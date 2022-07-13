@@ -100,9 +100,9 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\DJTAWINLibNET45\DJTAWINLibNET45.csproj">
-      <Project>{dffdb71b-156b-4cb3-a31e-b684007d9584}</Project>
-      <Name>DJTAWINLibNET45</Name>
+    <ProjectReference Include="..\DJTWAINLib\DJTWAINLib.csproj">
+      <Project>{71bc88c4-7ef1-4f89-93c7-b4ad97dd4864}</Project>
+      <Name>DJTWAINLib</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

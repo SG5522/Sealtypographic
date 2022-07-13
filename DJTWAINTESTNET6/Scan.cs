@@ -88,30 +88,38 @@ namespace DJTWAINTESTNET6
             }
             else
             {
-                Application.RemoveMessageFilter((IMessageFilter)this);
+                //Application.RemoveMessageFilter((IMessageFilter)this);
             }
         }
 
         private void btnScansource_Click(object sender, EventArgs e)
         {
             bool m_blExit;
-            string szIdentity;
-            string szDefault = "";
+            string szIdentity; //@被選擇的掃描機
+            string m_szProductDirectory;
             List<string> lszIdentity = new();
             ScanSelect ScanSelect;
             DialogResult dialogresult;
-            dJTWAIN.ScanSource(lszIdentity, this.Handle);
+            ScanSourceDataList scanSourceDataList = new();
+            
+            dJTWAIN.ScanSourceList(scanSourceDataList, this.Handle);
 
+
+            if(scanSourceDataList.ErrorMessage =="")
+            {
+                MessageBox.Show(scanSourceDataList.ErrorMessage);
+                return;
+            }
             
             // Ruh-roh...
-            if (lszIdentity.Count == 0)
+            if (scanSourceDataList.LszIdentity.Count == 0)
             {
                 MessageBox.Show("There are no TWAIN drivers installed on this system...");
                 return;
             }
 
             // Instantiate our form...
-            ScanSelect = new ScanSelect(lszIdentity, szDefault)
+            ScanSelect = new ScanSelect(scanSourceDataList.LszIdentity, scanSourceDataList.SzDefault)
             {
                 StartPosition = FormStartPosition.CenterParent
             };
@@ -121,18 +129,21 @@ namespace DJTWAINTESTNET6
                 m_blExit = true;
                 return;
             }
-            
-            //// Get all the identities...
-            //szIdentity = ScanSelect.GetSelectedDriver();
-            //if (szIdentity == null)
-            //{
-            //    m_blExit = true;
-            //    return;
-            //}
 
-            //// Get the selected identity...
+            // Get all the identities...
+            // Get the selected identity...
+            szIdentity = ScanSelect.GetSelectedDriver();
+            if (szIdentity == null)
+            {
+                m_blExit = true;
+                return;
+            }
+
+            dJTWAIN.ScanSource(szIdentity, scanSourceDataList);
+
+            // Get the selected identity...
             //m_blExit = true;
-            //foreach (string sz in lszIdentity)
+            //foreach (string sz in ScanSourceData.LszIdentity)
             //{
             //    if (sz.Contains(szIdentity))
             //    {
@@ -144,6 +155,39 @@ namespace DJTWAINTESTNET6
             //if (m_blExit)
             //{
             //    return;
+            //}
+
+            // Update the main form title...
+            this.Text = "TWAIN C# Scan (" + szIdentity + ")";
+
+            // Strip off unsafe chars.  Sadly, mono let's us down here...
+            //m_szProductDirectory = CSV.Parse(szIdentity)[11];
+            m_szProductDirectory = dJTWAIN.CSVFormat(scanSourceDataList.SzDefault)[11];
+            foreach (char c in new char[41]
+                            { '\x00', '\x01', '\x02', '\x03', '\x04', '\x05', '\x06', '\x07',
+                              '\x08', '\x09', '\x0A', '\x0B', '\x0C', '\x0D', '\x0E', '\x0F', '\x10', '\x11', '\x12',
+                              '\x13', '\x14', '\x15', '\x16', '\x17', '\x18', '\x19', '\x1A', '\x1B', '\x1C', '\x1D',
+                              '\x1E', '\x1F', '\x22', '\x3C', '\x3E', '\x7C', ':', '*', '?', '\\', '/'
+                            }
+                    )
+            {
+                m_szProductDirectory = m_szProductDirectory.Replace(c, '_');
+            }
+
+            //// New state...
+            //SetButtons(EBUTTONSTATE.OPEN);
+
+            //// Create the setup form...
+            //m_formsetup = new FormSetup(this, ref m_twain, m_szProductDirectory);
+        }
+
+        private void ButtonScan_Click(object sender, EventArgs e)
+        {
+            dJTWAIN.StartScan(this.Handle);
+            //sts = m_twain.DatUserinterface(TWAIN.DG.CONTROL, TWAIN.MSG.ENABLEDS, ref twuserinterface);
+            //if (sts == TWAIN.STS.SUCCESS)
+            //{
+            //    SetButtons(EBUTTONSTATE.SCANNING);
             //}
         }
     }

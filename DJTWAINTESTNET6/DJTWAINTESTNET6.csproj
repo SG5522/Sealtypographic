@@ -18,7 +18,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\DJTAWINLibNET45\DJTAWINLibNET45.csproj" />
     <ProjectReference Include="..\DJTWAINLib\DJTWAINLib.csproj" />
   </ItemGroup>
 

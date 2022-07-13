@@ -31,6 +31,7 @@
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.pictureBox2 = new System.Windows.Forms.PictureBox();
             this.btnScansource = new System.Windows.Forms.Button();
+            this.ButtonScan = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             this.SuspendLayout();
@@ -61,11 +62,22 @@
             this.btnScansource.UseVisualStyleBackColor = true;
             this.btnScansource.Click += new System.EventHandler(this.btnScansource_Click);
             // 
+            // ButtonScan
+            // 
+            this.ButtonScan.Location = new System.Drawing.Point(676, 393);
+            this.ButtonScan.Name = "ButtonScan";
+            this.ButtonScan.Size = new System.Drawing.Size(75, 23);
+            this.ButtonScan.TabIndex = 3;
+            this.ButtonScan.Text = "Scan";
+            this.ButtonScan.UseVisualStyleBackColor = true;
+            this.ButtonScan.Click += new System.EventHandler(this.ButtonScan_Click);
+            // 
             // Scan
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.ButtonScan);
             this.Controls.Add(this.btnScansource);
             this.Controls.Add(this.pictureBox2);
             this.Controls.Add(this.pictureBox1);
@@ -83,5 +95,6 @@
         private PictureBox pictureBox1;
         private PictureBox pictureBox2;
         private Button btnScansource;
+        private Button ButtonScan;
     }
 }
