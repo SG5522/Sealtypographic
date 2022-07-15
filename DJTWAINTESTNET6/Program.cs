@@ -14,15 +14,10 @@ namespace DJTWAINTESTNET6
             
             //@net core net5 net6 對unicode 以外文字的支援不足必須加這段
             System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
+            
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Scan scan = new();
-            if (!scan.ExitRequested())
-            {
-                Application.Run(scan);
-            }
-            //Application.Run(new Scan());
-            Application.Exit();
+            Application.Run(new Scan());
 
         }
     }

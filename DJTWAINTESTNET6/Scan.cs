@@ -1,29 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Security.Permissions;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using DJTWAINLib;
+﻿using DJTWAINLib;
 
 namespace DJTWAINTESTNET6
 {
     public partial class Scan : Form, IMessageFilter
     {
         private DJTWAIN dJTWAIN = new();
-        private Graphics? m_graphics1;
-        private bool blExit;
+        //private Graphics? m_graphics1;
+        //private bool blExit;
+        private readonly string imageName = "test";
+        private readonly string imgageType = ".png";
 
         public Scan()
         {
             InitializeComponent();
             dJTWAIN.TwainSet(this,this.Handle);
             SetMessageFilter(true);
-            blExit = false;
+            //blExit = false;
         }   
 
 
@@ -39,32 +31,45 @@ namespace DJTWAINTESTNET6
             /// We're being closed, clean up nicely...
             dJTWAIN.FormClosing();
             // This will prevent ReportImage from doing anything as we close...
-            m_graphics1 = null;
+            //m_graphics1 = null;
         }
-        [SecurityPermissionAttribute(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.UnmanagedCode)]
+
         /// <summary>
         /// Monitor for DG_CONTROL / DAT_NULL / MSG_* stuff (ex MSG_XFERREADY), this
         /// function is only triggered when SetMessageFilter() is called with 'true'...
         /// </summary>
         /// <param name="message">Message to process</param>
         /// <returns>Result of the processing</returns>
+        //[SecurityPermissionAttribute(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.UnmanagedCode)]
         public bool PreFilterMessage(ref Message message)
-        {
+        {            
             IntPtr a_intptrHwnd = message.HWnd;
             int a_iMsg = message.Msg;
             IntPtr a_intptrWparam = message.WParam;
             IntPtr a_intptrLparam = message.LParam;
-            return dJTWAIN.PreFilterMessage(a_intptrHwnd, a_iMsg, a_intptrWparam, a_intptrLparam);
+            bool scanEnd = dJTWAIN.PreFilterMessage(a_intptrHwnd, a_iMsg, a_intptrWparam, a_intptrLparam);
+            if(scanEnd)
+            {
+                string filePathF = @".\" + imageName + "F" + imgageType;
+                string filePathR = @".\" + imageName + "R" + imgageType;
+                FileStream fs = File.OpenRead(filePathF);
+                pictureBox1.Image = Image.FromStream(fs);
+                fs = File.OpenRead(filePathR);
+                pictureBox2.Image = Image.FromStream(fs);
+                fs.Close();
+                return true;
+            }
+            return false;
         }
         /// <summary>
         /// Turn message filtering on or off, we use this to capture stuff
         /// like MSG_XFERREADY.  If it's off, then it's assumed we're getting
         /// this info through DAT_CALLBACK2...
         /// </summary>
-        /// <param name="a_blAdd">True to turn it on</param>
-        public void SetMessageFilter(bool a_blAdd)
+        /// <param name="openCheck">True to turn it on</param>
+        public void SetMessageFilter(bool openCheck)
         {
-            if (a_blAdd)
+            if (openCheck)
             {
                 Application.AddMessageFilter(this);
             }
@@ -74,16 +79,17 @@ namespace DJTWAINTESTNET6
             }
         }
 
-        private void btnScansource_Click(object sender, EventArgs e)
+        private void ButtonScanSource_Click(object sender, EventArgs e)
         {
-            bool blExit;
+            //bool blExit;
             string selectScan; //@被選擇的掃描機
-            string m_szProductDirectory;
+            //string m_szProductDirectory;
             
             ScanSelect ScanSelect;
             DialogResult dialogresult;
             ScanSourceDataList scanSourceDataList = new();
             
+
             dJTWAIN.ScanSourceList(scanSourceDataList, this.Handle);
 
 
@@ -96,8 +102,9 @@ namespace DJTWAINTESTNET6
             // Ruh-roh...
             if (scanSourceDataList.LszIdentity.Count == 0)
             {
-                MessageBox.Show("There are no TWAIN drivers installed on this system...");
-                return;
+                //MessageBox.Show("There are no TWAIN drivers installed on this system...");
+                dJTWAIN.SuorceSelectCancel();
+                dJTWAIN.ScanSourceList(scanSourceDataList, this.Handle);
             }
 
             // Instantiate our form...
@@ -108,7 +115,7 @@ namespace DJTWAINTESTNET6
             dialogresult = ScanSelect.ShowDialog(this);
             if (dialogresult != System.Windows.Forms.DialogResult.OK)
             {
-                blExit = true;
+                //blExit = true;
                 return;
             }
 
@@ -117,7 +124,7 @@ namespace DJTWAINTESTNET6
             selectScan = ScanSelect.GetSelectedDriver();
             if (selectScan == null)
             {
-                blExit = true;
+                //blExit = true;
                 return;
             }
 
@@ -165,20 +172,8 @@ namespace DJTWAINTESTNET6
 
         private void ButtonScan_Click(object sender, EventArgs e)
         {
-            dJTWAIN.StartScan(this.Handle);
-            //sts = m_twain.DatUserinterface(TWAIN.DG.CONTROL, TWAIN.MSG.ENABLEDS, ref twuserinterface);
-            //if (sts == TWAIN.STS.SUCCESS)
-            //{
-            //    SetButtons(EBUTTONSTATE.SCANNING);
-            //}
-        }
-        /// <summary>
-        /// Something horrible has happened and we need to abort...
-        /// </summary>
-        /// <returns></returns>
-        public bool ExitRequested()
-        {
-            return (blExit);
-        }
+            dJTWAIN.StartScan(this.Handle, imageName,imgageType);           
+        }        
+
     }
 }

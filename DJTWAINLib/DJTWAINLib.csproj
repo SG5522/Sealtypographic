@@ -5,10 +5,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="System.Drawing.Common" Version="6.0.0" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Reference Include="TWAIN">
       <HintPath>TWAIN.dll</HintPath>
     </Reference>

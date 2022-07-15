@@ -1,61 +1,61 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Windows.Forms;
-using DJTWAINLib;
+﻿using DJTWAINLib;
 
 namespace DJTWAINTESTNET6
 {
     public partial class ScanSelect : Form
     {
         private readonly DJTWAIN dJTWAIN = new();
-        private string m_szSelected = ""; //回傳選擇的裝置
+        private string selected = ""; //回傳選擇的裝置
 
         /// <summary>
         /// Our constructor...
         /// </summary>
-        /// <param name="a_lszIdentity">list of scanners to show</param>
-        /// <param name="a_szDefault">the default selection</param>
-        public ScanSelect(List<string> a_lszIdentity, string a_szDefault)
+        /// <param name="identitys">list of scanners to show</param>
+        /// <param name="defaultSource">the default selection</param>
+        public ScanSelect(List<string> identitys, string defaultSource)
         {
-            string[] aszIdentity;
-            string[] aszDefault;
+            //string[] identityArray;
+            //string[] defaultArray;            
             // Init stuff...
             InitializeComponent();
-
-
+            ScanSourceData defaultData = dJTWAIN.SourceData(defaultSource);
+            
             // Explode the default...
-            aszDefault = dJTWAIN.CSVFormat(a_szDefault);
+            //defaultArray = dJTWAIN.CSVFormat(defaultSource);
 
             // Suspend updating...
             ListBoxSourceSelect.BeginUpdate();
 
             // Populate our driver list...
-            foreach (string sz in a_lszIdentity)
+            foreach (string sz in identitys)
             {
-                aszIdentity = dJTWAIN.CSVFormat(sz);
-                ListBoxSourceSelect.Items.Add(aszIdentity[11].ToString());
+                //identityArray = dJTWAIN.CSVFormat(sz);
+                //ListBoxSourceSelect.Items.Add(identityArray[11].ToString());
+                ScanSourceData identityData = dJTWAIN.SourceData(sz);
+                ListBoxSourceSelect.Items.Add(identityData.TwidentityProductName);
             }
 
             // Select the default...
-            ListBoxSourceSelect.SelectedIndex = ListBoxSourceSelect.FindStringExact(aszDefault[11]);
+            //ListBoxSourceSelect.SelectedIndex = ListBoxSourceSelect.FindStringExact(defaultArray[11]);
+            ListBoxSourceSelect.SelectedIndex = ListBoxSourceSelect.FindStringExact(defaultData.TwidentityProductName);
 
             // Resume updating...
             ListBoxSourceSelect.EndUpdate();
         }
         public string GetSelectedDriver()
         {
-            return m_szSelected;
+            return selected;
         }
 
         private void ButtonSelectScanSoucre_Click(object sender, EventArgs e)
         {
-            m_szSelected = (string)ListBoxSourceSelect.SelectedItem;
+            selected = (string)ListBoxSourceSelect.SelectedItem;
             this.DialogResult = DialogResult.OK;
         }
 
         private void ListBoxSourceSelect_DoubleClick(object sender, EventArgs e)
         {
-            m_szSelected = (string)ListBoxSourceSelect.SelectedItem;
+            selected = (string)ListBoxSourceSelect.SelectedItem;
             this.DialogResult = DialogResult.OK;
         }
     }
