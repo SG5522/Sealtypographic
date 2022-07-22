@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
-namespace SealTypographicDemo.Controllers
+namespace SealTypographic.Controllers
 {
     public class ErrorPage404Controller : Controller
     {

@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
-namespace SealTypographicDemo.Controllers
+namespace SealTypographic.Controllers
 {
-    public class ErrorPage500Controller : Controller
+    public class ErrorPage401Controller : Controller
     {
         public IActionResult Index()
         {

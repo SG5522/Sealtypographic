@@ -13,9 +13,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TchznSeal", "TchznSeal\Tchz
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TchznSealTest", "TchznSealTest\TchznSealTest.csproj", "{77CCF5D7-7289-4FB5-8788-78F78D8E969B}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SealTypographicDemo", "SealTypographicDemo\SealTypographicDemo.csproj", "{904296BF-1DF6-48AD-A169-5C1D951983A3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SealTypographic", "SealTypographic\SealTypographic.csproj", "{904296BF-1DF6-48AD-A169-5C1D951983A3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DJSpire", "DJSpire\DJSpire.csproj", "{466169CA-76F3-43E8-A042-876C56DDB7ED}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DJSpire", "DJSpire\DJSpire.csproj", "{466169CA-76F3-43E8-A042-876C56DDB7ED}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

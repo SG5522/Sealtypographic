@@ -199,7 +199,7 @@ namespace TchznSeal
         /// <param name="rotate">是否對印鑑分離圖旋轉 (0:不轉正 1:轉正)</param>
         /// <returns></returns>
         public KeyValuePair<int, ResultSealStatus> SealBuild(SealColor color, string szBmpFilePath, string szOutXmlFilePath,
-                                                             string TempPath, int dpi = 300, string LibPreFix = "", int LibIndex = 0,
+                                                             string TempPath, int dpi, string LibPreFix = "", int LibIndex = 0,
                                                              int left = 0, int top = 0, int width = 0, int height = 0,
                                                              int binarize = 0, int rotate = 0)
         {

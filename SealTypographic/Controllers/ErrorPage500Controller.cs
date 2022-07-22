@@ -1,12 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
-namespace SealTypographicDemo.Controllers
+namespace SealTypographic.Controllers
 {
-    public class LoginController : Controller
+    public class ErrorPage500Controller : Controller
     {
         public IActionResult Index()
         {
-            //return View();PartialView
             return PartialView();
         }
     }

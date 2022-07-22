@@ -8,7 +8,7 @@
     }
   },
   "profiles": {
-    "SealTypographicDemo": {
+    "SealTypographic": {
       "commandName": "Project",
       "dotnetRunMessages": true,
       "launchBrowser": true,

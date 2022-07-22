@@ -1,0 +1,11 @@
+﻿namespace SealTypographic.Models
+{
+    public class Seal
+    {
+        public string? CaseNo { get; set; }
+        public string? Id { get; set; }
+        public string? SetNo{ get; set; }
+        public string? SealNo { get; set; }
+        public string? SealImagePath { get; set; }
+    }
+}

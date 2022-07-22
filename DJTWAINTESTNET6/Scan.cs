@@ -8,7 +8,7 @@ namespace DJTWAINTESTNET6
         //private Graphics? m_graphics1;
         //private bool blExit;
         private readonly string imageName = "test";
-        private readonly string imgageType = ".png";
+        private readonly string imgageType = ".bmp";
 
         public Scan()
         {

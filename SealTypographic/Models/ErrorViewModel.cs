@@ -1,4 +1,4 @@
-namespace SealTypographicDemo.Models
+namespace SealTypographic.Models
 {
     public class ErrorViewModel
     {

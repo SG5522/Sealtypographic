@@ -1,0 +1,78 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    ViewData[""] = "";
+}
+<div class="container-fluid px-4">
+                        <h1 class="mt-4">TEST</h1>
+                        <ol class="breadcrumb mb-4">
+                            <li class="breadcrumb-item active">TEST</li>
+                        </ol>
+                        <div class="row">
+                            <div class="col-xl-3">
+                                <div class="card mb-4">
+                                    <div class="card-header">
+                                        <i class="fas fa-chart-area me-1"></i>
+                                        Area Chart
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="input-group float-right">                                            
+                                            <i class="fas fa-table me-1"></i>
+                                         <div class="list-group" id="listgroup">
+                                            <button type="button" class="list-group-item list">
+                                            Cras justo odio
+                                            </button>
+                                            <button type="button" class="list-group-item list">test.jpg</button>
+                                            <button type="button" class="list-group-item list">test2.jpg</button>
+                                            <button type="button" class="list-group-item list">Porta ac consectetur ac</button>
+                                            <button type="button" class="list-group-item list">Vestibulum at eros</button>
+                                         </div>
+                                       </div>
+                                    </div>
+                                </div>
+                            </div>
+                          <div class="col-xl-9">
+                                <div class="card mb-4">
+                                    <div class="card-header">
+                                        <i class="fas fa-chart-bar me-1"></i>
+                                        ImageView
+                                    </div>
+                                    <div id="sealcard" class="card-body">
+                                    <img src=@Url.Action("GetImage","CreateSealsSet") class="img-fluid" alt="Responsive image" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-6">   
+                                  <button id="test" type="submit" class="btn btn-primary float-right">確定</button>
+                            </div>
+                        </div>
+</div>
+ @section Scripts {
+    <script>
+        $('.list-group-item').on('click', function() {
+            var $this = $(this);
+            var $alias = $this.data('alias');
+
+            $('.active').removeClass('active');
+            $this.toggleClass('active')
+
+            $.ajax({
+                method: 'POST',
+                url: 'api/demo/GetTotalPages',
+            })
+            // Pass clicked link element to another function
+            myfunction($this, $alias)
+            })
+
+            function myfunction($this,  $alias) {
+            console.log($this.text());  // Will log Paris | France | etc...
+
+            console.log($alias);  // Will output whatever is in data-alias=""
+        }
+                
+
+
+
+    </script>
+  }

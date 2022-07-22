@@ -17,10 +17,10 @@
                                     <div class="card-body">
                                         <div class="input-group float-right">
                                             <ui>
-                                                <div id="Seal1">
+                                                <div id="seal1" draggable="true">
                                                     <img border="0" src="~/Seal/Seal1.jpg" width="50">
                                                 </div>
-                                                <div id="Seal2">                                            
+                                                <div id="seal2" draggable="true">                                            
                                                     <img border="0" src="~/Seal/Seal2.jpg" width="50">
                                                 </div>
                                             </ui>
@@ -35,8 +35,11 @@
                                         PDFview
                                     </div>
                                     <div class="card-body">
-                                        <div id="pdfdivcontent" >
-                                            <object data=@Url.Action("PdfOpen","Home") type="application/pdf" width="100%" height="1000px">
+                                        <div class ="droppable" id="pdfdivcontent"  >
+                                           <!-- <object data=@Url.Action("PdfOpen","Home") type="application/pdf" width="100%" height="1000px">
+                                            </object>
+                                           -->
+                                           <object data=@Url.Action("PdfOpen","Home") type="image/png" width="100%" height="100%">
                                             </object>
                                         </div>
                                     </div>
@@ -48,8 +51,9 @@
     <script>
         $(function () {
             $("#preview").click(function () {
+                //Prevent a link from opening the URL:
+                //(防止開啟新頁面)
                 event.preventDefault();
-                window.alert("test");
 
                 $objectTag = $('<object>'); 
                 $objectTag.attr("data", "@Url.Action("PdfOpen", "Home")");
@@ -61,18 +65,66 @@
             });
         });
 
-        $(function () {
-        //Make element draggable
-        $(".draggableItem").draggable({
-            //  use a helper-clone that is append to 'body' so is not 'contained' by a pane
-            helper: function () {
-                return $(this).clone().appendTo('body').css({
-                    'zIndex': 5
-                });
-            },
-            revert: "invalid",
-            cursor: 'move',
-            containment: '#pdfdivcontent'
-        });
+        let currentDroppable = null;
+
+        seal1.onmousedown = function(event) {
+
+          let shiftX = event.clientX - seal1.getBoundingClientRect().left;
+          let shiftY = event.clientY - seal1.getBoundingClientRect().top;
+
+          seal1.style.position = 'absolute';
+          seal1.style.zIndex = 1000;
+          document.body.append(seal1);
+
+          moveAt(event.pageX, event.pageY);
+
+          function moveAt(pageX, pageY) {
+            seal1.style.left = pageX - shiftX + 'px';
+            seal1.style.top = pageY - shiftY + 'px';
+          }
+
+          function onMouseMove(event) {
+            moveAt(event.pageX, event.pageY);
+
+            seal1.hidden = true;
+            let elemBelow = document.elementFromPoint(event.clientX, event.clientY);
+            seal1.hidden = false;
+
+            if (!elemBelow) return;
+
+            let droppableBelow = elemBelow.closest('.droppable');
+            if (currentDroppable != droppableBelow) {
+              if (currentDroppable) { // null when we were not over a droppable before this event
+                leaveDroppable(currentDroppable);
+              }
+              currentDroppable = droppableBelow;
+              if (currentDroppable) { // null if we're not coming over a droppable now
+                // (maybe just left the droppable)
+                enterDroppable(currentDroppable);
+              }
+            }
+          }
+
+          document.addEventListener('mousemove', onMouseMove);
+
+          seal1.onmouseup = function() {
+            document.removeEventListener('mousemove', onMouseMove);
+            seal1.onmouseup = null;
+          };
+
+        };
+        function enterDroppable(elem) {
+        elem.style.background = 'pink';
+        }
+
+        function leaveDroppable(elem) {
+        elem.style.background = '';
+        }
+
+        seal1.ondragstart = function() {
+        return false;
+        };
+
+
     </script>
 }
