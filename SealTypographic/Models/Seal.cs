@@ -7,5 +7,10 @@
         public string? SetNo{ get; set; }
         public string? SealNo { get; set; }
         public string? SealImagePath { get; set; }
+        public string? SealLocation { get; set; }
+        public string? SealLocationX { get; set; }
+        public string? SealLocationY { get; set; }
+        public string? SealLocationWidth { get; set; }
+        public string? SealLocationHeight { get; set; }
     }
 }

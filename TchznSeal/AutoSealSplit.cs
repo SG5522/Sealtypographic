@@ -7,8 +7,9 @@ using System.Drawing;
 namespace TchznSeal
 {
     public class AutoSealSplit
-    {        
-        private readonly string exePath = @".\";
+    {
+        //private readonly string exePath = @".\"; //@暫時固定路徑
+        private readonly string exePath = Directory.GetCurrentDirectory() + @"\bin\Debug\net6.0\"; //@暫時固定路徑
         //const string DJFileName = "DJSealResult.txt";   // 天創元件 結果文字檔
         private readonly string xmlname = "build.xml";
         [DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]

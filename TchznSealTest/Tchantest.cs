@@ -19,7 +19,7 @@ namespace TchznSealTest
             if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
                 string filepath = dialog.FileName;
-                autoSealSplit.SealSplit(filepath, @"D:\works\SealTypographic\TchznSealTest\bin\Debug\net6.0-windows\OUT\", "Test", "R");
+                autoSealSplit.SealSplit(filepath, @"C:\temp\", "Test", "R");
             }
         }
     }

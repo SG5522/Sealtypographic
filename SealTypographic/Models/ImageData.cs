@@ -2,8 +2,8 @@
 {
     public class ImageData
     {
-        public List<string>? Path { get; set; }
-
+        public string? Path { get; set; }
+        public string? Name { get; set; }
 
     }
 }

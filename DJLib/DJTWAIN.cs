@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 using TWAINWorkingGroup;
 using System.Security.Permissions;
 
-namespace DJTWAINLib
+namespace DJLib
 {
     public class DJTWAIN
     {

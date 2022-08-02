@@ -1,12 +1,14 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SealTypographic.Models;
 using System.Diagnostics;
-using DJSpire;
+using DJSpireNET6;
+using System.Drawing.Imaging;
 
 namespace SealTypographic.Controllers
 {
     public class HomeController : Controller
     {
+        //private SpirePDF spirePDF = new();
         private SpirePDF spirePDF = new();
         private readonly ILogger<HomeController> _logger;
 
@@ -38,18 +40,13 @@ namespace SealTypographic.Controllers
         //[HttpPost]
         public IActionResult PdfOpen()
         {
-
             //string FileName= "D:\\temp\\myPdf.pdf";
             string pdfPath = @"D:\works\SealTypographic\SealTypographic\wwwroot\pdf\test.pdf";
 
-            //MemoryStream stream = spirePDF.PdfLoad(pdfPath);
-            //stream.Position = 0;
-            //spirePDF.PdfDocumentClose();
-
             //return File(stream, "application/pdf");
             PDFData pdfData = new();
-            Stream stream = spirePDF.PdfLoadToPNG(pdfPath, 1, pdfData);
-            int pagetotal = pdfData.PDFTotalPage;
+            Stream stream = spirePDF.PdfLoadToPNG(pdfPath, 1, pdfData, ImageFormat.Png);            
+            //int pagetotal = pdfData.PDFTotalPage;
             return File(stream, "image/png");
         }
     }

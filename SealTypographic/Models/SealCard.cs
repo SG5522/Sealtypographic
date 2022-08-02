@@ -9,5 +9,6 @@
         public string? TotalSet { get; set; }
         public string? TotalSeals { get; set; }
         public DateTime? Date { get; set; }
+        public string? Type { get; set; }
     }
 }
