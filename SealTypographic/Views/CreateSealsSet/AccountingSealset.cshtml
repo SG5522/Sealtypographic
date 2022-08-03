@@ -1,7 +1,7 @@
 ﻿@*
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
-@model IEnumerable<SealTypographic.Models.Image>
+@model IEnumerable<SealTypographic.Models.Seal>
 @{
     ViewBag.Title = "Home Page";
 }
@@ -19,12 +19,15 @@
                                     </div>
                                     <div class="card-body h-50">
                                             <div class="list-group overflow-auto h-100">
-@*                                                @foreach (Image images in Model)
+                                                @foreach (Seal seal in Model)
                                                 {
-                                                    <button type="button" class="list-group-item list" value="@images.FileName">@images.FileName</button>
-                                                }*@
+                                                    <button type="button" class="list-group-item list" value="@seal.SealName">@seal.SealName</button>
+                                                }
                                             </div>
                                     </div>
+                                </div>
+                                <div class="card mb-2">   
+                                      <img id="sealImage" src="img/NoImage.svg" class="img-fluid" alt="Responsive image" style="width: auto; height: auto;"/>
                                 </div>
                             </div>
                             <div class="col-xl-8">
@@ -44,6 +47,19 @@
 </div>
  @section Scripts {
     <script>
+        $('.list-group-item').on('click', function() 
+        {
+            imageName = $(this);
+            //var imagedata = imagename.data('alias');
+            //Pass clicked link element to another function
+            //console.log(imageName.text());  // Will log Paris | France | etc...
+            //console.log(imagedata);  // Will output whatever is in data-alias=""
+            
+            //Change active 
+            $('.active').removeClass('active');
+            imageName.toggleClass('active');            
+            //$("#sealImage").attr("src", '@Url.Action("GetImage", new{imageName = @ViewBag.imageName})';            
 
+        })
     </script>
   }

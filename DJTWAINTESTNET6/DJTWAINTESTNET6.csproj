@@ -19,7 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\DJLib\DJLib.csproj" />
+    <ProjectReference Include="..\DJTWAIN\DJTWAINLib.csproj" />
   </ItemGroup>
 
   <ItemGroup>

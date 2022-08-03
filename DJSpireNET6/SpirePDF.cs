@@ -10,11 +10,13 @@ namespace DJSpireNET6
     {
         private readonly PdfDocument pdfDocument = new PdfDocument();
         //public PdfDocument pdfDocument = new PdfDocument();
-        public void PDFOpen(string pdfPath)
+
+
+        public void PDFOpen(string pdfFullName)
         {
             //Load pdf document
             
-            pdfDocument.LoadFromFile(pdfPath);
+            pdfDocument.LoadFromFile(pdfFullName);
 
             //Set view reference
             pdfDocument.ViewerPreferences.CenterWindow = true;
@@ -32,12 +34,12 @@ namespace DJSpireNET6
             //PDFDocumentViewer("ViewerPreference_result.pdf");
             
         }
-        public MemoryStream PdfLoad(string pdfPath)
+        public MemoryStream PdfLoad(string pdfFullName)
         {
             MemoryStream memoryStream = new MemoryStream();
             
             //Load pdf document
-            pdfDocument.LoadFromFile(pdfPath);
+            pdfDocument.LoadFromFile(pdfFullName);
       
             
             pdfDocument.SaveToStream(memoryStream);
@@ -47,15 +49,15 @@ namespace DJSpireNET6
         /// <summary>
         /// PDF轉PNG
         /// </summary>
-        /// <param name="pdfPath">PDF檔案位置</param>
+        /// <param name="pdfFullName">PDF檔案位置</param>
         /// <param name="page">要轉換的頁碼</param>
         /// <param name="pDFData">PDF的資料(暫時用不到)</param>
         /// <param name="imageFormat">轉換圖檔型態(只支援WINDOWS)</param>
         /// <returns></returns>
-        public Stream PdfLoadToPNG(string pdfPath, int page, PDFData pDFData, ImageFormat imageFormat)
+        public Stream PdfLoadToPNG(string pdfFullName, int page, PDFData pDFData, ImageFormat imageFormat)
         {
             //Load pdf document
-            pdfDocument.LoadFromFile(pdfPath);
+            pdfDocument.LoadFromFile(pdfFullName);
             //提供資料回傳
             pDFData.PDFTotalPage = pdfDocument.Pages.Count;
             //save Pdf page to image

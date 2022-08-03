@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SealTypographic.Models;
 using System.Diagnostics;
-using DJSpireNET6;
+using DJSpire;
 using System.Drawing.Imaging;
 
 namespace SealTypographic.Controllers
@@ -41,11 +41,12 @@ namespace SealTypographic.Controllers
         public IActionResult PdfOpen()
         {
             //string FileName= "D:\\temp\\myPdf.pdf";
-            string pdfPath = @"D:\works\SealTypographic\SealTypographic\wwwroot\pdf\test.pdf";
+            string pdfFullName = @"D:\works\SealTypographic\SealTypographic\wwwroot\pdf\test.pdf";
 
             //return File(stream, "application/pdf");
             PDFData pdfData = new();
-            Stream stream = spirePDF.PdfLoadToPNG(pdfPath, 1, pdfData, ImageFormat.Png);            
+            //Stream stream = spirePDF.PdfLoadToPNG(pdfPath, 1, pdfData, ImageFormat.Png); //DJSpireNET6 使用
+            Stream stream = spirePDF.PdfLoadToPNG(pdfFullName, 1, pdfData);
             //int pagetotal = pdfData.PDFTotalPage;
             return File(stream, "image/png");
         }

@@ -14,7 +14,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\DJLib\DJLib.csproj" />
-    <ProjectReference Include="..\DJSpireNET6\DJSpireNET6.csproj" />
+    <ProjectReference Include="..\DJSpire\DJSpire.csproj" />
     <ProjectReference Include="..\TchznSeal\TchznSeal.csproj" />
   </ItemGroup>
 

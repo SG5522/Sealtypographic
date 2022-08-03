@@ -45,53 +45,108 @@
                                 <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
                                 Dashboard
                             </a>
-                            <div class="sb-sidenav-menu-heading">Interface</div>
-                            <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseLayouts" aria-expanded="false" aria-controls="collapseLayouts">
+                            <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#sealCreate" aria-expanded="false" aria-controls="sealCreate">
                                 <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
-                                印鑑建檔系統
+                                印鑑取章
                                 <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
                             </a>
-                            <div class="collapse" id="collapseLayouts" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
-                                <nav class="sb-sidenav-menu-nested nav">
-                                    <a class="nav-link" href="@Url.Action("index","CreateSealsSet")">印鑑建檔</a>
-                                    <a class="nav-link" href="@Url.Action("index","Home")">取章排版</a>
+                            <div class="collapse" id="sealCreate" aria-labelledby="headingTwo" data-bs-parent="#sidenavSealCreatePages">
+                                <nav class="sb-sidenav-menu-nested nav accordion" id="sidenavSealCreatePages">
+                                    <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#outSourceSealCreate" aria-expanded="false" aria-controls="outSourceSealCreate">
+                                        委拖公司取章作業
+                                        <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                                    </a>
+                                    <div class="collapse" id="outSourceSealCreate" aria-labelledby="headingOne" data-bs-parent="#sidenavSealCreatePages">
+                                        <nav class="sb-sidenav-menu-nested nav">
+                                            <a class="nav-link" href="@Url.Action("index","CreateSealsSet")">新增</a>
+                                            <a class="nav-link" href="@Url.Action("index","Home")">取章排版</a>
+                                        </nav>
+                                    </div>
+                                    <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#accountingSealCreate" aria-expanded="false" aria-controls="accountingSealCreate">
+                                        會計師取章作業
+                                        <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                                    </a>
+                                    <div class="collapse" id="accountingSealCreate" aria-labelledby="headingOne" data-bs-parent="#sidenavSealCreatePages">
+                                        <nav class="sb-sidenav-menu-nested nav">
+                                            <a class="nav-link" href="@Url.Action("index","CreateSealsSet")">新增</a>
+                                            <a class="nav-link" href="#">異動</a>
+                                        </nav>
+                                    </div>
+                                    <a class="nav-link" href="#">未完成(未審查?)取章清單</a>
                                 </nav>
                             </div>
-                            <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapsePages" aria-expanded="false" aria-controls="collapsePages">
-                                <div class="sb-nav-link-icon"><i class="fas fa-book-open"></i></div>
-                                Pages
+                            <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#sealTypography" aria-expanded="false" aria-controls="sealTypography">
+                                <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
+                                排版作業
                                 <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
                             </a>
-                            <div class="collapse" id="collapsePages" aria-labelledby="headingTwo" data-bs-parent="#sidenavAccordion">
-                                <nav class="sb-sidenav-menu-nested nav accordion" id="sidenavAccordionPages">
-                                    <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#pagesCollapseAuth" aria-expanded="false" aria-controls="pagesCollapseAuth">
-                                        Authentication
+                            <div class="collapse" id="sealTypography" aria-labelledby="headingTwo" data-bs-parent="#sidenavSealCreatePages">
+                                <nav class="sb-sidenav-menu-nested nav accordion" id="sidenavSealCreatePages">
+                                    <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#outSourceSealTypography" aria-expanded="false" aria-controls="outSourceSealTypography">
+                                        委拖公司排版作業
                                         <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
                                     </a>
-                                    <div class="collapse" id="pagesCollapseAuth" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordionPages">
+                                    <div class="collapse" id="outSourceSealTypography" aria-labelledby="headingOne" data-bs-parent="#sidenavSealTypographyPages">
                                         <nav class="sb-sidenav-menu-nested nav">
-                                            <a class="nav-link" href="@Url.Action("index","Login")">Login</a>
-                                            <a class="nav-link" href="@Url.Action("index","Password")">Forgot Password</a>
+                                            <a class="nav-link" href="@Url.Action("index","Home")">新增</a>
+                                            <a class="nav-link" href="#">異動</a>
                                         </nav>
                                     </div>
-                                    <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#pagesCollapseError" aria-expanded="false" aria-controls="pagesCollapseError">
-                                        Error
+                                    <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#accountingSealTypography" aria-expanded="false" aria-controls="accountingSealTypography">
+                                        會計師排版作業
                                         <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
                                     </a>
-                                    <div class="collapse" id="pagesCollapseError" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordionPages">
+                                    <div class="collapse" id="accountingSealTypography" aria-labelledby="headingOne" data-bs-parent="#sidenavSealTypographyPages">
                                         <nav class="sb-sidenav-menu-nested nav">
-                                            <a class="nav-link" href="@Url.Action("index","ErrorPage401")">401 Page</a>
-                                            <a class="nav-link" href="@Url.Action("index","ErrorPage404")">404 Page</a>
-                                            <a class="nav-link" href="@Url.Action("index","ErrorPage500")">500 Page</a>
+                                            <a class="nav-link" href="@Url.Action("index","Home")">新增</a>
+                                            <a class="nav-link" href="#">異動</a>
                                         </nav>
                                     </div>
+                                    <a class="nav-link" href="#">未完成(未審查?)取章清單</a>
+                                </nav>
+                            </div>
+
+
+                            <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#permissionSetting" aria-expanded="false" aria-controls="permissionSetting">
+                                <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
+                                權限設定
+                                <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                            </a>
+                            <div class="collapse" id="permissionSetting" aria-labelledby="headingOne" data-bs-parent="#sidenavpermissionSettingPages">
+                                <nav class="sb-sidenav-menu-nested nav accordion" id="sidenavSealCreatePages">
+                                    <a class="nav-link" href="#">權限管理</a>
+                                    <a class="nav-link" href="#">功能管理</a>
+                                    <a class="nav-link" href="#">使用者管理</a>
+                                </nav>
+                            </div>
+
+                            <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#securityManage" aria-expanded="false" aria-controls="securityManage">
+                                <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
+                                資安管理
+                                <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                            </a>
+                            <div class="collapse" id="securityManage" aria-labelledby="headingOne" data-bs-parent="#sidenavSecurityManagePages">
+                                <nav class="sb-sidenav-menu-nested nav">
+                                    <a class="nav-link" href="#">連線查詢監控</a>
+                                    <a class="nav-link" href="#">多人資源管理</a>                                    
+                                </nav>
+                            </div>
+
+                            <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#systemSetting" aria-expanded="false" aria-controls="systemSetting">
+                                <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
+                                系統設定
+                                <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                            </a>
+                            <div class="collapse" id="systemSetting" aria-labelledby="headingOne" data-bs-parent="#sidenavSystemSettingPages">
+                                <nav class="sb-sidenav-menu-nested nav">
+                                    <a class="nav-link" href="#">待建置</a>
                                 </nav>
                             </div>
                         </div>
                     </div>
                     <div class="sb-sidenav-footer">
                         <div class="small">Logged in as:</div>
-                        Start Bootstrap
+                        Test
                     </div>
                 </nav>
             </div>

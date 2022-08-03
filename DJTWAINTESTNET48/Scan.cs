@@ -9,7 +9,7 @@ using System.Security.Permissions;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using DJLib;
+using DJTWAINLib;
 
 namespace DJTWAINTESTNET48
 {

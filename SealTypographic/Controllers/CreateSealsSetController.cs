@@ -8,8 +8,7 @@ namespace SealTypographic.Controllers
 {
     public class CreateSealsSetController : Controller
     {
-        private readonly string imagePath = @"D:\works\SealTypographic\SealTypographic\wwwroot\Sealcard\";
-        private readonly string sealTempPath = @"C:\temp\";
+        private readonly string scanImagePath = @"D:\works\SealTypographic\SealTypographic\wwwroot\Sealcard\";        
         private readonly float HeightScale = 0.25f;
         private readonly float WidthScale = 0.25f;
         private AutoSealSplit autoSealSplit = new();
@@ -20,7 +19,7 @@ namespace SealTypographic.Controllers
         /// <returns></returns>
         public IActionResult Index()
         {
-            List<Image> imageDatas = GetImages();
+            List<Image> imageDatas = GetImages(scanImagePath, "jpg");
             return View(imageDatas);
         }
 
@@ -41,24 +40,35 @@ namespace SealTypographic.Controllers
         /// <param name="imageName">被選擇的掃描圖檔名</param>
         /// <returns></returns>
         public IActionResult AccountingSealset(string imageName)
-        {            
-            //@呼叫天創元件進行分離 但目前分離的檔案有問題需要確認
-            //autoSealSplit.SealSplit(imagePath + imageName , Directory.GetCurrentDirectory() + @"\bin\Debug\net6.0\", "Test", "R");
+        {
+            List<Seal> seals = new();
+            List<Image> sealImage = GetImages(Path.GetTempPath() + @"\Seal\","bmp");
+            int count = 1;
+            //@呼叫天創元件進行分離 每次會自己產生bmp檔 後續需要請天創調整元件
+            autoSealSplit.SealSplit(scanImagePath + imageName , Path.GetTempPath() + @"\Seal\", "Test", "R");            
+            foreach(Image image in sealImage)
+            {                
+                seals.Add(new Seal
+                {
+                    SealImageFullName = image.FileFullName,
+                    SealName = "test" + count.ToString(),
+                    SetNo = count.ToString(),
+                    SealNo = "1",
+                });
+                count++;
+            }
+            
+            
             ViewBag.imageName = imageName;
-            return View();
+            return View(seals);
         }
 
-        private SealSet sealSet()
+        private SealSet SealSetSetting()
         {
             SealSet sealSet = new();
             return sealSet;
         }
 
-        private Seal seal()
-        {
-            Seal seal = new();
-            return seal;
-        }
 
         /// <summary>
         /// 信頭紙頁面
@@ -95,28 +105,31 @@ namespace SealTypographic.Controllers
         /// <returns></returns>
         public Image? GetSealImage(string imageName)
         {
-            List<Image> images = GetImages();
+            List<Image> images = GetImages(scanImagePath,"jpg");
             return images.Find(p => p.FileName == imageName);            
         }
 
         /// <summary>
         /// 獲得資料夾內的所有圖檔以及圖檔的檔名 資料型態(目前先固定為jpg) byte[]
         /// </summary>
+        /// <param name="imageath">圖檔路徑</param>
+        /// <param name="imageType">圖檔型態</param>
         /// <returns></returns>
-        private List<Image> GetImages()
+        private List<Image> GetImages(string imageath,string imageType)
         {
             List<Image> images = new();
-            string[] files = Directory.GetFiles(imagePath);
+            string[] files = Directory.GetFiles(imageath);
             if (files.Length > 0)
             {
-                DirectoryInfo folder = new(imagePath);
-                foreach (FileInfo file in folder.GetFiles("*.jpg"))
+                DirectoryInfo folder = new(imageath);
+                foreach (FileInfo file in folder.GetFiles("*."+ imageType))
                 {
                     images.Add(new Image
                     {
                         FileName = file.Name,
+                        FileFullName = file.FullName,
                         ContentType = "image/jpg",
-                        Data = ImageResize.ResizedImgToBytes(imagePath + file.Name, WidthScale, HeightScale),//縮放圖檔並轉成Bytes
+                        Data = ImageResize.ResizedImgToBytes(imageath + file.Name, WidthScale, HeightScale),//縮放圖檔並轉成Bytes
                     });
                 }
             }

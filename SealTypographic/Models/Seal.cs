@@ -6,7 +6,8 @@
         public string? Id { get; set; }
         public string? SetNo{ get; set; }
         public string? SealNo { get; set; }
-        public string? SealImagePath { get; set; }
+        public string? SealName { get; set; }
+        public string? SealImageFullName { get; set; }
         public string? SealLocation { get; set; }
         public string? SealLocationX { get; set; }
         public string? SealLocationY { get; set; }

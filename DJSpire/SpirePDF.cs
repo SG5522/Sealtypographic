@@ -8,11 +8,12 @@ namespace DJSpire
     {
         private readonly PdfDocument pdfDocument = new PdfDocument();
         //public PdfDocument pdfDocument = new PdfDocument();
-        public void PDFOpen(string pdfPath)
+
+        public void PDFOpen(string pdfFullName)
         {
             //Load pdf document
             
-            pdfDocument.LoadFromFile(pdfPath);
+            pdfDocument.LoadFromFile(pdfFullName);
 
             //Set view reference
             pdfDocument.ViewerPreferences.CenterWindow = true;
@@ -30,12 +31,12 @@ namespace DJSpire
             //PDFDocumentViewer("ViewerPreference_result.pdf");
             
         }
-        public MemoryStream PdfLoad(string pdfPath)
+        public MemoryStream PdfLoad(string pdfFullName)
         {
             MemoryStream memoryStream = new MemoryStream();
             
             //Load pdf document
-            pdfDocument.LoadFromFile(pdfPath);
+            pdfDocument.LoadFromFile(pdfFullName);
       
 
             //在STAND2.0的環境下使用SaveToStream 會需要使用SkiaSharp
@@ -43,14 +44,22 @@ namespace DJSpire
 
             return memoryStream;
         }
-        public Stream PdfLoadToPNG(string pdfPath, int page , PDFData pDFData)
+        /// <summary>
+        /// PDF轉PNG
+        /// </summary>
+        /// <param name="pdfFullName">完整檔案路徑名稱</param>
+        /// <param name="page">頁次</param>
+        /// <param name="pDFData">PDF資料(暫時無功能)</param>
+        /// <returns></returns>
+        public Stream PdfLoadToPNG(string pdfFullName, int page , PDFData pDFData)
         {
             //Load pdf document
-            pdfDocument.LoadFromFile(pdfPath);
+            pdfDocument.LoadFromFile(pdfFullName);
             //提供資料回傳
             pDFData.PDFTotalPage = pdfDocument.Pages.Count;
 
             //save Pdf page to image           
+            //在STAND2.0的環境下用到Stream會需要使用SkiaSharp
             return pdfDocument.SaveAsImage(page, PdfImageType.Bitmap);
         }
         public void PdfDocumentClose()

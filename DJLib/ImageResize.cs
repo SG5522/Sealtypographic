@@ -11,59 +11,61 @@ namespace DJLib
         /// <summary>
         /// 圖像縮放
         /// </summary>
-        /// <param name="image"></param>
-        /// <param name="scale"></param>
+        /// <param name="fullname"></param>
+        /// <param name="widthScale"></param>
+        /// <param name="heightScale"></param>
         /// <returns></returns>
-        public static Bitmap ResizedImg(string path, float WidthScale, float HeightScale)
+        public static Bitmap ResizedImg(string fullname, float widthScale, float heightScale)
         {
-            FileStream fs = File.OpenRead(path);
-            Image image = Image.FromStream(fs);
-            int width = (int)(image.Width * WidthScale);
-            int height = (int)(image.Height * HeightScale);
-            var destRect = new Rectangle(0, 0, width, height);
-            var destImage = new Bitmap(width, height);
+            FileStream fileStream = File.OpenRead(fullname);
+            Image image = Image.FromStream(fileStream);
+            int width = (int)(image.Width * widthScale);
+            int height = (int)(image.Height * heightScale);
+            Rectangle targatRect = new Rectangle(0, 0, width, height);
+            Bitmap targatBitmap = new Bitmap(width, height);
 
-            destImage.SetResolution(image.HorizontalResolution, image.VerticalResolution);
+            targatBitmap.SetResolution(image.HorizontalResolution, image.VerticalResolution);
 
-            using (var graphics = Graphics.FromImage(destImage))
-            {
-                graphics.CompositingMode = CompositingMode.SourceCopy;
-                graphics.CompositingQuality = CompositingQuality.HighQuality;
-                graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
-                graphics.SmoothingMode = SmoothingMode.HighQuality;
-                graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
+            Graphics graphics = Graphics.FromImage(targatBitmap);
+            graphics.CompositingMode = CompositingMode.SourceCopy;
+            graphics.CompositingQuality = CompositingQuality.HighQuality;
+            graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
+            graphics.SmoothingMode = SmoothingMode.HighQuality;
+            graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
 
-                using (var wrapMode = new ImageAttributes())
-                {
-                    wrapMode.SetWrapMode(WrapMode.TileFlipXY);
-                    graphics.DrawImage(image, destRect, 0, 0, image.Width, image.Height, GraphicsUnit.Pixel, wrapMode);
-                }
-            }
+            ImageAttributes wrapMode = new ImageAttributes();
+
+            wrapMode.SetWrapMode(WrapMode.TileFlipXY);
+            graphics.DrawImage(image, targatRect, 0, 0, image.Width, image.Height, GraphicsUnit.Pixel, wrapMode);
+            
+            wrapMode.Dispose();
+            graphics.Dispose();
             image.Dispose();
-            fs.Dispose();
-            return destImage;
+            fileStream.Dispose();
+
+            return targatBitmap;
         }
 
         /// <summary>
         /// 圖檔縮放並轉成Bytes
         /// </summary>
-        /// <param name="path">檔案路徑</param>
-        /// <param name="WidthScale">寬縮放大小(float)</param>
-        /// <param name="HeightScale">高縮放大小(float)</param>
+        /// <param name="fullName">檔案路徑</param>
+        /// <param name="widthScale">寬縮放大小(float)</param>
+        /// <param name="heightScale">高縮放大小(float)</param>
         /// <returns></returns>
-        public static byte[] ResizedImgToBytes(string path, float WidthScale, float HeightScale)
+        public static byte[] ResizedImgToBytes(string fullName, float widthScale, float heightScale)
         {
-            MemoryStream ms = new MemoryStream();
+            MemoryStream memoryStream = new MemoryStream();
             
-            Bitmap destImage = ResizedImg(path, WidthScale, HeightScale);            
-            destImage.Save(ms, ImageFormat.Png);
+            Bitmap targatBitmap = ResizedImg(fullName, widthScale, heightScale);            
+            targatBitmap.Save(memoryStream, ImageFormat.Png);
 
-            byte[] imageBytes = new byte[ms.Length];
-            ms.Position = 0;
-            ms.Read(imageBytes, 0, (int)ms.Length);
-            ms.Close();
+            byte[] imageBytes = new byte[memoryStream.Length];
+            memoryStream.Position = 0;
+            memoryStream.Read(imageBytes, 0, (int)memoryStream.Length);
+            memoryStream.Close();
 
-            destImage.Dispose();
+            targatBitmap.Dispose();
             return imageBytes;
         }
     }
