@@ -6,6 +6,6 @@ namespace DJSpire
 {
     public class PDFData
     {
-        public int PDFTotalPage { set; get; }
+        public int TotalPages { get; set; }
     }
 }

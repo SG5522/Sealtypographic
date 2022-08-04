@@ -46,7 +46,7 @@ namespace SealTypographic.Controllers
             //return File(stream, "application/pdf");
             PDFData pdfData = new();
             //Stream stream = spirePDF.PdfLoadToPNG(pdfPath, 1, pdfData, ImageFormat.Png); //DJSpireNET6 使用
-            Stream stream = spirePDF.PdfLoadToPNG(pdfFullName, 1, pdfData);
+            Stream stream = spirePDF.LoadPDFToPNG(pdfFullName, 1, pdfData);
             //int pagetotal = pdfData.PDFTotalPage;
             return File(stream, "image/png");
         }

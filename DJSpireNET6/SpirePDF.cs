@@ -11,29 +11,6 @@ namespace DJSpireNET6
         private readonly PdfDocument pdfDocument = new PdfDocument();
         //public PdfDocument pdfDocument = new PdfDocument();
 
-
-        public void PDFOpen(string pdfFullName)
-        {
-            //Load pdf document
-            
-            pdfDocument.LoadFromFile(pdfFullName);
-
-            //Set view reference
-            pdfDocument.ViewerPreferences.CenterWindow = true;
-            pdfDocument.ViewerPreferences.DisplayTitle = false;
-            pdfDocument.ViewerPreferences.FitWindow = false;
-            pdfDocument.ViewerPreferences.HideMenubar = true;
-            pdfDocument.ViewerPreferences.HideToolbar = true;
-            pdfDocument.ViewerPreferences.PageLayout = PdfPageLayout.SinglePage;
-
-            //Save pdf file
-            //pdfDocument.SaveToFile("ViewerPreference_result.pdf");
-            //pdfDocument.Close();
-
-            //Launch the Pdf file
-            //PDFDocumentViewer("ViewerPreference_result.pdf");
-            
-        }
         public MemoryStream PdfLoad(string pdfFullName)
         {
             MemoryStream memoryStream = new MemoryStream();
@@ -46,6 +23,7 @@ namespace DJSpireNET6
 
             return memoryStream;
         }
+
         /// <summary>
         /// PDF轉PNG
         /// </summary>

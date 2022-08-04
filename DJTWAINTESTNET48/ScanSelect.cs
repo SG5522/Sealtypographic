@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Windows.Forms;
-using DJLib;
+using DJTWAINLib;
 
 namespace DJTWAINTESTNET48
 {

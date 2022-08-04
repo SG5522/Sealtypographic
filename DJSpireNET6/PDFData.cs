@@ -6,6 +6,7 @@ namespace DJSpireNET6
 {
     public class PDFData
     {
-        public int PDFTotalPage { set; get; }
+        public int PDFTotalPage { get; set; }
+        
     }
 }

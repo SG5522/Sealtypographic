@@ -9,14 +9,15 @@ namespace DJLib
     public class ImageResize
     {
         /// <summary>
-        /// 圖像縮放
+        /// 重繪圖像並縮放(redraw)
         /// </summary>
         /// <param name="fullname"></param>
         /// <param name="widthScale"></param>
         /// <param name="heightScale"></param>
         /// <returns></returns>
-        public static Bitmap ResizedImg(string fullname, float widthScale, float heightScale)
+        public static Bitmap ReDrawImage(string fullname, float widthScale, float heightScale)
         {
+
             FileStream fileStream = File.OpenRead(fullname);
             Image image = Image.FromStream(fileStream);
             int width = (int)(image.Width * widthScale);
@@ -37,36 +38,45 @@ namespace DJLib
 
             wrapMode.SetWrapMode(WrapMode.TileFlipXY);
             graphics.DrawImage(image, targatRect, 0, 0, image.Width, image.Height, GraphicsUnit.Pixel, wrapMode);
-            
-            wrapMode.Dispose();
-            graphics.Dispose();
-            image.Dispose();
-            fileStream.Dispose();
+
+            //wrapMode.Dispose();
+            //graphics.Dispose();
+            //image.Dispose();
+            //fileStream.Dispose();            
+            fileStream.Close();
 
             return targatBitmap;
         }
 
         /// <summary>
-        /// 圖檔縮放並轉成Bytes
+        /// 重繪圖檔縮放並轉成Bytes
         /// </summary>
         /// <param name="fullName">檔案路徑</param>
         /// <param name="widthScale">寬縮放大小(float)</param>
         /// <param name="heightScale">高縮放大小(float)</param>
         /// <returns></returns>
-        public static byte[] ResizedImgToBytes(string fullName, float widthScale, float heightScale)
+        public static byte[] ReDrawImgToBytes(string fullName, float widthScale, float heightScale)
         {
-            MemoryStream memoryStream = new MemoryStream();
-            
-            Bitmap targatBitmap = ResizedImg(fullName, widthScale, heightScale);            
-            targatBitmap.Save(memoryStream, ImageFormat.Png);
+            try
+            {
+                MemoryStream memoryStream = new MemoryStream();
 
-            byte[] imageBytes = new byte[memoryStream.Length];
-            memoryStream.Position = 0;
-            memoryStream.Read(imageBytes, 0, (int)memoryStream.Length);
-            memoryStream.Close();
+                Bitmap targatBitmap = ReDrawImage(fullName, widthScale, heightScale);
+                targatBitmap.Save(memoryStream, ImageFormat.Png);
 
-            targatBitmap.Dispose();
-            return imageBytes;
+                byte[] imageBytes = new byte[memoryStream.Length];
+                memoryStream.Position = 0;
+                memoryStream.Read(imageBytes, 0, (int)memoryStream.Length);
+                memoryStream.Close();
+
+                //targatBitmap.Dispose();
+                return imageBytes;
+            }
+            catch (FileNotFoundException e)
+            {
+                Console.WriteLine($"The file was not found: '{e}'");
+                return null;
+            }
         }
     }
 }

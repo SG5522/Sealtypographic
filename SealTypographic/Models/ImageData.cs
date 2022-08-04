@@ -2,8 +2,9 @@
 {
     public class ImageData
     {
-        public string? Path { get; set; }
-        public string? Name { get; set; }
-
+        public string? FileName { get; set; }
+        public string? FileFullName { get; set; }
+        public string ContentType { get; set; } = null!;
+        public byte[] Data { get; set; } = null!;
     }
 }

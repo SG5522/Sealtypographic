@@ -18,12 +18,12 @@
                                        章式列表
                                     </div>
                                     <div class="card-body h-50">
-                                            <div class="list-group overflow-auto h-100">
-                                                @foreach (Seal seal in Model)
-                                                {
-                                                    <button type="button" class="list-group-item list" value="@seal.SealName">@seal.SealName</button>
-                                                }
-                                            </div>
+                                        <div class="list-group overflow-auto h-100">
+                                            @foreach (Seal seal in Model)
+                                            {
+                                                <button type="button" class="list-group-item list" value="@seal.SealImageName">@seal.SealImageName</button>
+                                            }
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="card mb-2">   
@@ -38,7 +38,7 @@
                                     </div>
                                     <div class="card-body">
                                         <div id="sealcard" class="card-body">
-                                            <img src="@Url.Action("GetImage", new{imageName = @ViewBag.imageName})"/>
+                                            <img src="@Url.Action("GetScanImage", new{imageName = @ViewBag.imageName})"/>
                                         </div>
                                     </div>
                                 </div>
@@ -49,16 +49,11 @@
     <script>
         $('.list-group-item').on('click', function() 
         {
-            imageName = $(this);
-            //var imagedata = imagename.data('alias');
-            //Pass clicked link element to another function
-            //console.log(imageName.text());  // Will log Paris | France | etc...
-            //console.log(imagedata);  // Will output whatever is in data-alias=""
-            
+            imageName = $(this);        
             //Change active 
             $('.active').removeClass('active');
             imageName.toggleClass('active');            
-            //$("#sealImage").attr("src", '@Url.Action("GetImage", new{imageName = @ViewBag.imageName})';            
+            $("#sealImage").attr("src", '@Url.Action("GetSealImage")?imageName=' + imageName.val());
 
         })
     </script>

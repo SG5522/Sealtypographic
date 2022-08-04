@@ -1,4 +1,4 @@
-﻿using DJLib;
+﻿using DJTWAINLib;
 
 namespace DJTWAINTESTNET6
 {

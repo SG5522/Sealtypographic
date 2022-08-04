@@ -6,39 +6,13 @@ namespace DJSpire
 {
     public class SpirePDF
     {
-        private readonly PdfDocument pdfDocument = new PdfDocument();
-        //public PdfDocument pdfDocument = new PdfDocument();
-
-        public void PDFOpen(string pdfFullName)
+        public MemoryStream Load(string pdfFullName)
         {
             //Load pdf document
-            
-            pdfDocument.LoadFromFile(pdfFullName);
-
-            //Set view reference
-            pdfDocument.ViewerPreferences.CenterWindow = true;
-            pdfDocument.ViewerPreferences.DisplayTitle = false;
-            pdfDocument.ViewerPreferences.FitWindow = false;
-            pdfDocument.ViewerPreferences.HideMenubar = true;
-            pdfDocument.ViewerPreferences.HideToolbar = true;
-            pdfDocument.ViewerPreferences.PageLayout = PdfPageLayout.SinglePage;
-
-            //Save pdf file
-            //pdfDocument.SaveToFile("ViewerPreference_result.pdf");
-            //pdfDocument.Close();
-
-            //Launch the Pdf file
-            //PDFDocumentViewer("ViewerPreference_result.pdf");
-            
-        }
-        public MemoryStream PdfLoad(string pdfFullName)
-        {
+            PdfDocument pdfDocument = new PdfDocument();
             MemoryStream memoryStream = new MemoryStream();
-            
             //Load pdf document
             pdfDocument.LoadFromFile(pdfFullName);
-      
-
             //在STAND2.0的環境下使用SaveToStream 會需要使用SkiaSharp
             pdfDocument.SaveToStream(memoryStream);
 
@@ -48,23 +22,19 @@ namespace DJSpire
         /// PDF轉PNG
         /// </summary>
         /// <param name="pdfFullName">完整檔案路徑名稱</param>
-        /// <param name="page">頁次</param>
+        /// <param name="pageNumber">頁次</param>
         /// <param name="pDFData">PDF資料(暫時無功能)</param>
         /// <returns></returns>
-        public Stream PdfLoadToPNG(string pdfFullName, int page , PDFData pDFData)
+        public Stream LoadPDFToPNG(string pdfFullName, int pageNumber , PDFData pdfData)
         {
             //Load pdf document
+            PdfDocument pdfDocument = new PdfDocument();
             pdfDocument.LoadFromFile(pdfFullName);
             //提供資料回傳
-            pDFData.PDFTotalPage = pdfDocument.Pages.Count;
-
-            //save Pdf page to image           
+            pdfData.TotalPages = pdfDocument.Pages.Count;
+            //save Pdf page to image 
             //在STAND2.0的環境下用到Stream會需要使用SkiaSharp
-            return pdfDocument.SaveAsImage(page, PdfImageType.Bitmap);
-        }
-        public void PdfDocumentClose()
-        {
-            pdfDocument.Close();
+            return pdfDocument.SaveAsImage(pageNumber, PdfImageType.Bitmap);
         }
     }
 }

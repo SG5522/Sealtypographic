@@ -8,7 +8,7 @@
         <meta name="author" content="" />
         <title>取章排版</title>
         <link href="https://cdn.jsdelivr.net/npm/simple-datatables@latest/dist/style.css" rel="stylesheet" />
-        <link href="~/css/styles.css" rel="stylesheet" />
+        <link href="~/css/sb-admin.css" rel="stylesheet" />
         <script src="https://use.fontawesome.com/releases/v6.1.0/js/all.js" crossorigin="anonymous"></script>
         @await RenderSectionAsync("Styles", required: false)
     </head>
@@ -20,7 +20,6 @@
             <button class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0" id="sidebarToggle" href="#!"><i class="fas fa-bars"></i></button>
             <!-- Navbar Search-->
             <form class="d-none d-md-inline-block form-inline ms-auto me-0 me-md-3 my-2 my-md-0">
-
             </form>
             <!-- Navbar-->
             <ul class="navbar-nav ms-auto ms-md-0 me-3 me-lg-4">
@@ -83,7 +82,7 @@
                             <div class="collapse" id="sealTypography" aria-labelledby="headingTwo" data-bs-parent="#sidenavSealCreatePages">
                                 <nav class="sb-sidenav-menu-nested nav accordion" id="sidenavSealCreatePages">
                                     <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#outSourceSealTypography" aria-expanded="false" aria-controls="outSourceSealTypography">
-                                        委拖公司排版作業
+                                        委託公司排版作業
                                         <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
                                     </a>
                                     <div class="collapse" id="outSourceSealTypography" aria-labelledby="headingOne" data-bs-parent="#sidenavSealTypographyPages">
@@ -106,7 +105,6 @@
                                 </nav>
                             </div>
 
-
                             <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#permissionSetting" aria-expanded="false" aria-controls="permissionSetting">
                                 <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
                                 權限設定
@@ -117,18 +115,6 @@
                                     <a class="nav-link" href="#">權限管理</a>
                                     <a class="nav-link" href="#">功能管理</a>
                                     <a class="nav-link" href="#">使用者管理</a>
-                                </nav>
-                            </div>
-
-                            <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#securityManage" aria-expanded="false" aria-controls="securityManage">
-                                <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
-                                資安管理
-                                <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
-                            </a>
-                            <div class="collapse" id="securityManage" aria-labelledby="headingOne" data-bs-parent="#sidenavSecurityManagePages">
-                                <nav class="sb-sidenav-menu-nested nav">
-                                    <a class="nav-link" href="#">連線查詢監控</a>
-                                    <a class="nav-link" href="#">多人資源管理</a>                                    
                                 </nav>
                             </div>
 
@@ -171,7 +157,7 @@
             </div>
         </div>
         <script src="~/lib/jquery/dist/jquery.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+        <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
         <script src="~/js/scripts.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js" crossorigin="anonymous"></script>
         <script src="~/lib/assets/demo/chart-area-demo.js"></script>
