@@ -69,9 +69,19 @@ namespace SealTypographic.Controllers
         /// </summary>
         /// <param name="imageName"></param>
         /// <returns></returns>
-        public IActionResult GetSealImage(string imageName)
+        public IActionResult GetSealImage(int imagePath, string imageName)
         {
-            ImageData? imageData = GetImageData(SealTempPath, imageName);
+            string imagepath = "";
+            switch(imagePath)
+            {
+                case 1:
+                    imagepath = ScanImagePath;
+                    break;
+                case 2:
+                    imagepath = SealTempPath;
+                    break;
+            }
+            ImageData? imageData = GetImageData(imagepath, imageName);
             if (imageData != null)
             {
                 //image.IsSelected = true;
@@ -104,16 +114,15 @@ namespace SealTypographic.Controllers
         /// </summary>
         /// <param name="imageName">圖片檔名</param>
         /// <returns></returns>
-        public IActionResult GetScanImage(string imageName)
+        public string GetScanImage(string imageName)
         {
-            ImageData? imageData = GetImageData(ScanImagePath,imageName);            
+            ImageData? imageData = GetImageData(ScanImagePath, imageName);
             if (imageData != null)
             {
-                //image.IsSelected = true;
-                //ViewBag.Base64String = "data:image/png;base64," + Convert.ToBase64String(image.Data, 0, image.Data.Length);
-                return File(imageData.Data,imageData.ContentType);
+                string imageBase64String = "data:"+ imageData.ContentType + ";base64," + Convert.ToBase64String(imageData.Data, 0, imageData.Data.Length);                
+                return imageBase64String;
             }
-            return View("Error");
+            return "img/NoImage.svg";
         }
 
         /// <summary>
@@ -128,7 +137,7 @@ namespace SealTypographic.Controllers
             ImageData imageData = new()
             {
                 FileName = imageName,
-                ContentType = "imageData/" + imageName.IndexOf(".") + 1,
+                ContentType = "image/" + imageName[(imageName.IndexOf(".") + 1)..],
                 Data = ImageResize.ReDrawImgToBytes(imagePath + imageName, WidthScale, HeightScale),//縮放圖檔並轉成Bytes
             };
             if (imageData.Data != null)
@@ -162,7 +171,7 @@ namespace SealTypographic.Controllers
                     {
                         FileName = file.Name,
                         FileFullName = file.FullName,
-                        ContentType = "imageData/" + file.Name[extensionLocation..],
+                        ContentType = "image/" + file.Name[extensionLocation..],
                         //Data = ImageResize.ImgToBytes(imagePath + file.Name, WidthScale, HeightScale),//縮放圖檔並轉成Bytes
                     });
                 }

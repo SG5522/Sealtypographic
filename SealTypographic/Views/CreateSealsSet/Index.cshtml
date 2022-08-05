@@ -78,50 +78,21 @@
             //Change active 
             $('.active').removeClass('active');
             imageName.toggleClass('active');            
-            $("#scanimage").attr("src", '@Url.Action("GetScanImage", "CreateSealsSet")?imageName=' + imageName.val());            
-
-
-            //sample
-            //$.ajax({
-            //    url: '@Url.Action("GetScanImage", "CreateSealsSet")',
-            //    //contentType: 'application/json; charset=utf-8',
-            //    //datatype: 'json',
-            //    data: {
-            //        imageName: imagename.text()
-            //    },
-            //    type: "GET",
-            //    success: function (response) {
-            //        //$("#scanimage").attr('src', 'data:image/jpg' + response);
-            //        $("#scanimage").attr('src','@Url.Action("GetScanImage", "CreateSealsSet")');
-            //    }
-            //});
-
-            //Pass to Controller
-            //$.ajax({                                
-            //    type: 'POST',
-            //    url: '@Url.Action("GetScanImage", "CreateSealsSet")',
-            //    dataType: 'JSON',
-            //    //contentType: "application/json; charset=utf-8",                                
-            //    //data: JSON.stringify(
-            //    //{ 
-            //    //    'imageName': imagename.text()
-            //    //}),
-            //    data: 
-            //    {
-            //        imageName: imagename.text() 
-            //    },
-            //    success: function (data) {
-            //        alert(data.imagename);
-            //        $("#scanimage").attr("data", data);
-            //        $("#scanimage").attr("type", "application/jpg");
-            //    },
-            //    failure: function (response) {
-            //        //alert(response.responseText);
-            //    },
-            //    error: function (response) {
-            //        //alert(response.responseText);
-            //    }
-            //});
+            //$("#scanimage").attr("src", '@Url.Action("GetScanImage", "CreateSealsSet")?imageName=' + imageName.val());                       
+                        
+            $.ajax({
+                url: '@Url.Action("GetScanImage")',
+                contentType: 'application/json; charset=utf-8',
+                datatype: 'json',
+                data: 
+                {
+                    imageName: imageName.val()
+                },
+                type: "GET",                
+                success: function (Data) {                    
+                    $("#scanimage").attr('src', Data);
+                },
+            });
         })
         
 
