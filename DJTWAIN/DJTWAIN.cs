@@ -21,11 +21,12 @@ namespace DJTWAINLib
         private int ImageCount = 0;
         private int imageBytes = 0;
 
-        private string imageName = "";
-        private string type = "";
-
+        private string saveImagePath = "";
+        private string saveImageName = "";
+        private string saveImagetype = "";
+        
         private bool xferReadySent;
-        private bool DisableDsSent;
+        private bool disableDsSent;
 
         private TWAIN twain;
         private TWAIN.TW_SETUPMEMXFER twSetupMemxfer;
@@ -193,9 +194,9 @@ namespace DJTWAINLib
                 if ((sts != TWAIN.STS.SUCCESS) || (twSetupMemxfer.Preferred == 0))
                 {
                     xferReadySent = false;
-                    if (!DisableDsSent)
+                    if (!disableDsSent)
                     {
-                        DisableDsSent = true;
+                        disableDsSent = true;
                         Rollback(TWAIN.STATE.S4);
                     }
                 }
@@ -204,23 +205,23 @@ namespace DJTWAINLib
                 intPtrXfer = Marshal.AllocHGlobal((int)twSetupMemxfer.Preferred + 65536);
                 if (intPtrXfer == IntPtr.Zero)
                 {
-                    DisableDsSent = true;
+                    disableDsSent = true;
                     Rollback(TWAIN.STATE.S4);
                 }
             }
 
             // Handle DAT_NULL/MSG_CLOSEDSREQ...
-            if (twain.IsMsgCloseDsReq() && !DisableDsSent)
+            if (twain.IsMsgCloseDsReq() && !disableDsSent)
             {
-                DisableDsSent = true;
+                disableDsSent = true;
                 Rollback(TWAIN.STATE.S4);
                 //SetButtons(EBUTTONSTATE.OPEN);
             }
 
             // Handle DAT_NULL/MSG_CLOSEDSOK...
-            if (twain.IsMsgCloseDsOk() && !DisableDsSent)
+            if (twain.IsMsgCloseDsOk() && !disableDsSent)
             {
-                DisableDsSent = true;
+                disableDsSent = true;
                 Rollback(TWAIN.STATE.S4);
                 //SetButtons(EBUTTONSTATE.OPEN);
             }
@@ -229,7 +230,7 @@ namespace DJTWAINLib
             // saves the images to disk (it also displays them).  It'll go back
             // and forth between states 6 and 7 until an error occurs, or until
             // we run out of images...
-            if (xferReadySent && !DisableDsSent)
+            if (xferReadySent && !disableDsSent)
             {
                 CaptureImages();
             }
@@ -268,7 +269,7 @@ namespace DJTWAINLib
 
                 // We're on our way out...
                 case TWAIN.STATE.S5:
-                    DisableDsSent = true;
+                    disableDsSent = true;
                     twain.DatUserinterface(TWAIN.DG.CONTROL, TWAIN.MSG.DISABLEDS, ref twuserinterface);
                     //SetButtons(EBUTTONSTATE.OPEN);
                     return;
@@ -284,7 +285,7 @@ namespace DJTWAINLib
             // Handle problems...
             if ((sts != TWAIN.STS.SUCCESS) && (sts != TWAIN.STS.XFERDONE))
             {
-                DisableDsSent = true;
+                disableDsSent = true;
                 Rollback(TWAIN.STATE.S4);
                 //SetButtons(EBUTTONSTATE.OPEN);
                 return;
@@ -303,7 +304,7 @@ namespace DJTWAINLib
             // Ruh-roh...
             if (intPtrImage == IntPtr.Zero)
             {
-                DisableDsSent = true;
+                disableDsSent = true;
                 Rollback(TWAIN.STATE.S4);
                 //SetButtons(EBUTTONSTATE.OPEN);
                 return;
@@ -386,7 +387,7 @@ namespace DJTWAINLib
                 else
                 {
                     TWAINWorkingGroup.Log.Error("unsupported format <" + twimageinfo.PixelType + "," + twimageinfo.Compression + ">");
-                    DisableDsSent = true;
+                    disableDsSent = true;
                     Rollback(TWAIN.STATE.S4);
                     //SetButtons(EBUTTONSTATE.OPEN);
                     return;
@@ -394,16 +395,17 @@ namespace DJTWAINLib
 
                 //string Filename = Path.Combine(Path.GetDirectoryName(@".\"), "img" + string.Format("{0:D6}", ImageCount));
                 //TWAIN.WriteImageFile(Filename + ".bmp", intPtrImage, imageBytes, out Filename);
+                //掃描完存成圖檔
                 if(ImageCount % 2 == 1)
                 {
-                    string filePath = @".\" + imageName + "F" + type;
-                    TWAIN.WriteImageFile(filePath, intPtrImage, imageBytes, out filePath);
+                    string fullNamePath = saveImagePath + @"\" + saveImageName + (ImageCount /2 + 1 ) + "F" + saveImagetype;
+                    TWAIN.WriteImageFile(fullNamePath, intPtrImage, imageBytes, out fullNamePath);
                 }
                 else
                 {
-                    string filePath = @".\" + imageName + "R" + type;
-                    TWAIN.WriteImageFile(filePath, intPtrImage, imageBytes, out filePath);
-                    ImageCount = 0;
+                    string fullNamePath = saveImagePath + @"\" + saveImageName + (ImageCount /2) + "R" + saveImagetype;
+                    TWAIN.WriteImageFile(fullNamePath, intPtrImage, imageBytes, out fullNamePath);
+                    //ImageCount = 0;
                 }
 
                 //@記憶圖片的參數初始化
@@ -416,7 +418,7 @@ namespace DJTWAINLib
                 // Looks like we're done!
                 if (twpendingxfers.Count == 0)
                 {
-                    DisableDsSent = true;
+                    disableDsSent = true;
                     twain.DatUserinterface(TWAIN.DG.CONTROL, TWAIN.MSG.DISABLEDS, ref twuserinterface);
                     //SetButtons(EBUTTONSTATE.OPEN);
                     return;
@@ -541,9 +543,9 @@ namespace DJTWAINLib
         /// <param name="lszIdentity">所有在此機的掃描機(TWAIN)驅動</param>
         /// <param name="ErrorMessage">回傳沒有取得驅動</param>
         public void ScanSourceList(ScanSourceDataList scanSourceDataList ,IntPtr Handle)
-        {                
+        {
             //string szStatus;
-            //List<string> lszIdentity = new List<string>();
+            //List<string> lszIdentity = new List<string>();            
 
             TWAIN.STS sts;
             //TWAIN.TW_IDENTITY twidentity = default(TWAIN.TW_IDENTITY);
@@ -551,6 +553,7 @@ namespace DJTWAINLib
 
             // Get the default driver...
             intPtrHwnd = Handle;
+            //intPtrHwnd = IntPtr.Zero;
             sts = twain.DatParent(TWAIN.DG.CONTROL, TWAIN.MSG.OPENDSM, ref intPtrHwnd);
             if (sts != TWAIN.STS.SUCCESS)
             {
@@ -635,12 +638,22 @@ namespace DJTWAINLib
             }
 
         }
-        //@開始掃描
-        public void StartScan(IntPtr Handle , string imgName, string imgType)
+
+        /// <summary>
+        /// 掃描動作
+        /// </summary>
+        /// <param name="Handle"></param>
+        /// <param name="savePath"></param>
+        /// <param name="saveName"></param>
+        /// <param name="saveType"></param>
+        public void StartScan(IntPtr Handle, string savePath, string saveName, string saveType)
         {
-            imageName = imgName;
-            type = imgType;
+            ImageCount = 0; //重置掃描張數
+            saveImagePath = savePath;
+            saveImageName = saveName;
+            saveImagetype = saveType;
             string twmemRef;
+
             //TWAIN.STS sts;
 
             // Silently start scanning if we detect that customdsdata is supported,
@@ -667,10 +680,14 @@ namespace DJTWAINLib
             //    SetButtons(EBUTTONSTATE.SCANNING);
             //}
         }
+
+        /// <summary>
+        /// Clear our event list, and reset our event...
+        /// </summary>
         public void ClearEvents()
         {
             xferReadySent = false;
-            DisableDsSent = false;
+            disableDsSent = false;
         }
 
         /// <summary>
@@ -697,7 +714,7 @@ namespace DJTWAINLib
 
             // Get rid of the TWAIN object...
             if (twain != null)
-            {
+            {                
                 twain.Dispose();
                 twain = null;
             }
@@ -726,6 +743,21 @@ namespace DJTWAINLib
                 TwidentityProductName = strings[11]
             };
             return scanSourceData;
+        }
+        /// <summary>
+        /// Close the currently open TWAIN driver...
+        /// </summary>
+        public void CloseTWAINDriver()
+        {            
+            Rollback(TWAIN.STATE.S2);
+        }
+        public void Setup(IntPtr intPtr)
+        {
+            ClearEvents();
+
+            TWAIN.TW_USERINTERFACE twuserinterface = default(TWAIN.TW_USERINTERFACE);
+            twain.CsvToUserinterface(ref twuserinterface, "TRUE,FALSE," + intPtr);
+            twain.DatUserinterface(TWAIN.DG.CONTROL, TWAIN.MSG.ENABLEDSUIONLY, ref twuserinterface);
         }
     }
 }

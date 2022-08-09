@@ -5,10 +5,8 @@ namespace DJTWAINTESTNET6
     public partial class Scan : Form, IMessageFilter
     {
         private DJTWAIN dJTWAIN = new();
-        //private Graphics? m_graphics1;
-        //private bool blExit;
-        private readonly string imageName = "test";
-        private readonly string imgageType = ".bmp";
+        private bool scanStart = false;
+        private string scanImagePath = "";
 
         public Scan()
         {
@@ -48,15 +46,11 @@ namespace DJTWAINTESTNET6
             IntPtr a_intptrWparam = message.WParam;
             IntPtr a_intptrLparam = message.LParam;
             bool scanEnd = dJTWAIN.PreFilterMessage(a_intptrHwnd, a_iMsg, a_intptrWparam, a_intptrLparam);
-            if(scanEnd)
+
+            if (scanEnd && scanStart)
             {
-                string filePathF = @".\" + imageName + "F" + imgageType;
-                string filePathR = @".\" + imageName + "R" + imgageType;
-                FileStream fs = File.OpenRead(filePathF);
-                pictureBox1.Image = Image.FromStream(fs);
-                fs = File.OpenRead(filePathR);
-                pictureBox2.Image = Image.FromStream(fs);
-                fs.Close();
+                scanStart = false;
+                OpenScanImageListView(scanImagePath,"bmp");
                 return true;
             }
             return false;
@@ -81,14 +75,13 @@ namespace DJTWAINTESTNET6
 
         private void ButtonScanSource_Click(object sender, EventArgs e)
         {
-            //bool blExit;
-            string selectScan; //@被選擇的掃描機
-            //string m_szProductDirectory;
             
+            dJTWAIN.CloseTWAINDriver(); //每次選擇掃描機就關閉前一次開啟的掃描機驅動
+
+            string selectScan; //@被選擇的掃描機
             ScanSelect ScanSelect;
             DialogResult dialogresult;
-            ScanSourceDataList scanSourceDataList = new();
-            
+            ScanSourceDataList scanSourceDataList = new();                       
 
             dJTWAIN.ScanSourceList(scanSourceDataList, this.Handle);
 
@@ -129,51 +122,90 @@ namespace DJTWAINTESTNET6
             }
 
             dJTWAIN.ScanSource(selectScan, scanSourceDataList);
-
-            // Get the selected identity...
-            //m_blExit = true;
-            //foreach (string sz in ScanSourceData.LszIdentity)
-            //{
-            //    if (sz.Contains(szIdentity))
-            //    {
-            //        m_blExit = false;
-            //        szIdentity = sz;
-            //        break;
-            //    }
-            //}
-            //if (m_blExit)
-            //{
-            //    return;
-            //}
-
-            // Update the main form title...
-            this.Text = "TWAIN C# Scan (" + selectScan + ")";
-
-            // Strip off unsafe chars.  Sadly, mono let's us down here...
-            //m_szProductDirectory = CSV.Parse(szIdentity)[11];
-            //m_szProductDirectory = dJTWAIN.CSVFormat(scanSourceDataList.SzDefault)[11];
-            //foreach (char c in new char[41]
-            //                { '\x00', '\x01', '\x02', '\x03', '\x04', '\x05', '\x06', '\x07',
-            //                  '\x08', '\x09', '\x0A', '\x0B', '\x0C', '\x0D', '\x0E', '\x0F', '\x10', '\x11', '\x12',
-            //                  '\x13', '\x14', '\x15', '\x16', '\x17', '\x18', '\x19', '\x1A', '\x1B', '\x1C', '\x1D',
-            //                  '\x1E', '\x1F', '\x22', '\x3C', '\x3E', '\x7C', ':', '*', '?', '\\', '/'
-            //                }
-            //        )
-            //{
-            //    m_szProductDirectory = m_szProductDirectory.Replace(c, '_');
-            //}
-
-            //// New state...
-            //SetButtons(EBUTTONSTATE.OPEN);
-
-            //// Create the setup form...
-            //m_formsetup = new FormSetup(this, ref m_twain, m_szProductDirectory);
+            if(scanSourceDataList.ErrorMessage == null)
+            {
+                this.Text = "TWAIN C# Scan (" + selectScan + ")";
+                ButtonSetup.Enabled = true;
+                ButtonScan.Enabled = true;                
+            }
+            else
+            {
+                MessageBox.Show(scanSourceDataList.ErrorMessage + "\n請確認掃描機是否有開啟");
+            }
         }
 
         private void ButtonScan_Click(object sender, EventArgs e)
-        {
-            dJTWAIN.StartScan(this.Handle, imageName,imgageType);           
-        }        
+        {            
+            string imageName = DateTime.Now.ToString("yyMMddHHmmss");
+            string imgageType = ".bmp";
 
+            dJTWAIN.StartScan(this.Handle, scanImagePath , imageName, imgageType);
+            scanStart = true;
+        }
+
+        private void ButtonSetup_Click(object sender, EventArgs e)
+        {
+            dJTWAIN.Setup(this.Handle);
+        }
+
+        private void SelectScanPathButton_Click(object sender, EventArgs e)
+        {
+            FolderBrowserDialog folderBrowserDialog = new();
+            folderBrowserDialog.Description = "請選擇掃描完成後的資料夾";
+            if (folderBrowserDialog.ShowDialog() == DialogResult.OK)
+            {
+                scanImagePath = folderBrowserDialog.SelectedPath + @"\";
+            }
+            OpenScanImageListView(scanImagePath, "bmp");
+            buttonScanSource.Enabled = true;
+        }
+
+        private void OpenScanImageListView(string scanImagePath,string imageType)
+        {
+            scanImageListView.Items.Clear();
+            ScanImageListViewHeaderSetting();
+            string[] files = Directory.GetFiles(scanImagePath );
+            if (files.Length > 0)
+            {
+                DirectoryInfo folder = new(scanImagePath);
+                foreach (FileInfo file in folder.GetFiles("*F." + imageType))
+                {
+                    scanImageListView.Items.Add(file.Name);
+                    //test
+
+                }
+                if (scanImageListView.Items.Count != 0) scanImageListView.Items[0].Selected = true;
+            }
+        }
+        private void ScanImageListViewHeaderSetting()
+        {
+            scanImageListView.Scrollable = false;
+            scanImageListView.HeaderStyle = ColumnHeaderStyle.None;
+            ColumnHeader header = new()
+            {
+                Text = "",
+                Name = "col1"
+            };
+            scanImageListView.Columns.Add(header);
+            scanImageListView.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
+        }
+
+        private void scanImageListView_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (scanImageListView.SelectedItems.Count != 0)
+            {
+                string Scan_filename_F = scanImageListView.SelectedItems[0].Text;
+                string Scan_filename_R = Scan_filename_F.Replace("F", "R");
+                pictureBox1.Image = Fromimage(scanImagePath + Scan_filename_F);
+                pictureBox2.Image = Fromimage(scanImagePath + Scan_filename_R);
+            }
+        }
+        private static Image Fromimage(string path)
+        {
+            FileStream fs = File.OpenRead(path);
+            var image = Image.FromStream(fs);
+            fs.Dispose();
+            return image;
+        }
     }
 }

@@ -137,7 +137,7 @@ namespace SealTypographic.Controllers
             ImageData imageData = new()
             {
                 FileName = imageName,
-                ContentType = "image/" + imageName[(imageName.IndexOf(".") + 1)..],
+                ContentType = ImageType(imageName),
                 Data = ImageResize.ReDrawImgToBytes(imagePath + imageName, WidthScale, HeightScale),//縮放圖檔並轉成Bytes
             };
             if (imageData.Data != null)
@@ -171,12 +171,66 @@ namespace SealTypographic.Controllers
                     {
                         FileName = file.Name,
                         FileFullName = file.FullName,
-                        ContentType = "image/" + file.Name[extensionLocation..],
+                        //ContentType = "image/" + file.Name[extensionLocation..],
+                        ContentType = ImageType(file.Name),
+
                         //Data = ImageResize.ImgToBytes(imagePath + file.Name, WidthScale, HeightScale),//縮放圖檔並轉成Bytes
                     });
                 }
             }
             return images;
+        }
+        private static string ImageType(string fileName)
+        {
+            string imageType = "";
+            string fileExtension = "";
+            fileExtension = fileName[fileName.LastIndexOf(".")..];
+            switch (fileExtension)
+            {
+                case ".apng":
+                    imageType = "image/apng";
+                    break;
+                case ".avif":
+                    imageType = "image/avif";
+                    break;
+                case ".bmp":
+                    imageType = "image/bmp";
+                    break;
+                case ".gif":
+                    imageType = "image/gif";
+                    break;
+                case ".jpg":
+                    imageType = "image/jpeg";
+                    break;
+                case ".jpeg":
+                    imageType = "image/jpeg";
+                    break;
+                case ".jfif":
+                    imageType = "image/jpeg";
+                    break;
+                case ".pjpeg":
+                    imageType = "image/jpeg";
+                    break;
+                case ".pjp":
+                    imageType = "image/jpeg";
+                    break;
+                case ".png":
+                    imageType = "image/png";
+                    break;
+                case ".svg":
+                    imageType = "image/svg+xml";
+                    break;
+                case ".tif":
+                    imageType = "image/tiff";
+                    break;
+                case ".tiff":
+                    imageType = "image/tiff";
+                    break;
+                case ".webp":
+                    imageType = "image/webp";
+                    break;
+            }
+            return imageType;
         }
     }
 }
