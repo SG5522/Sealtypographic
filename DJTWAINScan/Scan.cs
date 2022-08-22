@@ -1,19 +1,56 @@
-﻿using DJTWAINLib;
+﻿using Fleck;
+using DJTWAINLib;
+using System.Windows.Forms;
 
-namespace DJTWAINTESTNET6
+namespace DJTWAINScan
 {
     public partial class Scan : Form, IMessageFilter
     {
         private DJTWAIN dJTWAIN = new();
         private bool scanStart = false;
         private string scanImagePath = "";
-
+        private List<IWebSocketConnection> allSockets;
+        private WebSocketServer server;
         public Scan()
         {
             InitializeComponent();
+
             dJTWAIN.TwainSet(this,this.Handle);
             SetMessageFilter(true);
-            //blExit = false;
+
+            //預設縮到最小
+            this.WindowState = FormWindowState.Minimized;
+            this.ShowInTaskbar = false;
+
+
+            
+            //設定WebSocketServer
+            allSockets = new List<IWebSocketConnection>();
+            server = new WebSocketServer("ws://0.0.0.0:8181");
+            server.Start(socket =>
+            {
+                socket.OnOpen = () =>
+                {
+                    Console.WriteLine("Open!");
+                    allSockets.Add(socket);
+                };
+                socket.OnClose = () =>
+                {
+                    Console.WriteLine("Close!");
+                    allSockets.Remove(socket);
+                };
+                socket.OnMessage = message =>
+                {
+                    //等到網頁確定呼叫1100就將視窗還原
+                    if (message == "1100")
+                    {
+                        this.Invoke(new Action(() => {
+                            this.WindowState = FormWindowState.Normal;
+                        }));
+                    }
+                };
+            });   
+            
         }   
 
 
@@ -24,12 +61,12 @@ namespace DJTWAINTESTNET6
         /// <param name="e"></param>
         private void ThisFormClosing(object sender, FormClosingEventArgs e)
         {
-            // Make sure this thing is off...
-            SetMessageFilter(false);
-            /// We're being closed, clean up nicely...
-            dJTWAIN.FormClosing();
-            // This will prevent ReportImage from doing anything as we close...
-            //m_graphics1 = null;
+            if (e.CloseReason == CloseReason.UserClosing)
+            {
+                e.Cancel = true;
+                this.WindowState = FormWindowState.Minimized;
+            }
+
         }
 
         /// <summary>
@@ -155,16 +192,16 @@ namespace DJTWAINTESTNET6
             if (folderBrowserDialog.ShowDialog() == DialogResult.OK)
             {
                 scanImagePath = folderBrowserDialog.SelectedPath + @"\";
+                OpenScanImageListView(scanImagePath, "bmp");
+                buttonScanSource.Enabled = true;
             }
-            OpenScanImageListView(scanImagePath, "bmp");
-            buttonScanSource.Enabled = true;
         }
 
         private void OpenScanImageListView(string scanImagePath,string imageType)
         {
             scanImageListView.Items.Clear();
             ScanImageListViewHeaderSetting();
-            string[] files = Directory.GetFiles(scanImagePath );
+            string[] files = Directory.GetFiles(scanImagePath);
             if (files.Length > 0)
             {
                 DirectoryInfo folder = new(scanImagePath);
@@ -190,7 +227,7 @@ namespace DJTWAINTESTNET6
             scanImageListView.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
         }
 
-        private void scanImageListView_SelectedIndexChanged(object sender, EventArgs e)
+        private void ScanImageListView_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (scanImageListView.SelectedItems.Count != 0)
             {
@@ -206,6 +243,33 @@ namespace DJTWAINTESTNET6
             var image = Image.FromStream(fs);
             fs.Dispose();
             return image;
+        }
+
+        private void Scan_Resize(object sender, EventArgs e)
+        {
+            if (WindowState == FormWindowState.Minimized)
+            {
+                this.ShowIcon = false;
+                notifyIcon1.Visible = true;
+                //notifyIcon1.ShowBalloonTip(100);
+            }
+        }
+
+        private void ExitToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            // Make sure this thing is off...
+            SetMessageFilter(false);
+            /// We're being closed, clean up nicely...
+            dJTWAIN.FormClosing();
+            // This will prevent ReportImage from doing anything as we close...
+            //m_graphics1 = null;
+            Application.Exit();
+        }
+
+        private void NotifyIcon1_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            this.Show();
+            this.WindowState = FormWindowState.Normal;
         }
     }
 }

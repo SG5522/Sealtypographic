@@ -98,15 +98,6 @@ namespace DJTWAINLib
                 //);
                 return;
             }
-
-            //// Init our picture box...
-            //InitImage();
-
-            //// Prep for TWAIN events...
-            //SetMessageFilter(true);
-
-            //// Init our buttons...
-            //SetButtons(EBUTTONSTATE.CLOSED);
         }
 
 

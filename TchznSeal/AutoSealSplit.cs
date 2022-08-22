@@ -21,14 +21,14 @@ namespace TchznSeal
         /// </summary>
         /// <param name="sealCardFullName">印鑑卡檔名</param>
         /// <param name="targetFilePath">目標資料夾路徑</param>    
-        /// <param name="LibPreFixName">分離印章檔案名稱命名</param>
+        /// <param name="libPreFixName">分離印章檔案名稱命名</param>
         /// <param name="sealColor">印鑑顏色</param>
         /// <returns></returns>
-        public int SplitSeal(string sealCardFullName,string targetFilePath,string LibPreFixName, string sealColor)
+        public int SplitSeal(string sealCardFullName,string targetFilePath,string libPreFixName, string sealColor)
         {
             //var dll_t = new DJ_TzchznSeal();
             //dll_t.Seal_Split(Seal_name, SealColor);
-            var sealunit = new TchznSealUnit();
+            TchznSealUnit sealunit = new TchznSealUnit();
             KeyValuePair<int, TchznSealUnit.ResultSealStatus> result;
 
             if (File.Exists(sealCardFullName))
@@ -56,11 +56,11 @@ namespace TchznSeal
                 //準備擷取印鑑......
                 if (sealColor == "R")
                 {
-                    result = sealunit.SealBuild(TchznSealUnit.SealColor.Red, sealCardFullName, buildXmlFileFullName, targetFilePath, 300, LibPreFixName, sealIndex);
+                    result = sealunit.SealBuild(TchznSealUnit.SealColor.Red, sealCardFullName, buildXmlFileFullName, targetFilePath, 300, libPreFixName, sealIndex);
                 }
                 else
                 {
-                    result = sealunit.SealBuild(TchznSealUnit.SealColor.Blue, sealCardFullName, buildXmlFileFullName, targetFilePath, 300, LibPreFixName, sealIndex);
+                    result = sealunit.SealBuild(TchznSealUnit.SealColor.Blue, sealCardFullName, buildXmlFileFullName, targetFilePath, 300, libPreFixName, sealIndex);
                 }
                 if(result.Key == 0)
                 {

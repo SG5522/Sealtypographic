@@ -1,6 +1,6 @@
 ﻿using DJTWAINLib;
 
-namespace DJTWAINTESTNET6
+namespace DJTWAINScan
 {
     public partial class ScanSelect : Form
     {

@@ -1,4 +1,4 @@
-namespace DJTWAINTESTNET6
+namespace DJTWAINScan
 {
     internal static class Program
     {
@@ -17,7 +17,8 @@ namespace DJTWAINTESTNET6
             
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Scan());
+            //Application.Run(new Scan());
+            Application.Run(new ScannerForWeb());
 
         }
     }

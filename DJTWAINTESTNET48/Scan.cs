@@ -18,6 +18,7 @@ namespace DJTWAINTESTNET48
     {
         private DJTWAIN dJTWAIN = new DJTWAIN();
         //private Graphics? m_graphics1;
+        private string scanImagePath = "";
         private readonly string imageName = "test";
         private readonly string imgageType = ".png";
         public Scan()
@@ -124,7 +125,7 @@ namespace DJTWAINTESTNET48
 
         private void ButtonScan_Click(object sender, EventArgs e)
         {
-            dJTWAIN.StartScan(this.Handle, imageName, imgageType);
+            dJTWAIN.StartScan(this.Handle, scanImagePath, imageName, imgageType);
         }
 
         private void Scan_FormClosing(object sender, FormClosingEventArgs e)

@@ -9,15 +9,20 @@ namespace SealTypographic.Controllers
     public class CreateSealsSetController : Controller
     {
         private readonly string ScanImagePath = @".\wwwroot\Sealcard\";
-        private readonly string SealTempPath = Path.GetTempPath() + @"Seal\";
+        private readonly string SealTempPath = Path.GetTempPath() + @"\Seal\";
         private readonly float HeightScale = 0.25f;
         private readonly float WidthScale = 0.25f;        
+
+        public IActionResult Index()
+        {
+            return View();
+        }
 
         /// <summary>
         /// 印鑑建檔頁面 讀取資料夾所有圖檔
         /// </summary>
         /// <returns></returns>
-        public IActionResult Index()
+        public IActionResult SelectSealCard()
         {
             List<ImageData> imageDatas = GetImages(ScanImagePath);
             return View(imageDatas);

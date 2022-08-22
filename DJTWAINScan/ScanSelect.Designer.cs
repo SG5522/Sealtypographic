@@ -1,4 +1,4 @@
-﻿namespace DJTWAINTESTNET6
+﻿namespace DJTWAINScan
 {
     partial class ScanSelect
     {

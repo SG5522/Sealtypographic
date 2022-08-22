@@ -19,6 +19,15 @@
     <ProjectReference Include="..\TchznSeal\TchznSeal.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\ScanApp\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="wwwroot\ScanApp\DJScannerForWeb.msi" />
+    <None Include="wwwroot\ScanApp\setup.exe" />
+  </ItemGroup>
+
   <ProjectExtensions><VisualStudio><UserProperties appsettings_1json__JsonSchema="" /></VisualStudio></ProjectExtensions>
 
 </Project>
