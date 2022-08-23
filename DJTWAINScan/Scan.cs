@@ -1,6 +1,7 @@
 ﻿using Fleck;
 using DJTWAINLib;
 using System.Windows.Forms;
+using Newtonsoft.Json;
 
 namespace DJTWAINScan
 {
@@ -41,13 +42,29 @@ namespace DJTWAINScan
                 };
                 socket.OnMessage = message =>
                 {
-                    //等到網頁確定呼叫1100就將視窗還原
-                    if (message == "1100")
+                    GetData? getData = JsonConvert.DeserializeObject<GetData>(message);
+                    if(getData != null)
                     {
-                        this.Invoke(new Action(() => {
-                            this.WindowState = FormWindowState.Normal;
-                        }));
-                    }
+                        //等到網頁確定呼叫1100就將視窗還原
+                        if (getData.Opencode == "1100")
+                        {
+                            if(getData.ScanSavePath != null)
+                            {
+                                scanImagePath = getData.ScanSavePath;
+                                if (!Directory.Exists(scanImagePath))
+                                {
+                                    Directory.CreateDirectory(scanImagePath);
+                                }
+                                this.Invoke(new Action(() => {
+                                    this.WindowState = FormWindowState.Normal;
+                                }));
+                            }
+                            else
+                            {
+                                socket.Send("沒有指定掃描路徑");
+                            }
+                        }
+                    }                    
                 };
             });   
             
@@ -232,9 +249,9 @@ namespace DJTWAINScan
             if (scanImageListView.SelectedItems.Count != 0)
             {
                 string Scan_filename_F = scanImageListView.SelectedItems[0].Text;
-                string Scan_filename_R = Scan_filename_F.Replace("F", "R");
+                //string Scan_filename_R = Scan_filename_F.Replace("F", "R");
                 pictureBox1.Image = Fromimage(scanImagePath + Scan_filename_F);
-                pictureBox2.Image = Fromimage(scanImagePath + Scan_filename_R);
+                //pictureBox2.Image = Fromimage(scanImagePath + Scan_filename_R);
             }
         }
         private static Image Fromimage(string path)

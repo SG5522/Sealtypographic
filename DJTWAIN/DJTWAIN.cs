@@ -387,17 +387,19 @@ namespace DJTWAINLib
                 //string Filename = Path.Combine(Path.GetDirectoryName(@".\"), "img" + string.Format("{0:D6}", ImageCount));
                 //TWAIN.WriteImageFile(Filename + ".bmp", intPtrImage, imageBytes, out Filename);
                 //掃描完存成圖檔
-                if(ImageCount % 2 == 1)
-                {
-                    string fullNamePath = saveImagePath + @"\" + saveImageName + (ImageCount /2 + 1 ) + "F" + saveImagetype;
-                    TWAIN.WriteImageFile(fullNamePath, intPtrImage, imageBytes, out fullNamePath);
-                }
-                else
-                {
-                    string fullNamePath = saveImagePath + @"\" + saveImageName + (ImageCount /2) + "R" + saveImagetype;
-                    TWAIN.WriteImageFile(fullNamePath, intPtrImage, imageBytes, out fullNamePath);
-                    //ImageCount = 0;
-                }
+                string fullNamePath = saveImagePath + @"\" + saveImageName + ImageCount + "F" + saveImagetype;
+                TWAIN.WriteImageFile(fullNamePath, intPtrImage, imageBytes, out fullNamePath);
+                //if (ImageCount % 2 == 1)
+                //{
+                //    string fullNamePath = saveImagePath + @"\" + saveImageName + (ImageCount /2 + 1 ) + "F" + saveImagetype;
+                //    TWAIN.WriteImageFile(fullNamePath, intPtrImage, imageBytes, out fullNamePath);
+                //}
+                //else
+                //{
+                //    string fullNamePath = saveImagePath + @"\" + saveImageName + (ImageCount /2) + "R" + saveImagetype;
+                //    TWAIN.WriteImageFile(fullNamePath, intPtrImage, imageBytes, out fullNamePath);
+                //    //ImageCount = 0;
+                //}
 
                 //@記憶圖片的參數初始化
                 intPtrImage = IntPtr.Zero;

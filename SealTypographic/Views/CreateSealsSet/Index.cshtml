@@ -44,6 +44,7 @@
             ws.onmessage = function (e) {
                 if (typeof e.data === "string") {
                     //IF Received Data is String
+                    alert(e.data);
                 }
                 else if (e.data instanceof ArrayBuffer) {
                     //IF Received Data is ArrayBuffer
@@ -78,7 +79,10 @@
         window.onload = start;
 
         function scanImage() {
-            ws.send("1100");
+            ws.send(JSON.stringify({
+                Opencode: '1100',
+                ScanSavePath: 'C://temp//',
+            }, null, '\t'));
         };
 
 
