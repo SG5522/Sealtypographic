@@ -10,23 +10,29 @@ namespace DJTWAINScan
         private DJTWAIN dJTWAIN = new();
         private bool scanStart = false;
         private string scanImagePath = "";
-        private List<IWebSocketConnection> allSockets;
-        private WebSocketServer server;
+        private List<IWebSocketConnection> allSockets = new();
+        private WebSocketServer? server;
+        private List<ScanImageData> scanImageDatas = new();
+
         public Scan()
         {
             InitializeComponent();
 
-            dJTWAIN.TwainSet(this,this.Handle);
+            //Open ScanSetting
+            dJTWAIN.TwainSet(this, this.Handle);
             SetMessageFilter(true);
+            DefaultScan();
 
             //預設縮到最小
             this.WindowState = FormWindowState.Minimized;
             this.ShowInTaskbar = false;
 
+            WebSocket();
 
-            
-            //設定WebSocketServer
-            allSockets = new List<IWebSocketConnection>();
+        }   
+        public void WebSocket()
+        {
+            //設定WebSocketServer            
             server = new WebSocketServer("ws://0.0.0.0:8181");
             server.Start(socket =>
             {
@@ -43,19 +49,20 @@ namespace DJTWAINScan
                 socket.OnMessage = message =>
                 {
                     GetData? getData = JsonConvert.DeserializeObject<GetData>(message);
-                    if(getData != null)
+                    if (getData != null)
                     {
                         //等到網頁確定呼叫1100就將視窗還原
                         if (getData.Opencode == "1100")
                         {
-                            if(getData.ScanSavePath != null)
+                            if (getData.ScanSavePath != null)
                             {
                                 scanImagePath = getData.ScanSavePath;
                                 if (!Directory.Exists(scanImagePath))
                                 {
                                     Directory.CreateDirectory(scanImagePath);
                                 }
-                                this.Invoke(new Action(() => {
+                                this.Invoke(new Action(() =>
+                                {
                                     this.WindowState = FormWindowState.Normal;
                                 }));
                             }
@@ -64,12 +71,10 @@ namespace DJTWAINScan
                                 socket.Send("沒有指定掃描路徑");
                             }
                         }
-                    }                    
+                    }
                 };
-            });   
-            
-        }   
-
+            });
+        }
 
         /// <summary>
         /// We're being closed, clean up nicely...
@@ -104,7 +109,18 @@ namespace DJTWAINScan
             if (scanEnd && scanStart)
             {
                 scanStart = false;
-                OpenScanImageListView(scanImagePath,"bmp");
+                scanImageDatas = dJTWAIN.LoadImageDatas();
+                foreach (ScanImageData scanImageData in scanImageDatas)
+                {
+                    foreach (var socket in allSockets.ToList())
+                    {
+                        socket.Send(scanImageData.Data);
+                    }
+                }
+                this.WindowState = FormWindowState.Minimized;
+                //@清空ImageDatas
+                dJTWAIN.ClearImageDatas();
+                //OpenScanImageListView(scanImagePath,"bmp");
                 return true;
             }
             return false;
@@ -126,10 +142,22 @@ namespace DJTWAINScan
                 Application.RemoveMessageFilter(this);
             }
         }
+        private void DefaultScan()
+        {
+            ScanSourceDataList scanSourceDataList = new();
+            dJTWAIN.ScanSourceList(scanSourceDataList, this.Handle);
+            ScanSourceData defaultData = dJTWAIN.SourceData(scanSourceDataList.DefaultScan);
+            dJTWAIN.ScanSource(defaultData.TwidentityProductName, scanSourceDataList);
+            if (scanSourceDataList.ErrorMessage == null)
+            {
+                this.Text = "TWAIN C# Scan (" + defaultData.TwidentityProductName + ")";
+                ButtonSetup.Enabled = true;
+                ButtonScan.Enabled = true;
+            }
+        }
 
         private void ButtonScanSource_Click(object sender, EventArgs e)
-        {
-            
+        {            
             dJTWAIN.CloseTWAINDriver(); //每次選擇掃描機就關閉前一次開啟的掃描機驅動
 
             string selectScan; //@被選擇的掃描機
@@ -138,7 +166,6 @@ namespace DJTWAINScan
             ScanSourceDataList scanSourceDataList = new();                       
 
             dJTWAIN.ScanSourceList(scanSourceDataList, this.Handle);
-
 
             if(scanSourceDataList.ErrorMessage =="")
             {
@@ -155,7 +182,7 @@ namespace DJTWAINScan
             }
 
             // Instantiate our form...
-            ScanSelect = new ScanSelect(scanSourceDataList.LszIdentity, scanSourceDataList.SzDefault)
+            ScanSelect = new ScanSelect(scanSourceDataList.LszIdentity, scanSourceDataList.DefaultScan)
             {
                 StartPosition = FormStartPosition.CenterParent
             };
@@ -201,58 +228,9 @@ namespace DJTWAINScan
         {
             dJTWAIN.Setup(this.Handle);
         }
-
-        private void SelectScanPathButton_Click(object sender, EventArgs e)
-        {
-            FolderBrowserDialog folderBrowserDialog = new();
-            folderBrowserDialog.Description = "請選擇掃描完成後的資料夾";
-            if (folderBrowserDialog.ShowDialog() == DialogResult.OK)
-            {
-                scanImagePath = folderBrowserDialog.SelectedPath + @"\";
-                OpenScanImageListView(scanImagePath, "bmp");
-                buttonScanSource.Enabled = true;
-            }
-        }
-
-        private void OpenScanImageListView(string scanImagePath,string imageType)
-        {
-            scanImageListView.Items.Clear();
-            ScanImageListViewHeaderSetting();
-            string[] files = Directory.GetFiles(scanImagePath);
-            if (files.Length > 0)
-            {
-                DirectoryInfo folder = new(scanImagePath);
-                foreach (FileInfo file in folder.GetFiles("*F." + imageType))
-                {
-                    scanImageListView.Items.Add(file.Name);
-                    //test
-
-                }
-                if (scanImageListView.Items.Count != 0) scanImageListView.Items[0].Selected = true;
-            }
-        }
-        private void ScanImageListViewHeaderSetting()
-        {
-            scanImageListView.Scrollable = false;
-            scanImageListView.HeaderStyle = ColumnHeaderStyle.None;
-            ColumnHeader header = new()
-            {
-                Text = "",
-                Name = "col1"
-            };
-            scanImageListView.Columns.Add(header);
-            scanImageListView.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
-        }
-
         private void ScanImageListView_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (scanImageListView.SelectedItems.Count != 0)
-            {
-                string Scan_filename_F = scanImageListView.SelectedItems[0].Text;
-                //string Scan_filename_R = Scan_filename_F.Replace("F", "R");
-                pictureBox1.Image = Fromimage(scanImagePath + Scan_filename_F);
-                //pictureBox2.Image = Fromimage(scanImagePath + Scan_filename_R);
-            }
+
         }
         private static Image Fromimage(string path)
         {

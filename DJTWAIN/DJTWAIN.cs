@@ -2,6 +2,9 @@
 using System.Runtime.InteropServices;
 using TWAINWorkingGroup;
 using System.Security.Permissions;
+using System.IO;
+using static System.Net.Mime.MediaTypeNames;
+using System.Collections.Generic;
 
 namespace DJTWAINLib
 {
@@ -35,6 +38,10 @@ namespace DJTWAINLib
         private IntPtr intPtrHwnd;        
         private IntPtr intPtrImage;
 
+        private List<ScanImageData> scanImageDatas = new List<ScanImageData>();
+
+        private readonly string scanLogTempPath = Path.GetTempPath() + @"\DJScannerForWeb\";
+
         private object from;
 
 
@@ -43,8 +50,12 @@ namespace DJTWAINLib
         public void TwainSet(object From , IntPtr Handle)
         {
             from = From; //來源的from
-            // Open the log in our working folder, and say hi...
-            TWAINWorkingGroup.Log.Open("TWAINCSScan", ".", 1);
+                         // Open the log in our working folder, and say hi...
+            if (!Directory.Exists(scanLogTempPath))
+            {
+                Directory.CreateDirectory(scanLogTempPath);
+            }
+            TWAINWorkingGroup.Log.Open(scanLogTempPath + "TWAINCSScan", ".", 1);
             TWAINWorkingGroup.Log.Info("TWAINCSScan v" + System.Reflection.Assembly.GetEntryAssembly().GetName().Version.ToString());
 
             // Init other stuff...
@@ -277,8 +288,7 @@ namespace DJTWAINLib
             if ((sts != TWAIN.STS.SUCCESS) && (sts != TWAIN.STS.XFERDONE))
             {
                 disableDsSent = true;
-                Rollback(TWAIN.STATE.S4);
-                //SetButtons(EBUTTONSTATE.OPEN);
+                Rollback(TWAIN.STATE.S4);                
                 return;
             }
 
@@ -387,8 +397,10 @@ namespace DJTWAINLib
                 //string Filename = Path.Combine(Path.GetDirectoryName(@".\"), "img" + string.Format("{0:D6}", ImageCount));
                 //TWAIN.WriteImageFile(Filename + ".bmp", intPtrImage, imageBytes, out Filename);
                 //掃描完存成圖檔
-                string fullNamePath = saveImagePath + @"\" + saveImageName + ImageCount + "F" + saveImagetype;
-                TWAIN.WriteImageFile(fullNamePath, intPtrImage, imageBytes, out fullNamePath);
+
+                //string fullNamePath = saveImagePath + @"\" + saveImageName + ImageCount + "F" + saveImagetype;
+                //TWAIN.WriteImageFile(fullNamePath, intPtrImage, imageBytes, out fullNamePath);
+
                 //if (ImageCount % 2 == 1)
                 //{
                 //    string fullNamePath = saveImagePath + @"\" + saveImageName + (ImageCount /2 + 1 ) + "F" + saveImagetype;
@@ -400,8 +412,17 @@ namespace DJTWAINLib
                 //    TWAIN.WriteImageFile(fullNamePath, intPtrImage, imageBytes, out fullNamePath);
                 //    //ImageCount = 0;
                 //}
+                //@轉成byte值存到scanImageDatas
+                byte[] abImage = new byte[imageBytes];                
+                Marshal.Copy(intPtrImage, abImage, 0, imageBytes);
+                scanImageDatas.Add(new ScanImageData
+                {
+                    ImageName = saveImageName + ImageCount + saveImagetype,
+                    Data = abImage
+                });
 
                 //@記憶圖片的參數初始化
+                Marshal.FreeHGlobal(intPtrImage);
                 intPtrImage = IntPtr.Zero;
                 imageBytes = 0;
 
@@ -559,7 +580,7 @@ namespace DJTWAINLib
             sts = twain.DatIdentity(TWAIN.DG.CONTROL, TWAIN.MSG.GETDEFAULT, ref twidentity);
             if (sts == TWAIN.STS.SUCCESS)
             {
-                scanSourceDataList.SzDefault = TWAIN.IdentityToCsv(twidentity);
+                scanSourceDataList.DefaultScan = TWAIN.IdentityToCsv(twidentity);
             }
 
             // Enumerate the drivers...
@@ -751,6 +772,15 @@ namespace DJTWAINLib
             TWAIN.TW_USERINTERFACE twuserinterface = default(TWAIN.TW_USERINTERFACE);
             twain.CsvToUserinterface(ref twuserinterface, "TRUE,FALSE," + intPtr);
             twain.DatUserinterface(TWAIN.DG.CONTROL, TWAIN.MSG.ENABLEDSUIONLY, ref twuserinterface);
+        }
+        //回傳掃描圖檔
+        public List<ScanImageData> LoadImageDatas()
+        {
+            return scanImageDatas;
+        }        
+        public void ClearImageDatas()
+        {
+            scanImageDatas.Clear();
         }
     }
 }

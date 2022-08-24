@@ -33,45 +33,47 @@
             this.labelSelect = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
-            // listBoxSourceSelect
+            // ListBoxSourceSelect
             // 
             this.ListBoxSourceSelect.FormattingEnabled = true;
             this.ListBoxSourceSelect.ItemHeight = 15;
-            this.ListBoxSourceSelect.Location = new System.Drawing.Point(12, 58);
+            this.ListBoxSourceSelect.Location = new System.Drawing.Point(20, 57);
             this.ListBoxSourceSelect.Name = "ListBoxSourceSelect";
-            this.ListBoxSourceSelect.Size = new System.Drawing.Size(288, 199);
+            this.ListBoxSourceSelect.Size = new System.Drawing.Size(197, 154);
             this.ListBoxSourceSelect.Sorted = true;
             this.ListBoxSourceSelect.TabIndex = 0;
             this.ListBoxSourceSelect.DoubleClick += new System.EventHandler(this.ListBoxSourceSelect_DoubleClick);
             // 
             // ButtonSelectScanSoucre
             // 
-            this.ButtonSelectScanSoucre.Location = new System.Drawing.Point(225, 265);
+            this.ButtonSelectScanSoucre.Location = new System.Drawing.Point(20, 227);
             this.ButtonSelectScanSoucre.Name = "ButtonSelectScanSoucre";
             this.ButtonSelectScanSoucre.Size = new System.Drawing.Size(75, 23);
             this.ButtonSelectScanSoucre.TabIndex = 1;
-            this.ButtonSelectScanSoucre.Text = "Open";
+            this.ButtonSelectScanSoucre.Text = "確定";
             this.ButtonSelectScanSoucre.UseVisualStyleBackColor = true;
             this.ButtonSelectScanSoucre.Click += new System.EventHandler(this.ButtonSelectScanSoucre_Click);
             // 
             // labelSelect
             // 
             this.labelSelect.AutoSize = true;
-            this.labelSelect.Location = new System.Drawing.Point(12, 20);
+            this.labelSelect.Location = new System.Drawing.Point(20, 27);
             this.labelSelect.Name = "labelSelect";
-            this.labelSelect.Size = new System.Drawing.Size(123, 15);
+            this.labelSelect.Size = new System.Drawing.Size(67, 15);
             this.labelSelect.TabIndex = 2;
-            this.labelSelect.Text = "Select TWAIN Driver:";
+            this.labelSelect.Text = "選擇掃描機";
             // 
             // ScanSelect
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(320, 299);
+            this.ClientSize = new System.Drawing.Size(238, 275);
             this.Controls.Add(this.labelSelect);
             this.Controls.Add(this.ButtonSelectScanSoucre);
             this.Controls.Add(this.ListBoxSourceSelect);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Name = "ScanSelect";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "ScanSelect";
             this.ResumeLayout(false);
             this.PerformLayout();

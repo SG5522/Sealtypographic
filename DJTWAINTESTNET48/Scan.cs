@@ -99,7 +99,7 @@ namespace DJTWAINTESTNET48
             }
 
             // Instantiate our form...
-            ScanSelect = new ScanSelect(scanSourceDataList.LszIdentity, scanSourceDataList.SzDefault)
+            ScanSelect = new ScanSelect(scanSourceDataList.LszIdentity, scanSourceDataList.DefaultScan)
             {
                 StartPosition = FormStartPosition.CenterParent
             };
