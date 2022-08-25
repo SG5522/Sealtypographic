@@ -4,21 +4,60 @@
 @{
     ViewBag.Title = "Index";
 }
-
-<button type="button" onclick="scanImage();" class="btn btn-primary btn-lg">Scan</button>
-<br />
-<div id="selectedFiles" class="row" style="padding: 3px"></div>
-
-<div class="modal fade dalert" role="dialog">
-    <div class="modal-dialog modal-lg" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                Connection Failed
+<div class="container-fluid px-4">
+    <h1 class="mt-4">印鑑建檔</h1>
+    <ol class="breadcrumb mb-4">
+        <li class="breadcrumb-item active"></li>
+    </ol>
+    <button type="button" onclick="scanImage();" class="btn btn-primary btn-lg">Scan</button>
+    <div class="row">
+        <div class="col-xl-2">
+            <div class="card mb-2 h-50">
+                <div class="card-header">
+                    <i class="fas fa-chart-area me-1"></i>
+                    掃描List
+                </div>                
+                <div class="card-body h-50">
+                    <div class="list-group overflow-auto h-100">
+                        <button type="button" class="list-group-item list" value="ImageName1">123</button>
+                        <button type="button" class="list-group-item list" value="ImageName2">456</button>
+                        <button type="button" class="list-group-item list" value="ImageName3">789</button>
+                    </div>
+                </div>
+                
+                <div id="selectedFiles" class="row" style="padding: 3px"></div>
             </div>
-            <div class="modal-body">
-                沒有掃描程式                
-                在您的機器中找不到掃描應用程序，請先下載、安裝並打開，然後刷新瀏覽器。
-                <a href="~/ScanApp/DJScannerForWeb.msi" download>下載檔案</a>
+            <div class="card mb-2">
+                <div class="card-header">
+                    <i class="fas fa-chart-area me-1"></i>
+                    掃圖結果
+                </div>
+                <div class="modal fade dalert" role="dialog">
+                    <div class="modal-dialog modal-lg" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                Connection Failed
+                            </div>
+                            <div class="modal-body">
+                                沒有掃描程式                
+                                在您的機器中找不到掃描應用程序，請先下載、安裝並打開，然後刷新瀏覽器。
+                                <a href="~/ScanApp/DJScannerForWeb.msi" download>下載檔案</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal fade scandetail" role="dialog">
+                    <div class="modal-dialog modal-lg" role="document">
+                        <div class="modal-content">
+                            <div style="max-height:1000px;overflow:scroll;">
+                                <canvas id="myCanvas"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card mb-2">
+                <button id="next" type="submit" class="btn btn-primary float-right">下一步</button>
             </div>
         </div>
     </div>
@@ -44,7 +83,18 @@
             ws.onmessage = function (e) {
                 if (typeof e.data === "string") {
                     //IF Received Data is String
-                    alert(e.data);
+                    //alert(e.data);
+                    var ImageData = JSON.parse(e.data);
+                    var Image = ImageData.Base64Data;
+                    var ImageName = ImageData.ImageName;
+                    /*
+                    var imagelist ="";
+                    imagelist += '<li><img height="200px" width="100px" src="'+ Image + '"></li>'
+                    $('#imageFiles').append(imagelist);
+                    */
+                    var listgroup = "";
+                    listgroup += '<button type="button" class="list-group-item list" value="' + ImageName + '">' + ImageName + '</button>';
+                    $('.list-group').append(listgroup);
                 }
                 else if (e.data instanceof ArrayBuffer) {
                     //IF Received Data is ArrayBuffer
@@ -62,7 +112,7 @@
                     var reader = new FileReader();
 
                     reader.onload = function (e) {
-                        var html = "<div class=\"col-sm-2 text-center\" style=\"border: 1px solid black; margin-left: 2px;\"><img height=\"200px\" width=\"200px\" src=\"" + e.target.result + "\" data-file='" + f.name + "' class='selFile' title='Click to remove'><br/>" + i + "</div>";
+                        var html = "<div class=\"col-sm-2 text-center\" style=\"border: 1px solid black; margin-left: 2px;\"><img height=\"200px\" width=\"100px\" src=\"" + e.target.result + "\" data-file='" + f.name + "' class='selFile' title='Click to remove'><br/>" + i + "</div>";
                         selDiv.append(html);
 
                     }
@@ -84,7 +134,38 @@
                 ScanSavePath: 'C://temp//',
             }, null, '\t'));
         };
+        function editFiles(e) {
+            var file = $(this).data("file");
+            for (var i = 0; i < storedFiles.length; i++) {
+                if (storedFiles[i].name === file) {
+                    $('.scandetail').modal('show');
+                    var c = document.getElementById("myCanvas");
+                    var ctx = c.getContext("2d");
+                    var img = new Image();
+                    img.src = window.URL.createObjectURL(storedFiles[i]);
+                    img.onload = function () {
+                        c.width = img.width ;
+                        c.height = img.height;
+                        ctx.drawImage(img, 0, 0, img.width, img.height);
+                    }
+                    break;
+                }
+            }
+        };
+        $("#next").on('click', function () {
+            window.location.href = "@Url.Action("SelectSealCard", "CreateSealsSet")";
+        })
+        $('.list-group-item').on('click', function () {
+            imageName = $(this);
+            var img = imageName.val();
+            console.log(img);
+            alert("test");
+            //Change active
+            $('.active').removeClass('active');
+            imageName.toggleClass('active');
 
+            $('#ScanImage').attr('src',imageName.val());
 
+        })
     </script>
 }

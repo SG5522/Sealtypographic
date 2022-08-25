@@ -36,14 +36,15 @@
             this.notifyIcon1 = new System.Windows.Forms.NotifyIcon(this.components);
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.button1 = new System.Windows.Forms.Button();
             this.contextMenuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // buttonScanSource
             // 
-            this.buttonScanSource.Location = new System.Drawing.Point(61, 66);
+            this.buttonScanSource.Location = new System.Drawing.Point(35, 56);
             this.buttonScanSource.Name = "buttonScanSource";
-            this.buttonScanSource.Size = new System.Drawing.Size(75, 54);
+            this.buttonScanSource.Size = new System.Drawing.Size(80, 50);
             this.buttonScanSource.TabIndex = 2;
             this.buttonScanSource.Text = "選擇掃描機";
             this.buttonScanSource.UseVisualStyleBackColor = true;
@@ -52,10 +53,10 @@
             // ButtonScan
             // 
             this.ButtonScan.Enabled = false;
-            this.ButtonScan.Location = new System.Drawing.Point(337, 66);
+            this.ButtonScan.Location = new System.Drawing.Point(265, 56);
             this.ButtonScan.Name = "ButtonScan";
-            this.ButtonScan.Size = new System.Drawing.Size(75, 54);
-            this.ButtonScan.TabIndex = 3;
+            this.ButtonScan.Size = new System.Drawing.Size(80, 50);
+            this.ButtonScan.TabIndex = 5;
             this.ButtonScan.Text = "掃描";
             this.ButtonScan.UseVisualStyleBackColor = true;
             this.ButtonScan.Click += new System.EventHandler(this.ButtonScan_Click);
@@ -63,9 +64,9 @@
             // ButtonSetup
             // 
             this.ButtonSetup.Enabled = false;
-            this.ButtonSetup.Location = new System.Drawing.Point(199, 66);
+            this.ButtonSetup.Location = new System.Drawing.Point(150, 56);
             this.ButtonSetup.Name = "ButtonSetup";
-            this.ButtonSetup.Size = new System.Drawing.Size(75, 54);
+            this.ButtonSetup.Size = new System.Drawing.Size(80, 50);
             this.ButtonSetup.TabIndex = 4;
             this.ButtonSetup.Text = "設定";
             this.ButtonSetup.UseVisualStyleBackColor = true;
@@ -77,7 +78,6 @@
             this.notifyIcon1.Icon = ((System.Drawing.Icon)(resources.GetObject("notifyIcon1.Icon")));
             this.notifyIcon1.Text = "Web Scanner";
             this.notifyIcon1.Visible = true;
-            this.notifyIcon1.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.NotifyIcon1_MouseDoubleClick);
             // 
             // contextMenuStrip1
             // 
@@ -94,16 +94,30 @@
             this.exitToolStripMenuItem.Text = "Exit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.ExitToolStripMenuItem_Click);
             // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(64, 130);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(75, 23);
+            this.button1.TabIndex = 6;
+            this.button1.Text = "button1";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
             // Scan
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(484, 175);
+            this.ClientSize = new System.Drawing.Size(384, 161);
+            this.Controls.Add(this.button1);
             this.Controls.Add(this.ButtonSetup);
             this.Controls.Add(this.ButtonScan);
             this.Controls.Add(this.buttonScanSource);
+            this.MaximizeBox = false;
+            this.MinimizeBox = false;
             this.Name = "Scan";
             this.ShowInTaskbar = false;
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Scan";
             this.WindowState = System.Windows.Forms.FormWindowState.Minimized;
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.ThisFormClosing);
@@ -120,5 +134,6 @@
         private NotifyIcon notifyIcon1;
         private ContextMenuStrip contextMenuStrip1;
         private ToolStripMenuItem exitToolStripMenuItem;
+        private Button button1;
     }
 }

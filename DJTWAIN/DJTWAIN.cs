@@ -418,8 +418,8 @@ namespace DJTWAINLib
                 scanImageDatas.Add(new ScanImageData
                 {
                     ImageName = saveImageName + ImageCount + saveImagetype,
-                    Data = abImage
-                });
+                    Base64Data = ImageDataToBase64("bmp",abImage)
+                });;
 
                 //@記憶圖片的參數初始化
                 Marshal.FreeHGlobal(intPtrImage);
@@ -781,6 +781,11 @@ namespace DJTWAINLib
         public void ClearImageDatas()
         {
             scanImageDatas.Clear();
+        }
+        public string ImageDataToBase64(string contentType, byte[] imagebytes)
+        {
+            string imageBase64String = "data:" + contentType + ";base64," + Convert.ToBase64String(imagebytes, 0, imagebytes.Length);
+            return imageBase64String;
         }
     }
 }

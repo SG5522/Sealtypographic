@@ -18,12 +18,12 @@
                                         圖檔列表
                                     </div>
                                     <div class="card-body h-50">
-                                            <div class="list-group overflow-auto h-100">
-                                                @foreach (ImageData images in Model)
-                                                {
-                                                    <button type="button" class="list-group-item list" value="@images.FileName">@images.FileName</button>
-                                                }
-                                            </div>
+                                        <div class="list-group overflow-auto h-100">
+                                            @foreach (ImageData images in Model)
+                                            {
+                                                <button type="button" class="list-group-item list" value="@images.FileName">@images.FileName</button>
+                                            }
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="card mb-2">
@@ -97,9 +97,8 @@
         
 
         $("#next").on('click', function() {
-
             var imageName = $('.list-group-item.active').val();
-            var sealSetClass = $("input[name='sealClassRadio']:checked").val();            
+            var sealSetClass = $("input[name='sealClassRadio']:checked").val();       
             switch(sealSetClass) {
               case "CustomerSeal":
                 window.location.href = "@Url.Action("CustomerSealset", "CreateSealsSet")?imageName="+ imageName;

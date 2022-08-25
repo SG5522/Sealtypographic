@@ -6,7 +6,7 @@ namespace DJTWAINLib
 {
     public class ScanImageData
     {
-        public string ImageName { get; set; }
-        public byte[] Data { get; set; }
+        public string ImageName { get; set; }        
+        public string Base64Data { get; set; }
     }
 }

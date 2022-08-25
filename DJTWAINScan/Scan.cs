@@ -2,6 +2,9 @@
 using DJTWAINLib;
 using System.Windows.Forms;
 using Newtonsoft.Json;
+using System.Drawing.Imaging;
+using System.IO;
+using System.Net.Sockets;
 
 namespace DJTWAINScan
 {
@@ -64,6 +67,9 @@ namespace DJTWAINScan
                                 this.Invoke(new Action(() =>
                                 {
                                     this.WindowState = FormWindowState.Normal;
+                                    this.Show();
+                                    this.ShowIcon = true;
+                                    notifyIcon1.Visible = false;
                                 }));
                             }
                             else
@@ -110,11 +116,13 @@ namespace DJTWAINScan
             {
                 scanStart = false;
                 scanImageDatas = dJTWAIN.LoadImageDatas();
+                
                 foreach (ScanImageData scanImageData in scanImageDatas)
                 {
                     foreach (var socket in allSockets.ToList())
                     {
-                        socket.Send(scanImageData.Data);
+                        socket.Send(JsonConvert.SerializeObject(scanImageData));
+                        //socket.Send(scanImageData.Data);
                     }
                 }
                 this.WindowState = FormWindowState.Minimized;
@@ -150,9 +158,13 @@ namespace DJTWAINScan
             dJTWAIN.ScanSource(defaultData.TwidentityProductName, scanSourceDataList);
             if (scanSourceDataList.ErrorMessage == null)
             {
-                this.Text = "TWAIN C# Scan (" + defaultData.TwidentityProductName + ")";
+                this.Text = "Scan Device (" + defaultData.TwidentityProductName + ")";
                 ButtonSetup.Enabled = true;
                 ButtonScan.Enabled = true;
+            }
+            else
+            {
+                MessageBox.Show(scanSourceDataList.ErrorMessage + "\n請確認掃描機是否有開啟");
             }
         }
 
@@ -205,7 +217,7 @@ namespace DJTWAINScan
             dJTWAIN.ScanSource(selectScan, scanSourceDataList);
             if(scanSourceDataList.ErrorMessage == null)
             {
-                this.Text = "TWAIN C# Scan (" + selectScan + ")";
+                this.Text = "Scan Device (" + selectScan + ")";
                 ButtonSetup.Enabled = true;
                 ButtonScan.Enabled = true;                
             }
@@ -228,23 +240,13 @@ namespace DJTWAINScan
         {
             dJTWAIN.Setup(this.Handle);
         }
-        private void ScanImageListView_SelectedIndexChanged(object sender, EventArgs e)
-        {
-
-        }
-        private static Image Fromimage(string path)
-        {
-            FileStream fs = File.OpenRead(path);
-            var image = Image.FromStream(fs);
-            fs.Dispose();
-            return image;
-        }
 
         private void Scan_Resize(object sender, EventArgs e)
         {
             if (WindowState == FormWindowState.Minimized)
             {
                 this.ShowIcon = false;
+                this.Hide();
                 notifyIcon1.Visible = true;
                 //notifyIcon1.ShowBalloonTip(100);
             }
@@ -261,10 +263,50 @@ namespace DJTWAINScan
             Application.Exit();
         }
 
-        private void NotifyIcon1_MouseDoubleClick(object sender, MouseEventArgs e)
+        private void button1_Click(object sender, EventArgs e)
         {
-            this.Show();
-            this.WindowState = FormWindowState.Normal;
+            //scanImageDatas = img(@"D:\example\");
+            scanImageDatas.Add(new ScanImageData
+            {
+                ImageName = "Seal1.jpg",
+                Base64Data = ImageDataToBase64("Bmp",img(@"D:\example\Seal1.jpg")),                
+            });
+
+            //foreach (var socket in allSockets.ToList())
+            //{                
+            //    socket.Send(img(@"D:\example\Seal1.jpg"));
+            //}
+            
+            
+            foreach (ScanImageData scanImageData in scanImageDatas)
+            {
+                foreach (var socket in allSockets.ToList())
+                {
+                    socket.Send(JsonConvert.SerializeObject(scanImageData));
+                    //socket.Send(img(@"D:\example\Seal1.jpg"));
+                }
+            }
+            this.WindowState = FormWindowState.Minimized;
+            scanImageDatas.Clear();
+        }
+        public string ImageDataToBase64(string contentType , byte[] imagebytes)
+        {            
+            string imageBase64String = "data:" + contentType + ";base64," + Convert.ToBase64String(imagebytes, 0, imagebytes.Length);
+            return imageBase64String;   
+        }
+        private byte[] img(string path)
+        {
+            FileStream fileStream = File.OpenRead(path);
+            Image image = Image.FromStream(fileStream);
+            MemoryStream memoryStream = new MemoryStream();
+            image.Save(memoryStream, ImageFormat.Png);
+
+            byte[] imageBytes = new byte[memoryStream.Length];
+            memoryStream.Position = 0;
+            memoryStream.Read(imageBytes, 0, (int)memoryStream.Length);
+            memoryStream.Close();
+            fileStream.Close();
+            return imageBytes;
         }
     }
 }
