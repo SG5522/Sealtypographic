@@ -66,8 +66,8 @@ namespace DJTWAINScan
                                 }
                                 this.Invoke(new Action(() =>
                                 {
-                                    this.WindowState = FormWindowState.Normal;
                                     this.Show();
+                                    this.WindowState = FormWindowState.Normal;                                    
                                     this.ShowIcon = true;
                                     notifyIcon1.Visible = false;
                                 }));
@@ -271,13 +271,17 @@ namespace DJTWAINScan
                 ImageName = "Seal1.jpg",
                 Base64Data = ImageDataToBase64("Bmp",img(@"D:\example\Seal1.jpg")),                
             });
-
+            scanImageDatas.Add(new ScanImageData
+            {
+                ImageName = "Seal2.jpg",
+                Base64Data = ImageDataToBase64("Bmp", img(@"D:\example\Seal2.jpg")),
+            });
             //foreach (var socket in allSockets.ToList())
             //{                
             //    socket.Send(img(@"D:\example\Seal1.jpg"));
             //}
-            
-            
+
+
             foreach (ScanImageData scanImageData in scanImageDatas)
             {
                 foreach (var socket in allSockets.ToList())

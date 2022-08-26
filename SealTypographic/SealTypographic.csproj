@@ -8,6 +8,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="wwwroot\ScanApp\**" />
+    <Content Remove="wwwroot\ScanApp\**" />
+    <EmbeddedResource Remove="wwwroot\ScanApp\**" />
+    <None Remove="wwwroot\ScanApp\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="bootstrap" Version="5.1.3" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
   </ItemGroup>
@@ -17,15 +24,6 @@
     <ProjectReference Include="..\DJSpire\DJSpire.csproj" />
     <ProjectReference Include="..\DJTWAIN\DJTWAINLib.csproj" />
     <ProjectReference Include="..\TchznSeal\TchznSeal.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="wwwroot\ScanApp\" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Include="wwwroot\ScanApp\DJScannerForWeb.msi" />
-    <None Include="wwwroot\ScanApp\setup.exe" />
   </ItemGroup>
 
   <ProjectExtensions><VisualStudio><UserProperties appsettings_1json__JsonSchema="" /></VisualStudio></ProjectExtensions>
