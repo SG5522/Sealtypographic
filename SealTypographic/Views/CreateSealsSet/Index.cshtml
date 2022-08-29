@@ -9,54 +9,18 @@
         <ol class="breadcrumb mb-4">
             <li class="breadcrumb-item active"></li>
         </ol>
-        <div class="row h-75">
+        <div class="row">
             <div class="col-xl-2">
-            <div class="card mb-4 h-50" style="max-height:50%">
-                <div class="card-header">
-                    <i class="fas fa-chart-area me-1"></i>
-                    掃描列表
-                </div>
-                <div class="card-body overflow-auto h-50" style="max-height:50%">
-                        <div class="list-group">
-                        <button type="button" class="list-group-item list" value="123">ImageName</button>
-                        <button type="button" class="list-group-item list" value="123">ImageName</button>
-                        <button type="button" class="list-group-item list" value="123">ImageName</button>
-                        <button type="button" class="list-group-item list" value="123">ImageName</button>
-                        <button type="button" class="list-group-item list" value="123">ImageName</button>
-                        <button type="button" class="list-group-item list" value="123">ImageName</button>
-                        <button type="button" class="list-group-item list" value="123">ImageName</button>
-                        <button type="button" class="list-group-item list" value="123">ImageName</button>
-                        <button type="button" class="list-group-item list" value="123">ImageName</button>
-                        <button type="button" class="list-group-item list" value="123">ImageName</button>
-                        <button type="button" class="list-group-item list" value="123">ImageName</button>
-                        <button type="button" class="list-group-item list" value="123">ImageName</button>
-                        <button type="button" class="list-group-item list" value="123">ImageName</button>
-                        <button type="button" class="list-group-item list" value="123">ImageName</button>
-                        <button type="button" class="list-group-item list" value="123">ImageName</button>
-                        <button type="button" class="list-group-item list" value="123">ImageName</button>
-                        <button type="button" class="list-group-item list" value="123">ImageName</button>
-                        <button type="button" class="list-group-item list" value="123">ImageName</button>
-                        <button type="button" class="list-group-item list" value="123">ImageName</button>
-                        <button type="button" class="list-group-item list" value="123">ImageName</button>
-                        <button type="button" class="list-group-item list" value="123">ImageName</button>
-                        <button type="button" class="list-group-item list" value="123">ImageName</button>
-                        <button type="button" class="list-group-item list" value="123">ImageName</button>
-                        <button type="button" class="list-group-item list" value="123">ImageName</button>
-                        <button type="button" class="list-group-item list" value="123">ImageName</button>
-                        <button type="button" class="list-group-item list" value="123">ImageName</button>
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <i class="fas fa-chart-area me-1"></i>
+                            掃描列表
                         </div>
-                </div>
-            </div>
-                <div class="card mb-4">
-                    <div class="card-body">
-                        <button type="button" id="scanOpen" class="btn btn-primary float-right">Scan</button>
+                        <div class="card-body overflow-scroll-40vh">
+                            <div class="list-group">
+                            </div>
+                        </div>
                     </div>
-                </div>
-                <div class="card mb-4">
-                    <div class="card-body">
-                        <button id="next" type="submit" class="btn btn-primary float-right">下一步</button>
-                    </div>
-                </div>
             </div>
             <div class="col-xl-8">
                 <div class="card mb-4">
@@ -65,25 +29,34 @@
                         掃圖結果
                     </div>
                     <div class="card-body">
-                        <img id="scanImageView" src="img/NoImage.svg" class="img-fluid" alt="Responsive image" style="width: 25%; height: 25%;" />
+                        <img id="scanImageView" src="~/img/NoImage.svg" class="img-fluid" alt="Responsive image" style="width: 25%; height: 25%;" />
                     </div>
                 </div>
             </div>
         </div>
-@*        <div class="row">
+        <div class="row">
             <div class="col-xl-2">
                 <div class="card mb-4">
                     <div class="card-body">
-                        <button type="button" id="scanOpen" class="btn btn-primary float-right">Scan</button>
+                        <div class="row">
+                            <div class="col-xl-7">
+                                <button type="button" id="scanOpen" class="btn btn-primary float-right">開啟掃描</button>
+                            </div>
+                            <div class="col-xl-5">
+                                <button type="button" id="upLoad" class="btn btn-primary float-right">上傳</button>
+                            </div>
+                    </div>
                     </div>
                 </div>
+            </div>
+            <div class="col-xl-2">
                 <div class="card mb-4">
                     <div class="card-body">
                         <button id="next" type="submit" class="btn btn-primary float-right">下一步</button>
                     </div>
                 </div>
-            </div>
-        </div>*@
+            </div>            
+        </div>
     </div>
 
 
@@ -94,7 +67,7 @@
                 連線失敗
             </div>
             <div class="modal-body">
-                在您的機器中找不到掃描應用程序，請先安裝並打開，然後刷新瀏覽器。
+                在您的電腦中找不到掃描應用程序，請先安裝並打開，然後刷新瀏覽器。
             </div>
         </div>
     </div>
@@ -106,8 +79,7 @@
 
         $(document).ready(function () {
             $("body").on("click", ".list-group-item", ListGroup);
-        });
-
+        });        
         var start = function () {
             var i = 0;
 
@@ -119,21 +91,14 @@
                     //IF Received Data is String
                     //alert(e.data);                    
 
-                    var ImageData = JSON.parse(e.data);
-                    var Image = ImageData.Base64Data;
-                    var ImageName = ImageData.ImageName;
-
-                    var imageList = $("#imageList").height();
-                    var listgroup = "";
-                    //listgroup = '<button type="button" class="list-group-item list" value="' + Image + '">' + ImageName + '</button>';
+                    var ImageJSON = JSON.parse(e.data);
+                                                    
                     $listgroup = $('<button>');                    
                     $listgroup.attr("type", "button");
                     $listgroup.attr("class", "list-group-item list");
-                    $listgroup.attr("value", Image);
-                    $listgroup.html(ImageName);
-                    $(".list-group").append($listgroup);
-                    //$('.list-group').append(listgroup);
-
+                    $listgroup.attr("value", ImageJSON.Base64Data);
+                    $listgroup.html(ImageJSON.ImageName);
+                    $(".list-group").append($listgroup);                    
                 }
                 else if (e.data instanceof ArrayBuffer) {
                     //IF Received Data is ArrayBuffer
@@ -164,7 +129,6 @@
         });
 
 
-
         function ListGroup() 
         {
             imageName = $(this);
@@ -176,5 +140,13 @@
 
             $('#scanImageView').attr('src', imageName.val());
         }
+        $("#upLoad").on('click', function(){
+            var items = document.getElementsByClassName("list-group-item");
+            //var fileData = new FormData();
+            for (var i = 0; i < items.length; i++) {
+                alert(items[i].textContent);
+                alert(items[i].value);
+            }
+        })
     </script>
 }

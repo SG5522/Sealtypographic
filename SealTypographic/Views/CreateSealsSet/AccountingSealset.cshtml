@@ -12,13 +12,13 @@
                         </ol>
                         <div class="row">
                             <div class="col-xl-2">
-                                <div class="card mb-2 h-50" >
+                                <div class="card mb-2" >
                                     <div class="card-header">
                                         <i class="fas fa-chart-area me-1"></i>
                                        章式列表
                                     </div>
-                                    <div class="card-body h-50">
-                                        <div class="list-group overflow-auto h-100">
+                                    <div class="card-body overflow-scroll-40vh">
+                                        <div class="list-group">
                                             @foreach (Seal seal in Model)
                                             {
                                                 <button type="button" class="list-group-item list" value="@seal.SealImageName">@seal.SealImageName</button>
@@ -26,19 +26,16 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="card mb-2">   
-                                      <img id="sealImage" src="img/NoImage.svg" class="img-fluid" alt="Responsive image" style="width: auto; height: auto;"/>
-                                </div>
                             </div>
                             <div class="col-xl-8">
                                 <div class="card mb-8">
                                     <div class="card-header">
                                         <i class="fas fa-chart-area me-1"></i>
-                                        顯示指定掃描圖
+                                        顯示印鑑
                                     </div>
                                     <div class="card-body">
-                                        <div id="sealcard" class="card-body">
-                                            <img src="@Url.Action("GetScanImage", new{imageName = @ViewBag.imageName})"/>
+                                        <div class="card mb-2">
+                                            <img id="sealImage" src="~/img/NoImage.svg" class="img-fluid" alt="Responsive image" style="width: 25%; height: 25%;" />
                                         </div>
                                     </div>
                                 </div>
@@ -52,9 +49,17 @@
             imageName = $(this);        
             //Change active 
             $('.active').removeClass('active');
-            imageName.toggleClass('active');            
-            $("#sealImage").attr("src", '@Url.Action("GetSealImage")?imageName=' + imageName.val());
-
+            imageName.toggleClass('active');
+            
+            $.ajax({
+                url: '/api/ImageGet/2/' + imageName.val(),
+                contentType: 'application/json; charset=utf-8',
+                datatype: 'json',
+                type: "GET",
+                success: function (Data) {
+                    $("#sealImage").attr('src', Data);
+                },
+            });
         })
     </script>
   }

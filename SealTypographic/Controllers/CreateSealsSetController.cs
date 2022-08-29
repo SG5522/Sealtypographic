@@ -1,17 +1,15 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using DJLib;
 using SealTypographic.Models;
 using TchznSeal;
 using Newtonsoft.Json;
+using SealTypographic.Service;
 
 namespace SealTypographic.Controllers
 {
     public class CreateSealsSetController : Controller
     {
         private readonly string ScanImagePath = @".\wwwroot\Sealcard\";
-        private readonly string SealTempPath = Path.GetTempPath() + @"\Seal\";
-        private readonly float HeightScale = 0.25f;
-        private readonly float WidthScale = 0.25f;        
+        private readonly string SealTempPath = Path.GetTempPath() + @"\Seal\";     
 
         public IActionResult Index()
         {
@@ -24,7 +22,7 @@ namespace SealTypographic.Controllers
         /// <returns></returns>
         public IActionResult SelectSealCard()
         {
-            List<ImageData> imageDatas = GetImages(ScanImagePath);
+            List<ImageData> imageDatas = GetImageList(ScanImagePath);
             return View(imageDatas);
         }
 
@@ -51,7 +49,7 @@ namespace SealTypographic.Controllers
             int count = 1;
             //@呼叫天創元件進行分離 每次會自己產生bmp檔 後續需要請天創調整元件
             autoSealSplit.SplitSeal(ScanImagePath + imageName , SealTempPath, "Test", "R");
-            List<ImageData> sealImage = GetImages(SealTempPath);
+            List<ImageData> sealImage = GetImageList(SealTempPath);
             foreach (ImageData imageData in sealImage)
             {                
                 seals.Add(new Seal
@@ -69,32 +67,6 @@ namespace SealTypographic.Controllers
             return View(seals);
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="imageName"></param>
-        /// <returns></returns>
-        public IActionResult GetSealImage(int imagePath, string imageName)
-        {
-            string imagepath = "";
-            switch(imagePath)
-            {
-                case 1:
-                    imagepath = ScanImagePath;
-                    break;
-                case 2:
-                    imagepath = SealTempPath;
-                    break;
-            }
-            ImageData? imageData = GetImageData(imagepath, imageName);
-            if (imageData != null)
-            {
-                //image.IsSelected = true;
-                //ViewBag.Base64String = "data:image/png;base64," + Convert.ToBase64String(image.Data, 0, image.Data.Length);
-                return File(imageData.Data, imageData.ContentType);
-            }
-            return View("Error");
-        }
 
         private SealSet SealSetSetting()
         {
@@ -114,54 +86,14 @@ namespace SealTypographic.Controllers
             return View();
         }
 
-        /// <summary>
-        /// 取得圖檔並顯示指定的圖
-        /// </summary>
-        /// <param name="imageName">圖片檔名</param>
-        /// <returns></returns>
-        public string GetScanImage(string imageName)
-        {
-            ImageData? imageData = GetImageData(ScanImagePath, imageName);
-            if (imageData != null)
-            {
-                string imageBase64String = "data:"+ imageData.ContentType + ";base64," + Convert.ToBase64String(imageData.Data, 0, imageData.Data.Length);                
-                return imageBase64String;
-            }
-            return "img/NoImage.svg";
-        }
-
-        /// <summary>
-        /// 取得指定檔名圖檔資料
-        /// </summary>
-        /// <param name="imagePath">圖檔位置</param>
-        /// <param name="imageName">圖片檔名</param>
-        /// <returns></returns>
-        public ImageData? GetImageData(string imagePath, string imageName)
-        {
-
-            ImageData imageData = new()
-            {
-                FileName = imageName,
-                ContentType = ImageType(imageName),
-                Data = ImageResize.ReDrawImgToBytes(imagePath + imageName, WidthScale, HeightScale),//縮放圖檔並轉成Bytes
-            };
-            if (imageData.Data != null)
-            {
-                return imageData;                
-            }
-            else
-            {
-                return null;
-            }            
-        }
+                
 
         /// <summary>
         /// 獲得資料夾內的所有圖檔以及圖檔的檔名
         /// </summary>
-        /// <param name="imageath">圖檔路徑</param>
-        /// <param name="imageType">圖檔型態</param>
+        /// <param name="imagePath">圖檔路徑</param>        
         /// <returns></returns>
-        private static List<ImageData> GetImages(string imagePath)
+        private static List<ImageData> GetImageList(string imagePath)
         {
             List<ImageData> images = new();
             string[] files = Directory.GetFiles(imagePath);
@@ -170,72 +102,16 @@ namespace SealTypographic.Controllers
                 DirectoryInfo folder = new(imagePath);
                 //指定讀取資料夾內的圖檔type
                 foreach (FileInfo file in folder.GetFiles("*.*"))
-                {                    
-                    int extensionLocation = file.Name.IndexOf(".") + 1;
+                {                                        
                     images.Add(new ImageData
                     {
                         FileName = file.Name,
-                        FileFullName = file.FullName,
-                        //ContentType = "image/" + file.Name[extensionLocation..],
-                        ContentType = ImageType(file.Name),
-
-                        //Data = ImageResize.ImgToBytes(imagePath + file.Name, WidthScale, HeightScale),//縮放圖檔並轉成Bytes
+                        FileFullName = file.FullName,                        
+                        ContentType = ImageGetData.ImageType(file.Name),                        
                     });
                 }
             }
             return images;
-        }
-        private static string ImageType(string fileName)
-        {
-            string imageType = "";
-            string fileExtension = "";
-            fileExtension = fileName[fileName.LastIndexOf(".")..];
-            switch (fileExtension)
-            {
-                case ".apng":
-                    imageType = "image/apng";
-                    break;
-                case ".avif":
-                    imageType = "image/avif";
-                    break;
-                case ".bmp":
-                    imageType = "image/bmp";
-                    break;
-                case ".gif":
-                    imageType = "image/gif";
-                    break;
-                case ".jpg":
-                    imageType = "image/jpeg";
-                    break;
-                case ".jpeg":
-                    imageType = "image/jpeg";
-                    break;
-                case ".jfif":
-                    imageType = "image/jpeg";
-                    break;
-                case ".pjpeg":
-                    imageType = "image/jpeg";
-                    break;
-                case ".pjp":
-                    imageType = "image/jpeg";
-                    break;
-                case ".png":
-                    imageType = "image/png";
-                    break;
-                case ".svg":
-                    imageType = "image/svg+xml";
-                    break;
-                case ".tif":
-                    imageType = "image/tiff";
-                    break;
-                case ".tiff":
-                    imageType = "image/tiff";
-                    break;
-                case ".webp":
-                    imageType = "image/webp";
-                    break;
-            }
-            return imageType;
-        }
+        }        
     }
 }

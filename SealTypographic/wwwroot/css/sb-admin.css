@@ -5073,11 +5073,11 @@ textarea.form-control-lg {
 }
 
 .list-group {
-  display: flex;
-  flex-direction: column;
-  padding-left: 0;
-  margin-bottom: 0;
-  border-radius: 0.25rem;
+    display: flex;
+    flex-direction: column;
+    padding-left: 0;
+    margin-bottom: 0;
+    border-radius: 0.25rem;
 }
 
 .list-group-numbered {
@@ -6722,6 +6722,11 @@ textarea.form-control-lg {
 
 .overflow-scroll {
   overflow: scroll !important;
+}
+
+.overflow-scroll-40vh {
+    max-height: var(--bs-scroll-height, 40vh);
+    overflow-y: auto;
 }
 
 .d-inline {

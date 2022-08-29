@@ -276,6 +276,11 @@ namespace DJTWAINScan
                 ImageName = "Seal2.jpg",
                 Base64Data = ImageDataToBase64("Bmp", img(@"D:\example\Seal2.jpg")),
             });
+            scanImageDatas.Add(new ScanImageData
+            {
+                ImageName = "image0000003A.jpg",
+                Base64Data = ImageDataToBase64("Bmp", img(@"D:\example\image0000003A.jpg")),
+            });
             //foreach (var socket in allSockets.ToList())
             //{                
             //    socket.Send(img(@"D:\example\Seal1.jpg"));

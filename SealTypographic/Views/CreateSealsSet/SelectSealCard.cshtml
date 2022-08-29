@@ -12,13 +12,13 @@
                         </ol>
                         <div class="row">
                             <div class="col-xl-2">
-                                <div class="card mb-2 h-50" >
+                                <div class="card mb-2" >
                                     <div class="card-header">
                                         <i class="fas fa-chart-area me-1"></i>
                                         圖檔列表
                                     </div>
-                                    <div class="card-body h-50">
-                                        <div class="list-group overflow-auto h-100">
+                                    <div class="card-body overflow-scroll-40vh">
+                                        <div class="list-group">
                                             @foreach (ImageData images in Model)
                                             {
                                                 <button type="button" class="list-group-item list" value="@images.FileName">@images.FileName</button>
@@ -46,11 +46,6 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="card mb-4">   
-                                      <button id="next" type="submit" class="btn btn-primary float-right">下一步</button>
-                                      <p>@ViewBag.imageName</p>
-                                      <p>@ViewBag.sealsetClass</p>
-                                </div>
                             </div>
                           <div class="col-xl-8">
                                 <div class="card mb-4">
@@ -59,8 +54,17 @@
                                         ImageView
                                     </div>
                                     <div id="sealcard" class="card-body">
-                                        <img id="scanimage" src="img/NoImage.svg" class="img-fluid" alt="Responsive image" style="width: auto; height: auto;"/>
+                                        <img id="scanimage" src="~/img/NoImage.svg" class="img-fluid" alt="Responsive image" style="width: auto; height: auto;"/>
                                     </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xl-2">
+                                <div class="card mb-4">
+                                    <button id="next" type="submit" class="btn btn-primary float-right">下一步</button>
+                                    @*<p>@ViewBag.imageName</p>
+                                    <p>@ViewBag.sealsetClass</p>*@
                                 </div>
                             </div>
                         </div>
@@ -70,31 +74,25 @@
         $('.list-group-item').on('click', function() 
         {
             imageName = $(this);
-            //var imagedata = imagename.data('alias');
+            
             //Pass clicked link element to another function
             //console.log(imageName.text());  // Will log Paris | France | etc...
             //console.log(imagedata);  // Will output whatever is in data-alias=""
             
             //Change active 
             $('.active').removeClass('active');
-            imageName.toggleClass('active');            
-            //$("#scanimage").attr("src", '@Url.Action("GetScanImage", "CreateSealsSet")?imageName=' + imageName.val());                       
+            imageName.toggleClass('active');                        
                         
             $.ajax({
-                url: '@Url.Action("GetScanImage")',
+                url: '/api/ImageGet/1/' + imageName.val(),
                 contentType: 'application/json; charset=utf-8',
                 datatype: 'json',
-                data: 
-                {
-                    imageName: imageName.val()
-                },
-                type: "GET",                
-                success: function (Data) {                    
+                type: "GET",               
+                success: function (Data) {
                     $("#scanimage").attr('src', Data);
                 },
             });
-        })
-        
+        })                    
 
         $("#next").on('click', function() {
             var imageName = $('.list-group-item.active').val();
