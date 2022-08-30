@@ -31,6 +31,8 @@
                     <div class="card-body">
                         <img id="scanImageView" src="~/img/NoImage.svg" class="img-fluid" alt="Responsive image" style="width: 25%; height: 25%;" />
                     </div>
+                    <div id="uploadmessage" class="card-body">
+                    </div>
                 </div>
             </div>
         </div>
@@ -133,20 +135,36 @@
         {
             imageName = $(this);
             var img = imageName.val();
-            console.log(img);
+            //console.log(img);
             //Change active
             $('.active').removeClass('active');
             imageName.toggleClass('active');
 
             $('#scanImageView').attr('src', imageName.val());
         }
+
         $("#upLoad").on('click', function(){
-            var items = document.getElementsByClassName("list-group-item");
-            //var fileData = new FormData();
-            for (var i = 0; i < items.length; i++) {
-                alert(items[i].textContent);
-                alert(items[i].value);
+            var items = document.getElementsByClassName("list-group-item");            
+            var imagedata = [];
+            for (var i = 0; i < items.length; i++) {                
+                var imageJson = {
+                    FileName: items[i].textContent,
+                    ImageBase64: items[i].value
+                };
+                imagedata.push(imageJson);
             }
+            //console.log(JSON.stringify(imagedata));            
+            $.ajax({
+                url: '/api/upload/',
+                type: "POST",                
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify(imagedata),             
+                dataType: "json",                                                  
+                success: function (result) {
+                    alert(result);
+                    $("#uploadmessage").html(result.message);
+                }
+            });
         })
     </script>
 }

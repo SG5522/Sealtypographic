@@ -300,7 +300,7 @@ namespace DJTWAINScan
         }
         public string ImageDataToBase64(string contentType , byte[] imagebytes)
         {            
-            string imageBase64String = "data:" + contentType + ";base64," + Convert.ToBase64String(imagebytes, 0, imagebytes.Length);
+            string imageBase64String = @"data:image/" + contentType + ";base64," + Convert.ToBase64String(imagebytes, 0, imagebytes.Length);
             return imageBase64String;   
         }
         private byte[] img(string path)

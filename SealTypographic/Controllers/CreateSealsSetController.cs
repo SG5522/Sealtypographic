@@ -60,20 +60,17 @@ namespace SealTypographic.Controllers
                     SealNo = "1",
                 });
                 count++;
-            }
-            
+            }            
             
             ViewBag.imageName = imageName;
             return View(seals);
         }
-
 
         private SealSet SealSetSetting()
         {
             SealSet sealSet = new();
             return sealSet;
         }
-
 
         /// <summary>
         /// 信頭紙頁面
@@ -85,8 +82,6 @@ namespace SealTypographic.Controllers
             ViewBag.imageName = imageName;
             return View();
         }
-
-                
 
         /// <summary>
         /// 獲得資料夾內的所有圖檔以及圖檔的檔名
