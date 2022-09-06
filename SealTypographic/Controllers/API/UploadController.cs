@@ -5,7 +5,7 @@ using Newtonsoft.Json;
 using SealTypographic.Models;
 using System.Text.RegularExpressions;
 
-namespace SealTypographic.Service
+namespace SealTypographic.Controllers.API
 {
     [Route("api/upload")]
     [ApiController]

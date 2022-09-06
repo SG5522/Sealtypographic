@@ -1,9 +1,10 @@
 ﻿using DJLib;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using SealTypographic.Controllers.Funtions;
 using SealTypographic.Models;
 
-namespace SealTypographic.Service
+namespace SealTypographic.Controllers.API
 {
     [Route("api/ImageGet")]
     [ApiController]
@@ -34,8 +35,8 @@ namespace SealTypographic.Service
                     imagepath = ScanImagePath;
                     break;
             }
-            ImageGetData imageGetData = new();
-            ImageData? imageData = imageGetData.GetImageData(imagepath, imageName);
+            ImageFuntion imageGetData = new();
+            ImageData? imageData = imageGetData.GetData(imagepath, imageName);
             if (imageData != null)
             {             
                 //轉成image Base64

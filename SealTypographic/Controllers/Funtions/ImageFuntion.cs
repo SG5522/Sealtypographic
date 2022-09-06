@@ -1,9 +1,9 @@
 ﻿using DJLib;
 using SealTypographic.Models;
 
-namespace SealTypographic.Service
+namespace SealTypographic.Controllers.Funtions
 {
-    public class ImageGetData
+    public class ImageFuntion
     {
         private readonly float HeightScale = 0.25f;
         private readonly float WidthScale = 0.25f;
@@ -13,12 +13,12 @@ namespace SealTypographic.Service
         /// <param name="imagePath">圖檔位置</param>
         /// <param name="imageName">圖片檔名</param>
         /// <returns></returns>
-        public ImageData? GetImageData(string imagePath, string imageName)
+        public ImageData? GetData(string imagePath, string imageName)
         {
             ImageData imageData = new()
             {
                 FileName = imageName,
-                ContentType = ImageType(imageName),
+                ContentType = GetType(imageName),
                 Data = ImageResize.ReDrawImgToBytes(imagePath + imageName, WidthScale, HeightScale),//縮放圖檔並轉成Bytes
             };
             if (imageData.Data != null)
@@ -31,7 +31,7 @@ namespace SealTypographic.Service
             }
         }
 
-        public static string ImageType(string fileName)
+        public static string GetType(string fileName)
         {
             string imageType = "";
             string fileExtension = fileName[fileName.LastIndexOf(".")..];

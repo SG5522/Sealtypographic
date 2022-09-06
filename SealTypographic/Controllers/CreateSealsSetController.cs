@@ -2,7 +2,7 @@
 using SealTypographic.Models;
 using TchznSeal;
 using Newtonsoft.Json;
-using SealTypographic.Service;
+using SealTypographic.Controllers.Funtions;
 
 namespace SealTypographic.Controllers
 {
@@ -102,7 +102,7 @@ namespace SealTypographic.Controllers
                     {
                         FileName = file.Name,
                         FileFullName = file.FullName,                        
-                        ContentType = ImageGetData.ImageType(file.Name),                        
+                        ContentType = ImageFuntion.GetType(file.Name),                        
                     });
                 }
             }
