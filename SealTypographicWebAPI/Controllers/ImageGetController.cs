@@ -5,6 +5,9 @@ using Microsoft.AspNetCore.Cors;
 
 namespace SealTypographicWebAPI.Controllers
 {
+    /// <summary>
+    /// 取得圖片(Base64)
+    /// </summary>
     [Route("ImageGet")]
     [Produces("application/json")]
     [ApiController]
@@ -16,8 +19,9 @@ namespace SealTypographicWebAPI.Controllers
         /// <summary>
         /// 取得圖檔並顯示指定的圖
         /// </summary>
+        /// <param name="imageWorks">選擇使用路徑 1.掃描圖檔位置 2.印鑑暫存位置(本機暫存檔位置)</param>
         /// <param name="imageName">圖片檔名</param>
-        /// <returns></returns>                     
+        /// <returns>取得圖片(Base64)</returns>                     
         /// GET api/imageWorks/imageName
         [HttpGet("{imageWorks}/{imageName}")]
         public string GetScanImage(int imageWorks, string imageName)

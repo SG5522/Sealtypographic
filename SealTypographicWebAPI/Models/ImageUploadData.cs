@@ -1,8 +1,17 @@
 ﻿namespace SealTypographic.Models
 {
+    /// <summary>
+    /// 上傳用Class
+    /// </summary>
     public class ImageUploadData
     {
+        /// <summary>
+        /// 檔名
+        /// </summary>
         public string FileName { get; set; } = null!;
+        /// <summary>
+        /// Base64圖檔
+        /// </summary>
         public string ImageBase64 { get; set; } = null!;
     }
 }

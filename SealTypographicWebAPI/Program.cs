@@ -45,17 +45,20 @@ builder.Services.AddSwaggerGen(c =>
         //    Url = new Uri("https://example.com/license"),
         //}
     });
-    // Set the comments path for the Swagger JSON and UI.
-    //var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-    //var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
-    //c.IncludeXmlComments(xmlPath);
+    //Set the comments path for the Swagger JSON and UI.
+    string xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    string xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+    c.IncludeXmlComments(xmlPath);
 });
 
 var app = builder.Build();
 
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
 
-app.UseSwagger();
-app.UseSwaggerUI();
 app.UseCors(MyAllowSpecificOrigins);
 app.UseAuthorization();
 

@@ -4,6 +4,9 @@ project.lock.json
 .DS_Store
 *.pyc
 nupkg/
+*.bmp
+*.jpg
+*.png
 
 # Visual Studio Code
 .vscode
