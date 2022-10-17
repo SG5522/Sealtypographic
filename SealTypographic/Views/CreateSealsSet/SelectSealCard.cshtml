@@ -84,9 +84,11 @@
             imageName.toggleClass('active');                        
                         
             $.ajax({
-                url: '/api/ImageGet/1/' + imageName.val(),
+                //url: '/api/ImageGet/1/' + imageName.val(),
+                url: 'http://localhost:5008/ImageGet/1/' + imageName.val(),
                 contentType: 'application/json; charset=utf-8',
-                datatype: 'json',
+                //datatype: 'json',
+                datatype: 'string',
                 type: "GET",               
                 success: function (Data) {
                     $("#scanimage").attr('src', Data);

@@ -7,7 +7,8 @@
         <meta name="description" content="" />
         <meta name="author" content="" />
         <title>取章排版</title>
-        <link href="https://cdn.jsdelivr.net/npm/simple-datatables@latest/dist/style.css" rel="stylesheet" />
+        @*<link href="https://cdn.jsdelivr.net/npm/simple-datatables@latest/dist/style.css" rel="stylesheet" />*@
+        @*<link href="~/css/style.css" rel="stylesheet" />*@
         <link href="~/css/sb-admin.css" rel="stylesheet" />
         <script src="https://use.fontawesome.com/releases/v6.1.0/js/all.js" crossorigin="anonymous"></script>
         @await RenderSectionAsync("Styles", required: false)
@@ -49,7 +50,7 @@
                                 印鑑取章
                                 <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
                             </a>
-                            <div class="collapse" id="sealCreate" aria-labelledby="headingTwo" data-bs-parent="#sidenavSealCreatePages">
+                            <div class="collapse" id="sealCreate" aria-labelledby="headingTwo" data-bs-parent="#sidenavSealCreatePages">    
                                 <nav class="sb-sidenav-menu-nested nav accordion" id="sidenavSealCreatePages">
                                     <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#outSourceSealCreate" aria-expanded="false" aria-controls="outSourceSealCreate">
                                         委托公司取章作業
@@ -57,7 +58,7 @@
                                     </a>
                                     <div class="collapse" id="outSourceSealCreate" aria-labelledby="headingOne" data-bs-parent="#sidenavSealCreatePages">
                                         <nav class="sb-sidenav-menu-nested nav">
-                                            <a class="nav-link" href="@Url.Action("index","CreateSealsSet")">新增</a>
+                                        <a class="nav-link" href="@Url.Action("index","CreateSealsSet")">新增</a>
                                             <a class="nav-link" href="@Url.Action("index","Home")">取章排版</a>
                                         </nav>
                                     </div>
@@ -67,7 +68,7 @@
                                     </a>
                                     <div class="collapse" id="accountingSealCreate" aria-labelledby="headingOne" data-bs-parent="#sidenavSealCreatePages">
                                         <nav class="sb-sidenav-menu-nested nav">
-                                            <a class="nav-link" href="@Url.Action("index","CreateSealsSet")">新增</a>
+                                        <a class="nav-link" href="@Url.Action("index","CreateSealsSet")">新增</a>
                                             <a class="nav-link" href="#">異動</a>
                                         </nav>
                                     </div>
@@ -158,12 +159,12 @@
         </div>
         <script src="~/lib/jquery/dist/jquery.min.js"></script>
         <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-        <script src="~/js/scripts.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js" crossorigin="anonymous"></script>
-        <script src="~/lib/assets/demo/chart-area-demo.js"></script>
+        <script src="~/js/sb-admin.js"></script>
+        <script src="~/js/Chart.min.js" crossorigin="anonymous"></script>
+@*        <script src="~/lib/assets/demo/chart-area-demo.js"></script>
         <script src="~/lib/assets/demo/chart-bar-demo.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/simple-datatables@latest" crossorigin="anonymous"></script>
-        <script src="~/js/datatables-simple-demo.js"></script>
+        <script src="~/js/datatables-simple-demo.js"></script>*@
         @await RenderSectionAsync("Scripts", required: false)
         </body>
 </html>

@@ -8,8 +8,10 @@ namespace SealTypographic.Controllers
 {
     public class CreateSealsSetController : Controller
     {
-        private readonly string ScanImagePath = @".\wwwroot\Sealcard\";
-        private readonly string SealTempPath = Path.GetTempPath() + @"\Seal\";     
+        //private readonly string ScanImagePath = @".\wwwroot\Sealcard\";
+        private readonly string ScanImagePath = @"C:\DJimage\TestSealcard\";
+        private readonly string SealTempPath = Path.GetTempPath() + @"\Seal\";
+
 
         public IActionResult Index()
         {

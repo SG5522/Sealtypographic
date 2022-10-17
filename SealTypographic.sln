@@ -23,6 +23,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DJTWAINLib", "DJTWAIN\DJTWA
 EndProject
 Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "DJScannerForWeb", "DJScannerForWeb\DJScannerForWeb.vdproj", "{AFC8D0BC-A6DA-4B2A-8E35-7A82E8B1139D}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SealTypographicWebAPI", "SealTypographicWebAPI\SealTypographicWebAPI.csproj", "{BEE86DA4-662A-492C-B27B-AC613E24B12E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -147,6 +149,18 @@ Global
 		{AFC8D0BC-A6DA-4B2A-8E35-7A82E8B1139D}.Release|Any CPU.ActiveCfg = Release
 		{AFC8D0BC-A6DA-4B2A-8E35-7A82E8B1139D}.Release|x64.ActiveCfg = Release
 		{AFC8D0BC-A6DA-4B2A-8E35-7A82E8B1139D}.Release|x86.ActiveCfg = Release
+		{BEE86DA4-662A-492C-B27B-AC613E24B12E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BEE86DA4-662A-492C-B27B-AC613E24B12E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BEE86DA4-662A-492C-B27B-AC613E24B12E}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{BEE86DA4-662A-492C-B27B-AC613E24B12E}.Debug|x64.Build.0 = Debug|Any CPU
+		{BEE86DA4-662A-492C-B27B-AC613E24B12E}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{BEE86DA4-662A-492C-B27B-AC613E24B12E}.Debug|x86.Build.0 = Debug|Any CPU
+		{BEE86DA4-662A-492C-B27B-AC613E24B12E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BEE86DA4-662A-492C-B27B-AC613E24B12E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BEE86DA4-662A-492C-B27B-AC613E24B12E}.Release|x64.ActiveCfg = Release|Any CPU
+		{BEE86DA4-662A-492C-B27B-AC613E24B12E}.Release|x64.Build.0 = Release|Any CPU
+		{BEE86DA4-662A-492C-B27B-AC613E24B12E}.Release|x86.ActiveCfg = Release|Any CPU
+		{BEE86DA4-662A-492C-B27B-AC613E24B12E}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
