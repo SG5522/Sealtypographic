@@ -2,6 +2,7 @@
 using SealTypographicWebAPI.Service;
 using SealTypographicWebAPI.Models;
 using Microsoft.AspNetCore.Cors;
+using Microsoft.Extensions.Options;
 
 namespace SealTypographicWebAPI.Controllers
 {
@@ -13,8 +14,17 @@ namespace SealTypographicWebAPI.Controllers
     [ApiController]
     public class ImageGetController : ControllerBase
     {
-        private readonly string ScanImagePath = @"C:\DJimage\TestSealcard\";
-        private readonly string SealTempPath = Path.GetTempPath() + @"\Seal\";
+        private readonly ScanConfigPath _scanConfig;
+
+        /// <summary>
+        /// 注入appsetting的ScanConfigPath資料
+        /// </summary>
+        /// <param name="options"></param>
+        public ImageGetController(IOptionsMonitor<ScanConfigPath> options)
+        {
+            _scanConfig = options.CurrentValue;
+        }
+
 
         /// <summary>
         /// 取得圖檔並顯示指定的圖
@@ -30,13 +40,13 @@ namespace SealTypographicWebAPI.Controllers
             switch (imageWorks)
             {
                 case 1:
-                    imagepath = ScanImagePath;
+                    imagepath = _scanConfig.ScanImagePath;
                     break;
                 case 2:
-                    imagepath = SealTempPath;
+                    imagepath = Path.GetTempPath() + _scanConfig.SealTempPath;
                     break;
                 default:
-                    imagepath = ScanImagePath;
+                    imagepath = _scanConfig.ScanImagePath;
                     break;
             }
             ImageFuntion imageGetData = new();

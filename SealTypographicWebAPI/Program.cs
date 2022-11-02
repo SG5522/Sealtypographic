@@ -1,10 +1,15 @@
+﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
+using SealTypographicWebAPI.Models;
 using System.Reflection;
 
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
-var builder = WebApplication.CreateBuilder(args);
-var config = builder.Configuration; // ���o IConfiguration
+WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
+ConfigurationManager config = builder.Configuration; // 取得 IConfiguration
+
+builder.Services.Configure<ScanConfigPath>(
+    builder.Configuration.GetSection("ScanConfigPath"));
 
 //addCors
 builder.Services.AddCors(options =>
@@ -31,7 +36,7 @@ builder.Services.AddSwaggerGen(c =>
     {
         Version = "v1",
         Title = "SealTypographicWebAPI",
-        Description = "A simple example ASP.NET Core Web API",
+        Description = "取章排版ServerAPI",
         //TermsOfService = new Uri("https://example.com/terms"),
         //Contact = new OpenApiContact
         //{
@@ -49,6 +54,8 @@ builder.Services.AddSwaggerGen(c =>
     string xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
     string xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
     c.IncludeXmlComments(xmlPath);
+    //@解決部份宣告不為nullable 但還是nullable:true 的問題
+    c.SupportNonNullableReferenceTypes();
 });
 
 var app = builder.Build();

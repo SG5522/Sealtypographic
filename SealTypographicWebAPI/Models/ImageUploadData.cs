@@ -1,4 +1,4 @@
-﻿namespace SealTypographic.Models
+﻿namespace SealTypographicWebAPI.Models
 {
     /// <summary>
     /// 上傳用Class

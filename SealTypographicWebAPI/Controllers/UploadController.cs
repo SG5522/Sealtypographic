@@ -2,17 +2,25 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-using SealTypographic.Models;
+using SealTypographicWebAPI.Models;
 using System.Text.RegularExpressions;
 
 namespace SealTypographicWebAPI.Controllers
 {
+    /// <summary>
+    /// 上傳
+    /// </summary>
     [Route("upload")]
-    [Produces("application/json")]
-    //[ApiController]
+    [Produces("application/json")]        
+    //[ApiController]        
     public class UploadController : ControllerBase
     {
-        [HttpPost]
+        /// <summary>
+        /// 上傳圖檔
+        /// </summary>
+        /// <param name="imageUploadDatas">圖檔資料</param>
+        /// <returns></returns>
+        [HttpPost]        
         public string UploadFiles(List<ImageUploadData> imageUploadDatas)
         {
             try

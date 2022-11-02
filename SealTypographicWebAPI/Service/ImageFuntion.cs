@@ -3,6 +3,9 @@ using SealTypographicWebAPI.Models;
 
 namespace SealTypographicWebAPI.Service
 {
+    /// <summary>
+    /// 取得圖像資料
+    /// </summary>
     public class ImageFuntion
     {
         private readonly float HeightScale = 0.25f;
@@ -30,7 +33,11 @@ namespace SealTypographicWebAPI.Service
                 return null;
             }
         }
-
+        /// <summary>
+        /// 取得型態
+        /// </summary>
+        /// <param name="fileName">輸入檔案</param>
+        /// <returns></returns>
         public static string GetType(string fileName)
         {
             string imageType = "";
