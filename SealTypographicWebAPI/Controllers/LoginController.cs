@@ -17,15 +17,16 @@ namespace SealTypographicWebAPI.Controllers
         /// <summary>
         /// 登入並獲得驗證
         /// </summary>
-        /// <param name="loginData">帳號密碼</param>
+        /// <param name="userid">帳號</param>
+        /// <param name="password">密碼</param>
         /// <returns></returns>
-        [HttpPost]
-        public string Login(LoginData loginData)
+        [HttpGet("{userid}/{password}")]
+        public string Login(string userid, string password)
         {
             var json = new
             {
-                loginData.UserID,
-                loginData.Password,
+                userid,
+                password,
             };
             return JsonConvert.SerializeObject(json);
         }

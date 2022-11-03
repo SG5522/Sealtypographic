@@ -1,0 +1,43 @@
+﻿namespace SealTypographicWebAPI.Models
+{
+    /// <summary>
+    /// 客戶資料
+    /// </summary>
+    public class CustomerData
+    {
+        /// <summary>
+        /// 統一編號
+        /// </summary>
+        public string IDnumber { get; set; } = null!;
+
+        /// <summary>
+        /// 勤業使用的六碼帳號
+        /// </summary>
+        public string? Account { get; set; }
+
+        /// <summary>
+        /// 證券代號
+        /// </summary>
+        public string? StockCode { get; set; }
+
+        /// <summary>
+        /// 公司名稱
+        /// </summary>
+        public string? Name { get; set; }
+
+        /// <summary>
+        /// 地址
+        /// </summary>
+        public string? Address { get; set; }
+
+        /// <summary>
+        /// 電話
+        /// </summary>
+        public string? TelPhone { get; set; }
+
+        /// <summary>
+        /// 傳真
+        /// </summary>
+        public string? Fax { get; set; }
+    }
+}

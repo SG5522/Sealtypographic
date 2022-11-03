@@ -15,7 +15,6 @@ namespace SealTypographicWebAPI.Controllers
     public class ImageGetController : ControllerBase
     {
         private readonly ScanConfigPath _scanConfig;
-
         /// <summary>
         /// 注入appsetting的ScanConfigPath資料
         /// </summary>
@@ -24,8 +23,6 @@ namespace SealTypographicWebAPI.Controllers
         {
             _scanConfig = options.CurrentValue;
         }
-
-
         /// <summary>
         /// 取得圖檔並顯示指定的圖
         /// </summary>
