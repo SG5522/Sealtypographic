@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SealTypographicWebAPI.Models;
 using Newtonsoft.Json;
+using SealTypographicWebAPI.Service;
 using SealTypographicWebAPI.Service.Customer;
 
 
@@ -19,6 +20,11 @@ namespace SealTypographicWebAPI.Controllers
         protected Customer customer = new(new DeloitteCustomer());
 
         /// <summary>
+        /// 錯誤訊息
+        /// </summary>
+        protected ErrorMessage errorMessage = new();
+
+        /// <summary>
         /// /// 取得顧客基本資料
         /// </summary>
         /// <param name="id">顧客ID</param>
@@ -33,13 +39,7 @@ namespace SealTypographicWebAPI.Controllers
             }
             catch
             {
-                var json = new
-                {
-                    message = "Error",
-                    status = 0
-                };
-                //return JsonConvert.SerializeObject(json);
-                return NotFound(JsonConvert.SerializeObject(json));
+                return NotFound(JsonConvert.SerializeObject(errorMessage.Get()));
             }
         }
         /// <summary>
@@ -56,13 +56,7 @@ namespace SealTypographicWebAPI.Controllers
             }
             catch
             {
-                var json = new
-                {
-                    message = "Error",
-                    status = 0
-                };
-                //return JsonConvert.SerializeObject(json);
-                return NotFound(JsonConvert.SerializeObject(json));
+                return NotFound(JsonConvert.SerializeObject(errorMessage.Get()));
             }
         }
 
@@ -79,12 +73,7 @@ namespace SealTypographicWebAPI.Controllers
             }
             catch
             {
-                var json = new
-                {
-                    message = "Error",
-                    status = 0
-                };
-                return NotFound(JsonConvert.SerializeObject(json));
+                return NotFound(JsonConvert.SerializeObject(errorMessage.Get()));
             }
         }
     }

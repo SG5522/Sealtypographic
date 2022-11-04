@@ -2,22 +2,24 @@
 using Newtonsoft.Json;
 using SealTypographicWebAPI.Models;
 using SealTypographicWebAPI.Service;
+using SealTypographicWebAPI.Service.Accountant;
 using SealTypographicWebAPI.Service.Customer;
 
+// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+
 namespace SealTypographicWebAPI.Controllers
-{    
+{
     /// <summary>
-    /// 客戶章
+    /// 會計師印鑑組
     /// </summary>
-    [Route("[controller]")]
-    [Produces("application/json")]
+    [Route("api/[controller]")]
     [ApiController]
-    public class CustomerSealController : ControllerBase
+    public class AccountantSignController : ControllerBase
     {
         /// <summary>
-        /// 注入顧客處理函式
+        /// 注入會計處理函式
         /// </summary>
-        protected Customer customer = new(new DeloitteCustomer());
+        protected Accountant accountant = new(new DeloitteAccount());
 
         /// <summary>
         /// 錯誤訊息
@@ -25,33 +27,31 @@ namespace SealTypographicWebAPI.Controllers
         protected ErrorMessage errorMessage = new();
 
         /// <summary>
-        /// 取得客戶印鑑組
+        /// 取得會計師簽名印鑑組
         /// </summary>
-        /// <param name="customerID">顧客ID(顧表表ID 非勤業自行定義的六碼英數字)</param>
-        /// <param name="quarter">季度</param>
-        /// <returns></returns>        
-        [HttpGet("{customerID}/{quarter}")]
-        public IActionResult Get(int customerID, string quarter)
+        /// <param name="accountantID">會計ID</param>        
+        /// <returns></returns>
+        [HttpGet("{id}")]
+        public IActionResult Get(int accountantID)
         {
             try
             {
-                List<CustomerSeal> customerSeals = customer.GetcustomerSeals(customerID, quarter);
-
-                //return Ok(JsonConvert.SerializeObject(customerSeals));
+                List<AccountantSign> customerSeals = accountant.GetAccountantSigns(accountantID);
                 return Ok(customerSeals);
             }
             catch
-            {                                
+            {
                 return NotFound(JsonConvert.SerializeObject(errorMessage.Get()));
             }
         }
+
         /// <summary>
-        /// 建立客戶資料
-        /// </summary>        
-        /// <param name="customerSeals">客戶印鑑組資料(Json)</param>
+        /// 
+        /// </summary>
+        /// <param name="accountantSigns"></param>
         /// <returns></returns>
         [HttpPost]
-        public IActionResult Post(List<CustomerSeal> customerSeals)
+        public IActionResult Post(List<AccountantSign> accountantSigns)
         {
             try
             {
@@ -62,13 +62,14 @@ namespace SealTypographicWebAPI.Controllers
                 return NotFound(JsonConvert.SerializeObject(errorMessage.Get()));
             }
         }
+        
         /// <summary>
-        /// 修改印鑑
-        /// </summary>        
-        /// <param name="customerSealAddIDs">印鑑資料</param>
+        /// 修改簽名印鑑
+        /// </summary>
+        /// <param name="accountantSign">簽名印鑑資料</param>
         /// <returns></returns>
         [HttpPut]
-        public IActionResult Put(List<CustomerSealAddID> customerSealAddIDs)
+        public IActionResult Put(List<AccountantSignAddID> accountantSign)
         {
             try
             {
@@ -79,6 +80,7 @@ namespace SealTypographicWebAPI.Controllers
                 return NotFound(JsonConvert.SerializeObject(errorMessage.Get()));
             }
         }
+
         /// <summary>
         /// 刪除印鑑(變更不啟用狀態)
         /// </summary>

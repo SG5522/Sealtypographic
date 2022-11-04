@@ -21,5 +21,6 @@ namespace SealTypographicWebAPI.Service.Customer
         /// <param name="customerID">顧客ID</param>
         /// <returns></returns>
         CustomerDataAddID GetCustomerData(int customerID);
+
     }
 }

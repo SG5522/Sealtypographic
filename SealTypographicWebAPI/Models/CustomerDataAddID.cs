@@ -1,7 +1,7 @@
 ﻿namespace SealTypographicWebAPI.Models
 {
     /// <summary>
-    /// 取得基本資料
+    /// 顧客基本資料(含ID)
     /// </summary>
     public class CustomerDataAddID : CustomerData
     {
