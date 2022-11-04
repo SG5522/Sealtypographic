@@ -3,7 +3,7 @@
     /// <summary>
     /// 錯誤訊息使用的Class
     /// </summary>
-    public class ErrorMessage
+    public class ErrorData
     {
         /// <summary>
         /// 錯誤狀態
