@@ -8,6 +8,6 @@
         /// <summary>
         /// 會計師ID
         /// </summary>
-        public int ID { get; set; }
+        public string? ID { get; set; } = null!;
     }
 }

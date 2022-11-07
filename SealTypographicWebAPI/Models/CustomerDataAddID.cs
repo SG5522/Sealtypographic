@@ -8,6 +8,6 @@
         /// <summary>
         /// 客戶ID(更新或搜尋使用)
         /// </summary>
-        public int ID { get; set; }
+        public string ID { get; set; } = null!;
     }
 }

@@ -8,7 +8,7 @@
         /// <summary>
         /// 客戶ID
         /// </summary>
-        public int CustomerID { get; set; }
+        public string CustomerID { get; set; } = null!;
 
         /// <summary>
         /// 客戶印鑑群組ID 

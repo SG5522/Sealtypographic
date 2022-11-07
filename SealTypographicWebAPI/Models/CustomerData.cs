@@ -39,5 +39,13 @@
         /// 傳真
         /// </summary>
         public string? Fax { get; set; }
+
+        /// <summary>
+        /// 顧客狀態
+        /// 0.待審查
+        /// 1.已審查
+        /// 2.刪除(系統管理員可以看到資料)
+        /// </summary>
+        public int Status { get; set; }
     }
 }

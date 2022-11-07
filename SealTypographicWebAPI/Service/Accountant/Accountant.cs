@@ -26,7 +26,7 @@ namespace SealTypographicWebAPI.Service.Accountant
         /// </summary>
         /// <param name="accountantID"></param>        
         /// <returns></returns>
-        public List<AccountantSign> GetAccountantSigns(int accountantID)
+        public List<AccountantSign> GetAccountantSigns(string accountantID)
         {
             return _accountant.GetAccountantSigns(accountantID);
         }
@@ -36,7 +36,7 @@ namespace SealTypographicWebAPI.Service.Accountant
         /// </summary>
         /// <param name="accountantID"></param>
         /// <returns></returns>
-        public AccountantDataAddID GetAccountantData(int accountantID)
+        public AccountantDataAddID GetAccountantData(string accountantID)
         {
             return _accountant.GetAccountantData(accountantID);
         }

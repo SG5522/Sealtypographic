@@ -26,18 +26,29 @@ namespace SealTypographicWebAPI.Service.Customer
         /// <param name="customerID">顧客ID</param>
         /// <param name="quarter">季度</param>
         /// <returns></returns>
-        public List<CustomerSeal> GetcustomerSeals(int customerID, string quarter)
+        public List<CustomerSeal> GetcustomerSeals(string customerID, string quarter)
         {
             return _icustomer.GetcustomerSeals(customerID, quarter);
         }
+
         /// <summary>
-        /// 取得顧客基本資料
+        /// 取得單筆顧客基本資料
         /// </summary>
         /// <param name="customerID">顧客ID</param>
         /// <returns></returns>
-        public CustomerDataAddID GetCustomerData(int customerID)
+        public CustomerDataAddID GetCustomerData(string customerID)
         {
             return _icustomer.GetCustomerData(customerID);
+        }
+
+        /// <summary>
+        /// 依搜尋條件獲得顧客資料列表
+        /// </summary>
+        /// <param name="customerIDOrName"></param>        
+        /// <returns></returns>
+        public List<CustomerListData> GetCustomerList(string customerIDOrName)
+        {
+            return _icustomer.GetCustomerList(customerIDOrName);
         }
     }
 }

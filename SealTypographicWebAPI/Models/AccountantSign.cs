@@ -8,7 +8,7 @@
         /// <summary>
         /// 會計師ID
         /// </summary>
-        public int AccountantID { get; set; }
+        public string AccountantID { get; set; } = null!;
 
         /// <summary>
         /// 會計師簽名群組
@@ -27,11 +27,11 @@
         /// <summary>
         /// 啟用日(審查通過才有)
         /// </summary>
-        public DateTime AvailableDate { get; set; }
+        public DateOnly AvailableDate { get; set; }
 
         /// <summary>
         /// 建立日期
         /// </summary>
-        public DateTime CreatedDate { get; set; }
+        public DateOnly CreatedDate { get; set; }
     }
 }

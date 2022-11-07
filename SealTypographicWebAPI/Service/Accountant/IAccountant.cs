@@ -12,13 +12,13 @@ namespace SealTypographicWebAPI.Service.Accountant
         /// </summary>
         /// <param name="accountantID"></param>
         /// <returns></returns>
-        List<AccountantSign> GetAccountantSigns(int accountantID);
+        List<AccountantSign> GetAccountantSigns(string accountantID);
 
         /// <summary>
         /// 取得會計基本資料
         /// </summary>
         /// <param name="accountantID"></param>
         /// <returns></returns>
-        AccountantDataAddID GetAccountantData(int accountantID);
+        AccountantDataAddID GetAccountantData(string accountantID);
     }
 }

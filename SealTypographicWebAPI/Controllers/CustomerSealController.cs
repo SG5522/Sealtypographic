@@ -17,7 +17,7 @@ namespace SealTypographicWebAPI.Controllers
         /// <summary>
         /// 注入顧客處理函式
         /// </summary>
-        protected Customer customer = new(new DeloitteCustomer());
+        protected Customer customer = new(new CustomerDeloitte());
 
         /// <summary>
         /// 錯誤訊息
@@ -31,7 +31,7 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="quarter">季度</param>
         /// <returns></returns>        
         [HttpGet("{customerID}/{quarter}")]
-        public IActionResult Get(int customerID, string quarter)
+        public IActionResult Get(string customerID, string quarter)
         {
             try
             {

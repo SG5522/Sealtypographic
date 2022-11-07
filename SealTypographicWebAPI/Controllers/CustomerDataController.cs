@@ -3,7 +3,7 @@ using SealTypographicWebAPI.Models;
 using Newtonsoft.Json;
 using SealTypographicWebAPI.Service;
 using SealTypographicWebAPI.Service.Customer;
-
+using System.Globalization;
 
 namespace SealTypographicWebAPI.Controllers
 {
@@ -17,7 +17,7 @@ namespace SealTypographicWebAPI.Controllers
         /// <summary>
         /// 注入顧客處理函式
         /// </summary>
-        protected Customer customer = new(new DeloitteCustomer());
+        protected Customer customer = new(new CustomerDeloitte());
 
         /// <summary>
         /// 錯誤訊息
@@ -25,16 +25,36 @@ namespace SealTypographicWebAPI.Controllers
         protected ErrorMessage errorMessage = new();
 
         /// <summary>
+        /// 依搜尋條件獲得顧客資料列表
+        /// </summary>        
+        /// <param name="customerIDOrName"></param>
+        /// <returns></returns>
+        [HttpGet]
+        public IActionResult GetCustomerList(string customerIDOrName)
+        {            
+            try
+            {
+                List<CustomerListData> customerListData = customer.GetCustomerList(customerIDOrName);
+                return Ok(customerListData);
+            }
+            catch
+            {
+                return NotFound(JsonConvert.SerializeObject(errorMessage.Get()));
+            }
+        }
+
+
+        /// <summary>
         /// /// 取得顧客基本資料
         /// </summary>
-        /// <param name="id">顧客ID</param>
+        /// <param name="customerID">顧客ID</param>
         /// <returns></returns>
         [HttpGet("{id}")]
-        public IActionResult Get(int id)
+        public IActionResult Get(string customerID)
         {
             try
             {
-                CustomerData customerData = customer.GetCustomerData(id);
+                CustomerData customerData = customer.GetCustomerData(customerID);
                 return Ok(customerData);
             }
             catch
