@@ -21,6 +21,11 @@
         public int CustomerSealGroupsID { get; set; }
 
         /// <summary>
+        /// 印鑑編號(排序) 1為起始
+        /// </summary>
+        public int No { get; set; }
+
+        /// <summary>
         /// 圖檔路徑
         /// </summary>
         public string? ImagePath { get; set; }

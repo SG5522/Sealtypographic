@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using SealTypographicWebAPI.Service;
+using SealTypographicWebAPI.Services;
 using SealTypographicWebAPI.Models;
-using Microsoft.AspNetCore.Cors;
 using Microsoft.Extensions.Options;
 
 namespace SealTypographicWebAPI.Controllers
@@ -9,7 +8,7 @@ namespace SealTypographicWebAPI.Controllers
     /// <summary>
     /// 取得圖片(Base64)
     /// </summary>
-    [Route("ImageGet")]
+    [Route("api/[controller]")]
     [Produces("application/json")]
     [ApiController]
     public class ImageGetController : ControllerBase
@@ -46,8 +45,8 @@ namespace SealTypographicWebAPI.Controllers
                     imagepath = _scanConfig.ScanImagePath;
                     break;
             }
-            ImageFuntion imageGetData = new();
-            ImageData? imageData = imageGetData.GetData(imagepath, imageName);
+            ImageService imageGetData = new();
+            Image? imageData = imageGetData.GetData(imagepath, imageName);
             if (imageData != null)
             {
                 //轉成image Base64

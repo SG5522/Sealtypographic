@@ -3,7 +3,7 @@
     /// <summary>
     /// 顧客基本資料(含ID)
     /// </summary>
-    public class CustomerDataAddID : CustomerData
+    public class CustomerWithId : Customer
     {
         /// <summary>
         /// 客戶ID(更新或搜尋使用)

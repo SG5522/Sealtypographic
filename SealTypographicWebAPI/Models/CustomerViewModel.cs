@@ -3,7 +3,7 @@
     /// <summary>
     /// 客戶資料
     /// </summary>
-    public class CustomerListData
+    public class CustomerViewModel
     {
         /// <summary>
         /// 顧客ID
@@ -26,7 +26,7 @@
         /// 0.待審查
         /// 1.已審查
         /// 2.刪除(系統管理員可以看到資料)
-        /// </summary>
+        /// </summary>c
         public int Status { get; set; }
     }
 }

@@ -1,12 +1,12 @@
 ﻿namespace SealTypographicWebAPI.Models
 {
     /// <summary>
-    /// 會計師簽名含ID
+    /// 會計資料
     /// </summary>
-    public class AccountantSignAddID :AccountantData
+    public class LetterheadWithId : Letterhead
     {
         /// <summary>
-        /// 簽名ID
+        /// 信頭ID
         /// </summary>
         public int ID { get; set; }
     }

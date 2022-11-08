@@ -1,9 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using SealTypographicWebAPI.Models;
-using SealTypographicWebAPI.Service;
-using SealTypographicWebAPI.Service.Accountant;
-using SealTypographicWebAPI.Service.Customer;
+using SealTypographicWebAPI.Services;
+using SealTypographicWebAPI.Services.Accountant;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -17,14 +16,24 @@ namespace SealTypographicWebAPI.Controllers
     public class AccountantSignController : ControllerBase
     {
         /// <summary>
-        /// 注入會計處理函式
+        /// 宣告會計師的interface
         /// </summary>
-        protected Accountant accountant = new(new AccountantDeloitte());
+        protected readonly IAccountantService accountantService;
+
+        /// <summary>
+        /// 注入會計師interface
+        /// </summary>
+        /// <param name="accountantService"></param>
+        public AccountantSignController(IAccountantService accountantService)
+        {
+            this.accountantService = accountantService;
+        }
+
 
         /// <summary>
         /// 錯誤訊息
         /// </summary>
-        protected ErrorMessage errorMessage = new();
+        protected ResponseService errorMessage = new();
 
         /// <summary>
         /// 取得會計師簽名印鑑組
@@ -36,7 +45,7 @@ namespace SealTypographicWebAPI.Controllers
         {
             try
             {
-                List<AccountantSign> customerSeals = accountant.GetAccountantSigns(accountantID);
+                List<AccountantSign> customerSeals = accountantService.GetAccountantSigns(accountantID);
                 return Ok(customerSeals);
             }
             catch
@@ -69,7 +78,7 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="accountantSign">簽名印鑑資料</param>
         /// <returns></returns>
         [HttpPut]
-        public IActionResult Put(List<AccountantSignAddID> accountantSign)
+        public IActionResult Put(List<AccountantSignWithId> accountantSign)
         {
             try
             {

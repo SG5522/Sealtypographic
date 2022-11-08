@@ -1,11 +1,11 @@
 ﻿using SealTypographicWebAPI.Models;
 
-namespace SealTypographicWebAPI.Service.Accountant
+namespace SealTypographicWebAPI.Services.Accountant
 {
     /// <summary>
     /// 會計師
     /// </summary>
-    public interface IAccountant
+    public interface IAccountantService
     {
         /// <summary>
         /// 取得會計師簽名印鑑組
@@ -19,6 +19,6 @@ namespace SealTypographicWebAPI.Service.Accountant
         /// </summary>
         /// <param name="accountantID"></param>
         /// <returns></returns>
-        AccountantDataAddID GetAccountantData(string accountantID);
+        AccountantDataWithId GetAccountantData(string accountantID);
     }
 }

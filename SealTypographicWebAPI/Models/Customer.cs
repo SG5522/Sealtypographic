@@ -3,7 +3,7 @@
     /// <summary>
     /// 客戶資料
     /// </summary>
-    public class CustomerData
+    public class Customer : Response
     {
         /// <summary>
         /// 統一編號

@@ -1,13 +1,13 @@
 ﻿namespace SealTypographicWebAPI.Models
 {
     /// <summary>
-    /// 印鑑組資料(含ID)
+    /// 會計資料
     /// </summary>
-    public class CustomerSealAddID : CustomerSeal
+    public class Letterhead
     {
         /// <summary>
-        /// 印鑑ID
+        /// 信頭名稱
         /// </summary>
-        public int ID { get; set; }
+        public string? Name { get; set; }
     }
 }

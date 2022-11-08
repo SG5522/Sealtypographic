@@ -1,24 +1,25 @@
 ﻿using DJLib;
 using SealTypographicWebAPI.Models;
 
-namespace SealTypographicWebAPI.Service
+namespace SealTypographicWebAPI.Services
 {
     /// <summary>
     /// 取得圖像資料
     /// </summary>
-    public class ImageFuntion
+    public class ImageService
     {
         private readonly float HeightScale = 0.25f;
         private readonly float WidthScale = 0.25f;
+
         /// <summary>
         /// 取得指定檔名圖檔資料
         /// </summary>
         /// <param name="imagePath">圖檔位置</param>
         /// <param name="imageName">圖片檔名</param>
         /// <returns></returns>
-        public ImageData? GetData(string imagePath, string imageName)
+        public Image? GetData(string imagePath, string imageName)
         {
-            ImageData imageData = new()
+            Image imageData = new()
             {
                 FileName = imageName,
                 ContentType = GetType(imageName),
@@ -33,6 +34,7 @@ namespace SealTypographicWebAPI.Service
                 return null;
             }
         }
+
         /// <summary>
         /// 取得型態
         /// </summary>

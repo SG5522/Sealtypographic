@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using SealTypographicWebAPI.Service;
+using SealTypographicWebAPI.Services;
 using SealTypographicWebAPI.Models;
 using Newtonsoft.Json;
 
@@ -9,7 +9,7 @@ namespace SealTypographicWebAPI.Controllers
     /// <summary>
     /// 登入驗證
     /// </summary>
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     [Produces("application/json")]
     [ApiController]
     public class LoginController : ControllerBase

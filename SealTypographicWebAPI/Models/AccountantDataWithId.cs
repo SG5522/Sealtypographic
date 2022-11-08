@@ -3,7 +3,7 @@
     /// <summary>
     /// 會計師資料含ID
     /// </summary>
-    public class AccountantDataAddID : AccountantData
+    public class AccountantDataWithId : AccountantData
     {
         /// <summary>
         /// 會計師ID

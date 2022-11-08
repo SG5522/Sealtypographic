@@ -1,22 +1,22 @@
 ﻿using SealTypographicWebAPI.Models;
 
-namespace SealTypographicWebAPI.Service
+namespace SealTypographicWebAPI.Services
 {
     /// <summary>
     /// 錯誤訊息
     /// </summary>
-    public class ErrorMessage
+    public class ResponseService
     {
         /// <summary>
         /// 取得錯誤訊息
         /// </summary>
         /// <returns></returns>
-        public ErrorData Get()
+        public Response Get()
         {
-            ErrorData data = new()
+            Response data = new()
             {
-                Status = 0,
-                Message = "Error"
+                ResponseStatus = 404,
+                ResponseMessage = "error"
             };
             return data;
         }

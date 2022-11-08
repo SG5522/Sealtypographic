@@ -3,15 +3,15 @@
     /// <summary>
     /// 錯誤訊息使用的Class
     /// </summary>
-    public class ErrorData
+    public class Response
     {
         /// <summary>
-        /// 錯誤狀態
+        /// 狀態號碼
         /// </summary>
-        public int Status { get; set; }
+        public int ResponseStatus { get; set; }
         /// <summary>
         /// 錯誤訊息
         /// </summary>
-        public string? Message { get; set; }
+        public string? ResponseMessage { get; set; }
     }
 }

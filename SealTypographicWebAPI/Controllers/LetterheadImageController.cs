@@ -1,9 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using SealTypographicWebAPI.Models;
-using SealTypographicWebAPI.Service;
-using SealTypographicWebAPI.Service.Accountant;
-using SealTypographicWebAPI.Service.Letterhead;
+using SealTypographicWebAPI.Services;
+using SealTypographicWebAPI.Services.Letterhead;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -12,19 +11,28 @@ namespace SealTypographicWebAPI.Controllers
     /// <summary>
     /// 信頭資料處理
     /// </summary>
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     [ApiController]
     public class LetterheadImageController : ControllerBase
     {
         /// <summary>
-        /// 注入會計處理函式
+        /// 宣告信頭的interface
         /// </summary>
-        protected Letterhead letterhead = new(new LetterheadDeloitte());
+        protected readonly ILetterheadService letterheadService;
+
+        /// <summary>
+        /// 注入信頭interface
+        /// </summary>
+        /// <param name="letterheadService"></param>
+        public LetterheadImageController(ILetterheadService letterheadService)
+        {
+            this.letterheadService = letterheadService;
+        }
 
         /// <summary>
         /// 錯誤訊息
         /// </summary>
-        protected ErrorMessage errorMessage = new();
+        protected ResponseService errorMessage = new();
 
         /// <summary>
         /// 取得信頭
@@ -36,7 +44,7 @@ namespace SealTypographicWebAPI.Controllers
         {
             try
             {
-                List<LetterheadImageAddID> customerSeals = letterhead.GetLetterheadImages(litterheadID);
+                List<LetterheadImageWithId> customerSeals = letterheadService.GetLetterheadImages(litterheadID);
                 return Ok(customerSeals);
             }
             catch
@@ -69,7 +77,7 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="letterheadImages"></param>
         /// <returns></returns>
         [HttpPut("{id}")]
-        public IActionResult Put(List<LetterheadImageAddID> letterheadImages)
+        public IActionResult Put(List<LetterheadImageWithId> letterheadImages)
         {
             try
             {

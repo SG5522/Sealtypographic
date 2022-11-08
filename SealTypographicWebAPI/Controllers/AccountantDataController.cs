@@ -7,37 +7,56 @@ namespace SealTypographicWebAPI.Controllers
     /// <summary>
     /// 會計師基本資料
     /// </summary>
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     [ApiController]
     public class AccountantDataController : ControllerBase
     {
-        // GET: api/<AccountantDataController>
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="customerID"></param>
+        /// <param name="name"></param>
+        /// <returns></returns>
         [HttpGet]
         public IEnumerable<string> Get(string customerID,string name)
         {
             return new string[] { "value1", "value2" };
         }
 
-        // GET api/<AccountantDataController>/5
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpGet("{id}")]
         public string Get(int id)
         {
             return "value";
         }
 
-        // POST api/<AccountantDataController>
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="value"></param>
         [HttpPost]
         public void Post([FromBody] string value)
         {
         }
 
-        // PUT api/<AccountantDataController>/5
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="value"></param>
         [HttpPut("{id}")]
         public void Put(int id, [FromBody] string value)
         {
         }
 
-        // DELETE api/<AccountantDataController>/5
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="id"></param>
         [HttpDelete("{id}")]
         public void Delete(int id)
         {

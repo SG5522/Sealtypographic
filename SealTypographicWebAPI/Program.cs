@@ -1,7 +1,11 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
 using SealTypographicWebAPI.Models;
+using SealTypographicWebAPI.Services.Customer;
+using SealTypographicWebAPI.Services.Accountant;
+using SealTypographicWebAPI.Services.Letterhead;
 using System.Reflection;
+
 
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
@@ -55,8 +59,16 @@ builder.Services.AddSwaggerGen(c =>
     string xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
     c.IncludeXmlComments(xmlPath);
     //@解決部份宣告不為nullable 但還是nullable:true 的問題
-    c.SupportNonNullableReferenceTypes();
+    c.SupportNonNullableReferenceTypes();   
 });
+
+#region -- Service --
+
+builder.Services.AddScoped<ICustomerService, CustomerDeloitteService>();
+builder.Services.AddScoped<IAccountantService, AccountantDeloitteService>();
+builder.Services.AddScoped<ILetterheadService, LetterheadDeloitteService>();
+
+#endregion
 
 var app = builder.Build();
 

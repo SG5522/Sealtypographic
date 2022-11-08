@@ -3,7 +3,7 @@
     /// <summary>
     /// 
     /// </summary>
-    public class ImageData
+    public class Image
     {
         /// <summary>
         /// 檔名

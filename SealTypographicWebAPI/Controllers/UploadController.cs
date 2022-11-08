@@ -10,7 +10,7 @@ namespace SealTypographicWebAPI.Controllers
     /// <summary>
     /// 上傳
     /// </summary>
-    [Route("upload")]
+    [Route("api/[controller]")]
     [Produces("application/json")]        
     //[ApiController]        
     public class UploadController : ControllerBase
@@ -21,11 +21,11 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="imageUploadDatas">圖檔資料</param>
         /// <returns></returns>
         [HttpPost]        
-        public string UploadFiles(List<ImageUploadData> imageUploadDatas)
+        public string UploadFiles(List<ImageUpload> imageUploadDatas)
         {
             try
             {
-                foreach (ImageUploadData imageUploadData in imageUploadDatas)
+                foreach (ImageUpload imageUploadData in imageUploadDatas)
                 {
                     string fileName = Path.GetFileName(imageUploadData.FileName);
                     string uploadpath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\UploadFiles", fileName);

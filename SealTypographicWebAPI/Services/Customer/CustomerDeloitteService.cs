@@ -1,19 +1,19 @@
 ﻿using SealTypographicWebAPI.Models;
 
-namespace SealTypographicWebAPI.Service.Customer
+namespace SealTypographicWebAPI.Services.Customer
 {
     /// <summary>
     /// 勤業用的顧客資料
     /// </summary>
-    public class CustomerDeloitte : ICustomer
+    public class CustomerDeloitteService : ICustomerService
     {
         /// <summary>
         /// 取得顧客印鑑組
         /// </summary>
-        /// <param name="customerID"></param>
-        /// <param name="quarter"></param>
+        /// <param name="customerID">顧客ID</param>
+        /// <param name="quarter">季度</param>
         /// <returns></returns>
-        public List<CustomerSeal> GetcustomerSeals(string customerID , string quarter)
+        public CustomerSeals GetcustomerSeals(string customerID , string quarter)
         {
             List<CustomerSeal> customerSeals = new();
             for (int i = 0; i < 4; i++)
@@ -23,14 +23,21 @@ namespace SealTypographicWebAPI.Service.Customer
                 {
                     CustomerID = customerID,
                     CustomerSealGroupsID = i + 1,
+                    No = 1,
                     ImagePath = "C://123.jpg",
                     AvailableDate = DateTime.Now,
                     CreatedDate = DateTime.Now,
-                    Quarter = "110Q" + (i + 1).ToString(),
+                    Quarter = quarter,
                 };
                 customerSeals.Add(customerSeal);
             }
-            return customerSeals;
+            return new CustomerSeals()
+            {
+                ResponseStatus = 200,
+                ResponseMessage = "Success",
+
+                Seals = customerSeals
+            };
         }
 
         /// <summary>
@@ -38,11 +45,15 @@ namespace SealTypographicWebAPI.Service.Customer
         /// </summary>
         /// <param name="customerID">顧客ID</param>
         /// <returns></returns>
-        public CustomerDataAddID GetCustomerData(string customerID)
+        public CustomerWithId GetCustomer(string customerID)
         {
             //測試資料
-            CustomerDataAddID customerDataAddID = new()
+            CustomerWithId customerDataAddID = new()
             {
+                //回傳結果訊息用
+                ResponseStatus = 200,
+                ResponseMessage = "Success",
+
                 ID = customerID,
                 IDnumber = "123456789",
                 Name = "aaa公司",
@@ -61,44 +72,52 @@ namespace SealTypographicWebAPI.Service.Customer
         /// <param name="customerIDOrName">顧客名字或ID</param>
         /// <returns></returns>
 
-        public List<CustomerListData> GetCustomerList(string customerIDOrName)
+        public CustomerViewModels GetCustomerViewModels(string customerIDOrName)
         {
             //測試資料
-            List<CustomerListData> customerListDatas = new();
-            CustomerListData customerListData1 = new()
+            List<CustomerViewModel> customerViewModels = new();
+            CustomerViewModel customerListData1 = new()
             {
                 CustomerID = "aaa000",
                 IDnumber = "12345678",
                 Name = "aaa公司",
             };
-            CustomerListData customerListData2 = new()
+            CustomerViewModel customerListData2 = new()
             {
                 CustomerID = "aaa001",
                 IDnumber = "23456789",
                 Name = "bbb公司",
             };
-            CustomerListData customerListData3 = new()
+            CustomerViewModel customerListData3 = new()
             {
                 CustomerID = "aaa002",
                 IDnumber = "23456789",
                 Name = "ccc公司",
             };
-            CustomerListData customerListData4 = new()
+            CustomerViewModel customerListData4 = new()
             {
                 CustomerID = "aaa003",
                 IDnumber = "12345678",
                 Name = "ddd公司",
             };
-            customerListDatas.Add(customerListData1);
-            customerListDatas.Add(customerListData2);
-            customerListDatas.Add(customerListData3);
-            customerListDatas.Add(customerListData4);
+            customerViewModels.Add(customerListData1);
+            customerViewModels.Add(customerListData2);
+            customerViewModels.Add(customerListData3);
+            customerViewModels.Add(customerListData4);
 
-            customerListDatas = customerListDatas.Where(customerListData => 
+            customerViewModels = customerViewModels.Where(customerListData => 
                                                         customerListData.CustomerID.Contains(customerIDOrName) ||
                                                         customerListData.Name.Contains(customerIDOrName))                                                
                                                        .ToList();
-            return customerListDatas;
+            
+            return new CustomerViewModels()
+            {
+                //回傳結果訊息用
+                ResponseStatus = 200,
+                ResponseMessage = "Success",
+
+                ViewModels = customerViewModels,
+            };
         }
     }
 }

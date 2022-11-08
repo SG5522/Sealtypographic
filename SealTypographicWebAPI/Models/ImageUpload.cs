@@ -3,7 +3,7 @@
     /// <summary>
     /// 上傳用Class
     /// </summary>
-    public class ImageUploadData
+    public class ImageUpload
     {
         /// <summary>
         /// 檔名
