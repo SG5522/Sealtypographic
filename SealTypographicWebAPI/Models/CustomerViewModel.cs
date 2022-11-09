@@ -11,9 +11,9 @@
         public string CustomerID { get; set; } = null!;
 
         /// <summary>
-        /// 統一編號
+        /// 統一編號 (Business administration number)
         /// </summary>
-        public string IDnumber { get; set; } = null!;
+        public string BAN { get; set; } = null!;
 
 
         /// <summary>

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using SealTypographicWebAPI.Consts;
 using SealTypographicWebAPI.Models;
 using SealTypographicWebAPI.Services;
 using SealTypographicWebAPI.Services.Accountant;
@@ -33,7 +34,7 @@ namespace SealTypographicWebAPI.Controllers
         /// <summary>
         /// 錯誤訊息
         /// </summary>
-        protected ResponseService errorMessage = new();
+        protected ResponseService responseService = new();
 
         /// <summary>
         /// 取得會計師簽名印鑑組
@@ -50,7 +51,7 @@ namespace SealTypographicWebAPI.Controllers
             }
             catch
             {
-                return NotFound(JsonConvert.SerializeObject(errorMessage.Get()));
+                return NotFound(responseService.Get(ResponseCode.InternalServerError));
             }
         }
 
@@ -68,7 +69,7 @@ namespace SealTypographicWebAPI.Controllers
             }
             catch
             {
-                return NotFound(JsonConvert.SerializeObject(errorMessage.Get()));
+                return NotFound(responseService.Get(ResponseCode.InternalServerError));
             }
         }
         
@@ -86,7 +87,7 @@ namespace SealTypographicWebAPI.Controllers
             }
             catch
             {
-                return NotFound(JsonConvert.SerializeObject(errorMessage.Get()));
+                return NotFound(responseService.Get(ResponseCode.InternalServerError));
             }
         }
 

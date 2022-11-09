@@ -1,4 +1,6 @@
-﻿using SealTypographicWebAPI.Models;
+﻿using Microsoft.EntityFrameworkCore;
+using SealTypographicWebAPI.Models;
+using SealTypographicWebAPI.DbModels;
 
 namespace SealTypographicWebAPI.Services.Customer
 {
@@ -7,13 +9,24 @@ namespace SealTypographicWebAPI.Services.Customer
     /// </summary>
     public class CustomerDeloitteService : ICustomerService
     {
+        private readonly SealTypographicDbContext dbContext;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="dbContext"></param>
+        public CustomerDeloitteService(SealTypographicDbContext dbContext)
+        {
+            this.dbContext = dbContext;
+        }
+
         /// <summary>
         /// 取得顧客印鑑組
         /// </summary>
         /// <param name="customerID">顧客ID</param>
         /// <param name="quarter">季度</param>
         /// <returns></returns>
-        public CustomerSeals GetcustomerSeals(string customerID , string quarter)
+        public CustomerSeals GetCustomerSeals(string customerID , string quarter)
         {
             List<CustomerSeal> customerSeals = new();
             for (int i = 0; i < 4; i++)
@@ -33,8 +46,8 @@ namespace SealTypographicWebAPI.Services.Customer
             }
             return new CustomerSeals()
             {
-                ResponseStatus = 200,
-                ResponseMessage = "Success",
+                Code = 200,
+                Message = "Success",
 
                 Seals = customerSeals
             };
@@ -45,22 +58,21 @@ namespace SealTypographicWebAPI.Services.Customer
         /// </summary>
         /// <param name="customerID">顧客ID</param>
         /// <returns></returns>
-        public CustomerWithId GetCustomer(string customerID)
+        public Models.Customer GetCustomer(string customerID)
         {
             //測試資料
-            CustomerWithId customerDataAddID = new()
+            Models.Customer customerDataAddID = new()
             {
                 //回傳結果訊息用
-                ResponseStatus = 200,
-                ResponseMessage = "Success",
+                Code = 200,
+                Message = "Success",
 
                 ID = customerID,
-                IDnumber = "123456789",
-                Name = "aaa公司",
-                Account = "aaa001",
+                BAN = "123456789",
+                Name = "aaa公司",                
                 StockCode = "9999",
                 Address = "aaabbbcccddd",
-                TelPhone = "28825252",
+                Telephone = "28825252",
                 Fax = "28825252"
             };
             return customerDataAddID;
@@ -72,32 +84,32 @@ namespace SealTypographicWebAPI.Services.Customer
         /// <param name="customerIDOrName">顧客名字或ID</param>
         /// <returns></returns>
 
-        public CustomerViewModels GetCustomerViewModels(string customerIDOrName)
+        public CustomerResponseViewModel GetCustomerViewModels(string customerIDOrName)
         {
             //測試資料
             List<CustomerViewModel> customerViewModels = new();
             CustomerViewModel customerListData1 = new()
             {
                 CustomerID = "aaa000",
-                IDnumber = "12345678",
+                BAN = "12345678",
                 Name = "aaa公司",
             };
             CustomerViewModel customerListData2 = new()
             {
                 CustomerID = "aaa001",
-                IDnumber = "23456789",
+                BAN = "23456789",
                 Name = "bbb公司",
             };
             CustomerViewModel customerListData3 = new()
             {
                 CustomerID = "aaa002",
-                IDnumber = "23456789",
+                BAN = "23456789",
                 Name = "ccc公司",
             };
             CustomerViewModel customerListData4 = new()
             {
                 CustomerID = "aaa003",
-                IDnumber = "12345678",
+                BAN = "12345678",
                 Name = "ddd公司",
             };
             customerViewModels.Add(customerListData1);
@@ -110,14 +122,35 @@ namespace SealTypographicWebAPI.Services.Customer
                                                         customerListData.Name.Contains(customerIDOrName))                                                
                                                        .ToList();
             
-            return new CustomerViewModels()
+            return new CustomerResponseViewModel()
             {
                 //回傳結果訊息用
-                ResponseStatus = 200,
-                ResponseMessage = "Success",
+                Code = 200,
+                Message = "Success",
 
-                ViewModels = customerViewModels,
+                Customers = customerViewModels,
             };
+        }
+
+        /// <summary>
+        /// 新增顧客基本資料
+        /// </summary>
+        /// <param name="customer"></param>
+        public void CreateCustomer(Models.Customer customer)
+        {
+            DbModels.Customer dbcustomer = new()
+            {
+                ID = customer.ID,
+                Name = customer.Name,
+                BAN = customer.BAN,                
+                Address = customer.Address,
+                StockCode = customer.StockCode,
+                Telephone = customer.Telephone,
+                Fax = customer.Fax,
+                Status = customer.Status                
+            };
+            dbContext.Customers.Add(dbcustomer);
+            dbContext.SaveChanges();
         }
     }
 }

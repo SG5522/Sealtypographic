@@ -4,8 +4,10 @@ using SealTypographicWebAPI.Models;
 using SealTypographicWebAPI.Services.Customer;
 using SealTypographicWebAPI.Services.Accountant;
 using SealTypographicWebAPI.Services.Letterhead;
+using SealTypographicWebAPI.DbModels;
 using System.Reflection;
-
+using Microsoft.Extensions.Options;
+using Microsoft.EntityFrameworkCore;
 
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
@@ -63,12 +65,18 @@ builder.Services.AddSwaggerGen(c =>
 });
 
 #region -- Service --
-
 builder.Services.AddScoped<ICustomerService, CustomerDeloitteService>();
 builder.Services.AddScoped<IAccountantService, AccountantDeloitteService>();
 builder.Services.AddScoped<ILetterheadService, LetterheadDeloitteService>();
-
 #endregion
+
+#region -- ConectionString --
+builder.Services.AddDbContext<SealTypographicDbContext>(optionsBuilder =>
+{
+    optionsBuilder.UseSqlite(config.GetConnectionString("Sqlite"));
+});
+#endregion
+
 
 var app = builder.Build();
 

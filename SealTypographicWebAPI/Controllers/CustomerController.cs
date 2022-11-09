@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SealTypographicWebAPI.Models;
+using SealTypographicWebAPI.Consts;
 using Newtonsoft.Json;
 using SealTypographicWebAPI.Services;
 using SealTypographicWebAPI.Services.Customer;
@@ -39,7 +40,7 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="customerIDOrName"></param>
         /// <returns></returns>
         [HttpGet]
-        public CustomerViewModels GetCustomerViewModels(string customerIDOrName)
+        public CustomerResponseViewModel GetCustomerViewModels(string customerIDOrName)
         {            
             try
             {                
@@ -47,11 +48,11 @@ namespace SealTypographicWebAPI.Controllers
             }
             catch
             {
-                Response response = responseService.Get();
-                return new CustomerViewModels()
+                Response response = responseService.Get(ResponseCode.InternalServerError);
+                return new CustomerResponseViewModel()
                 {
-                    ResponseStatus = response.ResponseStatus,
-                    ResponseMessage = response.ResponseMessage,
+                    Code = response.Code,
+                    Message = response.Message,
                 };
             }
         }
@@ -71,11 +72,11 @@ namespace SealTypographicWebAPI.Controllers
             }
             catch
             {
-                Response response = responseService.Get();
+                Response response = responseService.Get(ResponseCode.InternalServerError);
                 return new Customer()
                 {
-                    ResponseStatus = response.ResponseStatus,
-                    ResponseMessage = response.ResponseMessage,
+                    Code = response.Code,
+                    Message = response.Message,
                 };
             }
         }
@@ -89,11 +90,12 @@ namespace SealTypographicWebAPI.Controllers
         {
             try
             {                
-                return Ok(customerData);
+                customerService.CreateCustomer(customerData);                
+                return Ok();
             }
             catch
             {
-                return NotFound(responseService.Get());
+                return NotFound(responseService.Get(ResponseCode.InternalServerError));
             }
         }
 
@@ -110,7 +112,7 @@ namespace SealTypographicWebAPI.Controllers
             }
             catch
             {
-                return NotFound(responseService.Get());
+                return NotFound(responseService.Get(ResponseCode.InternalServerError));
             }
         }
     }

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using SealTypographicWebAPI.Consts;
 using SealTypographicWebAPI.Models;
 using SealTypographicWebAPI.Services;
 using SealTypographicWebAPI.Services.Letterhead;
@@ -32,7 +33,7 @@ namespace SealTypographicWebAPI.Controllers
         /// <summary>
         /// 錯誤訊息
         /// </summary>
-        protected ResponseService errorMessage = new();
+        protected ResponseService responseService = new();
 
         /// <summary>
         /// 取得信頭
@@ -49,7 +50,7 @@ namespace SealTypographicWebAPI.Controllers
             }
             catch
             {
-                return NotFound(JsonConvert.SerializeObject(errorMessage.Get()));
+                return NotFound(responseService.Get(ResponseCode.InternalServerError));
             }
         }
 
@@ -67,7 +68,7 @@ namespace SealTypographicWebAPI.Controllers
             }
             catch
             {
-                return NotFound(JsonConvert.SerializeObject(errorMessage.Get()));
+                return NotFound(responseService.Get(ResponseCode.InternalServerError));
             }
         }
 
@@ -85,7 +86,7 @@ namespace SealTypographicWebAPI.Controllers
             }
             catch
             {
-                return NotFound(JsonConvert.SerializeObject(errorMessage.Get()));
+                return NotFound(responseService.Get(ResponseCode.InternalServerError));
             }
         }
 

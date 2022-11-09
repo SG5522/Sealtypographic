@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using SealTypographicWebAPI.Models;
+using SealTypographicWebAPI.Consts;
 using SealTypographicWebAPI.Services;
 using SealTypographicWebAPI.Services.Customer;
 
@@ -44,15 +45,15 @@ namespace SealTypographicWebAPI.Controllers
         {
             try
             {
-                return customerService.GetcustomerSeals(customerID, quarter);
+                return customerService.GetCustomerSeals(customerID, quarter);
             }
             catch
             {
-                Response response = responseService.Get();
+                Response response = responseService.Get(ResponseCode.InternalServerError);
                 return new CustomerSeals()
                 {
-                    ResponseStatus = response.ResponseStatus,
-                    ResponseMessage = response.ResponseMessage,
+                    Code = response.Code,
+                    Message = response.Message,
                 };
             }
         }
@@ -71,7 +72,7 @@ namespace SealTypographicWebAPI.Controllers
             }
             catch
             {
-                return NotFound(responseService.Get());
+                return NotFound(responseService.Get(ResponseCode.InternalServerError));
             }
         }
         /// <summary>
@@ -88,7 +89,7 @@ namespace SealTypographicWebAPI.Controllers
             }
             catch
             {
-                return NotFound(responseService.Get());
+                return NotFound(responseService.Get(ResponseCode.InternalServerError));
             }
         }
         /// <summary>

@@ -1,15 +1,17 @@
-﻿namespace SealTypographicWebAPI.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace SealTypographicWebAPI.DbModels
 {
     /// <summary>
-    /// 客戶資料
-    /// </summary>
-    public class Customer : Response
+    /// 客戶資料表
+    /// </summary>    
+    public class Customer
     {
         /// <summary>
         /// 客戶ID(更新或搜尋使用)
         /// </summary>
+        [Key]        
         public string ID { get; set; } = null!;
-
         /// <summary>
         /// 統一編號 (business administration number)
         /// </summary>

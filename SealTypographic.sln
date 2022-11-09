@@ -25,6 +25,11 @@ Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "DJScannerForWeb", "DJScanne
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SealTypographicWebAPI", "SealTypographicWebAPI\SealTypographicWebAPI.csproj", "{BEE86DA4-662A-492C-B27B-AC613E24B12E}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{3B9D3DDF-2D39-424E-AADE-32142217E554}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

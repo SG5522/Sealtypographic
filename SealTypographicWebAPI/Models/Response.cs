@@ -8,10 +8,10 @@
         /// <summary>
         /// 狀態號碼
         /// </summary>
-        public int ResponseStatus { get; set; }
+        public int Code { get; set; }
         /// <summary>
         /// 錯誤訊息
         /// </summary>
-        public string? ResponseMessage { get; set; }
+        public string? Message { get; set; }
     }
 }

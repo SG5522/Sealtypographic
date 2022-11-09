@@ -1,0 +1,23 @@
+﻿using Microsoft.EntityFrameworkCore;
+
+namespace SealTypographicWebAPI.DbModels
+{
+    /// <summary>
+    /// EF Core SealTypographic DbContext
+    /// </summary>
+    public class SealTypographicDbContext : DbContext
+    {
+        /// <summary>
+        /// 顧客資料表
+        /// </summary>
+        public DbSet<Customer> Customers { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="options"></param>
+        public SealTypographicDbContext(DbContextOptions<SealTypographicDbContext> options) : base(options)
+        {
+        }
+    }
+}
