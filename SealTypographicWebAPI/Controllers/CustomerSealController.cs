@@ -18,15 +18,15 @@ namespace SealTypographicWebAPI.Controllers
         /// <summary>
         /// 宣告顧客資料處理的interface
         /// </summary>
-        protected readonly ICustomerService customerService;
+        protected readonly ICustomerSealService customerSealService;
 
         /// <summary>
         /// 注入顧客interface
         /// </summary>
-        /// <param name="customerService"></param>
-        public CustomerSealController(ICustomerService customerService)
+        /// <param name="customerSealService"></param>
+        public CustomerSealController(ICustomerSealService customerSealService)
         {
-            this.customerService = customerService;
+            this.customerSealService = customerSealService;
         }
 
         /// <summary>
@@ -45,7 +45,7 @@ namespace SealTypographicWebAPI.Controllers
         {
             try
             {
-                return customerService.GetCustomerSeals(customerID, quarter);
+                return customerSealService.GetCustomerSeals(customerID, quarter);
             }
             catch
             {

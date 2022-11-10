@@ -8,10 +8,9 @@ namespace SealTypographicWebAPI.DbModels
     public class Customer
     {
         /// <summary>
-        /// 客戶ID(更新或搜尋使用)
+        /// 客戶ID
         /// </summary>
-        [Key]        
-        public string ID { get; set; } = null!;
+        public string Id { get; set; } = null!;
         /// <summary>
         /// 統一編號 (business administration number)
         /// </summary>

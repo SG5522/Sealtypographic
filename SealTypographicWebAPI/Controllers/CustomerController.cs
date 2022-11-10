@@ -9,9 +9,10 @@ using System.Globalization;
 namespace SealTypographicWebAPI.Controllers
 {
     /// <summary>
-    /// 顧客基本資料
+    /// 管理客戶基本資料
     /// </summary>
     [Route("api/[controller]")]
+    [Produces("application/json")]
     [ApiController]
     public class CustomerController : ControllerBase
     {        
@@ -35,16 +36,17 @@ namespace SealTypographicWebAPI.Controllers
         protected ResponseService responseService = new();
 
         /// <summary>
-        /// 依搜尋條件獲得顧客資料列表
+        /// 依搜尋條件獲得客戶資料列表
         /// </summary>        
-        /// <param name="customerIDOrName"></param>
+        /// <param name="customerIDOrName">客戶ID或是名稱</param>
+        /// <param name="thispage">現在頁次</param>
         /// <returns></returns>
         [HttpGet]
-        public CustomerResponseViewModel GetCustomerViewModels(string customerIDOrName)
+        public CustomerResponseViewModel GetCustomerViewModels(string customerIDOrName,int thispage)
         {            
             try
             {                
-                return customerService.GetCustomerViewModels(customerIDOrName);
+                return customerService.GetCustomerViewModels(customerIDOrName,thispage);
             }
             catch
             {
@@ -59,21 +61,21 @@ namespace SealTypographicWebAPI.Controllers
 
 
         /// <summary>
-        /// 取得顧客基本資料
+        /// 取得客戶基本資料
         /// </summary>
-        /// <param name="customerID">顧客ID</param>
+        /// <param name="id">顧客ID</param>
         /// <returns></returns>
         [HttpGet("{id}")]
-        public Customer Get(string customerID)
+        public CustomerResponse Get(string id)
         {
             try
             {                                
-                return customerService.GetCustomer(customerID);
+                return customerService.GetCustomer(id);
             }
             catch
             {
                 Response response = responseService.Get(ResponseCode.InternalServerError);
-                return new Customer()
+                return new CustomerResponse()
                 {
                     Code = response.Code,
                     Message = response.Message,
@@ -86,7 +88,7 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="customerData">基本資料</param>
         /// <returns></returns>
         [HttpPost]
-        public IActionResult Post(Customer customerData)
+        public IActionResult Post(CustomerBaseData customerData)
         {
             try
             {                

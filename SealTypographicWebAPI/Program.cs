@@ -30,6 +30,20 @@ builder.Services.AddCors(options =>
                       });
 });
 
+#region -- Service --
+builder.Services.AddScoped<ICustomerService, CustomerDeloitteService>();
+builder.Services.AddScoped<ICustomerSealService, CustomerSealsDeloitteService>();
+builder.Services.AddScoped<IAccountantService, AccountantDeloitteService>();
+builder.Services.AddScoped<ILetterheadService, LetterheadDeloitteService>();
+#endregion
+
+#region -- ConectionString --
+builder.Services.AddDbContext<SealTypographicDbContext>(optionsBuilder =>
+{
+    optionsBuilder.UseSqlite(config.GetConnectionString("Sqlite"));
+});
+#endregion
+
 // Add services to the container.
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -59,24 +73,11 @@ builder.Services.AddSwaggerGen(c =>
     //Set the comments path for the Swagger JSON and UI.
     string xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
     string xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
-    c.IncludeXmlComments(xmlPath);
+
+    c.IncludeXmlComments(xmlPath,true);
     //@解決部份宣告不為nullable 但還是nullable:true 的問題
     c.SupportNonNullableReferenceTypes();   
 });
-
-#region -- Service --
-builder.Services.AddScoped<ICustomerService, CustomerDeloitteService>();
-builder.Services.AddScoped<IAccountantService, AccountantDeloitteService>();
-builder.Services.AddScoped<ILetterheadService, LetterheadDeloitteService>();
-#endregion
-
-#region -- ConectionString --
-builder.Services.AddDbContext<SealTypographicDbContext>(optionsBuilder =>
-{
-    optionsBuilder.UseSqlite(config.GetConnectionString("Sqlite"));
-});
-#endregion
-
 
 var app = builder.Build();
 

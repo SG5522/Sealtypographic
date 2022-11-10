@@ -1,10 +1,15 @@
-﻿namespace SealTypographicWebAPI.Models
+﻿namespace SealTypographicWebAPI.DbModels
 {
     /// <summary>
-    /// 客戶印鑑組
+    /// 客戶印鑑組歷程
     /// </summary>
-    public class CustomerSeal
+    public class CustomerSealJournal
     {
+        /// <summary>
+        /// 客戶印鑑組ID
+        /// </summary>
+        public int Id { get; set; }
+
         /// <summary>
         /// 客戶ID
         /// </summary>
@@ -21,9 +26,9 @@
         public int GroupsId { get; set; }
 
         /// <summary>
-        /// 印鑑群組名稱
+        /// 客戶群組名稱
         /// </summary>
-        public string GroupsName { get; set; }
+        public int GroupsName { get; set; }
 
         /// <summary>
         /// 印鑑編號(排序) 1為起始
@@ -31,15 +36,15 @@
         public int No { get; set; }
 
         /// <summary>
-        /// 圖檔字串(Base64)
+        /// 圖檔路徑
         /// </summary>
-        public string ImageBase64 { get; set; }
-        
+        public string ImagePath { get; set; }
+
         /// <summary>
         /// 啟用日(審查通過才有)
         /// </summary>
         public DateTime AvailableDate { get; set; }
-        
+
         /// <summary>
         /// 建立日期
         /// </summary>

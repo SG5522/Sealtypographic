@@ -3,12 +3,12 @@
     /// <summary>
     /// 客戶資料
     /// </summary>
-    public class Customer : Response
+    public class CustomerBaseData
     {
         /// <summary>
         /// 客戶ID(更新或搜尋使用)
         /// </summary>
-        public string ID { get; set; } = null!;
+        public string Id { get; set; } = null!;
 
         /// <summary>
         /// 統一編號 (business administration number)
