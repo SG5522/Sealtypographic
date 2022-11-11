@@ -6,6 +6,10 @@
     public enum ResponseCode
     {
         /// <summary>
+        /// 資料庫欄位限制唯一約束錯誤回傳
+        /// </summary>
+        UniqueConstraintFailed = 19,
+        /// <summary>
         /// 回傳成功
         /// </summary>
         Success = 200,

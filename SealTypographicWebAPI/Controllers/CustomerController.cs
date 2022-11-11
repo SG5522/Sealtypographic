@@ -22,31 +22,34 @@ namespace SealTypographicWebAPI.Controllers
         protected readonly ICustomerService customerService;
 
         /// <summary>
-        /// 注入顧客interface
+        /// 回應結果
         /// </summary>
-        /// <param name="customerService"></param>
-        public CustomerController(ICustomerService customerService)
-        {
-            this.customerService = customerService;            
-        }
+        protected readonly ResponseService responseService;
 
         /// <summary>
-        /// 錯誤訊息
+        /// 注入Service
         /// </summary>
-        protected ResponseService responseService = new();
+        /// <param name="customerService">管理客戶資料</param>
+        /// <param name="responseService">回傳結果</param>
+        public CustomerController(ICustomerService customerService,ResponseService responseService)
+        {
+            this.customerService = customerService;            
+            this.responseService = responseService;
+        }
 
         /// <summary>
         /// 依搜尋條件獲得客戶資料列表
         /// </summary>        
         /// <param name="customerIDOrName">客戶ID或是名稱</param>
-        /// <param name="thispage">現在頁次</param>
+        /// <param name="thisPage">現在頁次(不得小於0)</param>
+        /// <param name="pageSize">單頁資料量(不得小於0)</param>
         /// <returns></returns>
         [HttpGet]
-        public CustomerResponseViewModel GetCustomerViewModels(string customerIDOrName,int thispage)
+        public CustomerResponseViewModel GetCustomerViewModels(string customerIDOrName, int thisPage, int pageSize)
         {            
             try
             {                
-                return customerService.GetCustomerViewModels(customerIDOrName,thispage);
+                return customerService.GetCustomerViewModels(customerIDOrName, thisPage, pageSize);
             }
             catch
             {
@@ -88,33 +91,52 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="customerData">基本資料</param>
         /// <returns></returns>
         [HttpPost]
-        public IActionResult Post(CustomerBaseData customerData)
+        public Response Post(CustomerBaseData customerData)
         {
             try
-            {                
-                customerService.CreateCustomer(customerData);                
-                return Ok();
+            {                                          
+                return customerService.CreateCustomer(customerData);
             }
             catch
             {
-                return NotFound(responseService.Get(ResponseCode.InternalServerError));
+                return responseService.Get(ResponseCode.InternalServerError);
             }
         }
 
         /// <summary>
         /// 更新基本資料
         /// </summary>
-        /// <param name="customerDataAddID">基本資料</param>
+        /// <param name="customerData">基本資料</param>
         [HttpPut]
-        public IActionResult Put(CustomerWithId customerDataAddID)
+        public Response Put(CustomerBaseData customerData)
         {
             try
             {                
-                return Ok("OK");
+                return customerService.UpdateCustomer(customerData);
             }
             catch
             {
-                return NotFound(responseService.Get(ResponseCode.InternalServerError));
+                return responseService.Get(ResponseCode.InternalServerError);
+            }
+        }
+
+        /// <summary>
+        /// 刪除基本資料，
+        /// 此刪除為更動狀態使其一般使用者看不到資料，
+        /// 而不是真正的刪除。
+        /// </summary>
+        /// <param name="customerId"></param>
+        /// <returns></returns>
+        [HttpDelete]
+        public Response Delete(string customerId)
+        {
+            try
+            {                
+                return customerService.DeleteCustomer(customerId);
+            }
+            catch
+            {
+                return responseService.Get(ResponseCode.InternalServerError);
             }
         }
     }

@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
 using SealTypographicWebAPI.Models;
+using SealTypographicWebAPI.Services;
 using SealTypographicWebAPI.Services.Customer;
 using SealTypographicWebAPI.Services.Accountant;
 using SealTypographicWebAPI.Services.Letterhead;
@@ -35,6 +36,7 @@ builder.Services.AddScoped<ICustomerService, CustomerDeloitteService>();
 builder.Services.AddScoped<ICustomerSealService, CustomerSealsDeloitteService>();
 builder.Services.AddScoped<IAccountantService, AccountantDeloitteService>();
 builder.Services.AddScoped<ILetterheadService, LetterheadDeloitteService>();
+builder.Services.AddSingleton<ResponseService>();
 #endregion
 
 #region -- ConectionString --

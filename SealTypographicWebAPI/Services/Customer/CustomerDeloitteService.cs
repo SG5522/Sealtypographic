@@ -1,7 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SealTypographicWebAPI.Models;
 using SealTypographicWebAPI.DbModels;
+using SealTypographicWebAPI.Consts;
 using System.Linq;
+using System.Net;
+using System.Xml.Linq;
 
 namespace SealTypographicWebAPI.Services.Customer
 {
@@ -11,14 +14,17 @@ namespace SealTypographicWebAPI.Services.Customer
     public class CustomerDeloitteService : ICustomerService
     {
         private readonly SealTypographicDbContext dbContext;
+        private readonly ResponseService responseService;
 
         /// <summary>
-        /// 
+        /// 取得DB與ResponseService
         /// </summary>
         /// <param name="dbContext"></param>
-        public CustomerDeloitteService(SealTypographicDbContext dbContext)
+        /// <param name="responseService"></param>
+        public CustomerDeloitteService(SealTypographicDbContext dbContext,ResponseService responseService)
         {
             this.dbContext = dbContext;
+            this.responseService = responseService;
         }
 
 
@@ -29,102 +35,184 @@ namespace SealTypographicWebAPI.Services.Customer
         /// <returns></returns>
         public CustomerResponse GetCustomer(string customerId)
         {
-            var customerResponse = dbContext.Customers                                   
-                                    .Where(customer => customer.Id == customerId)
-                                    .First();
-            
-            if (customerResponse != null)
+            CustomerBaseData customer = new();
+            Response response = new();
+            var customerQuery = dbContext.Customers                                   
+                                    .Where(customer => customer.Id == customerId);
+                                    
+            if (customerQuery.Any())
             {
-                return new CustomerResponse()
-                {
-                    //回傳結果訊息用
-                    Code = 200,
-                    Message = "Success",
+                var customerResponse = customerQuery.First();
 
-                    BaseData = new CustomerBaseData()
-                    {
-                        Id = customerResponse.Id,
-                        BAN = customerResponse.BAN,
-                        Name = customerResponse.Name,
-                        StockCode = customerResponse.StockCode,
-                        Address = customerResponse.Address,
-                        Telephone = customerResponse.Telephone,
-                        Fax = customerResponse.Fax
-                    }                    
-                };
+                customer.Id = customerResponse.Id;
+                customer.BAN = customerResponse.BAN;
+                customer.Name = customerResponse.Name;
+                customer.StockCode = customerResponse.StockCode;
+                customer.Address = customerResponse.Address;
+                customer.Telephone = customerResponse.Telephone;
+                customer.Fax = customerResponse.Fax;
+
+                response = responseService.Get(ResponseCode.Success);
             }
             else
-            {
-                return new CustomerResponse()
-                {
-                    Code = 404,
-                    Message = "NoData"
-                };
+            {                
+                response = responseService.Get(ResponseCode.NoData);
             }
-            
+            return new CustomerResponse()
+            {
+                //回傳結果訊息用
+                Code = response.Code,
+                Message = response.Message,
+
+                BaseData = customer
+            };
         }
 
         /// <summary>
         /// 依搜尋條件獲得顧客資料列表
         /// </summary>
         /// <param name="customerIdOrName">顧客名字或ID</param>
-        /// <param name="thisPage">現在頁次</param>        
+        /// <param name="thisPage">現在頁次</param>
+        /// <param name="pageSize">單頁資料量</param>        
         /// <returns></returns>
-        public CustomerResponseViewModel GetCustomerViewModels(string customerIdOrName,int thisPage)
-        {
+        public CustomerResponseViewModel GetCustomerViewModels(string customerIdOrName,int thisPage,int pageSize)
+        {            
             List<CustomerViewModel> customerViewModels = new();
-            var customer = dbContext.Customers.Where
+            Response response = new();
+            int totalPage = 0;
+            int totalCount = 0;
+            var customerQuery = dbContext.Customers.Where
                                     (
-                                        customer => 
-                                        customer.Id.Contains(customerIdOrName) ||
-                                        customer.Name.Contains(customerIdOrName)
-                                    );
-            int pageSize = 10;
-            
-            //取得該頁
-            var thisPageCustomerBaseData = customer.Skip(thisPage * pageSize).Take(pageSize);
-            foreach (var customerBase in thisPageCustomerBaseData)
+                                        customer =>
+                                        customer.Id.Contains(customerIdOrName)
+                                        || customer.Name.Contains(customerIdOrName)
+                                    )
+                                    .OrderBy(customer => customer.Id);
+            if(customerQuery.Any())
             {
-                customerViewModels.Add(new CustomerViewModel()
+                //取得該頁            
+                var thisPageCustomerBaseData = customerQuery.Skip((thisPage - 1) * pageSize).Take(pageSize).ToList();
+                //計算總頁數
+                totalPage = (customerQuery.Count() / pageSize) + (customerQuery.Count() % pageSize == 0 ? 0 : 1) ;
+                totalCount = customerQuery.Count();
+                foreach (var customerBase in thisPageCustomerBaseData)
                 {
-                    CustomerID = customerBase.Id,
-                    BAN = customerBase.BAN,
-                    Name = customerBase.Name,
-                    Status = customerBase.Status
-                });
+                    customerViewModels.Add(new CustomerViewModel()
+                    {
+                        CustomerID = customerBase.Id,
+                        BAN = customerBase.BAN,
+                        Name = customerBase.Name,
+                        Status = customerBase.Status
+                    });
+                }
+                //取得成功訊息
+                response = responseService.Get(ResponseCode.Success);
+            }
+            else
+            {
+                response = responseService.Get(ResponseCode.NoData);
             }
 
             return new CustomerResponseViewModel()
             {
                 ThisPage = thisPage,
-                TotalCount = customer.Count(),
-                TotalPage = customer.Count()/10,
+                TotalCount = customerQuery.Count(),
+                TotalPage = totalPage,
                 Customers = customerViewModels,
                 //回傳結果訊息用
-                Code = 200,
-                Message = "Success"
+                Code = response.Code,
+                Message = response.Message
             };
         }
 
         /// <summary>
         /// 新增顧客基本資料
         /// </summary>
-        /// <param name="customer"></param>
-        public void CreateCustomer(CustomerBaseData customer)
+        /// <param name="customerBaseData"></param>
+        public Response CreateCustomer(CustomerBaseData customerBaseData)
         {
-            DbModels.Customer dbcustomer = new()
+            Response response = new();
+            var customerQuery = dbContext.Customers
+                                .Where(customer => customer.Id == customerBaseData.Id);
+
+            if (!customerQuery.Any())
             {
-                Id = customer.Id,
-                Name = customer.Name,
-                BAN = customer.BAN,                
-                Address = customer.Address,
-                StockCode = customer.StockCode,
-                Telephone = customer.Telephone,
-                Fax = customer.Fax,
-                Status = customer.Status                
-            };
-            dbContext.Customers.Add(dbcustomer);
-            dbContext.SaveChanges();
+                DbModels.Customer dbcustomer = new()
+                {
+                    Id = customerBaseData.Id,
+                    Name = customerBaseData.Name,
+                    BAN = customerBaseData.BAN,
+                    Address = customerBaseData.Address,
+                    StockCode = customerBaseData.StockCode,
+                    Telephone = customerBaseData.Telephone,
+                    Fax = customerBaseData.Fax,
+                    Status = customerBaseData.Status
+                };
+                dbContext.Customers.Add(dbcustomer);
+                dbContext.SaveChanges();
+                response = responseService.Get(ResponseCode.Success);
+            }
+            else
+            {
+                response = responseService.Get(ResponseCode.UniqueConstraintFailed);
+            }
+
+            return response;
+        }
+
+        /// <summary>
+        /// 更新客戶基本資料
+        /// </summary>
+        /// <param name="customerBaseData">客戶基本資料 customerBaseData.id 為搜尋條件</param>        
+        public Response UpdateCustomer(CustomerBaseData customerBaseData)
+        {
+            Response response = new();
+            var customerQuery = dbContext.Customers
+                                .Where(customer => customer.Id == customerBaseData.Id);
+
+            if(customerQuery.Any())
+            {
+                var customer = customerQuery.First();
+                customer.BAN = customerBaseData.BAN;
+                customer.Name = customerBaseData.Name;
+                customer.Address = customerBaseData.Address;
+                customer.StockCode = customerBaseData.StockCode;
+                customer.Telephone = customerBaseData.Telephone;
+                customer.Fax = customerBaseData.Fax;
+                customer.Status = customerBaseData.Status;
+                dbContext.SaveChanges();
+                response = responseService.Get(ResponseCode.Success);
+            }
+            else
+            {
+                response = responseService.Get(ResponseCode.NoData);
+            }
+
+            return response;
+        }
+
+        /// <summary>
+        /// 變更此客戶狀態為刪除。
+        /// </summary>
+        /// <param name="customerId">客戶ID</param>        
+        public Response DeleteCustomer(string customerId)
+        {
+            Response response = new();
+            var customerQuery = dbContext.Customers
+                                .Where(customer => customer.Id == customerId);
+            
+            if(customerQuery.Any())
+            {
+                var customer = customerQuery.First();
+                customer.Status = 2;
+                dbContext.SaveChanges();
+                response = responseService.Get(ResponseCode.Success);
+            }
+            else
+            {
+                response = responseService.Get(ResponseCode.NoData);
+            }            
+            return response;
         }
     }
 }

@@ -26,14 +26,22 @@ namespace SealTypographicWebAPI.Services
                     return new Response()
                     {
                         Code = 500,
-                        Message = "error"
+                        Message = "Error"
                     };
-                default:
+                case ResponseCode.NoData:
                     return new Response()
                     {
-                        Code = 200,
-                        Message = "Success"
+                        Code = 404,
+                        Message = "NoData"
                     };
+                case ResponseCode.UniqueConstraintFailed:
+                    return new Response()
+                    {
+                        Code = 19,
+                        Message = "Unique constraint failed"
+                    };
+                default:
+                    return new Response();
             }                      
         }
     }

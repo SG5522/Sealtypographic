@@ -11,6 +11,12 @@ namespace SealTypographicWebAPI.DbModels
         /// 客戶ID
         /// </summary>
         public string Id { get; set; } = null!;
+
+        /// <summary>
+        /// 客戶帳號(勤業六碼，其他會計公司的客戶帳號等等搜尋用途...)
+        /// </summary>
+        //public string Account { get; set; } = null!;
+
         /// <summary>
         /// 統一編號 (business administration number)
         /// </summary>
