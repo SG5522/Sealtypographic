@@ -1,5 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-
+using SealTypographicWebAPI.Models;
+using SealTypographicWebAPI.Models.Accountant;
+using SealTypographicWebAPI.Consts;
+using SealTypographicWebAPI.Services;
+using SealTypographicWebAPI.Services.Accountant;
+using SealTypographicWebAPI.Services.Customer;
+using SealTypographicWebAPI.Models.Customer;
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace SealTypographicWebAPI.Controllers
@@ -8,58 +14,130 @@ namespace SealTypographicWebAPI.Controllers
     /// 會計師基本資料
     /// </summary>
     [Route("api/[controller]")]
+    [Produces("application/json")]
     [ApiController]
     public class AccountantDataController : ControllerBase
     {
         /// <summary>
-        /// 
+        /// 宣告會計師資料處理的interface
         /// </summary>
-        /// <param name="customerID"></param>
-        /// <param name="name"></param>
-        /// <returns></returns>
-        [HttpGet]
-        public IEnumerable<string> Get(string customerID,string name)
+        protected readonly IAccountantService accountantService;
+
+        /// <summary>
+        /// 回應結果
+        /// </summary>
+        protected readonly ResponseService responseService;
+
+        /// <summary>
+        /// 注入Service
+        /// </summary>
+        /// <param name="accountantService">管理會計師資料</param>
+        /// <param name="responseService">回傳結果</param>
+        public AccountantDataController(IAccountantService accountantService, ResponseService responseService)
         {
-            return new string[] { "value1", "value2" };
+            this.accountantService = accountantService;
+            this.responseService = responseService;
         }
 
         /// <summary>
-        /// 
+        /// 依搜尋條件獲得會計師資料列表
+        /// </summary>
+        /// <param name="idOrNmaeOrGroupsName">會計師ID或名字或是群組名稱</param>
+        /// <param name="thisPage">現在頁次(不得小於0)</param>
+        /// <param name="pageSize">單頁資料量(不得小於0)</param>
+        /// <returns></returns>
+        [HttpGet]
+        public AccountantsResponse GetAccountViewModels(string idOrNmaeOrGroupsName, int thisPage, int pageSize)
+        {
+            try
+            {
+                return accountantService.GetAccountantViewModels(idOrNmaeOrGroupsName, thisPage, pageSize);
+            }
+            catch
+            {
+                Response response = responseService.Get(ResponseCode.InternalServerError);
+                return new AccountantsResponse()
+                {
+                    Code = response.Code,
+                    Message = response.Message,
+                };
+            }
+        }
+
+        /// <summary>
+        /// 取得會計師基本資料
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpGet("{id}")]
-        public string Get(int id)
+        public AccountantResponse Get(string id)
         {
-            return "value";
+            try
+            {
+                return accountantService.GetAccountant(id);
+            }
+            catch
+            {
+                Response response = responseService.Get(ResponseCode.InternalServerError);
+                return new AccountantResponse()
+                {
+                    Code = response.Code,
+                    Message = response.Message,
+                };
+            }
         }
 
         /// <summary>
-        /// 
+        /// 建立會計師基本資料
         /// </summary>
-        /// <param name="value"></param>
+        /// <param name="accountantBaseData"></param>
         [HttpPost]
-        public void Post([FromBody] string value)
+        public Response Post(AccountantBaseData accountantBaseData)
         {
+            try
+            {
+                return accountantService.CreateAccountant(accountantBaseData);
+            }
+            catch
+            {
+                return responseService.Get(ResponseCode.InternalServerError);
+            }
         }
 
         /// <summary>
-        /// 
+        /// 更新基本資料
         /// </summary>
-        /// <param name="id"></param>
-        /// <param name="value"></param>
+        /// <param name="accountantBaseData"></param>
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        public Response Put(AccountantBaseData accountantBaseData)
         {
+            try
+            {
+                return accountantService.UpdateAccountant(accountantBaseData);
+            }
+            catch
+            {
+                return responseService.Get(ResponseCode.InternalServerError);
+            }
         }
 
         /// <summary>
-        /// 
+        /// 刪除基本資料，
+        /// 此刪除為更動狀態使其一般使用者看不到資料，
+        /// 而不是真正的刪除。
         /// </summary>
-        /// <param name="id"></param>
-        [HttpDelete("{id}")]
-        public void Delete(int id)
+        /// <param name="accountantId"></param>        
+        [HttpDelete("{accountantId}")]
+        public Response Delete(string accountantId)
         {
+            try
+            {
+                return accountantService.DeleteAccountant(accountantId);
+            }
+            catch
+            {
+                return responseService.Get(ResponseCode.InternalServerError);
+            }
         }
     }
 }

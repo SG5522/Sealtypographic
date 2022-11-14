@@ -17,6 +17,49 @@ namespace SealTypographicWebAPI.Migrations
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "6.0.11");
 
+            modelBuilder.Entity("SealTypographicWebAPI.DbModels.Accountant", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("AccountantGroupId")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("AvailableDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("CreateDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AccountantGroupId");
+
+                    b.ToTable("Accountants");
+                });
+
+            modelBuilder.Entity("SealTypographicWebAPI.DbModels.AccountantGroup", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("AccountantGroups");
+                });
+
             modelBuilder.Entity("SealTypographicWebAPI.DbModels.Customer", b =>
                 {
                     b.Property<string>("Id")
@@ -63,7 +106,7 @@ namespace SealTypographicWebAPI.Migrations
                     b.Property<DateTime>("AvailableDate")
                         .HasColumnType("TEXT");
 
-                    b.Property<DateTime>("CreatedDate")
+                    b.Property<DateTime>("CreateDate")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("CustomerId")
@@ -90,6 +133,22 @@ namespace SealTypographicWebAPI.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("CustomerSealJournals");
+                });
+
+            modelBuilder.Entity("SealTypographicWebAPI.DbModels.Accountant", b =>
+                {
+                    b.HasOne("SealTypographicWebAPI.DbModels.AccountantGroup", "AccountantGroup")
+                        .WithMany("Accountants")
+                        .HasForeignKey("AccountantGroupId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("AccountantGroup");
+                });
+
+            modelBuilder.Entity("SealTypographicWebAPI.DbModels.AccountantGroup", b =>
+                {
+                    b.Navigation("Accountants");
                 });
 #pragma warning restore 612, 618
         }

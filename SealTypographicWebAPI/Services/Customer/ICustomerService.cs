@@ -1,14 +1,15 @@
 ﻿using SealTypographicWebAPI.Models;
+using SealTypographicWebAPI.Models.Customer;
 
 namespace SealTypographicWebAPI.Services.Customer
-{   
+{
     /// <summary>
     /// 顧客資料處理的interface
     /// </summary>
     public interface ICustomerService
     {
         /// <summary>
-        /// 取得顧客基本資料
+        /// 取得顧客資料
         /// </summary>
         /// <param name="customerId">顧客ID</param>
         /// <returns></returns>
@@ -21,7 +22,7 @@ namespace SealTypographicWebAPI.Services.Customer
         /// <param name="thispage">現在頁次</param>
         /// <param name="pageSize">單頁資料量</param>
         /// <returns></returns>
-        CustomerResponseViewModel GetCustomerViewModels(string customerIDOrName,int thispage,int pageSize);
+        CustomerResponsePage GetCustomerViewModels(string customerIDOrName,int thispage,int pageSize);
 
         /// <summary>
         /// 建立顧客資料

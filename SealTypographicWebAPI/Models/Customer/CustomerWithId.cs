@@ -1,4 +1,4 @@
-﻿namespace SealTypographicWebAPI.Models
+﻿namespace SealTypographicWebAPI.Models.Customer
 {
     /// <summary>
     /// 顧客基本資料(含ID)

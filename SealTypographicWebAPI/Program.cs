@@ -37,6 +37,7 @@ builder.Services.AddScoped<ICustomerSealService, CustomerSealsDeloitteService>()
 builder.Services.AddScoped<IAccountantService, AccountantDeloitteService>();
 builder.Services.AddScoped<ILetterheadService, LetterheadDeloitteService>();
 builder.Services.AddSingleton<ResponseService>();
+builder.Services.AddSingleton<StatusService>();
 #endregion
 
 #region -- ConectionString --

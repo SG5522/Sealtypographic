@@ -1,4 +1,4 @@
-﻿namespace SealTypographicWebAPI.Models
+﻿namespace SealTypographicWebAPI.Models.Accountant
 {
     /// <summary>
     /// 會計師印鑑簽名組
@@ -32,6 +32,6 @@
         /// <summary>
         /// 建立日期
         /// </summary>
-        public DateOnly CreatedDate { get; set; }
+        public DateOnly CreateDate { get; set; }
     }
 }

@@ -4,9 +4,10 @@ using SealTypographicWebAPI.Models;
 using SealTypographicWebAPI.Consts;
 using SealTypographicWebAPI.Services;
 using SealTypographicWebAPI.Services.Customer;
+using SealTypographicWebAPI.Models.Customer;
 
 namespace SealTypographicWebAPI.Controllers
-{    
+{
     /// <summary>
     /// 客戶章
     /// </summary>

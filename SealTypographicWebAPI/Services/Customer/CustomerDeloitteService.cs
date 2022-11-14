@@ -1,10 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore;
-using SealTypographicWebAPI.Models;
+﻿using SealTypographicWebAPI.Models;
+using SealTypographicWebAPI.Models.Customer;
 using SealTypographicWebAPI.DbModels;
 using SealTypographicWebAPI.Consts;
-using System.Linq;
-using System.Net;
-using System.Xml.Linq;
+
 
 namespace SealTypographicWebAPI.Services.Customer
 {
@@ -26,7 +24,6 @@ namespace SealTypographicWebAPI.Services.Customer
             this.dbContext = dbContext;
             this.responseService = responseService;
         }
-
 
         /// <summary>
         /// 取得單筆顧客資料
@@ -75,7 +72,7 @@ namespace SealTypographicWebAPI.Services.Customer
         /// <param name="thisPage">現在頁次</param>
         /// <param name="pageSize">單頁資料量</param>        
         /// <returns></returns>
-        public CustomerResponseViewModel GetCustomerViewModels(string customerIdOrName,int thisPage,int pageSize)
+        public CustomerResponsePage GetCustomerViewModels(string customerIdOrName,int thisPage,int pageSize)
         {            
             List<CustomerViewModel> customerViewModels = new();
             Response response = new();
@@ -91,11 +88,11 @@ namespace SealTypographicWebAPI.Services.Customer
             if(customerQuery.Any())
             {
                 //取得該頁            
-                var thisPageCustomerBaseData = customerQuery.Skip((thisPage - 1) * pageSize).Take(pageSize).ToList();
+                var thisPageCustomers = customerQuery.Skip((thisPage - 1) * pageSize).Take(pageSize).ToList();
                 //計算總頁數
                 totalPage = (customerQuery.Count() / pageSize) + (customerQuery.Count() % pageSize == 0 ? 0 : 1) ;
                 totalCount = customerQuery.Count();
-                foreach (var customerBase in thisPageCustomerBaseData)
+                foreach (var customerBase in thisPageCustomers)
                 {
                     customerViewModels.Add(new CustomerViewModel()
                     {
@@ -113,10 +110,10 @@ namespace SealTypographicWebAPI.Services.Customer
                 response = responseService.Get(ResponseCode.NoData);
             }
 
-            return new CustomerResponseViewModel()
+            return new CustomerResponsePage()
             {
                 ThisPage = thisPage,
-                TotalCount = customerQuery.Count(),
+                TotalCount = totalCount,
                 TotalPage = totalPage,
                 Customers = customerViewModels,
                 //回傳結果訊息用
@@ -128,7 +125,7 @@ namespace SealTypographicWebAPI.Services.Customer
         /// <summary>
         /// 新增顧客基本資料
         /// </summary>
-        /// <param name="customerBaseData"></param>
+        /// <param name="customerBaseData">基本資料</param>
         public Response CreateCustomer(CustomerBaseData customerBaseData)
         {
             Response response = new();

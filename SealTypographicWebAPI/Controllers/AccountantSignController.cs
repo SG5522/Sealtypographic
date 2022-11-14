@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using SealTypographicWebAPI.Consts;
-using SealTypographicWebAPI.Models;
+using SealTypographicWebAPI.Models.Accountant;
 using SealTypographicWebAPI.Services;
 using SealTypographicWebAPI.Services.Accountant;
 
@@ -22,19 +22,20 @@ namespace SealTypographicWebAPI.Controllers
         protected readonly IAccountantService accountantService;
 
         /// <summary>
+        /// 回應結果
+        /// </summary>
+        protected readonly ResponseService responseService;
+
+        /// <summary>
         /// 注入會計師interface
         /// </summary>
         /// <param name="accountantService"></param>
-        public AccountantSignController(IAccountantService accountantService)
+        /// <param name="responseService"></param>
+        public AccountantSignController(IAccountantService accountantService, ResponseService responseService)
         {
             this.accountantService = accountantService;
+            this.responseService = responseService;
         }
-
-
-        /// <summary>
-        /// 錯誤訊息
-        /// </summary>
-        protected ResponseService responseService = new();
 
         /// <summary>
         /// 取得會計師簽名印鑑組
@@ -46,8 +47,8 @@ namespace SealTypographicWebAPI.Controllers
         {
             try
             {
-                List<AccountantSign> customerSeals = accountantService.GetAccountantSigns(accountantID);
-                return Ok(customerSeals);
+                //List<AccountantSign> customerSeals = accountantService.GetAccountantSigns(accountantID);
+                return Ok();
             }
             catch
             {

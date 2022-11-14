@@ -1,4 +1,4 @@
-﻿namespace SealTypographicWebAPI.Models
+﻿namespace SealTypographicWebAPI.Models.Customer
 {
     /// <summary>
     /// 客戶印鑑組
@@ -34,12 +34,12 @@
         /// 圖檔字串(Base64)
         /// </summary>
         public string ImageBase64 { get; set; }
-        
+
         /// <summary>
         /// 啟用日(審查通過才有)
         /// </summary>
         public DateTime AvailableDate { get; set; }
-        
+
         /// <summary>
         /// 建立日期
         /// </summary>

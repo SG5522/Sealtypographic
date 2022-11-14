@@ -17,6 +17,16 @@ namespace SealTypographicWebAPI.DbModels
         public DbSet<CustomerSealJournal> CustomerSealJournals { get; set; }
 
         /// <summary>
+        /// 會計師資料表
+        /// </summary>
+        public DbSet<Accountant> Accountants { get; set; }
+
+        /// <summary>
+        /// 會計師群組資料表
+        /// </summary>
+        public DbSet<AccountantGroup> AccountantGroups { get; set; }
+
+        /// <summary>
         /// 
         /// </summary>
         /// <param name="options"></param>

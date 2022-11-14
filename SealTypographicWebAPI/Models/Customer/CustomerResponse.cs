@@ -1,4 +1,4 @@
-﻿namespace SealTypographicWebAPI.Models
+﻿namespace SealTypographicWebAPI.Models.Customer
 {
     /// <summary>
     /// 取得客戶資料以及回應訊息

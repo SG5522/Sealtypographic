@@ -1,10 +1,9 @@
-﻿
-namespace SealTypographicWebAPI.Models
+﻿namespace SealTypographicWebAPI.Models.Customer
 {
     /// <summary>
-    /// 客戶資料
+    /// 依搜尋結果與分頁顯示客戶列表
     /// </summary>
-    public class CustomerResponseViewModel : Response
+    public class CustomerResponsePage : Response
     {
         /// <summary>
         /// 現在頁數
@@ -15,14 +14,14 @@ namespace SealTypographicWebAPI.Models
         /// 總頁數
         /// </summary>
         public int TotalPage { get; set; }
-        
+
         /// <summary>
         /// 資料筆數
         /// </summary>
         public int TotalCount { get; set; }
 
         /// <summary>
-        /// 顧客查詢表
+        /// 顧客列表
         /// </summary>
         public List<CustomerViewModel> Customers { get; set; }
     }

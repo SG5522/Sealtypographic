@@ -48,7 +48,7 @@
         /// <summary>
         /// 建立日期
         /// </summary>
-        public DateTime CreatedDate { get; set; }
+        public DateTime CreateDate { get; set; }
 
         /// <summary>
         /// 印鑑季度

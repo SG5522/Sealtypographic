@@ -7,7 +7,7 @@ namespace SealTypographicWebAPI.Services.Accountant
     /// <summary>
     /// 會計師
     /// </summary>
-    public interface IAccountantService
+    public interface IAccountantGroupService
     {
 
         /// <summary>
@@ -27,23 +27,23 @@ namespace SealTypographicWebAPI.Services.Accountant
         AccountantsResponse GetAccountantViewModels(string idOrNmaeOrGroupsName, int thisPage, int pageSize);
 
         /// <summary>
-        /// 建立會計師資料
+        /// 建立會計師群組資料
         /// </summary>
-        /// <param name="accountantBaseData">基本資料</param>        
-        Response CreateAccountant(AccountantBaseData accountantBaseData);
+        /// <param name="accountantGroupData">群組資料</param>        
+        Response CreateAccountantGroup(AccountantGroupData accountantGroupData);
 
 
         /// <summary>
-        /// 更新客戶基本資料
+        /// 更新會計師群組資料
         /// </summary>
-        /// <param name="accountantBaseData">基本資料</param>
-        Response UpdateAccountant(AccountantBaseData accountantBaseData);
+        /// <param name="accountantGroupData">群組資料</param>
+        Response UpdateAccountantGroup(AccountantGroupData accountantGroupData);
 
         /// <summary>
         /// 刪除客戶基本資料(變更狀態使其一般USER無法看到)
         /// </summary>
-        /// <param name="accountantId"></param>
-        Response DeleteAccountant(string accountantId);
+        /// <param name="accountantGroupDataId"></param>
+        Response DeleteAccountantGroup(string accountantGroupDataId);
     }
 
 }

@@ -1,10 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SealTypographicWebAPI.Models;
+using SealTypographicWebAPI.Models.Customer;
 using SealTypographicWebAPI.Consts;
-using Newtonsoft.Json;
 using SealTypographicWebAPI.Services;
 using SealTypographicWebAPI.Services.Customer;
-using System.Globalization;
+
 
 namespace SealTypographicWebAPI.Controllers
 {
@@ -45,7 +45,7 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="pageSize">單頁資料量(不得小於0)</param>
         /// <returns></returns>
         [HttpGet]
-        public CustomerResponseViewModel GetCustomerViewModels(string customerIDOrName, int thisPage, int pageSize)
+        public CustomerResponsePage GetCustomerViewModels(string customerIDOrName, int thisPage, int pageSize)
         {            
             try
             {                
@@ -54,7 +54,7 @@ namespace SealTypographicWebAPI.Controllers
             catch
             {
                 Response response = responseService.Get(ResponseCode.InternalServerError);
-                return new CustomerResponseViewModel()
+                return new CustomerResponsePage()
                 {
                     Code = response.Code,
                     Message = response.Message,
@@ -127,7 +127,7 @@ namespace SealTypographicWebAPI.Controllers
         /// </summary>
         /// <param name="customerId"></param>
         /// <returns></returns>
-        [HttpDelete]
+        [HttpDelete("{customerId}")]
         public Response Delete(string customerId)
         {
             try

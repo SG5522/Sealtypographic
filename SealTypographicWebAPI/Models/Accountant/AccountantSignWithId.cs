@@ -1,9 +1,9 @@
-﻿namespace SealTypographicWebAPI.Models
+﻿namespace SealTypographicWebAPI.Models.Accountant
 {
     /// <summary>
     /// 會計師簽名含ID
     /// </summary>
-    public class AccountantSignWithId :AccountantData
+    public class AccountantSignWithId : AccountantBaseData
     {
         /// <summary>
         /// 簽名ID
