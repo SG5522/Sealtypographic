@@ -7,7 +7,7 @@ using SealTypographicWebAPI.Models.Customer;
 namespace SealTypographicWebAPI.Services.Accountant
 {
     /// <summary>
-    /// 勤業使用的取得會計師資料
+    /// 勤業用 管理會計師資料
     /// </summary>
     public class AccountantDeloitteService : IAccountantService
     {
@@ -86,7 +86,7 @@ namespace SealTypographicWebAPI.Services.Accountant
         /// <param name="thisPage">現在頁次</param>
         /// <param name="pageSize">單頁資料量</param>     
         /// <returns></returns>
-        public AccountantsResponse GetAccountantViewModels(string idOrNmaeOrGroupsName,int thisPage, int pageSize)
+        public AccountantResponses GetAccountantViewModels(string idOrNmaeOrGroupsName,int thisPage, int pageSize)
         {
             List<AccountantViewModel> accountantViewModels = new();
             Response response = new();
@@ -95,14 +95,15 @@ namespace SealTypographicWebAPI.Services.Accountant
             var accountantsQuery = (from accountant in dbContext.Set<DbModels.Accountant>()
                                    join accountantGroup in dbContext.Set<AccountantGroup>()
                                    on accountant.AccountantGroupId equals accountantGroup.Id
-                                   where accountant.Id == idOrNmaeOrGroupsName
-                                   || accountant.Name == idOrNmaeOrGroupsName
-                                   || accountantGroup.Name == idOrNmaeOrGroupsName
+                                   where accountant.Id.Contains(idOrNmaeOrGroupsName)
+                                   || accountant.Name.Contains(idOrNmaeOrGroupsName)
+                                   || accountantGroup.Name.Contains(idOrNmaeOrGroupsName)
                                    select new
-                                   {
+                                   {                                       
                                        accountant.Id,
                                        accountant.Name,
-                                       accountant.AvailableDate,                                                                              
+                                       accountant.AvailableDate,                     
+                                       accountant.AccountantGroupId,
                                        accountantGroupName = accountantGroup.Name,
                                        accountant.Status
                                    }).OrderBy(accountant=> accountant.Id);                                   
@@ -120,6 +121,7 @@ namespace SealTypographicWebAPI.Services.Accountant
                         Id = accountant.Id,                        
                         Name = accountant.Name,
                         AvailableDate = accountant.AvailableDate,
+                        AccountantGroupsId = accountant.AccountantGroupId,
                         AccountantGroupsName = accountant.accountantGroupName,
                         StatusString = statusService.Get((Status)accountant.Status)
                     });
@@ -132,7 +134,7 @@ namespace SealTypographicWebAPI.Services.Accountant
                 response = responseService.Get(ResponseCode.NoData);
             }
 
-            return new AccountantsResponse()
+            return new AccountantResponses()
             {                                
                 ThisPage = thisPage,
                 TotalCount = totalCount,
@@ -154,6 +156,7 @@ namespace SealTypographicWebAPI.Services.Accountant
             Response response = new();
             var accountantQuery = dbContext.Accountants
                                     .Where(accountant => accountant.Id == accountantBaseData.Id);
+
 
             if(!accountantQuery.Any())
             {
@@ -193,7 +196,7 @@ namespace SealTypographicWebAPI.Services.Accountant
 
             if (accountantQuery.Any())
             {
-                var accountant = accountantQuery.First();
+                DbModels.Accountant accountant = accountantQuery.First();
                 accountant.Id = accountantBaseData.Id;
                 accountant.Name = accountantBaseData.Name;
                 accountant.AvailableDate = accountantBaseData.AvailableDate;               

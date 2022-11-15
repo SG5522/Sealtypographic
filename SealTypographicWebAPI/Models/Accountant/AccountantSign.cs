@@ -27,11 +27,11 @@
         /// <summary>
         /// 啟用日(審查通過才有)
         /// </summary>
-        public DateOnly AvailableDate { get; set; }
+        public DateTime AvailableDate { get; set; }
 
         /// <summary>
         /// 建立日期
         /// </summary>
-        public DateOnly CreateDate { get; set; }
+        public DateTime CreateDate { get; set; }
     }
 }

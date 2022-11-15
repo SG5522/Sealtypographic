@@ -1,43 +1,143 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using SealTypographicWebAPI.Services.Accountant;
+using SealTypographicWebAPI.Services;
+using SealTypographicWebAPI.Models.Accountant;
+using SealTypographicWebAPI.Consts;
+using SealTypographicWebAPI.Models;
+using SealTypographicWebAPI.DbModels;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace SealTypographicWebAPI.Controllers
 {
+    /// <summary>
+    /// 管理會計師群組
+    /// </summary>
     [Route("api/[controller]")]
+    [Produces("application/json")]
     [ApiController]
     public class AccountantGroupsController : ControllerBase
     {
-        // GET: api/<ValuesController>
+        /// <summary>
+        /// 宣告會計師資料處理的interface
+        /// </summary>
+        protected readonly IAccountantGroupService accountantGroupService;
+
+        /// <summary>
+        /// 回應結果
+        /// </summary>
+        protected readonly ResponseService responseService;
+
+        /// <summary>
+        /// 注入Service
+        /// </summary>
+        /// <param name="accountantGroupService">管理會計師群組資料</param>
+        /// <param name="responseService">回傳結果</param>
+        public AccountantGroupsController(IAccountantGroupService accountantGroupService, ResponseService responseService)
+        {
+            this.accountantGroupService = accountantGroupService;
+            this.responseService = responseService;
+        }
+
+
+        /// <summary>
+        /// 依搜尋條件獲得會計師資料列表
+        /// </summary>
+        /// <param name="idOrName">會計師群組ID或群組名字</param>
+        /// <param name="thisPage">現在頁次(不得小於0)</param>
+        /// <param name="pageSize">單頁資料量(不得小於0)</param>
+        /// <returns></returns>
         [HttpGet]
-        public IEnumerable<string> Get()
+        public AccountantGroupResponses GetAccountGroupViewModels(string idOrName, int thisPage, int pageSize)
         {
-            return new string[] { "value1", "value2" };
+            try
+            {
+                return accountantGroupService.GetAccountantGroups(idOrName, thisPage, pageSize);
+            }
+            catch
+            {
+                Response response = responseService.Get(ResponseCode.InternalServerError);
+                return new AccountantGroupResponses()
+                {
+                    Code = response.Code,
+                    Message = response.Message,
+                };
+            }
         }
 
-        // GET api/<ValuesController>/5
+        /// <summary>
+        /// 取得會計師群組資料
+        /// </summary>
+        /// <param name="id">群組ID</param>
+        /// <returns></returns>
         [HttpGet("{id}")]
-        public string Get(int id)
+        public AccountantGroupResponse Get(string id)
         {
-            return "value";
+            try
+            {
+                return accountantGroupService.GetAccountantGroup(id);
+            }
+            catch
+            {
+                Response response = responseService.Get(ResponseCode.InternalServerError);
+                return new AccountantGroupResponse()
+                {
+                    Code = response.Code,
+                    Message = response.Message,
+                };
+            }
         }
 
-        // POST api/<ValuesController>
+        /// <summary>
+        /// 建立會計師群組
+        /// </summary>
+        /// <param name="accountantGroupData">群組資料</param>
         [HttpPost]
-        public void Post([FromBody] string value)
+        public Response Post(AccountantGroupData accountantGroupData)
         {
+            try
+            {
+                return accountantGroupService.CreateAccountantGroup(accountantGroupData);
+            }
+            catch
+            {
+                return responseService.Get(ResponseCode.InternalServerError);
+            }
         }
 
-        // PUT api/<ValuesController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        /// <summary>
+        /// 更新群組資料
+        /// </summary>
+        /// <param name="accountantGroupData">群組資料</param>       
+        [HttpPut]
+        public Response Put(AccountantGroupData accountantGroupData)
         {
+            try
+            {
+                return accountantGroupService.UpdateAccountantGroup(accountantGroupData);
+            }
+            catch
+            {
+                return responseService.Get(ResponseCode.InternalServerError);
+            }
         }
 
-        // DELETE api/<ValuesController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
+        /// <summary>
+        /// 刪除群組(將該群組的所有人員先轉移到無群組在進行群組刪除)
+        /// </summary>
+        /// <param name="accountantGroupDataId">會計師群組ID</param>
+        /// <returns></returns>
+        [HttpDelete("{accountantGroupDataId}")]
+        public Response Delete(string accountantGroupDataId)
         {
+            try
+            {
+                return accountantGroupService.DeleteAccountantGroup(accountantGroupDataId);
+            }
+            catch
+            {
+                return responseService.Get(ResponseCode.InternalServerError);
+            }
         }
     }
 }

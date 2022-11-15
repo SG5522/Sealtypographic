@@ -3,7 +3,7 @@
     /// <summary>
     /// 依搜尋結果顯示會計師列表
     /// </summary>
-    public class AccountantsResponse : Response
+    public class AccountantResponses : Response
     {
         /// <summary>
         /// 現在頁數

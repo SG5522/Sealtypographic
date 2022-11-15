@@ -11,7 +11,7 @@ using SealTypographicWebAPI.Models.Customer;
 namespace SealTypographicWebAPI.Controllers
 {
     /// <summary>
-    /// 會計師基本資料
+    /// 管理會計師基本資料
     /// </summary>
     [Route("api/[controller]")]
     [Produces("application/json")]
@@ -42,21 +42,21 @@ namespace SealTypographicWebAPI.Controllers
         /// <summary>
         /// 依搜尋條件獲得會計師資料列表
         /// </summary>
-        /// <param name="idOrNmaeOrGroupsName">會計師ID或名字或是群組名稱</param>
+        /// <param name="idOrNameOrGroupsName">會計師ID或名字或是群組名稱</param>
         /// <param name="thisPage">現在頁次(不得小於0)</param>
         /// <param name="pageSize">單頁資料量(不得小於0)</param>
         /// <returns></returns>
         [HttpGet]
-        public AccountantsResponse GetAccountViewModels(string idOrNmaeOrGroupsName, int thisPage, int pageSize)
+        public AccountantResponses GetAccountViewModels(string idOrNameOrGroupsName, int thisPage, int pageSize)
         {
             try
             {
-                return accountantService.GetAccountantViewModels(idOrNmaeOrGroupsName, thisPage, pageSize);
+                return accountantService.GetAccountantViewModels(idOrNameOrGroupsName, thisPage, pageSize);
             }
             catch
             {
                 Response response = responseService.Get(ResponseCode.InternalServerError);
-                return new AccountantsResponse()
+                return new AccountantResponses()
                 {
                     Code = response.Code,
                     Message = response.Message,
@@ -107,8 +107,8 @@ namespace SealTypographicWebAPI.Controllers
         /// <summary>
         /// 更新基本資料
         /// </summary>
-        /// <param name="accountantBaseData"></param>
-        [HttpPut("{id}")]
+        /// <param name="accountantBaseData"></param>        
+        [HttpPut]
         public Response Put(AccountantBaseData accountantBaseData)
         {
             try

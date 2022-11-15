@@ -35,6 +35,7 @@ builder.Services.AddCors(options =>
 builder.Services.AddScoped<ICustomerService, CustomerDeloitteService>();
 builder.Services.AddScoped<ICustomerSealService, CustomerSealsDeloitteService>();
 builder.Services.AddScoped<IAccountantService, AccountantDeloitteService>();
+builder.Services.AddScoped<IAccountantGroupService, AccountantGroupDeloitteService>();
 builder.Services.AddScoped<ILetterheadService, LetterheadDeloitteService>();
 builder.Services.AddSingleton<ResponseService>();
 builder.Services.AddSingleton<StatusService>();
@@ -44,6 +45,8 @@ builder.Services.AddSingleton<StatusService>();
 builder.Services.AddDbContext<SealTypographicDbContext>(optionsBuilder =>
 {
     optionsBuilder.UseSqlite(config.GetConnectionString("Sqlite"));
+    //MySqlServerVersion serverVersion = new(new Version(5, 7, 27));
+    //optionsBuilder.UseMySql(config.GetConnectionString("MySql"), serverVersion);
 });
 #endregion
 

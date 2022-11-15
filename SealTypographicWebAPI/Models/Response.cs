@@ -10,7 +10,7 @@
         /// </summary>
         public int Code { get; set; }
         /// <summary>
-        /// 錯誤訊息
+        /// 回傳訊息
         /// </summary>
         public string? Message { get; set; }
     }

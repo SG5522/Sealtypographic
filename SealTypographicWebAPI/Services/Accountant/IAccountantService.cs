@@ -24,7 +24,7 @@ namespace SealTypographicWebAPI.Services.Accountant
         /// <param name="thisPage">現在頁次</param>
         /// <param name="pageSize">單頁資料量</param>     
         /// <returns></returns>
-        AccountantsResponse GetAccountantViewModels(string idOrNmaeOrGroupsName, int thisPage, int pageSize);
+        AccountantResponses GetAccountantViewModels(string idOrNmaeOrGroupsName, int thisPage, int pageSize);
 
         /// <summary>
         /// 建立會計師資料

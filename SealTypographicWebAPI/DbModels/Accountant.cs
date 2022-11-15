@@ -7,7 +7,7 @@
     {
         /// <summary>
         /// 會計師ID
-        /// </summary>
+        /// </summary>        
         public string Id { get; set; } = null!;
 
         /// <summary>
