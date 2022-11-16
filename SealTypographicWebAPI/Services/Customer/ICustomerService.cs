@@ -17,12 +17,10 @@ namespace SealTypographicWebAPI.Services.Customer
 
         /// <summary>
         /// 依搜尋條件獲得顧客資料列表
-        /// </summary>        
-        /// <param name="customerIDOrName">顧客ID或名字</param>
-        /// <param name="thispage">現在頁次</param>
-        /// <param name="pageSize">單頁資料量</param>
+        /// </summary>
+        /// <param name="customerQueryPage">客戶分頁搜尋</param>        
         /// <returns></returns>
-        CustomerResponsePage GetCustomerViewModels(string customerIDOrName,int thispage,int pageSize);
+        CustomerResponsePage GetCustomerViewModels(CustomerQueryPage customerQueryPage);
 
         /// <summary>
         /// 建立顧客資料

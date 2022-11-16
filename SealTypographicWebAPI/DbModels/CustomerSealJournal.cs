@@ -23,12 +23,7 @@
         /// 3.經理
         /// 4.會計主管    
         /// </summary>
-        public int GroupsId { get; set; }
-
-        /// <summary>
-        /// 客戶群組名稱
-        /// </summary>
-        public int GroupsName { get; set; }
+        public int ImageGroup { get; set; }
 
         /// <summary>
         /// 印鑑編號(排序) 1為起始

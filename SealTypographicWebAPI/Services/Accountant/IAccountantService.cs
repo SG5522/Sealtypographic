@@ -20,11 +20,9 @@ namespace SealTypographicWebAPI.Services.Accountant
         /// <summary>
         /// 依搜尋條件獲得會計資料列表
         /// </summary>
-        /// <param name="idOrNmaeOrGroupsName">會計師ID或名字或是群組名稱</param>
-        /// <param name="thisPage">現在頁次</param>
-        /// <param name="pageSize">單頁資料量</param>     
+        /// <param name="accountantQueryPage">會計師分頁搜尋</param>  
         /// <returns></returns>
-        AccountantResponses GetAccountantViewModels(string idOrNmaeOrGroupsName, int thisPage, int pageSize);
+        AccountantResponses GetAccountantViewModels(AccountantQueryPage accountantQueryPage);
 
         /// <summary>
         /// 建立會計師資料

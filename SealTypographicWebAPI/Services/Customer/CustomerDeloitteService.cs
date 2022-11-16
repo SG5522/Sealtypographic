@@ -68,31 +68,38 @@ namespace SealTypographicWebAPI.Services.Customer
         /// <summary>
         /// 依搜尋條件獲得顧客資料列表
         /// </summary>
-        /// <param name="customerIdOrName">顧客名字或ID</param>
-        /// <param name="thisPage">現在頁次</param>
-        /// <param name="pageSize">單頁資料量</param>        
+        /// <param name="customerQueryPage">搜尋條件</param>  
         /// <returns></returns>
-        public CustomerResponsePage GetCustomerViewModels(string customerIdOrName,int thisPage,int pageSize)
+        public CustomerResponsePage GetCustomerViewModels(CustomerQueryPage customerQueryPage)
         {            
             List<CustomerViewModel> customerViewModels = new();
             Response response = new();
             int totalPage = 0;
             int totalCount = 0;
-            var customerQuery = dbContext.Customers.Where
-                                    (
-                                        customer =>
-                                        customer.Id.Contains(customerIdOrName)
-                                        || customer.Name.Contains(customerIdOrName)
-                                    )
-                                    .OrderBy(customer => customer.Id);
-            if(customerQuery.Any())
+            var customerQuery = dbContext.Customers.AsQueryable();
+            if (customerQueryPage.CustomerIdOrName != null) 
+            {
+                customerQuery = customerQuery.Where
+                    (
+                        customer =>
+                        customer.Id.Contains(customerQueryPage.CustomerIdOrName)
+                        || customer.Name.Contains(customerQueryPage.CustomerIdOrName)
+                    );
+            }
+
+            customerQuery = customerQuery.OrderBy(customer => customer.Id);
+
+            if (customerQuery.Any())
             {
                 //取得該頁            
-                var thisPageCustomers = customerQuery.Skip((thisPage - 1) * pageSize).Take(pageSize).ToList();
+                var pageNumberCustomers = customerQuery
+                                          .Skip((customerQueryPage.PageNumber - 1) * customerQueryPage.PageSize)
+                                          .Take(customerQueryPage.PageSize)
+                                          .ToList();
                 //計算總頁數
-                totalPage = (customerQuery.Count() / pageSize) + (customerQuery.Count() % pageSize == 0 ? 0 : 1) ;
+                totalPage = (customerQuery.Count() / customerQueryPage.PageSize) + (customerQuery.Count() % customerQueryPage.PageSize == 0 ? 0 : 1) ;
                 totalCount = customerQuery.Count();
-                foreach (var customerBase in thisPageCustomers)
+                foreach (var customerBase in pageNumberCustomers)
                 {
                     customerViewModels.Add(new CustomerViewModel()
                     {
@@ -112,7 +119,7 @@ namespace SealTypographicWebAPI.Services.Customer
 
             return new CustomerResponsePage()
             {
-                ThisPage = thisPage,
+                PageNumber = customerQueryPage.PageNumber,
                 TotalCount = totalCount,
                 TotalPage = totalPage,
                 Customers = customerViewModels,

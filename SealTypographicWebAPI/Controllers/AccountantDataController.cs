@@ -42,16 +42,14 @@ namespace SealTypographicWebAPI.Controllers
         /// <summary>
         /// 依搜尋條件獲得會計師資料列表
         /// </summary>
-        /// <param name="idOrNameOrGroupsName">會計師ID或名字或是群組名稱</param>
-        /// <param name="thisPage">現在頁次(不得小於0)</param>
-        /// <param name="pageSize">單頁資料量(不得小於0)</param>
+        /// <param name="accountantQueryPage">會計師分頁搜尋</param>
         /// <returns></returns>
         [HttpGet]
-        public AccountantResponses GetAccountViewModels(string idOrNameOrGroupsName, int thisPage, int pageSize)
+        public AccountantResponses GetAccountViewModels([FromQuery]AccountantQueryPage accountantQueryPage)
         {
             try
             {
-                return accountantService.GetAccountantViewModels(idOrNameOrGroupsName, thisPage, pageSize);
+                return accountantService.GetAccountantViewModels(accountantQueryPage);
             }
             catch
             {

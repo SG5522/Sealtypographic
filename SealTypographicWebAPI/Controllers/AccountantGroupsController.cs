@@ -39,20 +39,17 @@ namespace SealTypographicWebAPI.Controllers
             this.responseService = responseService;
         }
 
-
         /// <summary>
         /// 依搜尋條件獲得會計師資料列表
         /// </summary>
-        /// <param name="idOrName">會計師群組ID或群組名字</param>
-        /// <param name="thisPage">現在頁次(不得小於0)</param>
-        /// <param name="pageSize">單頁資料量(不得小於0)</param>
+        /// <param name="accountantGroupQueryPage">會計師群組分頁搜尋</param>
         /// <returns></returns>
         [HttpGet]
-        public AccountantGroupResponses GetAccountGroupViewModels(string idOrName, int thisPage, int pageSize)
+        public AccountantGroupResponses GetAccountGroupViewModels([FromQuery]AccountantGroupQueryPage accountantGroupQueryPage)
         {
             try
             {
-                return accountantGroupService.GetAccountantGroups(idOrName, thisPage, pageSize);
+                return accountantGroupService.GetAccountantGroups(accountantGroupQueryPage);
             }
             catch
             {

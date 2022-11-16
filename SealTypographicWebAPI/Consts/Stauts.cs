@@ -9,13 +9,16 @@
         /// 待審
         /// </summary>
         Pending = 0,
+
         /// <summary>
         /// 已審
         /// </summary>
         Reviewed = 1,
+
         /// <summary>
         /// 隱藏(被刪除時的狀態)
         /// </summary>
         Hidden = 2,
+
     }
 }

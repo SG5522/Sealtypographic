@@ -2,7 +2,7 @@
 using SealTypographicWebAPI.Models.Accountant;
 using SealTypographicWebAPI.DbModels;
 using SealTypographicWebAPI.Consts;
-using SealTypographicWebAPI.Models.Customer;
+using System.Linq;
 
 namespace SealTypographicWebAPI.Services.Accountant
 {
@@ -82,37 +82,48 @@ namespace SealTypographicWebAPI.Services.Accountant
         /// <summary>
         /// 依搜尋條件獲得會計資料列表
         /// </summary>
-        /// <param name="idOrNmaeOrGroupsName">會計師ID或名字或是群組名稱</param>
-        /// <param name="thisPage">現在頁次</param>
-        /// <param name="pageSize">單頁資料量</param>     
+        /// <param name="accountantQueryPage">會計師分頁搜尋</param> 
         /// <returns></returns>
-        public AccountantResponses GetAccountantViewModels(string idOrNmaeOrGroupsName,int thisPage, int pageSize)
+        public AccountantResponses GetAccountantViewModels(AccountantQueryPage accountantQueryPage)
         {
             List<AccountantViewModel> accountantViewModels = new();
             Response response = new();
             int totalPage = 0;
             int totalCount = 0;
-            var accountantsQuery = (from accountant in dbContext.Set<DbModels.Accountant>()
-                                   join accountantGroup in dbContext.Set<AccountantGroup>()
-                                   on accountant.AccountantGroupId equals accountantGroup.Id
-                                   where accountant.Id.Contains(idOrNmaeOrGroupsName)
-                                   || accountant.Name.Contains(idOrNmaeOrGroupsName)
-                                   || accountantGroup.Name.Contains(idOrNmaeOrGroupsName)
-                                   select new
-                                   {                                       
-                                       accountant.Id,
-                                       accountant.Name,
-                                       accountant.AvailableDate,                     
-                                       accountant.AccountantGroupId,
-                                       accountantGroupName = accountantGroup.Name,
-                                       accountant.Status
-                                   }).OrderBy(accountant=> accountant.Id);                                   
-            if(accountantsQuery.Any())
+            var accountantsQuery = from accountant in dbContext.Set<DbModels.Accountant>()
+                                    join accountantGroup in dbContext.Set<AccountantGroup>()
+                                    on accountant.AccountantGroupId equals accountantGroup.Id
+                                    select new
+                                    {
+                                        accountant.Id,
+                                        accountant.Name,
+                                        accountant.AvailableDate,
+                                        accountant.AccountantGroupId,
+                                        accountantGroupName = accountantGroup.Name,
+                                        accountant.Status
+                                    };
+
+            if(accountantQueryPage.IdOrNameOrGroupsName != null)
+            {
+                accountantsQuery = accountantsQuery.Where
+                                    (
+                                        accountant =>                   
+                                        accountant.Id.Contains(accountantQueryPage.IdOrNameOrGroupsName)
+                                        || accountant.Name.Contains(accountantQueryPage.IdOrNameOrGroupsName)
+                                        || accountant.accountantGroupName.Contains(accountantQueryPage.IdOrNameOrGroupsName)
+                                    );
+            }
+            accountantsQuery = accountantsQuery.OrderBy( accountant => accountant.Id );
+                                
+            if (accountantsQuery.Any())
             {
                 //取得該頁            
-                var thisPageAccountants = accountantsQuery.Skip((thisPage - 1) * pageSize).Take(pageSize).ToList();
+                var thisPageAccountants = accountantsQuery
+                                          .Skip((accountantQueryPage.PageNumber - 1) * accountantQueryPage.PageSize)
+                                          .Take(accountantQueryPage.PageSize)
+                                          .ToList();
                 //計算總頁數
-                totalPage = (accountantsQuery.Count() / pageSize) + (accountantsQuery.Count() % pageSize == 0 ? 0 : 1);
+                totalPage = (accountantsQuery.Count() / accountantQueryPage.PageSize) + (accountantsQuery.Count() % accountantQueryPage.PageSize == 0 ? 0 : 1);
                 totalCount = accountantsQuery.Count();
                 foreach (var accountant in thisPageAccountants)
                 {
@@ -136,7 +147,7 @@ namespace SealTypographicWebAPI.Services.Accountant
 
             return new AccountantResponses()
             {                                
-                ThisPage = thisPage,
+                PageNumber = accountantQueryPage.PageNumber,
                 TotalCount = totalCount,
                 TotalPage = totalPage,                
                 Accountants = accountantViewModels,

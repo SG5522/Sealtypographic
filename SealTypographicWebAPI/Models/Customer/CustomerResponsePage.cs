@@ -8,7 +8,7 @@
         /// <summary>
         /// 現在頁數
         /// </summary>
-        public int ThisPage { get; set; }
+        public int PageNumber { get; set; }
 
         /// <summary>
         /// 總頁數

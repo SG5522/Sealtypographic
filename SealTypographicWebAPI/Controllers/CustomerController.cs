@@ -39,17 +39,16 @@ namespace SealTypographicWebAPI.Controllers
 
         /// <summary>
         /// 依搜尋條件獲得客戶資料列表
-        /// </summary>        
-        /// <param name="customerIDOrName">客戶ID或是名稱</param>
-        /// <param name="thisPage">現在頁次(不得小於0)</param>
-        /// <param name="pageSize">單頁資料量(不得小於0)</param>
+        /// </summary>
+        /// <param name="customerQueryPage">客戶分頁搜尋</param>        
         /// <returns></returns>
         [HttpGet]
-        public CustomerResponsePage GetCustomerViewModels(string customerIDOrName, int thisPage, int pageSize)
-        {            
+        //public CustomerResponsePage GetCustomerViewModels(string customerIDOrName, int thisPage, int pageSize)
+        public CustomerResponsePage GetCustomerViewModels([FromQuery]CustomerQueryPage customerQueryPage)
+        {         
             try
             {                
-                return customerService.GetCustomerViewModels(customerIDOrName, thisPage, pageSize);
+                return customerService.GetCustomerViewModels(customerQueryPage);
             }
             catch
             {
