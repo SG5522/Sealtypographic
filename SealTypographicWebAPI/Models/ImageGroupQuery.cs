@@ -1,15 +1,15 @@
-﻿namespace SealTypographicWebAPI.Models.Customer
+﻿namespace SealTypographicWebAPI.Models
 {
     /// <summary>
-    /// 客戶分頁搜尋
+    /// 圖片群組分頁搜尋
     /// </summary>
-    public class ImageGroupQueryPage
+    public class ImageGroupQuery
     {
         /// <summary>
-        /// 搜尋客戶ID或是名字
+        /// 搜尋群組名稱或是群組類別
         /// </summary>
-        /// <example>AAA001 or 公司</example>
-        public string? CustomerIdOrName { get; set; }
+        /// <example>公司章 customer</example>
+        public string? NameOrType { get; set; }
 
         /// <summary>
         /// 現在頁數(不得小於0)

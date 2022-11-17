@@ -10,6 +10,7 @@ using System.Reflection;
 using Microsoft.Extensions.Options;
 using Microsoft.EntityFrameworkCore;
 
+
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
@@ -39,6 +40,7 @@ builder.Services.AddScoped<IAccountantGroupService, AccountantGroupDeloitteServi
 builder.Services.AddScoped<ILetterheadService, LetterheadDeloitteService>();
 builder.Services.AddSingleton<ResponseService>();
 builder.Services.AddSingleton<StatusService>();
+builder.Services.AddScoped<ImageGroupService>();
 #endregion
 
 #region -- ConectionString --
@@ -58,6 +60,10 @@ builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddSwaggerGen(c =>
 {
+    //Set the comments path for the Swagger JSON and UI.
+    string xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    string xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+
     c.SwaggerDoc("v1", new OpenApiInfo
     {
         Version = "v1",
@@ -76,21 +82,22 @@ builder.Services.AddSwaggerGen(c =>
         //    Url = new Uri("https://example.com/license"),
         //}
     });
-    //Set the comments path for the Swagger JSON and UI.
-    string xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-    string xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+
+
+    //@解決部份宣告不為nullable 但還是nullable:true 的問題
+    c.SupportNonNullableReferenceTypes();
 
     c.IncludeXmlComments(xmlPath,true);
-    //@解決部份宣告不為nullable 但還是nullable:true 的問題
-    c.SupportNonNullableReferenceTypes();   
+
 });
+
 
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI();    
 }
 
 app.UseCors(MyAllowSpecificOrigins);

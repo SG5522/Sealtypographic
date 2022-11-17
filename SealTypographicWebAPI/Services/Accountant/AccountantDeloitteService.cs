@@ -2,7 +2,6 @@
 using SealTypographicWebAPI.Models.Accountant;
 using SealTypographicWebAPI.DbModels;
 using SealTypographicWebAPI.Consts;
-using System.Linq;
 
 namespace SealTypographicWebAPI.Services.Accountant
 {
@@ -50,7 +49,7 @@ namespace SealTypographicWebAPI.Services.Accountant
                                       accountant.AccountantGroupId,
                                       accountantGroupName = accountantGroup.Name
                                   };
-                                        
+         
             if (accountantQuery.Any())
             {
                 var accountant = accountantQuery.First();
@@ -167,7 +166,6 @@ namespace SealTypographicWebAPI.Services.Accountant
             Response response = new();
             var accountantQuery = dbContext.Accountants
                                     .Where(accountant => accountant.Id == accountantBaseData.Id);
-
 
             if(!accountantQuery.Any())
             {

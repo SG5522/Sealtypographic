@@ -44,7 +44,7 @@ namespace SealTypographicWebAPI.Controllers
         /// <returns></returns>
         [HttpGet]
         //public CustomerResponsePage GetCustomerViewModels(string customerIDOrName, int thisPage, int pageSize)
-        public CustomerResponsePage GetCustomerViewModels([FromQuery]CustomerQueryPage customerQueryPage)
+        public CustomerResponsePage GetCustomerViewModels([FromQuery]ImageGroupQueryPage customerQueryPage)
         {         
             try
             {                

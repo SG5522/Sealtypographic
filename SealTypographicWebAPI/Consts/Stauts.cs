@@ -11,14 +11,19 @@
         Pending = 0,
 
         /// <summary>
-        /// 已審
+        /// 通過(審核完成)
         /// </summary>
-        Reviewed = 1,
+        Approval = 1,
+
+        /// <summary>
+        /// 退件
+        /// </summary>
+        Reject = 2,
 
         /// <summary>
         /// 隱藏(被刪除時的狀態)
         /// </summary>
-        Hidden = 2,
+        Hidden = 3,
 
     }
 }

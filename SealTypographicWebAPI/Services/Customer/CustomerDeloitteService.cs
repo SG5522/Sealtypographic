@@ -70,7 +70,7 @@ namespace SealTypographicWebAPI.Services.Customer
         /// </summary>
         /// <param name="customerQueryPage">搜尋條件</param>  
         /// <returns></returns>
-        public CustomerResponsePage GetCustomerViewModels(CustomerQueryPage customerQueryPage)
+        public CustomerResponsePage GetCustomerViewModels(ImageGroupQueryPage customerQueryPage)
         {            
             List<CustomerViewModel> customerViewModels = new();
             Response response = new();

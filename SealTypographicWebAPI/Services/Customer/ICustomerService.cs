@@ -20,7 +20,7 @@ namespace SealTypographicWebAPI.Services.Customer
         /// </summary>
         /// <param name="customerQueryPage">客戶分頁搜尋</param>        
         /// <returns></returns>
-        CustomerResponsePage GetCustomerViewModels(CustomerQueryPage customerQueryPage);
+        CustomerResponsePage GetCustomerViewModels(ImageGroupQueryPage customerQueryPage);
 
         /// <summary>
         /// 建立顧客資料

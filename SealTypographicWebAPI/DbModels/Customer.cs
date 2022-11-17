@@ -2,12 +2,12 @@
 {
     /// <summary>
     /// 客戶資料表
-    /// </summary>    
+    /// </summary>        
     public class Customer
     {
         /// <summary>
         /// 客戶ID
-        /// </summary>
+        /// </summary>        
         public string Id { get; set; } = null!;
 
         /// <summary>
@@ -47,5 +47,10 @@
         /// 2.刪除(系統管理員可以看到資料)
         /// </summary>
         public int Status { get; set; }
+
+        /// <summary>
+        /// 客戶印鑑資料(歷程)
+        /// </summary>
+        public List<CustomerSealJournal> CustomerSealJournals { get; set; }
     }
 }

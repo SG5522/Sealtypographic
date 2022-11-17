@@ -17,7 +17,7 @@ namespace SealTypographicWebAPI.Services
             return status switch
             {
                 Status.Pending => "待審",
-                Status.Reviewed => "已審核",
+                Status.Approval => "已審核",
                 Status.Hidden => "刪除(隱藏)",
                 _ => "",
             };

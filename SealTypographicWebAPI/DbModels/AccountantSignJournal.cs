@@ -1,19 +1,14 @@
 ﻿namespace SealTypographicWebAPI.DbModels
 {
     /// <summary>
-    /// 客戶印鑑組歷程資料表
+    /// 會計師印鑑簽名組歷程資料表
     /// </summary>
-    public class CustomerSealJournal
+    public class AccountantSignJournal
     {
         /// <summary>
-        /// 客戶印鑑組ID
+        /// 會計印鑑簽名組ID
         /// </summary>
         public int Id { get; set; }
-
-        /// <summary>
-        /// 印鑑編號(排序) 1為起始
-        /// </summary>
-        public int No { get; set; }
 
         /// <summary>
         /// 圖檔路徑
@@ -31,28 +26,22 @@
         public DateTime CreateDate { get; set; }
 
         /// <summary>
-        /// 印鑑季度
+        /// 會計師ID
         /// </summary>
-        public string Quarter { get; set; } = null!;
-
-
-        /// <summary>
-        /// 客戶ID
-        /// </summary>
-        public string CustomerId { get; set; } = null!;
+        public string AccountantId { get; set; } = null!;
 
         /// <summary>
-        /// 客戶資料表
+        /// 會計師資料表
         /// </summary>
-        public Customer Customer { get; set; }
+        public Accountant Accountant { get; set; }
 
         /// <summary>
         /// 圖片群組ID 
         /// (目前暫定)
-        /// 1.公司章
-        /// 2.負責人
-        /// 3.經理
-        /// 4.會計主管    
+        /// 5.會計印鑑
+        /// 6.中文簽名
+        /// 7.英文簽名
+        /// 8.舊式簽名    
         /// </summary>
         public int ImageGroupId { get; set; }
 
