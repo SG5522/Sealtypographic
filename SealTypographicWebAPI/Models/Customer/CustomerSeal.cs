@@ -18,12 +18,7 @@
         /// 3.經理
         /// 4.會計主管    
         /// </summary>
-        public int GroupsId { get; set; }
-
-        /// <summary>
-        /// 印鑑群組名稱
-        /// </summary>
-        public string GroupsName { get; set; }
+        public int ImageGroupId { get; set; }
 
         /// <summary>
         /// 印鑑編號(排序) 1為起始

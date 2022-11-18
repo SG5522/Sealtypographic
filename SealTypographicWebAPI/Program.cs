@@ -40,6 +40,7 @@ builder.Services.AddScoped<IAccountantGroupService, AccountantGroupDeloitteServi
 builder.Services.AddScoped<ILetterheadService, LetterheadDeloitteService>();
 builder.Services.AddSingleton<ResponseService>();
 builder.Services.AddSingleton<StatusService>();
+builder.Services.AddSingleton<ImageService>();
 builder.Services.AddScoped<ImageGroupService>();
 #endregion
 

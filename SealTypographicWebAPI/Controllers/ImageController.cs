@@ -11,16 +11,21 @@ namespace SealTypographicWebAPI.Controllers
     [Route("api/[controller]")]
     [Produces("application/json")]
     [ApiController]
-    public class ImageGetController : ControllerBase
+    public class ImageController : ControllerBase
     {
         private readonly ScanConfigPath _scanConfig;
+
+        private readonly ImageService imageService;
+
         /// <summary>
         /// 注入appsetting的ScanConfigPath資料
         /// </summary>
         /// <param name="options"></param>
-        public ImageGetController(IOptionsMonitor<ScanConfigPath> options)
+        /// <param name="imageService"></param>
+        public ImageController(IOptionsMonitor<ScanConfigPath> options, ImageService imageService)
         {
             _scanConfig = options.CurrentValue;
+            this.imageService = imageService;
         }
         /// <summary>
         /// 取得圖檔並顯示指定的圖
@@ -44,9 +49,8 @@ namespace SealTypographicWebAPI.Controllers
                 default:
                     imagepath = _scanConfig.ScanImagePath;
                     break;
-            }
-            ImageService imageGetData = new();
-            Image? imageData = imageGetData.GetData(imagepath, imageName);
+            }            
+            Image? imageData = imageService.GetData(imagepath, imageName);
             if (imageData != null)
             {
                 //轉成image Base64
@@ -54,5 +58,16 @@ namespace SealTypographicWebAPI.Controllers
             }
             return "~/img/NoImage.svg";
         }
+        /// <summary>
+        /// 取得Base64字串
+        /// </summary>
+        /// <param name="imagePath"></param>
+        /// <returns></returns>
+        [HttpGet("{imagePath}")]
+        public string GetImageBase64(string imagePath) 
+        {
+            return imageService.GetImageBase64(imagePath);
+        }
+
     }
 }

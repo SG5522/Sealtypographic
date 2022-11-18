@@ -36,6 +36,18 @@ namespace SealTypographicWebAPI.Services
         }
 
         /// <summary>
+        /// 取得圖片base64字串
+        /// </summary>
+        /// <param name="imagePath">圖檔路徑</param>
+        /// <returns></returns>
+
+        public string GetImageBase64(string imagePath)
+        {
+            byte[] Base64 = ImageResize.ReDrawImgToBytes(imagePath, 1, 1);
+            return "data:" + GetType(imagePath) + ";base64," + Convert.ToBase64String(Base64, 0, Base64.Length);            
+        }
+
+        /// <summary>
         /// 取得型態
         /// </summary>
         /// <param name="fileName">輸入檔案</param>
