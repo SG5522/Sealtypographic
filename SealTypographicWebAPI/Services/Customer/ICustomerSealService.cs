@@ -9,12 +9,19 @@ namespace SealTypographicWebAPI.Services.Customer
     public interface ICustomerSealService
     {
         /// <summary>
-        /// 取得顧客印鑑組
+        /// 取得顧客印鑑季度表
         /// </summary>
-        /// <param name="customerID">顧客ID</param>
-        /// <param name="quarter">季度</param>
+        /// <param name="customerID">顧客ID</param>        
         /// <returns></returns>
-        CustomerSeals GetCustomerSeals(string customerID, string quarter);
+        CustomerSealQuarters GetCustomerSealQuarters(string customerID);
+
+
+        /// <summary>
+        /// 取得顧客印鑑
+        /// </summary>
+        /// <param name="customerSealQuarter"></param>
+        /// <returns></returns>
+        CustomerSealViewModels GetCustomerSealViewModels(CustomerSealQuarter customerSealQuarter);
 
         /// <summary>
         /// 新增印鑑組
@@ -28,7 +35,7 @@ namespace SealTypographicWebAPI.Services.Customer
         /// </summary>
         /// <param name="customerSeals">印鑑資料</param>
         /// <returns></returns>
-        Response UpdateCustomerSeals(List<CustomerSeal> customerSeals);
+        Response UpdateCustomerSeals(List<CustomerSealPostData> customerSeals);
 
         /// <summary>
         /// 刪除印鑑組

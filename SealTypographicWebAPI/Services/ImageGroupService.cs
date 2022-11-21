@@ -130,7 +130,7 @@ namespace SealTypographicWebAPI.Services
         {
             Response response = new();
             var imageGroupQuery = dbContext.ImageGroups
-                                .Where(imageGroup => imageGroup.Id == imageGroup.Id);
+                                .Where(imageGroup => imageGroup.Id == imageGroupViewModel.Id);
 
             if (!imageGroupQuery.Any())
             {

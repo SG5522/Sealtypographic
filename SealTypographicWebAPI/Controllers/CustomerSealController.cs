@@ -22,58 +22,82 @@ namespace SealTypographicWebAPI.Controllers
         protected readonly ICustomerSealService customerSealService;
 
         /// <summary>
+        /// 回傳結果
+        /// </summary>
+        protected readonly ResponseService responseService;
+
+        /// <summary>
         /// 注入顧客interface
         /// </summary>
         /// <param name="customerSealService"></param>
-        public CustomerSealController(ICustomerSealService customerSealService)
+        /// <param name="responseService">回傳結果</param>
+        public CustomerSealController(ICustomerSealService customerSealService, ResponseService responseService)
         {
             this.customerSealService = customerSealService;
+            this.responseService = responseService;
         }
 
         /// <summary>
-        /// 錯誤訊息
+        /// 取得顧客印鑑季度表
         /// </summary>
-        protected ResponseService responseService = new();
-
-        /// <summary>
-        /// 取得客戶印鑑組
-        /// </summary>
-        /// <param name="customerID">顧客ID(顧表表ID 非勤業自行定義的六碼英數字)</param>
-        /// <param name="quarter">季度</param>
-        /// <returns></returns>        
-        [HttpGet("{customerID}/{quarter}")]
-        public CustomerSeals Get(string customerID, string quarter)
+        /// <param name="customerId">顧客ID</param>
+        /// <returns></returns>
+        [HttpGet("customerId")]
+        public CustomerSealQuarters Get(string customerId)
         {
             try
             {
-                return customerSealService.GetCustomerSeals(customerID, quarter);
+                return customerSealService.GetCustomerSealQuarters(customerId);
             }
             catch
             {
                 Response response = responseService.Get(ResponseCode.InternalServerError);
-                return new CustomerSeals()
+                return new CustomerSealQuarters()
                 {
                     Code = response.Code,
                     Message = response.Message,
                 };
             }
         }
-        
+
+        /// <summary>
+        /// 取得客戶印鑑組
+        /// </summary>
+        /// <param name="customerSealQuarter">關鑑字</param>        
+        /// <returns></returns>        
+        [HttpGet]
+        public CustomerSealViewModels Get([FromQuery]CustomerSealQuarter customerSealQuarter)
+        {
+            try
+            {
+                return customerSealService.GetCustomerSealViewModels(customerSealQuarter);
+            }
+            catch
+            {
+                Response response = responseService.Get(ResponseCode.InternalServerError);
+                return new CustomerSealViewModels()
+                {
+                    Code = response.Code,
+                    Message = response.Message,
+                };
+            }
+        }        
+
         /// <summary>
         /// 建立客戶資料
         /// </summary>        
         /// <param name="customerSeals">客戶印鑑組資料(Json)</param>
         /// <returns></returns>
         [HttpPost]
-        public IActionResult Post(List<CustomerSeal> customerSeals)
+        public Response Post(List<CustomerSeal> customerSeals)
         {
             try
             {
-                return Ok("OK");
+                return customerSealService.CreateCustomerSeals(customerSeals);
             }
             catch
             {
-                return NotFound(responseService.Get(ResponseCode.InternalServerError));
+                return responseService.Get(ResponseCode.InternalServerError);
             }
         }
         /// <summary>
@@ -82,15 +106,15 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="customerSealAddIDs">印鑑資料</param>
         /// <returns></returns>
         [HttpPut]
-        public IActionResult Put(List<CustomerSealWithId> customerSealAddIDs)
+        public Response Put(List<CustomerSealPostData> customerSealAddIDs)
         {
             try
             {
-                return Ok("OK");
+                return customerSealService.UpdateCustomerSeals(customerSealAddIDs);
             }
             catch
             {
-                return NotFound(responseService.Get(ResponseCode.InternalServerError));
+                return responseService.Get(ResponseCode.InternalServerError);
             }
         }
         /// <summary>
