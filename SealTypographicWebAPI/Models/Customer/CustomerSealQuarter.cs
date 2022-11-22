@@ -8,11 +8,13 @@
         /// <summary>
         /// 客戶ID
         /// </summary>
+        /// <example>aaa001</example>
         public string CustomerId { get; set; }
 
         /// <summary>
         /// 印鑑季度
         /// </summary>
+        /// <example>111年Q1</example>
         public string Quarter { get; set; }
     }
 

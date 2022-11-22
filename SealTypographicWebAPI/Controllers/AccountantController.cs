@@ -16,7 +16,7 @@ namespace SealTypographicWebAPI.Controllers
     [Route("api/[controller]")]
     [Produces("application/json")]
     [ApiController]
-    public class AccountantDataController : ControllerBase
+    public class AccountantController : ControllerBase
     {
         /// <summary>
         /// 宣告會計師資料處理的interface
@@ -33,7 +33,7 @@ namespace SealTypographicWebAPI.Controllers
         /// </summary>
         /// <param name="accountantService">管理會計師資料</param>
         /// <param name="responseService">回傳結果</param>
-        public AccountantDataController(IAccountantService accountantService, ResponseService responseService)
+        public AccountantController(IAccountantService accountantService, ResponseService responseService)
         {
             this.accountantService = accountantService;
             this.responseService = responseService;
@@ -90,7 +90,7 @@ namespace SealTypographicWebAPI.Controllers
         /// </summary>
         /// <param name="accountantBaseData"></param>
         [HttpPost]
-        public Response Post(AccountantBaseData accountantBaseData)
+        public Response Post(AccountantData accountantBaseData)
         {
             try
             {
@@ -107,7 +107,7 @@ namespace SealTypographicWebAPI.Controllers
         /// </summary>
         /// <param name="accountantBaseData"></param>        
         [HttpPut]
-        public Response Put(AccountantBaseData accountantBaseData)
+        public Response Put(AccountantData accountantBaseData)
         {
             try
             {

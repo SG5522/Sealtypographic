@@ -3,19 +3,19 @@
     /// <summary>
     /// 客戶資料
     /// </summary>
-    public class CustomerBaseData
+    public class CustomerData
     {
         /// <summary>
         /// 客戶ID(更新或搜尋使用)
         /// </summary>
         /// <example>AAA001</example>
-        public string Id { get; set; } = null!;
+        public string Id { get; set; }
 
         /// <summary>
         /// 統一編號 (business administration number)
         /// </summary>
         /// <example>12345678</example>
-        public string BAN { get; set; } = null!;
+        public string BAN { get; set; }
 
         /// <summary>
         /// 證券代號

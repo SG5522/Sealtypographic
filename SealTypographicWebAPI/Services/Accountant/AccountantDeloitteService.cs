@@ -161,7 +161,7 @@ namespace SealTypographicWebAPI.Services.Accountant
         /// </summary>
         /// <param name="accountantBaseData">基本資料</param>
         /// <returns></returns>
-        public Response CreateAccountant(AccountantBaseData accountantBaseData)
+        public Response CreateAccountant(AccountantData accountantBaseData)
         {
             Response response = new();
             var accountantQuery = dbContext.Accountants
@@ -197,7 +197,7 @@ namespace SealTypographicWebAPI.Services.Accountant
         /// 更新會計師基本資料
         /// </summary>
         /// <param name="accountantBaseData">會計師基本資料 accountantBaseData.id 為搜尋條件</param>        
-        public Response UpdateAccountant(AccountantBaseData accountantBaseData)
+        public Response UpdateAccountant(AccountantData accountantBaseData)
         {
             Response response = new();
             var accountantQuery = dbContext.Accountants

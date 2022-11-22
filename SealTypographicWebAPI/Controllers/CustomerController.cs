@@ -90,7 +90,7 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="customerData">基本資料</param>
         /// <returns></returns>
         [HttpPost]
-        public Response Post(CustomerBaseData customerData)
+        public Response Post(CustomerData customerData)
         {
             try
             {                                          
@@ -107,7 +107,7 @@ namespace SealTypographicWebAPI.Controllers
         /// </summary>
         /// <param name="customerData">基本資料</param>
         [HttpPut]
-        public Response Put(CustomerBaseData customerData)
+        public Response Put(CustomerData customerData)
         {
             try
             {                

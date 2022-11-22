@@ -3,7 +3,7 @@
     /// <summary>
     /// 會計資料
     /// </summary>
-    public class AccountantBaseData
+    public class AccountantData
     {
         /// <summary>
         /// 會計師ID

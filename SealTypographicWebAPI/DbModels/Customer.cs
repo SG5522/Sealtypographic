@@ -8,12 +8,12 @@
         /// <summary>
         /// 客戶ID
         /// </summary>        
-        public string Id { get; set; } = null!;
+        public string Id { get; set; }
 
         /// <summary>
         /// 統一編號 (business administration number)
         /// </summary>
-        public string BAN { get; set; } = null!;
+        public string BAN { get; set; }
 
         /// <summary>
         /// 證券代號
@@ -43,8 +43,9 @@
         /// <summary>
         /// 顧客狀態
         /// 0.待審查
-        /// 1.已審查
-        /// 2.刪除(系統管理員可以看到資料)
+        /// 1.通過(審核完成)
+        /// 2.退件
+        /// 3.刪除(系統管理員可以看到資料)
         /// </summary>
         public int Status { get; set; }
 

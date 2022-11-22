@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using Microsoft.OpenApi.Models;
+﻿using Microsoft.OpenApi.Models;
 using SealTypographicWebAPI.Models;
 using SealTypographicWebAPI.Services;
 using SealTypographicWebAPI.Services.Customer;
@@ -7,8 +6,8 @@ using SealTypographicWebAPI.Services.Accountant;
 using SealTypographicWebAPI.Services.Letterhead;
 using SealTypographicWebAPI.DbModels;
 using System.Reflection;
-using Microsoft.Extensions.Options;
 using Microsoft.EntityFrameworkCore;
+using Serilog;
 
 
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
@@ -32,6 +31,8 @@ builder.Services.AddCors(options =>
                       });
 });
 
+builder.Host.UseSerilog();// <-SeriLog 
+
 #region -- Service --
 builder.Services.AddScoped<ICustomerService, CustomerDeloitteService>();
 builder.Services.AddScoped<ICustomerSealService, CustomerSealsDeloitteService>();
@@ -42,6 +43,7 @@ builder.Services.AddSingleton<ResponseService>();
 builder.Services.AddSingleton<StatusService>();
 builder.Services.AddSingleton<ImageService>();
 builder.Services.AddScoped<ImageGroupService>();
+builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
 #endregion
 
 #region -- ConectionString --
@@ -103,6 +105,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseCors(MyAllowSpecificOrigins);
 app.UseAuthorization();
+app.UseSerilogRequestLogging(); // <-SeriLog 
 
 app.MapControllers();
 

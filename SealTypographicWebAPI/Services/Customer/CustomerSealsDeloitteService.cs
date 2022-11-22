@@ -1,9 +1,11 @@
-﻿using EFCore.BulkExtensions;
+﻿using AutoMapper;
+using EFCore.BulkExtensions;
 using Microsoft.EntityFrameworkCore;
 using SealTypographicWebAPI.Consts;
 using SealTypographicWebAPI.DbModels;
 using SealTypographicWebAPI.Models;
 using SealTypographicWebAPI.Models.Customer;
+using System.Linq;
 
 namespace SealTypographicWebAPI.Services.Customer
 {
@@ -14,16 +16,18 @@ namespace SealTypographicWebAPI.Services.Customer
     {
         private readonly SealTypographicDbContext dbContext;
         private readonly ResponseService responseService;
-
+        private readonly IMapper mapper;
         /// <summary>
         /// 取得DB與ResponseService
         /// </summary>
         /// <param name="dbContext"></param>
         /// <param name="responseService"></param>
-        public CustomerSealsDeloitteService(SealTypographicDbContext dbContext, ResponseService responseService)
+        /// <param name="mapper"></param>
+        public CustomerSealsDeloitteService(SealTypographicDbContext dbContext, ResponseService responseService,IMapper mapper)
         {
             this.dbContext = dbContext;
             this.responseService = responseService;
+            this.mapper = mapper;
         }
 
         /// <summary>
@@ -77,36 +81,21 @@ namespace SealTypographicWebAPI.Services.Customer
         {
             List<CustomerSealViewModel> customerSealViewModels = new();
             Response response;
-            var customerSealQuery = (from customerSealJournal in dbContext.Set<CustomerSealJournal>()
-                                    join imageGroup in dbContext.Set<ImageGroup>()
-                                    on customerSealJournal.ImageGroupId equals imageGroup.Id
-                                    where customerSealJournal.CustomerId == customerSealQuarter.CustomerId
-                                    && customerSealJournal.Quarter == customerSealQuarter.Quarter
-                                    select new
-                                    {
-                                        customerSealJournal.CustomerId,
-                                        customerSealJournal.ImageGroupId,
-                                        ImageGroupName = imageGroup.Name,
-                                        customerSealJournal.No,
-                                        customerSealJournal.ImagePath,
-                                        customerSealJournal.Quarter,
-                                    })
-                                    .OrderBy(customerSealJournal => customerSealJournal.ImageGroupId)
-                                    .ToList();
-                                    
+            List<CustomerSealJournal> customerSealQuery = dbContext.CustomerSealJournals.Where
+                                                                    (
+                                                                        customerSealJournal => customerSealJournal.CustomerId == customerSealQuarter.CustomerId 
+                                                                        && customerSealJournal.Quarter == customerSealQuarter.Quarter
+                                                                    )
+                                                                    .Include(customerSealJournal => customerSealJournal.ImageGroup)
+                                                                    .OrderBy(customerSealJournal => customerSealJournal.ImageGroupId)
+                                                                    .ToList();
             if (customerSealQuery.Any()) 
             {
-                foreach(var customerSealJournal in customerSealQuery)
+                foreach(CustomerSealJournal customerSealJournal in customerSealQuery)
                 {
-                    customerSealViewModels.Add(new CustomerSealViewModel
-                    {
-                        CustomerId = customerSealJournal.CustomerId,
-                        ImageGroupId = customerSealJournal.ImageGroupId,
-                        ImageGroupName = customerSealJournal.ImageGroupName,
-                        No = customerSealJournal.No,                        
-                        ImageBase64 = customerSealJournal.ImagePath, //之後會在做BASE64轉換
-                        Quarter = customerSealJournal.Quarter
-                    });
+                    CustomerSealViewModel customerSealViewModel = mapper.Map<CustomerSealViewModel>(customerSealJournal);
+                    customerSealViewModel.ImageBase64 = "image/..."; //之後會在做BASE64轉換
+                    customerSealViewModels.Add(customerSealViewModel);
                 }
                 response = responseService.Get(ResponseCode.Success);
             }

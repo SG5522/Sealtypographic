@@ -102,6 +102,7 @@ namespace SealTypographicWebAPI.Migrations
                     AvailableDate = table.Column<DateTime>(type: "TEXT", nullable: false),
                     CreateDate = table.Column<DateTime>(type: "TEXT", nullable: false),
                     Quarter = table.Column<string>(type: "TEXT", nullable: false),
+                    Stauts = table.Column<int>(type: "INTEGER", nullable: false),
                     CustomerId = table.Column<string>(type: "TEXT", nullable: false),
                     ImageGroupId = table.Column<int>(type: "INTEGER", nullable: false)
                 },

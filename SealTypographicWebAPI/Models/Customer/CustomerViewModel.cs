@@ -8,18 +8,18 @@
         /// <summary>
         /// 顧客ID
         /// </summary>
-        public string CustomerID { get; set; } = null!;
+        public string Id { get; set; }
 
         /// <summary>
         /// 統一編號 (Business administration number)
         /// </summary>
-        public string BAN { get; set; } = null!;
+        public string BAN { get; set; }
 
 
         /// <summary>
         /// 公司名稱
         /// </summary>
-        public string Name { get; set; } = null!;
+        public string Name { get; set; }
 
         /// <summary>
         /// 顧客狀態

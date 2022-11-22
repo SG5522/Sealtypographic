@@ -28,14 +28,14 @@ namespace SealTypographicWebAPI.Services.Accountant
         /// 建立會計師資料
         /// </summary>
         /// <param name="accountantBaseData">基本資料</param>        
-        Response CreateAccountant(AccountantBaseData accountantBaseData);
+        Response CreateAccountant(AccountantData accountantBaseData);
 
 
         /// <summary>
         /// 更新客戶基本資料
         /// </summary>
         /// <param name="accountantBaseData">基本資料</param>
-        Response UpdateAccountant(AccountantBaseData accountantBaseData);
+        Response UpdateAccountant(AccountantData accountantBaseData);
 
         /// <summary>
         /// 刪除客戶基本資料(變更狀態使其一般USER無法看到)

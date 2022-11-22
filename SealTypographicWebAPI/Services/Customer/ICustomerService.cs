@@ -26,13 +26,13 @@ namespace SealTypographicWebAPI.Services.Customer
         /// 建立顧客資料
         /// </summary>
         /// <param name="customer">基本資料</param>
-        Response CreateCustomer(CustomerBaseData customer);
+        Response CreateCustomer(CustomerData customer);
 
         /// <summary>
         /// 更新客戶基本資料
         /// </summary>
         /// <param name="customer">基本資料</param>
-        Response UpdateCustomer(CustomerBaseData customer);
+        Response UpdateCustomer(CustomerData customer);
 
         /// <summary>
         /// 刪除客戶基本資料(變更狀態使其一般USER無法看到)

@@ -8,6 +8,6 @@
         /// <summary>
         /// 顧客基本資料
         /// </summary>
-        public CustomerBaseData BaseData { get; set; }
+        public CustomerData? Data { get; set; }
     }
 }

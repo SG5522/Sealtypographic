@@ -6,6 +6,11 @@
     public class CustomerSealViewModel
     {
         /// <summary>
+        /// 客戶印鑑組ID
+        /// </summary>
+        public int Id { get; set; }
+
+        /// <summary>
         /// 客戶ID
         /// </summary>
         /// <example>aaa001</example>

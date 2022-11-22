@@ -11,7 +11,7 @@ using SealTypographicWebAPI.DbModels;
 namespace SealTypographicWebAPI.Migrations
 {
     [DbContext(typeof(SealTypographicDbContext))]
-    [Migration("20221117065903_InitialCreate")]
+    [Migration("20221122012255_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -161,6 +161,9 @@ namespace SealTypographicWebAPI.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
+                    b.Property<int>("Stauts")
+                        .HasColumnType("INTEGER");
+
                     b.HasKey("Id");
 
                     b.HasIndex("CustomerId");
@@ -170,7 +173,7 @@ namespace SealTypographicWebAPI.Migrations
                     b.ToTable("CustomerSealJournals");
                 });
 
-            modelBuilder.Entity("SealTypographicWebAPI.DbModels.ImageGroupViewModel", b =>
+            modelBuilder.Entity("SealTypographicWebAPI.DbModels.ImageGroup", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -270,7 +273,7 @@ namespace SealTypographicWebAPI.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("SealTypographicWebAPI.DbModels.ImageGroupViewModel", "ImageGroupViewModel")
+                    b.HasOne("SealTypographicWebAPI.DbModels.ImageGroup", "ImageGroup")
                         .WithMany("AccountantSignJournals")
                         .HasForeignKey("ImageGroupId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -278,7 +281,7 @@ namespace SealTypographicWebAPI.Migrations
 
                     b.Navigation("Accountant");
 
-                    b.Navigation("ImageGroupViewModel");
+                    b.Navigation("ImageGroup");
                 });
 
             modelBuilder.Entity("SealTypographicWebAPI.DbModels.CustomerSealJournal", b =>
@@ -289,7 +292,7 @@ namespace SealTypographicWebAPI.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("SealTypographicWebAPI.DbModels.ImageGroupViewModel", "ImageGroupViewModel")
+                    b.HasOne("SealTypographicWebAPI.DbModels.ImageGroup", "ImageGroup")
                         .WithMany("CustomerSealJournals")
                         .HasForeignKey("ImageGroupId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -297,12 +300,12 @@ namespace SealTypographicWebAPI.Migrations
 
                     b.Navigation("Customer");
 
-                    b.Navigation("ImageGroupViewModel");
+                    b.Navigation("ImageGroup");
                 });
 
             modelBuilder.Entity("SealTypographicWebAPI.DbModels.LetterheadImageJournal", b =>
                 {
-                    b.HasOne("SealTypographicWebAPI.DbModels.ImageGroupViewModel", "ImageGroupViewModel")
+                    b.HasOne("SealTypographicWebAPI.DbModels.ImageGroup", "ImageGroup")
                         .WithMany("LetterheadImageJournals")
                         .HasForeignKey("ImageGroupId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -314,7 +317,7 @@ namespace SealTypographicWebAPI.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("ImageGroupViewModel");
+                    b.Navigation("ImageGroup");
 
                     b.Navigation("Letterhead");
                 });
@@ -329,7 +332,7 @@ namespace SealTypographicWebAPI.Migrations
                     b.Navigation("CustomerSealJournals");
                 });
 
-            modelBuilder.Entity("SealTypographicWebAPI.DbModels.ImageGroupViewModel", b =>
+            modelBuilder.Entity("SealTypographicWebAPI.DbModels.ImageGroup", b =>
                 {
                     b.Navigation("AccountantSignJournals");
 

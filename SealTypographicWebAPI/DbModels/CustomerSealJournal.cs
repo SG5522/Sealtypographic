@@ -35,6 +35,14 @@
         /// </summary>
         public string Quarter { get; set; } = null!;
 
+        /// <summary>
+        /// 印鑑狀態 
+        /// 0.待審查
+        /// 1.通過(審核完成)
+        /// 2.退件
+        /// 3.刪除(系統管理員可以看到資料)
+        /// </summary>
+        public int Stauts { get; set; } 
 
         /// <summary>
         /// 客戶ID

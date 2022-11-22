@@ -2,7 +2,8 @@
 using SealTypographicWebAPI.Models.Customer;
 using SealTypographicWebAPI.DbModels;
 using SealTypographicWebAPI.Consts;
-
+using AutoMapper;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace SealTypographicWebAPI.Services.Customer
 {
@@ -13,16 +14,19 @@ namespace SealTypographicWebAPI.Services.Customer
     {
         private readonly SealTypographicDbContext dbContext;
         private readonly ResponseService responseService;
+        private readonly IMapper mapper;
 
         /// <summary>
         /// 取得DB與ResponseService
         /// </summary>
         /// <param name="dbContext"></param>
         /// <param name="responseService"></param>
-        public CustomerDeloitteService(SealTypographicDbContext dbContext,ResponseService responseService)
+        /// <param name="mapper"></param>
+        public CustomerDeloitteService(SealTypographicDbContext dbContext,ResponseService responseService,IMapper mapper)
         {
             this.dbContext = dbContext;
             this.responseService = responseService;
+            this.mapper = mapper;
         }
 
         /// <summary>
@@ -32,27 +36,22 @@ namespace SealTypographicWebAPI.Services.Customer
         /// <returns></returns>
         public CustomerResponse GetCustomer(string customerId)
         {
-            CustomerBaseData customer = new();
-            Response response = new();
-            var customerQuery = dbContext.Customers                                   
+            CustomerData? customer = new();
+            Response response;
+            IQueryable<DbModels.Customer>? customerQuery = dbContext.Customers                                   
                                     .Where(customer => customer.Id == customerId);
-                                    
+            
             if (customerQuery.Any())
             {
-                var customerResponse = customerQuery.First();
-
-                customer.Id = customerResponse.Id;
-                customer.BAN = customerResponse.BAN;
-                customer.Name = customerResponse.Name;
-                customer.StockCode = customerResponse.StockCode;
-                customer.Address = customerResponse.Address;
-                customer.Telephone = customerResponse.Telephone;
-                customer.Fax = customerResponse.Fax;
+                
+                DbModels.Customer customerResponse = customerQuery.First();
+                customer = mapper.Map<CustomerData>(customerResponse);
 
                 response = responseService.Get(ResponseCode.Success);
             }
             else
-            {                
+            {
+                customer = null;
                 response = responseService.Get(ResponseCode.NoData);
             }
             return new CustomerResponse()
@@ -61,7 +60,7 @@ namespace SealTypographicWebAPI.Services.Customer
                 Code = response.Code,
                 Message = response.Message,
 
-                BaseData = customer
+                Data = customer
             };
         }
 
@@ -76,15 +75,20 @@ namespace SealTypographicWebAPI.Services.Customer
             Response response = new();
             int totalPage = 0;
             int totalCount = 0;
-            var customerQuery = dbContext.Customers.AsQueryable();
+            IQueryable<DbModels.Customer> customerQuery;
+
             if (customerQueryPage.CustomerIdOrName != null) 
             {
-                customerQuery = customerQuery.Where
+                customerQuery = dbContext.Customers.Where
                     (
                         customer =>
                         customer.Id.Contains(customerQueryPage.CustomerIdOrName)
                         || customer.Name.Contains(customerQueryPage.CustomerIdOrName)
                     );
+            }
+            else
+            {
+                customerQuery = dbContext.Customers;
             }
 
             customerQuery = customerQuery.OrderBy(customer => customer.Id);
@@ -97,17 +101,11 @@ namespace SealTypographicWebAPI.Services.Customer
                                           .Take(customerQueryPage.PageSize)
                                           .ToList();
                 //計算總頁數
-                totalPage = (customerQuery.Count() / customerQueryPage.PageSize) + (customerQuery.Count() % customerQueryPage.PageSize == 0 ? 0 : 1) ;
+                totalPage = (customerQuery.Count() / customerQueryPage.PageSize) + (customerQuery.Count() % customerQueryPage.PageSize == 0 ? 0 : 1);
                 totalCount = customerQuery.Count();
                 foreach (var customerBase in pageNumberCustomers)
                 {
-                    customerViewModels.Add(new CustomerViewModel()
-                    {
-                        CustomerID = customerBase.Id,
-                        BAN = customerBase.BAN,
-                        Name = customerBase.Name,
-                        Status = customerBase.Status
-                    });
+                    customerViewModels.Add(mapper.Map<CustomerViewModel>(customerBase));
                 }
                 //取得成功訊息
                 response = responseService.Get(ResponseCode.Success);
@@ -117,9 +115,11 @@ namespace SealTypographicWebAPI.Services.Customer
                 response = responseService.Get(ResponseCode.NoData);
             }
 
+
             return new CustomerResponsePage()
             {
                 PageNumber = customerQueryPage.PageNumber,
+                PageSize = customerQueryPage.PageSize,
                 TotalCount = totalCount,
                 TotalPage = totalPage,
                 Customers = customerViewModels,
@@ -133,26 +133,16 @@ namespace SealTypographicWebAPI.Services.Customer
         /// 新增顧客基本資料
         /// </summary>
         /// <param name="customerBaseData">基本資料</param>
-        public Response CreateCustomer(CustomerBaseData customerBaseData)
+        public Response CreateCustomer(CustomerData customerBaseData)
         {
             Response response = new();
-            var customerQuery = dbContext.Customers
+            IQueryable<DbModels.Customer> customerQuery = dbContext.Customers
                                 .Where(customer => customer.Id == customerBaseData.Id);
 
             if (!customerQuery.Any())
             {
-                DbModels.Customer dbcustomer = new()
-                {
-                    Id = customerBaseData.Id,
-                    Name = customerBaseData.Name,
-                    BAN = customerBaseData.BAN,
-                    Address = customerBaseData.Address,
-                    StockCode = customerBaseData.StockCode,
-                    Telephone = customerBaseData.Telephone,
-                    Fax = customerBaseData.Fax,
-                    Status = customerBaseData.Status
-                };
-                dbContext.Customers.Add(dbcustomer);
+                DbModels.Customer dbCustomer = mapper.Map<DbModels.Customer>(customerBaseData);
+                dbContext.Customers.Add(dbCustomer);
                 dbContext.SaveChanges();
                 response = responseService.Get(ResponseCode.Success);
             }
@@ -168,22 +158,16 @@ namespace SealTypographicWebAPI.Services.Customer
         /// 更新客戶基本資料
         /// </summary>
         /// <param name="customerBaseData">客戶基本資料 customerBaseData.id 為搜尋條件</param>        
-        public Response UpdateCustomer(CustomerBaseData customerBaseData)
+        public Response UpdateCustomer(CustomerData customerBaseData)
         {
             Response response = new();
-            var customerQuery = dbContext.Customers
-                                .Where(customer => customer.Id == customerBaseData.Id);
-
-            if(customerQuery.Any())
+            DbModels.Customer? customerQuery = dbContext.Customers
+                                .Where(customer => customer.Id == customerBaseData.Id)
+                                .FirstOrDefault();
+            
+            if (customerQuery != null)
             {
-                var customer = customerQuery.First();
-                customer.BAN = customerBaseData.BAN;
-                customer.Name = customerBaseData.Name;
-                customer.Address = customerBaseData.Address;
-                customer.StockCode = customerBaseData.StockCode;
-                customer.Telephone = customerBaseData.Telephone;
-                customer.Fax = customerBaseData.Fax;
-                customer.Status = customerBaseData.Status;
+                mapper.Map(customerBaseData, customerQuery);
                 dbContext.SaveChanges();
                 response = responseService.Get(ResponseCode.Success);
             }
