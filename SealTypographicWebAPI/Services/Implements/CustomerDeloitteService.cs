@@ -3,17 +3,16 @@ using SealTypographicWebAPI.Models.Customer;
 using SealTypographicWebAPI.DbModels;
 using SealTypographicWebAPI.Consts;
 using AutoMapper;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using SealTypographicWebAPI.Util;
 
-namespace SealTypographicWebAPI.Services.Customer
+namespace SealTypographicWebAPI.Services.Implements
 {
     /// <summary>
     /// 勤業用的顧客資料
     /// </summary>
     public class CustomerDeloitteService : ICustomerService
     {
-        private readonly SealTypographicDbContext dbContext;
-        private readonly ResponseService responseService;
+        private readonly SealTypographicDbContext dbContext;        
         private readonly IMapper mapper;
 
         /// <summary>
@@ -22,10 +21,9 @@ namespace SealTypographicWebAPI.Services.Customer
         /// <param name="dbContext"></param>
         /// <param name="responseService"></param>
         /// <param name="mapper"></param>
-        public CustomerDeloitteService(SealTypographicDbContext dbContext,ResponseService responseService,IMapper mapper)
+        public CustomerDeloitteService(SealTypographicDbContext dbContext, IMapper mapper)
         {
-            this.dbContext = dbContext;
-            this.responseService = responseService;
+            this.dbContext = dbContext;            
             this.mapper = mapper;
         }
 
@@ -38,21 +36,21 @@ namespace SealTypographicWebAPI.Services.Customer
         {
             CustomerData? customer = new();
             Response response;
-            IQueryable<DbModels.Customer>? customerQuery = dbContext.Customers                                   
+            IQueryable<Customer>? customerQuery = dbContext.Customers
                                     .Where(customer => customer.Id == customerId);
-            
+
             if (customerQuery.Any())
             {
-                
-                DbModels.Customer customerResponse = customerQuery.First();
+
+                Customer customerResponse = customerQuery.First();
                 customer = mapper.Map<CustomerData>(customerResponse);
 
-                response = responseService.Get(ResponseCode.Success);
+                response = ResponseUtil.Success();
             }
             else
             {
                 customer = null;
-                response = responseService.Get(ResponseCode.NoData);
+                response = ResponseUtil.NoData();
             }
             return new CustomerResponse()
             {
@@ -70,14 +68,14 @@ namespace SealTypographicWebAPI.Services.Customer
         /// <param name="customerQueryPage">搜尋條件</param>  
         /// <returns></returns>
         public CustomerResponsePage GetCustomerViewModels(ImageGroupQueryPage customerQueryPage)
-        {            
+        {
             List<CustomerViewModel> customerViewModels = new();
             Response response = new();
             int totalPage = 0;
             int totalCount = 0;
             IQueryable<DbModels.Customer> customerQuery;
 
-            if (customerQueryPage.CustomerIdOrName != null) 
+            if (customerQueryPage.CustomerIdOrName != null)
             {
                 customerQuery = dbContext.Customers.Where
                     (
@@ -101,18 +99,18 @@ namespace SealTypographicWebAPI.Services.Customer
                                           .Take(customerQueryPage.PageSize)
                                           .ToList();
                 //計算總頁數
-                totalPage = (customerQuery.Count() / customerQueryPage.PageSize) + (customerQuery.Count() % customerQueryPage.PageSize == 0 ? 0 : 1);
+                totalPage = customerQuery.Count() / customerQueryPage.PageSize + (customerQuery.Count() % customerQueryPage.PageSize == 0 ? 0 : 1);
                 totalCount = customerQuery.Count();
                 foreach (var customerBase in pageNumberCustomers)
                 {
                     customerViewModels.Add(mapper.Map<CustomerViewModel>(customerBase));
                 }
                 //取得成功訊息
-                response = responseService.Get(ResponseCode.Success);
+                response = ResponseUtil.Success();
             }
             else
             {
-                response = responseService.Get(ResponseCode.NoData);
+                response = ResponseUtil.NoData();
             }
 
 
@@ -144,11 +142,11 @@ namespace SealTypographicWebAPI.Services.Customer
                 DbModels.Customer dbCustomer = mapper.Map<DbModels.Customer>(customerBaseData);
                 dbContext.Customers.Add(dbCustomer);
                 dbContext.SaveChanges();
-                response = responseService.Get(ResponseCode.Success);
+                response = ResponseUtil.Success();
             }
             else
             {
-                response = responseService.Get(ResponseCode.UniqueConstraintFailed);
+                response = ResponseUtil.UniqueConstraintFailed();
             }
 
             return response;
@@ -164,16 +162,16 @@ namespace SealTypographicWebAPI.Services.Customer
             DbModels.Customer? customerQuery = dbContext.Customers
                                 .Where(customer => customer.Id == customerBaseData.Id)
                                 .FirstOrDefault();
-            
+
             if (customerQuery != null)
             {
                 mapper.Map(customerBaseData, customerQuery);
                 dbContext.SaveChanges();
-                response = responseService.Get(ResponseCode.Success);
+                response = ResponseUtil.Success();
             }
             else
             {
-                response = responseService.Get(ResponseCode.NoData);
+                response = ResponseUtil.NoData();
             }
 
             return response;
@@ -188,18 +186,18 @@ namespace SealTypographicWebAPI.Services.Customer
             Response response = new();
             var customerQuery = dbContext.Customers
                                 .Where(customer => customer.Id == customerId);
-            
-            if(customerQuery.Any())
+
+            if (customerQuery.Any())
             {
                 var customer = customerQuery.First();
                 customer.Status = 2;
                 dbContext.SaveChanges();
-                response = responseService.Get(ResponseCode.Success);
+                response = ResponseUtil.Success();
             }
             else
             {
-                response = responseService.Get(ResponseCode.NoData);
-            }            
+                response = ResponseUtil.NoData();
+            }
             return response;
         }
     }

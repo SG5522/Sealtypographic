@@ -48,6 +48,6 @@
         /// <summary>
         /// 圖片群組資料表 (使用印鑑、簽名、LOGO)
         /// </summary>
-        public ImageGroup ImageGroup { get; set; }
+        public SealMappingConfig ImageGroup { get; set; }
     }
 }

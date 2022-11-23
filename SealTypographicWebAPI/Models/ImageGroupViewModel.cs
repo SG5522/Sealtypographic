@@ -3,13 +3,19 @@
     /// <summary>
     /// 圖片群組 (使用印鑑、簽名、LOGO)
     /// </summary>
-    public class ImageGroupViewModel
+    public class SealMappingConfigViewModel
     {
+        /// <summary>
+        /// Type(customer、accountant、letterhead)
+        /// </summary>
+        /// <example>customer</example>
+        public string Type { get; set; }
+
         /// <summary>
         /// 群組ID
         /// </summary>
-        /// <example>1</example>
-        public int Id { get; set; }
+        /// <example></example>
+        public string SubId { get; set; }
 
         /// <summary>
         /// 群組名稱 (預設)
@@ -25,17 +31,5 @@
         /// </summary>
         /// <example>公司章</example>
         public string Name { get; set; }
-
-        /// <summary>
-        /// Type(customer、accountant、letterhead)
-        /// </summary>
-        /// <example>customer</example>
-        public string Type { get; set; }
-
-        /// <summary>
-        /// 說明
-        /// </summary>
-        /// <example>des...</example>
-        public string Description { get; set; }
     }
 }

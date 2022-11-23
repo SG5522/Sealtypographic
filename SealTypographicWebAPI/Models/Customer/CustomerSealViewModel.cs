@@ -30,7 +30,7 @@
         /// <summary>
         /// 客戶印鑑群組名稱
         /// </summary>        
-        public string ImageGroupName { get; set; }
+        public string SealMappingConfigName { get; set; }
 
         /// <summary>
         /// 印鑑編號(排序) 1為起始

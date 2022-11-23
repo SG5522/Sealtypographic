@@ -1,14 +1,14 @@
 ﻿using Microsoft.OpenApi.Models;
 using SealTypographicWebAPI.Models;
 using SealTypographicWebAPI.Services;
-using SealTypographicWebAPI.Services.Customer;
-using SealTypographicWebAPI.Services.Accountant;
-using SealTypographicWebAPI.Services.Letterhead;
 using SealTypographicWebAPI.DbModels;
 using System.Reflection;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
-
+using SealTypographicWebAPI.Util;
+using SealTypographicWebAPI.Utils;
+using SealTypographicWebAPI.Services.Implements;
+using SealTypographicWebAPI.Config;
 
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
@@ -31,29 +31,33 @@ builder.Services.AddCors(options =>
                       });
 });
 
-builder.Host.UseSerilog();// <-SeriLog 
-
-#region -- Service --
-builder.Services.AddScoped<ICustomerService, CustomerDeloitteService>();
-builder.Services.AddScoped<ICustomerSealService, CustomerSealsDeloitteService>();
-builder.Services.AddScoped<IAccountantService, AccountantDeloitteService>();
-builder.Services.AddScoped<IAccountantGroupService, AccountantGroupDeloitteService>();
-builder.Services.AddScoped<ILetterheadService, LetterheadDeloitteService>();
-builder.Services.AddSingleton<ResponseService>();
-builder.Services.AddSingleton<StatusService>();
-builder.Services.AddSingleton<ImageService>();
-builder.Services.AddScoped<ImageGroupService>();
-builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
-#endregion
+//builder.Host.UseSerilog();// <-SeriLog 
 
 #region -- ConectionString --
-builder.Services.AddDbContext<SealTypographicDbContext>(optionsBuilder =>
+builder.Services.AddDbContextPool<SealTypographicDbContext>(optionsBuilder =>
 {
     optionsBuilder.UseSqlite(config.GetConnectionString("Sqlite"));
     //MySqlServerVersion serverVersion = new(new Version(5, 7, 27));
     //optionsBuilder.UseMySql(config.GetConnectionString("MySql"), serverVersion);
-});
+},128);
 #endregion
+
+#region -- Service --
+
+builder.Services.AddSingleton<ImageService>();
+builder.Services.AddAutoMapper(typeof(MapperProfile));
+
+//DB Process
+builder.Services.AddScoped<ICustomerService, CustomerDeloitteService>();
+builder.Services.AddScoped<ICustomerSealService, CustomerSealDeloitteService>();
+builder.Services.AddScoped<IAccountantService, AccountantDeloitteService>();
+builder.Services.AddScoped<IAccountantGroupService, AccountantGroupDeloitteService>();
+builder.Services.AddScoped<ILetterheadService, LetterheadDeloitteService>();
+builder.Services.AddScoped<SealMappingConfigService>();
+
+#endregion
+
+
 
 // Add services to the container.
 builder.Services.AddControllers();
@@ -105,7 +109,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseCors(MyAllowSpecificOrigins);
 app.UseAuthorization();
-app.UseSerilogRequestLogging(); // <-SeriLog 
+//app.UseSerilogRequestLogging(); // <-SeriLog 
 
 app.MapControllers();
 

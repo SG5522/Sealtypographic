@@ -2,7 +2,7 @@
 using SealTypographicWebAPI.Models.Accountant;
 using SealTypographicWebAPI.Models.Customer;
 
-namespace SealTypographicWebAPI.Services.Accountant
+namespace SealTypographicWebAPI.Services
 {
     /// <summary>
     /// 會計師

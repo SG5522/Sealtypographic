@@ -1,7 +1,7 @@
 ﻿using SealTypographicWebAPI.Models;
 using SealTypographicWebAPI.Models.Customer;
 
-namespace SealTypographicWebAPI.Services.Customer
+namespace SealTypographicWebAPI.Services
 {
     /// <summary>
     /// 顧客印鑑組Interface

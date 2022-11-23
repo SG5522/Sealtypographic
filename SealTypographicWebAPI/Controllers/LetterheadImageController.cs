@@ -3,7 +3,7 @@ using Newtonsoft.Json;
 using SealTypographicWebAPI.Consts;
 using SealTypographicWebAPI.Models;
 using SealTypographicWebAPI.Services;
-using SealTypographicWebAPI.Services.Letterhead;
+using SealTypographicWebAPI.Util;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -33,7 +33,7 @@ namespace SealTypographicWebAPI.Controllers
         /// <summary>
         /// 錯誤訊息
         /// </summary>
-        protected ResponseService responseService = new();
+        protected ResponseUtil responseService = new();
 
         /// <summary>
         /// 取得信頭
@@ -50,7 +50,7 @@ namespace SealTypographicWebAPI.Controllers
             }
             catch
             {
-                return NotFound(responseService.Get(ResponseCode.InternalServerError));
+                return NotFound(ResponseUtil.InternalServerError());
             }
         }
 
@@ -68,7 +68,7 @@ namespace SealTypographicWebAPI.Controllers
             }
             catch
             {
-                return NotFound(responseService.Get(ResponseCode.InternalServerError));
+                return NotFound(ResponseUtil.InternalServerError());
             }
         }
 
@@ -86,7 +86,7 @@ namespace SealTypographicWebAPI.Controllers
             }
             catch
             {
-                return NotFound(responseService.Get(ResponseCode.InternalServerError));
+                return NotFound(ResponseUtil.InternalServerError());
             }
         }
 

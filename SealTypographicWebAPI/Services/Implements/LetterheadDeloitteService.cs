@@ -1,6 +1,6 @@
 ﻿using SealTypographicWebAPI.Models;
 
-namespace SealTypographicWebAPI.Services.Letterhead
+namespace SealTypographicWebAPI.Services.Implements
 {
     /// <summary>
     /// 勤業用的顧客資料
@@ -24,7 +24,7 @@ namespace SealTypographicWebAPI.Services.Letterhead
                     LetterheadID = litterheadID,
                     LetterheadImageGroup = i + 1,
                     ImagePath = "C://123.jpg",
-                    CreateDate = DateOnly.FromDateTime(DateTime.Now),                    
+                    CreateDate = DateOnly.FromDateTime(DateTime.Now),
                 };
                 letterheadImages.Add(letterheadImage);
             }

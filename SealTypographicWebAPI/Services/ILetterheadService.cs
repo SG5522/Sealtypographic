@@ -1,6 +1,6 @@
 ﻿using SealTypographicWebAPI.Models;
 
-namespace SealTypographicWebAPI.Services.Letterhead
+namespace SealTypographicWebAPI.Services
 {
     /// <summary>
     /// 顧客資料處理的interface

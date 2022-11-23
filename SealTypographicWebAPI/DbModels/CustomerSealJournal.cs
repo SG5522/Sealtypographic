@@ -62,11 +62,11 @@
         /// 3.經理
         /// 4.會計主管    
         /// </summary>
-        public int ImageGroupId { get; set; }
+        public string SealMappingConfigSubId { get; set; }
 
         /// <summary>
         /// 圖片群組資料表 (使用印鑑、簽名、LOGO)
         /// </summary>
-        public ImageGroup ImageGroup { get; set; }
+        public SealMappingConfig SealMappingConfig { get; set; }
     }
 }

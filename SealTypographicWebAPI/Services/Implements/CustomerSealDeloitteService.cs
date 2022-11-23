@@ -5,28 +5,25 @@ using SealTypographicWebAPI.Consts;
 using SealTypographicWebAPI.DbModels;
 using SealTypographicWebAPI.Models;
 using SealTypographicWebAPI.Models.Customer;
-using System.Linq;
+using SealTypographicWebAPI.Util;
 
-namespace SealTypographicWebAPI.Services.Customer
+namespace SealTypographicWebAPI.Services.Implements
 {
     /// <summary>
     /// 勤業用的顧客印鑑組
     /// </summary>
-    public class CustomerSealsDeloitteService : ICustomerSealService
+    public class CustomerSealDeloitteService : ICustomerSealService
     {
-        private readonly SealTypographicDbContext dbContext;
-        private readonly ResponseService responseService;
+        private readonly SealTypographicDbContext dbContext;        
         private readonly IMapper mapper;
         /// <summary>
         /// 取得DB與ResponseService
         /// </summary>
-        /// <param name="dbContext"></param>
-        /// <param name="responseService"></param>
+        /// <param name="dbContext"></param>        
         /// <param name="mapper"></param>
-        public CustomerSealsDeloitteService(SealTypographicDbContext dbContext, ResponseService responseService,IMapper mapper)
+        public CustomerSealDeloitteService(SealTypographicDbContext dbContext, IMapper mapper)
         {
-            this.dbContext = dbContext;
-            this.responseService = responseService;
+            this.dbContext = dbContext;            
             this.mapper = mapper;
         }
 
@@ -37,7 +34,7 @@ namespace SealTypographicWebAPI.Services.Customer
         /// <returns></returns>
         public CustomerSealQuarters GetCustomerSealQuarters(string customerId)
         {
-            List<CustomerSealQuarter> customerSealQuarters = new ();
+            List<CustomerSealQuarter> customerSealQuarters = new();
             Response response;
             var customerSealQuarterQuery = dbContext.CustomerSealJournals
                                            .Where(customerSealJournal => customerSealJournal.CustomerId == customerId)
@@ -45,9 +42,9 @@ namespace SealTypographicWebAPI.Services.Customer
                                            .Distinct()
                                            .ToList();
 
-            if (customerSealQuarterQuery.Any()) 
-            {                
-                foreach(string quarter in customerSealQuarterQuery)
+            if (customerSealQuarterQuery.Any())
+            {
+                foreach (string quarter in customerSealQuarterQuery)
                 {
                     customerSealQuarters.Add(new CustomerSealQuarter
                     {
@@ -55,11 +52,11 @@ namespace SealTypographicWebAPI.Services.Customer
                         Quarter = quarter
                     });
                 }
-                response = responseService.Get(ResponseCode.Success);
+                response = ResponseUtil.Success();
             }
             else
             {
-                response = responseService.Get(ResponseCode.NoData);
+                response = ResponseUtil.NoData();
             }
 
             return new CustomerSealQuarters()
@@ -77,38 +74,38 @@ namespace SealTypographicWebAPI.Services.Customer
         /// </summary>
         /// <param name="customerSealQuarter">搜尋條件</param>
         /// <returns></returns>
-        public CustomerSealViewModels GetCustomerSealViewModels(CustomerSealQuarter customerSealQuarter) 
+        public CustomerSealViewModels GetCustomerSealViewModels(CustomerSealQuarter customerSealQuarter)
         {
             List<CustomerSealViewModel> customerSealViewModels = new();
             Response response;
             List<CustomerSealJournal> customerSealQuery = dbContext.CustomerSealJournals.Where
                                                                     (
-                                                                        customerSealJournal => customerSealJournal.CustomerId == customerSealQuarter.CustomerId 
+                                                                        customerSealJournal => customerSealJournal.CustomerId == customerSealQuarter.CustomerId
                                                                         && customerSealJournal.Quarter == customerSealQuarter.Quarter
                                                                     )
-                                                                    .Include(customerSealJournal => customerSealJournal.ImageGroup)
-                                                                    .OrderBy(customerSealJournal => customerSealJournal.ImageGroupId)
+                                                                    .Include(customerSealJournal => customerSealJournal.SealMappingConfig)
+                                                                    .OrderBy(customerSealJournal => customerSealJournal.SealMappingConfigSubId)
                                                                     .ToList();
-            if (customerSealQuery.Any()) 
+            if (customerSealQuery.Any())
             {
-                foreach(CustomerSealJournal customerSealJournal in customerSealQuery)
+                foreach (CustomerSealJournal customerSealJournal in customerSealQuery)
                 {
                     CustomerSealViewModel customerSealViewModel = mapper.Map<CustomerSealViewModel>(customerSealJournal);
                     customerSealViewModel.ImageBase64 = "image/..."; //之後會在做BASE64轉換
                     customerSealViewModels.Add(customerSealViewModel);
                 }
-                response = responseService.Get(ResponseCode.Success);
+                response = ResponseUtil.Success();
             }
             else
             {
-                response = responseService.Get(ResponseCode.NoData);
+                response = ResponseUtil.NoData();
             }
 
 
             return new CustomerSealViewModels()
             {
-                Code= response.Code,
-                Message= response.Message,
+                Code = response.Code,
+                Message = response.Message,
 
                 SealViewModels = customerSealViewModels
             };
@@ -123,25 +120,19 @@ namespace SealTypographicWebAPI.Services.Customer
         {
             Response response = new();
             List<CustomerSealJournal> customerSealJournals = new();
-            foreach(CustomerSeal customerSeal in customerSeals)
+            foreach (CustomerSeal customerSeal in customerSeals)
             {
                 //這段之後會做成IMAGE64的處理並另存在指定的位置
                 string imagePath = customerSeal.ImageBase64;
 
-                customerSealJournals.Add(new CustomerSealJournal()
-                    {
-                        CustomerId = customerSeal.CustomerId,
-                        No = customerSeal.No,
-                        ImageGroupId = customerSeal.ImageGroupId,
-                        ImagePath = imagePath,
-                        CreateDate = DateTime.Now,
-                        Quarter = customerSeal.Quarter,                        
-                    }
-                );                
+                CustomerSealJournal customerSealJournal = mapper.Map<CustomerSealJournal>(customerSeal);
+                customerSealJournal.ImagePath = imagePath;
+                customerSealJournal.CreateDate = DateTime.Now;
+                customerSealJournals.Add(customerSealJournal);
             }
             dbContext.CustomerSealJournals.AddRange(customerSealJournals);
             dbContext.BulkSaveChanges();
-            response = responseService.Get(ResponseCode.Success);
+            response = ResponseUtil.Success();
 
             return response;
         }
@@ -156,30 +147,31 @@ namespace SealTypographicWebAPI.Services.Customer
             Response response = new();
             foreach (CustomerSealPostData customerSeal in customerSeals)
             {
-                var customerSealJournalQuery = dbContext.CustomerSealJournals.Where
+                CustomerSealJournal? customerSealJournalQuery = dbContext.CustomerSealJournals.Where
                                            (
                                                 customerSealJournal =>
                                                 customerSealJournal.Id == customerSeal.Id
-                                           );
-                if(customerSealJournalQuery.Any())
+                                           ).FirstOrDefault();
+                if (customerSealJournalQuery != null)
                 {
                     //這段之後會做成IMAGE64的處理並另存在指定的位置
                     string imagePath = customerSeal.ImageBase64;
 
-                    CustomerSealJournal customerSealJournal = customerSealJournalQuery.First();
-                    customerSealJournal.ImagePath = imagePath;
-                    customerSealJournal.AvailableDate = customerSeal.AvailableDate;
-                    customerSealJournal.No = customerSeal.No;
-                    customerSealJournal.CreateDate = DateTime.Now;
+                    mapper.Map(customerSealJournalQuery, customerSeal);
+                    customerSealJournalQuery.ImagePath = imagePath;
+                    //customerSealJournal.ImagePath = imagePath;
+                    //customerSealJournal.AvailableDate = customerSeal.AvailableDate;
+                    //customerSealJournal.No = customerSeal.No;
+                    //customerSealJournal.CreateDate = DateTime.Now;
                     dbContext.SaveChanges();
                 }
                 else
                 {
-                    response = responseService.Get(ResponseCode.NoData);
+                    response = ResponseUtil.NoData();
                     return response;
                 }
             }
-            response = responseService.Get(ResponseCode.Success);
+            response = ResponseUtil.Success();
             return response;
         }
 
@@ -189,7 +181,7 @@ namespace SealTypographicWebAPI.Services.Customer
         /// </summary>
         /// <param name="customerSeals">印鑑資料</param>
         /// <returns></returns>
-        public  Response DeleteCustomerSeals(List<CustomerSeal> customerSeals)
+        public Response DeleteCustomerSeals(List<CustomerSeal> customerSeals)
         {
             return new Response();
         }

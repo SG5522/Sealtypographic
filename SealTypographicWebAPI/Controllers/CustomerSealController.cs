@@ -2,9 +2,9 @@
 using Newtonsoft.Json;
 using SealTypographicWebAPI.Models;
 using SealTypographicWebAPI.Consts;
-using SealTypographicWebAPI.Services;
-using SealTypographicWebAPI.Services.Customer;
 using SealTypographicWebAPI.Models.Customer;
+using SealTypographicWebAPI.Util;
+using SealTypographicWebAPI.Services;
 
 namespace SealTypographicWebAPI.Controllers
 {
@@ -22,19 +22,12 @@ namespace SealTypographicWebAPI.Controllers
         protected readonly ICustomerSealService customerSealService;
 
         /// <summary>
-        /// 回傳結果
-        /// </summary>
-        protected readonly ResponseService responseService;
-
-        /// <summary>
         /// 注入顧客interface
         /// </summary>
-        /// <param name="customerSealService"></param>
-        /// <param name="responseService">回傳結果</param>
-        public CustomerSealController(ICustomerSealService customerSealService, ResponseService responseService)
+        /// <param name="customerSealService"></param>        
+        public CustomerSealController(ICustomerSealService customerSealService)
         {
-            this.customerSealService = customerSealService;
-            this.responseService = responseService;
+            this.customerSealService = customerSealService;            
         }
 
         /// <summary>
@@ -51,7 +44,7 @@ namespace SealTypographicWebAPI.Controllers
             }
             catch
             {
-                Response response = responseService.Get(ResponseCode.InternalServerError);
+                Response response = ResponseUtil.InternalServerError();
                 return new CustomerSealQuarters()
                 {
                     Code = response.Code,
@@ -74,7 +67,7 @@ namespace SealTypographicWebAPI.Controllers
             }
             catch
             {
-                Response response = responseService.Get(ResponseCode.InternalServerError);
+                Response response = ResponseUtil.InternalServerError();
                 return new CustomerSealViewModels()
                 {
                     Code = response.Code,
@@ -97,7 +90,7 @@ namespace SealTypographicWebAPI.Controllers
             }
             catch
             {
-                return responseService.Get(ResponseCode.InternalServerError);
+                return ResponseUtil.InternalServerError();
             }
         }
         /// <summary>
@@ -114,7 +107,7 @@ namespace SealTypographicWebAPI.Controllers
             }
             catch
             {
-                return responseService.Get(ResponseCode.InternalServerError);
+                return ResponseUtil.InternalServerError();
             }
         }
         /// <summary>

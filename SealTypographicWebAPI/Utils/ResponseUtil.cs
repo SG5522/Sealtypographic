@@ -1,18 +1,51 @@
 ﻿using SealTypographicWebAPI.Consts;
 using SealTypographicWebAPI.Models;
 
-namespace SealTypographicWebAPI.Services
+namespace SealTypographicWebAPI.Util
 {
     /// <summary>
     /// 錯誤訊息
     /// </summary>
-    public class ResponseService
+    public class ResponseUtil
     {
         /// <summary>
-        /// 取得錯誤訊息
+        /// 回傳成功
         /// </summary>
         /// <returns></returns>
-        public Response Get(ResponseCode responseCode)
+        public static Response Success()
+        {
+            return Get(ResponseCode.Success);
+        }
+        /// <summary>
+        /// 回傳伺服器錯誤
+        /// </summary>
+        /// <returns></returns>
+        public static Response InternalServerError()
+        {
+            return Get(ResponseCode.InternalServerError);
+        }
+        /// <summary>
+        /// 回傳無資料
+        /// </summary>
+        /// <returns></returns>
+        public static Response NoData()
+        {
+            return Get(ResponseCode.NoData);
+        }
+        /// <summary>
+        /// 資料庫欄位限制唯一約束錯誤回傳
+        /// </summary>
+        /// <returns></returns>
+        public static Response UniqueConstraintFailed()
+        {
+            return Get(ResponseCode.UniqueConstraintFailed);
+        }
+
+        /// <summary>
+        /// 取得訊息
+        /// </summary>
+        /// <returns></returns>
+        public static Response Get(ResponseCode responseCode)
         {
             switch (responseCode)
             {
@@ -42,7 +75,7 @@ namespace SealTypographicWebAPI.Services
                     };
                 default:
                     return new Response();
-            }                      
+            }
         }
     }
 }

@@ -3,7 +3,7 @@
     /// <summary>
     /// 取得圖片群組資料以及回應訊息
     /// </summary>
-    public class ImageGroupResponsePage : Response
+    public class SealMappingConfigResponsePage : Response
     {
         /// <summary>
         /// 現在頁數
@@ -23,6 +23,6 @@
         /// <summary>
         /// 圖片群組資料
         /// </summary>
-        public List<ImageGroupViewModel> ImageGroup { get; set; }
+        public List<SealMappingConfigViewModel> ImageGroup { get; set; }
     }
 }

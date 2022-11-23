@@ -20,19 +20,19 @@
         /// <summary>
         /// 證券代號
         /// </summary>
-        /// <example>9999</example>
+        /// <example>9666</example>
         public string StockCode { get; set; }
 
         /// <summary>
         /// 公司名稱
         /// </summary>
-        /// <example>xxxCompany</example>
+        /// <example>映像有限公司</example>
         public string Name { get; set; }
 
         /// <summary>
         /// 地址
         /// </summary>
-        /// <example>XX市XX區XX路XX巷XX號XX樓</example>
+        /// <example>台北市大同區環河北路路二段115號5樓</example>
         public string Address { get; set; }
 
         /// <summary>

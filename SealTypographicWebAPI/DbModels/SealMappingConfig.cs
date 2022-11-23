@@ -1,29 +1,30 @@
 ﻿namespace SealTypographicWebAPI.DbModels
 {
     /// <summary>
-    /// 圖片群組資料表 (使用印鑑、簽名、LOGO)
+    /// 印鑑Mapping設定表 (使用印鑑、簽名、LOGO)
     /// </summary>
-    public class ImageGroup
+    public class SealMappingConfig
     {
         /// <summary>
-        /// 群組ID
+        /// ID
         /// </summary>
         public int Id { get; set; }
 
-        /// <summary>
-        /// 群組名稱
-        /// </summary>
-        public string Name { get; set; }
 
         /// <summary>
-        /// Type(客戶、會計師、信頭)
+        /// SealType(客戶、會計師、信頭)
         /// </summary>
         public string Type { get; set; }
 
         /// <summary>
-        /// 說明
+        /// 群組ID
         /// </summary>
-        public string Description { get; set; }
+        public string SubId { get; set; }
+
+        /// <summary>
+        /// 印鑑類別名稱
+        /// </summary>
+        public string Name { get; set; }
 
         /// <summary>
         /// 客戶印鑑組歷程資料表

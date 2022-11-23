@@ -1,18 +1,17 @@
 ﻿using SealTypographicWebAPI.Consts;
-using SealTypographicWebAPI.Models;
 
-namespace SealTypographicWebAPI.Services
+namespace SealTypographicWebAPI.Utils
 {
     /// <summary>
     /// 錯誤訊息
     /// </summary>
-    public class StatusService
+    public class StatusUtil
     {
         /// <summary>
         /// 取得Status名稱
         /// </summary>
         /// <returns></returns>
-        public string Get(Status status)
+        public static string Get(Status status)
         {
             return status switch
             {

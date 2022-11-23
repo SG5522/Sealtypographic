@@ -2,9 +2,8 @@
 using SealTypographicWebAPI.Models;
 using SealTypographicWebAPI.Models.Customer;
 using SealTypographicWebAPI.Consts;
+using SealTypographicWebAPI.Util;
 using SealTypographicWebAPI.Services;
-using SealTypographicWebAPI.Services.Customer;
-
 
 namespace SealTypographicWebAPI.Controllers
 {
@@ -22,19 +21,12 @@ namespace SealTypographicWebAPI.Controllers
         protected readonly ICustomerService customerService;
 
         /// <summary>
-        /// 回應結果
-        /// </summary>
-        protected readonly ResponseService responseService;
-
-        /// <summary>
         /// 注入Service
         /// </summary>
         /// <param name="customerService">管理客戶資料</param>
-        /// <param name="responseService">回傳結果</param>
-        public CustomerController(ICustomerService customerService,ResponseService responseService)
+        public CustomerController(ICustomerService customerService)
         {
-            this.customerService = customerService;            
-            this.responseService = responseService;
+            this.customerService = customerService;                        
         }
 
         /// <summary>
@@ -52,7 +44,7 @@ namespace SealTypographicWebAPI.Controllers
             }
             catch
             {
-                Response response = responseService.Get(ResponseCode.InternalServerError);
+                Response response = ResponseUtil.InternalServerError();
                 return new CustomerResponsePage()
                 {
                     Code = response.Code,
@@ -76,7 +68,7 @@ namespace SealTypographicWebAPI.Controllers
             }
             catch
             {
-                Response response = responseService.Get(ResponseCode.InternalServerError);
+                Response response = ResponseUtil.InternalServerError();
                 return new CustomerResponse()
                 {
                     Code = response.Code,
@@ -98,7 +90,7 @@ namespace SealTypographicWebAPI.Controllers
             }
             catch
             {
-                return responseService.Get(ResponseCode.InternalServerError);
+                return ResponseUtil.InternalServerError();
             }
         }
 
@@ -115,7 +107,7 @@ namespace SealTypographicWebAPI.Controllers
             }
             catch
             {
-                return responseService.Get(ResponseCode.InternalServerError);
+                return ResponseUtil.InternalServerError();
             }
         }
 
@@ -135,7 +127,7 @@ namespace SealTypographicWebAPI.Controllers
             }
             catch
             {
-                return responseService.Get(ResponseCode.InternalServerError);
+                return ResponseUtil.InternalServerError();
             }
         }
     }

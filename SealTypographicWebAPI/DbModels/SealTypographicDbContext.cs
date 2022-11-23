@@ -44,7 +44,7 @@ namespace SealTypographicWebAPI.DbModels
         /// <summary>
         /// 圖片群組資料表 (使用印鑑、簽名、LOGO)
         /// </summary>
-        public DbSet<ImageGroup> ImageGroups { get; set; }
+        public DbSet<SealMappingConfig> ImageGroups { get; set; }
 
         /// <summary>
         /// 

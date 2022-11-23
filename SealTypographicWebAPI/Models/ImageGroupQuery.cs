@@ -3,7 +3,7 @@
     /// <summary>
     /// 圖片群組分頁搜尋
     /// </summary>
-    public class ImageGroupQuery
+    public class SealMappingConfigQuery
     {
         /// <summary>
         /// 搜尋群組名稱或是群組類別
