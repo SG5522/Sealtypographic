@@ -2,7 +2,7 @@
 using EFCore.BulkExtensions;
 using Microsoft.EntityFrameworkCore;
 using SealTypographicWebAPI.Consts;
-using SealTypographicWebAPI.DbModels;
+using SealTypographicWebAPI.Entities;
 using SealTypographicWebAPI.Models;
 using SealTypographicWebAPI.Models.Customer;
 using SealTypographicWebAPI.Util;
@@ -84,7 +84,7 @@ namespace SealTypographicWebAPI.Services.Implements
                                                                         && customerSealJournal.Quarter == customerSealQuarter.Quarter
                                                                     )
                                                                     .Include(customerSealJournal => customerSealJournal.SealMappingConfig)
-                                                                    .OrderBy(customerSealJournal => customerSealJournal.SealMappingConfigSubId)
+                                                                    .OrderBy(customerSealJournal => customerSealJournal.SealMappingConfigId)
                                                                     .ToList();
             if (customerSealQuery.Any())
             {

@@ -1,6 +1,6 @@
 ﻿using SealTypographicWebAPI.Models;
 using SealTypographicWebAPI.Models.Accountant;
-using SealTypographicWebAPI.DbModels;
+using SealTypographicWebAPI.Entities;
 using SealTypographicWebAPI.Consts;
 using SealTypographicWebAPI.Util;
 using SealTypographicWebAPI.Utils;
@@ -32,7 +32,7 @@ namespace SealTypographicWebAPI.Services.Implements
         {
             AccountantViewModel accountantViewModel = new();
             Response response = new();
-            var accountantQuery = from accountant in dbContext.Set<DbModels.Accountant>()
+            var accountantQuery = from accountant in dbContext.Set<Entities.Accountant>()
                                   join accountantGroup in dbContext.Set<AccountantGroup>()
                                   on accountant.AccountantGroupId equals accountantGroup.Id
                                   where accountant.Id == accountantId
@@ -85,7 +85,7 @@ namespace SealTypographicWebAPI.Services.Implements
             Response response = new();
             int totalPage = 0;
             int totalCount = 0;
-            var accountantsQuery = from accountant in dbContext.Set<DbModels.Accountant>()
+            var accountantsQuery = from accountant in dbContext.Set<Entities.Accountant>()
                                    join accountantGroup in dbContext.Set<AccountantGroup>()
                                    on accountant.AccountantGroupId equals accountantGroup.Id
                                    select new
@@ -165,7 +165,7 @@ namespace SealTypographicWebAPI.Services.Implements
 
             if (!accountantQuery.Any())
             {
-                DbModels.Accountant accountant = new()
+                Entities.Accountant accountant = new()
                 {
                     Id = accountantBaseData.Id,
                     Name = accountantBaseData.Name,
@@ -201,7 +201,7 @@ namespace SealTypographicWebAPI.Services.Implements
 
             if (accountantQuery.Any())
             {
-                DbModels.Accountant accountant = accountantQuery.First();
+                Entities.Accountant accountant = accountantQuery.First();
                 accountant.Id = accountantBaseData.Id;
                 accountant.Name = accountantBaseData.Name;
                 accountant.AvailableDate = accountantBaseData.AvailableDate;

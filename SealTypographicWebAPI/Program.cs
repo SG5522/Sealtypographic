@@ -1,12 +1,10 @@
 ﻿using Microsoft.OpenApi.Models;
 using SealTypographicWebAPI.Models;
 using SealTypographicWebAPI.Services;
-using SealTypographicWebAPI.DbModels;
+using SealTypographicWebAPI.Entities;
 using System.Reflection;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
-using SealTypographicWebAPI.Util;
-using SealTypographicWebAPI.Utils;
 using SealTypographicWebAPI.Services.Implements;
 using SealTypographicWebAPI.Config;
 

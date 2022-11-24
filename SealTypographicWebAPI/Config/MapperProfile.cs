@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using SealTypographicWebAPI.Models.Customer;
-using SealTypographicWebAPI.DbModels;
+using SealTypographicWebAPI.Entities;
 
 namespace SealTypographicWebAPI.Config
 {

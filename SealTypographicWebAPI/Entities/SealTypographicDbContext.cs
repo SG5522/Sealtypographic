@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
-namespace SealTypographicWebAPI.DbModels
+namespace SealTypographicWebAPI.Entities
 {
     /// <summary>
     /// EF Core SealTypographic DbContext
@@ -44,7 +44,7 @@ namespace SealTypographicWebAPI.DbModels
         /// <summary>
         /// 圖片群組資料表 (使用印鑑、簽名、LOGO)
         /// </summary>
-        public DbSet<SealMappingConfig> ImageGroups { get; set; }
+        public DbSet<SealMappingConfig> SealMappingConfigs { get; set; }
 
         /// <summary>
         /// 

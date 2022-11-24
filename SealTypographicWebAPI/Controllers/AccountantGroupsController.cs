@@ -2,7 +2,7 @@
 using SealTypographicWebAPI.Models.Accountant;
 using SealTypographicWebAPI.Consts;
 using SealTypographicWebAPI.Models;
-using SealTypographicWebAPI.DbModels;
+using SealTypographicWebAPI.Entities;
 using SealTypographicWebAPI.Util;
 using SealTypographicWebAPI.Services;
 

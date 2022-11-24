@@ -1,5 +1,5 @@
 ﻿using SealTypographicWebAPI.Models;
-using SealTypographicWebAPI.DbModels;
+using SealTypographicWebAPI.Entities;
 using SealTypographicWebAPI.Consts;
 using SealTypographicWebAPI.Models.Customer;
 using EFCore.BulkExtensions;
@@ -32,7 +32,7 @@ namespace SealTypographicWebAPI.Services
         {
             SealMappingConfigViewModel sealMappingConfigViewModel = new();
             Response response = new();
-            IQueryable<SealMappingConfig> sealMappingConfigQuery = dbContext.ImageGroups.Where(imageGroup => imageGroup.Id == imageGroupId);
+            IQueryable<SealMappingConfig> sealMappingConfigQuery = dbContext.SealMappingConfigs.Where(imageGroup => imageGroup.Id == imageGroupId);
             if(sealMappingConfigQuery.Any())
             {
                 SealMappingConfig sealMappingConfig = sealMappingConfigQuery.First();                
@@ -62,40 +62,40 @@ namespace SealTypographicWebAPI.Services
         /// <returns></returns>
         public SealMappingConfigResponsePage GetSealMappingConfigResponsePage(SealMappingConfigQuery SealMappingConfigQuery)
         {
-            List<SealMappingConfigViewModel> imageGroupViewModels = new();
+            List<SealMappingConfigViewModel> sealMappingConfigViewModels = new();
             Response response = new();
             int totalPage = 0;
             int totalCount = 0;
-            IQueryable<SealMappingConfig> sealMappingConfigQuerys = dbContext.ImageGroups.AsQueryable();
+            IQueryable<SealMappingConfig> sealMappingConfigQuerys = dbContext.SealMappingConfigs.AsQueryable();
             if (SealMappingConfigQuery.NameOrType != null)
             {
                 sealMappingConfigQuerys = sealMappingConfigQuerys.Where
                 (
-                    imageGroup =>
-                    imageGroup.Name.Contains(SealMappingConfigQuery.NameOrType)
-                    || imageGroup.Type.Contains(SealMappingConfigQuery.NameOrType)
+                    sealMappingConfig =>
+                    sealMappingConfig.Name.Contains(SealMappingConfigQuery.NameOrType)
+                    || sealMappingConfig.Type.Contains(SealMappingConfigQuery.NameOrType)
                 );
             }
 
-            sealMappingConfigQuerys = sealMappingConfigQuerys.OrderBy(imageGroup => imageGroup.Id);
+            sealMappingConfigQuerys = sealMappingConfigQuerys.OrderBy(sealMappingConfig => sealMappingConfig.Id);
 
             if (sealMappingConfigQuerys.Any())
             {
                 //取得該頁            
-                var pageNumberImageGroups = sealMappingConfigQuerys
+                var pageNumberSealMappingConfigs = sealMappingConfigQuerys
                                             .Skip((SealMappingConfigQuery.PageNumber - 1) * SealMappingConfigQuery.PageSize)
                                             .Take(SealMappingConfigQuery.PageSize)
                                             .ToList();
                 //計算總頁數
                 totalPage = (sealMappingConfigQuerys.Count() / SealMappingConfigQuery.PageSize) + (sealMappingConfigQuerys.Count() % SealMappingConfigQuery.PageSize == 0 ? 0 : 1);
                 totalCount = sealMappingConfigQuerys.Count();
-                foreach (var imageGroup in pageNumberImageGroups)
+                foreach (var sealMappingConfig in pageNumberSealMappingConfigs)
                 {
-                    imageGroupViewModels.Add(new ()
+                    sealMappingConfigViewModels.Add(new ()
                     {                        
-                        Name = imageGroup.Name,
-                        Type = imageGroup.Type,
-                        SubId = imageGroup.SubId                        
+                        Name = sealMappingConfig.Name,
+                        Type = sealMappingConfig.Type,
+                        SubId = sealMappingConfig.SubId                        
                     });
                 }
                 //取得成功訊息
@@ -110,7 +110,7 @@ namespace SealTypographicWebAPI.Services
                 PageNumber = SealMappingConfigQuery.PageNumber,
                 TotalPage = totalPage,
                 TotalCount= totalCount,
-                ImageGroup = imageGroupViewModels,
+                ImageGroup = sealMappingConfigViewModels,
 
                 Code = response.Code,
                 Message = response.Message
@@ -120,23 +120,23 @@ namespace SealTypographicWebAPI.Services
         /// <summary>
         /// 建立圖片群組
         /// </summary>
-        /// <param name="imageGroupViewModel">圖片群組資料</param>
+        /// <param name="sealMappingConfigViewModel">圖片群組資料</param>
         /// <returns></returns>
-        public Response CreateImageGroup (SealMappingConfigViewModel imageGroupViewModel)
+        public Response CreateImageGroup (SealMappingConfigViewModel sealMappingConfigViewModel)
         {
             Response response = new();
-            IQueryable<SealMappingConfig> imageGroupQuery = dbContext.ImageGroups
-                                .Where(imageGroup => imageGroup.SubId == imageGroupViewModel.SubId);
+            IQueryable<SealMappingConfig> sealMappingConfigQuery = dbContext.SealMappingConfigs
+                                .Where(sealMappingConfig => sealMappingConfig.SubId == sealMappingConfigViewModel.SubId);
 
-            if (!imageGroupQuery.Any())
+            if (!sealMappingConfigQuery.Any())
             {
                 SealMappingConfig imageGroup = new()
-                {                    
-                    Name = imageGroupViewModel.Name,
-                    Type = imageGroupViewModel.Type, 
-                    SubId = imageGroupViewModel.SubId
+                {                                        
+                    Type = sealMappingConfigViewModel.Type,
+                    SubId = sealMappingConfigViewModel.SubId,
+                    Name = sealMappingConfigViewModel.Name
                 };
-                dbContext.ImageGroups.Add(imageGroup);
+                dbContext.SealMappingConfigs.Add(imageGroup);
                 dbContext.SaveChanges();
                 response = ResponseUtil.Success();
             }
@@ -154,15 +154,15 @@ namespace SealTypographicWebAPI.Services
         public Response UpdateImageGroup(SealMappingConfigViewModel SealMappingConfigViewModel)
         {
             Response response = new();
-            IQueryable<SealMappingConfig> SealMappingConfigQuery = dbContext.ImageGroups
+            IQueryable<SealMappingConfig> SealMappingConfigQuery = dbContext.SealMappingConfigs
                                 .Where(imageGroup => imageGroup.SubId == SealMappingConfigViewModel.SubId);
 
             if (SealMappingConfigQuery.Any())
             {
-                SealMappingConfig SealMappingConfig = SealMappingConfigQuery.First();
-                SealMappingConfig.Name = SealMappingConfigViewModel.Name;
+                SealMappingConfig SealMappingConfig = SealMappingConfigQuery.First();                
                 SealMappingConfig.Type = SealMappingConfigViewModel.Type;
                 SealMappingConfig.SubId = SealMappingConfigViewModel.SubId;
+                SealMappingConfig.Name = SealMappingConfigViewModel.Name;                                
                 dbContext.SaveChanges();
                 response = ResponseUtil.Success();
             }

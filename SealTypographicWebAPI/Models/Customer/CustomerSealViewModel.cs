@@ -25,7 +25,7 @@
         /// 4.會計主管    
         /// </summary>
         /// <example>1</example>
-        public int ImageGroupId { get; set; }
+        public int SealMappingConfigId { get; set; }
 
         /// <summary>
         /// 客戶印鑑群組名稱

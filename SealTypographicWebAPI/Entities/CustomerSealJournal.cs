@@ -1,4 +1,4 @@
-﻿namespace SealTypographicWebAPI.DbModels
+﻿namespace SealTypographicWebAPI.Entities
 {
     /// <summary>
     /// 客戶印鑑組歷程資料表
@@ -62,7 +62,7 @@
         /// 3.經理
         /// 4.會計主管    
         /// </summary>
-        public string SealMappingConfigSubId { get; set; }
+        public int SealMappingConfigId { get; set; }
 
         /// <summary>
         /// 圖片群組資料表 (使用印鑑、簽名、LOGO)

@@ -1,4 +1,4 @@
-﻿namespace SealTypographicWebAPI.DbModels
+﻿namespace SealTypographicWebAPI.Entities
 {
     /// <summary>
     /// 客戶資料表

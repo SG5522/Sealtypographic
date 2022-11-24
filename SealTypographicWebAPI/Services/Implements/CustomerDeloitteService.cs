@@ -1,6 +1,6 @@
 ﻿using SealTypographicWebAPI.Models;
 using SealTypographicWebAPI.Models.Customer;
-using SealTypographicWebAPI.DbModels;
+using SealTypographicWebAPI.Entities;
 using SealTypographicWebAPI.Consts;
 using AutoMapper;
 using SealTypographicWebAPI.Util;
@@ -73,7 +73,7 @@ namespace SealTypographicWebAPI.Services.Implements
             Response response = new();
             int totalPage = 0;
             int totalCount = 0;
-            IQueryable<DbModels.Customer> customerQuery;
+            IQueryable<Entities.Customer> customerQuery;
 
             if (customerQueryPage.CustomerIdOrName != null)
             {
@@ -134,12 +134,12 @@ namespace SealTypographicWebAPI.Services.Implements
         public Response CreateCustomer(CustomerData customerBaseData)
         {
             Response response = new();
-            IQueryable<DbModels.Customer> customerQuery = dbContext.Customers
+            IQueryable<Entities.Customer> customerQuery = dbContext.Customers
                                 .Where(customer => customer.Id == customerBaseData.Id);
 
             if (!customerQuery.Any())
             {
-                DbModels.Customer dbCustomer = mapper.Map<DbModels.Customer>(customerBaseData);
+                Entities.Customer dbCustomer = mapper.Map<Entities.Customer>(customerBaseData);
                 dbContext.Customers.Add(dbCustomer);
                 dbContext.SaveChanges();
                 response = ResponseUtil.Success();
@@ -159,7 +159,7 @@ namespace SealTypographicWebAPI.Services.Implements
         public Response UpdateCustomer(CustomerData customerBaseData)
         {
             Response response = new();
-            DbModels.Customer? customerQuery = dbContext.Customers
+            Entities.Customer? customerQuery = dbContext.Customers
                                 .Where(customer => customer.Id == customerBaseData.Id)
                                 .FirstOrDefault();
 

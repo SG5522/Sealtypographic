@@ -1,8 +1,11 @@
-﻿namespace SealTypographicWebAPI.DbModels
+﻿using Microsoft.EntityFrameworkCore;
+
+namespace SealTypographicWebAPI.Entities
 {
     /// <summary>
     /// 印鑑Mapping設定表 (使用印鑑、簽名、LOGO)
     /// </summary>
+    [Index(nameof(SubId), IsUnique = true)]
     public class SealMappingConfig
     {
         /// <summary>
@@ -17,8 +20,8 @@
         public string Type { get; set; }
 
         /// <summary>
-        /// 群組ID
-        /// </summary>
+        /// SubId
+        /// </summary>        
         public string SubId { get; set; }
 
         /// <summary>

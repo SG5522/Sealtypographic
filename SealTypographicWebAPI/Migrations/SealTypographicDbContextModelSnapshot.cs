@@ -3,7 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using SealTypographicWebAPI.DbModels;
+using SealTypographicWebAPI.Entities;
 
 #nullable disable
 
@@ -17,7 +17,7 @@ namespace SealTypographicWebAPI.Migrations
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "6.0.11");
 
-            modelBuilder.Entity("SealTypographicWebAPI.DbModels.Accountant", b =>
+            modelBuilder.Entity("SealTypographicWebAPI.Entities.Accountant", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("TEXT");
@@ -46,7 +46,7 @@ namespace SealTypographicWebAPI.Migrations
                     b.ToTable("Accountants");
                 });
 
-            modelBuilder.Entity("SealTypographicWebAPI.DbModels.AccountantGroup", b =>
+            modelBuilder.Entity("SealTypographicWebAPI.Entities.AccountantGroup", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("TEXT");
@@ -60,7 +60,7 @@ namespace SealTypographicWebAPI.Migrations
                     b.ToTable("AccountantGroups");
                 });
 
-            modelBuilder.Entity("SealTypographicWebAPI.DbModels.AccountantSignJournal", b =>
+            modelBuilder.Entity("SealTypographicWebAPI.Entities.AccountantSignJournal", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -76,23 +76,23 @@ namespace SealTypographicWebAPI.Migrations
                     b.Property<DateTime>("CreateDate")
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("ImageGroupId")
-                        .HasColumnType("INTEGER");
-
                     b.Property<string>("ImagePath")
                         .IsRequired()
                         .HasColumnType("TEXT");
+
+                    b.Property<int>("SealMappingConfigId")
+                        .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
 
                     b.HasIndex("AccountantId");
 
-                    b.HasIndex("ImageGroupId");
+                    b.HasIndex("SealMappingConfigId");
 
                     b.ToTable("AccountantSignJournals");
                 });
 
-            modelBuilder.Entity("SealTypographicWebAPI.DbModels.Customer", b =>
+            modelBuilder.Entity("SealTypographicWebAPI.Entities.Customer", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("TEXT");
@@ -129,7 +129,7 @@ namespace SealTypographicWebAPI.Migrations
                     b.ToTable("Customers");
                 });
 
-            modelBuilder.Entity("SealTypographicWebAPI.DbModels.CustomerSealJournal", b =>
+            modelBuilder.Entity("SealTypographicWebAPI.Entities.CustomerSealJournal", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -145,9 +145,6 @@ namespace SealTypographicWebAPI.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("ImageGroupId")
-                        .HasColumnType("INTEGER");
-
                     b.Property<string>("ImagePath")
                         .IsRequired()
                         .HasColumnType("TEXT");
@@ -159,6 +156,9 @@ namespace SealTypographicWebAPI.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
+                    b.Property<int>("SealMappingConfigId")
+                        .HasColumnType("INTEGER");
+
                     b.Property<int>("Stauts")
                         .HasColumnType("INTEGER");
 
@@ -166,35 +166,12 @@ namespace SealTypographicWebAPI.Migrations
 
                     b.HasIndex("CustomerId");
 
-                    b.HasIndex("ImageGroupId");
+                    b.HasIndex("SealMappingConfigId");
 
                     b.ToTable("CustomerSealJournals");
                 });
 
-            modelBuilder.Entity("SealTypographicWebAPI.DbModels.ImageGroup", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Type")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("ImageGroups");
-                });
-
-            modelBuilder.Entity("SealTypographicWebAPI.DbModels.Letterhead", b =>
+            modelBuilder.Entity("SealTypographicWebAPI.Entities.Letterhead", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("TEXT");
@@ -217,7 +194,7 @@ namespace SealTypographicWebAPI.Migrations
                     b.ToTable("Letterheads");
                 });
 
-            modelBuilder.Entity("SealTypographicWebAPI.DbModels.LetterheadImageJournal", b =>
+            modelBuilder.Entity("SealTypographicWebAPI.Entities.LetterheadImageJournal", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -228,9 +205,6 @@ namespace SealTypographicWebAPI.Migrations
 
                     b.Property<DateTime>("CreateDate")
                         .HasColumnType("TEXT");
-
-                    b.Property<int>("ImageGroupId")
-                        .HasColumnType("INTEGER");
 
                     b.Property<string>("ImagePath")
                         .IsRequired()
@@ -243,18 +217,47 @@ namespace SealTypographicWebAPI.Migrations
                     b.Property<int>("No")
                         .HasColumnType("INTEGER");
 
+                    b.Property<int>("SealMappingConfigId")
+                        .HasColumnType("INTEGER");
+
                     b.HasKey("Id");
 
-                    b.HasIndex("ImageGroupId");
-
                     b.HasIndex("LetterheadId");
+
+                    b.HasIndex("SealMappingConfigId");
 
                     b.ToTable("LetterheadImageJournals");
                 });
 
-            modelBuilder.Entity("SealTypographicWebAPI.DbModels.Accountant", b =>
+            modelBuilder.Entity("SealTypographicWebAPI.Entities.SealMappingConfig", b =>
                 {
-                    b.HasOne("SealTypographicWebAPI.DbModels.AccountantGroup", "AccountantGroup")
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("SubId")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("SubId")
+                        .IsUnique();
+
+                    b.ToTable("SealMappingConfigs");
+                });
+
+            modelBuilder.Entity("SealTypographicWebAPI.Entities.Accountant", b =>
+                {
+                    b.HasOne("SealTypographicWebAPI.Entities.AccountantGroup", "AccountantGroup")
                         .WithMany("Accountants")
                         .HasForeignKey("AccountantGroupId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -263,74 +266,74 @@ namespace SealTypographicWebAPI.Migrations
                     b.Navigation("AccountantGroup");
                 });
 
-            modelBuilder.Entity("SealTypographicWebAPI.DbModels.AccountantSignJournal", b =>
+            modelBuilder.Entity("SealTypographicWebAPI.Entities.AccountantSignJournal", b =>
                 {
-                    b.HasOne("SealTypographicWebAPI.DbModels.Accountant", "Accountant")
+                    b.HasOne("SealTypographicWebAPI.Entities.Accountant", "Accountant")
                         .WithMany()
                         .HasForeignKey("AccountantId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("SealTypographicWebAPI.DbModels.ImageGroup", "ImageGroup")
+                    b.HasOne("SealTypographicWebAPI.Entities.SealMappingConfig", "SealMappingConfig")
                         .WithMany("AccountantSignJournals")
-                        .HasForeignKey("ImageGroupId")
+                        .HasForeignKey("SealMappingConfigId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Accountant");
 
-                    b.Navigation("ImageGroup");
+                    b.Navigation("SealMappingConfig");
                 });
 
-            modelBuilder.Entity("SealTypographicWebAPI.DbModels.CustomerSealJournal", b =>
+            modelBuilder.Entity("SealTypographicWebAPI.Entities.CustomerSealJournal", b =>
                 {
-                    b.HasOne("SealTypographicWebAPI.DbModels.Customer", "Customer")
+                    b.HasOne("SealTypographicWebAPI.Entities.Customer", "Customer")
                         .WithMany("CustomerSealJournals")
                         .HasForeignKey("CustomerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("SealTypographicWebAPI.DbModels.ImageGroup", "ImageGroup")
+                    b.HasOne("SealTypographicWebAPI.Entities.SealMappingConfig", "SealMappingConfig")
                         .WithMany("CustomerSealJournals")
-                        .HasForeignKey("ImageGroupId")
+                        .HasForeignKey("SealMappingConfigId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Customer");
 
-                    b.Navigation("ImageGroup");
+                    b.Navigation("SealMappingConfig");
                 });
 
-            modelBuilder.Entity("SealTypographicWebAPI.DbModels.LetterheadImageJournal", b =>
+            modelBuilder.Entity("SealTypographicWebAPI.Entities.LetterheadImageJournal", b =>
                 {
-                    b.HasOne("SealTypographicWebAPI.DbModels.ImageGroup", "ImageGroup")
-                        .WithMany("LetterheadImageJournals")
-                        .HasForeignKey("ImageGroupId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("SealTypographicWebAPI.DbModels.Letterhead", "Letterhead")
+                    b.HasOne("SealTypographicWebAPI.Entities.Letterhead", "Letterhead")
                         .WithMany()
                         .HasForeignKey("LetterheadId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("ImageGroup");
+                    b.HasOne("SealTypographicWebAPI.Entities.SealMappingConfig", "SealMappingConfig")
+                        .WithMany("LetterheadImageJournals")
+                        .HasForeignKey("SealMappingConfigId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Letterhead");
+
+                    b.Navigation("SealMappingConfig");
                 });
 
-            modelBuilder.Entity("SealTypographicWebAPI.DbModels.AccountantGroup", b =>
+            modelBuilder.Entity("SealTypographicWebAPI.Entities.AccountantGroup", b =>
                 {
                     b.Navigation("Accountants");
                 });
 
-            modelBuilder.Entity("SealTypographicWebAPI.DbModels.Customer", b =>
+            modelBuilder.Entity("SealTypographicWebAPI.Entities.Customer", b =>
                 {
                     b.Navigation("CustomerSealJournals");
                 });
 
-            modelBuilder.Entity("SealTypographicWebAPI.DbModels.ImageGroup", b =>
+            modelBuilder.Entity("SealTypographicWebAPI.Entities.SealMappingConfig", b =>
                 {
                     b.Navigation("AccountantSignJournals");
 

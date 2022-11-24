@@ -1,4 +1,4 @@
-﻿namespace SealTypographicWebAPI.DbModels
+﻿namespace SealTypographicWebAPI.Entities
 {
     /// <summary>
     /// 會計師資料表

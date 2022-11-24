@@ -1,19 +1,14 @@
-﻿namespace SealTypographicWebAPI.DbModels
+﻿namespace SealTypographicWebAPI.Entities
 {
     /// <summary>
-    /// 事務所信頭圖片歷程資料表
+    /// 會計師印鑑簽名組歷程資料表
     /// </summary>
-    public class LetterheadImageJournal
+    public class AccountantSignJournal
     {
         /// <summary>
-        /// ID
+        /// 會計印鑑簽名組ID
         /// </summary>
         public int Id { get; set; }
-
-        /// <summary>
-        ///  信頭圖片編號(排序) 1為起始
-        /// </summary>
-        public int No { get; set; }
 
         /// <summary>
         /// 圖檔路徑
@@ -31,25 +26,28 @@
         public DateTime CreateDate { get; set; }
 
         /// <summary>
-        /// 事務所信頭ID
+        /// 會計師ID
         /// </summary>
-        public string LetterheadId { get; set; } = null!;
+        public string AccountantId { get; set; } = null!;
 
         /// <summary>
-        /// 事務所信頭資料表
+        /// 會計師資料表
         /// </summary>
-        public Letterhead Letterhead { get; set; }
+        public Accountant Accountant { get; set; }
 
         /// <summary>
         /// 圖片群組ID 
         /// (目前暫定)
-        /// 9.信頭        
+        /// 5.會計印鑑
+        /// 6.中文簽名
+        /// 7.英文簽名
+        /// 8.舊式簽名    
         /// </summary>
-        public int ImageGroupId { get; set; }
+        public int SealMappingConfigId { get; set; }
 
         /// <summary>
         /// 圖片群組資料表 (使用印鑑、簽名、LOGO)
         /// </summary>
-        public SealMappingConfig ImageGroup { get; set; }
+        public SealMappingConfig SealMappingConfig { get; set; }
     }
 }

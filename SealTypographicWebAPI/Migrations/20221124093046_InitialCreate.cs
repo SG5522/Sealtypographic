@@ -40,21 +40,6 @@ namespace SealTypographicWebAPI.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "ImageGroups",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    Name = table.Column<string>(type: "TEXT", nullable: false),
-                    Type = table.Column<string>(type: "TEXT", nullable: false),
-                    Description = table.Column<string>(type: "TEXT", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ImageGroups", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Letterheads",
                 columns: table => new
                 {
@@ -67,6 +52,21 @@ namespace SealTypographicWebAPI.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Letterheads", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "SealMappingConfigs",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Type = table.Column<string>(type: "TEXT", nullable: false),
+                    SubId = table.Column<string>(type: "TEXT", nullable: false),
+                    Name = table.Column<string>(type: "TEXT", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_SealMappingConfigs", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -104,7 +104,7 @@ namespace SealTypographicWebAPI.Migrations
                     Quarter = table.Column<string>(type: "TEXT", nullable: false),
                     Stauts = table.Column<int>(type: "INTEGER", nullable: false),
                     CustomerId = table.Column<string>(type: "TEXT", nullable: false),
-                    ImageGroupId = table.Column<int>(type: "INTEGER", nullable: false)
+                    SealMappingConfigId = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -116,9 +116,9 @@ namespace SealTypographicWebAPI.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_CustomerSealJournals_ImageGroups_ImageGroupId",
-                        column: x => x.ImageGroupId,
-                        principalTable: "ImageGroups",
+                        name: "FK_CustomerSealJournals_SealMappingConfigs_SealMappingConfigId",
+                        column: x => x.SealMappingConfigId,
+                        principalTable: "SealMappingConfigs",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -134,21 +134,21 @@ namespace SealTypographicWebAPI.Migrations
                     AvailableDate = table.Column<DateTime>(type: "TEXT", nullable: false),
                     CreateDate = table.Column<DateTime>(type: "TEXT", nullable: false),
                     LetterheadId = table.Column<string>(type: "TEXT", nullable: false),
-                    ImageGroupId = table.Column<int>(type: "INTEGER", nullable: false)
+                    SealMappingConfigId = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_LetterheadImageJournals", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_LetterheadImageJournals_ImageGroups_ImageGroupId",
-                        column: x => x.ImageGroupId,
-                        principalTable: "ImageGroups",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
                         name: "FK_LetterheadImageJournals_Letterheads_LetterheadId",
                         column: x => x.LetterheadId,
                         principalTable: "Letterheads",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_LetterheadImageJournals_SealMappingConfigs_SealMappingConfigId",
+                        column: x => x.SealMappingConfigId,
+                        principalTable: "SealMappingConfigs",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -163,7 +163,7 @@ namespace SealTypographicWebAPI.Migrations
                     AvailableDate = table.Column<DateTime>(type: "TEXT", nullable: false),
                     CreateDate = table.Column<DateTime>(type: "TEXT", nullable: false),
                     AccountantId = table.Column<string>(type: "TEXT", nullable: false),
-                    ImageGroupId = table.Column<int>(type: "INTEGER", nullable: false)
+                    SealMappingConfigId = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -175,9 +175,9 @@ namespace SealTypographicWebAPI.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_AccountantSignJournals_ImageGroups_ImageGroupId",
-                        column: x => x.ImageGroupId,
-                        principalTable: "ImageGroups",
+                        name: "FK_AccountantSignJournals_SealMappingConfigs_SealMappingConfigId",
+                        column: x => x.SealMappingConfigId,
+                        principalTable: "SealMappingConfigs",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -193,9 +193,9 @@ namespace SealTypographicWebAPI.Migrations
                 column: "AccountantId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_AccountantSignJournals_ImageGroupId",
+                name: "IX_AccountantSignJournals_SealMappingConfigId",
                 table: "AccountantSignJournals",
-                column: "ImageGroupId");
+                column: "SealMappingConfigId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_CustomerSealJournals_CustomerId",
@@ -203,19 +203,25 @@ namespace SealTypographicWebAPI.Migrations
                 column: "CustomerId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_CustomerSealJournals_ImageGroupId",
+                name: "IX_CustomerSealJournals_SealMappingConfigId",
                 table: "CustomerSealJournals",
-                column: "ImageGroupId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_LetterheadImageJournals_ImageGroupId",
-                table: "LetterheadImageJournals",
-                column: "ImageGroupId");
+                column: "SealMappingConfigId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_LetterheadImageJournals_LetterheadId",
                 table: "LetterheadImageJournals",
                 column: "LetterheadId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_LetterheadImageJournals_SealMappingConfigId",
+                table: "LetterheadImageJournals",
+                column: "SealMappingConfigId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_SealMappingConfigs_SubId",
+                table: "SealMappingConfigs",
+                column: "SubId",
+                unique: true);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -236,10 +242,10 @@ namespace SealTypographicWebAPI.Migrations
                 name: "Customers");
 
             migrationBuilder.DropTable(
-                name: "ImageGroups");
+                name: "Letterheads");
 
             migrationBuilder.DropTable(
-                name: "Letterheads");
+                name: "SealMappingConfigs");
 
             migrationBuilder.DropTable(
                 name: "AccountantGroups");
