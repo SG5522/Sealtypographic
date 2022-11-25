@@ -20,7 +20,7 @@
         /// 4.會計主管    
         /// </summary>
         /// <example>1</example>
-        public int ImageGroupId { get; set; }
+        public int SealMappingConfigId { get; set; }
 
         /// <summary>
         /// 印鑑編號(排序) 1為起始
@@ -35,14 +35,15 @@
         public string ImageBase64 { get; set; }
 
         /// <summary>
-        /// 啟用日(審查通過才有)
+        /// 啟用日(審查通過才有正確時間)
         /// </summary>
+        /// <example>0000-01-01T00:00:00.000Z</example>
         public DateTime AvailableDate { get; set; }
 
         /// <summary>
         /// 建立日期
         /// </summary>
-        public DateTime CreatedDate { get; set; }
+        public DateTime CreateDate { get; set; }
 
         /// <summary>
         /// 印鑑季度

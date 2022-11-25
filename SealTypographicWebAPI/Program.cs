@@ -12,6 +12,9 @@ var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 ConfigurationManager config = builder.Configuration; // 取得 IConfiguration
+Log.Logger = new LoggerConfiguration()
+                .ReadFrom.Configuration(config)
+                .CreateBootstrapLogger();
 
 builder.Services.Configure<ScanConfigPath>(
     builder.Configuration.GetSection("ScanConfigPath"));
@@ -29,7 +32,8 @@ builder.Services.AddCors(options =>
                       });
 });
 
-//builder.Host.UseSerilog();// <-SeriLog 
+
+builder.Host.UseSerilog();// <-SeriLog 
 
 #region -- ConectionString --
 builder.Services.AddDbContextPool<SealTypographicDbContext>(optionsBuilder =>

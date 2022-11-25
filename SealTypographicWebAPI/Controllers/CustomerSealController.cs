@@ -110,13 +110,5 @@ namespace SealTypographicWebAPI.Controllers
                 return ResponseUtil.InternalServerError();
             }
         }
-        /// <summary>
-        /// 刪除印鑑(變更不啟用狀態)
-        /// </summary>
-        /// <param name="id"></param>
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
-        }
     }
 }

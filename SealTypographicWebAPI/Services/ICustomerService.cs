@@ -18,9 +18,9 @@ namespace SealTypographicWebAPI.Services
         /// <summary>
         /// 依搜尋條件獲得顧客資料列表
         /// </summary>
-        /// <param name="customerQueryPage">客戶分頁搜尋</param>        
+        /// <param name="customerQuery">客戶分頁搜尋</param>        
         /// <returns></returns>
-        CustomerResponsePage GetCustomerViewModels(ImageGroupQueryPage customerQueryPage);
+        CustomerResponsePage GetCustomerViewModels(CustomerQuery customerQuery);
 
         /// <summary>
         /// 建立顧客資料

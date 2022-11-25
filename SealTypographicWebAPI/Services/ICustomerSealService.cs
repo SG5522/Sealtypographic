@@ -37,12 +37,5 @@ namespace SealTypographicWebAPI.Services
         /// <returns></returns>
         Response UpdateCustomerSeals(List<CustomerSealPostData> customerSeals);
 
-        /// <summary>
-        /// 刪除印鑑組
-        /// </summary>
-        /// <param name="customerSeals">印鑑資料</param>
-        /// <returns></returns>
-        Response DeleteCustomerSeals(List<CustomerSeal> customerSeals);
-
     }
 }

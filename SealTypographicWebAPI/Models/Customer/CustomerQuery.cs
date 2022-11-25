@@ -3,7 +3,7 @@
     /// <summary>
     /// 客戶分頁搜尋
     /// </summary>
-    public class ImageGroupQueryPage
+    public class CustomerQuery
     {
         /// <summary>
         /// 搜尋客戶ID或是名字

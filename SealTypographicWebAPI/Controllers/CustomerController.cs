@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SealTypographicWebAPI.Models;
 using SealTypographicWebAPI.Models.Customer;
-using SealTypographicWebAPI.Consts;
 using SealTypographicWebAPI.Util;
 using SealTypographicWebAPI.Services;
+using Serilog;
 
 namespace SealTypographicWebAPI.Controllers
 {
@@ -32,19 +32,23 @@ namespace SealTypographicWebAPI.Controllers
         /// <summary>
         /// 依搜尋條件獲得客戶資料列表
         /// </summary>
-        /// <param name="customerQueryPage">客戶分頁搜尋</param>        
+        /// <param name="customerQuery">客戶分頁搜尋</param>        
         /// <returns></returns>
         [HttpGet]
         //public CustomerResponsePage GetCustomerViewModels(string customerIDOrName, int thisPage, int pageSize)
-        public CustomerResponsePage GetCustomerViewModels([FromQuery]ImageGroupQueryPage customerQueryPage)
+        public CustomerResponsePage GetCustomerViewModels([FromQuery]CustomerQuery customerQuery)
         {         
             try
-            {                
-                return customerService.GetCustomerViewModels(customerQueryPage);
+            {
+                Log.Information("GetCustomerViewModels {@Input}", customerQuery);
+                CustomerResponsePage customerResponsePage = customerService.GetCustomerViewModels(customerQuery);
+                Log.Information("GetCustomerViewModels {@Output}", customerResponsePage);
+                return customerResponsePage;
             }
             catch
             {
                 Response response = ResponseUtil.InternalServerError();
+                Log.Information("GetCustomerViewModels OutPut {@OutPut}", response);
                 return new CustomerResponsePage()
                 {
                     Code = response.Code,

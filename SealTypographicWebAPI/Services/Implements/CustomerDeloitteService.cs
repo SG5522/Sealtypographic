@@ -19,7 +19,6 @@ namespace SealTypographicWebAPI.Services.Implements
         /// 取得DB與ResponseService
         /// </summary>
         /// <param name="dbContext"></param>
-        /// <param name="responseService"></param>
         /// <param name="mapper"></param>
         public CustomerDeloitteService(SealTypographicDbContext dbContext, IMapper mapper)
         {
@@ -65,42 +64,42 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <summary>
         /// 依搜尋條件獲得顧客資料列表
         /// </summary>
-        /// <param name="customerQueryPage">搜尋條件</param>  
+        /// <param name="customerQuery">搜尋條件</param>  
         /// <returns></returns>
-        public CustomerResponsePage GetCustomerViewModels(ImageGroupQueryPage customerQueryPage)
+        public CustomerResponsePage GetCustomerViewModels(CustomerQuery customerQuery)
         {
             List<CustomerViewModel> customerViewModels = new();
             Response response = new();
             int totalPage = 0;
             int totalCount = 0;
-            IQueryable<Entities.Customer> customerQuery;
+            IQueryable<Customer> customerQuerys;
 
-            if (customerQueryPage.CustomerIdOrName != null)
+            if (customerQuery.CustomerIdOrName != null)
             {
-                customerQuery = dbContext.Customers.Where
+                customerQuerys = dbContext.Customers.Where
                     (
                         customer =>
-                        customer.Id.Contains(customerQueryPage.CustomerIdOrName)
-                        || customer.Name.Contains(customerQueryPage.CustomerIdOrName)
+                        customer.Id.Contains(customerQuery.CustomerIdOrName)
+                        || customer.Name.Contains(customerQuery.CustomerIdOrName)
                     );
             }
             else
             {
-                customerQuery = dbContext.Customers;
+                customerQuerys = dbContext.Customers;
             }
 
-            customerQuery = customerQuery.OrderBy(customer => customer.Id);
+            customerQuerys = customerQuerys.OrderBy(customer => customer.Id);
 
-            if (customerQuery.Any())
+            if (customerQuerys.Any())
             {
                 //取得該頁            
-                var pageNumberCustomers = customerQuery
-                                          .Skip((customerQueryPage.PageNumber - 1) * customerQueryPage.PageSize)
-                                          .Take(customerQueryPage.PageSize)
+                var pageNumberCustomers = customerQuerys
+                                          .Skip((customerQuery.PageNumber - 1) * customerQuery.PageSize)
+                                          .Take(customerQuery.PageSize)
                                           .ToList();
                 //計算總頁數
-                totalPage = customerQuery.Count() / customerQueryPage.PageSize + (customerQuery.Count() % customerQueryPage.PageSize == 0 ? 0 : 1);
-                totalCount = customerQuery.Count();
+                totalPage = customerQuerys.Count() / customerQuery.PageSize + (customerQuerys.Count() % customerQuery.PageSize == 0 ? 0 : 1);
+                totalCount = customerQuerys.Count();
                 foreach (var customerBase in pageNumberCustomers)
                 {
                     customerViewModels.Add(mapper.Map<CustomerViewModel>(customerBase));
@@ -112,12 +111,11 @@ namespace SealTypographicWebAPI.Services.Implements
             {
                 response = ResponseUtil.NoData();
             }
-
-
+            
             return new CustomerResponsePage()
             {
-                PageNumber = customerQueryPage.PageNumber,
-                PageSize = customerQueryPage.PageSize,
+                PageNumber = customerQuery.PageNumber,
+                PageSize = customerQuery.PageSize,
                 TotalCount = totalCount,
                 TotalPage = totalPage,
                 Customers = customerViewModels,
@@ -134,12 +132,12 @@ namespace SealTypographicWebAPI.Services.Implements
         public Response CreateCustomer(CustomerData customerBaseData)
         {
             Response response = new();
-            IQueryable<Entities.Customer> customerQuery = dbContext.Customers
+            IQueryable<Customer> customerQuery = dbContext.Customers
                                 .Where(customer => customer.Id == customerBaseData.Id);
 
             if (!customerQuery.Any())
             {
-                Entities.Customer dbCustomer = mapper.Map<Entities.Customer>(customerBaseData);
+                Customer dbCustomer = mapper.Map<Customer>(customerBaseData);
                 dbContext.Customers.Add(dbCustomer);
                 dbContext.SaveChanges();
                 response = ResponseUtil.Success();
@@ -159,7 +157,7 @@ namespace SealTypographicWebAPI.Services.Implements
         public Response UpdateCustomer(CustomerData customerBaseData)
         {
             Response response = new();
-            Entities.Customer? customerQuery = dbContext.Customers
+            Customer? customerQuery = dbContext.Customers
                                 .Where(customer => customer.Id == customerBaseData.Id)
                                 .FirstOrDefault();
 

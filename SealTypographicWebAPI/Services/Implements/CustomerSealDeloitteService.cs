@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using EFCore.BulkExtensions;
 using Microsoft.EntityFrameworkCore;
-using SealTypographicWebAPI.Consts;
 using SealTypographicWebAPI.Entities;
 using SealTypographicWebAPI.Models;
 using SealTypographicWebAPI.Models.Customer;
@@ -36,7 +35,7 @@ namespace SealTypographicWebAPI.Services.Implements
         {
             List<CustomerSealQuarter> customerSealQuarters = new();
             Response response;
-            var customerSealQuarterQuery = dbContext.CustomerSealJournals
+            List<string> customerSealQuarterQuery = dbContext.CustomerSealJournals
                                            .Where(customerSealJournal => customerSealJournal.CustomerId == customerId)
                                            .Select(customerSealJournal => customerSealJournal.Quarter)
                                            .Distinct()
@@ -156,34 +155,18 @@ namespace SealTypographicWebAPI.Services.Implements
                 {
                     //這段之後會做成IMAGE64的處理並另存在指定的位置
                     string imagePath = customerSeal.ImageBase64;
-
-                    mapper.Map(customerSealJournalQuery, customerSeal);
                     customerSealJournalQuery.ImagePath = imagePath;
-                    //customerSealJournal.ImagePath = imagePath;
-                    //customerSealJournal.AvailableDate = customerSeal.AvailableDate;
-                    //customerSealJournal.No = customerSeal.No;
-                    //customerSealJournal.CreateDate = DateTime.Now;
-                    dbContext.SaveChanges();
+                    mapper.Map(customerSeal, customerSealJournalQuery);                    
                 }
                 else
                 {
                     response = ResponseUtil.NoData();
                     return response;
                 }
-            }
+            }            
+            dbContext.SaveChanges();
             response = ResponseUtil.Success();
             return response;
-        }
-
-
-        /// <summary>
-        /// 刪除印鑑組
-        /// </summary>
-        /// <param name="customerSeals">印鑑資料</param>
-        /// <returns></returns>
-        public Response DeleteCustomerSeals(List<CustomerSeal> customerSeals)
-        {
-            return new Response();
         }
     }
 }
