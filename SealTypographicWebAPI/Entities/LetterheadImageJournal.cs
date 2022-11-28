@@ -26,9 +26,23 @@
         public DateTime AvailableDate { get; set; }
 
         /// <summary>
+        /// 啟用結束日期
+        /// </summary>
+        public DateTime DeadlineDate { get; set; }
+
+        /// <summary>
         /// 建立日期
         /// </summary>
         public DateTime CreateDate { get; set; }
+
+        /// <summary>
+        /// 狀態
+        /// 0.待審查
+        /// 1.通過(審核完成)
+        /// 2.退件
+        /// 3.刪除(系統管理員可以看到資料)
+        /// </summary>
+        public int Status { get; set; }
 
         /// <summary>
         /// 事務所信頭ID

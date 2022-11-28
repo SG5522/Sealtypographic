@@ -28,12 +28,12 @@
         /// <summary>
         /// 會計師群組ID
         /// </summary>
-        public string AccountantGroupsId { get; set; }
+        public string AccountantGroupId { get; set; }
 
         /// <summary>
         /// 會計師群組名稱
         /// </summary>
-        public string AccountantGroupsName { get; set; }
+        public string AccountantGroupName { get; set; }
 
         /// <summary>
         /// 會計師狀態字串顯示   

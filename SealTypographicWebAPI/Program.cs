@@ -54,6 +54,7 @@ builder.Services.AddScoped<ICustomerService, CustomerDeloitteService>();
 builder.Services.AddScoped<ICustomerSealService, CustomerSealDeloitteService>();
 builder.Services.AddScoped<IAccountantService, AccountantDeloitteService>();
 builder.Services.AddScoped<IAccountantGroupService, AccountantGroupDeloitteService>();
+builder.Services.AddScoped<IAccountantSignService, AcoountantSignDeloitteService>();
 builder.Services.AddScoped<ILetterheadService, LetterheadDeloitteService>();
 builder.Services.AddScoped<SealMappingConfigService>();
 

@@ -3,16 +3,18 @@
     /// <summary>
     /// 會計資料
     /// </summary>
-    public class AccountantData
+    public class AccountantPostData
     {
         /// <summary>
         /// 會計師ID
-        /// </summary>        
+        /// </summary>   
+        /// <example>ACC001</example>
         public string Id { get; set; } = null!;
 
         /// <summary>
         /// 名稱
         /// </summary>
+        /// <example>測試</example>
         public string Name { get; set; }
 
         /// <summary>
@@ -31,11 +33,14 @@
         /// 1.已審查
         /// 2.刪除(系統管理員可以看到資料)
         /// </summary>
+        /// <example>0</example>
         public int Status { get; set; }
 
         /// <summary>
         /// 會計師群組ID
+        /// 0 無群組
         /// </summary>
-        public string AccountantGroupsId { get; set; }
+        /// <example>0</example>
+        public string AccountantGroupId { get; set; }
     }
 }

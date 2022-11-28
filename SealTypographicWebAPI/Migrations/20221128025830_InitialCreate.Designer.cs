@@ -11,7 +11,7 @@ using SealTypographicWebAPI.Entities;
 namespace SealTypographicWebAPI.Migrations
 {
     [DbContext(typeof(SealTypographicDbContext))]
-    [Migration("20221124093046_InitialCreate")]
+    [Migration("20221128025830_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -78,11 +78,17 @@ namespace SealTypographicWebAPI.Migrations
                     b.Property<DateTime>("CreateDate")
                         .HasColumnType("TEXT");
 
+                    b.Property<DateTime>("DeadlineDate")
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("ImagePath")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<int>("SealMappingConfigId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("Status")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
@@ -208,6 +214,9 @@ namespace SealTypographicWebAPI.Migrations
                     b.Property<DateTime>("CreateDate")
                         .HasColumnType("TEXT");
 
+                    b.Property<DateTime>("DeadlineDate")
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("ImagePath")
                         .IsRequired()
                         .HasColumnType("TEXT");
@@ -220,6 +229,9 @@ namespace SealTypographicWebAPI.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("SealMappingConfigId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("Status")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");

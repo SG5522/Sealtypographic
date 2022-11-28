@@ -132,7 +132,9 @@ namespace SealTypographicWebAPI.Migrations
                     No = table.Column<int>(type: "INTEGER", nullable: false),
                     ImagePath = table.Column<string>(type: "TEXT", nullable: false),
                     AvailableDate = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    DeadlineDate = table.Column<DateTime>(type: "TEXT", nullable: false),
                     CreateDate = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    Status = table.Column<int>(type: "INTEGER", nullable: false),
                     LetterheadId = table.Column<string>(type: "TEXT", nullable: false),
                     SealMappingConfigId = table.Column<int>(type: "INTEGER", nullable: false)
                 },
@@ -161,7 +163,9 @@ namespace SealTypographicWebAPI.Migrations
                         .Annotation("Sqlite:Autoincrement", true),
                     ImagePath = table.Column<string>(type: "TEXT", nullable: false),
                     AvailableDate = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    DeadlineDate = table.Column<DateTime>(type: "TEXT", nullable: false),
                     CreateDate = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    Status = table.Column<int>(type: "INTEGER", nullable: false),
                     AccountantId = table.Column<string>(type: "TEXT", nullable: false),
                     SealMappingConfigId = table.Column<int>(type: "INTEGER", nullable: false)
                 },

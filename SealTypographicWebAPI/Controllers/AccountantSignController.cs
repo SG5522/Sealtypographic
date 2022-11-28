@@ -1,11 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
-using SealTypographicWebAPI.Consts;
+using SealTypographicWebAPI.Models;
 using SealTypographicWebAPI.Models.Accountant;
 using SealTypographicWebAPI.Services;
 using SealTypographicWebAPI.Util;
+using Serilog;
 
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace SealTypographicWebAPI.Controllers
 {
@@ -13,21 +12,22 @@ namespace SealTypographicWebAPI.Controllers
     /// 會計師印鑑組
     /// </summary>
     [Route("api/[controller]")]
+    [Produces("application/json")]
     [ApiController]
     public class AccountantSignController : ControllerBase
     {
         /// <summary>
         /// 宣告會計師的interface
         /// </summary>
-        protected readonly IAccountantService accountantService;
+        protected readonly IAccountantSignService accountantSignService;
 
         /// <summary>
         /// 注入會計師interface
         /// </summary>
-        /// <param name="accountantService"></param>        
-        public AccountantSignController(IAccountantService accountantService)
+        /// <param name="accountantSignService"></param>        
+        public AccountantSignController(IAccountantSignService accountantSignService)
         {
-            this.accountantService = accountantService;            
+            this.accountantSignService = accountantSignService;            
         }
 
         /// <summary>
@@ -36,52 +36,78 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="accountantID">會計ID</param>        
         /// <returns></returns>
         [HttpGet("{id}")]
-        public IActionResult Get(string accountantID)
+        public AccountantSignViewModels Get(string accountantID)
         {
             try
             {
-                //List<AccountantSign> customerSeals = accountantService.GetAccountantSigns(accountantID);
-                return Ok();
+                Log.Information("AccountantSignGet {@Input}", accountantID);
+                AccountantSignViewModels accountantSignViewModels = accountantSignService.GetAccountantSings(accountantID);
+                Log.Information("AccountantSignGet {@Output}", accountantSignViewModels);
+                return accountantSignViewModels;                
             }
             catch
             {
-                return NotFound(ResponseUtil.InternalServerError());
+                Response response = ResponseUtil.InternalServerError();
+                Log.Information("GetCustomerViewModels {@OutPut}", response);
+                return new()
+                {
+                    Code = response.Code,
+                    Message = response.Message,
+                };
             }
         }
 
         /// <summary>
         /// 建立會計師印鑑簽名組
         /// </summary>
-        /// <param name="accountantSigns"></param>
+        /// <param name="accountantSignPosts"></param>
         /// <returns></returns>
         [HttpPost]
-        public IActionResult Post(List<AccountantSign> accountantSigns)
+        public Response Post(List<AccountantSignPost> accountantSignPosts)
         {
             try
             {
-                return Ok("OK");
+                Log.Information("AccountantSignPost {@Input}", accountantSignPosts);
+                Response response = accountantSignService.CreateAccountantSigns(accountantSignPosts);
+                Log.Information("AccountantSignPost {@Output}", response);
+                return response;                
             }
             catch
             {
-                return NotFound(ResponseUtil.InternalServerError());
+                Response response = ResponseUtil.InternalServerError();
+                Log.Information("AccountantSignPost {@OutPut}", response);
+                return new()
+                {
+                    Code = response.Code,
+                    Message = response.Message,
+                };
             }
         }
         
         /// <summary>
         /// 修改簽名印鑑
         /// </summary>
-        /// <param name="accountantSign">簽名印鑑資料</param>
+        /// <param name="accountantSignUpdates">簽名印鑑資料</param>
         /// <returns></returns>
         [HttpPut]
-        public IActionResult Put(List<AccountantSignWithId> accountantSign)
+        public Response Put(List<AccountantSignUpdate> accountantSignUpdates)
         {
             try
             {
-                return Ok("OK");
+                Log.Information("AccountantSignPut {@Input}", accountantSignUpdates);
+                Response response = accountantSignService.UpdateAccountantSigns(accountantSignUpdates);
+                Log.Information("AccountantSignPut {@Output}", response);
+                return response;
             }
             catch
             {
-                return NotFound(ResponseUtil.InternalServerError());
+                Response response = ResponseUtil.InternalServerError();
+                Log.Information("AccountantSignPut {@OutPut}", response);
+                return new()
+                {
+                    Code = response.Code,
+                    Message = response.Message,
+                };
             }
         }
 

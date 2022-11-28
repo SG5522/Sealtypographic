@@ -49,7 +49,7 @@ namespace SealTypographicWebAPI.Controllers
             {
                 Response response = ResponseUtil.InternalServerError();
                 Log.Information("GetCustomerViewModels OutPut {@OutPut}", response);
-                return new CustomerResponsePage()
+                return new()
                 {
                     Code = response.Code,
                     Message = response.Message,

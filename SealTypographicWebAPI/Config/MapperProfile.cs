@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using SealTypographicWebAPI.Models.Customer;
 using SealTypographicWebAPI.Entities;
+using SealTypographicWebAPI.Models.Accountant;
 
 namespace SealTypographicWebAPI.Config
 {
@@ -27,6 +28,27 @@ namespace SealTypographicWebAPI.Config
             CreateMap<CustomerSealJournal, CustomerSeal>()
                     .ForMember(x => x.ImageBase64, y => y.Ignore()) // <---imagebase64要額外處理所以要忽略
                     .ReverseMap();
+
+            //會計師基本資料
+            CreateMap<Accountant, AccountantViewModel>()                    
+                    .ForMember(x => x.AccountantGroupName, y => y.MapFrom(o => o.AccountantGroup.Name))
+                    .ReverseMap();            
+            CreateMap<AccountantPostData, Accountant>();
+
+
+            //會計師印鑑
+            CreateMap<AccountantSignJournal, AccountantSignViewModel>()
+                    .ForMember(x => x.SealMappingConfigName, y => y.MapFrom(o => o.SealMappingConfig.Name))
+                    .ForMember(x => x.ImageBase64, y => y.Ignore()) // <---imagebase64要額外處理所以要忽略
+                    .ReverseMap();
+            CreateMap<AccountantSignJournal, AccountantSignPost>()
+                    .ForMember(x => x.ImageBase64, y => y.Ignore()) // <---imagebase64要額外處理所以要忽略
+                    .ReverseMap();
+
+            CreateMap<AccountantSignJournal, AccountantSignUpdate>()
+                    .ForMember(x => x.ImageBase64, y => y.Ignore()) // <---imagebase64要額外處理所以要忽略
+                    .ReverseMap();
+
         }
     }
 }

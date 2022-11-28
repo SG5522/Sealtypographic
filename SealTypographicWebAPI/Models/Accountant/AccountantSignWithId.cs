@@ -3,8 +3,7 @@
     /// <summary>
     /// 會計師簽名含ID
     /// </summary>
-    public class AccountantSignWithId : AccountantData
-    {
+    public class AccountantSignWithId : AccountantPostData    {
         /// <summary>
         /// 簽名ID
         /// </summary>

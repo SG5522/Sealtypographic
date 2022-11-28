@@ -57,7 +57,7 @@ namespace SealTypographicWebAPI.Controllers
         /// <summary>
         /// 取得會計師基本資料
         /// </summary>
-        /// <param name="id"></param>
+        /// <param name="id" example="ACC001"></param>        
         /// <returns></returns>
         [HttpGet("{id}")]
         public AccountantResponse Get(string id)
@@ -82,7 +82,7 @@ namespace SealTypographicWebAPI.Controllers
         /// </summary>
         /// <param name="accountantBaseData"></param>
         [HttpPost]
-        public Response Post(AccountantData accountantBaseData)
+        public Response Post(AccountantPostData accountantBaseData)
         {
             try
             {
@@ -99,7 +99,7 @@ namespace SealTypographicWebAPI.Controllers
         /// </summary>
         /// <param name="accountantBaseData"></param>        
         [HttpPut]
-        public Response Put(AccountantData accountantBaseData)
+        public Response Put(AccountantPostData accountantBaseData)
         {
             try
             {

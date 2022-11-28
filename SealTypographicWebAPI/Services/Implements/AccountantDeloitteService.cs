@@ -4,6 +4,8 @@ using SealTypographicWebAPI.Entities;
 using SealTypographicWebAPI.Consts;
 using SealTypographicWebAPI.Util;
 using SealTypographicWebAPI.Utils;
+using Microsoft.EntityFrameworkCore;
+using AutoMapper;
 
 namespace SealTypographicWebAPI.Services.Implements
 {
@@ -13,14 +15,17 @@ namespace SealTypographicWebAPI.Services.Implements
     public class AccountantDeloitteService : IAccountantService
     {
         private readonly SealTypographicDbContext dbContext;
+        private readonly IMapper mapper;
 
         /// <summary>
-        /// 注入DB
+        /// 注入DB與Mapper
         /// </summary>
         /// <param name="dbContext"></param>
-        public AccountantDeloitteService(SealTypographicDbContext dbContext)
+        /// <param name="mapper"></param>
+        public AccountantDeloitteService(SealTypographicDbContext dbContext,IMapper mapper)
         {
             this.dbContext = dbContext;
+            this.mapper = mapper;
         }
 
         /// <summary>
@@ -32,31 +37,14 @@ namespace SealTypographicWebAPI.Services.Implements
         {
             AccountantViewModel accountantViewModel = new();
             Response response = new();
-            var accountantQuery = from accountant in dbContext.Set<Entities.Accountant>()
-                                  join accountantGroup in dbContext.Set<AccountantGroup>()
-                                  on accountant.AccountantGroupId equals accountantGroup.Id
-                                  where accountant.Id == accountantId
-                                  select new
-                                  {
-                                      accountant.Id,
-                                      accountant.Name,
-                                      accountant.AvailableDate,
-                                      accountant.CreateDate,
-                                      accountant.AccountantGroupId,
-                                      accountantGroupName = accountantGroup.Name
-                                  };
+            Accountant? accountantQuery = dbContext.Accountants.Where(accountant => accountant.Id == accountantId)
+                                                                .Include(accountant => accountant.AccountantGroup)                                                                
+                                                                .FirstOrDefault();
 
-            if (accountantQuery.Any())
+            if (accountantQuery != null)
             {
-                var accountant = accountantQuery.First();
-
-                accountantViewModel.Id = accountant.Id;
-                accountantViewModel.Name = accountant.Name;
-                accountantViewModel.AvailableDate = accountant.AvailableDate;
-                accountantViewModel.CreateDate = accountant.CreateDate;
-                accountantViewModel.AccountantGroupsId = accountant.AccountantGroupId;
-                accountantViewModel.AccountantGroupsName = accountant.accountantGroupName;
-
+                accountantViewModel = mapper.Map<AccountantViewModel>(accountantQuery);
+                accountantViewModel.StatusString = StatusUtil.Get((Status)accountantQuery.Status);
                 response = ResponseUtil.Success();
             }
             else
@@ -85,60 +73,43 @@ namespace SealTypographicWebAPI.Services.Implements
             Response response = new();
             int totalPage = 0;
             int totalCount = 0;
-            var accountantsQuery = from accountant in dbContext.Set<Entities.Accountant>()
-                                   join accountantGroup in dbContext.Set<AccountantGroup>()
-                                   on accountant.AccountantGroupId equals accountantGroup.Id
-                                   select new
-                                   {
-                                       accountant.Id,
-                                       accountant.Name,
-                                       accountant.AvailableDate,
-                                       accountant.AccountantGroupId,
-                                       accountantGroupName = accountantGroup.Name,
-                                       accountant.Status
-                                   };
 
             if (accountantQueryPage.IdOrNameOrGroupsName != null)
             {
-                accountantsQuery = accountantsQuery.Where
-                                    (
-                                        accountant =>
-                                        accountant.Id.Contains(accountantQueryPage.IdOrNameOrGroupsName)
-                                        || accountant.Name.Contains(accountantQueryPage.IdOrNameOrGroupsName)
-                                        || accountant.accountantGroupName.Contains(accountantQueryPage.IdOrNameOrGroupsName)
-                                    );
-            }
-            accountantsQuery = accountantsQuery.OrderBy(accountant => accountant.Id);
-
-            if (accountantsQuery.Any())
-            {
-                //取得該頁            
-                var thisPageAccountants = accountantsQuery
-                                          .Skip((accountantQueryPage.PageNumber - 1) * accountantQueryPage.PageSize)
-                                          .Take(accountantQueryPage.PageSize)
-                                          .ToList();
-                //計算總頁數
-                totalPage = accountantsQuery.Count() / accountantQueryPage.PageSize + (accountantsQuery.Count() % accountantQueryPage.PageSize == 0 ? 0 : 1);
-                totalCount = accountantsQuery.Count();
-                foreach (var accountant in thisPageAccountants)
+                IQueryable<Accountant>? accountantsQuery = dbContext.Accountants.Where
+                                                                            (
+                                                                                accountant =>
+                                                                                accountant.Id.Contains(accountantQueryPage.IdOrNameOrGroupsName)
+                                                                                || accountant.Name.Contains(accountantQueryPage.IdOrNameOrGroupsName)
+                                                                                || accountant.AccountantGroup.Name.Contains(accountantQueryPage.IdOrNameOrGroupsName)
+                                                                            )                                                                            
+                                                                            .OrderBy(accountant => accountant.Id);
+                if (accountantsQuery.Any())
                 {
-                    accountantViewModels.Add(new AccountantViewModel()
+                    //取得該頁            
+                    List<Accountant> thisPageAccountants = accountantsQuery
+                                              .Include(accountantGroup => accountantGroup.AccountantGroup)
+                                              .Skip((accountantQueryPage.PageNumber - 1) * accountantQueryPage.PageSize)
+                                              .Take(accountantQueryPage.PageSize)
+                                              .ToList();
+                    //計算總頁數
+                    totalPage = accountantsQuery.Count() / accountantQueryPage.PageSize + (accountantsQuery.Count() % accountantQueryPage.PageSize == 0 ? 0 : 1);
+                    totalCount = accountantsQuery.Count();
+                    foreach (Accountant accountant in thisPageAccountants)
                     {
-                        Id = accountant.Id,
-                        Name = accountant.Name,
-                        AvailableDate = accountant.AvailableDate,
-                        AccountantGroupsId = accountant.AccountantGroupId,
-                        AccountantGroupsName = accountant.accountantGroupName,
-                        StatusString = StatusUtil.Get((Status)accountant.Status)
-                    });
+                        AccountantViewModel accountantViewModel = mapper.Map<AccountantViewModel>(accountant);
+                        accountantViewModel.StatusString = StatusUtil.Get((Status)accountant.Status);
+                        accountantViewModels.Add(accountantViewModel);
+                    }
+                    //取得成功訊息
+                    response = ResponseUtil.Success();
                 }
-                //取得成功訊息
-                response = ResponseUtil.Success();
+                else
+                {
+                    response = ResponseUtil.NoData();
+                }
             }
-            else
-            {
-                response = ResponseUtil.NoData();
-            }
+            
 
             return new AccountantResponses()
             {
@@ -155,28 +126,18 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <summary>
         /// 新增會計基本資料
         /// </summary>
-        /// <param name="accountantBaseData">基本資料</param>
+        /// <param name="accountantPostData">基本資料</param>
         /// <returns></returns>
-        public Response CreateAccountant(AccountantData accountantBaseData)
+        public Response CreateAccountant(AccountantPostData accountantPostData)
         {
             Response response = new();
-            var accountantQuery = dbContext.Accountants
-                                    .Where(accountant => accountant.Id == accountantBaseData.Id);
+            Accountant? accountantQuery = dbContext.Accountants
+                                    .Where(accountant => accountant.Id == accountantPostData.Id)
+                                    .FirstOrDefault();
 
-            if (!accountantQuery.Any())
+            if (accountantQuery == null)
             {
-                Entities.Accountant accountant = new()
-                {
-                    Id = accountantBaseData.Id,
-                    Name = accountantBaseData.Name,
-                    AvailableDate = accountantBaseData.AvailableDate,
-                    //CreatedDate = DateOnly.FromDateTime(DateTime.Now),
-                    CreateDate = accountantBaseData.CreateDate,
-                    AccountantGroupId = accountantBaseData.AccountantGroupsId,
-                    //Status = 0, //預設建立是待審
-                    Status = accountantBaseData.Status
-
-                };
+                Accountant accountant = mapper.Map<Accountant>(accountantPostData);
                 dbContext.Accountants.Add(accountant);
                 dbContext.SaveChanges();
                 response = ResponseUtil.Success();
@@ -192,21 +153,18 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <summary>
         /// 更新會計師基本資料
         /// </summary>
-        /// <param name="accountantBaseData">會計師基本資料 accountantBaseData.id 為搜尋條件</param>        
-        public Response UpdateAccountant(AccountantData accountantBaseData)
+        /// <param name="accountaPostData">會計師基本資料 accountantBaseData.id 為搜尋條件</param>        
+        public Response UpdateAccountant(AccountantPostData accountaPostData)
         {
             Response response = new();
-            var accountantQuery = dbContext.Accountants
-                                .Where(accountant => accountant.Id == accountantBaseData.Id);
+            Accountant? accountantQuery = dbContext.Accountants
+                                .Where(accountant => accountant.Id == accountaPostData.Id)
+                                .FirstOrDefault();
 
-            if (accountantQuery.Any())
+            if (accountantQuery != null)
             {
-                Entities.Accountant accountant = accountantQuery.First();
-                accountant.Id = accountantBaseData.Id;
-                accountant.Name = accountantBaseData.Name;
-                accountant.AvailableDate = accountantBaseData.AvailableDate;
-                accountant.AccountantGroupId = accountantBaseData.AccountantGroupsId;
-                accountant.Status = accountantBaseData.Status;
+                mapper.Map(accountaPostData, accountantQuery);
+
                 dbContext.SaveChanges();
                 response = ResponseUtil.Success();
             }
