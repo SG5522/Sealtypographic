@@ -34,21 +34,20 @@ namespace SealTypographicWebAPI.Controllers
         /// </summary>
         /// <param name="customerQuery">客戶分頁搜尋</param>        
         /// <returns></returns>
-        [HttpGet]
-        //public CustomerResponsePage GetCustomerViewModels(string customerIDOrName, int thisPage, int pageSize)
-        public CustomerResponsePage GetCustomerViewModels([FromQuery]CustomerQuery customerQuery)
+        [HttpGet]        
+        public CustomerResponsePage Get([FromQuery]CustomerSearch customerQuery)
         {         
             try
             {
-                Log.Information("GetCustomerViewModels {@Input}", customerQuery);
+                Log.Information("Customer get viewModels input {@Input}", customerQuery);
                 CustomerResponsePage customerResponsePage = customerService.GetCustomerViewModels(customerQuery);
-                Log.Information("GetCustomerViewModels {@Output}", customerResponsePage);
+                Log.Information("Customer get viewModels output {@Output}", customerResponsePage);
                 return customerResponsePage;
             }
-            catch
+            catch (Exception ex)
             {
-                Response response = ResponseUtil.InternalServerError();
-                Log.Information("GetCustomerViewModels OutPut {@OutPut}", response);
+                Log.Error("Customer get viewModels error {@Error}", ex);
+                Response response = ResponseUtil.InternalServerError();                
                 return new()
                 {
                     Code = response.Code,
@@ -67,11 +66,15 @@ namespace SealTypographicWebAPI.Controllers
         public CustomerResponse Get(string id)
         {
             try
-            {                                
-                return customerService.GetCustomer(id);
-            }
-            catch
             {
+                Log.Information("Customer get customerData input {@Input}", id);
+                CustomerResponse customerResponse = customerService.GetCustomer(id);
+                Log.Information("Customer get customerData output {@Output}", customerResponse);
+                return customerResponse;
+            }
+            catch (Exception ex)
+            {
+                Log.Error("Customer get customerData error {@Error}", ex);
                 Response response = ResponseUtil.InternalServerError();
                 return new CustomerResponse()
                 {
@@ -89,11 +92,15 @@ namespace SealTypographicWebAPI.Controllers
         public Response Post(CustomerData customerData)
         {
             try
-            {                                          
-                return customerService.CreateCustomer(customerData);
-            }
-            catch
             {
+                Log.Information("Customer post customerData input {@Input}", customerData);
+                Response response = customerService.CreateCustomer(customerData);
+                Log.Information("Customer post customerData output {@Input}", response);
+                return response;
+            }
+            catch (Exception ex)
+            {
+                Log.Error("Customer post customerData error {@Error}", ex);
                 return ResponseUtil.InternalServerError();
             }
         }
@@ -106,11 +113,15 @@ namespace SealTypographicWebAPI.Controllers
         public Response Put(CustomerData customerData)
         {
             try
-            {                
-                return customerService.UpdateCustomer(customerData);
-            }
-            catch
             {
+                Log.Information("Customer put customerData input {@Input}", customerData);
+                Response response = customerService.UpdateCustomer(customerData);
+                Log.Information("Customer put customerData output {@Output}", response);
+                return response;
+            }
+            catch (Exception ex)
+            {
+                Log.Error("Customer put customerData error {@Error}", ex);
                 return ResponseUtil.InternalServerError();
             }
         }
@@ -126,11 +137,15 @@ namespace SealTypographicWebAPI.Controllers
         public Response Delete(string customerId)
         {
             try
-            {                
-                return customerService.DeleteCustomer(customerId);
-            }
-            catch
             {
+                Log.Information("Customer delete customerData input {@Input}", customerId);
+                Response response = customerService.DeleteCustomer(customerId);
+                Log.Information("Customer delete customerData input {@Input}", response);
+                return response;
+            }
+            catch (Exception ex)
+            {
+                Log.Error("Customer delete customerData error {@Error}", ex);
                 return ResponseUtil.InternalServerError();
             }
         }

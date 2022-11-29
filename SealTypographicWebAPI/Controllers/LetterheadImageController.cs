@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using SealTypographicWebAPI.Consts;
-using SealTypographicWebAPI.Models;
+using SealTypographicWebAPI.Models.Letterhead;
 using SealTypographicWebAPI.Services;
 using SealTypographicWebAPI.Util;
 
@@ -44,9 +44,8 @@ namespace SealTypographicWebAPI.Controllers
         public IActionResult Get(int litterheadID)
         {
             try
-            {
-                List<LetterheadImageWithId> customerSeals = letterheadService.GetLetterheadImages(litterheadID);
-                return Ok(customerSeals);
+            {                
+                return Ok();
             }
             catch
             {

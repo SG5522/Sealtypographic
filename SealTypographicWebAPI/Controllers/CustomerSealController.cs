@@ -5,6 +5,7 @@ using SealTypographicWebAPI.Consts;
 using SealTypographicWebAPI.Models.Customer;
 using SealTypographicWebAPI.Util;
 using SealTypographicWebAPI.Services;
+using Serilog;
 
 namespace SealTypographicWebAPI.Controllers
 {
@@ -40,10 +41,14 @@ namespace SealTypographicWebAPI.Controllers
         {
             try
             {
-                return customerSealService.GetCustomerSealQuarters(customerId);
+                Log.Information("CustomerSeal get customerSealQuarters input {@Input}", customerId);
+                CustomerSealQuarters customerSealQuarters = customerSealService.GetCustomerSealQuarters(customerId);
+                Log.Information("CustomerSeal get customerSealQuarters output {@Output}", customerSealQuarters);
+                return customerSealQuarters;
             }
-            catch
+            catch (Exception ex)
             {
+                Log.Error("CustomerSeal get customerSealQuarters error {@Error}", ex);
                 Response response = ResponseUtil.InternalServerError();
                 return new CustomerSealQuarters()
                 {
@@ -63,10 +68,14 @@ namespace SealTypographicWebAPI.Controllers
         {
             try
             {
-                return customerSealService.GetCustomerSealViewModels(customerSealQuarter);
+                Log.Information("CustomerSeal get customerSealViewModels input {@Input}", customerSealQuarter);
+                CustomerSealViewModels customerSealViewModels = customerSealService.GetCustomerSealViewModels(customerSealQuarter);
+                Log.Information("CustomerSeal get customerSealViewModels output {@Output}", customerSealViewModels);
+                return customerSealViewModels;
             }
-            catch
+            catch (Exception ex)
             {
+                Log.Error("CustomerSeal get customerSealViewModels error {@Error}", ex);
                 Response response = ResponseUtil.InternalServerError();
                 return new CustomerSealViewModels()
                 {
@@ -86,27 +95,35 @@ namespace SealTypographicWebAPI.Controllers
         {
             try
             {
-                return customerSealService.CreateCustomerSeals(customerSeals);
+                Log.Information("CustomerSeal post customerSealData input {@Input}", customerSeals);
+                Response response = customerSealService.CreateCustomerSeals(customerSeals);
+                Log.Information("CustomerSeal post customerSealData output {@Output}", response);
+                return response;
             }
-            catch
+            catch (Exception ex)
             {
+                Log.Error("CustomerSeal post customerSealData error {@Error}", ex);
                 return ResponseUtil.InternalServerError();
             }
         }
         /// <summary>
         /// 修改印鑑
         /// </summary>        
-        /// <param name="customerSealAddIDs">印鑑資料</param>
+        /// <param name="customerSealPostDatas">印鑑資料</param>
         /// <returns></returns>
         [HttpPut]
-        public Response Put(List<CustomerSealPostData> customerSealAddIDs)
+        public Response Put(List<CustomerSealPostData> customerSealPostDatas)
         {
             try
             {
-                return customerSealService.UpdateCustomerSeals(customerSealAddIDs);
+                Log.Information("CustomerSeal post customerSealData input {@Input}", customerSealPostDatas);
+                Response response = customerSealService.UpdateCustomerSeals(customerSealPostDatas);
+                Log.Information("CustomerSeal post customerSealData output {@Output}", response);
+                return response;                
             }
-            catch
+            catch (Exception ex)
             {
+                Log.Error("CustomerSeal put customerSealData error {@Error}", ex);
                 return ResponseUtil.InternalServerError();
             }
         }

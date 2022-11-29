@@ -5,6 +5,7 @@ using SealTypographicWebAPI.Consts;
 using SealTypographicWebAPI.Models.Customer;
 using SealTypographicWebAPI.Util;
 using SealTypographicWebAPI.Services;
+using Serilog;
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace SealTypographicWebAPI.Controllers
@@ -37,14 +38,18 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="accountantQueryPage">會計師分頁搜尋</param>
         /// <returns></returns>
         [HttpGet]
-        public AccountantResponses GetAccountViewModels([FromQuery]AccountantQueryPage accountantQueryPage)
+        public AccountantResponses Get([FromQuery]AccountantQueryPage accountantQueryPage)
         {
             try
             {
-                return accountantService.GetAccountantViewModels(accountantQueryPage);
+                Log.Information("Accountant get accountantViewModels input {@Input}", accountantQueryPage);
+                AccountantResponses accountantResponses = accountantService.GetAccountantViewModels(accountantQueryPage);
+                Log.Information("Accountant get accountantViewModels output {@Output}", accountantResponses);
+                return accountantResponses;
             }
-            catch
+            catch (Exception ex) 
             {
+                Log.Error("AccountantGroups get accountantViewModels error {@Error}", ex);
                 Response response = ResponseUtil.InternalServerError();
                 return new AccountantResponses()
                 {
@@ -57,17 +62,21 @@ namespace SealTypographicWebAPI.Controllers
         /// <summary>
         /// 取得會計師基本資料
         /// </summary>
-        /// <param name="id" example="ACC001"></param>        
+        /// <param name="id" example="ACC001">會計師ID</param>        
         /// <returns></returns>
         [HttpGet("{id}")]
         public AccountantResponse Get(string id)
         {
             try
             {
-                return accountantService.GetAccountant(id);
+                Log.Information("Accountant get accountantViewModel input {@Input}", id);
+                AccountantResponse accountantResponse = accountantService.GetAccountant(id);
+                Log.Information("Accountant get accountantViewModel output {@Output}", accountantResponse);
+                return accountantResponse;
             }
-            catch
+            catch (Exception ex)
             {
+                Log.Error("AccountantGroups get accountantViewModel error {@Error}", ex);
                 Response response = ResponseUtil.InternalServerError();
                 return new AccountantResponse()
                 {
@@ -86,10 +95,14 @@ namespace SealTypographicWebAPI.Controllers
         {
             try
             {
-                return accountantService.CreateAccountant(accountantBaseData);
+                Log.Information("Accountant post accountantBaseData input {@Input}", accountantBaseData);
+                Response response = accountantService.CreateAccountant(accountantBaseData);
+                Log.Information("Accountant post accountantBaseData output {@Output}", response);
+                return response;                
             }
-            catch
+            catch (Exception ex)
             {
+                Log.Error("AccountantGroups post accountantBaseData error {@Error}", ex);
                 return ResponseUtil.InternalServerError();
             }
         }
@@ -103,10 +116,14 @@ namespace SealTypographicWebAPI.Controllers
         {
             try
             {
-                return accountantService.UpdateAccountant(accountantBaseData);
+                Log.Information("Accountant put accountantBaseData input {@Input}", accountantBaseData);
+                Response response = accountantService.UpdateAccountant(accountantBaseData);
+                Log.Information("Accountant put accountantBaseData output {@Output}", response);
+                return response;
             }
-            catch
+            catch (Exception ex)
             {
+                Log.Error("AccountantGroups put accountantBaseData error {@Error}", ex);
                 return ResponseUtil.InternalServerError();
             }
         }
@@ -122,11 +139,15 @@ namespace SealTypographicWebAPI.Controllers
         {
             try
             {
-                return accountantService.DeleteAccountant(accountantId);
+                Log.Information("Accountant delete(hide) accountantBaseData input {@Input}", accountantId);
+                Response response = accountantService.DeleteAccountant(accountantId);
+                Log.Information("Accountant delete(hide) accountantBaseData output {@Output}", response);
+                return response;
             }
-            catch
-            {
-                return ResponseUtil.InternalServerError();
+            catch (Exception ex)
+            { 
+                Log.Error("AccountantGroups delete(hide) accountantBaseData error {@Error}", ex); 
+                return ResponseUtil.InternalServerError(); 
             }
         }
     }

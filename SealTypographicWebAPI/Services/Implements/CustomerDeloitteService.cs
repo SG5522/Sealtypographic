@@ -64,42 +64,37 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <summary>
         /// 依搜尋條件獲得顧客資料列表
         /// </summary>
-        /// <param name="customerQuery">搜尋條件</param>  
+        /// <param name="customerSearch">搜尋條件</param>  
         /// <returns></returns>
-        public CustomerResponsePage GetCustomerViewModels(CustomerQuery customerQuery)
+        public CustomerResponsePage GetCustomerViewModels(CustomerSearch customerSearch)
         {
             List<CustomerViewModel> customerViewModels = new();
             Response response = new();
             int totalPage = 0;
             int totalCount = 0;
-            IQueryable<Customer> customerQuerys;
-
-            if (customerQuery.CustomerIdOrName != null)
+            IQueryable<Customer> customerQuery = dbContext.Customers;            
+            if (!string.IsNullOrWhiteSpace(customerSearch.CustomerIdOrName))
             {
-                customerQuerys = dbContext.Customers.Where
+                customerQuery = customerQuery.Where
                     (
                         customer =>
-                        customer.Id.Contains(customerQuery.CustomerIdOrName)
-                        || customer.Name.Contains(customerQuery.CustomerIdOrName)
+                        customer.Id.Contains(customerSearch.CustomerIdOrName)
+                        || customer.Name.Contains(customerSearch.CustomerIdOrName)
                     );
             }
-            else
-            {
-                customerQuerys = dbContext.Customers;
-            }
 
-            customerQuerys = customerQuerys.OrderBy(customer => customer.Id);
+            customerQuery = customerQuery.OrderBy(customer => customer.Id);
 
-            if (customerQuerys.Any())
+            if (customerQuery.Any())
             {
                 //取得該頁            
-                var pageNumberCustomers = customerQuerys
-                                          .Skip((customerQuery.PageNumber - 1) * customerQuery.PageSize)
-                                          .Take(customerQuery.PageSize)
+                var pageNumberCustomers = customerQuery
+                                          .Skip((customerSearch.PageNumber - 1) * customerSearch.PageSize)
+                                          .Take(customerSearch.PageSize)
                                           .ToList();
                 //計算總頁數
-                totalPage = customerQuerys.Count() / customerQuery.PageSize + (customerQuerys.Count() % customerQuery.PageSize == 0 ? 0 : 1);
-                totalCount = customerQuerys.Count();
+                totalPage = customerQuery.Count() / customerSearch.PageSize + (customerQuery.Count() % customerSearch.PageSize == 0 ? 0 : 1);
+                totalCount = customerQuery.Count();
                 foreach (var customerBase in pageNumberCustomers)
                 {
                     customerViewModels.Add(mapper.Map<CustomerViewModel>(customerBase));
@@ -112,10 +107,10 @@ namespace SealTypographicWebAPI.Services.Implements
                 response = ResponseUtil.NoData();
             }
             
-            return new CustomerResponsePage()
+            return new()
             {
-                PageNumber = customerQuery.PageNumber,
-                PageSize = customerQuery.PageSize,
+                PageNumber = customerSearch.PageNumber,
+                PageSize = customerSearch.PageSize,
                 TotalCount = totalCount,
                 TotalPage = totalPage,
                 Customers = customerViewModels,

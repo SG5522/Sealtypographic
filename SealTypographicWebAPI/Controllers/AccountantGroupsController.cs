@@ -5,6 +5,7 @@ using SealTypographicWebAPI.Models;
 using SealTypographicWebAPI.Entities;
 using SealTypographicWebAPI.Util;
 using SealTypographicWebAPI.Services;
+using Serilog;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -42,11 +43,16 @@ namespace SealTypographicWebAPI.Controllers
         {
             try
             {
-                return accountantGroupService.GetAccountantGroups(accountantGroupQueryPage);
+                Log.Information("AccountantGroups get accountantGroupDatas input {@Input}", accountantGroupQueryPage);
+                AccountantGroupResponses accountantGroupResponses = accountantGroupService.GetAccountantGroups(accountantGroupQueryPage);
+                Log.Information("AccountantGroups get accountantGroupDatas putput {@Output}", accountantGroupResponses);
+                return accountantGroupResponses;
+                
             }
-            catch
+            catch (Exception ex)
             {
-                Response response = ResponseUtil.InternalServerError();
+                Log.Error("AccountantGroups get accountantGroupDatas error {@Error}", ex);
+                Response response = ResponseUtil.InternalServerError();                
                 return new AccountantGroupResponses()
                 {
                     Code = response.Code,
@@ -65,10 +71,14 @@ namespace SealTypographicWebAPI.Controllers
         {
             try
             {
-                return accountantGroupService.GetAccountantGroup(id);
+                Log.Information("AccountantGroups get accountantGroupDatas input {@Input}", id);
+                AccountantGroupResponse accountantGroupResponse = accountantGroupService.GetAccountantGroup(id);
+                Log.Information("AccountantGroups get accountantGroupDatas putput {@Output}", accountantGroupResponse);
+                return accountantGroupResponse;                
             }
-            catch
+            catch (Exception ex)
             {
+                Log.Error("AccountantGroups get accountantGroupData error {@Error}", ex);
                 Response response = ResponseUtil.InternalServerError();
                 return new AccountantGroupResponse()
                 {
@@ -87,10 +97,14 @@ namespace SealTypographicWebAPI.Controllers
         {
             try
             {
-                return accountantGroupService.CreateAccountantGroup(accountantGroupData);
+                Log.Information("AccountantGroups post accountantGroupData input {@Input}", accountantGroupData);
+                Response response = accountantGroupService.CreateAccountantGroup(accountantGroupData);
+                Log.Information("AccountantGroups post accountantGroupData output {@Output}", response);
+                return response;
             }
-            catch
+            catch (Exception ex)
             {
+                Log.Error("AccountantGroups post accountantGroupData error {@Error}", ex);
                 return ResponseUtil.InternalServerError();
             }
         }
@@ -104,10 +118,14 @@ namespace SealTypographicWebAPI.Controllers
         {
             try
             {
-                return accountantGroupService.UpdateAccountantGroup(accountantGroupData);
+                Log.Information("AccountantGroups put accountantGroupData input {@Input}", accountantGroupData);
+                Response response = accountantGroupService.UpdateAccountantGroup(accountantGroupData);
+                Log.Information("AccountantGroups put accountantGroupData output {@Output}", response);
+                return response;                
             }
-            catch
+            catch (Exception ex)
             {
+                Log.Error("AccountantGroups put accountantGroupData error {@Error}", ex);
                 return ResponseUtil.InternalServerError();
             }
         }
@@ -122,10 +140,14 @@ namespace SealTypographicWebAPI.Controllers
         {
             try
             {
-                return accountantGroupService.DeleteAccountantGroup(accountantGroupDataId);
+                Log.Information("AccountantGroups delete accountantGroupData input {@Input}", accountantGroupDataId);
+                Response response = accountantGroupService.DeleteAccountantGroup(accountantGroupDataId);
+                Log.Information("AccountantGroups delete accountantGroupData output {@Output}", response);
+                return response;
             }
-            catch
+            catch (Exception ex)
             {
+                Log.Error("AccountantGroups delete accountantGroupData error {@Error}", ex);
                 return ResponseUtil.InternalServerError();
             }
         }

@@ -40,15 +40,15 @@ namespace SealTypographicWebAPI.Controllers
         {
             try
             {
-                Log.Information("AccountantSignGet {@Input}", accountantID);
+                Log.Information("AccountantSign Get accountantSignViewModel input {@Input}", accountantID);
                 AccountantSignViewModels accountantSignViewModels = accountantSignService.GetAccountantSings(accountantID);
-                Log.Information("AccountantSignGet {@Output}", accountantSignViewModels);
+                Log.Information("AccountantSign Get accountantSignViewModel output {@Output}", accountantSignViewModels);
                 return accountantSignViewModels;                
             }
-            catch
+            catch (Exception ex)
             {
                 Response response = ResponseUtil.InternalServerError();
-                Log.Information("GetCustomerViewModels {@OutPut}", response);
+                Log.Error("AccountantSign Get accountantSignViewModel error {@Error}", ex);
                 return new()
                 {
                     Code = response.Code,
@@ -67,15 +67,15 @@ namespace SealTypographicWebAPI.Controllers
         {
             try
             {
-                Log.Information("AccountantSignPost {@Input}", accountantSignPosts);
+                Log.Information("AccountantSign post accountantSignDatas input {@Input}", accountantSignPosts);
                 Response response = accountantSignService.CreateAccountantSigns(accountantSignPosts);
-                Log.Information("AccountantSignPost {@Output}", response);
+                Log.Information("AccountantSign post accountantSignDatas output {@Output}", response);
                 return response;                
             }
-            catch
+            catch (Exception ex)
             {
                 Response response = ResponseUtil.InternalServerError();
-                Log.Information("AccountantSignPost {@OutPut}", response);
+                Log.Error("AccountantSign post accountantSignDatas error {@Error}", ex);
                 return new()
                 {
                     Code = response.Code,
@@ -94,15 +94,15 @@ namespace SealTypographicWebAPI.Controllers
         {
             try
             {
-                Log.Information("AccountantSignPut {@Input}", accountantSignUpdates);
+                Log.Information("AccountantSign put accountantSignDatas input {@Input}", accountantSignUpdates);
                 Response response = accountantSignService.UpdateAccountantSigns(accountantSignUpdates);
-                Log.Information("AccountantSignPut {@Output}", response);
+                Log.Information("AccountantSign put accountantSignDatas output {@Output}", response);
                 return response;
             }
-            catch
+            catch (Exception ex)
             {
                 Response response = ResponseUtil.InternalServerError();
-                Log.Information("AccountantSignPut {@OutPut}", response);
+                Log.Error("AccountantSign put accountantSignDatas error {@Error}", ex);
                 return new()
                 {
                     Code = response.Code,

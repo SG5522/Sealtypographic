@@ -2,6 +2,7 @@
 using SealTypographicWebAPI.Models.Customer;
 using SealTypographicWebAPI.Entities;
 using SealTypographicWebAPI.Models.Accountant;
+using SealTypographicWebAPI.Models.Letterhead;
 
 namespace SealTypographicWebAPI.Config
 {
@@ -49,6 +50,9 @@ namespace SealTypographicWebAPI.Config
                     .ForMember(x => x.ImageBase64, y => y.Ignore()) // <---imagebase64要額外處理所以要忽略
                     .ReverseMap();
 
+            //信頭基本資料
+            CreateMap<Letterhead, LetterheadViewModel>();            
+            CreateMap<LetterheadPostData, Letterhead>();
         }
     }
 }

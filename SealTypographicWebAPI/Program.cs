@@ -14,7 +14,7 @@ WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 ConfigurationManager config = builder.Configuration; // 取得 IConfiguration
 Log.Logger = new LoggerConfiguration()
                 .ReadFrom.Configuration(config)
-                .CreateBootstrapLogger();
+                .CreateLogger();
 
 builder.Services.Configure<ScanConfigPath>(
     builder.Configuration.GetSection("ScanConfigPath"));

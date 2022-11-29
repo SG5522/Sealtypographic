@@ -1,4 +1,4 @@
-﻿namespace SealTypographicWebAPI.Models
+﻿namespace SealTypographicWebAPI.Models.Letterhead
 {
     /// <summary>
     /// 信頭圖組

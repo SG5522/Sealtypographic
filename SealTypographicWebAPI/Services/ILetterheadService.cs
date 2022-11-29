@@ -1,4 +1,6 @@
 ﻿using SealTypographicWebAPI.Models;
+using SealTypographicWebAPI.Models.Customer;
+using SealTypographicWebAPI.Models.Letterhead;
 
 namespace SealTypographicWebAPI.Services
 {
@@ -8,18 +10,35 @@ namespace SealTypographicWebAPI.Services
     public interface ILetterheadService
     {
         /// <summary>
-        /// 取得顧客印鑑組
+        /// 取得信頭基本資料列表
         /// </summary>
-        /// <param name="litterheadID">顧客ID</param>         
+        /// <param name="letterheadSearch">信頭搜尋條件</param>         
         /// <returns></returns>
-        List<LetterheadImageWithId> GetLetterheadImages(int litterheadID);
+        LetterheadViewModels GetLetterheadViewModels(LetterheadSearch letterheadSearch);
 
         /// <summary>
-        /// 取得顧客基本資料
+        /// 取得信頭基本資料
         /// </summary>
-        /// <param name="litterheadID">顧客ID</param>
+        /// <param name="litterheadID">信頭ID</param>
         /// <returns></returns>
-        LetterheadWithId GetLetterheadData(int litterheadID);
+        LetterheadResponse GetLetterheadViewModel(string litterheadID);
 
+        /// <summary>
+        /// 建立信頭資料
+        /// </summary>
+        /// <param name="letterheadPostData">基本資料</param>
+        Response CreateLetterhead(LetterheadPostData letterheadPostData);
+
+        /// <summary>
+        /// 更新建立信頭資料
+        /// </summary>
+        /// <param name="letterheadPostData">基本資料</param>
+        Response UpdateLetterhead(LetterheadPostData letterheadPostData);
+
+        /// <summary>
+        /// 刪除信頭資料(變更狀態使其一般USER無法看到)
+        /// </summary>
+        /// <param name="litterheadID"></param>
+        Response DeleteLetterhead(string litterheadID);
     }
 }

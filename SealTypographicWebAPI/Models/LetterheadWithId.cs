@@ -3,7 +3,7 @@
     /// <summary>
     /// 會計資料
     /// </summary>
-    public class LetterheadWithId : Letterhead
+    public class LetterheadWithId
     {
         /// <summary>
         /// 信頭ID

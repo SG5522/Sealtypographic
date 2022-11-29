@@ -33,15 +33,14 @@ namespace SealTypographicWebAPI.Services.Implements
         {
             AccountantGroupData accountantGroupData = new();
             Response response = new();
-            var accountantGroupQuery = dbContext.AccountantGroups
-                                        .Where(accountantGroup => accountantGroup.Id == accountantGroupId);
+            AccountantGroup? accountantGroupQuery = dbContext.AccountantGroups
+                                                    .Where(accountantGroup => accountantGroup.Id == accountantGroupId)
+                                                    .FirstOrDefault();
 
-            if (accountantGroupQuery.Any())
-            {
-                var accountantGroup = accountantGroupQuery.First();
-
-                accountantGroupData.Id = accountantGroup.Id;
-                accountantGroupData.Name = accountantGroup.Name;
+            if (accountantGroupQuery != null)
+            {                
+                accountantGroupData.Id = accountantGroupQuery.Id;
+                accountantGroupData.Name = accountantGroupQuery.Name;
 
                 response = ResponseUtil.Success();
             }
@@ -71,8 +70,8 @@ namespace SealTypographicWebAPI.Services.Implements
             Response response = new();
             int totalPage = 0;
             int totalCount = 0;
-            var accountantGroupsQuery = dbContext.AccountantGroups.AsQueryable();
-            if (accountantGroupQueryPage.IdOrGroupsName != null)
+            IQueryable<AccountantGroup> accountantGroupsQuery = dbContext.AccountantGroups;
+            if (!string.IsNullOrWhiteSpace(accountantGroupQueryPage.IdOrGroupsName))
             {
                 accountantGroupsQuery = accountantGroupsQuery.Where
                                         (
@@ -86,7 +85,10 @@ namespace SealTypographicWebAPI.Services.Implements
             if (accountantGroupsQuery.Any())
             {
                 //取得該頁            
-                var thisPageAccountantGroups = accountantGroupsQuery.Skip((accountantGroupQueryPage.PageNumber - 1) * accountantGroupQueryPage.PageSize).Take(accountantGroupQueryPage.PageSize).ToList();
+                List<AccountantGroup> thisPageAccountantGroups = accountantGroupsQuery
+                                                                .Skip((accountantGroupQueryPage.PageNumber - 1) * accountantGroupQueryPage.PageSize)
+                                                                .Take(accountantGroupQueryPage.PageSize)
+                                                                .ToList();
                 //計算總頁數
                 totalPage = accountantGroupsQuery.Count() / accountantGroupQueryPage.PageSize + (accountantGroupsQuery.Count() % accountantGroupQueryPage.PageSize == 0 ? 0 : 1);
                 totalCount = accountantGroupsQuery.Count();
@@ -125,8 +127,8 @@ namespace SealTypographicWebAPI.Services.Implements
         public Response CreateAccountantGroup(AccountantGroupData accountantGroupData)
         {
             Response response = new();
-            var accountantGroupQuery = dbContext.AccountantGroups
-                                    .Where(accountantGroup => accountantGroup.Id == accountantGroupData.Id);
+            IQueryable<AccountantGroup> accountantGroupQuery = dbContext.AccountantGroups
+                                                                .Where(accountantGroup => accountantGroup.Id == accountantGroupData.Id);
 
             if (!accountantGroupQuery.Any())
             {
@@ -153,8 +155,8 @@ namespace SealTypographicWebAPI.Services.Implements
         public Response UpdateAccountantGroup(AccountantGroupData accountantGroupData)
         {
             Response response = new();
-            var accountantGroupQuery = dbContext.AccountantGroups
-                                .Where(accountantGroup => accountantGroup.Id == accountantGroupData.Id);
+            IQueryable<AccountantGroup> accountantGroupQuery = dbContext.AccountantGroups
+                                                                .Where(accountantGroup => accountantGroup.Id == accountantGroupData.Id);
 
             if (accountantGroupQuery.Any())
             {
@@ -178,18 +180,18 @@ namespace SealTypographicWebAPI.Services.Implements
         public Response DeleteAccountantGroup(string accountantGroupDataId)
         {
             Response response = new();
-            var accountantGroupQuery = dbContext.AccountantGroups.Where
-                                       (
-                                            accountantGroup =>
-                                            accountantGroup.Id == accountantGroupDataId
-                                       );
+            IQueryable<AccountantGroup> accountantGroupQuery = dbContext.AccountantGroups.Where
+                                                               (
+                                                                    accountantGroup =>
+                                                                    accountantGroup.Id == accountantGroupDataId
+                                                               );
             if (accountantGroupQuery.Any())
             {
-                var accountantQuery = dbContext.Accountants.Where
-                                   (
-                                         accountant =>
-                                         accountant.AccountantGroupId == accountantGroupDataId
-                                   ).BatchUpdate(new Accountant { AccountantGroupId = "0" });
+                dbContext.Accountants.Where
+                (
+                        accountant =>
+                        accountant.AccountantGroupId == accountantGroupDataId
+                ).BatchUpdate(new Accountant { AccountantGroupId = "0" });
 
                 AccountantGroup accountantGroup = accountantGroupQuery.First();
                 dbContext.AccountantGroups.Remove(accountantGroup);

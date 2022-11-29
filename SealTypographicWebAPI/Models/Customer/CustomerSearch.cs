@@ -3,7 +3,7 @@
     /// <summary>
     /// 客戶分頁搜尋
     /// </summary>
-    public class CustomerQuery
+    public class CustomerSearch
     {
         /// <summary>
         /// 搜尋客戶ID或是名字

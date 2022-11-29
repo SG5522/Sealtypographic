@@ -71,45 +71,45 @@ namespace SealTypographicWebAPI.Services.Implements
         {
             List<AccountantViewModel> accountantViewModels = new();
             Response response = new();
+            IQueryable<Accountant> accountantsQuery = dbContext.Accountants;
             int totalPage = 0;
             int totalCount = 0;
-
-            if (accountantQueryPage.IdOrNameOrGroupsName != null)
-            {
-                IQueryable<Accountant>? accountantsQuery = dbContext.Accountants.Where
-                                                                            (
-                                                                                accountant =>
-                                                                                accountant.Id.Contains(accountantQueryPage.IdOrNameOrGroupsName)
-                                                                                || accountant.Name.Contains(accountantQueryPage.IdOrNameOrGroupsName)
-                                                                                || accountant.AccountantGroup.Name.Contains(accountantQueryPage.IdOrNameOrGroupsName)
-                                                                            )                                                                            
-                                                                            .OrderBy(accountant => accountant.Id);
-                if (accountantsQuery.Any())
-                {
-                    //取得該頁            
-                    List<Accountant> thisPageAccountants = accountantsQuery
-                                              .Include(accountantGroup => accountantGroup.AccountantGroup)
-                                              .Skip((accountantQueryPage.PageNumber - 1) * accountantQueryPage.PageSize)
-                                              .Take(accountantQueryPage.PageSize)
-                                              .ToList();
-                    //計算總頁數
-                    totalPage = accountantsQuery.Count() / accountantQueryPage.PageSize + (accountantsQuery.Count() % accountantQueryPage.PageSize == 0 ? 0 : 1);
-                    totalCount = accountantsQuery.Count();
-                    foreach (Accountant accountant in thisPageAccountants)
-                    {
-                        AccountantViewModel accountantViewModel = mapper.Map<AccountantViewModel>(accountant);
-                        accountantViewModel.StatusString = StatusUtil.Get((Status)accountant.Status);
-                        accountantViewModels.Add(accountantViewModel);
-                    }
-                    //取得成功訊息
-                    response = ResponseUtil.Success();
-                }
-                else
-                {
-                    response = ResponseUtil.NoData();
-                }
-            }
             
+            if (!string.IsNullOrWhiteSpace(accountantQueryPage.IdOrNameOrGroupsName))
+            {
+                accountantsQuery = accountantsQuery.Where
+                                                    (
+                                                        accountant =>
+                                                        accountant.Id.Contains(accountantQueryPage.IdOrNameOrGroupsName)
+                                                        || accountant.Name.Contains(accountantQueryPage.IdOrNameOrGroupsName)
+                                                        || accountant.AccountantGroup.Name.Contains(accountantQueryPage.IdOrNameOrGroupsName)
+                                                    );                                                   
+            }
+            accountantsQuery = accountantsQuery.OrderBy(accountant => accountant.Id);
+            if (accountantsQuery.Any())
+            {
+                //取得該頁            
+                List<Accountant> thisPageAccountants = accountantsQuery
+                                          .Include(accountantGroup => accountantGroup.AccountantGroup)
+                                          .Skip((accountantQueryPage.PageNumber - 1) * accountantQueryPage.PageSize)
+                                          .Take(accountantQueryPage.PageSize)
+                                          .ToList();
+                //計算總頁數
+                totalPage = accountantsQuery.Count() / accountantQueryPage.PageSize + (accountantsQuery.Count() % accountantQueryPage.PageSize == 0 ? 0 : 1);
+                totalCount = accountantsQuery.Count();
+                foreach (Accountant accountant in thisPageAccountants)
+                {
+                    AccountantViewModel accountantViewModel = mapper.Map<AccountantViewModel>(accountant);
+                    accountantViewModel.StatusString = StatusUtil.Get((Status)accountant.Status);
+                    accountantViewModels.Add(accountantViewModel);
+                }
+                //取得成功訊息
+                response = ResponseUtil.Success();
+            }
+            else
+            {
+                response = ResponseUtil.NoData();
+            }
 
             return new AccountantResponses()
             {
