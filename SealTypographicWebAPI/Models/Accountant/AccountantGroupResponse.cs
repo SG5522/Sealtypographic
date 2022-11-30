@@ -3,7 +3,7 @@
     /// <summary>
     /// 會計師群組資料以及回應
     /// </summary>
-    public class AccountantGroupResponse : Response
+    public class AccountantGroupResponse : ResponseViewModel
     {
         /// <summary>
         /// 會計師群組基本資料

@@ -47,6 +47,32 @@ namespace SealTypographicWebAPI.Entities
         public DbSet<SealMappingConfig> SealMappingConfigs { get; set; }
 
         /// <summary>
+        /// PDF排版資訊
+        /// </summary>
+        public DbSet<TypographicPDF> TypographicPDFs { get; set; }
+
+        /// <summary>
+        /// 排版頁
+        /// </summary>
+        public DbSet<TypographicPage> TypographicPages { get; set; }
+
+        /// <summary>
+        /// 客戶印鑑排版位置
+        /// </summary>
+        public DbSet<CustomerSealLocaltion> CustomerSealLocaltions { get; set; }
+
+        /// <summary>
+        /// 會計師印鑑簽名ID
+        /// </summary>
+        public DbSet<AccountantSingLocaltion> AccountantSingLocaltions { get; set; }
+
+        /// <summary>
+        /// 信頭圖片排版位置
+        /// </summary>
+        public DbSet<LetterheadImageLocaltion> LetterheadImageLocaltions { get; set; }
+
+
+        /// <summary>
         /// 
         /// </summary>
         /// <param name="options"></param>

@@ -35,7 +35,7 @@ namespace SealTypographicWebAPI.Services.Implements
         public AccountantSignViewModels GetAccountantSings(string accountantId)
         {
             List<AccountantSignViewModel> accountantSignViewModels = new();
-            Response response;
+            ResponseViewModel response;
             List<AccountantSignJournal> accountantSignJournalQuery = dbContext.AccountantSignJournals.Where
                                                                     (
                                                                         accountantSignJournal => accountantSignJournal.AccountantId == accountantId                                                                        
@@ -73,9 +73,9 @@ namespace SealTypographicWebAPI.Services.Implements
         /// </summary>
         /// <param name="accountantSignPostDatas">簽名印鑑組</param>
         /// <returns></returns>
-        public Response CreateAccountantSigns(List<AccountantSignPost> accountantSignPostDatas)
+        public ResponseViewModel CreateAccountantSigns(List<AccountantSignPost> accountantSignPostDatas)
         {
-            Response response = new();
+            ResponseViewModel response = new();
             List<AccountantSignJournal> accountantSignJournals = new();
             foreach (AccountantSignPost accountantSignPostData in accountantSignPostDatas)
             {
@@ -99,9 +99,9 @@ namespace SealTypographicWebAPI.Services.Implements
         /// </summary>
         /// <param name="accountantSignUpdates">印鑑組</param>
         /// <returns></returns>
-        public Response UpdateAccountantSigns(List<AccountantSignUpdate> accountantSignUpdates)
+        public ResponseViewModel UpdateAccountantSigns(List<AccountantSignUpdate> accountantSignUpdates)
         {
-            Response response = new();
+            ResponseViewModel response = new();
             foreach (AccountantSignUpdate accountantSignUpdate in accountantSignUpdates)
             {
                 AccountantSignJournal? accountantSignJournalQuery = dbContext.AccountantSignJournals.Where

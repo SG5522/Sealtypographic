@@ -6,6 +6,11 @@
     public enum Status : int
     {
         /// <summary>
+        /// 全部
+        /// </summary>
+        All = -1,
+
+        /// <summary>
         /// 待審
         /// </summary>
         Pending = 0,
@@ -25,5 +30,20 @@
         /// </summary>
         Hidden = 3,
 
+    }
+
+    /// <summary>
+    /// 每頁資料上限
+    /// </summary>
+    public static class PageSizeLimit
+    {
+        /// <summary>
+        /// 最小值
+        /// </summary>
+        public const int Min = 5;
+        /// <summary>
+        /// 最大值
+        /// </summary>
+        public const int Max = 100;
     }
 }

@@ -27,18 +27,18 @@ namespace SealTypographicWebAPI.Services
         /// 建立信頭資料
         /// </summary>
         /// <param name="letterheadPostData">基本資料</param>
-        Response CreateLetterhead(LetterheadPostData letterheadPostData);
+        ResponseViewModel CreateLetterhead(LetterheadPostData letterheadPostData);
 
         /// <summary>
         /// 更新建立信頭資料
         /// </summary>
         /// <param name="letterheadPostData">基本資料</param>
-        Response UpdateLetterhead(LetterheadPostData letterheadPostData);
+        ResponseViewModel UpdateLetterhead(LetterheadPostData letterheadPostData);
 
         /// <summary>
         /// 刪除信頭資料(變更狀態使其一般USER無法看到)
         /// </summary>
         /// <param name="litterheadID"></param>
-        Response DeleteLetterhead(string litterheadID);
+        ResponseViewModel DeleteLetterhead(string litterheadID);
     }
 }

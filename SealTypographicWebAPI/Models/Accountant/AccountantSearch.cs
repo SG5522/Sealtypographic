@@ -1,22 +1,21 @@
-﻿using SealTypographicWebAPI.Consts;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
+using SealTypographicWebAPI.Consts;
 
-namespace SealTypographicWebAPI.Models.Customer
+namespace SealTypographicWebAPI.Models.Accountant
 {
     /// <summary>
-    /// 客戶分頁搜尋
+    /// 會計師分頁搜尋
     /// </summary>
-    public class CustomerSearch
+    public class AccountantSearch
     {
         /// <summary>
-        /// 搜尋客戶ID或是名字
-        /// </summary>
-        /// <example>AAA001 or 公司</example>
-        public string? CustomerIdOrName { get; set; }
+        /// 會計師ID或名字或是群組名稱
+        /// </summary>        
+        public string? IdOrNameOrGroupsName { get; set; }
 
         /// <summary>
         /// 狀態
-        ///-1.全部 
+        ///-1.全部
         /// 0.待審
         /// 1.通過(審核完成)
         /// 2.退件
@@ -28,19 +27,19 @@ namespace SealTypographicWebAPI.Models.Customer
         public int Status { get; set; }
 
         /// <summary>
-        /// 現在頁數(不得小於0)
+        /// 現在頁次(不得小於0)
         /// </summary>
         /// <example>1</example>
         [Required]
-        [Range(1,int.MaxValue)]
+        [Range(1, int.MaxValue)]
         public int PageNumber { get; set; }
 
         /// <summary>
-        /// 每頁資料筆數(不得小於0)
+        /// 單頁筆數(不得小於0)
         /// </summary>
         /// <example>5</example>
         [Required]
-        [Range(1,PageSizeLimit.Max)]
+        [Range(1, PageSizeLimit.Max)]
         public int PageSize { get; set; }
     }
 }

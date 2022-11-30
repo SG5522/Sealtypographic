@@ -98,6 +98,39 @@ namespace SealTypographicWebAPI.Migrations
                     b.ToTable("AccountantSignJournals");
                 });
 
+            modelBuilder.Entity("SealTypographicWebAPI.Entities.AccountantSingLocaltion", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("AccountantSignJournalId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("Height")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("Left")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("Top")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("TypographicPageId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("Width")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AccountantSignJournalId");
+
+                    b.HasIndex("TypographicPageId");
+
+                    b.ToTable("AccountantSingLocaltions");
+                });
+
             modelBuilder.Entity("SealTypographicWebAPI.Entities.Customer", b =>
                 {
                     b.Property<string>("Id")
@@ -177,6 +210,39 @@ namespace SealTypographicWebAPI.Migrations
                     b.ToTable("CustomerSealJournals");
                 });
 
+            modelBuilder.Entity("SealTypographicWebAPI.Entities.CustomerSealLocaltion", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("CustomerSealJournalId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("Height")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("Left")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("Top")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("TypographicPageId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("Width")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CustomerSealJournalId");
+
+                    b.HasIndex("TypographicPageId");
+
+                    b.ToTable("CustomerSealLocaltions");
+                });
+
             modelBuilder.Entity("SealTypographicWebAPI.Entities.Letterhead", b =>
                 {
                     b.Property<string>("Id")
@@ -241,6 +307,39 @@ namespace SealTypographicWebAPI.Migrations
                     b.ToTable("LetterheadImageJournals");
                 });
 
+            modelBuilder.Entity("SealTypographicWebAPI.Entities.LetterheadImageLocaltion", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("Height")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("Left")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("LetterheadImageJournalId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("Top")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("TypographicPageId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("Width")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("LetterheadImageJournalId");
+
+                    b.HasIndex("TypographicPageId");
+
+                    b.ToTable("LetterheadImageLocaltions");
+                });
+
             modelBuilder.Entity("SealTypographicWebAPI.Entities.SealMappingConfig", b =>
                 {
                     b.Property<int>("Id")
@@ -267,6 +366,54 @@ namespace SealTypographicWebAPI.Migrations
                     b.ToTable("SealMappingConfigs");
                 });
 
+            modelBuilder.Entity("SealTypographicWebAPI.Entities.TypographicPage", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("PageNumber")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("TypographicPDFId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TypographicPDFId");
+
+                    b.ToTable("TypographicPages");
+                });
+
+            modelBuilder.Entity("SealTypographicWebAPI.Entities.TypographicPDF", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("CustomerId")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Path")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Quarter")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CustomerId");
+
+                    b.ToTable("TypographicPDFs");
+                });
+
             modelBuilder.Entity("SealTypographicWebAPI.Entities.Accountant", b =>
                 {
                     b.HasOne("SealTypographicWebAPI.Entities.AccountantGroup", "AccountantGroup")
@@ -281,7 +428,7 @@ namespace SealTypographicWebAPI.Migrations
             modelBuilder.Entity("SealTypographicWebAPI.Entities.AccountantSignJournal", b =>
                 {
                     b.HasOne("SealTypographicWebAPI.Entities.Accountant", "Accountant")
-                        .WithMany()
+                        .WithMany("AccountantSignJournals")
                         .HasForeignKey("AccountantId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -295,6 +442,25 @@ namespace SealTypographicWebAPI.Migrations
                     b.Navigation("Accountant");
 
                     b.Navigation("SealMappingConfig");
+                });
+
+            modelBuilder.Entity("SealTypographicWebAPI.Entities.AccountantSingLocaltion", b =>
+                {
+                    b.HasOne("SealTypographicWebAPI.Entities.AccountantSignJournal", "AccountantSignJournal")
+                        .WithMany()
+                        .HasForeignKey("AccountantSignJournalId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("SealTypographicWebAPI.Entities.TypographicPage", "TypographicPage")
+                        .WithMany("AccountantSingLocaltions")
+                        .HasForeignKey("TypographicPageId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("AccountantSignJournal");
+
+                    b.Navigation("TypographicPage");
                 });
 
             modelBuilder.Entity("SealTypographicWebAPI.Entities.CustomerSealJournal", b =>
@@ -316,6 +482,25 @@ namespace SealTypographicWebAPI.Migrations
                     b.Navigation("SealMappingConfig");
                 });
 
+            modelBuilder.Entity("SealTypographicWebAPI.Entities.CustomerSealLocaltion", b =>
+                {
+                    b.HasOne("SealTypographicWebAPI.Entities.CustomerSealJournal", "CustomerSealJournal")
+                        .WithMany()
+                        .HasForeignKey("CustomerSealJournalId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("SealTypographicWebAPI.Entities.TypographicPage", "TypographicPage")
+                        .WithMany("CustomerSealLocaltions")
+                        .HasForeignKey("TypographicPageId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("CustomerSealJournal");
+
+                    b.Navigation("TypographicPage");
+                });
+
             modelBuilder.Entity("SealTypographicWebAPI.Entities.LetterheadImageJournal", b =>
                 {
                     b.HasOne("SealTypographicWebAPI.Entities.Letterhead", "Letterhead")
@@ -335,6 +520,52 @@ namespace SealTypographicWebAPI.Migrations
                     b.Navigation("SealMappingConfig");
                 });
 
+            modelBuilder.Entity("SealTypographicWebAPI.Entities.LetterheadImageLocaltion", b =>
+                {
+                    b.HasOne("SealTypographicWebAPI.Entities.LetterheadImageJournal", "LetterheadImageJournal")
+                        .WithMany()
+                        .HasForeignKey("LetterheadImageJournalId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("SealTypographicWebAPI.Entities.TypographicPage", "TypographicPage")
+                        .WithMany("LetterheadImageLocaltions")
+                        .HasForeignKey("TypographicPageId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("LetterheadImageJournal");
+
+                    b.Navigation("TypographicPage");
+                });
+
+            modelBuilder.Entity("SealTypographicWebAPI.Entities.TypographicPage", b =>
+                {
+                    b.HasOne("SealTypographicWebAPI.Entities.TypographicPDF", "TypographicPDF")
+                        .WithMany("TypographicPages")
+                        .HasForeignKey("TypographicPDFId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("TypographicPDF");
+                });
+
+            modelBuilder.Entity("SealTypographicWebAPI.Entities.TypographicPDF", b =>
+                {
+                    b.HasOne("SealTypographicWebAPI.Entities.Customer", "Customer")
+                        .WithMany()
+                        .HasForeignKey("CustomerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Customer");
+                });
+
+            modelBuilder.Entity("SealTypographicWebAPI.Entities.Accountant", b =>
+                {
+                    b.Navigation("AccountantSignJournals");
+                });
+
             modelBuilder.Entity("SealTypographicWebAPI.Entities.AccountantGroup", b =>
                 {
                     b.Navigation("Accountants");
@@ -352,6 +583,20 @@ namespace SealTypographicWebAPI.Migrations
                     b.Navigation("CustomerSealJournals");
 
                     b.Navigation("LetterheadImageJournals");
+                });
+
+            modelBuilder.Entity("SealTypographicWebAPI.Entities.TypographicPage", b =>
+                {
+                    b.Navigation("AccountantSingLocaltions");
+
+                    b.Navigation("CustomerSealLocaltions");
+
+                    b.Navigation("LetterheadImageLocaltions");
+                });
+
+            modelBuilder.Entity("SealTypographicWebAPI.Entities.TypographicPDF", b =>
+                {
+                    b.Navigation("TypographicPages");
                 });
 #pragma warning restore 612, 618
         }

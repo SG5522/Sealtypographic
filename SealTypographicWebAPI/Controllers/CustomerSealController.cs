@@ -49,7 +49,7 @@ namespace SealTypographicWebAPI.Controllers
             catch (Exception ex)
             {
                 Log.Error("CustomerSeal get customerSealQuarters error {@Error}", ex);
-                Response response = ResponseUtil.InternalServerError();
+                ResponseViewModel response = ResponseUtil.InternalServerError();
                 return new CustomerSealQuarters()
                 {
                     Code = response.Code,
@@ -76,7 +76,7 @@ namespace SealTypographicWebAPI.Controllers
             catch (Exception ex)
             {
                 Log.Error("CustomerSeal get customerSealViewModels error {@Error}", ex);
-                Response response = ResponseUtil.InternalServerError();
+                ResponseViewModel response = ResponseUtil.InternalServerError();
                 return new CustomerSealViewModels()
                 {
                     Code = response.Code,
@@ -91,12 +91,12 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="customerSeals">客戶印鑑組資料(Json)</param>
         /// <returns></returns>
         [HttpPost]
-        public Response Post(List<CustomerSeal> customerSeals)
+        public ResponseViewModel Post(List<CustomerSealForm> customerSeals)
         {
             try
             {
                 Log.Information("CustomerSeal post customerSealData input {@Input}", customerSeals);
-                Response response = customerSealService.CreateCustomerSeals(customerSeals);
+                ResponseViewModel response = customerSealService.CreateCustomerSeals(customerSeals);
                 Log.Information("CustomerSeal post customerSealData output {@Output}", response);
                 return response;
             }
@@ -112,12 +112,12 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="customerSealPostDatas">印鑑資料</param>
         /// <returns></returns>
         [HttpPut]
-        public Response Put(List<CustomerSealPostData> customerSealPostDatas)
+        public ResponseViewModel Put(List<CustomerSealFormWithID> customerSealPostDatas)
         {
             try
             {
                 Log.Information("CustomerSeal post customerSealData input {@Input}", customerSealPostDatas);
-                Response response = customerSealService.UpdateCustomerSeals(customerSealPostDatas);
+                ResponseViewModel response = customerSealService.UpdateCustomerSeals(customerSealPostDatas);
                 Log.Information("CustomerSeal post customerSealData output {@Output}", response);
                 return response;                
             }

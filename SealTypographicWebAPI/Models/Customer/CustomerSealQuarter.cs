@@ -21,7 +21,7 @@
     /// <summary>
     /// 客戶季度搜尋表
     /// </summary>
-    public class CustomerSealQuarters : Response
+    public class CustomerSealQuarters : ResponseViewModel
     {
         /// <summary>
         /// 客戶季度搜尋表

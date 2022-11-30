@@ -31,10 +31,10 @@ namespace SealTypographicWebAPI.Services.Implements
         /// </summary>
         /// <param name="customerId">顧客ID</param>
         /// <returns></returns>
-        public CustomerResponse GetCustomer(string customerId)
+        public CustomerResponseViewModel GetCustomer(string customerId)
         {
-            CustomerData? customer = new();
-            Response response;
+            CustomerForm? customer = new();
+            ResponseViewModel response;
             IQueryable<Customer>? customerQuery = dbContext.Customers
                                     .Where(customer => customer.Id == customerId);
 
@@ -42,7 +42,7 @@ namespace SealTypographicWebAPI.Services.Implements
             {
 
                 Customer customerResponse = customerQuery.First();
-                customer = mapper.Map<CustomerData>(customerResponse);
+                customer = mapper.Map<CustomerForm>(customerResponse);
 
                 response = ResponseUtil.Success();
             }
@@ -51,7 +51,7 @@ namespace SealTypographicWebAPI.Services.Implements
                 customer = null;
                 response = ResponseUtil.NoData();
             }
-            return new CustomerResponse()
+            return new CustomerResponseViewModel()
             {
                 //回傳結果訊息用
                 Code = response.Code,
@@ -66,10 +66,10 @@ namespace SealTypographicWebAPI.Services.Implements
         /// </summary>
         /// <param name="customerSearch">搜尋條件</param>  
         /// <returns></returns>
-        public CustomerResponsePage GetCustomerViewModels(CustomerSearch customerSearch)
+        public CustomerViewModelPaginate GetCustomerViewModels(CustomerSearch customerSearch)
         {
             List<CustomerViewModel> customerViewModels = new();
-            Response response = new();
+            ResponseViewModel response = new();
             int totalPage = 0;
             int totalCount = 0;
             IQueryable<Customer> customerQuery = dbContext.Customers;            
@@ -79,10 +79,13 @@ namespace SealTypographicWebAPI.Services.Implements
                     (
                         customer =>
                         customer.Id.Contains(customerSearch.CustomerIdOrName)
-                        || customer.Name.Contains(customerSearch.CustomerIdOrName)
+                        || customer.Name.Contains(customerSearch.CustomerIdOrName)                        
                     );
             }
-
+            if(customerSearch.Status != (int)Status.All)
+            {
+                customerQuery = customerQuery.Where(customer => customer.Status == customerSearch.Status);
+            }
             customerQuery = customerQuery.OrderBy(customer => customer.Id);
 
             if (customerQuery.Any())
@@ -124,9 +127,9 @@ namespace SealTypographicWebAPI.Services.Implements
         /// 新增顧客基本資料
         /// </summary>
         /// <param name="customerBaseData">基本資料</param>
-        public Response CreateCustomer(CustomerData customerBaseData)
+        public ResponseViewModel CreateCustomer(CustomerForm customerBaseData)
         {
-            Response response = new();
+            ResponseViewModel response = new();
             IQueryable<Customer> customerQuery = dbContext.Customers
                                 .Where(customer => customer.Id == customerBaseData.Id);
 
@@ -149,9 +152,9 @@ namespace SealTypographicWebAPI.Services.Implements
         /// 更新客戶基本資料
         /// </summary>
         /// <param name="customerBaseData">客戶基本資料 customerBaseData.id 為搜尋條件</param>        
-        public Response UpdateCustomer(CustomerData customerBaseData)
+        public ResponseViewModel UpdateCustomer(CustomerForm customerBaseData)
         {
-            Response response = new();
+            ResponseViewModel response = new();
             Customer? customerQuery = dbContext.Customers
                                 .Where(customer => customer.Id == customerBaseData.Id)
                                 .FirstOrDefault();
@@ -174,9 +177,9 @@ namespace SealTypographicWebAPI.Services.Implements
         /// 變更此客戶狀態為刪除。
         /// </summary>
         /// <param name="customerId">客戶ID</param>        
-        public Response DeleteCustomer(string customerId)
+        public ResponseViewModel DeleteCustomer(string customerId)
         {
-            Response response = new();
+            ResponseViewModel response = new();
             var customerQuery = dbContext.Customers
                                 .Where(customer => customer.Id == customerId);
 

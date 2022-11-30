@@ -43,5 +43,10 @@
         /// 會計師群組
         /// </summary>
         public AccountantGroup AccountantGroup { get; set; }
+
+        /// <summary>
+        /// 會計師印鑑資料(歷程)
+        /// </summary>
+        public List<AccountantSignJournal> AccountantSignJournals { get; set; }
     }
 }

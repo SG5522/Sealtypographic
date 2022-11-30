@@ -17,16 +17,16 @@ namespace SealTypographicWebAPI.Config
         public MapperProfile()
         {
             //顧客基本資料
-            CreateMap<Customer, CustomerData>();
+            CreateMap<Customer, CustomerForm>();
             CreateMap<Customer, CustomerViewModel>();
-            CreateMap<CustomerData, Customer>();
+            CreateMap<CustomerForm, Customer>();
 
             //顧客印鑑
             CreateMap<CustomerSealJournal, CustomerSealViewModel>()
                     .ForMember(x => x.SealMappingConfigName, y => y.MapFrom(o => o.SealMappingConfig.Name))
                     .ForMember(x => x.ImageBase64, y => y.Ignore()) // <---imagebase64要額外處理所以要忽略
                     .ReverseMap();
-            CreateMap<CustomerSealJournal, CustomerSeal>()
+            CreateMap<CustomerSealJournal, CustomerSealForm>()
                     .ForMember(x => x.ImageBase64, y => y.Ignore()) // <---imagebase64要額外處理所以要忽略
                     .ReverseMap();
 

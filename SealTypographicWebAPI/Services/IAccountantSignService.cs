@@ -22,14 +22,14 @@ namespace SealTypographicWebAPI.Services
         /// </summary>
         /// <param name="accountantSignPosts">會計印鑑簽名資料</param>
         /// <returns></returns>
-        Response CreateAccountantSigns(List<AccountantSignPost> accountantSignPosts);
+        ResponseViewModel CreateAccountantSigns(List<AccountantSignPost> accountantSignPosts);
 
         /// <summary>
         /// 修改印鑑組
         /// </summary>
         /// <param name="accountantSignUpdates">會計印鑑簽名資料</param>
         /// <returns></returns>
-        Response UpdateAccountantSigns(List<AccountantSignUpdate> accountantSignUpdates);
+        ResponseViewModel UpdateAccountantSigns(List<AccountantSignUpdate> accountantSignUpdates);
 
     }
 }

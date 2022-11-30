@@ -50,7 +50,7 @@ namespace SealTypographicWebAPI.Controllers
             catch (Exception ex)
             {
                 Log.Error("Letterhead get LetterheadViewModels error {@Error}", ex);
-                Response response = ResponseUtil.InternalServerError();
+                ResponseViewModel response = ResponseUtil.InternalServerError();
                 return new()
                 {
                     Code = response.Code,
@@ -77,7 +77,7 @@ namespace SealTypographicWebAPI.Controllers
             catch (Exception ex)
             {
                 Log.Error("Letterhead get LetterheadViewModel error {@Error}", ex);
-                Response response = ResponseUtil.InternalServerError();
+                ResponseViewModel response = ResponseUtil.InternalServerError();
                 return new ()
                 {
                     Code = response.Code,
@@ -91,12 +91,12 @@ namespace SealTypographicWebAPI.Controllers
         /// </summary>
         /// <param name="letterheadPostData"></param>
         [HttpPost]
-        public Response Post([FromBody] LetterheadPostData letterheadPostData)
+        public ResponseViewModel Post([FromBody] LetterheadPostData letterheadPostData)
         {
             try
             {
                 Log.Information("Letterhead post letterheadPostData input {@Input}", letterheadPostData);
-                Response response = letterheadService.CreateLetterhead(letterheadPostData);
+                ResponseViewModel response = letterheadService.CreateLetterhead(letterheadPostData);
                 Log.Information("Letterhead post letterheadPostData output {@Output}", response);
                 return response;
             }
@@ -112,12 +112,12 @@ namespace SealTypographicWebAPI.Controllers
         /// </summary>
         /// <param name="letterheadPostData"></param>
         [HttpPut]
-        public Response Put([FromBody] LetterheadPostData letterheadPostData)
+        public ResponseViewModel Put([FromBody] LetterheadPostData letterheadPostData)
         {
             try
             {
                 Log.Information("Letterhead put letterheadPostData input {@Input}", letterheadPostData);
-                Response response = letterheadService.UpdateLetterhead(letterheadPostData);
+                ResponseViewModel response = letterheadService.UpdateLetterhead(letterheadPostData);
                 Log.Information("Letterhead put letterheadPostData output {@Output}", response);
                 return response;
             }
@@ -136,12 +136,12 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="letterheadId"></param>
         /// <returns></returns>
         [HttpDelete("{letterheadId}")]
-        public Response Delete(string letterheadId)
+        public ResponseViewModel Delete(string letterheadId)
         {
             try
             {
                 Log.Information("Letterhead delete(hide) letterheadPostData input {@Input}", letterheadId);
-                Response response = letterheadService.DeleteLetterhead(letterheadId);
+                ResponseViewModel response = letterheadService.DeleteLetterhead(letterheadId);
                 Log.Information("Letterhead delete(hide) letterheadPostData output {@Output}", response);
                 return response;
             }

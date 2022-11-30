@@ -28,14 +28,14 @@ namespace SealTypographicWebAPI.Services
         /// </summary>
         /// <param name="customerSeals">印鑑資料</param>
         /// <returns></returns>
-        Response CreateCustomerSeals(List<CustomerSeal> customerSeals);
+        ResponseViewModel CreateCustomerSeals(List<CustomerSealForm> customerSeals);
 
         /// <summary>
         /// 修改印鑑組
         /// </summary>
         /// <param name="customerSeals">印鑑資料</param>
         /// <returns></returns>
-        Response UpdateCustomerSeals(List<CustomerSealPostData> customerSeals);
+        ResponseViewModel UpdateCustomerSeals(List<CustomerSealFormWithID> customerSeals);
 
     }
 }

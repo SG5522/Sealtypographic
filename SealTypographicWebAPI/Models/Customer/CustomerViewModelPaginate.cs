@@ -3,7 +3,7 @@
     /// <summary>
     /// 依搜尋結果與分頁顯示客戶列表
     /// </summary>
-    public class CustomerResponsePage : Response
+    public class CustomerViewModelPaginate : ResponseViewModel
     {
         /// <summary>
         /// 現在頁數

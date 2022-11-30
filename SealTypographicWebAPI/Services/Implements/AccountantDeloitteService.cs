@@ -36,7 +36,7 @@ namespace SealTypographicWebAPI.Services.Implements
         public AccountantResponse GetAccountant(string accountantId)
         {
             AccountantViewModel accountantViewModel = new();
-            Response response = new();
+            ResponseViewModel response = new();
             Accountant? accountantQuery = dbContext.Accountants.Where(accountant => accountant.Id == accountantId)
                                                                 .Include(accountant => accountant.AccountantGroup)                                                                
                                                                 .FirstOrDefault();
@@ -65,25 +65,28 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <summary>
         /// 依搜尋條件獲得會計資料列表
         /// </summary>
-        /// <param name="accountantQueryPage">會計師分頁搜尋</param> 
+        /// <param name="accountantSearch">會計師分頁搜尋</param> 
         /// <returns></returns>
-        public AccountantResponses GetAccountantViewModels(AccountantQueryPage accountantQueryPage)
-        {
+        public AccountantResponses GetAccountantViewModels(AccountantSearch accountantSearch)
+        {            
             List<AccountantViewModel> accountantViewModels = new();
-            Response response = new();
+            ResponseViewModel response = new();
             IQueryable<Accountant> accountantsQuery = dbContext.Accountants;
             int totalPage = 0;
-            int totalCount = 0;
-            
-            if (!string.IsNullOrWhiteSpace(accountantQueryPage.IdOrNameOrGroupsName))
+            int totalCount = 0;            
+            if (!string.IsNullOrWhiteSpace(accountantSearch.IdOrNameOrGroupsName))
             {
                 accountantsQuery = accountantsQuery.Where
                                                     (
                                                         accountant =>
-                                                        accountant.Id.Contains(accountantQueryPage.IdOrNameOrGroupsName)
-                                                        || accountant.Name.Contains(accountantQueryPage.IdOrNameOrGroupsName)
-                                                        || accountant.AccountantGroup.Name.Contains(accountantQueryPage.IdOrNameOrGroupsName)
+                                                        accountant.Id.Contains(accountantSearch.IdOrNameOrGroupsName)
+                                                        || accountant.Name.Contains(accountantSearch.IdOrNameOrGroupsName)
+                                                        || accountant.AccountantGroup.Name.Contains(accountantSearch.IdOrNameOrGroupsName)
                                                     );                                                   
+            }
+            if(accountantSearch.Status != (int)Status.All)
+            {
+                accountantsQuery = accountantsQuery.Where(accountant => accountant.Status == accountantSearch.Status);
             }
             accountantsQuery = accountantsQuery.OrderBy(accountant => accountant.Id);
             if (accountantsQuery.Any())
@@ -91,11 +94,11 @@ namespace SealTypographicWebAPI.Services.Implements
                 //取得該頁            
                 List<Accountant> thisPageAccountants = accountantsQuery
                                           .Include(accountantGroup => accountantGroup.AccountantGroup)
-                                          .Skip((accountantQueryPage.PageNumber - 1) * accountantQueryPage.PageSize)
-                                          .Take(accountantQueryPage.PageSize)
+                                          .Skip((accountantSearch.PageNumber - 1) * accountantSearch.PageSize)
+                                          .Take(accountantSearch.PageSize)
                                           .ToList();
                 //計算總頁數
-                totalPage = accountantsQuery.Count() / accountantQueryPage.PageSize + (accountantsQuery.Count() % accountantQueryPage.PageSize == 0 ? 0 : 1);
+                totalPage = accountantsQuery.Count() / accountantSearch.PageSize + (accountantsQuery.Count() % accountantSearch.PageSize == 0 ? 0 : 1);
                 totalCount = accountantsQuery.Count();
                 foreach (Accountant accountant in thisPageAccountants)
                 {
@@ -113,7 +116,7 @@ namespace SealTypographicWebAPI.Services.Implements
 
             return new AccountantResponses()
             {
-                PageNumber = accountantQueryPage.PageNumber,
+                PageNumber = accountantSearch.PageNumber,
                 TotalCount = totalCount,
                 TotalPage = totalPage,
                 Accountants = accountantViewModels,
@@ -128,9 +131,9 @@ namespace SealTypographicWebAPI.Services.Implements
         /// </summary>
         /// <param name="accountantPostData">基本資料</param>
         /// <returns></returns>
-        public Response CreateAccountant(AccountantPostData accountantPostData)
+        public ResponseViewModel CreateAccountant(AccountantPostData accountantPostData)
         {
-            Response response = new();
+            ResponseViewModel response = new();
             Accountant? accountantQuery = dbContext.Accountants
                                     .Where(accountant => accountant.Id == accountantPostData.Id)
                                     .FirstOrDefault();
@@ -154,9 +157,9 @@ namespace SealTypographicWebAPI.Services.Implements
         /// 更新會計師基本資料
         /// </summary>
         /// <param name="accountaPostData">會計師基本資料 accountantBaseData.id 為搜尋條件</param>        
-        public Response UpdateAccountant(AccountantPostData accountaPostData)
+        public ResponseViewModel UpdateAccountant(AccountantPostData accountaPostData)
         {
-            Response response = new();
+            ResponseViewModel response = new();
             Accountant? accountantQuery = dbContext.Accountants
                                 .Where(accountant => accountant.Id == accountaPostData.Id)
                                 .FirstOrDefault();
@@ -180,9 +183,9 @@ namespace SealTypographicWebAPI.Services.Implements
         /// 變更此客戶狀態為刪除(隱藏)。
         /// </summary>
         /// <param name="accountantId">會計師ID</param>        
-        public Response DeleteAccountant(string accountantId)
+        public ResponseViewModel DeleteAccountant(string accountantId)
         {
-            Response response = new();
+            ResponseViewModel response = new();
             var accountantQuery = dbContext.Accountants
                                 .Where(accountant => accountant.Id == accountantId);
 

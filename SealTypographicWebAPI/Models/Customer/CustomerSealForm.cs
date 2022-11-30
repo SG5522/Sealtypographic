@@ -3,7 +3,7 @@
     /// <summary>
     /// 客戶印鑑組
     /// </summary>
-    public class CustomerSeal
+    public class CustomerSealForm
     {
         /// <summary>
         /// 客戶ID

@@ -47,7 +47,7 @@ namespace SealTypographicWebAPI.Controllers
             }
             catch (Exception ex)
             {
-                Response response = ResponseUtil.InternalServerError();
+                ResponseViewModel response = ResponseUtil.InternalServerError();
                 Log.Error("AccountantSign Get accountantSignViewModel error {@Error}", ex);
                 return new()
                 {
@@ -63,18 +63,18 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="accountantSignPosts"></param>
         /// <returns></returns>
         [HttpPost]
-        public Response Post(List<AccountantSignPost> accountantSignPosts)
+        public ResponseViewModel Post(List<AccountantSignPost> accountantSignPosts)
         {
             try
             {
                 Log.Information("AccountantSign post accountantSignDatas input {@Input}", accountantSignPosts);
-                Response response = accountantSignService.CreateAccountantSigns(accountantSignPosts);
+                ResponseViewModel response = accountantSignService.CreateAccountantSigns(accountantSignPosts);
                 Log.Information("AccountantSign post accountantSignDatas output {@Output}", response);
                 return response;                
             }
             catch (Exception ex)
             {
-                Response response = ResponseUtil.InternalServerError();
+                ResponseViewModel response = ResponseUtil.InternalServerError();
                 Log.Error("AccountantSign post accountantSignDatas error {@Error}", ex);
                 return new()
                 {
@@ -90,18 +90,18 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="accountantSignUpdates">簽名印鑑資料</param>
         /// <returns></returns>
         [HttpPut]
-        public Response Put(List<AccountantSignUpdate> accountantSignUpdates)
+        public ResponseViewModel Put(List<AccountantSignUpdate> accountantSignUpdates)
         {
             try
             {
                 Log.Information("AccountantSign put accountantSignDatas input {@Input}", accountantSignUpdates);
-                Response response = accountantSignService.UpdateAccountantSigns(accountantSignUpdates);
+                ResponseViewModel response = accountantSignService.UpdateAccountantSigns(accountantSignUpdates);
                 Log.Information("AccountantSign put accountantSignDatas output {@Output}", response);
                 return response;
             }
             catch (Exception ex)
             {
-                Response response = ResponseUtil.InternalServerError();
+                ResponseViewModel response = ResponseUtil.InternalServerError();
                 Log.Error("AccountantSign put accountantSignDatas error {@Error}", ex);
                 return new()
                 {

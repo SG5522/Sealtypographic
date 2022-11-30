@@ -3,7 +3,7 @@
     /// <summary>
     /// 取得圖片群組資料以及回應訊息
     /// </summary>
-    public class SealMappingConfigResponsePage : Response
+    public class SealMappingConfigResponsePage : ResponseViewModel
     {
         /// <summary>
         /// 現在頁數

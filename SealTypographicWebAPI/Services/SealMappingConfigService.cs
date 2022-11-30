@@ -31,7 +31,7 @@ namespace SealTypographicWebAPI.Services
         public SealMappingConfigResponse GetImageGroup(int imageGroupId)
         {
             SealMappingConfigViewModel sealMappingConfigViewModel = new();
-            Response response = new();
+            ResponseViewModel response = new();
             IQueryable<SealMappingConfig> sealMappingConfigQuery = dbContext.SealMappingConfigs.Where(imageGroup => imageGroup.Id == imageGroupId);
             if(sealMappingConfigQuery.Any())
             {
@@ -63,7 +63,7 @@ namespace SealTypographicWebAPI.Services
         public SealMappingConfigResponsePage GetSealMappingConfigResponsePage(SealMappingConfigQuery SealMappingConfigQuery)
         {
             List<SealMappingConfigViewModel> sealMappingConfigViewModels = new();
-            Response response = new();
+            ResponseViewModel response = new();
             int totalPage = 0;
             int totalCount = 0;
             IQueryable<SealMappingConfig> sealMappingConfigQuerys = dbContext.SealMappingConfigs.AsQueryable();
@@ -122,9 +122,9 @@ namespace SealTypographicWebAPI.Services
         /// </summary>
         /// <param name="sealMappingConfigViewModel">圖片群組資料</param>
         /// <returns></returns>
-        public Response CreateImageGroup (SealMappingConfigViewModel sealMappingConfigViewModel)
+        public ResponseViewModel CreateImageGroup (SealMappingConfigViewModel sealMappingConfigViewModel)
         {
-            Response response = new();
+            ResponseViewModel response = new();
             IQueryable<SealMappingConfig> sealMappingConfigQuery = dbContext.SealMappingConfigs
                                 .Where(sealMappingConfig => sealMappingConfig.SubId == sealMappingConfigViewModel.SubId);
 
@@ -151,9 +151,9 @@ namespace SealTypographicWebAPI.Services
         /// 更新圖片群組資料
         /// </summary>
         /// <param name="SealMappingConfigViewModel">圖片群組資料 imageGroupViewModel.id 為搜尋條件</param>        
-        public Response UpdateImageGroup(SealMappingConfigViewModel SealMappingConfigViewModel)
+        public ResponseViewModel UpdateImageGroup(SealMappingConfigViewModel SealMappingConfigViewModel)
         {
-            Response response = new();
+            ResponseViewModel response = new();
             IQueryable<SealMappingConfig> SealMappingConfigQuery = dbContext.SealMappingConfigs
                                 .Where(imageGroup => imageGroup.SubId == SealMappingConfigViewModel.SubId);
 

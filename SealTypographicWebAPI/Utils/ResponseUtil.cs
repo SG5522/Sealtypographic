@@ -12,7 +12,7 @@ namespace SealTypographicWebAPI.Util
         /// 回傳成功
         /// </summary>
         /// <returns></returns>
-        public static Response Success()
+        public static ResponseViewModel Success()
         {
             return Get(ResponseCode.Success);
         }
@@ -20,7 +20,7 @@ namespace SealTypographicWebAPI.Util
         /// 回傳伺服器錯誤
         /// </summary>
         /// <returns></returns>
-        public static Response InternalServerError()
+        public static ResponseViewModel InternalServerError()
         {
             return Get(ResponseCode.InternalServerError);
         }
@@ -28,7 +28,7 @@ namespace SealTypographicWebAPI.Util
         /// 回傳無資料
         /// </summary>
         /// <returns></returns>
-        public static Response NoData()
+        public static ResponseViewModel NoData()
         {
             return Get(ResponseCode.NoData);
         }
@@ -36,7 +36,7 @@ namespace SealTypographicWebAPI.Util
         /// 資料庫欄位限制唯一約束錯誤回傳
         /// </summary>
         /// <returns></returns>
-        public static Response UniqueConstraintFailed()
+        public static ResponseViewModel UniqueConstraintFailed()
         {
             return Get(ResponseCode.UniqueConstraintFailed);
         }
@@ -45,36 +45,36 @@ namespace SealTypographicWebAPI.Util
         /// 取得訊息
         /// </summary>
         /// <returns></returns>
-        public static Response Get(ResponseCode responseCode)
+        public static ResponseViewModel Get(ResponseCode responseCode)
         {
             switch (responseCode)
             {
                 case ResponseCode.Success:
-                    return new Response()
+                    return new ResponseViewModel()
                     {
                         Code = 200,
                         Message = "Success"
                     };
                 case ResponseCode.InternalServerError:
-                    return new Response()
+                    return new ResponseViewModel()
                     {
                         Code = 500,
                         Message = "Error"
                     };
                 case ResponseCode.NoData:
-                    return new Response()
+                    return new ResponseViewModel()
                     {
                         Code = 404,
                         Message = "NoData"
                     };
                 case ResponseCode.UniqueConstraintFailed:
-                    return new Response()
+                    return new ResponseViewModel()
                     {
                         Code = 19,
                         Message = "Unique constraint failed"
                     };
                 default:
-                    return new Response();
+                    return new ResponseViewModel();
             }
         }
     }

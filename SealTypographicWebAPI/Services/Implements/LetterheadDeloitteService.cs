@@ -35,7 +35,7 @@ namespace SealTypographicWebAPI.Services.Implements
         public LetterheadResponse GetLetterheadViewModel(string litterheadID)
         {
             LetterheadViewModel letterheadViewModel = new();
-            Response response;
+            ResponseViewModel response;
             Letterhead? letterheadQuery = dbContext.Letterheads
                                     .Where(letterhead => letterhead.Id == litterheadID)
                                     .FirstOrDefault();
@@ -68,7 +68,7 @@ namespace SealTypographicWebAPI.Services.Implements
         public LetterheadViewModels GetLetterheadViewModels(LetterheadSearch letterheadSearch)
         {
             List<LetterheadViewModel> letterheadViewModels = new();
-            Response response = new();
+            ResponseViewModel response = new();
             int totalPage = 0;
             int totalCount = 0;
             IQueryable<Letterhead> letterheadQuery = dbContext.Letterheads;
@@ -123,9 +123,9 @@ namespace SealTypographicWebAPI.Services.Implements
         /// 建立信頭資料
         /// </summary>
         /// <param name="letterheadPostData">基本資料</param>
-        public Response CreateLetterhead(LetterheadPostData letterheadPostData)
+        public ResponseViewModel CreateLetterhead(LetterheadPostData letterheadPostData)
         {
-            Response response = new();
+            ResponseViewModel response = new();
             IQueryable<Letterhead> letterheadQuery = dbContext.Letterheads
                                                     .Where(letterhead => letterhead.Id == letterheadPostData.Id);
 
@@ -147,9 +147,9 @@ namespace SealTypographicWebAPI.Services.Implements
         /// 更新建立信頭資料
         /// </summary>
         /// <param name="letterheadPostData">基本資料</param>
-        public Response UpdateLetterhead(LetterheadPostData letterheadPostData)
+        public ResponseViewModel UpdateLetterhead(LetterheadPostData letterheadPostData)
         {
-            Response response = new();
+            ResponseViewModel response = new();
             Letterhead? letterheadQuery = dbContext.Letterheads
                                 .Where(letterhead => letterhead.Id == letterheadPostData.Id)
                                 .FirstOrDefault();
@@ -172,9 +172,9 @@ namespace SealTypographicWebAPI.Services.Implements
         /// 刪除信頭資料(變更狀態使其一般USER無法看到)
         /// </summary>
         /// <param name="litterheadID"></param>
-        public Response DeleteLetterhead(string litterheadID)
+        public ResponseViewModel DeleteLetterhead(string litterheadID)
         {
-            Response response = new();
+            ResponseViewModel response = new();
             Letterhead? letterheadQuery = dbContext.Letterheads
                     .Where(letterhead => letterhead.Id == litterheadID)
                     .FirstOrDefault();

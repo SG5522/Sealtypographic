@@ -1,4 +1,6 @@
-﻿namespace SealTypographicWebAPI.Models.Customer
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace SealTypographicWebAPI.Models.Customer
 {
     /// <summary>
     /// 印鑑資料(含群組名稱)
@@ -14,6 +16,7 @@
         /// 客戶ID
         /// </summary>
         /// <example>aaa001</example>
+        [Required]
         public string CustomerId { get; set; } = null!;
 
         /// <summary>
@@ -25,6 +28,7 @@
         /// 4.會計主管    
         /// </summary>
         /// <example>1</example>
+        [Range(1,11)]
         public int SealMappingConfigId { get; set; }
 
         /// <summary>
@@ -60,7 +64,7 @@
     /// <summary>
     /// 印鑑組
     /// </summary>
-    public class CustomerSealViewModels : Response
+    public class CustomerSealViewModels : ResponseViewModel
     {
         /// <summary>
         /// 客戶印鑑組

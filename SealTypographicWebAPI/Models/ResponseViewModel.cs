@@ -3,7 +3,7 @@
     /// <summary>
     /// 錯誤訊息使用的Class
     /// </summary>
-    public class Response
+    public class ResponseViewModel
     {
         /// <summary>
         /// 狀態號碼

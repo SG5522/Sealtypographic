@@ -52,7 +52,7 @@ namespace SealTypographicWebAPI.Controllers
             catch (Exception ex)
             {
                 Log.Error("AccountantGroups get accountantGroupDatas error {@Error}", ex);
-                Response response = ResponseUtil.InternalServerError();                
+                ResponseViewModel response = ResponseUtil.InternalServerError();                
                 return new AccountantGroupResponses()
                 {
                     Code = response.Code,
@@ -79,7 +79,7 @@ namespace SealTypographicWebAPI.Controllers
             catch (Exception ex)
             {
                 Log.Error("AccountantGroups get accountantGroupData error {@Error}", ex);
-                Response response = ResponseUtil.InternalServerError();
+                ResponseViewModel response = ResponseUtil.InternalServerError();
                 return new AccountantGroupResponse()
                 {
                     Code = response.Code,
@@ -93,12 +93,12 @@ namespace SealTypographicWebAPI.Controllers
         /// </summary>
         /// <param name="accountantGroupData">群組資料</param>
         [HttpPost]
-        public Response Post(AccountantGroupData accountantGroupData)
+        public ResponseViewModel Post(AccountantGroupData accountantGroupData)
         {
             try
             {
                 Log.Information("AccountantGroups post accountantGroupData input {@Input}", accountantGroupData);
-                Response response = accountantGroupService.CreateAccountantGroup(accountantGroupData);
+                ResponseViewModel response = accountantGroupService.CreateAccountantGroup(accountantGroupData);
                 Log.Information("AccountantGroups post accountantGroupData output {@Output}", response);
                 return response;
             }
@@ -114,12 +114,12 @@ namespace SealTypographicWebAPI.Controllers
         /// </summary>
         /// <param name="accountantGroupData">群組資料</param>       
         [HttpPut]
-        public Response Put(AccountantGroupData accountantGroupData)
+        public ResponseViewModel Put(AccountantGroupData accountantGroupData)
         {
             try
             {
                 Log.Information("AccountantGroups put accountantGroupData input {@Input}", accountantGroupData);
-                Response response = accountantGroupService.UpdateAccountantGroup(accountantGroupData);
+                ResponseViewModel response = accountantGroupService.UpdateAccountantGroup(accountantGroupData);
                 Log.Information("AccountantGroups put accountantGroupData output {@Output}", response);
                 return response;                
             }
@@ -136,12 +136,12 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="accountantGroupDataId">會計師群組ID</param>
         /// <returns></returns>
         [HttpDelete("{accountantGroupDataId}")]
-        public Response Delete(string accountantGroupDataId)
+        public ResponseViewModel Delete(string accountantGroupDataId)
         {
             try
             {
                 Log.Information("AccountantGroups delete accountantGroupData input {@Input}", accountantGroupDataId);
-                Response response = accountantGroupService.DeleteAccountantGroup(accountantGroupDataId);
+                ResponseViewModel response = accountantGroupService.DeleteAccountantGroup(accountantGroupDataId);
                 Log.Information("AccountantGroups delete accountantGroupData output {@Output}", response);
                 return response;
             }

@@ -44,7 +44,7 @@ namespace SealTypographicWebAPI.Controllers
             }
             catch
             {
-                Response response = ResponseUtil.InternalServerError();
+                ResponseViewModel response = ResponseUtil.InternalServerError();
                 return new SealMappingConfigResponsePage()
                 {
                     Code = response.Code,
@@ -67,7 +67,7 @@ namespace SealTypographicWebAPI.Controllers
             }
             catch
             {
-                Response response = ResponseUtil.InternalServerError();
+                ResponseViewModel response = ResponseUtil.InternalServerError();
                 return new ()
                 {
                     Code = response.Code,
@@ -82,7 +82,7 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="imageGroupViewModel">群組資料</param>
         /// <returns></returns>
         [HttpPost]
-        public Response Post(SealMappingConfigViewModel imageGroupViewModel)
+        public ResponseViewModel Post(SealMappingConfigViewModel imageGroupViewModel)
         {
             try
             {
@@ -99,7 +99,7 @@ namespace SealTypographicWebAPI.Controllers
         /// </summary>
         /// <param name="imageGroupViewModel">群組資料</param>       
         [HttpPut]
-        public Response Put(SealMappingConfigViewModel imageGroupViewModel)
+        public ResponseViewModel Put(SealMappingConfigViewModel imageGroupViewModel)
         {
             try
             {

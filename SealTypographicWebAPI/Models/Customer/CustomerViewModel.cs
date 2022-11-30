@@ -1,4 +1,6 @@
-﻿namespace SealTypographicWebAPI.Models.Customer
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace SealTypographicWebAPI.Models.Customer
 {
     /// <summary>
     /// 客戶資料
@@ -26,7 +28,7 @@
         /// 0.待審查
         /// 1.已審查
         /// 2.刪除(系統管理員可以看到資料)
-        /// </summary>c
+        /// </summary>
         public int Status { get; set; }
     }
 }

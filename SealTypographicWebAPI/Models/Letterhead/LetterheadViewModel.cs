@@ -34,7 +34,7 @@
     /// <summary>
     /// /// 信頭資料列表
     /// </summary>
-    public class LetterheadViewModels : Response
+    public class LetterheadViewModels : ResponseViewModel
     {
         /// <summary>
         /// 現在頁數
@@ -65,7 +65,7 @@
     /// <summary>
     /// /// 信頭資料列表
     /// </summary>
-    public class LetterheadResponse : Response
+    public class LetterheadResponse : ResponseViewModel
     {
         /// <summary>
         /// 信頭資料

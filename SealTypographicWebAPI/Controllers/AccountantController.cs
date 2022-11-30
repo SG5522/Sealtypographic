@@ -38,7 +38,7 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="accountantQueryPage">會計師分頁搜尋</param>
         /// <returns></returns>
         [HttpGet]
-        public AccountantResponses Get([FromQuery]AccountantQueryPage accountantQueryPage)
+        public AccountantResponses Get([FromQuery]AccountantSearch accountantQueryPage)
         {
             try
             {
@@ -50,7 +50,7 @@ namespace SealTypographicWebAPI.Controllers
             catch (Exception ex) 
             {
                 Log.Error("AccountantGroups get accountantViewModels error {@Error}", ex);
-                Response response = ResponseUtil.InternalServerError();
+                ResponseViewModel response = ResponseUtil.InternalServerError();
                 return new AccountantResponses()
                 {
                     Code = response.Code,
@@ -77,7 +77,7 @@ namespace SealTypographicWebAPI.Controllers
             catch (Exception ex)
             {
                 Log.Error("AccountantGroups get accountantViewModel error {@Error}", ex);
-                Response response = ResponseUtil.InternalServerError();
+                ResponseViewModel response = ResponseUtil.InternalServerError();
                 return new AccountantResponse()
                 {
                     Code = response.Code,
@@ -91,12 +91,12 @@ namespace SealTypographicWebAPI.Controllers
         /// </summary>
         /// <param name="accountantBaseData"></param>
         [HttpPost]
-        public Response Post(AccountantPostData accountantBaseData)
+        public ResponseViewModel Post(AccountantPostData accountantBaseData)
         {
             try
             {
                 Log.Information("Accountant post accountantBaseData input {@Input}", accountantBaseData);
-                Response response = accountantService.CreateAccountant(accountantBaseData);
+                ResponseViewModel response = accountantService.CreateAccountant(accountantBaseData);
                 Log.Information("Accountant post accountantBaseData output {@Output}", response);
                 return response;                
             }
@@ -112,12 +112,12 @@ namespace SealTypographicWebAPI.Controllers
         /// </summary>
         /// <param name="accountantBaseData"></param>        
         [HttpPut]
-        public Response Put(AccountantPostData accountantBaseData)
+        public ResponseViewModel Put(AccountantPostData accountantBaseData)
         {
             try
             {
                 Log.Information("Accountant put accountantBaseData input {@Input}", accountantBaseData);
-                Response response = accountantService.UpdateAccountant(accountantBaseData);
+                ResponseViewModel response = accountantService.UpdateAccountant(accountantBaseData);
                 Log.Information("Accountant put accountantBaseData output {@Output}", response);
                 return response;
             }
@@ -135,12 +135,12 @@ namespace SealTypographicWebAPI.Controllers
         /// </summary>
         /// <param name="accountantId"></param>        
         [HttpDelete("{accountantId}")]
-        public Response Delete(string accountantId)
+        public ResponseViewModel Delete(string accountantId)
         {
             try
             {
                 Log.Information("Accountant delete(hide) accountantBaseData input {@Input}", accountantId);
-                Response response = accountantService.DeleteAccountant(accountantId);
+                ResponseViewModel response = accountantService.DeleteAccountant(accountantId);
                 Log.Information("Accountant delete(hide) accountantBaseData output {@Output}", response);
                 return response;
             }

@@ -1,14 +1,18 @@
-﻿namespace SealTypographicWebAPI.Models.Customer
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace SealTypographicWebAPI.Models.Customer
 {
     /// <summary>
     /// 客戶資料
     /// </summary>
-    public class CustomerData
+    public class CustomerForm
     {
         /// <summary>
         /// 客戶ID(更新或搜尋使用)
         /// </summary>
         /// <example>AAA001</example>
+        [Required]
+        [StringLength(6)]
         public string Id { get; set; }
 
         /// <summary>
@@ -54,6 +58,8 @@
         /// 2.刪除(系統管理員可以看到資料)
         /// </summary>
         /// <example>0</example>
+        [Required]
+        [Range(0, 3)]
         public int Status { get; set; }
     }
 }

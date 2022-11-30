@@ -38,7 +38,7 @@
     /// <summary>
     /// 會計師印鑑簽名組
     /// </summary>
-    public class AccountantSignViewModels : Response
+    public class AccountantSignViewModels : ResponseViewModel
     {
         /// <summary>
         /// 會計師印鑑簽名組

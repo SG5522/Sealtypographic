@@ -34,7 +34,7 @@ namespace SealTypographicWebAPI.Services.Implements
         public CustomerSealQuarters GetCustomerSealQuarters(string customerId)
         {
             List<CustomerSealQuarter> customerSealQuarters = new();
-            Response response;
+            ResponseViewModel response;
             List<string> customerSealQuarterQuery = dbContext.CustomerSealJournals
                                            .Where(customerSealJournal => customerSealJournal.CustomerId == customerId)
                                            .Select(customerSealJournal => customerSealJournal.Quarter)
@@ -76,7 +76,7 @@ namespace SealTypographicWebAPI.Services.Implements
         public CustomerSealViewModels GetCustomerSealViewModels(CustomerSealQuarter customerSealQuarter)
         {
             List<CustomerSealViewModel> customerSealViewModels = new();
-            Response response;
+            ResponseViewModel response;
             List<CustomerSealJournal> customerSealQuery = dbContext.CustomerSealJournals.Where
                                                                     (
                                                                         customerSealJournal => customerSealJournal.CustomerId == customerSealQuarter.CustomerId
@@ -115,11 +115,11 @@ namespace SealTypographicWebAPI.Services.Implements
         /// </summary>
         /// <param name="customerSeals">印鑑組</param>
         /// <returns></returns>
-        public Response CreateCustomerSeals(List<CustomerSeal> customerSeals)
+        public ResponseViewModel CreateCustomerSeals(List<CustomerSealForm> customerSeals)
         {
-            Response response = new();
+            ResponseViewModel response = new();
             List<CustomerSealJournal> customerSealJournals = new();
-            foreach (CustomerSeal customerSeal in customerSeals)
+            foreach (CustomerSealForm customerSeal in customerSeals)
             {
                 //這段之後會做成IMAGE64的處理並另存在指定的位置
                 string imagePath = customerSeal.ImageBase64;
@@ -141,10 +141,10 @@ namespace SealTypographicWebAPI.Services.Implements
         /// </summary>
         /// <param name="customerSeals">印鑑組</param>
         /// <returns></returns>
-        public Response UpdateCustomerSeals(List<CustomerSealPostData> customerSeals)
+        public ResponseViewModel UpdateCustomerSeals(List<CustomerSealFormWithID> customerSeals)
         {
-            Response response = new();
-            foreach (CustomerSealPostData customerSeal in customerSeals)
+            ResponseViewModel response = new();
+            foreach (CustomerSealFormWithID customerSeal in customerSeals)
             {
                 CustomerSealJournal? customerSealJournalQuery = dbContext.CustomerSealJournals.Where
                                            (
