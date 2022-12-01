@@ -46,4 +46,26 @@
         /// </summary>
         public const int Max = 100;
     }
+
+    /// <summary>
+    /// 上傳文件型態
+    /// </summary>
+    public enum UploadType
+    {
+        /// <summary>
+        /// 客戶印鑑授權書
+        /// </summary>
+        CustomerAuthorization = 1,
+
+        /// <summary>
+        /// 會計印鑑簽名授權書
+        /// </summary>
+        AccountantAuthorization = 2,
+
+        /// <summary>
+        /// 信頭
+        /// </summary>
+        LetterheadImage = 3,
+
+    }
 }

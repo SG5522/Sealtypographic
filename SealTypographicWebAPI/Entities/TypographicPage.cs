@@ -28,16 +28,16 @@
         /// <summary>
         /// 客戶印鑑排版位置
         /// </summary>
-        public List<CustomerSealLocaltion> CustomerSealLocaltions { get; set; }
+        public List<CustomerSealLocation> CustomerSealLocaltions { get; set; }
 
         /// <summary>
         /// 會計師印鑑簽名排版位置
         /// </summary>
-        public List<AccountantSingLocaltion> AccountantSingLocaltions { get; set; }
+        public List<AccountantSingLocation> AccountantSingLocaltions { get; set; }
 
         /// <summary>
         /// 信頭圖片排版位置
         /// </summary>
-        public List<LetterheadImageLocaltion> LetterheadImageLocaltions { get; set; }
+        public List<LetterheadImageLocation> LetterheadImageLocaltions { get; set; }
     }
 }

@@ -3,7 +3,7 @@
     /// <summary>
     /// 信頭圖片排版位置
     /// </summary>
-    public class LetterheadImageLocaltion : Localtion
+    public class LetterheadImageLocation : Location
     {
         /// <summary>
         /// 信頭圖片ID

@@ -21,11 +21,11 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="imageUploadDatas">圖檔資料</param>
         /// <returns></returns>
         [HttpPost]        
-        public string UploadFiles(List<ImageUpload> imageUploadDatas)
+        public string UploadFiles(List<UploadForm> imageUploadDatas)
         {
             try
             {
-                foreach (ImageUpload imageUploadData in imageUploadDatas)
+                foreach (UploadForm imageUploadData in imageUploadDatas)
                 {
                     string fileName = Path.GetFileName(imageUploadData.FileName);
                     string uploadpath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\UploadFiles", fileName);

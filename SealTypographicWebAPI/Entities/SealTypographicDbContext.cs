@@ -59,17 +59,17 @@ namespace SealTypographicWebAPI.Entities
         /// <summary>
         /// 客戶印鑑排版位置
         /// </summary>
-        public DbSet<CustomerSealLocaltion> CustomerSealLocaltions { get; set; }
+        public DbSet<CustomerSealLocation> CustomerSealLocaltions { get; set; }
 
         /// <summary>
         /// 會計師印鑑簽名ID
         /// </summary>
-        public DbSet<AccountantSingLocaltion> AccountantSingLocaltions { get; set; }
+        public DbSet<AccountantSingLocation> AccountantSingLocaltions { get; set; }
 
         /// <summary>
         /// 信頭圖片排版位置
         /// </summary>
-        public DbSet<LetterheadImageLocaltion> LetterheadImageLocaltions { get; set; }
+        public DbSet<LetterheadImageLocation> LetterheadImageLocaltions { get; set; }
 
 
         /// <summary>

@@ -307,7 +307,7 @@ namespace SealTypographicWebAPI.Migrations
                     b.ToTable("LetterheadImageJournals");
                 });
 
-            modelBuilder.Entity("SealTypographicWebAPI.Entities.LetterheadImageLocaltion", b =>
+            modelBuilder.Entity("SealTypographicWebAPI.Entities.LetterheadImageLocation", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -520,7 +520,7 @@ namespace SealTypographicWebAPI.Migrations
                     b.Navigation("SealMappingConfig");
                 });
 
-            modelBuilder.Entity("SealTypographicWebAPI.Entities.LetterheadImageLocaltion", b =>
+            modelBuilder.Entity("SealTypographicWebAPI.Entities.LetterheadImageLocation", b =>
                 {
                     b.HasOne("SealTypographicWebAPI.Entities.LetterheadImageJournal", "LetterheadImageJournal")
                         .WithMany()

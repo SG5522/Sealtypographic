@@ -8,7 +8,8 @@ using Serilog;
 using SealTypographicWebAPI.Services.Implements;
 using SealTypographicWebAPI.Config;
 
-var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
+string allowSpecificOrigins = "allowSpecificOrigins";
+string allowAllOrigins = "allowSpecificOrigins";
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 ConfigurationManager config = builder.Configuration; // 取得 IConfiguration
@@ -22,13 +23,19 @@ builder.Services.Configure<ScanConfigPath>(
 //addCors
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy(name: MyAllowSpecificOrigins,
+    options.AddPolicy(name: allowAllOrigins,
+                      policy =>
+                      {
+                          policy.AllowAnyHeader()
+                          .AllowAnyMethod()
+                          .AllowAnyOrigin();
+                      });
+    options.AddPolicy(name: allowSpecificOrigins,
                       policy =>
                       {
                           policy.WithOrigins(config.GetSection("AllowOrigins").Get<string[]>())
                           .AllowAnyHeader()
-                          .AllowAnyMethod();
-                          //.AllowAnyOrigin();
+                          .AllowAnyMethod();                          
                       });
 });
 
@@ -107,10 +114,14 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();    
+    app.UseSwaggerUI();
+    app.UseCors(allowAllOrigins);
+}
+else
+{
+    app.UseCors(allowSpecificOrigins);
 }
 
-app.UseCors(MyAllowSpecificOrigins);
 app.UseAuthorization();
 //app.UseSerilogRequestLogging(); // <-SeriLog 
 

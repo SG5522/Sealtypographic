@@ -3,6 +3,7 @@ using SealTypographicWebAPI.Models.Customer;
 using SealTypographicWebAPI.Entities;
 using SealTypographicWebAPI.Models.Accountant;
 using SealTypographicWebAPI.Models.Letterhead;
+using SealTypographicWebAPI.Models.TypographicPDF;
 
 namespace SealTypographicWebAPI.Config
 {
@@ -53,6 +54,19 @@ namespace SealTypographicWebAPI.Config
             //信頭基本資料
             CreateMap<Letterhead, LetterheadViewModel>();            
             CreateMap<LetterheadPostData, Letterhead>();
+
+
+            //PDF排版資訊
+            CreateMap<TypographicPDFForm, TypographicPDF>()
+                .ForMember(x => x.FullPath, y => y.Ignore());
+
+            CreateMap<TypographicPageForm, TypographicPage>();
+            CreateMap<CustomerSealLocationForm, CustomerSealLocation>();
+            CreateMap<AccountantSingLocationForm, AccountantSingLocation>();
+            CreateMap<LetterheadImageLocationForm, LetterheadImageLocation>();
+
+
+
         }
     }
 }

@@ -1,15 +1,10 @@
-﻿namespace SealTypographicWebAPI.Entities
+﻿namespace SealTypographicWebAPI.Models.TypographicPDF
 {
     /// <summary>
-    /// PDF排版資訊
+    /// 排版資訊
     /// </summary>
-    public class TypographicPDF
+    public class TypographicPDFForm : ResponseViewModel
     {
-        /// <summary>
-        /// ID
-        /// </summary>
-        public int Id { get; set; }
-
         /// <summary>
         /// 名稱
         /// </summary>
@@ -21,9 +16,9 @@
         public string OriginFileName { get; set; }
 
         /// <summary>
-        /// PDF路徑
+        /// PDFBase64
         /// </summary>
-        public string FullPath { get; set; }
+        public string PDFBase64 { get; set; }
 
         /// <summary>
         /// 季度
@@ -31,19 +26,13 @@
         public string Quarter { get; set; }
 
         /// <summary>
-        /// 客戶Id
+        /// 客戶名稱
         /// </summary>
         public string CustomerId { get; set; }
 
         /// <summary>
-        /// 顧客
+        /// 排版頁數
         /// </summary>
-        public Customer Customer { get; set; }
-
-        /// <summary>
-        /// 排版頁
-        /// </summary>
-        public List<TypographicPage> TypographicPages { get; set; }
-
+        public List<TypographicPageForm> TypographicPagesForm { get; set;}
     }
 }
