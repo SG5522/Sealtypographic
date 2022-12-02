@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using SealTypographicWebAPI.Consts;
 using SealTypographicWebAPI.Entities;
 using SealTypographicWebAPI.Models;
-using SealTypographicWebAPI.Models.Accountant;
+using SealTypographicWebAPI.Models.AccountantGroup;
 using SealTypographicWebAPI.Util;
 
 namespace SealTypographicWebAPI.Services.Implements
@@ -64,7 +64,7 @@ namespace SealTypographicWebAPI.Services.Implements
         /// </summary>
         /// <param name="accountantGroupQueryPage">accountantGroupData</param>
         /// <returns></returns>
-        public AccountantGroupResponses GetAccountantGroups(AccountantGroupQueryPage accountantGroupQueryPage)
+        public AccountantGroupResponses GetAccountantGroups(AccountantGroupSearch accountantGroupQueryPage)
         {
             List<AccountantGroupData> accountantGroups = new();
             ResponseViewModel response = new();

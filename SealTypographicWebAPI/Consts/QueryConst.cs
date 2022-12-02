@@ -68,4 +68,19 @@
         LetterheadImage = 3,
 
     }
+
+    /// <summary>
+    /// 啟用日期
+    /// </summary>
+    public enum AvailableDate
+    {
+        /// <summary>
+        /// 未啟用
+        /// </summary>
+        NotActivated,
+        /// <summary>
+        /// 啟用
+        /// </summary>
+        Activated
+    }
 }

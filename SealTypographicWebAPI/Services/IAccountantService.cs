@@ -22,20 +22,20 @@ namespace SealTypographicWebAPI.Services
         /// </summary>
         /// <param name="accountantQueryPage">會計師分頁搜尋</param>  
         /// <returns></returns>
-        AccountantResponses GetAccountantViewModels(AccountantSearch accountantQueryPage);
+        AccountantPaginatesViewModel GetAccountantViewModels(AccountantSearch accountantQueryPage);
 
         /// <summary>
         /// 建立會計師資料
         /// </summary>
         /// <param name="accountantBaseData">基本資料</param>        
-        ResponseViewModel CreateAccountant(AccountantPostData accountantBaseData);
+        ResponseViewModel CreateAccountant(AccountantForm accountantBaseData);
 
 
         /// <summary>
         /// 更新客戶基本資料
         /// </summary>
         /// <param name="accountantBaseData">基本資料</param>
-        ResponseViewModel UpdateAccountant(AccountantPostData accountantBaseData);
+        ResponseViewModel UpdateAccountant(AccountantForm accountantBaseData);
 
         /// <summary>
         /// 刪除客戶基本資料(變更狀態使其一般USER無法看到)

@@ -91,7 +91,7 @@ namespace SealTypographicWebAPI.Controllers
         /// </summary>
         /// <param name="letterheadPostData"></param>
         [HttpPost]
-        public ResponseViewModel Post([FromBody] LetterheadPostData letterheadPostData)
+        public ResponseViewModel Post([FromBody] LetterheadForm letterheadPostData)
         {
             try
             {
@@ -112,7 +112,7 @@ namespace SealTypographicWebAPI.Controllers
         /// </summary>
         /// <param name="letterheadPostData"></param>
         [HttpPut]
-        public ResponseViewModel Put([FromBody] LetterheadPostData letterheadPostData)
+        public ResponseViewModel Put([FromBody] LetterheadForm letterheadPostData)
         {
             try
             {

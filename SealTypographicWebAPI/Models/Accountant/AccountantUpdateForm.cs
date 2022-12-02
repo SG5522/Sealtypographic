@@ -3,22 +3,25 @@
     /// <summary>
     /// 會計資料
     /// </summary>
-    public class AccountantViewModel
+    public class AccountantUpdateForm
     {
         /// <summary>
         /// 會計師ID
-        /// </summary>
+        /// </summary>   
+        /// <example>ACC001</example>
         public string Id { get; set; } = null!;
 
         /// <summary>
         /// 名稱
         /// </summary>
+        /// <example>測試</example>
         public string Name { get; set; }
 
         /// <summary>
-        /// 會計師群組名稱
+        /// 會計師群組ID
+        /// 0 無群組
         /// </summary>
-        public string AccountantGroupName { get; set; }
-
+        /// <example>0</example>
+        public string AccountantGroupId { get; set; }
     }
 }

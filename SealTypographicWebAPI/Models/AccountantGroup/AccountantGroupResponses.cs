@@ -1,20 +1,14 @@
-﻿namespace SealTypographicWebAPI.Models.Customer
+﻿namespace SealTypographicWebAPI.Models.AccountantGroup
 {
     /// <summary>
-    /// 依搜尋結果與分頁顯示客戶列表
+    /// 依搜尋結果顯示會計師列表
     /// </summary>
-    public class CustomerViewModelPaginate : ResponseViewModel
+    public class AccountantGroupResponses : ResponseViewModel
     {
         /// <summary>
         /// 現在頁數
         /// </summary>
         public int PageNumber { get; set; }
-
-        /// <summary>
-        /// 每頁資料筆數(不得小於0)
-        /// </summary>
-        /// <example>5</example>
-        public int PageSize { get; set; }
 
         /// <summary>
         /// 總頁數
@@ -27,8 +21,8 @@
         public int TotalCount { get; set; }
 
         /// <summary>
-        /// 顧客列表
+        /// 會計師列表
         /// </summary>
-        public List<CustomerViewModel> Customers { get; set; }
+        public List<AccountantGroupData> AccountantGroups { get; set; }
     }
 }

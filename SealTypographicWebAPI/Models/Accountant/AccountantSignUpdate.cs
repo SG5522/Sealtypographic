@@ -3,7 +3,7 @@
     /// <summary>
     /// 會計師印鑑簽名
     /// </summary>
-    public class AccountantSignUpdate : AccountantSignPost
+    public class AccountantSignUpdate : AccountantSignForm
     {
         /// <summary>
         /// 會計師簽名印鑑ID

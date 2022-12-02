@@ -35,12 +35,12 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="customerQuery">客戶分頁搜尋</param>        
         /// <returns></returns>
         [HttpGet]        
-        public CustomerViewModelPaginate Get([FromQuery]CustomerSearch customerQuery)
+        public CustomerPaginatesViewModel Get([FromQuery]CustomerSearch customerQuery)
         {         
             try
             {
                 Log.Information("Customer get viewModels input {@Input}", customerQuery);
-                CustomerViewModelPaginate customerResponsePage = customerService.GetCustomerViewModels(customerQuery);
+                CustomerPaginatesViewModel customerResponsePage = customerService.GetCustomerPaginatesViewModel(customerQuery);
                 Log.Information("Customer get viewModels output {@Output}", customerResponsePage);
                 return customerResponsePage;
             }
@@ -68,7 +68,7 @@ namespace SealTypographicWebAPI.Controllers
             try
             {
                 Log.Information("Customer get customerForm input {@Input}", id);
-                CustomerResponseViewModel customerResponse = customerService.GetCustomer(id);
+                CustomerResponseViewModel customerResponse = customerService.GetCustomerViewModel(id);
                 Log.Information("Customer get customerForm output {@Output}", customerResponse);
                 return customerResponse;
             }
@@ -86,15 +86,15 @@ namespace SealTypographicWebAPI.Controllers
         /// <summary>
         /// 建立顧客基本資料
         /// </summary>
-        /// <param name="customerData">基本資料</param>
+        /// <param name="customerForm">基本資料</param>
         /// <returns></returns>
         [HttpPost]
-        public ResponseViewModel Post(CustomerForm customerData)
+        public ResponseViewModel Post(CustomerForm customerForm)
         {
             try
             {
-                Log.Information("Customer post customerForm input {@Input}", customerData);
-                ResponseViewModel response = customerService.CreateCustomer(customerData);
+                Log.Information("Customer post customerForm input {@Input}", customerForm);
+                ResponseViewModel response = customerService.CreateCustomer(customerForm);
                 Log.Information("Customer post customerForm output {@Input}", response);
                 return response;
             }

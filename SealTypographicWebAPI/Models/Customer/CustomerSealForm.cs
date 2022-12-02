@@ -26,7 +26,7 @@
         /// 印鑑編號(排序) 1為起始
         /// </summary>
         /// <example>1</example>
-        public int No { get; set; }
+        public int Sequence { get; set; }
 
         /// <summary>
         /// 圖檔字串(Base64)
@@ -35,20 +35,9 @@
         public string ImageBase64 { get; set; }
 
         /// <summary>
-        /// 啟用日(審查通過才有正確時間)
-        /// </summary>
-        /// <example>0000-01-01T00:00:00.000Z</example>
-        public DateTime AvailableDate { get; set; }
-
-        /// <summary>
-        /// 建立日期
-        /// </summary>
-        public DateTime CreateDate { get; set; }
-
-        /// <summary>
         /// 印鑑季度
         /// </summary>
         /// <example>111年Q1</example>
-        public string Quarter { get; set; } = null!;
+        public string Quarter { get; set; }
     }
 }

@@ -63,7 +63,7 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="accountantSignPosts"></param>
         /// <returns></returns>
         [HttpPost]
-        public ResponseViewModel Post(List<AccountantSignPost> accountantSignPosts)
+        public ResponseViewModel Post(List<AccountantSignForm> accountantSignPosts)
         {
             try
             {

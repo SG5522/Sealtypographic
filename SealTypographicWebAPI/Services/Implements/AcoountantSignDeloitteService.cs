@@ -73,11 +73,11 @@ namespace SealTypographicWebAPI.Services.Implements
         /// </summary>
         /// <param name="accountantSignPostDatas">簽名印鑑組</param>
         /// <returns></returns>
-        public ResponseViewModel CreateAccountantSigns(List<AccountantSignPost> accountantSignPostDatas)
+        public ResponseViewModel CreateAccountantSigns(List<AccountantSignForm> accountantSignPostDatas)
         {
             ResponseViewModel response = new();
             List<AccountantSignJournal> accountantSignJournals = new();
-            foreach (AccountantSignPost accountantSignPostData in accountantSignPostDatas)
+            foreach (AccountantSignForm accountantSignPostData in accountantSignPostDatas)
             {
                 //這段之後會做成IMAGE64的處理並另存在指定的位置
                 string imagePath = accountantSignPostData.ImageBase64;

@@ -6,41 +6,12 @@ namespace SealTypographicWebAPI.Models.Customer
     /// <summary>
     /// 客戶分頁搜尋
     /// </summary>
-    public class CustomerSearch
+    public class CustomerSearch : PaginateSearchWithStatus
     {
         /// <summary>
         /// 搜尋客戶ID或是名字
         /// </summary>
         /// <example>AAA001 or 公司</example>
-        public string? CustomerIdOrName { get; set; }
-
-        /// <summary>
-        /// 狀態
-        ///-1.全部 
-        /// 0.待審
-        /// 1.通過(審核完成)
-        /// 2.退件
-        /// 3.隱藏(被刪除時的狀態)
-        /// </summary>
-        /// <example>0</example>
-        [Required]
-        [Range(-1, 3)]
-        public int Status { get; set; }
-
-        /// <summary>
-        /// 現在頁數(不得小於0)
-        /// </summary>
-        /// <example>1</example>
-        [Required]
-        [Range(1,int.MaxValue)]
-        public int PageNumber { get; set; }
-
-        /// <summary>
-        /// 每頁資料筆數(不得小於0)
-        /// </summary>
-        /// <example>5</example>
-        [Required]
-        [Range(1,PageSizeLimit.Max)]
-        public int PageSize { get; set; }
+        public string? CustomerIdOrName { get; set; }       
     }
 }

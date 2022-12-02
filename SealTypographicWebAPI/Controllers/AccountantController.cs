@@ -38,12 +38,12 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="accountantQueryPage">會計師分頁搜尋</param>
         /// <returns></returns>
         [HttpGet]
-        public AccountantResponses Get([FromQuery]AccountantSearch accountantQueryPage)
+        public AccountantPaginatesViewModel Get([FromQuery]AccountantSearch accountantQueryPage)
         {
             try
             {
                 Log.Information("Accountant get accountantViewModels input {@Input}", accountantQueryPage);
-                AccountantResponses accountantResponses = accountantService.GetAccountantViewModels(accountantQueryPage);
+                AccountantPaginatesViewModel accountantResponses = accountantService.GetAccountantViewModels(accountantQueryPage);
                 Log.Information("Accountant get accountantViewModels output {@Output}", accountantResponses);
                 return accountantResponses;
             }
@@ -51,7 +51,7 @@ namespace SealTypographicWebAPI.Controllers
             {
                 Log.Error("AccountantGroups get accountantViewModels error {@Error}", ex);
                 ResponseViewModel response = ResponseUtil.InternalServerError();
-                return new AccountantResponses()
+                return new ()
                 {
                     Code = response.Code,
                     Message = response.Message,
@@ -91,7 +91,7 @@ namespace SealTypographicWebAPI.Controllers
         /// </summary>
         /// <param name="accountantBaseData"></param>
         [HttpPost]
-        public ResponseViewModel Post(AccountantPostData accountantBaseData)
+        public ResponseViewModel Post(AccountantForm accountantBaseData)
         {
             try
             {
@@ -112,7 +112,7 @@ namespace SealTypographicWebAPI.Controllers
         /// </summary>
         /// <param name="accountantBaseData"></param>        
         [HttpPut]
-        public ResponseViewModel Put(AccountantPostData accountantBaseData)
+        public ResponseViewModel Put(AccountantForm accountantBaseData)
         {
             try
             {

@@ -1,5 +1,5 @@
 ﻿using SealTypographicWebAPI.Models;
-using SealTypographicWebAPI.Models.Accountant;
+using SealTypographicWebAPI.Models.AccountantGroup;
 using SealTypographicWebAPI.Models.Customer;
 
 namespace SealTypographicWebAPI.Services
@@ -22,7 +22,7 @@ namespace SealTypographicWebAPI.Services
         /// </summary>
         /// <param name="accountantGroupQueryPage">會計師群組分頁搜尋</param> 
         /// <returns></returns>
-        AccountantGroupResponses GetAccountantGroups(AccountantGroupQueryPage accountantGroupQueryPage);
+        AccountantGroupResponses GetAccountantGroups(AccountantGroupSearch accountantGroupQueryPage);
 
         /// <summary>
         /// 建立會計師群組資料

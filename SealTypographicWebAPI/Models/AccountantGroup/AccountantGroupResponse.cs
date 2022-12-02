@@ -1,4 +1,4 @@
-﻿namespace SealTypographicWebAPI.Models.Accountant
+﻿namespace SealTypographicWebAPI.Models.AccountantGroup
 {
     /// <summary>
     /// 會計師群組資料以及回應

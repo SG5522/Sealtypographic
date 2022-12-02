@@ -28,10 +28,12 @@ namespace SealTypographicWebAPI.Migrations
                     Id = table.Column<string>(type: "TEXT", nullable: false),
                     BAN = table.Column<string>(type: "TEXT", nullable: false),
                     StockCode = table.Column<string>(type: "TEXT", nullable: false),
-                    Name = table.Column<string>(type: "TEXT", nullable: false),
                     Address = table.Column<string>(type: "TEXT", nullable: false),
                     Telephone = table.Column<string>(type: "TEXT", nullable: false),
                     Fax = table.Column<string>(type: "TEXT", nullable: false),
+                    Name = table.Column<string>(type: "TEXT", nullable: false),
+                    AvailableDate = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    CreateDate = table.Column<DateTime>(type: "TEXT", nullable: false),
                     Status = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
@@ -70,15 +72,15 @@ namespace SealTypographicWebAPI.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Accountants",
+                name: "AccountantPaginates",
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "TEXT", nullable: false),
+                    AccountantGroupId = table.Column<string>(type: "TEXT", nullable: false),
                     Name = table.Column<string>(type: "TEXT", nullable: false),
                     AvailableDate = table.Column<DateTime>(type: "TEXT", nullable: false),
                     CreateDate = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    Status = table.Column<int>(type: "INTEGER", nullable: false),
-                    AccountantGroupId = table.Column<string>(type: "TEXT", nullable: false)
+                    Status = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -98,7 +100,8 @@ namespace SealTypographicWebAPI.Migrations
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     Name = table.Column<string>(type: "TEXT", nullable: false),
-                    Path = table.Column<string>(type: "TEXT", nullable: false),
+                    OriginFileName = table.Column<string>(type: "TEXT", nullable: false),
+                    FullPath = table.Column<string>(type: "TEXT", nullable: false),
                     Quarter = table.Column<string>(type: "TEXT", nullable: false),
                     CustomerId = table.Column<string>(type: "TEXT", nullable: false)
                 },
@@ -119,13 +122,14 @@ namespace SealTypographicWebAPI.Migrations
                 {
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    No = table.Column<int>(type: "INTEGER", nullable: false),
+                    Sequence = table.Column<int>(type: "INTEGER", nullable: false),
+                    Quarter = table.Column<string>(type: "TEXT", nullable: false),
+                    CustomerId = table.Column<string>(type: "TEXT", nullable: false),
                     ImagePath = table.Column<string>(type: "TEXT", nullable: false),
                     AvailableDate = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    DeadlineDate = table.Column<DateTime>(type: "TEXT", nullable: false),
                     CreateDate = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    Quarter = table.Column<string>(type: "TEXT", nullable: false),
-                    Stauts = table.Column<int>(type: "INTEGER", nullable: false),
-                    CustomerId = table.Column<string>(type: "TEXT", nullable: false),
+                    Status = table.Column<int>(type: "INTEGER", nullable: false),
                     SealMappingConfigId = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
@@ -151,13 +155,13 @@ namespace SealTypographicWebAPI.Migrations
                 {
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    No = table.Column<int>(type: "INTEGER", nullable: false),
+                    Sequence = table.Column<int>(type: "INTEGER", nullable: false),
+                    LetterheadId = table.Column<string>(type: "TEXT", nullable: false),
                     ImagePath = table.Column<string>(type: "TEXT", nullable: false),
                     AvailableDate = table.Column<DateTime>(type: "TEXT", nullable: false),
                     DeadlineDate = table.Column<DateTime>(type: "TEXT", nullable: false),
                     CreateDate = table.Column<DateTime>(type: "TEXT", nullable: false),
                     Status = table.Column<int>(type: "INTEGER", nullable: false),
-                    LetterheadId = table.Column<string>(type: "TEXT", nullable: false),
                     SealMappingConfigId = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
@@ -183,12 +187,12 @@ namespace SealTypographicWebAPI.Migrations
                 {
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
+                    AccountantId = table.Column<string>(type: "TEXT", nullable: false),
                     ImagePath = table.Column<string>(type: "TEXT", nullable: false),
                     AvailableDate = table.Column<DateTime>(type: "TEXT", nullable: false),
                     DeadlineDate = table.Column<DateTime>(type: "TEXT", nullable: false),
                     CreateDate = table.Column<DateTime>(type: "TEXT", nullable: false),
                     Status = table.Column<int>(type: "INTEGER", nullable: false),
-                    AccountantId = table.Column<string>(type: "TEXT", nullable: false),
                     SealMappingConfigId = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
@@ -197,7 +201,7 @@ namespace SealTypographicWebAPI.Migrations
                     table.ForeignKey(
                         name: "FK_AccountantSignJournals_Accountants_AccountantId",
                         column: x => x.AccountantId,
-                        principalTable: "Accountants",
+                        principalTable: "AccountantPaginates",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
@@ -235,8 +239,8 @@ namespace SealTypographicWebAPI.Migrations
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     AccountantSignJournalId = table.Column<int>(type: "INTEGER", nullable: false),
-                    Top = table.Column<int>(type: "INTEGER", nullable: false),
-                    Left = table.Column<int>(type: "INTEGER", nullable: false),
+                    Top = table.Column<float>(type: "REAL", nullable: false),
+                    Left = table.Column<float>(type: "REAL", nullable: false),
                     Width = table.Column<int>(type: "INTEGER", nullable: false),
                     Height = table.Column<int>(type: "INTEGER", nullable: false),
                     TypographicPageId = table.Column<int>(type: "INTEGER", nullable: false)
@@ -265,8 +269,8 @@ namespace SealTypographicWebAPI.Migrations
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     CustomerSealJournalId = table.Column<int>(type: "INTEGER", nullable: false),
-                    Top = table.Column<int>(type: "INTEGER", nullable: false),
-                    Left = table.Column<int>(type: "INTEGER", nullable: false),
+                    Top = table.Column<float>(type: "REAL", nullable: false),
+                    Left = table.Column<float>(type: "REAL", nullable: false),
                     Width = table.Column<int>(type: "INTEGER", nullable: false),
                     Height = table.Column<int>(type: "INTEGER", nullable: false),
                     TypographicPageId = table.Column<int>(type: "INTEGER", nullable: false)
@@ -295,8 +299,8 @@ namespace SealTypographicWebAPI.Migrations
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     LetterheadImageJournalId = table.Column<int>(type: "INTEGER", nullable: false),
-                    Top = table.Column<int>(type: "INTEGER", nullable: false),
-                    Left = table.Column<int>(type: "INTEGER", nullable: false),
+                    Top = table.Column<float>(type: "REAL", nullable: false),
+                    Left = table.Column<float>(type: "REAL", nullable: false),
                     Width = table.Column<int>(type: "INTEGER", nullable: false),
                     Height = table.Column<int>(type: "INTEGER", nullable: false),
                     TypographicPageId = table.Column<int>(type: "INTEGER", nullable: false)
@@ -320,7 +324,7 @@ namespace SealTypographicWebAPI.Migrations
 
             migrationBuilder.CreateIndex(
                 name: "IX_Accountants_AccountantGroupId",
-                table: "Accountants",
+                table: "AccountantPaginates",
                 column: "AccountantGroupId");
 
             migrationBuilder.CreateIndex(
@@ -424,7 +428,7 @@ namespace SealTypographicWebAPI.Migrations
                 name: "TypographicPages");
 
             migrationBuilder.DropTable(
-                name: "Accountants");
+                name: "AccountantPaginates");
 
             migrationBuilder.DropTable(
                 name: "Letterheads");

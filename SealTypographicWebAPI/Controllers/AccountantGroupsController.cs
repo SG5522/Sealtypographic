@@ -1,11 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using SealTypographicWebAPI.Models.Accountant;
 using SealTypographicWebAPI.Consts;
 using SealTypographicWebAPI.Models;
 using SealTypographicWebAPI.Entities;
 using SealTypographicWebAPI.Util;
 using SealTypographicWebAPI.Services;
 using Serilog;
+using SealTypographicWebAPI.Models.AccountantGroup;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -39,7 +39,7 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="accountantGroupQueryPage">會計師群組分頁搜尋</param>
         /// <returns></returns>
         [HttpGet]
-        public AccountantGroupResponses GetAccountGroupViewModels([FromQuery]AccountantGroupQueryPage accountantGroupQueryPage)
+        public AccountantGroupResponses GetAccountGroupViewModels([FromQuery]AccountantGroupSearch accountantGroupQueryPage)
         {
             try
             {

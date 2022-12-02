@@ -1,20 +1,18 @@
-﻿namespace SealTypographicWebAPI.Models.Letterhead
+﻿namespace SealTypographicWebAPI.Entities
 {
     /// <summary>
-    /// 信頭資料
+    /// 各類別基本資料
     /// </summary>
-    public class LetterheadPostData
+    public class BaseData
     {
         /// <summary>
-        /// 信頭ID
-        /// </summary>
-        /// <example>Lh001</example>
+        /// ID
+        /// </summary>        
         public string Id { get; set; }
 
         /// <summary>
-        /// 信頭名稱
+        /// 名稱
         /// </summary>
-        /// <example>測試信頭</example>
         public string Name { get; set; }
 
         /// <summary>
@@ -28,12 +26,12 @@
         public DateTime CreateDate { get; set; }
 
         /// <summary>
-        /// 狀態
+        /// 會計師狀態
         /// 0.待審查
-        /// 1.已審查
-        /// 2.刪除(系統管理員可以看到資料)
+        /// 1.通過(審核完成)
+        /// 2.退件
+        /// 3.刪除(系統管理員可以看到資料)
         /// </summary>
-        /// <example>0</example>
         public int Status { get; set; }
     }
 }

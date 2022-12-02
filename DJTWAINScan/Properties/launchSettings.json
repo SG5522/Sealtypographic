@@ -1,0 +1,12 @@
+{
+  "profiles": {
+    "DJTWAINScan": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "applicationUrl": "https://localhost:49379;http://localhost:49384"
+    }
+  }
+}

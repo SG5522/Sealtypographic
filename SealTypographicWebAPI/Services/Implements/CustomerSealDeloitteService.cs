@@ -1,10 +1,12 @@
 ﻿using AutoMapper;
 using EFCore.BulkExtensions;
 using Microsoft.EntityFrameworkCore;
+using SealTypographicWebAPI.Consts;
 using SealTypographicWebAPI.Entities;
 using SealTypographicWebAPI.Models;
 using SealTypographicWebAPI.Models.Customer;
 using SealTypographicWebAPI.Util;
+using SealTypographicWebAPI.Utils;
 
 namespace SealTypographicWebAPI.Services.Implements
 {
@@ -127,6 +129,9 @@ namespace SealTypographicWebAPI.Services.Implements
                 CustomerSealJournal customerSealJournal = mapper.Map<CustomerSealJournal>(customerSeal);
                 customerSealJournal.ImagePath = imagePath;
                 customerSealJournal.CreateDate = DateTime.Now;
+                customerSealJournal.AvailableDate = AvailableDateUtil.NotActivated();
+                customerSealJournal.DeadlineDate = AvailableDateUtil.NotActivated(); //暫時加上
+                customerSealJournal.Status = (int)Status.Pending;
                 customerSealJournals.Add(customerSealJournal);
             }
             dbContext.CustomerSealJournals.AddRange(customerSealJournals);
@@ -141,10 +146,10 @@ namespace SealTypographicWebAPI.Services.Implements
         /// </summary>
         /// <param name="customerSeals">印鑑組</param>
         /// <returns></returns>
-        public ResponseViewModel UpdateCustomerSeals(List<CustomerSealFormWithID> customerSeals)
+        public ResponseViewModel UpdateCustomerSeals(List<CustomerSealUpdate> customerSeals)
         {
             ResponseViewModel response = new();
-            foreach (CustomerSealFormWithID customerSeal in customerSeals)
+            foreach (CustomerSealUpdate customerSeal in customerSeals)
             {
                 CustomerSealJournal? customerSealJournalQuery = dbContext.CustomerSealJournals.Where
                                            (
@@ -155,8 +160,12 @@ namespace SealTypographicWebAPI.Services.Implements
                 {
                     //這段之後會做成IMAGE64的處理並另存在指定的位置
                     string imagePath = customerSeal.ImageBase64;
-                    customerSealJournalQuery.ImagePath = imagePath;
-                    mapper.Map(customerSeal, customerSealJournalQuery);                    
+                    //mapper.Map(customerSeal, customerSealJournalQuery);
+
+                    customerSealJournalQuery.ImagePath = imagePath;                    
+                    customerSealJournalQuery.AvailableDate = AvailableDateUtil.NotActivated();
+                    customerSealJournalQuery.DeadlineDate = AvailableDateUtil.NotActivated(); //暫時加上
+                    customerSealJournalQuery.Status = (int)Status.Pending;
                 }
                 else
                 {

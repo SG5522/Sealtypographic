@@ -8,6 +8,42 @@ namespace SealTypographicWebAPI.Utils
     public class StatusUtil
     {        
         /// <summary>
+        /// 待審
+        /// </summary>
+        /// <returns></returns>
+        public static string Pending()
+        {
+            return Get(Status.Pending);
+        }
+
+        /// <summary>
+        /// 通過(審核完成)
+        /// </summary>
+        /// <returns></returns>
+        public static string Approval()
+        {
+            return Get(Status.Approval);
+        }
+
+        /// <summary>
+        /// 退件
+        /// </summary>
+        /// <returns></returns>
+        public static string Reject()
+        {
+            return Get(Status.Reject);
+        }
+
+        /// <summary>
+        /// 隱藏(被刪除時的狀態)
+        /// </summary>
+        /// <returns></returns>
+        public static string Hidden()
+        {
+            return Get(Status.Hidden);
+        }
+
+        /// <summary>
         /// 取得Status名稱
         /// </summary>
         /// <returns></returns>

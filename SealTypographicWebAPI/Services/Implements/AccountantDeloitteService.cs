@@ -43,8 +43,7 @@ namespace SealTypographicWebAPI.Services.Implements
 
             if (accountantQuery != null)
             {
-                accountantViewModel = mapper.Map<AccountantViewModel>(accountantQuery);
-                accountantViewModel.StatusString = StatusUtil.Get((Status)accountantQuery.Status);
+                accountantViewModel = mapper.Map<AccountantViewModel>(accountantQuery);                
                 response = ResponseUtil.Success();
             }
             else
@@ -67,9 +66,9 @@ namespace SealTypographicWebAPI.Services.Implements
         /// </summary>
         /// <param name="accountantSearch">會計師分頁搜尋</param> 
         /// <returns></returns>
-        public AccountantResponses GetAccountantViewModels(AccountantSearch accountantSearch)
+        public AccountantPaginatesViewModel GetAccountantViewModels(AccountantSearch accountantSearch)
         {            
-            List<AccountantViewModel> accountantViewModels = new();
+            List<AccountantPaginateViewModel> accountantPaginateViewModels = new();
             ResponseViewModel response = new();
             IQueryable<Accountant> accountantsQuery = dbContext.Accountants;
             int totalPage = 0;
@@ -102,9 +101,9 @@ namespace SealTypographicWebAPI.Services.Implements
                 totalCount = accountantsQuery.Count();
                 foreach (Accountant accountant in thisPageAccountants)
                 {
-                    AccountantViewModel accountantViewModel = mapper.Map<AccountantViewModel>(accountant);
-                    accountantViewModel.StatusString = StatusUtil.Get((Status)accountant.Status);
-                    accountantViewModels.Add(accountantViewModel);
+                    AccountantPaginateViewModel accountantPaginateViewModel = mapper.Map<AccountantPaginateViewModel>(accountant);
+                    accountantPaginateViewModel.StatusString = StatusUtil.Get((Status)accountant.Status);
+                    accountantPaginateViewModels.Add(accountantPaginateViewModel);
                 }
                 //取得成功訊息
                 response = ResponseUtil.Success();
@@ -114,12 +113,12 @@ namespace SealTypographicWebAPI.Services.Implements
                 response = ResponseUtil.NoData();
             }
 
-            return new AccountantResponses()
+            return new()
             {
                 PageNumber = accountantSearch.PageNumber,
                 TotalCount = totalCount,
                 TotalPage = totalPage,
-                Accountants = accountantViewModels,
+                AccountantPaginates = accountantPaginateViewModels,
                 //回傳結果訊息用
                 Code = response.Code,
                 Message = response.Message,
@@ -131,7 +130,7 @@ namespace SealTypographicWebAPI.Services.Implements
         /// </summary>
         /// <param name="accountantPostData">基本資料</param>
         /// <returns></returns>
-        public ResponseViewModel CreateAccountant(AccountantPostData accountantPostData)
+        public ResponseViewModel CreateAccountant(AccountantForm accountantPostData)
         {
             ResponseViewModel response = new();
             Accountant? accountantQuery = dbContext.Accountants
@@ -141,6 +140,10 @@ namespace SealTypographicWebAPI.Services.Implements
             if (accountantQuery == null)
             {
                 Accountant accountant = mapper.Map<Accountant>(accountantPostData);
+                accountant.CreateDate = DateTime.Now;
+                accountant.AvailableDate = AvailableDateUtil.NotActivated();
+                accountant.Status = (int)Status.Pending;
+
                 dbContext.Accountants.Add(accountant);
                 dbContext.SaveChanges();
                 response = ResponseUtil.Success();
@@ -157,7 +160,7 @@ namespace SealTypographicWebAPI.Services.Implements
         /// 更新會計師基本資料
         /// </summary>
         /// <param name="accountaPostData">會計師基本資料 accountantBaseData.id 為搜尋條件</param>        
-        public ResponseViewModel UpdateAccountant(AccountantPostData accountaPostData)
+        public ResponseViewModel UpdateAccountant(AccountantForm accountaPostData)
         {
             ResponseViewModel response = new();
             Accountant? accountantQuery = dbContext.Accountants
@@ -167,6 +170,8 @@ namespace SealTypographicWebAPI.Services.Implements
             if (accountantQuery != null)
             {
                 mapper.Map(accountaPostData, accountantQuery);
+                accountantQuery.AvailableDate = AvailableDateUtil.NotActivated();
+                accountantQuery.Status = (int)Status.Pending;
 
                 dbContext.SaveChanges();
                 response = ResponseUtil.Success();
@@ -186,13 +191,14 @@ namespace SealTypographicWebAPI.Services.Implements
         public ResponseViewModel DeleteAccountant(string accountantId)
         {
             ResponseViewModel response = new();
-            var accountantQuery = dbContext.Accountants
-                                .Where(accountant => accountant.Id == accountantId);
+            Accountant? accountantQuery = dbContext.Accountants
+                                .Where(accountant => accountant.Id == accountantId)
+                                .FirstOrDefault();
 
-            if (accountantQuery.Any())
-            {
-                var accountant = accountantQuery.First();
-                accountant.Status = 2;
+            if (accountantQuery != null)
+            {                
+                accountantQuery.AvailableDate = AvailableDateUtil.NotActivated();
+                accountantQuery.Status = (int)Status.Hidden;
                 dbContext.SaveChanges();
                 response = ResponseUtil.Success();
             }

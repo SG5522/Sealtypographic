@@ -123,7 +123,7 @@ namespace SealTypographicWebAPI.Services.Implements
         /// 建立信頭資料
         /// </summary>
         /// <param name="letterheadPostData">基本資料</param>
-        public ResponseViewModel CreateLetterhead(LetterheadPostData letterheadPostData)
+        public ResponseViewModel CreateLetterhead(LetterheadForm letterheadPostData)
         {
             ResponseViewModel response = new();
             IQueryable<Letterhead> letterheadQuery = dbContext.Letterheads
@@ -147,7 +147,7 @@ namespace SealTypographicWebAPI.Services.Implements
         /// 更新建立信頭資料
         /// </summary>
         /// <param name="letterheadPostData">基本資料</param>
-        public ResponseViewModel UpdateLetterhead(LetterheadPostData letterheadPostData)
+        public ResponseViewModel UpdateLetterhead(LetterheadForm letterheadPostData)
         {
             ResponseViewModel response = new();
             Letterhead? letterheadQuery = dbContext.Letterheads

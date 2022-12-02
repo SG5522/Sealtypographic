@@ -1,11 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace SealTypographicWebAPI.Models.Customer
+﻿namespace SealTypographicWebAPI.Models.Customer
 {
     /// <summary>
     /// 客戶資料
     /// </summary>
-    public class CustomerViewModel
+    public class CustomerPaginateViewModel
     {
         /// <summary>
         /// 顧客ID
@@ -30,5 +28,15 @@ namespace SealTypographicWebAPI.Models.Customer
         /// 2.刪除(系統管理員可以看到資料)
         /// </summary>
         public int Status { get; set; }
+    }
+    /// <summary>
+    /// 依搜尋結果與分頁顯示客戶列表
+    /// </summary>
+    public class CustomerPaginatesViewModel : PaginateViewModel
+    {
+        /// <summary>
+        /// 顧客列表
+        /// </summary>
+        public List<CustomerPaginateViewModel> Customers { get; set; }
     }
 }

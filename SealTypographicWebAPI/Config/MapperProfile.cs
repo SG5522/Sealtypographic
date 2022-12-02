@@ -19,7 +19,7 @@ namespace SealTypographicWebAPI.Config
         {
             //顧客基本資料
             CreateMap<Customer, CustomerForm>();
-            CreateMap<Customer, CustomerViewModel>();
+            CreateMap<Customer, CustomerPaginateViewModel>();
             CreateMap<CustomerForm, Customer>();
 
             //顧客印鑑
@@ -34,8 +34,11 @@ namespace SealTypographicWebAPI.Config
             //會計師基本資料
             CreateMap<Accountant, AccountantViewModel>()                    
                     .ForMember(x => x.AccountantGroupName, y => y.MapFrom(o => o.AccountantGroup.Name))
-                    .ReverseMap();            
-            CreateMap<AccountantPostData, Accountant>();
+                    .ReverseMap();
+            CreateMap<Accountant, AccountantPaginateViewModel>()
+                    .ForMember(x => x.AccountantGroupName, y => y.MapFrom(o => o.AccountantGroup.Name))
+                    .ReverseMap();
+            CreateMap<AccountantForm, Accountant>();
 
 
             //會計師印鑑
@@ -43,17 +46,17 @@ namespace SealTypographicWebAPI.Config
                     .ForMember(x => x.SealMappingConfigName, y => y.MapFrom(o => o.SealMappingConfig.Name))
                     .ForMember(x => x.ImageBase64, y => y.Ignore()) // <---imagebase64要額外處理所以要忽略
                     .ReverseMap();
-            CreateMap<AccountantSignJournal, AccountantSignPost>()
+            CreateMap<AccountantSignJournal, AccountantSignForm>()
                     .ForMember(x => x.ImageBase64, y => y.Ignore()) // <---imagebase64要額外處理所以要忽略
                     .ReverseMap();
-
+            //這個可能用不到
             CreateMap<AccountantSignJournal, AccountantSignUpdate>()
                     .ForMember(x => x.ImageBase64, y => y.Ignore()) // <---imagebase64要額外處理所以要忽略
                     .ReverseMap();
 
             //信頭基本資料
             CreateMap<Letterhead, LetterheadViewModel>();            
-            CreateMap<LetterheadPostData, Letterhead>();
+            CreateMap<LetterheadForm, Letterhead>();
 
 
             //PDF排版資訊
