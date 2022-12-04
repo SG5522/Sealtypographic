@@ -2,6 +2,7 @@
 using SealTypographicWebAPI.Services;
 using SealTypographicWebAPI.Models;
 using Microsoft.Extensions.Options;
+using SealTypographicWebAPI.Utils;
 
 namespace SealTypographicWebAPI.Controllers
 {
@@ -49,8 +50,8 @@ namespace SealTypographicWebAPI.Controllers
                 default:
                     imagepath = _scanConfig.ScanImagePath;
                     break;
-            }            
-            Image? imageData = imageService.GetData(imagepath, imageName);
+            }
+            ImageModel? imageData = imageService.GetData(imagepath, imageName);
             if (imageData != null)
             {
                 //轉成image Base64
@@ -64,10 +65,15 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="imagePath"></param>
         /// <returns></returns>
         [HttpGet("{imagePath}")]
-        public string GetImageBase64(string imagePath) 
+        public string GetImageBase64(string imagePath)
         {
-            return imageService.GetImageBase64(imagePath);
-        }
+            //測試存圖用
+            string base64 = ImageSharpUtil.PathImageFileToBase64(imagePath);
+            ImageSharpUtil.Base64ToSaveImage(base64);
 
+            return ImageSharpUtil.PathImageFileToBase64(imagePath);
+
+            //return imageService.GetImageBase64(imagePath);
+        }
     }
 }

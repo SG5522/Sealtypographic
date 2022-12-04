@@ -17,9 +17,9 @@ namespace SealTypographicWebAPI.Services
         /// <param name="imagePath">圖檔位置</param>
         /// <param name="imageName">圖片檔名</param>
         /// <returns></returns>
-        public Image? GetData(string imagePath, string imageName)
+        public ImageModel? GetData(string imagePath, string imageName)
         {
-            Image imageData = new()
+            ImageModel imageData = new()
             {
                 FileName = imageName,
                 ContentType = GetType(imageName),
