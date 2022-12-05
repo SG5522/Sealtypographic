@@ -83,4 +83,25 @@
         /// </summary>
         Activated
     }
+
+    /// <summary>
+    /// 掃描文件類型
+    /// </summary>
+    public enum UploadScanType
+    {
+        /// <summary>
+        /// 客戶
+        /// </summary>
+        Customer = 1,
+
+        /// <summary>
+        /// 會計師
+        /// </summary>
+        Accountant = 2,
+
+        /// <summary>
+        /// 信頭
+        /// </summary>
+        Letterhead = 3,
+    }
 }

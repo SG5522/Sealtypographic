@@ -3,7 +3,7 @@
     /// <summary>
     /// 會計師印鑑簽名
     /// </summary>
-    public class AccountantSignForm : PostCreateData
+    public class AccountantSignForm
     {
         /// <summary>
         /// 會計師ID
@@ -23,11 +23,5 @@
         /// 圖檔
         /// </summary>
         public string ImageBase64 { get; set; }
-
-        /// <summary>
-        /// 啟用結束日期
-        /// </summary>
-        public DateTime DeadlineDate { get; set; }
-
     }
 }

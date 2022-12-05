@@ -42,6 +42,15 @@ namespace SealTypographicWebAPI.Util
         }
 
         /// <summary>
+        /// 上傳失敗
+        /// </summary>
+        /// <returns></returns>
+        public static ResponseViewModel FileUploadFailed()
+        {
+            return Get(ResponseCode.FileUploadFailed);
+        }
+
+        /// <summary>
         /// 取得訊息
         /// </summary>
         /// <returns></returns>
@@ -52,26 +61,32 @@ namespace SealTypographicWebAPI.Util
                 case ResponseCode.Success:
                     return new ResponseViewModel()
                     {
-                        Code = 200,
+                        Code = (int)ResponseCode.Success,
                         Message = "Success"
                     };
                 case ResponseCode.InternalServerError:
                     return new ResponseViewModel()
                     {
-                        Code = 500,
+                        Code = (int)ResponseCode.InternalServerError,
                         Message = "Error"
                     };
                 case ResponseCode.NoData:
                     return new ResponseViewModel()
                     {
-                        Code = 404,
+                        Code = (int)ResponseCode.NoData,
                         Message = "NoData"
                     };
                 case ResponseCode.UniqueConstraintFailed:
                     return new ResponseViewModel()
                     {
-                        Code = 19,
+                        Code = (int)ResponseCode.UniqueConstraintFailed,
                         Message = "Unique constraint failed"
+                    };
+                case ResponseCode.FileUploadFailed:
+                    return new ResponseViewModel()
+                    {
+                        Code = (int)ResponseCode.FileUploadFailed,
+                        Message = "File Upload failed"
                     };
                 default:
                     return new ResponseViewModel();

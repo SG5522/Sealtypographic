@@ -53,7 +53,8 @@ builder.Services.AddDbContextPool<SealTypographicDbContext>(optionsBuilder =>
 
 #region -- Service --
 
-builder.Services.AddSingleton<ImageService>();
+builder.Services.AddSingleton<ImageSharpService>();
+builder.Services.AddSingleton<UploadService>();
 builder.Services.AddAutoMapper(typeof(MapperProfile));
 
 //DB Process

@@ -11,20 +11,6 @@
         public string AccountantID { get; set; } = null!;
 
         /// <summary>
-        /// 啟用日(審查通過才有)
-        /// </summary>
-        public DateTime AvailableDate { get; set; }
-
-        /// <summary>
-        /// 會計師簽名群組
-        /// 1.印鑑
-        /// 2.中文簽名
-        /// 3.英文簽名
-        /// 4.舊式簽名(英文)        
-        /// </summary>
-        public int AccountantSignGroupID { get; set; }
-
-        /// <summary>
         /// 會計印鑑群組名稱
         /// </summary>        
         public string SealMappingConfigName { get; set; }

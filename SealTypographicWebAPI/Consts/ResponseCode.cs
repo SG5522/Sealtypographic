@@ -24,5 +24,10 @@
         /// 伺服器錯誤
         /// </summary>
         InternalServerError = 500,
+
+        /// <summary>
+        /// 上傳失敗
+        /// </summary>
+        FileUploadFailed = 18,
     }
 }

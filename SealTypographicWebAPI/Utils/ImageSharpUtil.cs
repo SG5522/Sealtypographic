@@ -12,30 +12,6 @@ namespace SealTypographicWebAPI.Utils
     public class ImageSharpUtil
     {
         /// <summary>
-        /// Base64轉圖
-        /// </summary>
-        /// <param name="imageBase64"></param>
-        /// <returns></returns>
-        public static ResponseViewModel Base64ToSaveImage (string imageBase64)
-        {
-            string path = @"C:\Users\User\Desktop\test";
-            imageBase64 = imageBase64[(imageBase64.IndexOf(",") + 1)..];
-            byte[] bytes = Convert.FromBase64String(imageBase64);
-            Image image = Image.Load(bytes, out IImageFormat format);
-            switch(format.Name)
-            {
-                case "JPEG":
-                    image.SaveAsJpeg(path + ".jpg");
-                    return ResponseUtil.Success();
-                case "PNG":
-                    image.SaveAsJpeg(path + ".png");
-                    return ResponseUtil.Success();
-                default:
-                    return ResponseUtil.InternalServerError();
-            }
-        }
-
-        /// <summary>
         /// 圖片轉base64
         /// </summary>
         /// <param name="image"></param>

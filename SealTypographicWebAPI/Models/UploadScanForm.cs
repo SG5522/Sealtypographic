@@ -3,12 +3,12 @@
     /// <summary>
     /// 上傳用Class
     /// </summary>
-    public class UploadForm
+    public class UploadScanForm
     {
         /// <summary>
         /// 檔名
         /// </summary>
-        public string FileName { get; set; }
+        public string ClientFileName { get; set; }
 
         /// <summary>
         /// Base64圖檔

@@ -1,11 +1,13 @@
 ﻿using AutoMapper;
 using EFCore.BulkExtensions;
 using Microsoft.EntityFrameworkCore;
+using SealTypographicWebAPI.Consts;
 using SealTypographicWebAPI.Entities;
 using SealTypographicWebAPI.Models;
 using SealTypographicWebAPI.Models.Accountant;
 using SealTypographicWebAPI.Models.Customer;
 using SealTypographicWebAPI.Util;
+using SealTypographicWebAPI.Utils;
 
 namespace SealTypographicWebAPI.Services.Implements
 {
@@ -84,7 +86,11 @@ namespace SealTypographicWebAPI.Services.Implements
 
                 AccountantSignJournal accountantSignJournal = mapper.Map<AccountantSignJournal>(accountantSignPostData);
                 accountantSignJournal.ImagePath = imagePath;
-                //customerSealJournal.CreateDate = DateTime.Now;
+                accountantSignJournal.CreateDate = DateTime.Now;
+                accountantSignJournal.AvailableDate = AvailableDateUtil.NotActivated();
+                accountantSignJournal.DeadlineDate = AvailableDateUtil.NotActivated(); //暫時加上
+                accountantSignJournal.Status = (int)Status.Pending;
+
                 accountantSignJournals.Add(accountantSignJournal);
             }
             dbContext.AccountantSignJournals.AddRange(accountantSignJournals);
@@ -114,7 +120,10 @@ namespace SealTypographicWebAPI.Services.Implements
                     //這段之後會做成IMAGE64的處理並另存在指定的位置
                     string imagePath = accountantSignUpdate.ImageBase64;
                     accountantSignJournalQuery.ImagePath = imagePath;
-                    mapper.Map(accountantSignUpdate, accountantSignJournalQuery);                    
+                    //mapper.Map(accountantSignUpdate, accountantSignJournalQuery);                                        
+                    accountantSignJournalQuery.AvailableDate = AvailableDateUtil.NotActivated();
+                    accountantSignJournalQuery.DeadlineDate = AvailableDateUtil.NotActivated(); //暫時加上
+                    accountantSignJournalQuery.Status = (int)Status.Pending;
                 }
                 else
                 {
