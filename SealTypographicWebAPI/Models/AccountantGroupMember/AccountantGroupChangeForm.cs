@@ -1,21 +1,15 @@
-﻿namespace SealTypographicWebAPI.Models.Accountant
+﻿namespace SealTypographicWebAPI.Models.AccountantGroupMember
 {
     /// <summary>
-    /// 會計資料
+    /// 會計群組變更資料
     /// </summary>
-    public class AccountantUpdateForm
+    public class AccountantGroupChangeForm
     {
         /// <summary>
         /// 會計師ID
         /// </summary>   
         /// <example>ACC001</example>
         public string Id { get; set; } = null!;
-
-        /// <summary>
-        /// 名稱
-        /// </summary>
-        /// <example>測試</example>
-        public string Name { get; set; }
 
         /// <summary>
         /// 會計師群組ID

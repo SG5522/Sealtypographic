@@ -6,6 +6,7 @@ using SealTypographicWebAPI.Util;
 using SealTypographicWebAPI.Services;
 using Serilog;
 using SealTypographicWebAPI.Models.AccountantGroup;
+using SealTypographicWebAPI.Models.Accountant;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -17,20 +18,45 @@ namespace SealTypographicWebAPI.Controllers
     [Route("api/[controller]")]
     [Produces("application/json")]
     [ApiController]
-    public class AccountantGroupsController : ControllerBase
+    public class AccountantGroupController : ControllerBase
     {
         /// <summary>
-        /// 宣告會計師資料處理的interface
+        /// 會計師群組管理的interface
         /// </summary>
         protected readonly IAccountantGroupService accountantGroupService;
 
         /// <summary>
         /// 注入Service
         /// </summary>
-        /// <param name="accountantGroupService">管理會計師群組資料</param>
-        public AccountantGroupsController(IAccountantGroupService accountantGroupService)
+        /// <param name="accountantGroupService">管理會計師群組interface</param>        
+        public AccountantGroupController(IAccountantGroupService accountantGroupService)
         {
             this.accountantGroupService = accountantGroupService;
+        }
+
+        /// <summary>
+        /// 取得會計師群組所有資料
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("List")]
+        public AccountantGroupList GetAccountantGroupList()
+        {
+            try
+            {                
+                AccountantGroupList accountantGroupList = accountantGroupService.GetAccountantGroupList();
+                Log.Information("AccountantGroups get accountantGroupList output {@Output}", accountantGroupList);
+                return accountantGroupList;
+            }
+            catch (Exception ex)
+            {
+                Log.Error("AccountantGroups get accountantGroupList error {@Error}", ex);
+                ResponseViewModel response = ResponseUtil.InternalServerError();
+                return new()
+                {
+                    Code = response.Code,
+                    Message = response.Message,
+                };
+            }
         }
 
         /// <summary>
@@ -45,7 +71,7 @@ namespace SealTypographicWebAPI.Controllers
             {
                 Log.Information("AccountantGroups get accountantGroupDatas input {@Input}", accountantGroupQueryPage);
                 AccountantGroupResponses accountantGroupResponses = accountantGroupService.GetAccountantGroups(accountantGroupQueryPage);
-                Log.Information("AccountantGroups get accountantGroupDatas putput {@Output}", accountantGroupResponses);
+                Log.Information("AccountantGroups get accountantGroupDatas output {@Output}", accountantGroupResponses);
                 return accountantGroupResponses;
                 
             }
@@ -64,16 +90,16 @@ namespace SealTypographicWebAPI.Controllers
         /// <summary>
         /// 取得會計師群組資料
         /// </summary>
-        /// <param name="id">群組ID</param>
+        /// <param name="accountantGroupId">群組ID</param>
         /// <returns></returns>
-        [HttpGet("{id}")]
-        public AccountantGroupResponse Get(string id)
+        [HttpGet("{accountantGroupId}")]        
+        public AccountantGroupResponse Get(string accountantGroupId)
         {
             try
             {
-                Log.Information("AccountantGroups get accountantGroupDatas input {@Input}", id);
-                AccountantGroupResponse accountantGroupResponse = accountantGroupService.GetAccountantGroup(id);
-                Log.Information("AccountantGroups get accountantGroupDatas putput {@Output}", accountantGroupResponse);
+                Log.Information("AccountantGroups get accountantGroupDatas input {@Input}", accountantGroupId);
+                AccountantGroupResponse accountantGroupResponse = accountantGroupService.GetAccountantGroupData(accountantGroupId);
+                Log.Information("AccountantGroups get accountantGroupDatas output {@Output}", accountantGroupResponse);
                 return accountantGroupResponse;                
             }
             catch (Exception ex)
@@ -86,8 +112,8 @@ namespace SealTypographicWebAPI.Controllers
                     Message = response.Message,
                 };
             }
-        }
-
+        }                
+      
         /// <summary>
         /// 建立會計師群組
         /// </summary>

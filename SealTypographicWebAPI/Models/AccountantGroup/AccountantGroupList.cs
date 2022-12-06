@@ -1,13 +1,13 @@
 ﻿namespace SealTypographicWebAPI.Models.AccountantGroup
 {
     /// <summary>
-    /// 依搜尋結果顯示會計師列表
+    /// 會計師群組列表
     /// </summary>
-    public class AccountantGroupResponses : PaginateViewModel
+    public class AccountantGroupList : ResponseViewModel
     {
         /// <summary>
         /// 會計師群組列表
         /// </summary>
-        public List<AccountantGroupData> AccountantGroups { get; set; }
+        public List<AccountantGroupData> AccountantGroupDatas { get; set; }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using SealTypographicWebAPI.Models;
+using SealTypographicWebAPI.Models.Accountant;
 using SealTypographicWebAPI.Models.AccountantGroup;
 using SealTypographicWebAPI.Models.Customer;
 
@@ -9,13 +10,18 @@ namespace SealTypographicWebAPI.Services
     /// </summary>
     public interface IAccountantGroupService
     {
+        /// <summary>
+        /// 取得會計師群組所有資料
+        /// </summary>
+        /// <returns></returns>
+        AccountantGroupList GetAccountantGroupList();
 
         /// <summary>
         /// 取得會計師資料
         /// </summary>
         /// <param name="accountantGroupId">群組ID</param>
         /// <returns></returns>
-        AccountantGroupResponse GetAccountantGroup(string accountantGroupId);
+        AccountantGroupResponse GetAccountantGroupData(string accountantGroupId);
 
         /// <summary>
         /// 依搜尋條件獲得會計資料列表
@@ -29,7 +35,6 @@ namespace SealTypographicWebAPI.Services
         /// </summary>
         /// <param name="accountantGroupData">群組資料</param>        
         ResponseViewModel CreateAccountantGroup(AccountantGroupData accountantGroupData);
-
 
         /// <summary>
         /// 更新會計師群組資料

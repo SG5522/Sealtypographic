@@ -57,9 +57,9 @@ namespace SealTypographicWebAPI.Services.Implements
                 List<CustomerSealLocation> customerSealLocation = new();
                 List<AccountantSingLocation> accountantSingLocation = new();
                 List<LetterheadImageLocation> letterheadImageLocation = new();
-                foreach (TypographicPageForm TypographicPagesForm in typographicPDFForm.TypographicPagesForm)
+                foreach (TypographicPageForm typographicPageForm in typographicPDFForm.TypographicPagesForm)
                 {
-
+                    
                 }
                 
 

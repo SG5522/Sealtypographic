@@ -13,7 +13,7 @@
         /// <summary>
         /// 回傳成功
         /// </summary>
-        Success = 200,
+        Success = 0,
 
         /// <summary>
         /// 無資料
