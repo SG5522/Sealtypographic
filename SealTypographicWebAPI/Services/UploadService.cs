@@ -33,7 +33,7 @@ namespace SealTypographicWebAPI.Services
         {            
             foreach(UploadScanForm uploadScanForm in uploadScanForms)
             {
-                SaveImageInfo saveImageInfo = GetSaveImageInfo(uploadScanForm.UploadType, uploadScanForm.ClientFileName);
+                SaveImageInfo saveImageInfo = GetSaveImageInfo(uploadScanForm.SealType, uploadScanForm.ClientFileName);
                 imageSharpService.Base64ToSaveImage(uploadScanForm.ImageBase64, saveImageInfo);
             }
             return new();
@@ -49,26 +49,26 @@ namespace SealTypographicWebAPI.Services
         {
             foreach (IFormFile formFile in formFiles)
             {
-                SaveImageInfo saveImageInfo = GetSaveImageInfo(uploadType, formFile.FileName);
+                SaveImageInfo saveImageInfo = GetSaveImageInfo((SealType)uploadType, formFile.FileName);
                 imageSharpService.IFromToSaveImage(formFile, saveImageInfo);
             }
             return new();
         }
 
-        private SaveImageInfo GetSaveImageInfo(int uploadType, string clientFileName)
+        private SaveImageInfo GetSaveImageInfo(SealType sealType, string clientFileName)
         {
             SaveImageInfo saveScanForm = new();
             string targetFolder = DateTime.Now.ToString("yyyy") + "/" + DateTime.Now.ToString("MM") + "/" + DateTime.Now.ToString("dd") + "/";
             string fileName = clientFileName; //暫時使用來源資料之後會變動為SERVER上的名稱
-            switch (uploadType)
+            switch (sealType)
             {
-                case (int)UploadScanType.Customer :                    
+                case SealType.Customer :                    
                     saveScanForm.Folder = scanConfig.ScanImagePath + scanConfig.CustomerFolder + targetFolder;
                     break;
-                case (int)UploadScanType.Accountant:
+                case SealType.Accountant:
                     saveScanForm.Folder = scanConfig.ScanImagePath + scanConfig.AccountantFolder + targetFolder;
                     break;
-                case (int)UploadScanType.Letterhead:
+                case SealType.Letterhead:
                     saveScanForm.Folder = scanConfig.ScanImagePath + scanConfig.LetterheadFolder + targetFolder;
                     break;
             }

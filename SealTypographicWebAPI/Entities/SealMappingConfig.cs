@@ -17,7 +17,7 @@ namespace SealTypographicWebAPI.Entities
         /// <summary>
         /// SealType(客戶、會計師、信頭)
         /// </summary>
-        public string Type { get; set; }
+        public string SealType { get; set; }
 
         /// <summary>
         /// SubId

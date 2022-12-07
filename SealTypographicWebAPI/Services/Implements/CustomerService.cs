@@ -11,7 +11,7 @@ namespace SealTypographicWebAPI.Services.Implements
     /// <summary>
     /// 勤業用的顧客資料
     /// </summary>
-    public class CustomerDeloitteService : ICustomerService
+    public class CustomerService : ICustomerService
     {
         private readonly SealTypographicDbContext dbContext;        
         private readonly IMapper mapper;
@@ -21,7 +21,7 @@ namespace SealTypographicWebAPI.Services.Implements
         /// </summary>
         /// <param name="dbContext"></param>
         /// <param name="mapper"></param>
-        public CustomerDeloitteService(SealTypographicDbContext dbContext, IMapper mapper)
+        public CustomerService(SealTypographicDbContext dbContext, IMapper mapper)
         {
             this.dbContext = dbContext;            
             this.mapper = mapper;
@@ -32,7 +32,7 @@ namespace SealTypographicWebAPI.Services.Implements
         /// </summary>
         /// <param name="customerId">顧客ID</param>
         /// <returns></returns>
-        public CustomerResponseViewModel GetCustomerViewModel(string customerId)
+        public CustomerResponseViewModel GetCustomerViewModel(int customerId)
         {
             CustomerForm? customer = new();
             ResponseViewModel response;
@@ -74,18 +74,18 @@ namespace SealTypographicWebAPI.Services.Implements
             int totalPage = 0;
             int totalCount = 0;
             IQueryable<Customer> customerQuery = dbContext.Customers;            
-            if (!string.IsNullOrWhiteSpace(customerSearch.CustomerIdOrName))
+            if (!string.IsNullOrWhiteSpace(customerSearch.CustomerNumberOrName))
             {
                 customerQuery = customerQuery.Where
                     (
                         customer =>
-                        customer.Id.Contains(customerSearch.CustomerIdOrName)
-                        || customer.Name.Contains(customerSearch.CustomerIdOrName)                        
+                        customer.CustomerNumber.Contains(customerSearch.CustomerNumberOrName)
+                        || customer.Name.Contains(customerSearch.CustomerNumberOrName)                        
                     );
             }
-            if(customerSearch.Status != (int)Status.All)
+            if(customerSearch.ReviewStatus != ReviewStatus.All)
             {
-                customerQuery = customerQuery.Where(customer => customer.Status == customerSearch.Status);
+                customerQuery = customerQuery.Where(customer => customer.ReviewStatus == customerSearch.ReviewStatus);
             }
             customerQuery = customerQuery.OrderBy(customer => customer.Id);
 
@@ -132,13 +132,13 @@ namespace SealTypographicWebAPI.Services.Implements
         {
             ResponseViewModel response = new();
             IQueryable<Customer> customerQuery = dbContext.Customers
-                                .Where(customer => customer.Id == customerForm.Id);
+                                .Where(customer => customer.CustomerNumber == customerForm.CustomerNumber);
 
             if (!customerQuery.Any())
             {
                 Customer dbCustomer = mapper.Map<Customer>(customerForm);
                 dbCustomer.CreateDate = DateTime.Now;
-                dbCustomer.AvailableDate = AvailableDateUtil.NotActivated();
+                dbCustomer.StartDate = AvailableDateUtil.NotActivated();
                 dbContext.Customers.Add(dbCustomer);
                 dbContext.SaveChanges();
                 response = ResponseUtil.Success();
@@ -154,20 +154,20 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <summary>
         /// 更新客戶基本資料
         /// </summary>
-        /// <param name="customerForm">客戶基本資料 customerBaseData.id 為搜尋條件</param>        
+        /// <param name="customerForm">客戶基本資料 customerForm.CustomerNumber 為搜尋條件</param>        
         public ResponseViewModel UpdateCustomer(CustomerForm customerForm)
         {
             ResponseViewModel response = new();
             Customer? customerQuery = dbContext.Customers
-                                .Where(customer => customer.Id == customerForm.Id)
+                                .Where(customer => customer.CustomerNumber == customerForm.CustomerNumber)
                                 .FirstOrDefault();
 
             if (customerQuery != null)
             {
                 mapper.Map(customerForm, customerQuery);
                 //修改資料時要改回審察與啟用日期設為不啟用(0000/01/01)
-                customerQuery.Status = (int)Status.Pending;
-                customerQuery.AvailableDate = AvailableDateUtil.NotActivated();
+                customerQuery.ReviewStatus = ReviewStatus.Pending;
+                customerQuery.StartDate = AvailableDateUtil.NotActivated();
 
                 dbContext.SaveChanges();
                 response = ResponseUtil.Success();
@@ -184,7 +184,7 @@ namespace SealTypographicWebAPI.Services.Implements
         /// 變更此客戶狀態為刪除。
         /// </summary>
         /// <param name="customerId">客戶ID</param>        
-        public ResponseViewModel DeleteCustomer(string customerId)
+        public ResponseViewModel DeleteCustomer(int customerId)
         {
             ResponseViewModel response = new();
             Customer? customerQuery = dbContext.Customers
@@ -193,8 +193,8 @@ namespace SealTypographicWebAPI.Services.Implements
 
             if (customerQuery != null)
             {
-                customerQuery.Status = (int)Status.Hidden;
-                customerQuery.AvailableDate = AvailableDateUtil.NotActivated();
+                customerQuery.ReviewStatus = ReviewStatus.Hidden;
+                customerQuery.StartDate = AvailableDateUtil.NotActivated();
                 dbContext.SaveChanges();
                 response = ResponseUtil.Success();
             }

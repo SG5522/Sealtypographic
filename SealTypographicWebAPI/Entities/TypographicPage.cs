@@ -3,12 +3,8 @@
     /// <summary>
     /// 排版頁
     /// </summary>
-    public class TypographicPage
+    public class TypographicPage : BaseData
     {
-        /// <summary>
-        /// ID
-        /// </summary>
-        public int Id { get; set; }
 
         /// <summary>
         /// 頁數

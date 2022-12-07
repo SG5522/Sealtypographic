@@ -6,16 +6,16 @@
     public class AccountantGroupChangeForm
     {
         /// <summary>
-        /// 會計師ID
+        /// 會計師編號
         /// </summary>   
         /// <example>ACC001</example>
-        public string Id { get; set; } = null!;
+        public string AccountantNumber { get; set; }
 
         /// <summary>
         /// 會計師群組ID
-        /// 0 無群組
+        /// NO000 無群組
         /// </summary>
-        /// <example>0</example>
+        /// <example>NO000</example>
         public string AccountantGroupId { get; set; }
     }
 }

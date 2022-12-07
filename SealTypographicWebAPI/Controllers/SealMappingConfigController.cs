@@ -44,7 +44,7 @@ namespace SealTypographicWebAPI.Controllers
             }
             catch
             {
-                ResponseViewModel response = ResponseUtil.InternalServerError();
+                ResponseViewModel response = ResponseUtil.DBError();
                 return new SealMappingConfigResponsePage()
                 {
                     Code = response.Code,
@@ -67,7 +67,7 @@ namespace SealTypographicWebAPI.Controllers
             }
             catch
             {
-                ResponseViewModel response = ResponseUtil.InternalServerError();
+                ResponseViewModel response = ResponseUtil.DBError();
                 return new ()
                 {
                     Code = response.Code,
@@ -90,7 +90,7 @@ namespace SealTypographicWebAPI.Controllers
             }
             catch
             {
-                return ResponseUtil.InternalServerError();
+                return ResponseUtil.DBError();
             }
         }
 
@@ -107,7 +107,7 @@ namespace SealTypographicWebAPI.Controllers
             }
             catch
             {
-                return ResponseUtil.InternalServerError();
+                return ResponseUtil.DBError();
             }
         }
     }

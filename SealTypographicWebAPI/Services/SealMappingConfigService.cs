@@ -37,7 +37,7 @@ namespace SealTypographicWebAPI.Services
             {
                 SealMappingConfig sealMappingConfig = sealMappingConfigQuery.First();                
                 sealMappingConfigViewModel.Name = sealMappingConfig.Name;
-                sealMappingConfigViewModel.Type = sealMappingConfig.Type;
+                sealMappingConfigViewModel.SealType = sealMappingConfig.SealType;
                 sealMappingConfigViewModel.SubId = sealMappingConfig.SubId;
                 
                 response = ResponseUtil.Success();
@@ -73,7 +73,7 @@ namespace SealTypographicWebAPI.Services
                 (
                     sealMappingConfig =>
                     sealMappingConfig.Name.Contains(SealMappingConfigQuery.NameOrType)
-                    || sealMappingConfig.Type.Contains(SealMappingConfigQuery.NameOrType)
+                    || sealMappingConfig.SealType.Contains(SealMappingConfigQuery.NameOrType)
                 );
             }
 
@@ -94,7 +94,7 @@ namespace SealTypographicWebAPI.Services
                     sealMappingConfigViewModels.Add(new ()
                     {                        
                         Name = sealMappingConfig.Name,
-                        Type = sealMappingConfig.Type,
+                        SealType = sealMappingConfig.SealType,
                         SubId = sealMappingConfig.SubId                        
                     });
                 }
@@ -130,13 +130,13 @@ namespace SealTypographicWebAPI.Services
 
             if (!sealMappingConfigQuery.Any())
             {
-                SealMappingConfig imageGroup = new()
+                SealMappingConfig sealMappingConfig = new()
                 {                                        
-                    Type = sealMappingConfigViewModel.Type,
+                    SealType = sealMappingConfigViewModel.SealType,
                     SubId = sealMappingConfigViewModel.SubId,
                     Name = sealMappingConfigViewModel.Name
                 };
-                dbContext.SealMappingConfigs.Add(imageGroup);
+                dbContext.SealMappingConfigs.Add(sealMappingConfig);
                 dbContext.SaveChanges();
                 response = ResponseUtil.Success();
             }
@@ -160,7 +160,7 @@ namespace SealTypographicWebAPI.Services
             if (SealMappingConfigQuery.Any())
             {
                 SealMappingConfig SealMappingConfig = SealMappingConfigQuery.First();                
-                SealMappingConfig.Type = SealMappingConfigViewModel.Type;
+                SealMappingConfig.SealType = SealMappingConfigViewModel.SealType;
                 SealMappingConfig.SubId = SealMappingConfigViewModel.SubId;
                 SealMappingConfig.Name = SealMappingConfigViewModel.Name;                                
                 dbContext.SaveChanges();

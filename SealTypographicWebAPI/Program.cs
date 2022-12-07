@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Serilog;
 using SealTypographicWebAPI.Services.Implements;
 using SealTypographicWebAPI.Config;
+using Microsoft.Extensions.Hosting;
 
 string allowSpecificOrigins = "allowSpecificOrigins";
 string allowAllOrigins = "allowSpecificOrigins";
@@ -44,7 +45,7 @@ builder.Host.UseSerilog();// <-SeriLog
 
 #region -- ConectionString --
 builder.Services.AddDbContextPool<SealTypographicDbContext>(optionsBuilder =>
-{
+{    
     optionsBuilder.UseSqlite(config.GetConnectionString("Sqlite"));
     //MySqlServerVersion serverVersion = new(new Version(5, 7, 27));
     //optionsBuilder.UseMySql(config.GetConnectionString("MySql"), serverVersion);
@@ -58,13 +59,13 @@ builder.Services.AddSingleton<UploadService>();
 builder.Services.AddAutoMapper(typeof(MapperProfile));
 
 //DB Process
-builder.Services.AddScoped<ICustomerService, CustomerDeloitteService>();
-builder.Services.AddScoped<ICustomerSealService, CustomerSealDeloitteService>();
-builder.Services.AddScoped<IAccountantService, AccountantDeloitteService>();
-builder.Services.AddScoped<IAccountantGroupService, AccountantGroupDeloitteService>();
-builder.Services.AddScoped<IAccountantGroupMemberService, AccountantGroupMemberDeloitteService>();
-builder.Services.AddScoped<IAccountantSignService, AcoountantSignDeloitteService>();
-builder.Services.AddScoped<ILetterheadService, LetterheadDeloitteService>();
+builder.Services.AddScoped<ICustomerService, CustomerService>();
+builder.Services.AddScoped<ICustomerSealService, CustomerSealService>();
+builder.Services.AddScoped<IAccountantService, AccountantService>();
+builder.Services.AddScoped<IAccountantGroupService, AccountantGroupService>();
+builder.Services.AddScoped<IAccountantGroupMemberService, AccountantGroupMemberService>();
+builder.Services.AddScoped<IAccountantSignService, AcoountantSignService>();
+builder.Services.AddScoped<ILetterheadService, LetterheadService>();
 builder.Services.AddScoped<SealMappingConfigService>();
 
 #endregion
@@ -122,6 +123,12 @@ if (app.Environment.IsDevelopment())
 else
 {
     app.UseCors(allowSpecificOrigins);
+}
+
+using (IServiceScope scope = app.Services.CreateScope())
+{
+    SealTypographicDbContext db = scope.ServiceProvider.GetRequiredService<SealTypographicDbContext>();
+    db.Database.Migrate();
 }
 
 app.UseAuthorization();

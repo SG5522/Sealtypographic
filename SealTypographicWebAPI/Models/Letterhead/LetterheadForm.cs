@@ -9,7 +9,7 @@
         /// 信頭ID
         /// </summary>
         /// <example>Lh001</example>
-        public string Id { get; set; }
+        public int Id { get; set; }
 
         /// <summary>
         /// 信頭名稱

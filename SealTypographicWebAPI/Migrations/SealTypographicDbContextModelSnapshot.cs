@@ -19,41 +19,78 @@ namespace SealTypographicWebAPI.Migrations
 
             modelBuilder.Entity("SealTypographicWebAPI.Entities.Accountant", b =>
                 {
-                    b.Property<string>("Id")
-                        .HasColumnType("TEXT");
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("AccountantGroupId")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<DateTime>("AvailableDate")
+                    b.Property<int>("AccountantGroupId1")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("AccountantNumber")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime>("CreateDate")
                         .HasColumnType("TEXT");
 
+                    b.Property<int>("CreateUserId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("EndDate")
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("Status")
+                    b.Property<int>("ReviewStatus")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("StartDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("UpdateDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("UpdateUserId")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AccountantGroupId");
+                    b.HasIndex("AccountantGroupId1");
 
-                    b.ToTable("AccountantPaginates");
+                    b.ToTable("Accountants");
                 });
 
             modelBuilder.Entity("SealTypographicWebAPI.Entities.AccountantGroup", b =>
                 {
-                    b.Property<string>("Id")
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("AccountantGroupNumber")
+                        .IsRequired()
                         .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("CreateDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("CreateUserId")
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("UpdateDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("UpdateUserId")
+                        .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
 
@@ -66,27 +103,35 @@ namespace SealTypographicWebAPI.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("AccountantId")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime>("AvailableDate")
-                        .HasColumnType("TEXT");
+                    b.Property<int>("AccountantId")
+                        .HasColumnType("INTEGER");
 
                     b.Property<DateTime>("CreateDate")
                         .HasColumnType("TEXT");
 
-                    b.Property<DateTime>("DeadlineDate")
+                    b.Property<int>("CreateUserId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("EndDate")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("ImagePath")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
+                    b.Property<int>("ReviewStatus")
+                        .HasColumnType("INTEGER");
+
                     b.Property<int>("SealMappingConfigId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("Status")
+                    b.Property<DateTime>("StartDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("UpdateDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("UpdateUserId")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
@@ -107,6 +152,12 @@ namespace SealTypographicWebAPI.Migrations
                     b.Property<int>("AccountantSignJournalId")
                         .HasColumnType("INTEGER");
 
+                    b.Property<DateTime>("CreateDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("CreateUserId")
+                        .HasColumnType("INTEGER");
+
                     b.Property<int>("Height")
                         .HasColumnType("INTEGER");
 
@@ -117,6 +168,12 @@ namespace SealTypographicWebAPI.Migrations
                         .HasColumnType("REAL");
 
                     b.Property<int>("TypographicPageId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("UpdateDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("UpdateUserId")
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("Width")
@@ -133,14 +190,12 @@ namespace SealTypographicWebAPI.Migrations
 
             modelBuilder.Entity("SealTypographicWebAPI.Entities.Customer", b =>
                 {
-                    b.Property<string>("Id")
-                        .HasColumnType("TEXT");
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("Address")
                         .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime>("AvailableDate")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("BAN")
@@ -148,6 +203,16 @@ namespace SealTypographicWebAPI.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime>("CreateDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("CreateUserId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("CustomerNumber")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("EndDate")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Fax")
@@ -158,8 +223,11 @@ namespace SealTypographicWebAPI.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("Status")
+                    b.Property<int>("ReviewStatus")
                         .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("StartDate")
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("StockCode")
                         .IsRequired()
@@ -168,6 +236,12 @@ namespace SealTypographicWebAPI.Migrations
                     b.Property<string>("Telephone")
                         .IsRequired()
                         .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("UpdateDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("UpdateUserId")
+                        .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
 
@@ -180,17 +254,16 @@ namespace SealTypographicWebAPI.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<DateTime>("AvailableDate")
-                        .HasColumnType("TEXT");
-
                     b.Property<DateTime>("CreateDate")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("CustomerId")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
+                    b.Property<int>("CreateUserId")
+                        .HasColumnType("INTEGER");
 
-                    b.Property<DateTime>("DeadlineDate")
+                    b.Property<int>("CustomerId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("EndDate")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("ImagePath")
@@ -201,13 +274,22 @@ namespace SealTypographicWebAPI.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
+                    b.Property<int>("ReviewStatus")
+                        .HasColumnType("INTEGER");
+
                     b.Property<int>("SealMappingConfigId")
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("Sequence")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("Status")
+                    b.Property<DateTime>("StartDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("UpdateDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("UpdateUserId")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
@@ -225,6 +307,12 @@ namespace SealTypographicWebAPI.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<DateTime>("CreateDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("CreateUserId")
+                        .HasColumnType("INTEGER");
+
                     b.Property<int>("CustomerSealJournalId")
                         .HasColumnType("INTEGER");
 
@@ -238,6 +326,12 @@ namespace SealTypographicWebAPI.Migrations
                         .HasColumnType("REAL");
 
                     b.Property<int>("TypographicPageId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("UpdateDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("UpdateUserId")
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("Width")
@@ -254,20 +348,33 @@ namespace SealTypographicWebAPI.Migrations
 
             modelBuilder.Entity("SealTypographicWebAPI.Entities.Letterhead", b =>
                 {
-                    b.Property<string>("Id")
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime>("AvailableDate")
-                        .HasColumnType("TEXT");
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
 
                     b.Property<DateTime>("CreateDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("CreateUserId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("EndDate")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("Status")
+                    b.Property<int>("ReviewStatus")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("StartDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("UpdateDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("UpdateUserId")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
@@ -281,22 +388,24 @@ namespace SealTypographicWebAPI.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<DateTime>("AvailableDate")
-                        .HasColumnType("TEXT");
-
                     b.Property<DateTime>("CreateDate")
                         .HasColumnType("TEXT");
 
-                    b.Property<DateTime>("DeadlineDate")
+                    b.Property<int>("CreateUserId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("EndDate")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("ImagePath")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("LetterheadId")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
+                    b.Property<int>("LetterheadId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("ReviewStatus")
+                        .HasColumnType("INTEGER");
 
                     b.Property<int>("SealMappingConfigId")
                         .HasColumnType("INTEGER");
@@ -304,7 +413,13 @@ namespace SealTypographicWebAPI.Migrations
                     b.Property<int>("Sequence")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("Status")
+                    b.Property<DateTime>("StartDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("UpdateDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("UpdateUserId")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
@@ -322,6 +437,12 @@ namespace SealTypographicWebAPI.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<DateTime>("CreateDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("CreateUserId")
+                        .HasColumnType("INTEGER");
+
                     b.Property<int>("Height")
                         .HasColumnType("INTEGER");
 
@@ -335,6 +456,12 @@ namespace SealTypographicWebAPI.Migrations
                         .HasColumnType("REAL");
 
                     b.Property<int>("TypographicPageId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("UpdateDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("UpdateUserId")
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("Width")
@@ -359,11 +486,11 @@ namespace SealTypographicWebAPI.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("SubId")
+                    b.Property<string>("SealType")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("Type")
+                    b.Property<string>("SubId")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
@@ -381,10 +508,22 @@ namespace SealTypographicWebAPI.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<DateTime>("CreateDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("CreateUserId")
+                        .HasColumnType("INTEGER");
+
                     b.Property<int>("PageNumber")
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("TypographicPDFId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("UpdateDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("UpdateUserId")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
@@ -400,9 +539,14 @@ namespace SealTypographicWebAPI.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("CustomerId")
-                        .IsRequired()
+                    b.Property<DateTime>("CreateDate")
                         .HasColumnType("TEXT");
+
+                    b.Property<int>("CreateUserId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("CustomerId")
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("FullPath")
                         .IsRequired()
@@ -420,6 +564,12 @@ namespace SealTypographicWebAPI.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
+                    b.Property<DateTime>("UpdateDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("UpdateUserId")
+                        .HasColumnType("INTEGER");
+
                     b.HasKey("Id");
 
                     b.HasIndex("CustomerId");
@@ -427,11 +577,30 @@ namespace SealTypographicWebAPI.Migrations
                     b.ToTable("TypographicPDFs");
                 });
 
+            modelBuilder.Entity("SealTypographicWebAPI.Entities.User", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("AccountName")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Pwaosrsd")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Users");
+                });
+
             modelBuilder.Entity("SealTypographicWebAPI.Entities.Accountant", b =>
                 {
                     b.HasOne("SealTypographicWebAPI.Entities.AccountantGroup", "AccountantGroup")
-                        .WithMany("AccountantPaginates")
-                        .HasForeignKey("AccountantGroupId")
+                        .WithMany("Accountants")
+                        .HasForeignKey("AccountantGroupId1")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -581,7 +750,7 @@ namespace SealTypographicWebAPI.Migrations
 
             modelBuilder.Entity("SealTypographicWebAPI.Entities.AccountantGroup", b =>
                 {
-                    b.Navigation("AccountantPaginates");
+                    b.Navigation("Accountants");
                 });
 
             modelBuilder.Entity("SealTypographicWebAPI.Entities.Customer", b =>

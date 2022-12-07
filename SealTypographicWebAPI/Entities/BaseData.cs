@@ -1,4 +1,6 @@
-﻿namespace SealTypographicWebAPI.Entities
+﻿using SealTypographicWebAPI.Consts;
+
+namespace SealTypographicWebAPI.Entities
 {
     /// <summary>
     /// 各類別基本資料
@@ -8,17 +10,7 @@
         /// <summary>
         /// ID
         /// </summary>        
-        public string Id { get; set; }
-
-        /// <summary>
-        /// 名稱
-        /// </summary>
-        public string Name { get; set; }
-
-        /// <summary>
-        /// 啟用日期
-        /// </summary>
-        public DateTime AvailableDate { get; set; }
+        public int Id { get; set; }
 
         /// <summary>
         /// 建立日期
@@ -26,12 +18,19 @@
         public DateTime CreateDate { get; set; }
 
         /// <summary>
-        /// 會計師狀態
-        /// 0.待審查
-        /// 1.通過(審核完成)
-        /// 2.退件
-        /// 3.刪除(系統管理員可以看到資料)
+        /// 更新日期
         /// </summary>
-        public int Status { get; set; }
+        public DateTime UpdateDate { get; set; }
+
+        /// <summary>
+        /// 創建User
+        /// </summary>
+        public int CreateUserId { get; set; }
+
+        /// <summary>
+        /// 更新User
+        /// </summary>
+        public int UpdateUserId { get; set; }
+
     }
 }

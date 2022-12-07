@@ -15,7 +15,7 @@ namespace SealTypographicWebAPI.Utils
         /// <returns></returns>
         public static DateTime NotActivated()
         {
-            return Get(AvailableDate.NotActivated);
+            return Get(Available.NotActivated);
         }
 
         /// <summary>
@@ -24,16 +24,16 @@ namespace SealTypographicWebAPI.Utils
         /// <returns></returns>
         public static DateTime Activated()
         {
-            return Get(AvailableDate.Activated);
+            return Get(Available.Activated);
         }
 
-        private static DateTime Get(AvailableDate availableDate)
+        private static DateTime Get(Available availableDate)
         {
             switch (availableDate)
             {
-                case AvailableDate.NotActivated:
+                case Available.NotActivated:
                     return DateTime.Parse("0001/01/01");
-                case AvailableDate.Activated:
+                case Available.Activated:
                     return DateTime.Now;
                 default:
                     return DateTime.Parse("0001/01/01");

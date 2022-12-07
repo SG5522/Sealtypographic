@@ -19,7 +19,7 @@ namespace SealTypographicWebAPI.Models
         /// <example>0</example>
         [Required]
         [Range(-1, 3)]
-        public int Status { get; set; }
+        public ReviewStatus ReviewStatus { get; set; }
     }
 
 }

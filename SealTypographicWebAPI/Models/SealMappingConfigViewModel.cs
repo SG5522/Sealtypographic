@@ -9,7 +9,7 @@
         /// Type(customer、accountant、letterhead)
         /// </summary>
         /// <example>customer</example>
-        public string Type { get; set; }
+        public string SealType { get; set; }
 
         /// <summary>
         /// 群組ID
@@ -22,12 +22,14 @@
         /// 1.公司章
         /// 2.負責人
         /// 3.經理
-        /// 4.會計主管   
-        /// 5.會計印鑑
-        /// 6.中文簽名
-        /// 7.英文簽名
-        /// 8.舊式簽名   
-        /// 9.信頭
+        /// 4.會計主管  
+        /// 5.其他
+        /// 6.會計印鑑
+        /// 7.中文簽名
+        /// 8.英文簽名
+        /// 9.舊式簽名   
+        /// 10.其他
+        /// 11.信頭
         /// </summary>
         /// <example>公司章</example>
         public string Name { get; set; }

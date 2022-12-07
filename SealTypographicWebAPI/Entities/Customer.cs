@@ -3,8 +3,13 @@
     /// <summary>
     /// 客戶資料表
     /// </summary>        
-    public class Customer : BaseData
+    public class Customer : BaseReviewNameData
     {
+
+        /// <summary>
+        /// 客戶編號
+        /// </summary>
+        public string CustomerNumber { get; set; }
         /// <summary>
         /// 統一編號 (business administration number)
         /// </summary>

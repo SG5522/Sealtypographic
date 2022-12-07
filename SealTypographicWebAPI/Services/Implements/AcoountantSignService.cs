@@ -14,7 +14,7 @@ namespace SealTypographicWebAPI.Services.Implements
     /// <summary>
     /// 勤業用的顧客印鑑組
     /// </summary>
-    public class AcoountantSignDeloitteService : IAccountantSignService
+    public class AcoountantSignService : IAccountantSignService
     {
         private readonly SealTypographicDbContext dbContext;        
         private readonly IMapper mapper;
@@ -23,7 +23,7 @@ namespace SealTypographicWebAPI.Services.Implements
         /// </summary>
         /// <param name="dbContext"></param>        
         /// <param name="mapper"></param>
-        public AcoountantSignDeloitteService(SealTypographicDbContext dbContext, IMapper mapper)
+        public AcoountantSignService(SealTypographicDbContext dbContext, IMapper mapper)
         {
             this.dbContext = dbContext;            
             this.mapper = mapper;
@@ -34,7 +34,7 @@ namespace SealTypographicWebAPI.Services.Implements
         /// </summary>
         /// <param name="accountantId">搜尋條件</param>
         /// <returns></returns>
-        public AccountantSignViewModels GetAccountantSings(string accountantId)
+        public AccountantSignViewModels GetAccountantSings(int accountantId)
         {
             List<AccountantSignViewModel> accountantSignViewModels = new();
             ResponseViewModel response;
@@ -87,9 +87,9 @@ namespace SealTypographicWebAPI.Services.Implements
                 AccountantSignJournal accountantSignJournal = mapper.Map<AccountantSignJournal>(accountantSignPostData);
                 accountantSignJournal.ImagePath = imagePath;
                 accountantSignJournal.CreateDate = DateTime.Now;
-                accountantSignJournal.AvailableDate = AvailableDateUtil.NotActivated();
-                accountantSignJournal.DeadlineDate = AvailableDateUtil.NotActivated(); //暫時加上
-                accountantSignJournal.Status = (int)Status.Pending;
+                accountantSignJournal.StartDate = AvailableDateUtil.NotActivated();
+                accountantSignJournal.EndDate = AvailableDateUtil.NotActivated(); //暫時加上
+                accountantSignJournal.ReviewStatus = ReviewStatus.Pending;
 
                 accountantSignJournals.Add(accountantSignJournal);
             }
@@ -121,9 +121,9 @@ namespace SealTypographicWebAPI.Services.Implements
                     string imagePath = accountantSignUpdate.ImageBase64;
                     accountantSignJournalQuery.ImagePath = imagePath;
                     //mapper.Map(accountantSignUpdate, accountantSignJournalQuery);                                        
-                    accountantSignJournalQuery.AvailableDate = AvailableDateUtil.NotActivated();
-                    accountantSignJournalQuery.DeadlineDate = AvailableDateUtil.NotActivated(); //暫時加上
-                    accountantSignJournalQuery.Status = (int)Status.Pending;
+                    accountantSignJournalQuery.StartDate = AvailableDateUtil.NotActivated();
+                    accountantSignJournalQuery.EndDate = AvailableDateUtil.NotActivated(); //暫時加上
+                    accountantSignJournalQuery.ReviewStatus = ReviewStatus.Pending;
                 }
                 else
                 {

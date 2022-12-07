@@ -9,7 +9,7 @@
         /// 客戶ID
         /// </summary>
         /// <example>aaa001</example>
-        public string CustomerId { get; set; }
+        public int CustomerId { get; set; }
 
         /// <summary>
         /// 印鑑季度

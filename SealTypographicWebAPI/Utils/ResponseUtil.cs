@@ -20,9 +20,9 @@ namespace SealTypographicWebAPI.Util
         /// 回傳伺服器錯誤
         /// </summary>
         /// <returns></returns>
-        public static ResponseViewModel InternalServerError()
+        public static ResponseViewModel DBError()
         {
-            return Get(ResponseCode.InternalServerError);
+            return Get(ResponseCode.DBError);
         }
         /// <summary>
         /// 回傳無資料
@@ -64,11 +64,11 @@ namespace SealTypographicWebAPI.Util
                         Code = (int)ResponseCode.Success,
                         Message = "Success"
                     };
-                case ResponseCode.InternalServerError:
+                case ResponseCode.DBError:
                     return new ResponseViewModel()
                     {
-                        Code = (int)ResponseCode.InternalServerError,
-                        Message = "Error"
+                        Code = (int)ResponseCode.DBError,
+                        Message = "DataBase Error"
                     };
                 case ResponseCode.NoData:
                     return new ResponseViewModel()

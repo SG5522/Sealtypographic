@@ -8,7 +8,7 @@
         /// <summary>
         /// 會計師ID
         /// </summary>
-        public string AccountantId { get; set; } = null!;
+        public int AccountantId { get; set; }
 
         /// <summary>
         /// 會計師資料表

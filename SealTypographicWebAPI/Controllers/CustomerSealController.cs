@@ -37,7 +37,7 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="customerId">顧客ID</param>
         /// <returns></returns>
         [HttpGet("customerId")]
-        public CustomerSealQuarters Get(string customerId)
+        public CustomerSealQuarters Get(int customerId)
         {
             try
             {
@@ -49,7 +49,7 @@ namespace SealTypographicWebAPI.Controllers
             catch (Exception ex)
             {
                 Log.Error("CustomerSeal get customerSealQuarters error {@Error}", ex);
-                ResponseViewModel response = ResponseUtil.InternalServerError();
+                ResponseViewModel response = ResponseUtil.DBError();
                 return new CustomerSealQuarters()
                 {
                     Code = response.Code,
@@ -76,7 +76,7 @@ namespace SealTypographicWebAPI.Controllers
             catch (Exception ex)
             {
                 Log.Error("CustomerSeal get customerSealViewModels error {@Error}", ex);
-                ResponseViewModel response = ResponseUtil.InternalServerError();
+                ResponseViewModel response = ResponseUtil.DBError();
                 return new CustomerSealViewModels()
                 {
                     Code = response.Code,
@@ -103,7 +103,7 @@ namespace SealTypographicWebAPI.Controllers
             catch (Exception ex)
             {
                 Log.Error("CustomerSeal post customerSealData error {@Error}", ex);
-                return ResponseUtil.InternalServerError();
+                return ResponseUtil.DBError();
             }
         }
         /// <summary>
@@ -124,7 +124,7 @@ namespace SealTypographicWebAPI.Controllers
             catch (Exception ex)
             {
                 Log.Error("CustomerSeal put customerSealData error {@Error}", ex);
-                return ResponseUtil.InternalServerError();
+                return ResponseUtil.DBError();
             }
         }
     }

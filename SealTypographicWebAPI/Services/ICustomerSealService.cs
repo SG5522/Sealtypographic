@@ -13,7 +13,7 @@ namespace SealTypographicWebAPI.Services
         /// </summary>
         /// <param name="customerID">顧客ID</param>        
         /// <returns></returns>
-        CustomerSealQuarters GetCustomerSealQuarters(string customerID);
+        CustomerSealQuarters GetCustomerSealQuarters(int customerID);
 
 
         /// <summary>

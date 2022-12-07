@@ -13,12 +13,12 @@
         /// <summary>
         /// 印鑑季度
         /// </summary>
-        public string Quarter { get; set; } = null!;
+        public string Quarter { get; set; }
 
         /// <summary>
         /// 客戶ID
         /// </summary>
-        public string CustomerId { get; set; } = null!;
+        public int CustomerId { get; set; }
 
         /// <summary>
         /// 客戶資料表

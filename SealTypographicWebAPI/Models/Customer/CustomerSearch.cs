@@ -12,6 +12,6 @@ namespace SealTypographicWebAPI.Models.Customer
         /// 搜尋客戶ID或是名字
         /// </summary>
         /// <example>AAA001 or 公司</example>
-        public string? CustomerIdOrName { get; set; }       
+        public string? CustomerNumberOrName { get; set; }       
     }
 }

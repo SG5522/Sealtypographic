@@ -13,7 +13,7 @@ namespace SealTypographicWebAPI.Utils
         /// <returns></returns>
         public static string Pending()
         {
-            return Get(Status.Pending);
+            return Get(ReviewStatus.Pending);
         }
 
         /// <summary>
@@ -22,7 +22,7 @@ namespace SealTypographicWebAPI.Utils
         /// <returns></returns>
         public static string Approval()
         {
-            return Get(Status.Approval);
+            return Get(ReviewStatus.Approval);
         }
 
         /// <summary>
@@ -31,7 +31,7 @@ namespace SealTypographicWebAPI.Utils
         /// <returns></returns>
         public static string Reject()
         {
-            return Get(Status.Reject);
+            return Get(ReviewStatus.Reject);
         }
 
         /// <summary>
@@ -40,21 +40,21 @@ namespace SealTypographicWebAPI.Utils
         /// <returns></returns>
         public static string Hidden()
         {
-            return Get(Status.Hidden);
+            return Get(ReviewStatus.Hidden);
         }
 
         /// <summary>
         /// 取得Status名稱
         /// </summary>
         /// <returns></returns>
-        public static string Get(Status status)
+        public static string Get(ReviewStatus status)
         {
             return status switch
             {
-                Status.Pending => "待審",
-                Status.Approval => "已審核",
-                Status.Reject => "退件",
-                Status.Hidden => "刪除(隱藏)",
+                ReviewStatus.Pending => "待審",
+                ReviewStatus.Approval => "已審核",
+                ReviewStatus.Reject => "退件",
+                ReviewStatus.Hidden => "刪除(隱藏)",
                 _ => "",
             };
         }

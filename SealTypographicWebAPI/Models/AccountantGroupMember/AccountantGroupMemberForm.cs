@@ -13,6 +13,6 @@
         /// <summary>
         /// 成員Id
         /// </summary>
-        public List<string> AccountantIds { get; set; }
+        public List<int> AccountantIds { get; set; }
     }
 }

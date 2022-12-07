@@ -13,7 +13,7 @@
         /// <summary>
         /// 事務所信頭ID
         /// </summary>
-        public string LetterheadId { get; set; } = null!;
+        public int LetterheadId { get; set; }
 
         /// <summary>
         /// 事務所信頭資料表

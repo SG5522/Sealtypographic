@@ -1,0 +1,23 @@
+﻿namespace SealTypographicWebAPI.Entities
+{
+    /// <summary>
+    /// 使用者
+    /// </summary>
+    public class User
+    {
+        /// <summary>
+        /// ID
+        /// </summary>
+        public int Id { get; set; }
+
+        /// <summary>
+        /// 登入帳號
+        /// </summary>
+        public string AccountName { get; set; }
+
+        /// <summary>
+        /// 密碼
+        /// </summary>
+        public string Pwaosrsd { get; set; }
+    }
+}

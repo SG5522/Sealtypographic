@@ -8,12 +8,12 @@ namespace SealTypographicWebAPI.Models.Customer
     public class CustomerForm
     {
         /// <summary>
-        /// 客戶ID(更新或搜尋使用)
+        /// 客戶編號(更新或搜尋使用)
         /// </summary>
         /// <example>AAA001</example>
         [Required]
         [StringLength(6)]
-        public string Id { get; set; }
+        public string CustomerNumber { get; set; }
 
         /// <summary>
         /// 統一編號 (business administration number)

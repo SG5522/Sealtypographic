@@ -20,8 +20,8 @@ namespace SealTypographicWebAPI.Services
         /// <summary>
         /// 取得非此群組的成員
         /// </summary>
-        /// <param name="accountantGroupid"></param>
-        NotThisGroupMember GetNotThisGroupMember(string accountantGroupid);
+        /// <param name="notThisGroupMemberSearch">搜尋條件</param>
+        NotThisGroupMember GetNotThisGroupMember(NotThisGroupMemberSearch notThisGroupMemberSearch);
 
         /// <summary>
         /// 變更會計師群組(單個)

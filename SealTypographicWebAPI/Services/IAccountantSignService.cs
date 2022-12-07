@@ -14,7 +14,7 @@ namespace SealTypographicWebAPI.Services
         /// </summary>
         /// <param name="accountantId">會計師ID</param>        
         /// <returns></returns>
-        AccountantSignViewModels GetAccountantSings(string accountantId);
+        AccountantSignViewModels GetAccountantSings(int accountantId);
 
 
         /// <summary>

@@ -3,18 +3,8 @@
     /// <summary>
     /// PDF排版資訊
     /// </summary>
-    public class TypographicPDF
+    public class TypographicPDF : BaseNameData
     {
-        /// <summary>
-        /// ID
-        /// </summary>
-        public int Id { get; set; }
-
-        /// <summary>
-        /// 名稱
-        /// </summary>
-        public string Name { get; set; }
-
         /// <summary>
         /// 原始檔名
         /// </summary>
@@ -33,7 +23,7 @@
         /// <summary>
         /// 客戶Id
         /// </summary>
-        public string CustomerId { get; set; }
+        public int CustomerId { get; set; }
 
         /// <summary>
         /// 顧客

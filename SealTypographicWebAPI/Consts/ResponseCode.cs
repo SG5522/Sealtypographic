@@ -18,12 +18,12 @@
         /// <summary>
         /// 無資料
         /// </summary>
-        NoData = 404,
+        NoData = 1,
 
         /// <summary>
-        /// 伺服器錯誤
+        /// 資料庫錯誤
         /// </summary>
-        InternalServerError = 500,
+        DBError = 101,
 
         /// <summary>
         /// 上傳失敗

@@ -49,7 +49,7 @@ namespace SealTypographicWebAPI.Controllers
             catch (Exception ex)
             {
                 Log.Error("UploadImage Post error {@Error}", ex);
-                return ResponseUtil.InternalServerError();
+                return ResponseUtil.DBError();
             }
         }
 
@@ -73,7 +73,7 @@ namespace SealTypographicWebAPI.Controllers
             catch (Exception ex)
             {
                 Log.Error("UploadImage Post error {@Error}", ex);
-                return ResponseUtil.InternalServerError();
+                return ResponseUtil.DBError();
             }
         }
     }

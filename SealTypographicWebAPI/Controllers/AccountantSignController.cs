@@ -36,7 +36,7 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="accountantID">會計ID</param>        
         /// <returns></returns>
         [HttpGet("{id}")]
-        public AccountantSignViewModels Get(string accountantID)
+        public AccountantSignViewModels Get(int accountantID)
         {
             try
             {
@@ -47,7 +47,7 @@ namespace SealTypographicWebAPI.Controllers
             }
             catch (Exception ex)
             {
-                ResponseViewModel response = ResponseUtil.InternalServerError();
+                ResponseViewModel response = ResponseUtil.DBError();
                 Log.Error("AccountantSign Get accountantSignViewModel error {@Error}", ex);
                 return new()
                 {
@@ -74,7 +74,7 @@ namespace SealTypographicWebAPI.Controllers
             }
             catch (Exception ex)
             {
-                ResponseViewModel response = ResponseUtil.InternalServerError();
+                ResponseViewModel response = ResponseUtil.DBError();
                 Log.Error("AccountantSign post accountantSignDatas error {@Error}", ex);
                 return new()
                 {
@@ -101,7 +101,7 @@ namespace SealTypographicWebAPI.Controllers
             }
             catch (Exception ex)
             {
-                ResponseViewModel response = ResponseUtil.InternalServerError();
+                ResponseViewModel response = ResponseUtil.DBError();
                 Log.Error("AccountantSign put accountantSignDatas error {@Error}", ex);
                 return new()
                 {

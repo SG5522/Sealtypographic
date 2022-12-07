@@ -49,7 +49,7 @@ namespace SealTypographicWebAPI.Controllers
             }
             catch
             {
-                return NotFound(ResponseUtil.InternalServerError());
+                return NotFound(ResponseUtil.DBError());
             }
         }
 
@@ -67,7 +67,7 @@ namespace SealTypographicWebAPI.Controllers
             }
             catch
             {
-                return NotFound(ResponseUtil.InternalServerError());
+                return NotFound(ResponseUtil.DBError());
             }
         }
 
@@ -85,7 +85,7 @@ namespace SealTypographicWebAPI.Controllers
             }
             catch
             {
-                return NotFound(ResponseUtil.InternalServerError());
+                return NotFound(ResponseUtil.DBError());
             }
         }
 

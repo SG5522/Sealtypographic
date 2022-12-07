@@ -6,9 +6,9 @@
     public class LetterheadSearch : PaginateSearchWithStatus
     {
         /// <summary>
-        /// 搜尋客戶ID或是名字
+        /// 搜尋名字
         /// </summary>
-        /// <example>AAA001 or 公司</example>
-        public string? LetterheadIdOrName { get; set; }
+        /// <example>信頭名稱</example>
+        public string? Name { get; set; }
     }
 }

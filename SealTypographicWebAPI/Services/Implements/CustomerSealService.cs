@@ -13,7 +13,7 @@ namespace SealTypographicWebAPI.Services.Implements
     /// <summary>
     /// 勤業用的顧客印鑑組
     /// </summary>
-    public class CustomerSealDeloitteService : ICustomerSealService
+    public class CustomerSealService : ICustomerSealService
     {
         private readonly SealTypographicDbContext dbContext;        
         private readonly IMapper mapper;
@@ -22,7 +22,7 @@ namespace SealTypographicWebAPI.Services.Implements
         /// </summary>
         /// <param name="dbContext"></param>        
         /// <param name="mapper"></param>
-        public CustomerSealDeloitteService(SealTypographicDbContext dbContext, IMapper mapper)
+        public CustomerSealService(SealTypographicDbContext dbContext, IMapper mapper)
         {
             this.dbContext = dbContext;            
             this.mapper = mapper;
@@ -33,7 +33,7 @@ namespace SealTypographicWebAPI.Services.Implements
         /// </summary>
         /// <param name="customerId">客戶ID</param>        
         /// <returns></returns>
-        public CustomerSealQuarters GetCustomerSealQuarters(string customerId)
+        public CustomerSealQuarters GetCustomerSealQuarters(int customerId)
         {
             List<CustomerSealQuarter> customerSealQuarters = new();
             ResponseViewModel response;
@@ -47,7 +47,7 @@ namespace SealTypographicWebAPI.Services.Implements
             {
                 foreach (string quarter in customerSealQuarterQuery)
                 {
-                    customerSealQuarters.Add(new CustomerSealQuarter
+                    customerSealQuarters.Add(new()
                     {
                         CustomerId = customerId,
                         Quarter = quarter
@@ -129,9 +129,9 @@ namespace SealTypographicWebAPI.Services.Implements
                 CustomerSealJournal customerSealJournal = mapper.Map<CustomerSealJournal>(customerSeal);
                 customerSealJournal.ImagePath = imagePath;
                 customerSealJournal.CreateDate = DateTime.Now;
-                customerSealJournal.AvailableDate = AvailableDateUtil.NotActivated();
-                customerSealJournal.DeadlineDate = AvailableDateUtil.NotActivated(); //暫時加上
-                customerSealJournal.Status = (int)Status.Pending;
+                customerSealJournal.StartDate = AvailableDateUtil.NotActivated();
+                customerSealJournal.EndDate = AvailableDateUtil.NotActivated(); //暫時加上
+                customerSealJournal.ReviewStatus = ReviewStatus.Pending;
                 customerSealJournals.Add(customerSealJournal);
             }
             dbContext.CustomerSealJournals.AddRange(customerSealJournals);
@@ -163,9 +163,9 @@ namespace SealTypographicWebAPI.Services.Implements
                     //mapper.Map(customerSeal, customerSealJournalQuery);
 
                     customerSealJournalQuery.ImagePath = imagePath;                    
-                    customerSealJournalQuery.AvailableDate = AvailableDateUtil.NotActivated();
-                    customerSealJournalQuery.DeadlineDate = AvailableDateUtil.NotActivated(); //暫時加上
-                    customerSealJournalQuery.Status = (int)Status.Pending;
+                    customerSealJournalQuery.StartDate = AvailableDateUtil.NotActivated();
+                    customerSealJournalQuery.EndDate = AvailableDateUtil.NotActivated(); //暫時加上
+                    customerSealJournalQuery.ReviewStatus = ReviewStatus.Pending;
                 }
                 else
                 {

@@ -3,17 +3,12 @@
     /// <summary>
     /// 會計師群組
     /// </summary>
-    public class AccountantGroup
+    public class AccountantGroup : BaseNameData
     {
         /// <summary>
-        /// 群組ID
+        /// 會計師群組編號
         /// </summary>
-        public string Id { get; set; } = null!;
-
-        /// <summary>
-        /// 群組名稱
-        /// </summary>
-        public string Name { get; set; }
+        public string AccountantGroupNumber { get; set; }
 
         /// <summary>
         /// 會計師資料表

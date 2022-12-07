@@ -10,7 +10,7 @@ namespace SealTypographicWebAPI.Services.Implements
     /// <summary>
     /// 管理PDF排版資訊
     /// </summary>
-    public class TypographicPDFDeloittleService : ITypographicPDFService
+    public class TypographicPDFService : ITypographicPDFService
     {
         private readonly SealTypographicDbContext dbContext;
         private readonly IMapper mapper;
@@ -20,7 +20,7 @@ namespace SealTypographicWebAPI.Services.Implements
         /// </summary>
         /// <param name="dbContext"></param>
         /// <param name="mapper"></param>
-        public TypographicPDFDeloittleService(SealTypographicDbContext dbContext, IMapper mapper)
+        public TypographicPDFService(SealTypographicDbContext dbContext, IMapper mapper)
         {
             this.dbContext = dbContext;
             this.mapper = mapper;

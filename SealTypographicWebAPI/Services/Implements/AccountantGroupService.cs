@@ -9,7 +9,7 @@ namespace SealTypographicWebAPI.Services.Implements
     /// <summary>
     /// 勤業用 管理會計師群組
     /// </summary>
-    public class AccountantGroupDeloitteService : IAccountantGroupService
+    public class AccountantGroupService : IAccountantGroupService
     {
         private readonly SealTypographicDbContext dbContext;        
 
@@ -17,7 +17,7 @@ namespace SealTypographicWebAPI.Services.Implements
         /// 注入DB、ResponseService
         /// </summary>
         /// <param name="dbContext"></param>        
-        public AccountantGroupDeloitteService(SealTypographicDbContext dbContext)
+        public AccountantGroupService(SealTypographicDbContext dbContext)
         {
             this.dbContext = dbContext;            
         }        
@@ -64,7 +64,7 @@ namespace SealTypographicWebAPI.Services.Implements
         /// </summary>
         /// <param name="accountantGroupId">群組ID</param>
         /// <returns></returns>
-        public AccountantGroupResponse GetAccountantGroupData(string accountantGroupId)
+        public AccountantGroupResponse GetAccountantGroupData(int accountantGroupId)
         {
             AccountantGroupData accountantGroupData = new();
             ResponseViewModel response;
@@ -106,13 +106,12 @@ namespace SealTypographicWebAPI.Services.Implements
             int totalPage = 0;
             int totalCount = 0;
             IQueryable<AccountantGroup> accountantGroupsQuery = dbContext.AccountantGroups;
-            if (!string.IsNullOrWhiteSpace(accountantGroupQueryPage.IdOrGroupsName))
+            if (!string.IsNullOrWhiteSpace(accountantGroupQueryPage.GroupName))
             {
                 accountantGroupsQuery = accountantGroupsQuery.Where
                                         (
-                                            accountantGroup =>
-                                            accountantGroup.Id.Contains(accountantGroupQueryPage.IdOrGroupsName)
-                                            || accountantGroup.Name.Contains(accountantGroupQueryPage.IdOrGroupsName)
+                                            accountantGroup =>                                            
+                                            accountantGroup.Name.Contains(accountantGroupQueryPage.GroupName)
                                         );
             }
             accountantGroupsQuery.OrderBy(accountantGroup => accountantGroup.Id);
@@ -212,21 +211,21 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <summary>
         /// 刪除群組(將該群組的所有人員先轉移到無群組在進行群組刪除)
         /// </summary>
-        /// <param name="accountantGroupDataId"></param>
-        public ResponseViewModel DeleteAccountantGroup(string accountantGroupDataId)
+        /// <param name="accountantGroupId"></param>
+        public ResponseViewModel DeleteAccountantGroup(int accountantGroupId)
         {
             ResponseViewModel response;
             IQueryable<AccountantGroup> accountantGroupQuery = dbContext.AccountantGroups.Where
                                                                (
                                                                     accountantGroup =>
-                                                                    accountantGroup.Id == accountantGroupDataId
+                                                                    accountantGroup.Id == accountantGroupId
                                                                );
             if (accountantGroupQuery.Any())
             {
                 dbContext.Accountants.Where
                 (
                         accountant =>
-                        accountant.AccountantGroupId == accountantGroupDataId
+                        accountant.Id == accountantGroupId
                 ).BatchUpdate(new Accountant { AccountantGroupId = "0" });
 
                 AccountantGroup accountantGroup = accountantGroupQuery.First();

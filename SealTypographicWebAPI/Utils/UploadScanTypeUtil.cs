@@ -13,7 +13,7 @@ namespace SealTypographicWebAPI.Utils
         /// <returns></returns>
         public static string Customer()
         {
-            return Get(UploadScanType.Customer);
+            return Get(SealType.Customer);
         }
 
         /// <summary>
@@ -22,7 +22,7 @@ namespace SealTypographicWebAPI.Utils
         /// <returns></returns>
         public static string Accountant()
         {
-            return Get(UploadScanType.Accountant);
+            return Get(SealType.Accountant);
         }
 
         /// <summary>
@@ -31,7 +31,7 @@ namespace SealTypographicWebAPI.Utils
         /// <returns></returns>
         public static string Letterhead()
         {
-            return Get(UploadScanType.Letterhead);
+            return Get(SealType.Letterhead);
         }
 
 
@@ -39,13 +39,13 @@ namespace SealTypographicWebAPI.Utils
         /// 取得UploadScanType名稱
         /// </summary>
         /// <returns></returns>
-        public static string Get(UploadScanType uploadScanType)
+        public static string Get(SealType uploadScanType)
         {
             return uploadScanType switch
             {
-                UploadScanType.Customer => "客戶",
-                UploadScanType.Accountant => "會計師",
-                UploadScanType.Letterhead => "信頭",
+                SealType.Customer => "客戶",
+                SealType.Accountant => "會計師",
+                SealType.Letterhead => "信頭",
                 _ => "",
             };
         }

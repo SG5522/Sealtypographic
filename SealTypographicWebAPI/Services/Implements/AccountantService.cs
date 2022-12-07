@@ -12,7 +12,7 @@ namespace SealTypographicWebAPI.Services.Implements
     /// <summary>
     /// 勤業用 管理會計師資料
     /// </summary>
-    public class AccountantDeloitteService : IAccountantService
+    public class AccountantService : IAccountantService
     {
         private readonly SealTypographicDbContext dbContext;
         private readonly IMapper mapper;
@@ -22,7 +22,7 @@ namespace SealTypographicWebAPI.Services.Implements
         /// </summary>
         /// <param name="dbContext"></param>
         /// <param name="mapper"></param>
-        public AccountantDeloitteService(SealTypographicDbContext dbContext,IMapper mapper)
+        public AccountantService(SealTypographicDbContext dbContext,IMapper mapper)
         {
             this.dbContext = dbContext;
             this.mapper = mapper;
@@ -33,7 +33,7 @@ namespace SealTypographicWebAPI.Services.Implements
         /// </summary>
         /// <param name="accountantId"></param>
         /// <returns></returns>
-        public AccountantResponse GetAccountant(string accountantId)
+        public AccountantResponse GetAccountant(int accountantId)
         {
             AccountantViewModel accountantViewModel = new();
             ResponseViewModel response = new();
@@ -78,14 +78,14 @@ namespace SealTypographicWebAPI.Services.Implements
                 accountantsQuery = accountantsQuery.Where
                                                     (
                                                         accountant =>
-                                                        accountant.Id.Contains(accountantSearch.IdOrNameOrGroupsName)
+                                                        accountant.AccountantNumber.Contains(accountantSearch.IdOrNameOrGroupsName)
                                                         || accountant.Name.Contains(accountantSearch.IdOrNameOrGroupsName)
                                                         || accountant.AccountantGroup.Name.Contains(accountantSearch.IdOrNameOrGroupsName)
                                                     );                                                   
             }
-            if(accountantSearch.Status != (int)Status.All)
+            if(accountantSearch.ReviewStatus != ReviewStatus.All)
             {
-                accountantsQuery = accountantsQuery.Where(accountant => accountant.Status == accountantSearch.Status);
+                accountantsQuery = accountantsQuery.Where(accountant => accountant.ReviewStatus == accountantSearch.ReviewStatus);
             }
             accountantsQuery = accountantsQuery.OrderBy(accountant => accountant.Id);
             if (accountantsQuery.Any())
@@ -102,7 +102,7 @@ namespace SealTypographicWebAPI.Services.Implements
                 foreach (Accountant accountant in thisPageAccountants)
                 {
                     AccountantPaginateViewModel accountantPaginateViewModel = mapper.Map<AccountantPaginateViewModel>(accountant);
-                    accountantPaginateViewModel.StatusString = StatusUtil.Get((Status)accountant.Status);
+                    accountantPaginateViewModel.StatusString = StatusUtil.Get(accountant.ReviewStatus);
                     accountantPaginateViewModels.Add(accountantPaginateViewModel);
                 }
                 //取得成功訊息
@@ -134,15 +134,19 @@ namespace SealTypographicWebAPI.Services.Implements
         {
             ResponseViewModel response = new();
             Accountant? accountantQuery = dbContext.Accountants
-                                    .Where(accountant => accountant.Id == accountantPostData.Id)
+                                    .Where(accountant => accountant.AccountantNumber == accountantPostData.AccountantNumber)
                                     .FirstOrDefault();
 
             if (accountantQuery == null)
             {
                 Accountant accountant = mapper.Map<Accountant>(accountantPostData);
                 accountant.CreateDate = DateTime.Now;
-                accountant.AvailableDate = AvailableDateUtil.NotActivated();
-                accountant.Status = (int)Status.Pending;
+                //暫用
+                accountant.UpdateDate = AvailableDateUtil.NotActivated();
+                accountant.StartDate = AvailableDateUtil.NotActivated();
+                accountant.EndDate = AvailableDateUtil.NotActivated();
+
+                accountant.ReviewStatus = ReviewStatus.Pending;
 
                 dbContext.Accountants.Add(accountant);
                 dbContext.SaveChanges();
@@ -164,14 +168,15 @@ namespace SealTypographicWebAPI.Services.Implements
         {
             ResponseViewModel response = new();
             Accountant? accountantQuery = dbContext.Accountants
-                                .Where(accountant => accountant.Id == accountaPostData.Id)
+                                .Where(accountant => accountant.AccountantNumber == accountaPostData.AccountantNumber)
                                 .FirstOrDefault();
 
             if (accountantQuery != null)
             {
                 mapper.Map(accountaPostData, accountantQuery);
-                accountantQuery.AvailableDate = AvailableDateUtil.NotActivated();
-                accountantQuery.Status = (int)Status.Pending;
+                accountantQuery.StartDate = AvailableDateUtil.NotActivated();
+                accountantQuery.EndDate = AvailableDateUtil.NotActivated();
+                accountantQuery.ReviewStatus = ReviewStatus.Pending;
 
                 dbContext.SaveChanges();
                 response = ResponseUtil.Success();
@@ -188,7 +193,7 @@ namespace SealTypographicWebAPI.Services.Implements
         /// 變更此客戶狀態為刪除(隱藏)。
         /// </summary>
         /// <param name="accountantId">會計師ID</param>        
-        public ResponseViewModel DeleteAccountant(string accountantId)
+        public ResponseViewModel DeleteAccountant(int accountantId)
         {
             ResponseViewModel response = new();
             Accountant? accountantQuery = dbContext.Accountants
@@ -197,8 +202,8 @@ namespace SealTypographicWebAPI.Services.Implements
 
             if (accountantQuery != null)
             {                
-                accountantQuery.AvailableDate = AvailableDateUtil.NotActivated();
-                accountantQuery.Status = (int)Status.Hidden;
+                accountantQuery.StartDate = AvailableDateUtil.NotActivated();
+                accountantQuery.ReviewStatus = ReviewStatus.Hidden;
                 dbContext.SaveChanges();
                 response = ResponseUtil.Success();
             }

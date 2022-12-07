@@ -57,7 +57,7 @@ namespace SealTypographicWebAPI.Controllers
             catch (Exception ex)
             {
                 Log.Error("AccountantGroupMember get accountantGroupMembers error {@Error}", ex);
-                ResponseViewModel response = ResponseUtil.InternalServerError();
+                ResponseViewModel response = ResponseUtil.DBError();
                 return new()
                 {
                     Code = response.Code,
@@ -69,22 +69,22 @@ namespace SealTypographicWebAPI.Controllers
         /// <summary>
         /// 群組新增人員時取得非該群組成員資料
         /// </summary>
-        /// <param name="accountantGroupId">群組成員搜尋條件</param>
+        /// <param name="notThisGroupMemberSearch">群組成員搜尋條件</param>
         /// <returns></returns>
-        [HttpGet("NotTheGroup/{accountantGroupId}")]
-        public NotThisGroupMember GetNotGroupMembers(string accountantGroupId)
+        [HttpGet("NotTheGroup")]
+        public NotThisGroupMember GetNotGroupMembers([FromQuery]NotThisGroupMemberSearch notThisGroupMemberSearch)
         {
             try
             {                
-                Log.Information("AccountantGroupMember get  input {@Input}", accountantGroupId);
-                NotThisGroupMember notThisGroupMember =  accountantGroupMemberService.GetNotThisGroupMember(accountantGroupId);
+                Log.Information("AccountantGroupMember get  input {@Input}", notThisGroupMemberSearch);
+                NotThisGroupMember notThisGroupMember =  accountantGroupMemberService.GetNotThisGroupMember(notThisGroupMemberSearch);
                 Log.Information("AccountantGroupMember get  output {@Output}", notThisGroupMember);
                 return notThisGroupMember;
             }
             catch (Exception ex)
             {
                 Log.Error("AccountantGroupMember get  error {@Error}", ex);
-                ResponseViewModel response = ResponseUtil.InternalServerError();
+                ResponseViewModel response = ResponseUtil.DBError();
                 return new()
                 {
                     Code = response.Code,
@@ -99,7 +99,7 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="accountantId">會計師ID</param>
         /// <returns></returns>
         [HttpGet("{accountantId}")]
-        public AccountantResponse GetAccountantViewModel(string accountantId)
+        public AccountantResponse GetAccountantViewModel(int accountantId)
         {
             try
             {
@@ -111,7 +111,7 @@ namespace SealTypographicWebAPI.Controllers
             catch (Exception ex)
             {
                 Log.Error("AccountantGroupMember get accountantGroupMembers error {@Error}", ex);
-                ResponseViewModel response = ResponseUtil.InternalServerError();
+                ResponseViewModel response = ResponseUtil.DBError();
                 return new()
                 {
                     Code = response.Code,
@@ -137,7 +137,7 @@ namespace SealTypographicWebAPI.Controllers
             catch (Exception ex)
             {
                 Log.Error("AccountantGroupMember put accountantGroupChangeForm error {@Error}", ex);
-                return ResponseUtil.InternalServerError();
+                return ResponseUtil.DBError();
             }
         }
 
@@ -160,7 +160,7 @@ namespace SealTypographicWebAPI.Controllers
             catch (Exception ex)
             {
                 Log.Error("AccountantGroupMember put accountantGroupChangeForm error {@Error}", ex);
-                return ResponseUtil.InternalServerError();
+                return ResponseUtil.DBError();
             }
         }
     }

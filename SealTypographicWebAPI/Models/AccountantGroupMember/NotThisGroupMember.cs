@@ -5,7 +5,7 @@ namespace SealTypographicWebAPI.Models.AccountantGroupMember
     /// <summary>
     /// 非群組成員
     /// </summary>
-    public class NotThisGroupMember : ResponseViewModel
+    public class NotThisGroupMember : PaginateViewModel
     {
         /// <summary>
         /// 群組ID

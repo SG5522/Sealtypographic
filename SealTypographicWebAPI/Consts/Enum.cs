@@ -3,7 +3,7 @@
     /// <summary>
     /// 客戶、會計師、印鑑、簽名的狀態
     /// </summary>
-    public enum Status : int
+    public enum ReviewStatus : int
     {
         /// <summary>
         /// 全部
@@ -18,61 +18,39 @@
         /// <summary>
         /// 通過(審核完成)
         /// </summary>
-        Approval = 1,
+        Approval = 10,
 
         /// <summary>
         /// 退件
         /// </summary>
-        Reject = 2,
+        Reject = 20,
 
         /// <summary>
         /// 隱藏(被刪除時的狀態)
         /// </summary>
-        Hidden = 3,
+        Hidden = 99,
 
     }
 
     /// <summary>
     /// 每頁資料上限
     /// </summary>
-    public static class PageSizeLimit
+    public enum PageSizeLimit : int
     {
         /// <summary>
         /// 最小值
         /// </summary>
-        public const int Min = 5;
+        Min = 5,
         /// <summary>
         /// 最大值
         /// </summary>
-        public const int Max = 100;
-    }
-
-    /// <summary>
-    /// 上傳文件型態
-    /// </summary>
-    public enum UploadType
-    {
-        /// <summary>
-        /// 客戶印鑑授權書
-        /// </summary>
-        CustomerAuthorization = 1,
-
-        /// <summary>
-        /// 會計印鑑簽名授權書
-        /// </summary>
-        AccountantAuthorization = 2,
-
-        /// <summary>
-        /// 信頭
-        /// </summary>
-        LetterheadImage = 3,
-
+        Max = 100
     }
 
     /// <summary>
     /// 啟用日期
     /// </summary>
-    public enum AvailableDate
+    public enum Available
     {
         /// <summary>
         /// 未啟用
@@ -85,9 +63,9 @@
     }
 
     /// <summary>
-    /// 掃描文件類型
+    /// 印鑑類型
     /// </summary>
-    public enum UploadScanType
+    public enum SealType : int
     {
         /// <summary>
         /// 客戶

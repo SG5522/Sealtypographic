@@ -15,7 +15,7 @@ namespace SealTypographicWebAPI.Services
         /// </summary>
         /// <param name="accountantId"></param>
         /// <returns></returns>
-        AccountantResponse GetAccountant(string accountantId);
+        AccountantResponse GetAccountant(int accountantId);
 
         /// <summary>
         /// 依搜尋條件獲得會計資料列表
@@ -41,7 +41,7 @@ namespace SealTypographicWebAPI.Services
         /// 刪除客戶基本資料(變更狀態使其一般USER無法看到)
         /// </summary>
         /// <param name="accountantId"></param>
-        ResponseViewModel DeleteAccountant(string accountantId);
+        ResponseViewModel DeleteAccountant(int accountantId);
     }
 
 }

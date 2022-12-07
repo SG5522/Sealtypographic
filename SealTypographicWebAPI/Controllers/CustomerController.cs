@@ -47,7 +47,7 @@ namespace SealTypographicWebAPI.Controllers
             catch (Exception ex)
             {
                 Log.Error("Customer get viewModels error {@Error}", ex);
-                ResponseViewModel response = ResponseUtil.InternalServerError();                
+                ResponseViewModel response = ResponseUtil.DBError();                
                 return new()
                 {
                     Code = response.Code,
@@ -60,22 +60,22 @@ namespace SealTypographicWebAPI.Controllers
         /// <summary>
         /// 取得客戶基本資料
         /// </summary>
-        /// <param name="id">顧客ID</param>
+        /// <param name="Customerid">顧客ID</param>
         /// <returns></returns>
-        [HttpGet("{id}")]
-        public CustomerResponseViewModel Get(string id)
+        [HttpGet("{Customerid}")]
+        public CustomerResponseViewModel Get(int Customerid)
         {
             try
             {
-                Log.Information("Customer get customerForm input {@Input}", id);
-                CustomerResponseViewModel customerResponse = customerService.GetCustomerViewModel(id);
+                Log.Information("Customer get customerForm input {@Input}", Customerid);
+                CustomerResponseViewModel customerResponse = customerService.GetCustomerViewModel(Customerid);
                 Log.Information("Customer get customerForm output {@Output}", customerResponse);
                 return customerResponse;
             }
             catch (Exception ex)
             {
                 Log.Error("Customer get customerForm error {@Error}", ex);
-                ResponseViewModel response = ResponseUtil.InternalServerError();
+                ResponseViewModel response = ResponseUtil.DBError();
                 return new CustomerResponseViewModel()
                 {
                     Code = response.Code,
@@ -101,7 +101,7 @@ namespace SealTypographicWebAPI.Controllers
             catch (Exception ex)
             {
                 Log.Error("Customer post customerForm error {@Error}", ex);
-                return ResponseUtil.InternalServerError();
+                return ResponseUtil.DBError();
             }
         }
 
@@ -122,7 +122,7 @@ namespace SealTypographicWebAPI.Controllers
             catch (Exception ex)
             {
                 Log.Error("Customer put customerForm error {@Error}", ex);
-                return ResponseUtil.InternalServerError();
+                return ResponseUtil.DBError();
             }
         }
 
@@ -134,7 +134,7 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="customerId"></param>
         /// <returns></returns>
         [HttpDelete("{customerId}")]
-        public ResponseViewModel Delete(string customerId)
+        public ResponseViewModel Delete(int customerId)
         {
             try
             {
@@ -146,7 +146,7 @@ namespace SealTypographicWebAPI.Controllers
             catch (Exception ex)
             {
                 Log.Error("Customer delete customerForm error {@Error}", ex);
-                return ResponseUtil.InternalServerError();
+                return ResponseUtil.DBError();
             }
         }
     }

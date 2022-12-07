@@ -50,7 +50,7 @@ namespace SealTypographicWebAPI.Controllers
             catch (Exception ex) 
             {
                 Log.Error("AccountantGroups get accountantViewModels error {@Error}", ex);
-                ResponseViewModel response = ResponseUtil.InternalServerError();
+                ResponseViewModel response = ResponseUtil.DBError();
                 return new ()
                 {
                     Code = response.Code,
@@ -65,7 +65,7 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="id" example="ACC001">會計師ID</param>        
         /// <returns></returns>
         [HttpGet("{id}")]
-        public AccountantResponse Get(string id)
+        public AccountantResponse Get(int id)
         {
             try
             {
@@ -77,7 +77,7 @@ namespace SealTypographicWebAPI.Controllers
             catch (Exception ex)
             {
                 Log.Error("AccountantGroups get accountantViewModel error {@Error}", ex);
-                ResponseViewModel response = ResponseUtil.InternalServerError();
+                ResponseViewModel response = ResponseUtil.DBError();
                 return new AccountantResponse()
                 {
                     Code = response.Code,
@@ -103,7 +103,7 @@ namespace SealTypographicWebAPI.Controllers
             catch (Exception ex)
             {
                 Log.Error("AccountantGroups post accountantBaseData error {@Error}", ex);
-                return ResponseUtil.InternalServerError();
+                return ResponseUtil.DBError();
             }
         }
 
@@ -124,7 +124,7 @@ namespace SealTypographicWebAPI.Controllers
             catch (Exception ex)
             {
                 Log.Error("AccountantGroups put accountantBaseData error {@Error}", ex);
-                return ResponseUtil.InternalServerError();
+                return ResponseUtil.DBError();
             }
         }
 
@@ -135,7 +135,7 @@ namespace SealTypographicWebAPI.Controllers
         /// </summary>
         /// <param name="accountantId"></param>        
         [HttpDelete("{accountantId}")]
-        public ResponseViewModel Delete(string accountantId)
+        public ResponseViewModel Delete(int accountantId)
         {
             try
             {
@@ -147,7 +147,7 @@ namespace SealTypographicWebAPI.Controllers
             catch (Exception ex)
             { 
                 Log.Error("AccountantGroups delete(hide) accountantBaseData error {@Error}", ex); 
-                return ResponseUtil.InternalServerError(); 
+                return ResponseUtil.DBError(); 
             }
         }
     }

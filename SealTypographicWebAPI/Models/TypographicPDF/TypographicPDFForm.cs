@@ -28,7 +28,7 @@
         /// <summary>
         /// 客戶名稱
         /// </summary>
-        public string CustomerId { get; set; }
+        public int CustomerId { get; set; }
 
         /// <summary>
         /// 排版頁數

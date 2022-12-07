@@ -8,7 +8,12 @@
         /// <summary>
         /// 會計師ID
         /// </summary>
-        public string Id { get; set; }
+        public int Id { get; set; }
+
+        /// <summary>
+        /// 會計師編號
+        /// </summary>
+        public string AccountantNumber { get; set; }
 
         /// <summary>
         /// 會計師名稱
@@ -21,6 +26,7 @@
     /// </summary>
     public class AccountantGroupMembers : PaginateViewModel
     {
+
         /// <summary>
         /// 成員
         /// </summary>

@@ -3,13 +3,8 @@
     /// <summary>
     /// 印鑑圖像ID 與 位置
     /// </summary>
-    public class Location
-    {
-        /// <summary>
-        /// Id
-        /// </summary>
-        public int Id { get; set; }
-        
+    public class Location : BaseData
+    {        
         /// <summary>
         /// 頂部位置
         /// </summary>

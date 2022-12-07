@@ -3,8 +3,13 @@
     /// <summary>
     /// 會計師資料表
     /// </summary>
-    public class Accountant : BaseData
+    public class Accountant : BaseReviewNameData
     {
+        /// <summary>
+        /// 會計編號
+        /// </summary>
+        public string AccountantNumber { get; set; }
+
         /// <summary>
         /// 會計師群組ID
         /// </summary>                

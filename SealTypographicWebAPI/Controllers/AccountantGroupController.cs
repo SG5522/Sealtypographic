@@ -50,7 +50,7 @@ namespace SealTypographicWebAPI.Controllers
             catch (Exception ex)
             {
                 Log.Error("AccountantGroups get accountantGroupList error {@Error}", ex);
-                ResponseViewModel response = ResponseUtil.InternalServerError();
+                ResponseViewModel response = ResponseUtil.DBError();
                 return new()
                 {
                     Code = response.Code,
@@ -78,7 +78,7 @@ namespace SealTypographicWebAPI.Controllers
             catch (Exception ex)
             {
                 Log.Error("AccountantGroups get accountantGroupDatas error {@Error}", ex);
-                ResponseViewModel response = ResponseUtil.InternalServerError();                
+                ResponseViewModel response = ResponseUtil.DBError();                
                 return new AccountantGroupResponses()
                 {
                     Code = response.Code,
@@ -88,12 +88,12 @@ namespace SealTypographicWebAPI.Controllers
         }
 
         /// <summary>
-        /// 取得會計師群組資料
+        /// 取得會計師群組資料(單筆)
         /// </summary>
         /// <param name="accountantGroupId">群組ID</param>
         /// <returns></returns>
         [HttpGet("{accountantGroupId}")]        
-        public AccountantGroupResponse Get(string accountantGroupId)
+        public AccountantGroupResponse Get(int accountantGroupId)
         {
             try
             {
@@ -105,7 +105,7 @@ namespace SealTypographicWebAPI.Controllers
             catch (Exception ex)
             {
                 Log.Error("AccountantGroups get accountantGroupData error {@Error}", ex);
-                ResponseViewModel response = ResponseUtil.InternalServerError();
+                ResponseViewModel response = ResponseUtil.DBError();
                 return new AccountantGroupResponse()
                 {
                     Code = response.Code,
@@ -131,7 +131,7 @@ namespace SealTypographicWebAPI.Controllers
             catch (Exception ex)
             {
                 Log.Error("AccountantGroups post accountantGroupData error {@Error}", ex);
-                return ResponseUtil.InternalServerError();
+                return ResponseUtil.DBError();
             }
         }
 
@@ -152,7 +152,7 @@ namespace SealTypographicWebAPI.Controllers
             catch (Exception ex)
             {
                 Log.Error("AccountantGroups put accountantGroupData error {@Error}", ex);
-                return ResponseUtil.InternalServerError();
+                return ResponseUtil.DBError();
             }
         }
 
@@ -162,7 +162,7 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="accountantGroupDataId">會計師群組ID</param>
         /// <returns></returns>
         [HttpDelete("{accountantGroupDataId}")]
-        public ResponseViewModel Delete(string accountantGroupDataId)
+        public ResponseViewModel Delete(int accountantGroupDataId)
         {
             try
             {
@@ -174,7 +174,7 @@ namespace SealTypographicWebAPI.Controllers
             catch (Exception ex)
             {
                 Log.Error("AccountantGroups delete accountantGroupData error {@Error}", ex);
-                return ResponseUtil.InternalServerError();
+                return ResponseUtil.DBError();
             }
         }
     }

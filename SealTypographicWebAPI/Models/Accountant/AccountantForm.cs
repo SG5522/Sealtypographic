@@ -3,13 +3,13 @@
     /// <summary>
     /// 會計資料
     /// </summary>
-    public class AccountantForm
+    public class AccountantForm : BaseForm
     {
         /// <summary>
-        /// 會計師ID
+        /// 會計師編號
         /// </summary>   
         /// <example>ACC001</example>
-        public string Id { get; set; } = null!;
+        public string AccountantNumber { get; set; }
 
         /// <summary>
         /// 名稱

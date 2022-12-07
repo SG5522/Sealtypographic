@@ -1,4 +1,6 @@
-﻿namespace SealTypographicWebAPI.Models
+﻿using SealTypographicWebAPI.Consts;
+
+namespace SealTypographicWebAPI.Models
 {
     /// <summary>
     /// 上傳用Class
@@ -21,6 +23,6 @@
         /// 2.會計印鑑簽名授權書
         /// 3.信頭
         /// </summary>
-        public int UploadType { get; set; }
+        public SealType SealType { get; set; }
     }
 }

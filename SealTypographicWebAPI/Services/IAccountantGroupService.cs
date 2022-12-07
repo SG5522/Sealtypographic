@@ -21,7 +21,7 @@ namespace SealTypographicWebAPI.Services
         /// </summary>
         /// <param name="accountantGroupId">群組ID</param>
         /// <returns></returns>
-        AccountantGroupResponse GetAccountantGroupData(string accountantGroupId);
+        AccountantGroupResponse GetAccountantGroupData(int accountantGroupId);
 
         /// <summary>
         /// 依搜尋條件獲得會計資料列表
@@ -46,7 +46,7 @@ namespace SealTypographicWebAPI.Services
         /// 刪除群組(將該群組的所有人員先轉移到無群組在進行群組刪除)
         /// </summary>
         /// <param name="accountantGroupDataId">會計師群組ID</param>
-        ResponseViewModel DeleteAccountantGroup(string accountantGroupDataId);
+        ResponseViewModel DeleteAccountantGroup(int accountantGroupDataId);
     }
 
 }

@@ -21,7 +21,7 @@ namespace SealTypographicWebAPI.Services
         /// </summary>
         /// <param name="litterheadID">信頭ID</param>
         /// <returns></returns>
-        LetterheadResponse GetLetterheadViewModel(string litterheadID);
+        LetterheadResponse GetLetterheadViewModel(int litterheadID);
 
         /// <summary>
         /// 建立信頭資料
@@ -39,6 +39,6 @@ namespace SealTypographicWebAPI.Services
         /// 刪除信頭資料(變更狀態使其一般USER無法看到)
         /// </summary>
         /// <param name="litterheadID"></param>
-        ResponseViewModel DeleteLetterhead(string litterheadID);
+        ResponseViewModel DeleteLetterhead(int litterheadID);
     }
 }
