@@ -35,12 +35,12 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="customerQuery">客戶分頁搜尋</param>        
         /// <returns></returns>
         [HttpGet]        
-        public CustomerPaginatesViewModel Get([FromQuery]CustomerSearch customerQuery)
+        public CustomerPaginateViewModel Get([FromQuery]CustomerSearch customerQuery)
         {         
             try
             {
                 Log.Information("Customer get viewModels input {@Input}", customerQuery);
-                CustomerPaginatesViewModel customerResponsePage = customerService.GetCustomerPaginatesViewModel(customerQuery);
+                CustomerPaginateViewModel customerResponsePage = customerService.GetCustomerPaginatesViewModel(customerQuery);
                 Log.Information("Customer get viewModels output {@Output}", customerResponsePage);
                 return customerResponsePage;
             }
@@ -63,20 +63,20 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="Customerid">顧客ID</param>
         /// <returns></returns>
         [HttpGet("{Customerid}")]
-        public CustomerResponseViewModel Get(int Customerid)
+        public CustomerDetailViewModel Get(int Customerid)
         {
             try
             {
                 Log.Information("Customer get customerForm input {@Input}", Customerid);
-                CustomerResponseViewModel customerResponse = customerService.GetCustomerViewModel(Customerid);
-                Log.Information("Customer get customerForm output {@Output}", customerResponse);
-                return customerResponse;
+                CustomerDetailViewModel customerDetailViewModel = customerService.GetCustomerDetailViewModel(Customerid);
+                Log.Information("Customer get customerForm output {@Output}", customerDetailViewModel);
+                return customerDetailViewModel;
             }
             catch (Exception ex)
             {
                 Log.Error("Customer get customerForm error {@Error}", ex);
                 ResponseViewModel response = ResponseUtil.DBError();
-                return new CustomerResponseViewModel()
+                return new ()
                 {
                     Code = response.Code,
                     Message = response.Message,
@@ -110,7 +110,7 @@ namespace SealTypographicWebAPI.Controllers
         /// </summary>
         /// <param name="customerForm">基本資料</param>
         [HttpPut]
-        public ResponseViewModel Put(CustomerForm customerForm)
+        public ResponseViewModel Put(CustomerFormUpdate customerForm)
         {
             try
             {               

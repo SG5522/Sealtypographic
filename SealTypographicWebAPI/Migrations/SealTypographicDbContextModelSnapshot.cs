@@ -40,17 +40,8 @@ namespace SealTypographicWebAPI.Migrations
                     b.Property<int>("CreateUserId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<DateTime>("EndDate")
-                        .HasColumnType("TEXT");
-
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<int>("ReviewStatus")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<DateTime>("StartDate")
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime>("UpdateDate")
@@ -120,6 +111,9 @@ namespace SealTypographicWebAPI.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<int>("ReviewStatus")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int?>("ReviewUserId")
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("SealMappingConfigId")
@@ -212,21 +206,12 @@ namespace SealTypographicWebAPI.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<DateTime>("EndDate")
-                        .HasColumnType("TEXT");
-
                     b.Property<string>("Fax")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<int>("ReviewStatus")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<DateTime>("StartDate")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("StockCode")
@@ -275,6 +260,9 @@ namespace SealTypographicWebAPI.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<int>("ReviewStatus")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int?>("ReviewUserId")
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("SealMappingConfigId")
@@ -358,17 +346,8 @@ namespace SealTypographicWebAPI.Migrations
                     b.Property<int>("CreateUserId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<DateTime>("EndDate")
-                        .HasColumnType("TEXT");
-
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<int>("ReviewStatus")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<DateTime>("StartDate")
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime>("UpdateDate")
@@ -405,6 +384,9 @@ namespace SealTypographicWebAPI.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("ReviewStatus")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int?>("ReviewUserId")
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("SealMappingConfigId")

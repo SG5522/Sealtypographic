@@ -4,6 +4,7 @@ using SealTypographicWebAPI.Models;
 using SealTypographicWebAPI.Consts;
 using SealTypographicWebAPI.Models.Accountant;
 using SealTypographicWebAPI.Util;
+using SealTypographicWebAPI.Models.SealMappingConfig;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 

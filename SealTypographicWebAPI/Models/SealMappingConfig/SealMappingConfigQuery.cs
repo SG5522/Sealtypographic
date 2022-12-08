@@ -1,4 +1,4 @@
-﻿namespace SealTypographicWebAPI.Models
+﻿namespace SealTypographicWebAPI.Models.SealMappingConfig
 {
     /// <summary>
     /// 圖片群組分頁搜尋

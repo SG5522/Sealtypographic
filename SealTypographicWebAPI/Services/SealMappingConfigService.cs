@@ -4,6 +4,7 @@ using SealTypographicWebAPI.Consts;
 using SealTypographicWebAPI.Models.Customer;
 using EFCore.BulkExtensions;
 using SealTypographicWebAPI.Util;
+using SealTypographicWebAPI.Models.SealMappingConfig;
 
 namespace SealTypographicWebAPI.Services
 {

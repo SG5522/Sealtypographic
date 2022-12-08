@@ -32,9 +32,9 @@ namespace SealTypographicWebAPI.Services.Implements
         /// </summary>
         /// <param name="customerId">顧客ID</param>
         /// <returns></returns>
-        public CustomerResponseViewModel GetCustomerViewModel(int customerId)
+        public CustomerDetailViewModel GetCustomerDetailViewModel(int customerId)
         {
-            CustomerForm? customer = new();
+            CustomerDetail? customerDetail = new();
             ResponseViewModel response;
             IQueryable<Customer>? customerQuery = dbContext.Customers
                                     .Where(customer => customer.Id == customerId);
@@ -42,23 +42,22 @@ namespace SealTypographicWebAPI.Services.Implements
             if (customerQuery.Any())
             {
 
-                Customer customerResponse = customerQuery.First();
-                customer = mapper.Map<CustomerForm>(customerResponse);
-
+                Customer customer = customerQuery.First();
+                customerDetail = mapper.Map<CustomerDetail>(customer);
                 response = ResponseUtil.Success();
             }
             else
             {
-                customer = null;
+                customerDetail = null;
                 response = ResponseUtil.NoData();
             }
-            return new CustomerResponseViewModel()
+            return new ()
             {
                 //回傳結果訊息用
                 Code = response.Code,
                 Message = response.Message,
 
-                Data = customer
+                CustomerDetail = customerDetail
             };
         }
 
@@ -67,9 +66,9 @@ namespace SealTypographicWebAPI.Services.Implements
         /// </summary>
         /// <param name="customerSearch">搜尋條件</param>  
         /// <returns></returns>
-        public CustomerPaginatesViewModel GetCustomerPaginatesViewModel(CustomerSearch customerSearch)
+        public CustomerPaginateViewModel GetCustomerPaginatesViewModel(CustomerSearch customerSearch)
         {
-            List<CustomerPaginateViewModel> customerViewModels = new();
+            List<CustomerViewModel> customerViewModels = new();
             ResponseViewModel response = new();
             int totalPage = 0;
             int totalCount = 0;
@@ -82,10 +81,6 @@ namespace SealTypographicWebAPI.Services.Implements
                         customer.CustomerNumber.Contains(customerSearch.CustomerNumberOrName)
                         || customer.Name.Contains(customerSearch.CustomerNumberOrName)                        
                     );
-            }
-            if(customerSearch.ReviewStatus != ReviewStatus.All)
-            {
-                customerQuery = customerQuery.Where(customer => customer.ReviewStatus == customerSearch.ReviewStatus);
             }
             customerQuery = customerQuery.OrderBy(customer => customer.Id);
 
@@ -101,7 +96,7 @@ namespace SealTypographicWebAPI.Services.Implements
                 totalCount = customerQuery.Count();
                 foreach (var customerBase in pageNumberCustomers)
                 {
-                    customerViewModels.Add(mapper.Map<CustomerPaginateViewModel>(customerBase));
+                    customerViewModels.Add(mapper.Map<CustomerViewModel>(customerBase));
                 }
                 //取得成功訊息
                 response = ResponseUtil.Success();
@@ -137,8 +132,7 @@ namespace SealTypographicWebAPI.Services.Implements
             if (!customerQuery.Any())
             {
                 Customer dbCustomer = mapper.Map<Customer>(customerForm);
-                dbCustomer.CreateDate = DateTime.Now;
-                dbCustomer.StartDate = AvailableDateUtil.NotActivated();
+                dbCustomer.CreateDate = DateTime.Now;                
                 dbContext.Customers.Add(dbCustomer);
                 dbContext.SaveChanges();
                 response = ResponseUtil.Success();
@@ -154,20 +148,18 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <summary>
         /// 更新客戶基本資料
         /// </summary>
-        /// <param name="customerForm">客戶基本資料 customerForm.CustomerNumber 為搜尋條件</param>        
-        public ResponseViewModel UpdateCustomer(CustomerForm customerForm)
+        /// <param name="customerFormUpdate">客戶基本資料 customerForm.CustomerNumber 為搜尋條件</param>        
+        public ResponseViewModel UpdateCustomer(CustomerFormUpdate customerFormUpdate)
         {
             ResponseViewModel response = new();
             Customer? customerQuery = dbContext.Customers
-                                .Where(customer => customer.CustomerNumber == customerForm.CustomerNumber)
+                                .Where(customer => customer.Id == customerFormUpdate.Id)
                                 .FirstOrDefault();
 
             if (customerQuery != null)
             {
-                mapper.Map(customerForm, customerQuery);
+                mapper.Map(customerFormUpdate, customerQuery);
                 //修改資料時要改回審察與啟用日期設為不啟用(0000/01/01)
-                customerQuery.ReviewStatus = ReviewStatus.Pending;
-                customerQuery.StartDate = AvailableDateUtil.NotActivated();
 
                 dbContext.SaveChanges();
                 response = ResponseUtil.Success();
@@ -193,8 +185,6 @@ namespace SealTypographicWebAPI.Services.Implements
 
             if (customerQuery != null)
             {
-                customerQuery.ReviewStatus = ReviewStatus.Hidden;
-                customerQuery.StartDate = AvailableDateUtil.NotActivated();
                 dbContext.SaveChanges();
                 response = ResponseUtil.Success();
             }

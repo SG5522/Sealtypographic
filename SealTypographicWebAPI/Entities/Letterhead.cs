@@ -3,7 +3,7 @@
     /// <summary>
     /// 事務所信頭資料表
     /// </summary>
-    public class Letterhead : BaseReviewNameData
+    public class Letterhead : BaseNameData
     {
         /// <summary>
         /// 信頭圖片資料(歷程)

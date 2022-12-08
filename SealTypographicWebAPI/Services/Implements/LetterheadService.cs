@@ -168,8 +168,7 @@ namespace SealTypographicWebAPI.Services.Implements
                     .FirstOrDefault();
 
             if (letterheadQuery != null)
-            {                
-                letterheadQuery.ReviewStatus = ReviewStatus.Hidden;
+            {                                
                 dbContext.SaveChanges();
                 response = ResponseUtil.Success();
             }

@@ -5,10 +5,10 @@ namespace SealTypographicWebAPI.Models.Customer
     /// <summary>
     /// 客戶資料(新增或是更新使用)
     /// </summary>
-    public class CustomerForm : BaseCreateNameData
+    public class CustomerFormUpdate : BaseUpdateNameData
     {
         /// <summary>
-        /// 客戶編號(更新或搜尋使用)
+        /// 客戶編號(搜尋使用)
         /// </summary>
         /// <example>AAA001</example>
         [Required]

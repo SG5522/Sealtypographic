@@ -23,12 +23,12 @@ namespace SealTypographicWebAPI.Entities
         public DateTime UpdateDate { get; set; }
 
         /// <summary>
-        /// 創建User
+        /// 創建UserId
         /// </summary>
         public int CreateUserId { get; set; }
 
         /// <summary>
-        /// 更新User
+        /// 更新UserId
         /// </summary>
         public int UpdateUserId { get; set; }
 

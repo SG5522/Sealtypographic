@@ -6,7 +6,7 @@ namespace SealTypographicWebAPI.Models.Customer
     /// <summary>
     /// 客戶分頁搜尋
     /// </summary>
-    public class CustomerSearch : PaginateSearchWithStatus
+    public class CustomerSearch : PaginateSearch
     {
         /// <summary>
         /// 搜尋客戶ID或是名字

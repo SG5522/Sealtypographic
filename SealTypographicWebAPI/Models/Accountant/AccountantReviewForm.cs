@@ -3,7 +3,7 @@
     /// <summary>
     /// 會計資料
     /// </summary>
-    public class AccountantReviewForm : BaseForm
+    public class AccountantReviewForm : BaseData
     {
         /// <summary>
         /// 會計師ID

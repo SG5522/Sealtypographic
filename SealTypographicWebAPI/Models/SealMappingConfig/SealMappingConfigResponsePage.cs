@@ -1,4 +1,4 @@
-﻿namespace SealTypographicWebAPI.Models
+﻿namespace SealTypographicWebAPI.Models.SealMappingConfig
 {
     /// <summary>
     /// 取得圖片群組資料以及回應訊息

@@ -8,6 +8,11 @@ namespace SealTypographicWebAPI.Entities
     public class BaseReviewData : BaseData
     {
         /// <summary>
+        /// 檢核人員Id
+        /// </summary>
+        public int? ReviewUserId { get; set; }
+
+        /// <summary>
         /// 啟用日期
         /// </summary>
         public DateTime StartDate { get; set; }

@@ -1,4 +1,4 @@
-﻿namespace SealTypographicWebAPI.Models
+﻿namespace SealTypographicWebAPI.Models.SealMappingConfig
 {
     /// <summary>
     /// 圖片群組 (使用印鑑、簽名、LOGO)

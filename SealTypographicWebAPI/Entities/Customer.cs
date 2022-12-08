@@ -3,7 +3,7 @@
     /// <summary>
     /// 客戶資料表
     /// </summary>        
-    public class Customer : BaseReviewNameData
+    public class Customer : BaseNameData
     {
 
         /// <summary>

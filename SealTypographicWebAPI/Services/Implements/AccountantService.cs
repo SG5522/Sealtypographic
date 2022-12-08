@@ -83,10 +83,7 @@ namespace SealTypographicWebAPI.Services.Implements
                                                         || accountant.AccountantGroup.Name.Contains(accountantSearch.IdOrNameOrGroupsName)
                                                     );                                                   
             }
-            if(accountantSearch.ReviewStatus != ReviewStatus.All)
-            {
-                accountantsQuery = accountantsQuery.Where(accountant => accountant.ReviewStatus == accountantSearch.ReviewStatus);
-            }
+
             accountantsQuery = accountantsQuery.OrderBy(accountant => accountant.Id);
             if (accountantsQuery.Any())
             {
@@ -102,7 +99,6 @@ namespace SealTypographicWebAPI.Services.Implements
                 foreach (Accountant accountant in thisPageAccountants)
                 {
                     AccountantPaginateViewModel accountantPaginateViewModel = mapper.Map<AccountantPaginateViewModel>(accountant);
-                    accountantPaginateViewModel.StatusString = StatusUtil.Get(accountant.ReviewStatus);
                     accountantPaginateViewModels.Add(accountantPaginateViewModel);
                 }
                 //取得成功訊息
@@ -143,10 +139,6 @@ namespace SealTypographicWebAPI.Services.Implements
                 accountant.CreateDate = DateTime.Now;
                 //暫用
                 accountant.UpdateDate = AvailableDateUtil.NotActivated();
-                accountant.StartDate = AvailableDateUtil.NotActivated();
-                accountant.EndDate = AvailableDateUtil.NotActivated();
-
-                accountant.ReviewStatus = ReviewStatus.Pending;
 
                 dbContext.Accountants.Add(accountant);
                 dbContext.SaveChanges();
@@ -174,9 +166,6 @@ namespace SealTypographicWebAPI.Services.Implements
             if (accountantQuery != null)
             {
                 mapper.Map(accountaPostData, accountantQuery);
-                accountantQuery.StartDate = AvailableDateUtil.NotActivated();
-                accountantQuery.EndDate = AvailableDateUtil.NotActivated();
-                accountantQuery.ReviewStatus = ReviewStatus.Pending;
 
                 dbContext.SaveChanges();
                 response = ResponseUtil.Success();
@@ -202,8 +191,6 @@ namespace SealTypographicWebAPI.Services.Implements
 
             if (accountantQuery != null)
             {                
-                accountantQuery.StartDate = AvailableDateUtil.NotActivated();
-                accountantQuery.ReviewStatus = ReviewStatus.Hidden;
                 dbContext.SaveChanges();
                 response = ResponseUtil.Success();
             }

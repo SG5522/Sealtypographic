@@ -13,14 +13,14 @@ namespace SealTypographicWebAPI.Services
         /// </summary>
         /// <param name="customerId">顧客ID</param>
         /// <returns></returns>
-        CustomerResponseViewModel GetCustomerViewModel(int customerId);
+        CustomerDetailViewModel GetCustomerDetailViewModel(int customerId);
 
         /// <summary>
         /// 依搜尋條件獲得顧客資料列表
         /// </summary>
         /// <param name="customerQuery">客戶分頁搜尋</param>        
         /// <returns></returns>
-        CustomerPaginatesViewModel GetCustomerPaginatesViewModel(CustomerSearch customerQuery);
+        CustomerPaginateViewModel GetCustomerPaginatesViewModel(CustomerSearch customerQuery);
 
         /// <summary>
         /// 建立顧客資料
@@ -32,7 +32,7 @@ namespace SealTypographicWebAPI.Services
         /// 更新客戶基本資料
         /// </summary>
         /// <param name="customer">基本資料</param>
-        ResponseViewModel UpdateCustomer(CustomerForm customer);
+        ResponseViewModel UpdateCustomer(CustomerFormUpdate customer);
 
         /// <summary>
         /// 刪除客戶基本資料(變更狀態使其一般USER無法看到)

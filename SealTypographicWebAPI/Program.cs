@@ -127,8 +127,8 @@ else
 
 using (IServiceScope scope = app.Services.CreateScope())
 {
-    SealTypographicDbContext db = scope.ServiceProvider.GetRequiredService<SealTypographicDbContext>();
-    db.Database.Migrate();
+    SealTypographicDbContext dbContext = scope.ServiceProvider.GetRequiredService<SealTypographicDbContext>();
+    dbContext.Database.Migrate();
 }
 
 app.UseAuthorization();

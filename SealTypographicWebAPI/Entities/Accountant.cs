@@ -3,7 +3,7 @@
     /// <summary>
     /// 會計師資料表
     /// </summary>
-    public class Accountant : BaseReviewNameData
+    public class Accountant : BaseNameData
     {
         /// <summary>
         /// 會計編號

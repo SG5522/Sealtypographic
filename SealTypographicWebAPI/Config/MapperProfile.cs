@@ -18,9 +18,10 @@ namespace SealTypographicWebAPI.Config
         public MapperProfile()
         {
             //顧客基本資料
-            CreateMap<Customer, CustomerForm>();
-            CreateMap<Customer, CustomerPaginateViewModel>();
+            CreateMap<Customer, CustomerDetail>();
+            CreateMap<Customer, CustomerViewModel>();
             CreateMap<CustomerForm, Customer>();
+            CreateMap<CustomerFormUpdate, Customer>();
 
             //顧客印鑑
             CreateMap<CustomerSealJournal, CustomerSealViewModel>()
