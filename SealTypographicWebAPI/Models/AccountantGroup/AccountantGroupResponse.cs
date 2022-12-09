@@ -8,6 +8,6 @@
         /// <summary>
         /// 會計師群組基本資料
         /// </summary>
-        public AccountantGroupData AccountantGroupData { get; set; }
+        public AccountantGroupViewModel AccountantGroupData { get; set; }
     }
 }

@@ -95,14 +95,14 @@ namespace SealTypographicWebAPI.Controllers
         {
             try
             {
-                Log.Information("Accountant post accountantBaseData input {@Input}", accountantBaseData);
+                Log.Information("Accountant post accountantFormUpdate input {@Input}", accountantBaseData);
                 ResponseViewModel response = accountantService.CreateAccountant(accountantBaseData);
-                Log.Information("Accountant post accountantBaseData output {@Output}", response);
+                Log.Information("Accountant post accountantFormUpdate output {@Output}", response);
                 return response;                
             }
             catch (Exception ex)
             {
-                Log.Error("AccountantGroups post accountantBaseData error {@Error}", ex);
+                Log.Error("AccountantGroups post accountantFormUpdate error {@Error}", ex);
                 return ResponseUtil.DBError();
             }
         }
@@ -110,20 +110,20 @@ namespace SealTypographicWebAPI.Controllers
         /// <summary>
         /// 更新基本資料
         /// </summary>
-        /// <param name="accountantBaseData"></param>        
+        /// <param name="accountantFormUpdate"></param>        
         [HttpPut]
-        public ResponseViewModel Put(AccountantForm accountantBaseData)
+        public ResponseViewModel Put(AccountantFormUpdate accountantFormUpdate)
         {
             try
             {
-                Log.Information("Accountant put accountantBaseData input {@Input}", accountantBaseData);
-                ResponseViewModel response = accountantService.UpdateAccountant(accountantBaseData);
-                Log.Information("Accountant put accountantBaseData output {@Output}", response);
+                Log.Information("Accountant put accountantFormUpdate input {@Input}", accountantFormUpdate);
+                ResponseViewModel response = accountantService.UpdateAccountant(accountantFormUpdate);
+                Log.Information("Accountant put accountantFormUpdate output {@Output}", response);
                 return response;
             }
             catch (Exception ex)
             {
-                Log.Error("AccountantGroups put accountantBaseData error {@Error}", ex);
+                Log.Error("AccountantGroups put accountantFormUpdate error {@Error}", ex);
                 return ResponseUtil.DBError();
             }
         }
@@ -139,14 +139,14 @@ namespace SealTypographicWebAPI.Controllers
         {
             try
             {
-                Log.Information("Accountant delete(hide) accountantBaseData input {@Input}", accountantId);
+                Log.Information("Accountant delete(hide) accountantFormUpdate input {@Input}", accountantId);
                 ResponseViewModel response = accountantService.DeleteAccountant(accountantId);
-                Log.Information("Accountant delete(hide) accountantBaseData output {@Output}", response);
+                Log.Information("Accountant delete(hide) accountantFormUpdate output {@Output}", response);
                 return response;
             }
             catch (Exception ex)
             { 
-                Log.Error("AccountantGroups delete(hide) accountantBaseData error {@Error}", ex); 
+                Log.Error("AccountantGroups delete(hide) accountantFormUpdate error {@Error}", ex); 
                 return ResponseUtil.DBError(); 
             }
         }

@@ -35,7 +35,7 @@ namespace SealTypographicWebAPI.Services
         /// 更新客戶基本資料
         /// </summary>
         /// <param name="accountantBaseData">基本資料</param>
-        ResponseViewModel UpdateAccountant(AccountantForm accountantBaseData);
+        ResponseViewModel UpdateAccountant(AccountantFormUpdate accountantBaseData);
 
         /// <summary>
         /// 刪除客戶基本資料(變更狀態使其一般USER無法看到)

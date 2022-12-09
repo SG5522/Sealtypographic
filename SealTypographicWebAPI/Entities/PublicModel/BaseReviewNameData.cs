@@ -1,6 +1,5 @@
-﻿using SealTypographicWebAPI.Consts;
-
-namespace SealTypographicWebAPI.Entities
+﻿
+namespace SealTypographicWebAPI.Entities.PublicModel
 {
     /// <summary>
     /// 各類別基本資料

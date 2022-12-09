@@ -72,7 +72,7 @@ namespace SealTypographicWebAPI.Services.Implements
             ResponseViewModel response = new();
             int totalPage = 0;
             int totalCount = 0;
-            IQueryable<Customer> customerQuery = dbContext.Customers;            
+            IQueryable<Customer> customerQuery = dbContext.Customers.Where(customer => customer.DeleteStatus == DeleteStatus.NO);            
             if (!string.IsNullOrWhiteSpace(customerSearch.CustomerNumberOrName))
             {
                 customerQuery = customerQuery.Where
@@ -132,7 +132,8 @@ namespace SealTypographicWebAPI.Services.Implements
             if (!customerQuery.Any())
             {
                 Customer dbCustomer = mapper.Map<Customer>(customerForm);
-                dbCustomer.CreateDate = DateTime.Now;                
+                dbCustomer.CreateDate = DateTime.Now;
+                dbCustomer.DeleteStatus = DeleteStatus.NO;
                 dbContext.Customers.Add(dbCustomer);
                 dbContext.SaveChanges();
                 response = ResponseUtil.Success();
@@ -158,8 +159,8 @@ namespace SealTypographicWebAPI.Services.Implements
 
             if (customerQuery != null)
             {
-                mapper.Map(customerFormUpdate, customerQuery);
-                //修改資料時要改回審察與啟用日期設為不啟用(0000/01/01)
+                mapper.Map(customerFormUpdate, customerQuery);                
+                customerQuery.UpdateDate = DateTime.Now;
 
                 dbContext.SaveChanges();
                 response = ResponseUtil.Success();
@@ -185,6 +186,7 @@ namespace SealTypographicWebAPI.Services.Implements
 
             if (customerQuery != null)
             {
+                customerQuery.DeleteStatus = DeleteStatus.Yes;
                 dbContext.SaveChanges();
                 response = ResponseUtil.Success();
             }

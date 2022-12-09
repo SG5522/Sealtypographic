@@ -1,4 +1,4 @@
-﻿namespace SealTypographicWebAPI.Models
+﻿namespace SealTypographicWebAPI.Models.PublicModel
 {
     /// <summary>
     /// 新增更新資料時會填入的資料

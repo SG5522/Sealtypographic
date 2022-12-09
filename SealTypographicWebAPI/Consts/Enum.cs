@@ -11,25 +11,35 @@
         All = -1,
 
         /// <summary>
-        /// 待審
-        /// </summary>
-        Pending = 0,
-
-        /// <summary>
         /// 通過(審核完成)
         /// </summary>
-        Approval = 10,
+        Approval = 0,
+
+        /// <summary>
+        /// 待審
+        /// </summary>
+        Pending = 10,
 
         /// <summary>
         /// 退件
         /// </summary>
         Reject = 20,
+    }
+
+    /// <summary>
+    /// 刪除狀態
+    /// </summary>
+    public enum DeleteStatus : int
+    {
+        /// <summary>
+        /// 無標記
+        /// </summary>
+        NO = 0,
 
         /// <summary>
-        /// 隱藏(被刪除時的狀態)
+        /// 隱藏或標記刪除
         /// </summary>
-        Hidden = 99,
-
+        Yes = 1,
     }
 
     /// <summary>

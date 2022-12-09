@@ -1,4 +1,6 @@
-﻿namespace SealTypographicWebAPI.Entities
+﻿using SealTypographicWebAPI.Entities.PublicModel;
+
+namespace SealTypographicWebAPI.Entities
 {
     /// <summary>
     /// 信頭圖片排版位置

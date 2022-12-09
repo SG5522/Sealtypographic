@@ -1,6 +1,6 @@
 ﻿using SealTypographicWebAPI.Consts;
 
-namespace SealTypographicWebAPI.Entities
+namespace SealTypographicWebAPI.Entities.PublicModel
 {
     /// <summary>
     /// 各類別基本資料
@@ -23,12 +23,18 @@ namespace SealTypographicWebAPI.Entities
         public DateTime EndDate { get; set; }
 
         /// <summary>
-        /// 狀態
-        /// 0.待審查
-        /// 1.通過(審核完成)
-        /// 2.退件
-        /// 3.刪除(系統管理員可以看到資料)
+        /// 審核狀態狀態
+        /// 0.通過(審核完成)
+        /// 10.待審查
+        /// 20.退件
         /// </summary>
         public ReviewStatus ReviewStatus { get; set; }
+
+        /// <summary>
+        /// 刪除狀態
+        /// 0.無標記
+        /// 1.刪除或隱藏
+        /// </summary>
+        public DeleteStatus DeleteStatus { get; set; }
     }
 }

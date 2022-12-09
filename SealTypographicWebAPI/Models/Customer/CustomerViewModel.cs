@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using SealTypographicWebAPI.Models.PublicModel;
 
 namespace SealTypographicWebAPI.Models.Customer
 {

@@ -1,9 +1,9 @@
-﻿namespace SealTypographicWebAPI.Models
+﻿namespace SealTypographicWebAPI.Models.PublicModel
 {
     /// <summary>
     /// 新增更新資料時會填入的資料
     /// </summary>
-    public class BaseUpdateNameData : BaseNameData
+    public class BaseUpdateData : BaseData
     {
         /// <summary>
         /// 更新UserId(暫無帳號先給0)

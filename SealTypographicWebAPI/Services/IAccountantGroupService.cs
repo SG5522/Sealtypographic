@@ -33,14 +33,14 @@ namespace SealTypographicWebAPI.Services
         /// <summary>
         /// 建立會計師群組資料
         /// </summary>
-        /// <param name="accountantGroupData">群組資料</param>        
-        ResponseViewModel CreateAccountantGroup(AccountantGroupData accountantGroupData);
+        /// <param name="accountantGroupForm">群組資料</param>        
+        ResponseViewModel CreateAccountantGroup(AccountantGroupForm accountantGroupForm);
 
         /// <summary>
         /// 更新會計師群組資料
         /// </summary>
-        /// <param name="accountantGroupData">群組資料</param>
-        ResponseViewModel UpdateAccountantGroup(AccountantGroupData accountantGroupData);
+        /// <param name="accountantGroupFormUpdate">群組資料</param>
+        ResponseViewModel UpdateAccountantGroup(AccountantGroupFormUpdate accountantGroupFormUpdate);
 
         /// <summary>
         /// 刪除群組(將該群組的所有人員先轉移到無群組在進行群組刪除)

@@ -1,10 +1,14 @@
-﻿namespace SealTypographicWebAPI.Entities
+﻿using SealTypographicWebAPI.Entities.PublicModel;
+
+namespace SealTypographicWebAPI.Entities
 {
     /// <summary>
     /// 客戶資料表
     /// </summary>        
-    public class Customer : BaseNameData
+    public class Customer : BaseNameDeleteStatusData
     {
+        /// 公司負責人
+        public string CompanyPrincipal { get; set; }
 
         /// <summary>
         /// 客戶編號
@@ -33,7 +37,17 @@
         /// <summary>
         /// 傳真
         /// </summary>
-        public string Fax { get; set; }
+        public string? Fax { get; set; }
+
+        /// <summary>
+        /// 聯絡人
+        /// </summary>
+        public string? ContactPerson { get; set; }
+
+        /// <summary>
+        /// 聯絡人職稱
+        /// </summary>
+        public string? ContactTitle { get; set; }
 
         /// <summary>
         /// 客戶印鑑資料(歷程)

@@ -1,4 +1,5 @@
 ﻿using SealTypographicWebAPI.Models.Accountant;
+using SealTypographicWebAPI.Models.PublicModel;
 
 namespace SealTypographicWebAPI.Models.AccountantGroupMember
 {

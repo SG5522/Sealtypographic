@@ -4,6 +4,7 @@ using SealTypographicWebAPI.Entities;
 using SealTypographicWebAPI.Models.Accountant;
 using SealTypographicWebAPI.Models.Letterhead;
 using SealTypographicWebAPI.Models.TypographicPDF;
+using SealTypographicWebAPI.Models.AccountantGroup;
 
 namespace SealTypographicWebAPI.Config
 {
@@ -36,11 +37,13 @@ namespace SealTypographicWebAPI.Config
             CreateMap<Accountant, AccountantViewModel>()                    
                     .ForMember(x => x.AccountantGroupName, y => y.MapFrom(o => o.AccountantGroup.Name))
                     .ReverseMap();
-            CreateMap<Accountant, AccountantPaginateViewModel>()
-                    .ForMember(x => x.AccountantGroupName, y => y.MapFrom(o => o.AccountantGroup.Name))
-                    .ReverseMap();
             CreateMap<AccountantForm, Accountant>();
+            CreateMap<AccountantFormUpdate, Accountant>();
 
+            //會計師群組
+            CreateMap<AccountantGroup, AccountantGroupViewModel>();
+            CreateMap<AccountantGroupForm, AccountantGroup>();
+            CreateMap<AccountantGroupFormUpdate,AccountantGroup>();
 
             //會計師印鑑
             CreateMap<AccountantSignJournal, AccountantSignViewModel>()

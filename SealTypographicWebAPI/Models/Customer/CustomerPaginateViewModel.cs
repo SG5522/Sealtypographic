@@ -1,4 +1,6 @@
-﻿namespace SealTypographicWebAPI.Models.Customer
+﻿using SealTypographicWebAPI.Models.PublicModel;
+
+namespace SealTypographicWebAPI.Models.Customer
 {
     /// <summary>
     /// 依搜尋結果與分頁顯示客戶列表

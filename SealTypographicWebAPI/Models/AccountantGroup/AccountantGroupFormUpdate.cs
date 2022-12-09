@@ -3,13 +3,13 @@
 namespace SealTypographicWebAPI.Models.AccountantGroup
 {
     /// <summary>
-    /// 會計師群組分頁搜尋
+    /// 建立會計師群組
     /// </summary>
-    public class AccountantGroupSearch : PaginateSearch
+    public class AccountantGroupFormUpdate : BaseUpdateNameData
     {
         /// <summary>
-        /// 會計師群組名稱
+        /// 會計師群組編號
         /// </summary>
-        public string? GroupName { get; set; }
+        public string AccountantGroupNumber { get; set; }
     }
 }

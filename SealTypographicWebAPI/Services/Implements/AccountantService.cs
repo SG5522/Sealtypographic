@@ -68,7 +68,7 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <returns></returns>
         public AccountantPaginatesViewModel GetAccountantViewModels(AccountantSearch accountantSearch)
         {            
-            List<AccountantPaginateViewModel> accountantPaginateViewModels = new();
+            List<AccountantViewModel> accountantViewModels = new();
             ResponseViewModel response = new();
             IQueryable<Accountant> accountantsQuery = dbContext.Accountants;
             int totalPage = 0;
@@ -98,8 +98,8 @@ namespace SealTypographicWebAPI.Services.Implements
                 totalCount = accountantsQuery.Count();
                 foreach (Accountant accountant in thisPageAccountants)
                 {
-                    AccountantPaginateViewModel accountantPaginateViewModel = mapper.Map<AccountantPaginateViewModel>(accountant);
-                    accountantPaginateViewModels.Add(accountantPaginateViewModel);
+                    AccountantViewModel accountantViewModel = mapper.Map<AccountantViewModel>(accountant);
+                    accountantViewModels.Add(accountantViewModel);
                 }
                 //取得成功訊息
                 response = ResponseUtil.Success();
@@ -114,7 +114,7 @@ namespace SealTypographicWebAPI.Services.Implements
                 PageNumber = accountantSearch.PageNumber,
                 TotalCount = totalCount,
                 TotalPage = totalPage,
-                AccountantPaginates = accountantPaginateViewModels,
+                AccountantViewModels = accountantViewModels,
                 //回傳結果訊息用
                 Code = response.Code,
                 Message = response.Message,
@@ -124,22 +124,20 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <summary>
         /// 新增會計基本資料
         /// </summary>
-        /// <param name="accountantPostData">基本資料</param>
+        /// <param name="accountantForm">基本資料</param>
         /// <returns></returns>
-        public ResponseViewModel CreateAccountant(AccountantForm accountantPostData)
+        public ResponseViewModel CreateAccountant(AccountantForm accountantForm)
         {
             ResponseViewModel response = new();
             Accountant? accountantQuery = dbContext.Accountants
-                                    .Where(accountant => accountant.AccountantNumber == accountantPostData.AccountantNumber)
+                                    .Where(accountant => accountant.AccountantNumber == accountantForm.AccountantNumber)
                                     .FirstOrDefault();
 
             if (accountantQuery == null)
             {
-                Accountant accountant = mapper.Map<Accountant>(accountantPostData);
+                Accountant accountant = mapper.Map<Accountant>(accountantForm);
                 accountant.CreateDate = DateTime.Now;
-                //暫用
-                accountant.UpdateDate = AvailableDateUtil.NotActivated();
-
+                accountant.DeleteStatus = DeleteStatus.NO;
                 dbContext.Accountants.Add(accountant);
                 dbContext.SaveChanges();
                 response = ResponseUtil.Success();
@@ -155,18 +153,18 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <summary>
         /// 更新會計師基本資料
         /// </summary>
-        /// <param name="accountaPostData">會計師基本資料 accountantBaseData.id 為搜尋條件</param>        
-        public ResponseViewModel UpdateAccountant(AccountantForm accountaPostData)
+        /// <param name="accountantFormUpdate">會計師基本資料 accountantBaseData.id 為搜尋條件</param>        
+        public ResponseViewModel UpdateAccountant(AccountantFormUpdate accountantFormUpdate)
         {
             ResponseViewModel response = new();
             Accountant? accountantQuery = dbContext.Accountants
-                                .Where(accountant => accountant.AccountantNumber == accountaPostData.AccountantNumber)
+                                .Where(accountant => accountant.AccountantNumber == accountantFormUpdate.AccountantNumber)
                                 .FirstOrDefault();
 
             if (accountantQuery != null)
             {
-                mapper.Map(accountaPostData, accountantQuery);
-
+                mapper.Map(accountantFormUpdate, accountantQuery);
+                accountantQuery.UpdateDate = DateTime.Now;
                 dbContext.SaveChanges();
                 response = ResponseUtil.Success();
             }
@@ -190,7 +188,8 @@ namespace SealTypographicWebAPI.Services.Implements
                                 .FirstOrDefault();
 
             if (accountantQuery != null)
-            {                
+            {
+                accountantQuery.DeleteStatus = DeleteStatus.Yes;
                 dbContext.SaveChanges();
                 response = ResponseUtil.Success();
             }

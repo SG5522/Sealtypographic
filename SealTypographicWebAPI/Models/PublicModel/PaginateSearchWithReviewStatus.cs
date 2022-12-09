@@ -1,12 +1,12 @@
 ﻿using SealTypographicWebAPI.Consts;
 using System.ComponentModel.DataAnnotations;
 
-namespace SealTypographicWebAPI.Models
+namespace SealTypographicWebAPI.Models.PublicModel
 {
     /// <summary>
     /// 分頁搜尋
     /// </summary>
-    public class PaginateSearchWithStatus : PaginateSearch
+    public class PaginateSearchWithReviewStatus : PaginateSearch
     {
         /// <summary>
         /// 狀態

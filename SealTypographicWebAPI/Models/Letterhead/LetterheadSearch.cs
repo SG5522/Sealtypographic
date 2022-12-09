@@ -1,9 +1,11 @@
-﻿namespace SealTypographicWebAPI.Models.Customer
+﻿using SealTypographicWebAPI.Models.PublicModel;
+
+namespace SealTypographicWebAPI.Models.Customer
 {
     /// <summary>
     /// 客戶分頁搜尋
     /// </summary>
-    public class LetterheadSearch : PaginateSearchWithStatus
+    public class LetterheadSearch : PaginateSearchWithReviewStatus
     {
         /// <summary>
         /// 搜尋名字

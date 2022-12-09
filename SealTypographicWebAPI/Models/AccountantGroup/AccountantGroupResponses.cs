@@ -1,4 +1,6 @@
-﻿namespace SealTypographicWebAPI.Models.AccountantGroup
+﻿using SealTypographicWebAPI.Models.PublicModel;
+
+namespace SealTypographicWebAPI.Models.AccountantGroup
 {
     /// <summary>
     /// 依搜尋結果顯示會計師列表
@@ -8,6 +10,6 @@
         /// <summary>
         /// 會計師群組列表
         /// </summary>
-        public List<AccountantGroupData> AccountantGroups { get; set; }
+        public List<AccountantGroupViewModel> AccountantGroups { get; set; }
     }
 }

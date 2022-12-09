@@ -104,7 +104,7 @@ namespace SealTypographicWebAPI.Controllers
             }
             catch (Exception ex)
             {
-                Log.Error("AccountantGroups get accountantGroupData error {@Error}", ex);
+                Log.Error("AccountantGroups get accountantGroupForm error {@Error}", ex);
                 ResponseViewModel response = ResponseUtil.DBError();
                 return new AccountantGroupResponse()
                 {
@@ -117,20 +117,20 @@ namespace SealTypographicWebAPI.Controllers
         /// <summary>
         /// 建立會計師群組
         /// </summary>
-        /// <param name="accountantGroupData">群組資料</param>
+        /// <param name="accountantGroupForm">群組資料</param>
         [HttpPost]
-        public ResponseViewModel Post(AccountantGroupData accountantGroupData)
+        public ResponseViewModel Post(AccountantGroupForm accountantGroupForm)
         {
             try
             {
-                Log.Information("AccountantGroups post accountantGroupData input {@Input}", accountantGroupData);
-                ResponseViewModel response = accountantGroupService.CreateAccountantGroup(accountantGroupData);
-                Log.Information("AccountantGroups post accountantGroupData output {@Output}", response);
+                Log.Information("AccountantGroups post accountantGroupForm input {@Input}", accountantGroupForm);
+                ResponseViewModel response = accountantGroupService.CreateAccountantGroup(accountantGroupForm);
+                Log.Information("AccountantGroups post accountantGroupForm output {@Output}", response);
                 return response;
             }
             catch (Exception ex)
             {
-                Log.Error("AccountantGroups post accountantGroupData error {@Error}", ex);
+                Log.Error("AccountantGroups post accountantGroupForm error {@Error}", ex);
                 return ResponseUtil.DBError();
             }
         }
@@ -138,20 +138,20 @@ namespace SealTypographicWebAPI.Controllers
         /// <summary>
         /// 更新群組資料
         /// </summary>
-        /// <param name="accountantGroupData">群組資料</param>       
+        /// <param name="accountantGroupFormUpdate">群組資料</param>       
         [HttpPut]
-        public ResponseViewModel Put(AccountantGroupData accountantGroupData)
+        public ResponseViewModel Put(AccountantGroupFormUpdate accountantGroupFormUpdate)
         {
             try
             {
-                Log.Information("AccountantGroups put accountantGroupData input {@Input}", accountantGroupData);
-                ResponseViewModel response = accountantGroupService.UpdateAccountantGroup(accountantGroupData);
-                Log.Information("AccountantGroups put accountantGroupData output {@Output}", response);
+                Log.Information("AccountantGroups put accountantGroupForm input {@Input}", accountantGroupFormUpdate);
+                ResponseViewModel response = accountantGroupService.UpdateAccountantGroup(accountantGroupFormUpdate);
+                Log.Information("AccountantGroups put accountantGroupForm output {@Output}", response);
                 return response;                
             }
             catch (Exception ex)
             {
-                Log.Error("AccountantGroups put accountantGroupData error {@Error}", ex);
+                Log.Error("AccountantGroups put accountantGroupForm error {@Error}", ex);
                 return ResponseUtil.DBError();
             }
         }
@@ -166,14 +166,14 @@ namespace SealTypographicWebAPI.Controllers
         {
             try
             {
-                Log.Information("AccountantGroups delete accountantGroupData input {@Input}", accountantGroupDataId);
+                Log.Information("AccountantGroups delete accountantGroupForm input {@Input}", accountantGroupDataId);
                 ResponseViewModel response = accountantGroupService.DeleteAccountantGroup(accountantGroupDataId);
-                Log.Information("AccountantGroups delete accountantGroupData output {@Output}", response);
+                Log.Information("AccountantGroups delete accountantGroupForm output {@Output}", response);
                 return response;
             }
             catch (Exception ex)
             {
-                Log.Error("AccountantGroups delete accountantGroupData error {@Error}", ex);
+                Log.Error("AccountantGroups delete accountantGroupForm error {@Error}", ex);
                 return ResponseUtil.DBError();
             }
         }

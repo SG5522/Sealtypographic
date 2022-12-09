@@ -1,4 +1,6 @@
-﻿namespace SealTypographicWebAPI.Entities
+﻿using SealTypographicWebAPI.Entities.PublicModel;
+
+namespace SealTypographicWebAPI.Entities
 {
     /// <summary>
     /// 會計師簽名與印鑑位置

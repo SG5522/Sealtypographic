@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using SealTypographicWebAPI.Models.PublicModel;
 
 namespace SealTypographicWebAPI.Models.Customer
 {
@@ -7,6 +8,12 @@ namespace SealTypographicWebAPI.Models.Customer
     /// </summary>
     public class CustomerForm : BaseCreateNameData
     {
+        /// <summary>
+        /// 公司負責人
+        /// </summary>
+        /// <example>負責人</example>
+        public string CompanyPrincipal { get; set; }
+
         /// <summary>
         /// 客戶編號(更新或搜尋使用)
         /// </summary>
@@ -43,5 +50,19 @@ namespace SealTypographicWebAPI.Models.Customer
         /// </summary>
         /// <example>28825252</example>
         public string Fax { get; set; }
+
+
+
+        /// <summary>
+        /// 聯絡人
+        /// </summary>
+        /// <example>映先生</example>
+        public string? ContactPerson { get; set; }
+
+        /// <summary>
+        /// 聯絡人職稱
+        /// </summary>
+        /// <example>業務</example>
+        public string? ContactTitle { get; set; }
     }
 }

@@ -6,7 +6,12 @@ namespace SealTypographicWebAPI.Models.Customer
     /// 客戶資料
     /// </summary>
     public class CustomerDetail : CustomerViewModel
-    {
+    {        
+        /// <summary>
+        /// 公司負責人
+        /// </summary>
+        public string CompanyPrincipal { get; set; }
+
         /// <summary>
         /// 證券代號
         /// </summary>
@@ -30,6 +35,18 @@ namespace SealTypographicWebAPI.Models.Customer
         /// </summary>
         /// <example>28825252</example>
         public string Fax { get; set; }
+
+
+
+        /// <summary>
+        /// 聯絡人
+        /// </summary>
+        public string? ContactPerson { get; set; }
+
+        /// <summary>
+        /// 聯絡人職稱
+        /// </summary>
+        public string? ContactTitle { get; set; }
     }
 
     /// <summary>

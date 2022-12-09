@@ -1,4 +1,6 @@
-﻿namespace SealTypographicWebAPI.Models.AccountantGroupMember
+﻿using SealTypographicWebAPI.Models.PublicModel;
+
+namespace SealTypographicWebAPI.Models.AccountantGroupMember
 {
     /// <summary>
     /// 會計師群組成員資料

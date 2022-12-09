@@ -34,14 +34,6 @@ namespace SealTypographicWebAPI.Utils
             return Get(ReviewStatus.Reject);
         }
 
-        /// <summary>
-        /// 隱藏(被刪除時的狀態)
-        /// </summary>
-        /// <returns></returns>
-        public static string Hidden()
-        {
-            return Get(ReviewStatus.Hidden);
-        }
 
         /// <summary>
         /// 取得Status名稱
@@ -53,8 +45,7 @@ namespace SealTypographicWebAPI.Utils
             {
                 ReviewStatus.Pending => "待審",
                 ReviewStatus.Approval => "已審核",
-                ReviewStatus.Reject => "退件",
-                ReviewStatus.Hidden => "刪除(隱藏)",
+                ReviewStatus.Reject => "退件",                
                 _ => "",
             };
         }

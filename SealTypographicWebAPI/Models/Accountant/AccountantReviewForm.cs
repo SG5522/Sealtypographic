@@ -1,4 +1,6 @@
-﻿namespace SealTypographicWebAPI.Models.Accountant
+﻿using SealTypographicWebAPI.Models.PublicModel;
+
+namespace SealTypographicWebAPI.Models.Accountant
 {
     /// <summary>
     /// 會計資料
