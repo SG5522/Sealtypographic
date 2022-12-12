@@ -78,7 +78,7 @@ namespace SealTypographicWebAPI.Migrations
                 {
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    SealType = table.Column<string>(type: "TEXT", nullable: false),
+                    SealType = table.Column<int>(type: "INTEGER", nullable: false),
                     SubId = table.Column<string>(type: "TEXT", nullable: false),
                     Name = table.Column<string>(type: "TEXT", nullable: false)
                 },
@@ -108,8 +108,7 @@ namespace SealTypographicWebAPI.Migrations
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     AccountantNumber = table.Column<string>(type: "TEXT", nullable: false),
-                    AccountantGroupId = table.Column<string>(type: "TEXT", nullable: false),
-                    AccountantGroupId1 = table.Column<int>(type: "INTEGER", nullable: false),
+                    AccountantGroupId = table.Column<int>(type: "INTEGER", nullable: false),
                     CreateDate = table.Column<DateTime>(type: "TEXT", nullable: false),
                     UpdateDate = table.Column<DateTime>(type: "TEXT", nullable: false),
                     CreateUserId = table.Column<int>(type: "INTEGER", nullable: false),
@@ -121,8 +120,8 @@ namespace SealTypographicWebAPI.Migrations
                 {
                     table.PrimaryKey("PK_Accountants", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Accountants_AccountantGroups_AccountantGroupId1",
-                        column: x => x.AccountantGroupId1,
+                        name: "FK_Accountants_AccountantGroups_AccountantGroupId",
+                        column: x => x.AccountantGroupId,
                         principalTable: "AccountantGroups",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -393,9 +392,9 @@ namespace SealTypographicWebAPI.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Accountants_AccountantGroupId1",
+                name: "IX_Accountants_AccountantGroupId",
                 table: "Accountants",
-                column: "AccountantGroupId1");
+                column: "AccountantGroupId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_AccountantSignJournals_AccountantId",

@@ -28,7 +28,7 @@ namespace SealTypographicWebAPI.Services
         /// </summary>
         /// <param name="accountantGroupChangeForm">會計群組變更資料</param>
         /// <returns></returns>
-        ResponseViewModel ChangeAccountantGroup(AccountantGroupChangeForm accountantGroupChangeForm);
+        ResponseViewModel UpdateAccountantGroup(AccountantGroupChangeForm accountantGroupChangeForm);
 
         /// <summary>
         /// 變更多個會計師的群組

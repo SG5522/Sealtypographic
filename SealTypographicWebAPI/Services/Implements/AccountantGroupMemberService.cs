@@ -8,6 +8,7 @@ using AutoMapper;
 using SealTypographicWebAPI.Consts;
 using SealTypographicWebAPI.Utils;
 using SealTypographicWebAPI.Models.Customer;
+using System.Linq;
 
 namespace SealTypographicWebAPI.Services.Implements
 {
@@ -70,7 +71,7 @@ namespace SealTypographicWebAPI.Services.Implements
             }
             else
             {
-                response = ResponseUtil.NoData();
+                response = ResponseUtil.DbNoData();
             }
 
             return new()
@@ -97,9 +98,18 @@ namespace SealTypographicWebAPI.Services.Implements
             int totalPage = 0;
             int totalCount = 0;
             IQueryable<Accountant>? accountantQuery = dbContext.Accountants
-                                                .Where(accountant => !accountant.AccountantGroupId.Contains(notThisGroupMemberSearch.AccountantGroupId))
+                                                .Where(accountant => accountant.AccountantGroupId != notThisGroupMemberSearch.AccountantGroupId)
                                                 .Include(accountant => accountant.AccountantGroup);
                                                 
+            if(notThisGroupMemberSearch.AccountantNumberOrName != null)
+            {
+                accountantQuery = accountantQuery.Where
+                                (
+                                    accountant => accountant.AccountantNumber.Contains(notThisGroupMemberSearch.AccountantNumberOrName)
+                                    || accountant.Name.Contains(notThisGroupMemberSearch.AccountantNumberOrName)
+                                );
+            }
+
             if (accountantQuery.Any())
             {
                 //取得該頁            
@@ -121,7 +131,7 @@ namespace SealTypographicWebAPI.Services.Implements
             }
             else
             {
-                response = ResponseUtil.NoData();
+                response = ResponseUtil.DbNoData();
             }
 
             return new()
@@ -144,11 +154,11 @@ namespace SealTypographicWebAPI.Services.Implements
         /// </summary>
         /// <param name="accountantGroupChangeForm"></param>
         /// <returns></returns>
-        public ResponseViewModel ChangeAccountantGroup(AccountantGroupChangeForm accountantGroupChangeForm)
+        public ResponseViewModel UpdateAccountantGroup(AccountantGroupChangeForm accountantGroupChangeForm)
         {
             ResponseViewModel response;
             Accountant? accountant = dbContext.Accountants
-                                    .Where(accountant => accountant.AccountantNumber == accountantGroupChangeForm.AccountantNumber)
+                                    .Where(accountant => accountant.Id == accountantGroupChangeForm.Id)
                                     .FirstOrDefault();
             if (accountant != null)
             {

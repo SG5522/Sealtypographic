@@ -1,4 +1,7 @@
-﻿namespace SealTypographicWebAPI.Models.Customer
+﻿using SealTypographicWebAPI.Models.PublicModel;
+using System.ComponentModel.DataAnnotations;
+
+namespace SealTypographicWebAPI.Models.Customer
 {
     /// <summary>
     /// 客戶季度搜尋
@@ -6,15 +9,17 @@
     public class CustomerSealQuarter
     {
         /// <summary>
-        /// 客戶ID
+        /// 客戶Id
         /// </summary>
-        /// <example>aaa001</example>
+        /// <example>1</example>
+        [Required]
         public int CustomerId { get; set; }
 
         /// <summary>
         /// 印鑑季度
         /// </summary>
         /// <example>111年Q1</example>
+        [Required]
         public string Quarter { get; set; }
     }
 

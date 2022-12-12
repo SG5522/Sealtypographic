@@ -27,7 +27,6 @@ namespace SealTypographicWebAPI.Services.Implements
             this.dbContext = dbContext;            
             this.mapper = mapper;
         }
-
         /// <summary>
         /// 取得顧客印鑑季度表
         /// </summary>
@@ -57,7 +56,7 @@ namespace SealTypographicWebAPI.Services.Implements
             }
             else
             {
-                response = ResponseUtil.NoData();
+                response = ResponseUtil.DbNoData();
             }
 
             return new CustomerSealQuarters()
@@ -99,9 +98,8 @@ namespace SealTypographicWebAPI.Services.Implements
             }
             else
             {
-                response = ResponseUtil.NoData();
+                response = ResponseUtil.DbNoData();
             }
-
 
             return new CustomerSealViewModels()
             {
@@ -122,17 +120,25 @@ namespace SealTypographicWebAPI.Services.Implements
             ResponseViewModel response = new();
             List<CustomerSealJournal> customerSealJournals = new();
             foreach (CustomerSealForm customerSeal in customerSeals)
-            {
-                //這段之後會做成IMAGE64的處理並另存在指定的位置
-                string imagePath = customerSeal.ImageBase64;
+            {                
+                if (CheckRepeatSequence(mapper.Map<CustomerSealSequenceCheck>(customerSeal))) //確認序號是否重複
+                {
+                    //這段之後會做成IMAGE64的處理並另存在指定的位置
+                    string imagePath = customerSeal.ImageBase64;
 
-                CustomerSealJournal customerSealJournal = mapper.Map<CustomerSealJournal>(customerSeal);
-                customerSealJournal.ImagePath = imagePath;
-                customerSealJournal.CreateDate = DateTime.Now;
-                customerSealJournal.StartDate = AvailableDateUtil.NotActivated();
-                customerSealJournal.EndDate = AvailableDateUtil.NotActivated(); //暫時加上
-                customerSealJournal.ReviewStatus = ReviewStatus.Pending;
-                customerSealJournals.Add(customerSealJournal);
+                    CustomerSealJournal customerSealJournal = mapper.Map<CustomerSealJournal>(customerSeal);
+                    customerSealJournal.ImagePath = imagePath;
+                    customerSealJournal.CreateDate = DateTime.Now;
+                    customerSealJournal.StartDate = AvailableDateUtil.NotActivated();
+                    customerSealJournal.EndDate = AvailableDateUtil.NotActivated(); //暫時加上                
+                    customerSealJournal.ReviewStatus = ReviewStatus.Pending;
+                    customerSealJournal.DeleteStatus = DeleteStatus.NO;
+                    customerSealJournals.Add(customerSealJournal);
+                }
+                else
+                {
+                    return ResponseUtil.SealSequenceError();
+                }
             }
             dbContext.CustomerSealJournals.AddRange(customerSealJournals);
             dbContext.BulkSaveChanges();
@@ -146,10 +152,10 @@ namespace SealTypographicWebAPI.Services.Implements
         /// </summary>
         /// <param name="customerSeals">印鑑組</param>
         /// <returns></returns>
-        public ResponseViewModel UpdateCustomerSeals(List<CustomerSealUpdate> customerSeals)
+        public ResponseViewModel UpdateCustomerSeals(List<CustomerSealFormUpdate> customerSeals)
         {
             ResponseViewModel response = new();
-            foreach (CustomerSealUpdate customerSeal in customerSeals)
+            foreach (CustomerSealFormUpdate customerSeal in customerSeals)
             {
                 CustomerSealJournal? customerSealJournalQuery = dbContext.CustomerSealJournals.Where
                                            (
@@ -158,24 +164,93 @@ namespace SealTypographicWebAPI.Services.Implements
                                            ).FirstOrDefault();
                 if (customerSealJournalQuery != null)
                 {
-                    //這段之後會做成IMAGE64的處理並另存在指定的位置
-                    string imagePath = customerSeal.ImageBase64;
-                    //mapper.Map(customerSeal, customerSealJournalQuery);
+                    bool sequenceRepeatCheck = true;
 
-                    customerSealJournalQuery.ImagePath = imagePath;                    
-                    customerSealJournalQuery.StartDate = AvailableDateUtil.NotActivated();
-                    customerSealJournalQuery.EndDate = AvailableDateUtil.NotActivated(); //暫時加上
-                    customerSealJournalQuery.ReviewStatus = ReviewStatus.Pending;
+                    //印鑑序號如果是新的就進行重複確認
+                    if(customerSealJournalQuery.Sequence != customerSeal.Sequence)
+                    {
+                        CustomerSealSequenceCheck customerSealSequenceCheck = mapper.Map<CustomerSealSequenceCheck>(customerSealJournalQuery);
+                        customerSealSequenceCheck.Sequence = customerSeal.Sequence;
+                        sequenceRepeatCheck = CheckRepeatSequence(customerSealSequenceCheck);
+                    }
+                    
+                    if (sequenceRepeatCheck)
+                    {
+                        //這段之後會做成IMAGE64的處理並另存在指定的位置
+                        string imagePath = customerSeal.ImageBase64;
+                        mapper.Map(customerSeal, customerSealJournalQuery);
+
+                        customerSealJournalQuery.ImagePath = imagePath;
+                        customerSealJournalQuery.UpdateDate = DateTime.Now;
+                        customerSealJournalQuery.StartDate = AvailableDateUtil.NotActivated();
+                        customerSealJournalQuery.EndDate = AvailableDateUtil.NotActivated(); //暫時加上
+                        customerSealJournalQuery.ReviewStatus = ReviewStatus.Pending;
+                    }
+                    else
+                    {
+                        return ResponseUtil.SealSequenceError();
+                    }
                 }
                 else
                 {
-                    response = ResponseUtil.NoData();
+                    response = ResponseUtil.DbNoData();
                     return response;
                 }
             }            
             dbContext.SaveChanges();
             response = ResponseUtil.Success();
             return response;
+        }
+
+        /// <summary>
+        /// 變更此客戶狀態為刪除。
+        /// </summary>
+        /// <param name="customerSealId">客戶ID</param>        
+        public ResponseViewModel DeleteCustomerSeal(int customerSealId)
+        {
+            ResponseViewModel response = new();
+            CustomerSealJournal? customerSealJournalQuery = dbContext.CustomerSealJournals
+                                .Where(customerSealJournal => customerSealJournal.Id == customerSealId)
+                                .FirstOrDefault();
+
+            if (customerSealJournalQuery != null)
+            {
+                customerSealJournalQuery.DeleteStatus = DeleteStatus.Yes;
+                dbContext.SaveChanges();
+                response = ResponseUtil.Success();
+            }
+            else
+            {
+                response = ResponseUtil.DbNoData();
+            }
+            return response;
+        }
+
+        /// <summary>
+        /// 確認客戶序號是否重複 true 不重複 false 重複
+        /// </summary>
+        /// <param name="customerSealSequenceCheck">查詢參數</param>
+        /// <returns></returns>
+        private bool CheckRepeatSequence(CustomerSealSequenceCheck customerSealSequenceCheck)
+        {
+            CustomerSealJournal? customerSealQuery = dbContext.CustomerSealJournals
+                                .Where
+                                (
+                                    customerSealJournal => customerSealJournal.CustomerId == customerSealSequenceCheck.CustomerId
+                                    && customerSealJournal.SealMappingConfigId == customerSealSequenceCheck.SealMappingConfigId
+                                    && customerSealJournal.Quarter == customerSealSequenceCheck.Quarter
+                                    && customerSealJournal.Sequence == customerSealSequenceCheck.Sequence
+                                    && customerSealJournal.DeleteStatus == DeleteStatus.NO
+                                ).FirstOrDefault();
+
+            if(customerSealQuery == null )
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
     }
 }

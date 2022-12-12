@@ -8,7 +8,7 @@
         /// <summary>
         /// 群組ID
         /// </summary>
-        public string AccountantGroupId { get; set; }
+        public int AccountantGroupId { get; set; }
 
         /// <summary>
         /// 成員Id

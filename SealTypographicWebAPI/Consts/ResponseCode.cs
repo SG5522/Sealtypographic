@@ -16,14 +16,24 @@
         Success = 0,
 
         /// <summary>
-        /// 無資料
+        /// DB無資料
         /// </summary>
-        NoData = 1,
+        DbNoData = 100,
 
         /// <summary>
         /// 資料庫錯誤
         /// </summary>
-        DBError = 101,
+        DbError = 101,
+
+        /// <summary>
+        /// 資料庫客戶印鑑序號重複
+        /// </summary>
+        CustomerSealSequenceRepeat = 21,
+
+        /// <summary>
+        /// 資料庫會計師簽印已有資料
+        /// </summary>
+        AccountSignHaveData = 31,
 
         /// <summary>
         /// 上傳失敗

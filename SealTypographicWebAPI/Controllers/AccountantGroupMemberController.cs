@@ -130,7 +130,7 @@ namespace SealTypographicWebAPI.Controllers
             try
             {
                 Log.Information("AccountantGroupMember put accountantGroupChangeForm input {@Input}", accountantGroupChangeForm);
-                ResponseViewModel response = accountantGroupMemberService.ChangeAccountantGroup(accountantGroupChangeForm);
+                ResponseViewModel response = accountantGroupMemberService.UpdateAccountantGroup(accountantGroupChangeForm);
                 Log.Information("AccountantGroupMember put accountantGroupChangeForm output {@Output}", response);
                 return response;
             }

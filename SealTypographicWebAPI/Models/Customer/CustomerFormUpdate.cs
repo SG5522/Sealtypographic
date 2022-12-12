@@ -6,7 +6,7 @@ namespace SealTypographicWebAPI.Models.Customer
     /// <summary>
     /// 客戶資料(新增或是更新使用)
     /// </summary>
-    public class CustomerFormUpdate : BaseUpdateNameData
+    public class CustomerFormUpdate : BaseUpdateName
     {
         /// <summary>
         /// 公司負責人
@@ -19,18 +19,21 @@ namespace SealTypographicWebAPI.Models.Customer
         /// </summary>
         /// <example>AAA001</example>
         [Required]
+        [RegularExpression(@"^[a-zA-Z0-9]*$")]
         public string CustomerNumber { get; set; }
 
         /// <summary>
         /// 統一編號 (business administration number)
         /// </summary>
-        /// <example>12345678</example>
+        /// <example>12345678</example>        
+        [RegularExpression(@"^[0-9]*$")]
         public string BAN { get; set; }
 
         /// <summary>
         /// 證券代號
         /// </summary>
         /// <example>9666</example>
+        [RegularExpression(@"^[0-9]*$")]
         public string StockCode { get; set; }
 
         /// <summary>
@@ -43,12 +46,14 @@ namespace SealTypographicWebAPI.Models.Customer
         /// 電話
         /// </summary>
         /// <example>28825252</example>
+        [RegularExpression(@"^[0-9]*$")]
         public string Telephone { get; set; }
 
         /// <summary>
         /// 傳真
         /// </summary>
         /// <example>28825252</example>
+        [RegularExpression(@"^[0-9]*$")]
         public string Fax { get; set; }
 
         /// <summary>

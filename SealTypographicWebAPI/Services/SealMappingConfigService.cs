@@ -5,6 +5,7 @@ using SealTypographicWebAPI.Models.Customer;
 using EFCore.BulkExtensions;
 using SealTypographicWebAPI.Util;
 using SealTypographicWebAPI.Models.SealMappingConfig;
+using AutoMapper;
 
 namespace SealTypographicWebAPI.Services
 {
@@ -13,15 +14,18 @@ namespace SealTypographicWebAPI.Services
     /// </summary>
     public class SealMappingConfigService
     {
-        private readonly SealTypographicDbContext dbContext;        
+        private readonly SealTypographicDbContext dbContext;
+        private readonly IMapper mapper;
 
         /// <summary>
         /// 注入DB、ResponseService
         /// </summary>
-        /// <param name="dbContext"></param>          
-        public SealMappingConfigService(SealTypographicDbContext dbContext)
+        /// <param name="dbContext"></param>
+        /// <param name="mapper"></param>          
+        public SealMappingConfigService(SealTypographicDbContext dbContext,IMapper mapper)
         {
             this.dbContext = dbContext;            
+            this.mapper = mapper;
         }
 
         /// <summary>
@@ -45,11 +49,11 @@ namespace SealTypographicWebAPI.Services
             }
             else
             {
-                response = ResponseUtil.NoData();
+                response = ResponseUtil.DbNoData();
             }
             return new SealMappingConfigResponse()
             {
-                ImageGroup = sealMappingConfigViewModel,
+                SealMappingConfigViewModel = sealMappingConfigViewModel,
 
                 Code = response.Code,
                 Message= response.Message
@@ -57,64 +61,33 @@ namespace SealTypographicWebAPI.Services
         }
 
         /// <summary>
-        /// 取得圖片群組資料列
+        /// 取得印鑑群組(客戶)資料列
         /// </summary>
-        /// <param name="SealMappingConfigQuery"></param>
         /// <returns></returns>
-        public SealMappingConfigResponsePage GetSealMappingConfigResponsePage(SealMappingConfigQuery SealMappingConfigQuery)
+        public SealMappingConfigResponseList GetSealMappingConfigResponseList(SealType sealType)
         {
             List<SealMappingConfigViewModel> sealMappingConfigViewModels = new();
             ResponseViewModel response = new();
-            int totalPage = 0;
-            int totalCount = 0;
-            IQueryable<SealMappingConfig> sealMappingConfigQuerys = dbContext.SealMappingConfigs.AsQueryable();
-            if (SealMappingConfigQuery.NameOrType != null)
-            {
-                sealMappingConfigQuerys = sealMappingConfigQuerys.Where
-                (
-                    sealMappingConfig =>
-                    sealMappingConfig.Name.Contains(SealMappingConfigQuery.NameOrType)
-                    || sealMappingConfig.SealType.Contains(SealMappingConfigQuery.NameOrType)
-                );
-            }
-
-            sealMappingConfigQuerys = sealMappingConfigQuerys.OrderBy(sealMappingConfig => sealMappingConfig.Id);
-
+            List<SealMappingConfig> sealMappingConfigQuerys = dbContext.SealMappingConfigs.Where(sealMappingConfig => sealMappingConfig.SealType == sealType).ToList();
             if (sealMappingConfigQuerys.Any())
             {
-                //取得該頁            
-                var pageNumberSealMappingConfigs = sealMappingConfigQuerys
-                                            .Skip((SealMappingConfigQuery.PageNumber - 1) * SealMappingConfigQuery.PageSize)
-                                            .Take(SealMappingConfigQuery.PageSize)
-                                            .ToList();
-                //計算總頁數
-                totalPage = (sealMappingConfigQuerys.Count() / SealMappingConfigQuery.PageSize) + (sealMappingConfigQuerys.Count() % SealMappingConfigQuery.PageSize == 0 ? 0 : 1);
-                totalCount = sealMappingConfigQuerys.Count();
-                foreach (var sealMappingConfig in pageNumberSealMappingConfigs)
+                foreach (SealMappingConfig sealMappingConfig in sealMappingConfigQuerys)
                 {
-                    sealMappingConfigViewModels.Add(new ()
-                    {                        
-                        Name = sealMappingConfig.Name,
-                        SealType = sealMappingConfig.SealType,
-                        SubId = sealMappingConfig.SubId                        
-                    });
+                    sealMappingConfigViewModels.Add(mapper.Map<SealMappingConfigViewModel>(sealMappingConfig));
                 }
                 //取得成功訊息
                 response = ResponseUtil.Success();
             }
             else
             {
-                response = ResponseUtil.NoData();
+                response = ResponseUtil.DbNoData();
             }
-            return new SealMappingConfigResponsePage() 
+            return new SealMappingConfigResponseList() 
             { 
-                PageNumber = SealMappingConfigQuery.PageNumber,
-                TotalPage = totalPage,
-                TotalCount= totalCount,
-                ImageGroup = sealMappingConfigViewModels,
-
                 Code = response.Code,
-                Message = response.Message
+                Message = response.Message,
+
+                SealMappingConfigViewModel = sealMappingConfigViewModels,
             };
         }
 
@@ -123,7 +96,7 @@ namespace SealTypographicWebAPI.Services
         /// </summary>
         /// <param name="sealMappingConfigViewModel">圖片群組資料</param>
         /// <returns></returns>
-        public ResponseViewModel CreateImageGroup (SealMappingConfigViewModel sealMappingConfigViewModel)
+        public ResponseViewModel CreateSealMappingConfig (SealMappingConfigViewModel sealMappingConfigViewModel)
         {
             ResponseViewModel response = new();
             IQueryable<SealMappingConfig> sealMappingConfigQuery = dbContext.SealMappingConfigs
@@ -131,12 +104,7 @@ namespace SealTypographicWebAPI.Services
 
             if (!sealMappingConfigQuery.Any())
             {
-                SealMappingConfig sealMappingConfig = new()
-                {                                        
-                    SealType = sealMappingConfigViewModel.SealType,
-                    SubId = sealMappingConfigViewModel.SubId,
-                    Name = sealMappingConfigViewModel.Name
-                };
+                SealMappingConfig sealMappingConfig = mapper.Map<SealMappingConfig>(sealMappingConfigViewModel);
                 dbContext.SealMappingConfigs.Add(sealMappingConfig);
                 dbContext.SaveChanges();
                 response = ResponseUtil.Success();
@@ -148,28 +116,27 @@ namespace SealTypographicWebAPI.Services
 
             return response;
         }
+
         /// <summary>
         /// 更新圖片群組資料
         /// </summary>
-        /// <param name="SealMappingConfigViewModel">圖片群組資料 imageGroupViewModel.id 為搜尋條件</param>        
-        public ResponseViewModel UpdateImageGroup(SealMappingConfigViewModel SealMappingConfigViewModel)
+        /// <param name="sealMappingConfigViewModel">圖片群組資料 sealMappingConfigViewModel.id 為搜尋條件</param>        
+        public ResponseViewModel UpdateSealMappingConfig (SealMappingConfigViewModel sealMappingConfigViewModel)
         {
             ResponseViewModel response = new();
-            IQueryable<SealMappingConfig> SealMappingConfigQuery = dbContext.SealMappingConfigs
-                                .Where(imageGroup => imageGroup.SubId == SealMappingConfigViewModel.SubId);
+            SealMappingConfig? SealMappingConfigQuery = dbContext.SealMappingConfigs
+                                .Where(sealMappingConfig => sealMappingConfig.Id == sealMappingConfigViewModel.Id)
+                                .FirstOrDefault();
 
-            if (SealMappingConfigQuery.Any())
-            {
-                SealMappingConfig SealMappingConfig = SealMappingConfigQuery.First();                
-                SealMappingConfig.SealType = SealMappingConfigViewModel.SealType;
-                SealMappingConfig.SubId = SealMappingConfigViewModel.SubId;
-                SealMappingConfig.Name = SealMappingConfigViewModel.Name;                                
+            if (SealMappingConfigQuery != null)
+            {                
+                mapper.Map(sealMappingConfigViewModel, SealMappingConfigQuery);
                 dbContext.SaveChanges();
                 response = ResponseUtil.Success();
             }
             else
             {
-                response = ResponseUtil.NoData();
+                response = ResponseUtil.DbNoData();
             }
             return response;
         }       

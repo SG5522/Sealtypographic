@@ -49,7 +49,7 @@ namespace SealTypographicWebAPI.Services.Implements
             else
             {
                 customerDetail = null;
-                response = ResponseUtil.NoData();
+                response = ResponseUtil.DbNoData();
             }
             return new ()
             {
@@ -103,7 +103,7 @@ namespace SealTypographicWebAPI.Services.Implements
             }
             else
             {
-                response = ResponseUtil.NoData();
+                response = ResponseUtil.DbNoData();
             }
             
             return new()
@@ -167,7 +167,7 @@ namespace SealTypographicWebAPI.Services.Implements
             }
             else
             {
-                response = ResponseUtil.NoData();
+                response = ResponseUtil.DbNoData();
             }
 
             return response;
@@ -192,7 +192,7 @@ namespace SealTypographicWebAPI.Services.Implements
             }
             else
             {
-                response = ResponseUtil.NoData();
+                response = ResponseUtil.DbNoData();
             }
             return response;
         }

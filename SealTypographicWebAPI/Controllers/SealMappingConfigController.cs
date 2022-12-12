@@ -5,6 +5,7 @@ using SealTypographicWebAPI.Consts;
 using SealTypographicWebAPI.Models.Accountant;
 using SealTypographicWebAPI.Util;
 using SealTypographicWebAPI.Models.SealMappingConfig;
+using Serilog;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -32,21 +33,25 @@ namespace SealTypographicWebAPI.Controllers
         }
 
         /// <summary>
-        /// 依搜尋條件獲得圖片群組資料列表
+        /// 取得印鑑類別資料列表
         /// </summary>
-        /// <param name="imageGroupQuery">圖片群組分頁搜尋</param>
+        /// <param name="sealType">印鑑類別 1.客戶 2.會計師 3.信頭</param>        
         /// <returns></returns>
         [HttpGet]
-        public SealMappingConfigResponsePage Get([FromQuery]SealMappingConfigQuery imageGroupQuery)
+        public SealMappingConfigResponseList Get(SealType sealType)
         {
             try
             {
-                return sealMappingConfigService.GetSealMappingConfigResponsePage(imageGroupQuery);
+                Log.Information("CustomerSeal get(sealtype) input {@Input}", sealType);
+                SealMappingConfigResponseList sealMappingConfigResponseList = sealMappingConfigService.GetSealMappingConfigResponseList(sealType);
+                Log.Information("CustomerSeal get(sealtype) output {@Output}", sealMappingConfigResponseList);
+                return sealMappingConfigResponseList;
             }
-            catch
+            catch (Exception ex)
             {
+                Log.Error("sealMappingConfigViewModel get{id} error {@Error}", ex);
                 ResponseViewModel response = ResponseUtil.DBError();
-                return new SealMappingConfigResponsePage()
+                return new SealMappingConfigResponseList()
                 {
                     Code = response.Code,
                     Message = response.Message,
@@ -64,10 +69,14 @@ namespace SealTypographicWebAPI.Controllers
         {
             try
             {
-                return sealMappingConfigService.GetImageGroup(id);
+                Log.Information("CustomerSeal get{id} input {@Input}", id);
+                SealMappingConfigResponse sealMappingConfigResponse = sealMappingConfigService.GetImageGroup(id); ;
+                Log.Information("CustomerSeal get{id} output {@Output}", sealMappingConfigResponse);
+                return sealMappingConfigResponse;
             }
-            catch
+            catch (Exception ex)
             {
+                Log.Error("sealMappingConfigViewModel get{id} error {@Error}", ex);
                 ResponseViewModel response = ResponseUtil.DBError();
                 return new ()
                 {
@@ -80,17 +89,21 @@ namespace SealTypographicWebAPI.Controllers
         /// <summary>
         /// 建立圖片群組
         /// </summary>
-        /// <param name="imageGroupViewModel">群組資料</param>
+        /// <param name="sealMappingConfigViewModel">群組資料</param>
         /// <returns></returns>
         [HttpPost]
-        public ResponseViewModel Post(SealMappingConfigViewModel imageGroupViewModel)
+        public ResponseViewModel Post(SealMappingConfigViewModel sealMappingConfigViewModel)
         {
             try
             {
-                return sealMappingConfigService.CreateImageGroup(imageGroupViewModel);
+                Log.Information("CustomerSeal post input {@Input}", sealMappingConfigViewModel);
+                ResponseViewModel response = sealMappingConfigService.CreateSealMappingConfig(sealMappingConfigViewModel);
+                Log.Information("CustomerSeal post output {@Output}", response);
+                return response;
             }
-            catch
+            catch (Exception ex)
             {
+                Log.Error("sealMappingConfigViewModel post error {@Error}", ex);
                 return ResponseUtil.DBError();
             }
         }
@@ -98,16 +111,20 @@ namespace SealTypographicWebAPI.Controllers
         /// <summary>
         /// 更新群組資料
         /// </summary>
-        /// <param name="imageGroupViewModel">群組資料</param>       
+        /// <param name="sealMappingConfigViewModel">群組資料</param>       
         [HttpPut]
-        public ResponseViewModel Put(SealMappingConfigViewModel imageGroupViewModel)
+        public ResponseViewModel Put(SealMappingConfigViewModel sealMappingConfigViewModel)
         {
             try
             {
-                return sealMappingConfigService.UpdateImageGroup(imageGroupViewModel);
+                Log.Information("CustomerSeal post input {@Input}", sealMappingConfigViewModel);
+                ResponseViewModel response = sealMappingConfigService.UpdateSealMappingConfig(sealMappingConfigViewModel);
+                Log.Information("CustomerSeal post output {@Output}", response);
+                return response;
             }
-            catch
+            catch (Exception ex)
             {
+                Log.Error("sealMappingConfigViewModel put error {@Error}", ex);
                 return ResponseUtil.DBError();
             }
         }

@@ -2,6 +2,7 @@
 using SealTypographicWebAPI.Models;
 using SealTypographicWebAPI.Models.Accountant;
 using SealTypographicWebAPI.Services;
+using SealTypographicWebAPI.Services.Implements;
 using SealTypographicWebAPI.Util;
 using Serilog;
 
@@ -35,7 +36,7 @@ namespace SealTypographicWebAPI.Controllers
         /// </summary>
         /// <param name="accountantID">會計ID</param>        
         /// <returns></returns>
-        [HttpGet("{id}")]
+        [HttpGet("{accountantID}")]
         public AccountantSignViewModels Get(int accountantID)
         {
             try
@@ -90,7 +91,7 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="accountantSignUpdates">簽名印鑑資料</param>
         /// <returns></returns>
         [HttpPut]
-        public ResponseViewModel Put(List<AccountantSignUpdate> accountantSignUpdates)
+        public ResponseViewModel Put(List<AccountantSignFormUpdate> accountantSignUpdates)
         {
             try
             {
@@ -112,12 +113,25 @@ namespace SealTypographicWebAPI.Controllers
         }
 
         /// <summary>
-        /// 刪除印鑑(變更不啟用狀態)
+        /// 刪除會計師簽印，(隱藏)
         /// </summary>
-        /// <param name="id"></param>
-        [HttpDelete("{id}")]
-        public void Delete(int id)
+        /// <param name="accountantSignId"></param>
+        /// <returns></returns>
+        [HttpDelete("{accountantSignId}")]
+        public ResponseViewModel Delete(int accountantSignId)
         {
+            try
+            {
+                Log.Information("CustomerSeal delete input {@Input}", accountantSignId);
+                ResponseViewModel response = accountantSignService.DeleteAccountantSign(accountantSignId);
+                Log.Information("CustomerSeal delete output {@Ouput}", response);
+                return response;
+            }
+            catch (Exception ex)
+            {
+                Log.Error("Customer delete customerForm error {@Error}", ex);
+                return ResponseUtil.DBError();
+            }
         }
     }
 }

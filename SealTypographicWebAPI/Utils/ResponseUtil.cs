@@ -22,16 +22,35 @@ namespace SealTypographicWebAPI.Util
         /// <returns></returns>
         public static ResponseViewModel DBError()
         {
-            return Get(ResponseCode.DBError);
+            return Get(ResponseCode.DbError);
         }
         /// <summary>
         /// 回傳無資料
         /// </summary>
         /// <returns></returns>
-        public static ResponseViewModel NoData()
+        public static ResponseViewModel DbNoData()
         {
-            return Get(ResponseCode.NoData);
+            return Get(ResponseCode.DbNoData);
         }
+
+        /// <summary>
+        /// 印鑑排序重複
+        /// </summary>
+        /// <returns></returns>
+        public static ResponseViewModel SealSequenceError()
+        {
+            return Get(ResponseCode.CustomerSealSequenceRepeat);
+        }
+
+        /// <summary>
+        /// 會計師簽印已有資料
+        /// </summary>
+        /// <returns></returns>
+        public static ResponseViewModel AccountSignHaveData()
+        {
+            return Get(ResponseCode.AccountSignHaveData);
+        }
+
         /// <summary>
         /// 資料庫欄位限制唯一約束錯誤回傳
         /// </summary>
@@ -64,17 +83,29 @@ namespace SealTypographicWebAPI.Util
                         Code = (int)ResponseCode.Success,
                         Message = "Success"
                     };
-                case ResponseCode.DBError:
+                case ResponseCode.DbError:
                     return new ResponseViewModel()
                     {
-                        Code = (int)ResponseCode.DBError,
+                        Code = (int)ResponseCode.DbError,
                         Message = "DataBase Error"
                     };
-                case ResponseCode.NoData:
+                case ResponseCode.DbNoData:
                     return new ResponseViewModel()
                     {
-                        Code = (int)ResponseCode.NoData,
-                        Message = "NoData"
+                        Code = (int)ResponseCode.DbNoData,
+                        Message = "Database DbNoData"
+                    };
+                case ResponseCode.CustomerSealSequenceRepeat:
+                    return new ResponseViewModel()
+                    {
+                        Code = (int)ResponseCode.CustomerSealSequenceRepeat,
+                        Message = "CustomerSeal Sequence Repeat"
+                    };
+                case ResponseCode.AccountSignHaveData:
+                    return new ResponseViewModel()
+                    {
+                        Code = (int)ResponseCode.AccountSignHaveData,
+                        Message = "AccountSign have data"
                     };
                 case ResponseCode.UniqueConstraintFailed:
                     return new ResponseViewModel()

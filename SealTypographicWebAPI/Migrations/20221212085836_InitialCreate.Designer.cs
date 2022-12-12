@@ -11,7 +11,7 @@ using SealTypographicWebAPI.Entities;
 namespace SealTypographicWebAPI.Migrations
 {
     [DbContext(typeof(SealTypographicDbContext))]
-    [Migration("20221209092750_InitialCreate")]
+    [Migration("20221212085836_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -25,11 +25,7 @@ namespace SealTypographicWebAPI.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("AccountantGroupId")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<int>("AccountantGroupId1")
+                    b.Property<int>("AccountantGroupId")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("AccountantNumber")
@@ -57,7 +53,7 @@ namespace SealTypographicWebAPI.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AccountantGroupId1");
+                    b.HasIndex("AccountantGroupId");
 
                     b.ToTable("Accountants");
                 });
@@ -497,9 +493,8 @@ namespace SealTypographicWebAPI.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("SealType")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
+                    b.Property<int>("SealType")
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("SubId")
                         .IsRequired()
@@ -611,7 +606,7 @@ namespace SealTypographicWebAPI.Migrations
                 {
                     b.HasOne("SealTypographicWebAPI.Entities.AccountantGroup", "AccountantGroup")
                         .WithMany("Accountants")
-                        .HasForeignKey("AccountantGroupId1")
+                        .HasForeignKey("AccountantGroupId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

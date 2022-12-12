@@ -1,15 +1,18 @@
-﻿namespace SealTypographicWebAPI.Models.SealMappingConfig
+﻿using SealTypographicWebAPI.Consts;
+using SealTypographicWebAPI.Models.PublicModel;
+
+namespace SealTypographicWebAPI.Models.SealMappingConfig
 {
     /// <summary>
     /// 圖片群組 (使用印鑑、簽名、LOGO)
     /// </summary>
-    public class SealMappingConfigViewModel
+    public class SealMappingConfigViewModel : BaseData
     {
         /// <summary>
         /// Type(customer、accountant、letterhead)
         /// </summary>
         /// <example>customer</example>
-        public string SealType { get; set; }
+        public SealType SealType { get; set; }
 
         /// <summary>
         /// 群組ID

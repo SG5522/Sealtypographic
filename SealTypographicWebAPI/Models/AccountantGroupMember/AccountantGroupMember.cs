@@ -5,22 +5,12 @@ namespace SealTypographicWebAPI.Models.AccountantGroupMember
     /// <summary>
     /// 會計師群組成員資料
     /// </summary>
-    public class AccountantGroupMember
+    public class AccountantGroupMember : BaseName
     {
-        /// <summary>
-        /// 會計師ID
-        /// </summary>
-        public int Id { get; set; }
-
         /// <summary>
         /// 會計師編號
         /// </summary>
         public string AccountantNumber { get; set; }
-
-        /// <summary>
-        /// 會計師名稱
-        /// </summary>
-        public string Name { get; set; }
     }
 
     /// <summary>

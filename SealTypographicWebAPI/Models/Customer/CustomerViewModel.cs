@@ -6,7 +6,7 @@ namespace SealTypographicWebAPI.Models.Customer
     /// <summary>
     /// 客戶
     /// </summary>
-    public class CustomerViewModel : BaseNameData
+    public class CustomerViewModel : BaseName
     {
         /// <summary>
         /// 統一編號 (Business administration number)

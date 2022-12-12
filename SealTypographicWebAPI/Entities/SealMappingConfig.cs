@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using SealTypographicWebAPI.Consts;
 
 namespace SealTypographicWebAPI.Entities
 {
@@ -17,7 +18,7 @@ namespace SealTypographicWebAPI.Entities
         /// <summary>
         /// SealType(客戶、會計師、信頭)
         /// </summary>
-        public string SealType { get; set; }
+        public SealType SealType { get; set; }
 
         /// <summary>
         /// SubId

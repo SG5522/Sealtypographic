@@ -51,7 +51,7 @@ namespace SealTypographicWebAPI.Services.Implements
             }
             else
             {
-                response = ResponseUtil.NoData();
+                response = ResponseUtil.DbNoData();
             }
 
             return new()
@@ -87,7 +87,7 @@ namespace SealTypographicWebAPI.Services.Implements
             }
             else
             {
-                response = ResponseUtil.NoData();
+                response = ResponseUtil.DbNoData();
             }
 
             return new AccountantGroupResponse()
@@ -146,7 +146,7 @@ namespace SealTypographicWebAPI.Services.Implements
             }
             else
             {
-                response = ResponseUtil.NoData();
+                response = ResponseUtil.DbNoData();
             }
 
             return new AccountantGroupResponses()
@@ -176,11 +176,7 @@ namespace SealTypographicWebAPI.Services.Implements
             if (accountantGroupQuery == null)
             {
                 AccountantGroup accountantGroup = mapper.Map<AccountantGroup>(accountantGroupForm);
-                //AccountantGroup accountantGroup = new()
-                //{
-                //    Id = accountantGroupForm.Id,
-                //    Name = accountantGroupForm.Name,
-                //};
+                accountantGroup.CreateDate = DateTime.Now;
                 dbContext.AccountantGroups.Add(accountantGroup);
                 dbContext.SaveChanges();
                 response = ResponseUtil.Success();
@@ -192,11 +188,11 @@ namespace SealTypographicWebAPI.Services.Implements
             return response;
         }
 
-        /// <summary>
-        /// 更新會計師群組資料
-        /// </summary>
-        /// <param name="accountantGroupFormUpdate">群組資料</param>
-        public ResponseViewModel UpdateAccountantGroup(AccountantGroupFormUpdate accountantGroupFormUpdate)
+    /// <summary>
+    /// 更新會計師群組資料
+    /// </summary>
+    /// <param name="accountantGroupFormUpdate">群組資料</param>
+    public ResponseViewModel UpdateAccountantGroup(AccountantGroupFormUpdate accountantGroupFormUpdate)
         {
             ResponseViewModel response;
             AccountantGroup? accountantGroupQuery = dbContext.AccountantGroups
@@ -204,15 +200,14 @@ namespace SealTypographicWebAPI.Services.Implements
                                                     .FirstOrDefault();
             if (accountantGroupQuery != null)
             {
-                mapper.Map(accountantGroupQuery, accountantGroupFormUpdate);
-                //accountantGroupQuery.Id = accountantGroupFormUpdate.Id;
-                //accountantGroupQuery.Name = accountantGroupFormUpdate.Name;
+                mapper.Map(accountantGroupFormUpdate, accountantGroupQuery);
+                accountantGroupQuery.UpdateDate = DateTime.Now;
                 dbContext.SaveChanges();
                 response = ResponseUtil.Success();
             }
             else
             {
-                response = ResponseUtil.NoData();
+                response = ResponseUtil.DbNoData();
             }
             return response;
         }
@@ -220,7 +215,7 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <summary>
         /// 刪除群組(將該群組的所有人員先轉移到無群組在進行群組刪除)
         /// </summary>
-        /// <param name="accountantGroupId"></param>
+        /// <param name="accountantGroupId">群組Id</param>
         public ResponseViewModel DeleteAccountantGroup(int accountantGroupId)
         {
             ResponseViewModel response;
@@ -235,7 +230,7 @@ namespace SealTypographicWebAPI.Services.Implements
                 (
                         accountant =>
                         accountant.Id == accountantGroupId
-                ).BatchUpdate(new Accountant { AccountantGroupId = "0" });
+                ).BatchUpdate(new Accountant { AccountantGroupId = 1 });
 
                 AccountantGroup accountantGroup = accountantGroupQuery.First();
                 dbContext.AccountantGroups.Remove(accountantGroup);
@@ -244,7 +239,7 @@ namespace SealTypographicWebAPI.Services.Implements
             }
             else
             {
-                response = ResponseUtil.NoData();
+                response = ResponseUtil.DbNoData();
             }
             return response;
         }

@@ -35,7 +35,15 @@ namespace SealTypographicWebAPI.Services
         /// </summary>
         /// <param name="customerSeals">印鑑資料</param>
         /// <returns></returns>
-        ResponseViewModel UpdateCustomerSeals(List<CustomerSealUpdate> customerSeals);
+        ResponseViewModel UpdateCustomerSeals(List<CustomerSealFormUpdate> customerSeals);
+
+
+        /// <summary>
+        /// 刪除印鑑 (隱藏)
+        /// </summary>
+        /// <param name="customerSealId"></param>
+        /// <returns></returns>
+        ResponseViewModel DeleteCustomerSeal(int customerSealId);
 
     }
 }

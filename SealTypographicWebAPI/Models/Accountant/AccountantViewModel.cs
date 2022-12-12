@@ -5,7 +5,7 @@ namespace SealTypographicWebAPI.Models.Accountant
     /// <summary>
     /// 會計資料
     /// </summary>
-    public class AccountantViewModel : BaseNameData
+    public class AccountantViewModel : BaseName
     {
         /// <summary>
         /// 會計師編號

@@ -3,16 +3,15 @@
 namespace SealTypographicWebAPI.Models.PublicModel
 {
     /// <summary>
-    /// 更新資料時會填入的資料
+    /// 印鑑
     /// </summary>
-    public class BaseData
+    public class BaseUpdateSeal : BaseUpdateData
     {
         /// <summary>
-        /// ID
+        /// 圖檔字串(Base64)
         /// </summary>
-        /// <example>0</example>        
+        /// <example>image/...</example>        
         [Required]
-        public int Id { get; set; }
-
+        public string ImageBase64 { get; set; }
     }
 }

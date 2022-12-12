@@ -15,7 +15,7 @@ namespace SealTypographicWebAPI.Entities
         /// <summary>
         /// 會計師群組ID
         /// </summary>                
-        public string AccountantGroupId { get; set; }
+        public int AccountantGroupId { get; set; }
 
         /// <summary>
         /// 會計師群組

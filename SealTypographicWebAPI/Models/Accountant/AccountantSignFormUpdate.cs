@@ -5,11 +5,8 @@ namespace SealTypographicWebAPI.Models.Accountant
     /// <summary>
     /// 會計師印鑑簽名
     /// </summary>
-    public class AccountantSignForm : BaseCreateSeal
+    public class AccountantSignFormUpdate : BaseUpdateSeal
     {
-        /// <summary>
-        /// 會計師ID
-        /// </summary>
-        public int AccountantID { get; set; }
+
     }
 }

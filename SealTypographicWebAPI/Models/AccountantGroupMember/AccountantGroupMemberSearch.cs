@@ -12,8 +12,7 @@ namespace SealTypographicWebAPI.Models.AccountantGroupMember
         /// <summary>
         /// 群組Id
         /// </summary>        
-        [Required]
-        [MaxLength(6)]
-        public string AccountantGroupId { get; set; }
+        [Required]        
+        public int AccountantGroupId { get; set; }
     }
 }
