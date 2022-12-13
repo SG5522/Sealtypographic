@@ -10,7 +10,7 @@ namespace SealTypographicWebAPI.Models.Customer
         /// <summary>
         /// 公司負責人
         /// </summary>
-        public string CompanyPrincipal { get; set; }
+        public string President { get; set; }
 
         /// <summary>
         /// 證券代號

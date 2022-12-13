@@ -1,5 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using SealTypographicWebAPI.Models.PublicModel;
+using SealTypographicWebAPI.Models.BaseModels;
 
 namespace SealTypographicWebAPI.Models.Customer
 {
@@ -12,7 +12,7 @@ namespace SealTypographicWebAPI.Models.Customer
         /// 公司負責人
         /// </summary>
         /// <example>負責人</example>
-        public string CompanyPrincipal { get; set; }
+        public string President { get; set; }
 
         /// <summary>
         /// 客戶編號(更新或搜尋使用)

@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using SealTypographicWebAPI.Consts;
-using SealTypographicWebAPI.Models.PublicModel;
+using SealTypographicWebAPI.Models.BaseModels;
 
 namespace SealTypographicWebAPI.Models.Accountant
 {

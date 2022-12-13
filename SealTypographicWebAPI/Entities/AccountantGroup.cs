@@ -1,4 +1,4 @@
-﻿using SealTypographicWebAPI.Entities.PublicModel;
+﻿using SealTypographicWebAPI.Entities.BaseEntities;
 
 namespace SealTypographicWebAPI.Entities
 {

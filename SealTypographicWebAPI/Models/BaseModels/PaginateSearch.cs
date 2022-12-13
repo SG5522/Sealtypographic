@@ -1,7 +1,7 @@
 ﻿using SealTypographicWebAPI.Consts;
 using System.ComponentModel.DataAnnotations;
 
-namespace SealTypographicWebAPI.Models.PublicModel
+namespace SealTypographicWebAPI.Models.BaseModels
 {
     /// <summary>
     /// 分頁搜尋

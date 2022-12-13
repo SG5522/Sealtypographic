@@ -1,11 +1,11 @@
-﻿using SealTypographicWebAPI.Entities.PublicModel;
+﻿using SealTypographicWebAPI.Entities.BaseEntities;
 
 namespace SealTypographicWebAPI.Entities
 {
     /// <summary>
     /// 事務所信頭資料表
     /// </summary>
-    public class Letterhead : BaseNameDeleteStatusData
+    public class Letterhead : BaseNameData
     {
         /// <summary>
         /// 信頭圖片資料(歷程)

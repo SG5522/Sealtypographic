@@ -34,8 +34,8 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <returns></returns>
         public CustomerSealQuarters GetCustomerSealQuarters(int customerId)
         {
-            List<CustomerSealQuarter> customerSealQuarters = new();
-            ResponseViewModel response;
+            CustomerSealQuarters customerSealQuarters = new();
+            List<CustomerSealQuarter> sealQuarters = new();            
             List<string> customerSealQuarterQuery = dbContext.CustomerSealJournals
                                            .Where(customerSealJournal => customerSealJournal.CustomerId == customerId)
                                            .Select(customerSealJournal => customerSealJournal.Quarter)
@@ -46,27 +46,21 @@ namespace SealTypographicWebAPI.Services.Implements
             {
                 foreach (string quarter in customerSealQuarterQuery)
                 {
-                    customerSealQuarters.Add(new()
+                    sealQuarters.Add(new()
                     {
                         CustomerId = customerId,
                         Quarter = quarter
                     });
                 }
-                response = ResponseUtil.Success();
+                customerSealQuarters.Quarters = sealQuarters;
+                customerSealQuarters.Success();                
             }
             else
             {
-                response = ResponseUtil.DbNoData();
+                customerSealQuarters.DbNoData();                
             }
 
-            return new CustomerSealQuarters()
-            {
-
-                Code = response.Code,
-                Message = response.Message,
-
-                Quarters = customerSealQuarters
-            };
+            return customerSealQuarters;
         }
 
         /// <summary>
@@ -76,8 +70,8 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <returns></returns>
         public CustomerSealViewModels GetCustomerSealViewModels(CustomerSealQuarter customerSealQuarter)
         {
-            List<CustomerSealViewModel> customerSealViewModels = new();
-            ResponseViewModel response;
+            CustomerSealViewModels customerSealViewModels = new();
+            List<CustomerSealViewModel> sealViewModels = new();            
             List<CustomerSealJournal> customerSealQuery = dbContext.CustomerSealJournals.Where
                                                                     (
                                                                         customerSealJournal => customerSealJournal.CustomerId == customerSealQuarter.CustomerId
@@ -92,22 +86,17 @@ namespace SealTypographicWebAPI.Services.Implements
                 {
                     CustomerSealViewModel customerSealViewModel = mapper.Map<CustomerSealViewModel>(customerSealJournal);
                     customerSealViewModel.ImageBase64 = "image/..."; //之後會在做BASE64轉換
-                    customerSealViewModels.Add(customerSealViewModel);
+                    sealViewModels.Add(customerSealViewModel);
                 }
-                response = ResponseUtil.Success();
+                customerSealViewModels.SealViewModels = sealViewModels;
+                customerSealViewModels.Success();                
             }
             else
             {
-                response = ResponseUtil.DbNoData();
+                customerSealViewModels.DbNoData();                
             }
 
-            return new CustomerSealViewModels()
-            {
-                Code = response.Code,
-                Message = response.Message,
-
-                SealViewModels = customerSealViewModels
-            };
+            return customerSealViewModels;
         }
 
         /// <summary>
@@ -116,8 +105,7 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <param name="customerSeals">印鑑組</param>
         /// <returns></returns>
         public ResponseViewModel CreateCustomerSeals(List<CustomerSealForm> customerSeals)
-        {
-            ResponseViewModel response = new();
+        {            
             List<CustomerSealJournal> customerSealJournals = new();
             foreach (CustomerSealForm customerSeal in customerSeals)
             {                
@@ -137,14 +125,13 @@ namespace SealTypographicWebAPI.Services.Implements
                 }
                 else
                 {
-                    return ResponseUtil.SealSequenceError();
+                    return ResponseUtil.CustomerSealSequenceRepeat();                    
                 }
             }
             dbContext.CustomerSealJournals.AddRange(customerSealJournals);
-            dbContext.BulkSaveChanges();
-            response = ResponseUtil.Success();
+            dbContext.BulkSaveChanges();            
 
-            return response;
+            return ResponseUtil.Success();
         }
 
         /// <summary>
@@ -188,18 +175,19 @@ namespace SealTypographicWebAPI.Services.Implements
                     }
                     else
                     {
-                        return ResponseUtil.SealSequenceError();
+                        response.CustomerSealSequenceRepeat();
+                        return response;
                     }
                 }
                 else
                 {
-                    response = ResponseUtil.DbNoData();
-                    return response;
+                    response.DbNoData();
+                    return response;                    
                 }
             }            
             dbContext.SaveChanges();
-            response = ResponseUtil.Success();
-            return response;
+            response.Success();
+            return response;            
         }
 
         /// <summary>
@@ -217,11 +205,11 @@ namespace SealTypographicWebAPI.Services.Implements
             {
                 customerSealJournalQuery.DeleteStatus = DeleteStatus.Yes;
                 dbContext.SaveChanges();
-                response = ResponseUtil.Success();
+                response.Success();                
             }
             else
             {
-                response = ResponseUtil.DbNoData();
+                response.DbNoData();                
             }
             return response;
         }

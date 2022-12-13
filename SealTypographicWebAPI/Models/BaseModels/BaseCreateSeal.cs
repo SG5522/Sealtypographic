@@ -1,11 +1,11 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace SealTypographicWebAPI.Models.PublicModel
+namespace SealTypographicWebAPI.Models.BaseModels
 {
     /// <summary>
     /// 印鑑
     /// </summary>
-    public class BaseCreateSeal : BaseCreate
+    public class BaseCreateSeal
     {
         /// <summary>
         /// 客戶印鑑群組ID 

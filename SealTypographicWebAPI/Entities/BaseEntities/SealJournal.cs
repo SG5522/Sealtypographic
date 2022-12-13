@@ -1,4 +1,4 @@
-﻿namespace SealTypographicWebAPI.Entities.PublicModel
+﻿namespace SealTypographicWebAPI.Entities.BaseEntities
 {
     /// <summary>
     /// 各項印鑑(簽名)歷程

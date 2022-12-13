@@ -1,14 +1,14 @@
-﻿using SealTypographicWebAPI.Entities.PublicModel;
+﻿using SealTypographicWebAPI.Entities.BaseEntities;
 
 namespace SealTypographicWebAPI.Entities
 {
     /// <summary>
     /// 客戶資料表
     /// </summary>        
-    public class Customer : BaseNameDeleteStatusData
+    public class Customer : BaseNameData
     {
         /// 公司負責人
-        public string CompanyPrincipal { get; set; }
+        public string President { get; set; }
 
         /// <summary>
         /// 客戶編號

@@ -1,4 +1,4 @@
-﻿namespace SealTypographicWebAPI.Models.PublicModel
+﻿namespace SealTypographicWebAPI.Models.BaseModels
 {
     /// <summary>
     /// 各種分頁回傳結果

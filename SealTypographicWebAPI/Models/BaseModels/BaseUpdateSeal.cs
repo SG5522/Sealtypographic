@@ -1,11 +1,11 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace SealTypographicWebAPI.Models.PublicModel
+namespace SealTypographicWebAPI.Models.BaseModels
 {
     /// <summary>
     /// 印鑑
     /// </summary>
-    public class BaseUpdateSeal : BaseUpdateData
+    public class BaseUpdateSeal : BaseData
     {
         /// <summary>
         /// 圖檔字串(Base64)

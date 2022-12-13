@@ -1,4 +1,4 @@
-﻿namespace SealTypographicWebAPI.Entities.PublicModel
+﻿namespace SealTypographicWebAPI.Entities.BaseEntities
 {
     /// <summary>
     /// 各類別基本資料

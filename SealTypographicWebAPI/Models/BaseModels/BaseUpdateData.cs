@@ -1,11 +1,11 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace SealTypographicWebAPI.Models.PublicModel
+namespace SealTypographicWebAPI.Models.BaseModels
 {
     /// <summary>
     /// 新增更新資料時會填入的資料
     /// </summary>
-    public class BaseUpdateName : BaseName
+    public class BaseUpdateData : BaseData
     {
         /// <summary>
         /// 更新UserId(暫無帳號先給0)

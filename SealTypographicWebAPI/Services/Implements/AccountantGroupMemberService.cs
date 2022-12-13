@@ -37,10 +37,9 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <param name="accountantGroupMemberSearch">會計群組搜尋條件(分頁)</param>
         /// <returns></returns>
         public AccountantGroupMembers GetAccountantGroupMembers(AccountantGroupMemberSearch accountantGroupMemberSearch)
-        {            
-            List<AccountantGroupMember> accountantGroupMembers = new();
-            ResponseViewModel response;
-            int totalCount = 0;
+        {
+            AccountantGroupMembers accountantGroupMembers = new();
+            List<AccountantGroupMember> accountantMembers = new();
             int totalPage = 0;
             IQueryable<Accountant> accountantQuery = dbContext.Accountants
                                            .Where(accountant => accountant.AccountantGroupId == accountantGroupMemberSearch.AccountantGroupId)
@@ -54,37 +53,27 @@ namespace SealTypographicWebAPI.Services.Implements
                                             .Take(accountantGroupMemberSearch.PageSize)
                                             .ToList();
                 //計算總頁數
-                totalPage = accountantQuery.Count() / accountantGroupMemberSearch.PageSize + (accountantQuery.Count() % accountantGroupMemberSearch.PageSize == 0 ? 0 : 1);
-                totalCount = accountantQuery.Count();
-
+                totalPage = TotalPageUtil.GetTotalPage(accountantQuery.Count(), accountantGroupMemberSearch.PageSize);                
                 foreach (Accountant accountant in accountants)
                 {
-                    accountantGroupMembers.Add(new ()
+                    accountantMembers.Add(new()
                     {
                         Id = accountant.Id,
                         AccountantNumber = accountant.AccountantNumber,
                         Name = accountant.Name,
                     });
                 }
-                //取得成功訊息
-                response = ResponseUtil.Success();
+                accountantGroupMembers.Members = accountantMembers;                
+                accountantGroupMembers.Success();               
             }
             else
             {
-                response = ResponseUtil.DbNoData();
+                accountantGroupMembers.DbNoData();                
             }
+            accountantGroupMembers.TotalPage = totalPage;
+            accountantGroupMembers.TotalCount = accountantQuery.Count();
 
-            return new()
-            {
-                PageNumber = accountantGroupMemberSearch.PageNumber,
-                PageSize = accountantGroupMemberSearch.PageSize,
-                TotalCount = totalCount,
-                TotalPage = totalPage,
-                Members = accountantGroupMembers,
-                //回傳結果訊息用
-                Code = response.Code,
-                Message = response.Message,
-            };
+            return accountantGroupMembers;
         }
 
         /// <summary>

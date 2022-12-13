@@ -37,7 +37,7 @@ namespace SealTypographicWebAPI.Util
         /// 印鑑排序重複
         /// </summary>
         /// <returns></returns>
-        public static ResponseViewModel SealSequenceError()
+        public static ResponseViewModel CustomerSealSequenceRepeat()
         {
             return Get(ResponseCode.CustomerSealSequenceRepeat);
         }
@@ -48,7 +48,7 @@ namespace SealTypographicWebAPI.Util
         /// <returns></returns>
         public static ResponseViewModel AccountSignHaveData()
         {
-            return Get(ResponseCode.AccountSignHaveData);
+            return Get(ResponseCode.AccountantSignRepeat);
         }
 
         /// <summary>
@@ -101,10 +101,10 @@ namespace SealTypographicWebAPI.Util
                         Code = (int)ResponseCode.CustomerSealSequenceRepeat,
                         Message = "CustomerSeal Sequence Repeat"
                     };
-                case ResponseCode.AccountSignHaveData:
+                case ResponseCode.AccountantSignRepeat:
                     return new ResponseViewModel()
                     {
-                        Code = (int)ResponseCode.AccountSignHaveData,
+                        Code = (int)ResponseCode.AccountantSignRepeat,
                         Message = "AccountSign have data"
                     };
                 case ResponseCode.UniqueConstraintFailed:

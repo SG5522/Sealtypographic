@@ -1,4 +1,4 @@
-﻿namespace SealTypographicWebAPI.Models.PublicModel
+﻿namespace SealTypographicWebAPI.Models.BaseModels
 {
     /// <summary>
     /// 印鑑

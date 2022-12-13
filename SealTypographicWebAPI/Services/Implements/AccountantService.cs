@@ -6,6 +6,7 @@ using SealTypographicWebAPI.Util;
 using SealTypographicWebAPI.Utils;
 using Microsoft.EntityFrameworkCore;
 using AutoMapper;
+using System.Linq;
 
 namespace SealTypographicWebAPI.Services.Implements
 {
@@ -35,7 +36,7 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <returns></returns>
         public AccountantResponse GetAccountant(int accountantId)
         {
-            AccountantViewModel accountantViewModel = new();
+            AccountantResponse accountantResponse = new();            
             ResponseViewModel response = new();
             Accountant? accountantQuery = dbContext.Accountants.Where(accountant => accountant.Id == accountantId)
                                                                 .Include(accountant => accountant.AccountantGroup)                                                                
@@ -43,22 +44,14 @@ namespace SealTypographicWebAPI.Services.Implements
 
             if (accountantQuery != null)
             {
-                accountantViewModel = mapper.Map<AccountantViewModel>(accountantQuery);                
-                response = ResponseUtil.Success();
+                accountantResponse.AccountantViewModel = mapper.Map<AccountantViewModel>(accountantQuery);
+                accountantResponse.Success();
             }
             else
             {
-                response = ResponseUtil.DbNoData();
+                accountantResponse.DbNoData();
             }
-
-            return new AccountantResponse()
-            {
-                //回傳結果訊息用
-                Code = response.Code,
-                Message = response.Message,
-
-                AccountantViewModel = accountantViewModel
-            };
+            return accountantResponse;
         }
 
         /// <summary>
@@ -72,13 +65,13 @@ namespace SealTypographicWebAPI.Services.Implements
             ResponseViewModel response = new();
             IQueryable<Accountant> accountantsQuery = dbContext.Accountants;
             int totalPage = 0;
-            int totalCount = 0;            
+            int totalCount = 0;
             if (!string.IsNullOrWhiteSpace(accountantSearch.IdOrNameOrGroupsName))
             {
                 accountantsQuery = accountantsQuery.Where
                                                     (
                                                         accountant =>
-                                                        accountant.AccountantNumber.Contains(accountantSearch.IdOrNameOrGroupsName)
+                                                        accountant.AccountantNumber.ToLower().Contains(accountantSearch.IdOrNameOrGroupsName.ToLower())                                                         
                                                         || accountant.Name.Contains(accountantSearch.IdOrNameOrGroupsName)
                                                         || accountant.AccountantGroup.Name.Contains(accountantSearch.IdOrNameOrGroupsName)
                                                     );                                                   

@@ -11,9 +11,6 @@ namespace SealTypographicWebAPI.Services
     /// </summary>
     public class ImageSharpService
     {
-        //private readonly float HeightScale = 0.25f;
-        //private readonly float WidthScale = 0.25f;       
-
         /// <summary>
         /// Base64轉圖存檔
         /// </summary>

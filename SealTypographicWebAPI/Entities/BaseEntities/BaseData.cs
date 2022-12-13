@@ -1,6 +1,6 @@
 ﻿using SealTypographicWebAPI.Consts;
 
-namespace SealTypographicWebAPI.Entities.PublicModel
+namespace SealTypographicWebAPI.Entities.BaseEntities
 {
     /// <summary>
     /// 各類別基本資料
@@ -32,5 +32,9 @@ namespace SealTypographicWebAPI.Entities.PublicModel
         /// </summary>
         public int UpdateUserId { get; set; }
 
+        /// <summary>
+        /// 刪除狀態
+        /// </summary>
+        public DeleteStatus DeleteStatus { get; set; }
     }
 }

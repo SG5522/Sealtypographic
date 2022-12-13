@@ -1,11 +1,11 @@
-﻿using SealTypographicWebAPI.Entities.PublicModel;
+﻿using SealTypographicWebAPI.Entities.BaseEntities;
 
 namespace SealTypographicWebAPI.Entities
 {
     /// <summary>
     /// 會計師資料表
     /// </summary>
-    public class Accountant : BaseNameDeleteStatusData
+    public class Accountant : BaseNameData
     {
         /// <summary>
         /// 會計編號

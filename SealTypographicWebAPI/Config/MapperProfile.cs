@@ -6,6 +6,7 @@ using SealTypographicWebAPI.Models.Letterhead;
 using SealTypographicWebAPI.Models.TypographicPDF;
 using SealTypographicWebAPI.Models.AccountantGroup;
 using SealTypographicWebAPI.Models.SealMappingConfig;
+using SealTypographicWebAPI.Models.AccountantGroupMember;
 
 namespace SealTypographicWebAPI.Config
 {
@@ -40,8 +41,8 @@ namespace SealTypographicWebAPI.Config
                     .ReverseMap();
 
             //客戶印鑑序號確認用
-            CreateMap<CustomerSealForm, AccountantSignCheck>();
-            CreateMap<CustomerSealJournal, AccountantSignCheck>();
+            CreateMap<CustomerSealForm, CustomerSealSequenceCheck>();
+            CreateMap<CustomerSealJournal, CustomerSealSequenceCheck>();
 
 
             //會計師基本資料
@@ -54,7 +55,7 @@ namespace SealTypographicWebAPI.Config
             //會計師群組
             CreateMap<AccountantGroup, AccountantGroupViewModel>();
             CreateMap<AccountantGroupForm, AccountantGroup>();
-            CreateMap<AccountantGroupFormUpdate,AccountantGroup>();
+            CreateMap<AccountantGroupFormUpdate,AccountantGroup>();            
 
             //會計師印鑑
             CreateMap<AccountantSignJournal, AccountantSignViewModel>()

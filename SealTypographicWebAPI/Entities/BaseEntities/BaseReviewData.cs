@@ -1,6 +1,6 @@
 ﻿using SealTypographicWebAPI.Consts;
 
-namespace SealTypographicWebAPI.Entities.PublicModel
+namespace SealTypographicWebAPI.Entities.BaseEntities
 {
     /// <summary>
     /// 各類別基本資料
@@ -11,6 +11,11 @@ namespace SealTypographicWebAPI.Entities.PublicModel
         /// 檢核人員Id
         /// </summary>
         public int? ReviewUserId { get; set; }
+
+        /// <summary>
+        /// 審查時間
+        /// </summary>
+        public DateTime? ReviewDate { get; set; }
 
         /// <summary>
         /// 啟用日期
@@ -29,12 +34,5 @@ namespace SealTypographicWebAPI.Entities.PublicModel
         /// 20.退件
         /// </summary>
         public ReviewStatus ReviewStatus { get; set; }
-
-        /// <summary>
-        /// 刪除狀態
-        /// 0.無標記
-        /// 1.刪除或隱藏
-        /// </summary>
-        public DeleteStatus DeleteStatus { get; set; }
     }
 }

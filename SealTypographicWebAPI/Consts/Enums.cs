@@ -1,9 +1,9 @@
 ﻿namespace SealTypographicWebAPI.Consts
-{
+{    
     /// <summary>
     /// 客戶、會計師、印鑑、簽名的狀態
     /// </summary>
-    public enum ReviewStatus : int
+    public enum ReviewStatus : sbyte
     {
         /// <summary>
         /// 全部
@@ -29,7 +29,7 @@
     /// <summary>
     /// 刪除狀態
     /// </summary>
-    public enum DeleteStatus : int
+    public enum DeleteStatus : byte
     {
         /// <summary>
         /// 無標記
@@ -45,7 +45,7 @@
     /// <summary>
     /// 每頁資料上限
     /// </summary>
-    public enum PageSizeLimit : int
+    public enum PageSizeLimit : byte
     {
         /// <summary>
         /// 最小值
@@ -60,22 +60,22 @@
     /// <summary>
     /// 啟用日期
     /// </summary>
-    public enum Available
+    public enum Available : byte
     {
         /// <summary>
         /// 未啟用
         /// </summary>
-        NotActivated,
+        NotActivated = 0,
         /// <summary>
         /// 啟用
         /// </summary>
-        Activated
+        Activated = 1,
     }
 
     /// <summary>
     /// 印鑑類型
     /// </summary>
-    public enum SealType : int
+    public enum SealType : byte
     {
         /// <summary>
         /// 客戶

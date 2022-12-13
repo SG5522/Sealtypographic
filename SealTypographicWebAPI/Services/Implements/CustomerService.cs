@@ -34,31 +34,19 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <returns></returns>
         public CustomerDetailViewModel GetCustomerDetailViewModel(int customerId)
         {
-            CustomerDetail? customerDetail = new();
-            ResponseViewModel response;
-            IQueryable<Customer>? customerQuery = dbContext.Customers
-                                    .Where(customer => customer.Id == customerId);
-
-            if (customerQuery.Any())
+            CustomerDetailViewModel customerDetailViewModel = new();                        
+            Customer? customerQuery = dbContext.Customers.Find(customerId);                                    
+            if (customerQuery != null)
             {
 
-                Customer customer = customerQuery.First();
-                customerDetail = mapper.Map<CustomerDetail>(customer);
-                response = ResponseUtil.Success();
+                customerDetailViewModel.CustomerDetail = mapper.Map<CustomerDetail>(customerQuery);
+                customerDetailViewModel.Success();                
             }
             else
             {
-                customerDetail = null;
-                response = ResponseUtil.DbNoData();
+                customerDetailViewModel.DbNoData();                
             }
-            return new ()
-            {
-                //回傳結果訊息用
-                Code = response.Code,
-                Message = response.Message,
-
-                CustomerDetail = customerDetail
-            };
+            return customerDetailViewModel;
         }
 
         /// <summary>
@@ -68,10 +56,8 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <returns></returns>
         public CustomerPaginateViewModel GetCustomerPaginatesViewModel(CustomerSearch customerSearch)
         {
-            List<CustomerViewModel> customerViewModels = new();
-            ResponseViewModel response = new();
-            int totalPage = 0;
-            int totalCount = 0;
+            CustomerPaginateViewModel customerPaginateViewModel = new();
+            List<CustomerViewModel> customerViewModels = new();            
             IQueryable<Customer> customerQuery = dbContext.Customers.Where(customer => customer.DeleteStatus == DeleteStatus.NO);            
             if (!string.IsNullOrWhiteSpace(customerSearch.CustomerNumberOrName))
             {
@@ -87,36 +73,28 @@ namespace SealTypographicWebAPI.Services.Implements
             if (customerQuery.Any())
             {
                 //取得該頁            
-                var pageNumberCustomers = customerQuery
+                List<Customer> pageNumberCustomers = customerQuery
                                           .Skip((customerSearch.PageNumber - 1) * customerSearch.PageSize)
                                           .Take(customerSearch.PageSize)
                                           .ToList();
-                //計算總頁數
-                totalPage = customerQuery.Count() / customerSearch.PageSize + (customerQuery.Count() % customerSearch.PageSize == 0 ? 0 : 1);
-                totalCount = customerQuery.Count();
+                
                 foreach (var customerBase in pageNumberCustomers)
                 {
                     customerViewModels.Add(mapper.Map<CustomerViewModel>(customerBase));
                 }
-                //取得成功訊息
-                response = ResponseUtil.Success();
+                //計算總頁數
+                customerPaginateViewModel.TotalPage = TotalPageUtil.GetTotalPage(customerQuery.Count(), customerSearch.PageSize);
+                customerPaginateViewModel.TotalCount = customerQuery.Count();                
+                customerPaginateViewModel.PageNumber = customerSearch.PageNumber;
+                customerPaginateViewModel.Customers = customerViewModels;
+                customerPaginateViewModel.Success();
             }
             else
             {
-                response = ResponseUtil.DbNoData();
+                customerPaginateViewModel.DbNoData();                
             }
-            
-            return new()
-            {
-                PageNumber = customerSearch.PageNumber,
-                PageSize = customerSearch.PageSize,
-                TotalCount = totalCount,
-                TotalPage = totalPage,
-                Customers = customerViewModels,
-                //回傳結果訊息用
-                Code = response.Code,
-                Message = response.Message
-            };
+
+            return customerPaginateViewModel;
         }
 
         /// <summary>

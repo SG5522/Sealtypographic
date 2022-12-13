@@ -20,6 +20,7 @@ namespace SealTypographicWebAPI.Migrations
                     UpdateDate = table.Column<DateTime>(type: "TEXT", nullable: false),
                     CreateUserId = table.Column<int>(type: "INTEGER", nullable: false),
                     UpdateUserId = table.Column<int>(type: "INTEGER", nullable: false),
+                    DeleteStatus = table.Column<byte>(type: "INTEGER", nullable: false),
                     Name = table.Column<string>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
@@ -33,7 +34,7 @@ namespace SealTypographicWebAPI.Migrations
                 {
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    CompanyPrincipal = table.Column<string>(type: "TEXT", nullable: false),
+                    President = table.Column<string>(type: "TEXT", nullable: false),
                     CustomerNumber = table.Column<string>(type: "TEXT", nullable: false),
                     BAN = table.Column<string>(type: "TEXT", nullable: false),
                     StockCode = table.Column<string>(type: "TEXT", nullable: false),
@@ -46,8 +47,8 @@ namespace SealTypographicWebAPI.Migrations
                     UpdateDate = table.Column<DateTime>(type: "TEXT", nullable: false),
                     CreateUserId = table.Column<int>(type: "INTEGER", nullable: false),
                     UpdateUserId = table.Column<int>(type: "INTEGER", nullable: false),
-                    Name = table.Column<string>(type: "TEXT", nullable: false),
-                    DeleteStatus = table.Column<int>(type: "INTEGER", nullable: false)
+                    DeleteStatus = table.Column<byte>(type: "INTEGER", nullable: false),
+                    Name = table.Column<string>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -64,8 +65,8 @@ namespace SealTypographicWebAPI.Migrations
                     UpdateDate = table.Column<DateTime>(type: "TEXT", nullable: false),
                     CreateUserId = table.Column<int>(type: "INTEGER", nullable: false),
                     UpdateUserId = table.Column<int>(type: "INTEGER", nullable: false),
-                    Name = table.Column<string>(type: "TEXT", nullable: false),
-                    DeleteStatus = table.Column<int>(type: "INTEGER", nullable: false)
+                    DeleteStatus = table.Column<byte>(type: "INTEGER", nullable: false),
+                    Name = table.Column<string>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -78,7 +79,7 @@ namespace SealTypographicWebAPI.Migrations
                 {
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    SealType = table.Column<int>(type: "INTEGER", nullable: false),
+                    SealType = table.Column<byte>(type: "INTEGER", nullable: false),
                     SubId = table.Column<string>(type: "TEXT", nullable: false),
                     Name = table.Column<string>(type: "TEXT", nullable: false)
                 },
@@ -113,8 +114,8 @@ namespace SealTypographicWebAPI.Migrations
                     UpdateDate = table.Column<DateTime>(type: "TEXT", nullable: false),
                     CreateUserId = table.Column<int>(type: "INTEGER", nullable: false),
                     UpdateUserId = table.Column<int>(type: "INTEGER", nullable: false),
-                    Name = table.Column<string>(type: "TEXT", nullable: false),
-                    DeleteStatus = table.Column<int>(type: "INTEGER", nullable: false)
+                    DeleteStatus = table.Column<byte>(type: "INTEGER", nullable: false),
+                    Name = table.Column<string>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -141,6 +142,7 @@ namespace SealTypographicWebAPI.Migrations
                     UpdateDate = table.Column<DateTime>(type: "TEXT", nullable: false),
                     CreateUserId = table.Column<int>(type: "INTEGER", nullable: false),
                     UpdateUserId = table.Column<int>(type: "INTEGER", nullable: false),
+                    DeleteStatus = table.Column<byte>(type: "INTEGER", nullable: false),
                     Name = table.Column<string>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
@@ -167,11 +169,12 @@ namespace SealTypographicWebAPI.Migrations
                     UpdateDate = table.Column<DateTime>(type: "TEXT", nullable: false),
                     CreateUserId = table.Column<int>(type: "INTEGER", nullable: false),
                     UpdateUserId = table.Column<int>(type: "INTEGER", nullable: false),
+                    DeleteStatus = table.Column<byte>(type: "INTEGER", nullable: false),
                     ReviewUserId = table.Column<int>(type: "INTEGER", nullable: true),
+                    ReviewDate = table.Column<DateTime>(type: "TEXT", nullable: true),
                     StartDate = table.Column<DateTime>(type: "TEXT", nullable: false),
                     EndDate = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    ReviewStatus = table.Column<int>(type: "INTEGER", nullable: false),
-                    DeleteStatus = table.Column<int>(type: "INTEGER", nullable: false),
+                    ReviewStatus = table.Column<sbyte>(type: "INTEGER", nullable: false),
                     ImagePath = table.Column<string>(type: "TEXT", nullable: false),
                     SealMappingConfigId = table.Column<int>(type: "INTEGER", nullable: false)
                 },
@@ -204,11 +207,12 @@ namespace SealTypographicWebAPI.Migrations
                     UpdateDate = table.Column<DateTime>(type: "TEXT", nullable: false),
                     CreateUserId = table.Column<int>(type: "INTEGER", nullable: false),
                     UpdateUserId = table.Column<int>(type: "INTEGER", nullable: false),
+                    DeleteStatus = table.Column<byte>(type: "INTEGER", nullable: false),
                     ReviewUserId = table.Column<int>(type: "INTEGER", nullable: true),
+                    ReviewDate = table.Column<DateTime>(type: "TEXT", nullable: true),
                     StartDate = table.Column<DateTime>(type: "TEXT", nullable: false),
                     EndDate = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    ReviewStatus = table.Column<int>(type: "INTEGER", nullable: false),
-                    DeleteStatus = table.Column<int>(type: "INTEGER", nullable: false),
+                    ReviewStatus = table.Column<sbyte>(type: "INTEGER", nullable: false),
                     ImagePath = table.Column<string>(type: "TEXT", nullable: false),
                     SealMappingConfigId = table.Column<int>(type: "INTEGER", nullable: false)
                 },
@@ -240,11 +244,12 @@ namespace SealTypographicWebAPI.Migrations
                     UpdateDate = table.Column<DateTime>(type: "TEXT", nullable: false),
                     CreateUserId = table.Column<int>(type: "INTEGER", nullable: false),
                     UpdateUserId = table.Column<int>(type: "INTEGER", nullable: false),
+                    DeleteStatus = table.Column<byte>(type: "INTEGER", nullable: false),
                     ReviewUserId = table.Column<int>(type: "INTEGER", nullable: true),
+                    ReviewDate = table.Column<DateTime>(type: "TEXT", nullable: true),
                     StartDate = table.Column<DateTime>(type: "TEXT", nullable: false),
                     EndDate = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    ReviewStatus = table.Column<int>(type: "INTEGER", nullable: false),
-                    DeleteStatus = table.Column<int>(type: "INTEGER", nullable: false),
+                    ReviewStatus = table.Column<sbyte>(type: "INTEGER", nullable: false),
                     ImagePath = table.Column<string>(type: "TEXT", nullable: false),
                     SealMappingConfigId = table.Column<int>(type: "INTEGER", nullable: false)
                 },
@@ -276,7 +281,8 @@ namespace SealTypographicWebAPI.Migrations
                     CreateDate = table.Column<DateTime>(type: "TEXT", nullable: false),
                     UpdateDate = table.Column<DateTime>(type: "TEXT", nullable: false),
                     CreateUserId = table.Column<int>(type: "INTEGER", nullable: false),
-                    UpdateUserId = table.Column<int>(type: "INTEGER", nullable: false)
+                    UpdateUserId = table.Column<int>(type: "INTEGER", nullable: false),
+                    DeleteStatus = table.Column<byte>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -300,6 +306,7 @@ namespace SealTypographicWebAPI.Migrations
                     UpdateDate = table.Column<DateTime>(type: "TEXT", nullable: false),
                     CreateUserId = table.Column<int>(type: "INTEGER", nullable: false),
                     UpdateUserId = table.Column<int>(type: "INTEGER", nullable: false),
+                    DeleteStatus = table.Column<byte>(type: "INTEGER", nullable: false),
                     Top = table.Column<float>(type: "REAL", nullable: false),
                     Left = table.Column<float>(type: "REAL", nullable: false),
                     Width = table.Column<int>(type: "INTEGER", nullable: false),
@@ -334,6 +341,7 @@ namespace SealTypographicWebAPI.Migrations
                     UpdateDate = table.Column<DateTime>(type: "TEXT", nullable: false),
                     CreateUserId = table.Column<int>(type: "INTEGER", nullable: false),
                     UpdateUserId = table.Column<int>(type: "INTEGER", nullable: false),
+                    DeleteStatus = table.Column<byte>(type: "INTEGER", nullable: false),
                     Top = table.Column<float>(type: "REAL", nullable: false),
                     Left = table.Column<float>(type: "REAL", nullable: false),
                     Width = table.Column<int>(type: "INTEGER", nullable: false),
@@ -368,6 +376,7 @@ namespace SealTypographicWebAPI.Migrations
                     UpdateDate = table.Column<DateTime>(type: "TEXT", nullable: false),
                     CreateUserId = table.Column<int>(type: "INTEGER", nullable: false),
                     UpdateUserId = table.Column<int>(type: "INTEGER", nullable: false),
+                    DeleteStatus = table.Column<byte>(type: "INTEGER", nullable: false),
                     Top = table.Column<float>(type: "REAL", nullable: false),
                     Left = table.Column<float>(type: "REAL", nullable: false),
                     Width = table.Column<int>(type: "INTEGER", nullable: false),

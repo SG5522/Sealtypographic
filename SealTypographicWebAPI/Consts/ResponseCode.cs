@@ -5,10 +5,7 @@
     /// </summary>
     public enum ResponseCode
     {
-        /// <summary>
-        /// 資料庫欄位限制唯一約束錯誤回傳
-        /// </summary>
-        UniqueConstraintFailed = 19,
+
 
         /// <summary>
         /// 回傳成功
@@ -18,26 +15,41 @@
         /// <summary>
         /// DB無資料
         /// </summary>
-        DbNoData = 100,
+        DbNoData = 1000,
 
         /// <summary>
-        /// 資料庫錯誤
+        /// 資料庫處理錯誤
         /// </summary>
-        DbError = 101,
+        DbError = 1001,
+
+        /// <summary>
+        /// 資料庫欄位限制唯一約束錯誤回傳
+        /// </summary>
+        UniqueConstraintFailed = 1019,
+
+        /// <summary>
+        /// 資料庫客戶編號重複
+        /// </summary>
+        CustomerNumberRepeat = 2001,
 
         /// <summary>
         /// 資料庫客戶印鑑序號重複
         /// </summary>
-        CustomerSealSequenceRepeat = 21,
+        CustomerSealSequenceRepeat = 2002,
+
+        /// <summary>
+        /// 資料庫會計師編號重複
+        /// </summary>
+        AccountantNumberRepeat = 3001,
 
         /// <summary>
         /// 資料庫會計師簽印已有資料
         /// </summary>
-        AccountSignHaveData = 31,
+        AccountantSignRepeat = 3002,
 
         /// <summary>
         /// 上傳失敗
         /// </summary>
-        FileUploadFailed = 18,
+        FileUploadFailed = 4001,
     }
 }
