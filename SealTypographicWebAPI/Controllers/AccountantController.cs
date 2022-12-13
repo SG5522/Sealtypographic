@@ -40,49 +40,43 @@ namespace SealTypographicWebAPI.Controllers
         [HttpGet]
         public AccountantPaginatesViewModel Get([FromQuery]AccountantSearch accountantQueryPage)
         {
+            AccountantPaginatesViewModel accountantPaginatesViewModel = new();
             try
             {
-                Log.Information("Accountant get accountantViewModels input {@Input}", accountantQueryPage);
-                AccountantPaginatesViewModel accountantResponses = accountantService.GetAccountantViewModels(accountantQueryPage);
-                Log.Information("Accountant get accountantViewModels output {@Output}", accountantResponses);
-                return accountantResponses;
+                Log.Information("Accountant get FromQuery input {@Input}", accountantQueryPage);
+                accountantPaginatesViewModel = accountantService.GetAccountantViewModels(accountantQueryPage);
+                Log.Information("Accountant get FromQuery output {@Output}", accountantPaginatesViewModel);
+                return accountantPaginatesViewModel;
             }
             catch (Exception ex) 
             {
-                Log.Error("AccountantGroups get accountantViewModels error {@Error}", ex);
-                ResponseViewModel response = ResponseUtil.DBError();
-                return new ()
-                {
-                    Code = response.Code,
-                    Message = response.Message,
-                };
+                Log.Error("AccountantGroups get FromQuery error {@Error}", ex);
+                accountantPaginatesViewModel.DbError();                
+                return accountantPaginatesViewModel;
             }
         }
 
         /// <summary>
         /// 取得會計師基本資料
         /// </summary>
-        /// <param name="id" example="ACC001">會計師ID</param>        
+        /// <param name="accountantId">會計師ID</param>        
         /// <returns></returns>
-        [HttpGet("{id}")]
-        public AccountantResponse Get(int id)
+        [HttpGet("{accountantId}")]
+        public AccountantResponse Get(int accountantId)
         {
+            AccountantResponse accountantResponse = new();
             try
             {
-                Log.Information("Accountant get accountantViewModel input {@Input}", id);
-                AccountantResponse accountantResponse = accountantService.GetAccountant(id);
-                Log.Information("Accountant get accountantViewModel output {@Output}", accountantResponse);
+                Log.Information("Accountant get{accountantId} input {@Input}", accountantId);
+                accountantResponse = accountantService.GetAccountant(accountantId);
+                Log.Information("Accountant get{accountantId} output {@Output}", accountantResponse);
                 return accountantResponse;
             }
             catch (Exception ex)
             {
-                Log.Error("AccountantGroups get accountantViewModel error {@Error}", ex);
-                ResponseViewModel response = ResponseUtil.DBError();
-                return new AccountantResponse()
-                {
-                    Code = response.Code,
-                    Message = response.Message,
-                };
+                Log.Error("AccountantGroups get{accountantId} error {@Error}", ex);
+                accountantResponse.DbError();                
+                return accountantResponse;
             }
         }
 
@@ -93,17 +87,19 @@ namespace SealTypographicWebAPI.Controllers
         [HttpPost]
         public ResponseViewModel Post(AccountantForm accountantBaseData)
         {
+            ResponseViewModel response = new();
             try
             {
-                Log.Information("Accountant post accountantFormUpdate input {@Input}", accountantBaseData);
-                ResponseViewModel response = accountantService.CreateAccountant(accountantBaseData);
-                Log.Information("Accountant post accountantFormUpdate output {@Output}", response);
+                Log.Information("Accountant post input {@Input}", accountantBaseData);
+                response = accountantService.CreateAccountant(accountantBaseData);
+                Log.Information("Accountant post output {@Output}", response);
                 return response;                
             }
             catch (Exception ex)
             {
                 Log.Error("AccountantGroups post accountantFormUpdate error {@Error}", ex);
-                return ResponseUtil.DBError();
+                response.DbError();
+                return response;
             }
         }
 
@@ -114,17 +110,19 @@ namespace SealTypographicWebAPI.Controllers
         [HttpPut]
         public ResponseViewModel Put(AccountantFormUpdate accountantFormUpdate)
         {
+            ResponseViewModel response = new();
             try
             {
-                Log.Information("Accountant put accountantFormUpdate input {@Input}", accountantFormUpdate);
-                ResponseViewModel response = accountantService.UpdateAccountant(accountantFormUpdate);
-                Log.Information("Accountant put accountantFormUpdate output {@Output}", response);
+                Log.Information("Accountant put input {@Input}", accountantFormUpdate);
+                response = accountantService.UpdateAccountant(accountantFormUpdate);
+                Log.Information("Accountant put output {@Output}", response);
                 return response;
             }
             catch (Exception ex)
             {
                 Log.Error("AccountantGroups put accountantFormUpdate error {@Error}", ex);
-                return ResponseUtil.DBError();
+                response.DbError();
+                return response;
             }
         }
 
@@ -137,17 +135,19 @@ namespace SealTypographicWebAPI.Controllers
         [HttpDelete("{accountantId}")]
         public ResponseViewModel Delete(int accountantId)
         {
+            ResponseViewModel response = new();
             try
             {
-                Log.Information("Accountant delete(hide) accountantFormUpdate input {@Input}", accountantId);
-                ResponseViewModel response = accountantService.DeleteAccountant(accountantId);
-                Log.Information("Accountant delete(hide) accountantFormUpdate output {@Output}", response);
+                Log.Information("Accountant delete(hide) input {@Input}", accountantId);
+                response = accountantService.DeleteAccountant(accountantId);
+                Log.Information("Accountant delete(hide) output {@Output}", response);
                 return response;
             }
             catch (Exception ex)
             { 
-                Log.Error("AccountantGroups delete(hide) accountantFormUpdate error {@Error}", ex); 
-                return ResponseUtil.DBError(); 
+                Log.Error("AccountantGroups delete(hide) error {@Error}", ex);
+                response.DbError();
+                return response; 
             }
         }
     }

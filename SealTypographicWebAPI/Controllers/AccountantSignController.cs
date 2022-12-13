@@ -39,22 +39,19 @@ namespace SealTypographicWebAPI.Controllers
         [HttpGet("{accountantID}")]
         public AccountantSignViewModels Get(int accountantID)
         {
+            AccountantSignViewModels accountantSignViewModels = new ();
             try
             {
-                Log.Information("AccountantSign Get accountantSignViewModel input {@Input}", accountantID);
-                AccountantSignViewModels accountantSignViewModels = accountantSignService.GetAccountantSings(accountantID);
-                Log.Information("AccountantSign Get accountantSignViewModel output {@Output}", accountantSignViewModels);
+                Log.Information("AccountantSign get{accountantID} input {@Input}", accountantID);
+                accountantSignViewModels = accountantSignService.GetAccountantSings(accountantID);
+                Log.Information("AccountantSign get{accountantID} output {@Output}", accountantSignViewModels);
                 return accountantSignViewModels;                
             }
             catch (Exception ex)
-            {
-                ResponseViewModel response = ResponseUtil.DBError();
-                Log.Error("AccountantSign Get accountantSignViewModel error {@Error}", ex);
-                return new()
-                {
-                    Code = response.Code,
-                    Message = response.Message,
-                };
+            {             
+                Log.Error("AccountantSign get{accountantID} error {@Error}", ex);
+                accountantSignViewModels.DbError();
+                return accountantSignViewModels;
             }
         }
 
@@ -66,22 +63,19 @@ namespace SealTypographicWebAPI.Controllers
         [HttpPost]
         public ResponseViewModel Post(List<AccountantSignForm> accountantSignPosts)
         {
+            ResponseViewModel response = new ();
             try
             {
-                Log.Information("AccountantSign post accountantSignDatas input {@Input}", accountantSignPosts);
-                ResponseViewModel response = accountantSignService.CreateAccountantSigns(accountantSignPosts);
-                Log.Information("AccountantSign post accountantSignDatas output {@Output}", response);
+                Log.Information("AccountantSign post input {@Input}", accountantSignPosts);
+                response = accountantSignService.CreateAccountantSigns(accountantSignPosts);
+                Log.Information("AccountantSign post output {@Output}", response);
                 return response;                
             }
             catch (Exception ex)
-            {
-                ResponseViewModel response = ResponseUtil.DBError();
-                Log.Error("AccountantSign post accountantSignDatas error {@Error}", ex);
-                return new()
-                {
-                    Code = response.Code,
-                    Message = response.Message,
-                };
+            {                
+                Log.Error("AccountantSign post error {@Error}", ex);
+                response.DbError();
+                return response;
             }
         }
         
@@ -93,22 +87,19 @@ namespace SealTypographicWebAPI.Controllers
         [HttpPut]
         public ResponseViewModel Put(List<AccountantSignFormUpdate> accountantSignUpdates)
         {
+            ResponseViewModel response = new();
             try
             {
-                Log.Information("AccountantSign put accountantSignDatas input {@Input}", accountantSignUpdates);
-                ResponseViewModel response = accountantSignService.UpdateAccountantSigns(accountantSignUpdates);
-                Log.Information("AccountantSign put accountantSignDatas output {@Output}", response);
+                Log.Information("AccountantSign put input {@Input}", accountantSignUpdates);
+                response = accountantSignService.UpdateAccountantSigns(accountantSignUpdates);
+                Log.Information("AccountantSign put output {@Output}", response);
                 return response;
             }
             catch (Exception ex)
-            {
-                ResponseViewModel response = ResponseUtil.DBError();
-                Log.Error("AccountantSign put accountantSignDatas error {@Error}", ex);
-                return new()
-                {
-                    Code = response.Code,
-                    Message = response.Message,
-                };
+            {                
+                Log.Error("AccountantSign put error {@Error}", ex);
+                response.DbError();
+                return response;
             }
         }
 
@@ -120,17 +111,19 @@ namespace SealTypographicWebAPI.Controllers
         [HttpDelete("{accountantSignId}")]
         public ResponseViewModel Delete(int accountantSignId)
         {
+            ResponseViewModel response = new();
             try
             {
                 Log.Information("CustomerSeal delete input {@Input}", accountantSignId);
-                ResponseViewModel response = accountantSignService.DeleteAccountantSign(accountantSignId);
+                response = accountantSignService.DeleteAccountantSign(accountantSignId);
                 Log.Information("CustomerSeal delete output {@Ouput}", response);
                 return response;
             }
             catch (Exception ex)
             {
-                Log.Error("Customer delete customerForm error {@Error}", ex);
-                return ResponseUtil.DBError();
+                Log.Error("Customer delete error {@Error}", ex);
+                response.DbError();
+                return response;
             }
         }
     }

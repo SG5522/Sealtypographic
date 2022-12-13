@@ -6,6 +6,7 @@ using SealTypographicWebAPI.Models;
 using SealTypographicWebAPI.Models.Customer;
 using SealTypographicWebAPI.Models.Letterhead;
 using SealTypographicWebAPI.Util;
+using SealTypographicWebAPI.Utils;
 
 namespace SealTypographicWebAPI.Services.Implements
 {
@@ -35,30 +36,19 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <returns></returns>
         public LetterheadResponse GetLetterheadViewModel(int litterheadId)
         {
-            LetterheadViewModel letterheadViewModel = new();
-            ResponseViewModel response;
-            Letterhead? letterheadQuery = dbContext.Letterheads
-                                    .Where(letterhead => letterhead.Id == litterheadId)
-                                    .FirstOrDefault();
+            LetterheadResponse letterheadResponse = new();
+            Letterhead? letterheadQuery = dbContext.Letterheads.Find(litterheadId);
 
             if (letterheadQuery != null)
             {
-                letterheadViewModel = mapper.Map<LetterheadViewModel>(letterheadQuery);
-
-                response = ResponseUtil.Success();
+                letterheadResponse.ViewModel = mapper.Map<LetterheadViewModel>(letterheadQuery);
+                letterheadResponse.Success();                
             }
             else
-            {                
-                response = ResponseUtil.DbNoData();
-            }
-            return new()
             {
-                //回傳結果訊息用
-                Code = response.Code,
-                Message = response.Message,
-
-                ViewModel = letterheadViewModel
-            };
+                letterheadResponse.DbNoData();                
+            }
+            return letterheadResponse;
         }
 
         /// <summary>
@@ -68,7 +58,8 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <returns></returns>
         public LetterheadViewModels GetLetterheadViewModels(LetterheadSearch letterheadSearch)
         {
-            List<LetterheadViewModel> letterheadViewModels = new();
+            LetterheadViewModels letterheadViewModels = new ();
+            List<LetterheadViewModel> viewModels = new();
             ResponseViewModel response = new();
             int totalPage = 0;
             int totalCount = 0;
@@ -96,27 +87,23 @@ namespace SealTypographicWebAPI.Services.Implements
                 totalCount = letterheadQuery.Count();
                 foreach (Letterhead letterheadData in pageNumberLetterheads)
                 {
-                    letterheadViewModels.Add(mapper.Map<LetterheadViewModel>(letterheadData));
+                    viewModels.Add(mapper.Map<LetterheadViewModel>(letterheadData));
                 }
-                //取得成功訊息
-                response = ResponseUtil.Success();
+
+                letterheadViewModels.ViewModels = viewModels;
+                letterheadViewModels.PageNumber = letterheadSearch.PageNumber;
+                letterheadViewModels.PageSize = letterheadSearch.PageSize;
+                //計算總頁數
+                letterheadViewModels.TotalPage = TotalPageUtil.GetTotalPage(letterheadQuery.Count(), letterheadQuery.Count());
+                letterheadViewModels.TotalCount = letterheadQuery.Count();
+                letterheadViewModels.Success();
             }
             else
             {
-                response = ResponseUtil.DbNoData();
+                letterheadViewModels.DbNoData();                
             }
 
-            return new()
-            {
-                PageNumber = letterheadSearch.PageNumber,
-                PageSize = letterheadSearch.PageSize,
-                TotalCount = totalCount,
-                TotalPage = totalPage,
-                ViewModels = letterheadViewModels,
-                //回傳結果訊息用
-                Code = response.Code,
-                Message = response.Message
-            };            
+            return letterheadViewModels;
         }
 
         /// <summary>
@@ -134,25 +121,22 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <summary>
         /// 更新建立信頭資料
         /// </summary>
-        /// <param name="letterheadPostData">基本資料</param>
-        public ResponseViewModel UpdateLetterhead(LetterheadForm letterheadPostData)
+        /// <param name="letterheadForm">基本資料</param>
+        public ResponseViewModel UpdateLetterhead(LetterheadForm letterheadForm)
         {
             ResponseViewModel response = new();
-            Letterhead? letterheadQuery = dbContext.Letterheads
-                                .Where(letterhead => letterhead.Id == letterheadPostData.Id)
-                                .FirstOrDefault();
+            Letterhead? letterheadQuery = dbContext.Letterheads.Find(letterheadForm.Id);
 
             if (letterheadQuery != null)
             {                
-                mapper.Map(letterheadPostData, letterheadQuery);
+                mapper.Map(letterheadForm, letterheadQuery);
                 dbContext.SaveChanges();
-                response = ResponseUtil.Success();
+                response.Success();
             }
             else
             {
-                response = ResponseUtil.DbNoData();
+                response.DbNoData();
             }
-
             return response;
         }
 
@@ -163,18 +147,17 @@ namespace SealTypographicWebAPI.Services.Implements
         public ResponseViewModel DeleteLetterhead(int litterheadID)
         {
             ResponseViewModel response = new();
-            Letterhead? letterheadQuery = dbContext.Letterheads
-                    .Where(letterhead => letterhead.Id == litterheadID)
-                    .FirstOrDefault();
+            Letterhead? letterheadQuery = dbContext.Letterheads.Find(litterheadID);
 
             if (letterheadQuery != null)
-            {                                
+            {
+                letterheadQuery.DeleteStatus = DeleteStatus.Yes;
                 dbContext.SaveChanges();
-                response = ResponseUtil.Success();
+                response.Success();
             }
             else
             {
-                response = ResponseUtil.DbNoData();
+                response.DbNoData();
             }
             return response;            
         }

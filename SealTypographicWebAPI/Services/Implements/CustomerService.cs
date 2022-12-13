@@ -82,11 +82,12 @@ namespace SealTypographicWebAPI.Services.Implements
                 {
                     customerViewModels.Add(mapper.Map<CustomerViewModel>(customerBase));
                 }
+                customerPaginateViewModel.Customers = customerViewModels;
+                customerPaginateViewModel.PageNumber = customerSearch.PageNumber;
+                customerPaginateViewModel.PageSize= customerSearch.PageSize;
                 //計算總頁數
                 customerPaginateViewModel.TotalPage = TotalPageUtil.GetTotalPage(customerQuery.Count(), customerSearch.PageSize);
-                customerPaginateViewModel.TotalCount = customerQuery.Count();                
-                customerPaginateViewModel.PageNumber = customerSearch.PageNumber;
-                customerPaginateViewModel.Customers = customerViewModels;
+                customerPaginateViewModel.TotalCount = customerQuery.Count();
                 customerPaginateViewModel.Success();
             }
             else
@@ -114,13 +115,12 @@ namespace SealTypographicWebAPI.Services.Implements
                 dbCustomer.DeleteStatus = DeleteStatus.NO;
                 dbContext.Customers.Add(dbCustomer);
                 dbContext.SaveChanges();
-                response = ResponseUtil.Success();
+                response.Success();
             }
             else
             {
-                response = ResponseUtil.UniqueConstraintFailed();
+                response.CustomerNumberRepeat();
             }
-
             return response;
         }
 
@@ -131,9 +131,7 @@ namespace SealTypographicWebAPI.Services.Implements
         public ResponseViewModel UpdateCustomer(CustomerFormUpdate customerFormUpdate)
         {
             ResponseViewModel response = new();
-            Customer? customerQuery = dbContext.Customers
-                                .Where(customer => customer.Id == customerFormUpdate.Id)
-                                .FirstOrDefault();
+            Customer? customerQuery = dbContext.Customers.Find(customerFormUpdate.Id);
 
             if (customerQuery != null)
             {
@@ -141,13 +139,12 @@ namespace SealTypographicWebAPI.Services.Implements
                 customerQuery.UpdateDate = DateTime.Now;
 
                 dbContext.SaveChanges();
-                response = ResponseUtil.Success();
+                response.Success();
             }
             else
             {
-                response = ResponseUtil.DbNoData();
+                response.DbNoData();
             }
-
             return response;
         }
 
@@ -158,19 +155,17 @@ namespace SealTypographicWebAPI.Services.Implements
         public ResponseViewModel DeleteCustomer(int customerId)
         {
             ResponseViewModel response = new();
-            Customer? customerQuery = dbContext.Customers
-                                .Where(customer => customer.Id == customerId)
-                                .FirstOrDefault();
+            Customer? customerQuery = dbContext.Customers.Find(customerId);
 
             if (customerQuery != null)
             {
                 customerQuery.DeleteStatus = DeleteStatus.Yes;
                 dbContext.SaveChanges();
-                response = ResponseUtil.Success();
+                response.Success();
             }
             else
             {
-                response = ResponseUtil.DbNoData();
+                response.DbNoData();
             }
             return response;
         }

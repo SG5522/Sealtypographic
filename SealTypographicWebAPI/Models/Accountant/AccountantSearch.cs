@@ -10,8 +10,9 @@ namespace SealTypographicWebAPI.Models.Accountant
     public class AccountantSearch : PaginateSearch
     {
         /// <summary>
-        /// 會計師ID或名字或是群組名稱
+        /// 會計師編號或名字或是群組名稱
         /// </summary>        
-        public string? IdOrNameOrGroupsName { get; set; }        
+        /// <example>ACC001 or 會計名字 or 會計群組名稱</example>
+        public string? NumberOrNameOrGroupsName { get; set; }        
     }
 }

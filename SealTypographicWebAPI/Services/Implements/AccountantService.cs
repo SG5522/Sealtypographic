@@ -36,10 +36,10 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <returns></returns>
         public AccountantResponse GetAccountant(int accountantId)
         {
-            AccountantResponse accountantResponse = new();            
+            AccountantResponse accountantResponse = new();
             ResponseViewModel response = new();
             Accountant? accountantQuery = dbContext.Accountants.Where(accountant => accountant.Id == accountantId)
-                                                                .Include(accountant => accountant.AccountantGroup)                                                                
+                                                                .Include(accountant => accountant.AccountantGroup)
                                                                 .FirstOrDefault();
 
             if (accountantQuery != null)
@@ -60,58 +60,49 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <param name="accountantSearch">會計師分頁搜尋</param> 
         /// <returns></returns>
         public AccountantPaginatesViewModel GetAccountantViewModels(AccountantSearch accountantSearch)
-        {            
+        {
+            AccountantPaginatesViewModel accountantPaginatesViewModel = new();
             List<AccountantViewModel> accountantViewModels = new();
             ResponseViewModel response = new();
-            IQueryable<Accountant> accountantsQuery = dbContext.Accountants;
-            int totalPage = 0;
-            int totalCount = 0;
-            if (!string.IsNullOrWhiteSpace(accountantSearch.IdOrNameOrGroupsName))
+            IQueryable<Accountant> accountantQuery = dbContext.Accountants;
+            if (!string.IsNullOrWhiteSpace(accountantSearch.NumberOrNameOrGroupsName))
             {
-                accountantsQuery = accountantsQuery.Where
+                accountantQuery = accountantQuery.Where
                                                     (
                                                         accountant =>
-                                                        accountant.AccountantNumber.ToLower().Contains(accountantSearch.IdOrNameOrGroupsName.ToLower())                                                         
-                                                        || accountant.Name.Contains(accountantSearch.IdOrNameOrGroupsName)
-                                                        || accountant.AccountantGroup.Name.Contains(accountantSearch.IdOrNameOrGroupsName)
+                                                        accountant.AccountantNumber.ToLower().Contains(accountantSearch.NumberOrNameOrGroupsName.ToLower())                                                         
+                                                        || accountant.Name.Contains(accountantSearch.NumberOrNameOrGroupsName)
+                                                        || accountant.AccountantGroup.Name.Contains(accountantSearch.NumberOrNameOrGroupsName)
                                                     );                                                   
             }
 
-            accountantsQuery = accountantsQuery.OrderBy(accountant => accountant.Id);
-            if (accountantsQuery.Any())
+            accountantQuery = accountantQuery.OrderBy(accountant => accountant.Id);
+            if (accountantQuery.Any())
             {
                 //取得該頁            
-                List<Accountant> thisPageAccountants = accountantsQuery
+                List<Accountant> thisPageAccountants = accountantQuery
                                           .Include(accountantGroup => accountantGroup.AccountantGroup)
                                           .Skip((accountantSearch.PageNumber - 1) * accountantSearch.PageSize)
                                           .Take(accountantSearch.PageSize)
                                           .ToList();
-                //計算總頁數
-                totalPage = accountantsQuery.Count() / accountantSearch.PageSize + (accountantsQuery.Count() % accountantSearch.PageSize == 0 ? 0 : 1);
-                totalCount = accountantsQuery.Count();
                 foreach (Accountant accountant in thisPageAccountants)
                 {
                     AccountantViewModel accountantViewModel = mapper.Map<AccountantViewModel>(accountant);
                     accountantViewModels.Add(accountantViewModel);
                 }
-                //取得成功訊息
-                response = ResponseUtil.Success();
+                accountantPaginatesViewModel.AccountantViewModels = accountantViewModels;
+                accountantPaginatesViewModel.PageNumber= accountantSearch.PageNumber;
+                accountantPaginatesViewModel.PageSize = accountantSearch.PageSize;
+                //計算總頁數
+                accountantPaginatesViewModel.TotalPage = TotalPageUtil.GetTotalPage(accountantQuery.Count(), accountantSearch.PageSize);               
+                accountantPaginatesViewModel.TotalCount = accountantQuery.Count();
+                accountantPaginatesViewModel.Success();
             }
             else
             {
-                response = ResponseUtil.DbNoData();
+                accountantPaginatesViewModel.DbNoData();                
             }
-
-            return new()
-            {
-                PageNumber = accountantSearch.PageNumber,
-                TotalCount = totalCount,
-                TotalPage = totalPage,
-                AccountantViewModels = accountantViewModels,
-                //回傳結果訊息用
-                Code = response.Code,
-                Message = response.Message,
-            };
+            return accountantPaginatesViewModel;
         }
 
         /// <summary>
@@ -133,13 +124,12 @@ namespace SealTypographicWebAPI.Services.Implements
                 accountant.DeleteStatus = DeleteStatus.NO;
                 dbContext.Accountants.Add(accountant);
                 dbContext.SaveChanges();
-                response = ResponseUtil.Success();
+                response.Success();                
             }
             else
             {
-                response = ResponseUtil.UniqueConstraintFailed();
+                response.AccountantNumberRepeat();                
             }
-
             return response;
         }
 
@@ -150,22 +140,19 @@ namespace SealTypographicWebAPI.Services.Implements
         public ResponseViewModel UpdateAccountant(AccountantFormUpdate accountantFormUpdate)
         {
             ResponseViewModel response = new();
-            Accountant? accountantQuery = dbContext.Accountants
-                                .Where(accountant => accountant.AccountantNumber == accountantFormUpdate.AccountantNumber)
-                                .FirstOrDefault();
+            Accountant? accountantQuery = dbContext.Accountants.Find(accountantFormUpdate.Id);
 
             if (accountantQuery != null)
             {
                 mapper.Map(accountantFormUpdate, accountantQuery);
                 accountantQuery.UpdateDate = DateTime.Now;
                 dbContext.SaveChanges();
-                response = ResponseUtil.Success();
+                response.Success();
             }
             else
             {
-                response = ResponseUtil.DbNoData();
+                response.DbNoData();
             }
-
             return response;
         }
 
@@ -176,19 +163,17 @@ namespace SealTypographicWebAPI.Services.Implements
         public ResponseViewModel DeleteAccountant(int accountantId)
         {
             ResponseViewModel response = new();
-            Accountant? accountantQuery = dbContext.Accountants
-                                .Where(accountant => accountant.Id == accountantId)
-                                .FirstOrDefault();
+            Accountant? accountantQuery = dbContext.Accountants.Find(accountantId);
 
             if (accountantQuery != null)
             {
                 accountantQuery.DeleteStatus = DeleteStatus.Yes;
                 dbContext.SaveChanges();
-                response = ResponseUtil.Success();
+                response.Success();
             }
             else
             {
-                response = ResponseUtil.DbNoData();
+                response.DbNoData();
             }
             return response;
         }

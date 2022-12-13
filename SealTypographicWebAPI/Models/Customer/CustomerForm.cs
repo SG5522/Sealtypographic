@@ -25,7 +25,8 @@ namespace SealTypographicWebAPI.Models.Customer
         /// <summary>
         /// 統一編號 (business administration number)
         /// </summary>
-        /// <example>12345678</example>
+        /// <example>12345678</example>        
+        [StringLength(8)]
         [RegularExpression(@"^[0-9]*$")]
         public string BAN { get; set; }
 
@@ -33,7 +34,8 @@ namespace SealTypographicWebAPI.Models.Customer
         /// 證券代號
         /// </summary>
         /// <example>9666</example>
-        [RegularExpression(@"^[0-9]*$")]
+        [StringLength(4)]
+        [RegularExpression(@"^[0-9]*$")]        
         public string StockCode { get; set; }
 
         /// <summary>
@@ -46,13 +48,15 @@ namespace SealTypographicWebAPI.Models.Customer
         /// 電話
         /// </summary>
         /// <example>28825252</example>
-        [RegularExpression(@"^[0-9]*$")]
+        [StringLength(8)]
+        [RegularExpression(@"^[0-9]*$")]        
         public string Telephone { get; set; }
 
         /// <summary>
         /// 傳真
         /// </summary>
         /// <example>28825252</example>
+        [StringLength(8)]
         [RegularExpression(@"^[0-9]*$")]
         public string Fax { get; set; }
 

@@ -47,22 +47,19 @@ namespace SealTypographicWebAPI.Controllers
         [HttpGet]
         public AccountantGroupMembers GetAccountantGroupMember([FromQuery] AccountantGroupMemberSearch accountantGroupMemberSearch)
         {
+            AccountantGroupMembers accountantGroupMembers = new ();
             try
             {
-                Log.Information("AccountantGroupMember get accountantGroupMembers input {@Input}", accountantGroupMemberSearch);
-                AccountantGroupMembers accountantGroupMembers = accountantGroupMemberService.GetAccountantGroupMembers(accountantGroupMemberSearch);                
-                Log.Information("AccountantGroupMember get accountantGroupMembers output {@Output}", accountantGroupMembers);
+                Log.Information("AccountantGroupMember get FromQuery input {@Input}", accountantGroupMemberSearch);
+                accountantGroupMembers = accountantGroupMemberService.GetAccountantGroupMembers(accountantGroupMemberSearch);                
+                Log.Information("AccountantGroupMember get FromQuery output {@Output}", accountantGroupMembers);
                 return accountantGroupMembers;
             }
             catch (Exception ex)
             {
-                Log.Error("AccountantGroupMember get accountantGroupMembers error {@Error}", ex);
-                ResponseViewModel response = ResponseUtil.DBError();
-                return new()
-                {
-                    Code = response.Code,
-                    Message = response.Message,
-                };
+                Log.Error("AccountantGroupMember get FromQuery error {@Error}", ex);
+                accountantGroupMembers.DbError();                
+                return accountantGroupMembers;
             }
         }
 
@@ -74,22 +71,19 @@ namespace SealTypographicWebAPI.Controllers
         [HttpGet("NotTheGroup")]
         public NotThisGroupMember GetNotGroupMembers([FromQuery]NotThisGroupMemberSearch notThisGroupMemberSearch)
         {
+            NotThisGroupMember notThisGroupMember = new ();
             try
             {                
-                Log.Information("AccountantGroupMember get  input {@Input}", notThisGroupMemberSearch);
-                NotThisGroupMember notThisGroupMember =  accountantGroupMemberService.GetNotThisGroupMember(notThisGroupMemberSearch);
-                Log.Information("AccountantGroupMember get  output {@Output}", notThisGroupMember);
+                Log.Information("AccountantGroupMember get(NotTheGroup) input {@Input}", notThisGroupMemberSearch);
+                notThisGroupMember = accountantGroupMemberService.GetNotThisGroupMember(notThisGroupMemberSearch);
+                Log.Information("AccountantGroupMember get(NotTheGroup) output {@Output}", notThisGroupMember);
                 return notThisGroupMember;
             }
             catch (Exception ex)
             {
-                Log.Error("AccountantGroupMember get  error {@Error}", ex);
-                ResponseViewModel response = ResponseUtil.DBError();
-                return new()
-                {
-                    Code = response.Code,
-                    Message = response.Message,
-                };
+                Log.Error("AccountantGroupMember get(NotTheGroup) error {@Error}", ex);                
+                notThisGroupMember.DbError();
+                return notThisGroupMember;
             }
         }
 
@@ -101,22 +95,19 @@ namespace SealTypographicWebAPI.Controllers
         [HttpGet("{accountantId}")]
         public AccountantResponse GetAccountantViewModel(int accountantId)
         {
+            AccountantResponse accountantResponse = new();
             try
             {
-                Log.Information("AccountantGroupMember get accountantViewModel input {@Input}", accountantId);
-                AccountantResponse accountantResponse = accountantService.GetAccountant(accountantId);
-                Log.Information("AccountantGroupMember get accountantViewModel output {@Output}", accountantResponse);
+                Log.Information("AccountantGroupMember get{accountantId} input {@Input}", accountantId);
+                accountantResponse = accountantService.GetAccountant(accountantId);
+                Log.Information("AccountantGroupMember get{accountantId} output {@Output}", accountantResponse);
                 return accountantResponse;
             }
             catch (Exception ex)
             {
-                Log.Error("AccountantGroupMember get accountantGroupMembers error {@Error}", ex);
-                ResponseViewModel response = ResponseUtil.DBError();
-                return new()
-                {
-                    Code = response.Code,
-                    Message = response.Message,
-                };
+                Log.Error("AccountantGroupMember get{accountantId} error {@Error}", ex);                
+                accountantResponse.DbError();
+                return accountantResponse;
             }
         }
 
@@ -127,17 +118,19 @@ namespace SealTypographicWebAPI.Controllers
         [HttpPut]
         public ResponseViewModel PutAccountantGroup(AccountantGroupChangeForm accountantGroupChangeForm)
         {
+            ResponseViewModel response = new();
             try
             {
-                Log.Information("AccountantGroupMember put accountantGroupChangeForm input {@Input}", accountantGroupChangeForm);
-                ResponseViewModel response = accountantGroupMemberService.UpdateAccountantGroup(accountantGroupChangeForm);
-                Log.Information("AccountantGroupMember put accountantGroupChangeForm output {@Output}", response);
+                Log.Information("AccountantGroupMember put input {@Input}", accountantGroupChangeForm);
+                response = accountantGroupMemberService.UpdateAccountantGroup(accountantGroupChangeForm);
+                Log.Information("AccountantGroupMember put output {@Output}", response);
                 return response;
             }
             catch (Exception ex)
             {
-                Log.Error("AccountantGroupMember put accountantGroupChangeForm error {@Error}", ex);
-                return ResponseUtil.DBError();
+                Log.Error("AccountantGroupMember put error {@Error}", ex);
+                response.DbError();
+                return response;
             }
         }
 
@@ -149,18 +142,19 @@ namespace SealTypographicWebAPI.Controllers
         [HttpPut("NotTheGroup")]
         public ResponseViewModel PutGNotGroupMember(AccountantGroupMemberForm accountantGroupMemberForm)
         {
+            ResponseViewModel response = new ();
             try
             {
-                Log.Information("AccountantGroupMember put accountantGroupChangeForm input {@Input}", accountantGroupMemberForm);
-                ResponseViewModel response = accountantGroupMemberService.ChangeNotTheGroupMember(accountantGroupMemberForm);
-                //Log.Information("AccountantGroupMember put accountantGroupChangeForm output {@Output}", response);
-                //return ResponseUtil.Success();
+                Log.Information("AccountantGroupMember put(NotTheGroup) input {@Input}", accountantGroupMemberForm);
+                response = accountantGroupMemberService.ChangeNotTheGroupMember(accountantGroupMemberForm);
+                Log.Information("AccountantGroupMember put(NotTheGroup) output {@Output}", response);
                 return response;
             }
             catch (Exception ex)
             {
-                Log.Error("AccountantGroupMember put accountantGroupChangeForm error {@Error}", ex);
-                return ResponseUtil.DBError();
+                Log.Error("AccountantGroupMember put(NotTheGroup) error {@Error}", ex);
+                response.DbError();
+                return response;
             }
         }
     }

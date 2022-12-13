@@ -36,23 +36,20 @@ namespace SealTypographicWebAPI.Controllers
         /// <returns></returns>
         [HttpGet]        
         public CustomerPaginateViewModel Get([FromQuery]CustomerSearch customerQuery)
-        {         
+        {
+            CustomerPaginateViewModel customerResponsePage = new ();
             try
             {
-                Log.Information("Customer get viewModels input {@Input}", customerQuery);
-                CustomerPaginateViewModel customerResponsePage = customerService.GetCustomerPaginatesViewModel(customerQuery);
-                Log.Information("Customer get viewModels output {@Output}", customerResponsePage);
+                Log.Information("Customer get FromQuery input {@Input}", customerQuery);
+                customerResponsePage = customerService.GetCustomerPaginatesViewModel(customerQuery);
+                Log.Information("Customer get FromQuery output {@Output}", customerResponsePage);
                 return customerResponsePage;
             }
             catch (Exception ex)
             {
-                Log.Error("Customer get viewModels error {@Error}", ex);
-                ResponseViewModel response = ResponseUtil.DBError();                
-                return new()
-                {
-                    Code = response.Code,
-                    Message = response.Message,
-                };
+                Log.Error("Customer get FromQuery error {@Error}", ex);                
+                customerResponsePage.DbError();
+                return customerResponsePage;
             }
         }
 
@@ -65,22 +62,19 @@ namespace SealTypographicWebAPI.Controllers
         [HttpGet("{Customerid}")]
         public CustomerDetailViewModel Get(int Customerid)
         {
+            CustomerDetailViewModel customerDetailViewModel = new();
             try
             {
-                Log.Information("Customer get customerForm input {@Input}", Customerid);
-                CustomerDetailViewModel customerDetailViewModel = customerService.GetCustomerDetailViewModel(Customerid);
-                Log.Information("Customer get customerForm output {@Output}", customerDetailViewModel);
+                Log.Information("Customer get{Customerid} input {@Input}", Customerid);
+                customerDetailViewModel = customerService.GetCustomerDetailViewModel(Customerid);
+                Log.Information("Customer get{Customerid} output {@Output}", customerDetailViewModel);
                 return customerDetailViewModel;
             }
             catch (Exception ex)
             {
-                Log.Error("Customer get customerForm error {@Error}", ex);
-                ResponseViewModel response = ResponseUtil.DBError();
-                return new ()
-                {
-                    Code = response.Code,
-                    Message = response.Message,
-                };
+                Log.Error("Customer get{Customerid} error {@Error}", ex);                
+                customerDetailViewModel.DbNoData();
+                return customerDetailViewModel;
             }
         }
         /// <summary>
@@ -91,17 +85,19 @@ namespace SealTypographicWebAPI.Controllers
         [HttpPost]
         public ResponseViewModel Post(CustomerForm customerForm)
         {
+            ResponseViewModel response = new();
             try
             {
-                Log.Information("Customer post customerForm input {@Input}", customerForm);
-                ResponseViewModel response = customerService.CreateCustomer(customerForm);
-                Log.Information("Customer post customerForm output {@Input}", response);
+                Log.Information("Customer post input {@Input}", customerForm);
+                response = customerService.CreateCustomer(customerForm);
+                Log.Information("Customer post output {@Input}", response);
                 return response;
             }
             catch (Exception ex)
             {
-                Log.Error("Customer post customerForm error {@Error}", ex);
-                return ResponseUtil.DBError();
+                Log.Error("Customer post error {@Error}", ex);
+                response.DbError();
+                return response;
             }
         }
 
@@ -112,17 +108,19 @@ namespace SealTypographicWebAPI.Controllers
         [HttpPut]
         public ResponseViewModel Put(CustomerFormUpdate customerForm)
         {
+            ResponseViewModel response = new();
             try
             {               
-                Log.Information("Customer put customerForm input {@Input}", customerForm);
-                ResponseViewModel response = customerService.UpdateCustomer(customerForm);
-                Log.Information("Customer put customerForm output {@Output}", response);
+                Log.Information("Customer put input {@Input}", customerForm);
+                response = customerService.UpdateCustomer(customerForm);
+                Log.Information("Customer put output {@Output}", response);
                 return response;
             }
             catch (Exception ex)
             {
-                Log.Error("Customer put customerForm error {@Error}", ex);
-                return ResponseUtil.DBError();
+                Log.Error("Customer put error {@Error}", ex);
+                response.DbError();
+                return response;
             }
         }
 
@@ -136,17 +134,19 @@ namespace SealTypographicWebAPI.Controllers
         [HttpDelete("{customerId}")]
         public ResponseViewModel Delete(int customerId)
         {
+            ResponseViewModel response = new();
             try
             {
-                Log.Information("Customer delete customerForm input {@Input}", customerId);
-                ResponseViewModel response = customerService.DeleteCustomer(customerId);
-                Log.Information("Customer delete customerForm input {@Input}", response);
+                Log.Information("Customer delete input {@Input}", customerId);
+                response = customerService.DeleteCustomer(customerId);
+                Log.Information("Customer delete input {@Input}", response);
                 return response;
             }
             catch (Exception ex)
             {
-                Log.Error("Customer delete customerForm error {@Error}", ex);
-                return ResponseUtil.DBError();
+                Log.Error("Customer delete error {@Error}", ex);
+                response.DbError();
+                return response;
             }
         }
     }

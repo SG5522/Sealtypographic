@@ -36,8 +36,8 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <returns></returns>
         public AccountantSignViewModels GetAccountantSings(int accountantId)
         {
-            List<AccountantSignViewModel> accountantSignViewModels = new();
-            ResponseViewModel response;
+            AccountantSignViewModels signViewModels = new();
+            List<AccountantSignViewModel> accountantSignViewModels = new();            
             List<AccountantSignJournal> accountantSignJournalQuery = dbContext.AccountantSignJournals.Where
                                                                     (
                                                                         accountantSignJournal => accountantSignJournal.AccountantId == accountantId                                                                        
@@ -45,7 +45,6 @@ namespace SealTypographicWebAPI.Services.Implements
                                                                     .Include(accountantSignJournal => accountantSignJournal.SealMappingConfig)                                                                    
                                                                     .OrderBy(accountantSignJournal => accountantSignJournal.SealMappingConfigId)
                                                                     .ToList();
-
 
             if (accountantSignJournalQuery.Any())
             {
@@ -55,21 +54,15 @@ namespace SealTypographicWebAPI.Services.Implements
                     customerSealViewModel.ImageBase64 = "image/..."; //之後會在做BASE64轉換
                     accountantSignViewModels.Add(customerSealViewModel);
                 }
-                response = ResponseUtil.Success();
+                signViewModels.SignViewModels = accountantSignViewModels;
+                signViewModels.Success();                
             }
             else
             {
-                response = ResponseUtil.DbNoData();
+                signViewModels.DbNoData();                
             }
 
-
-            return new AccountantSignViewModels()
-            {
-                Code = response.Code,
-                Message = response.Message,
-
-                SignViewModels = accountantSignViewModels
-            };
+            return signViewModels;
         }
 
         /// <summary>
@@ -97,12 +90,13 @@ namespace SealTypographicWebAPI.Services.Implements
                 }
                 else
                 {
-                    return ResponseUtil.AccountSignHaveData();
+                    response.AccountantSignRepeat();
+                    return response;
                 }
             }
             dbContext.AccountantSignJournals.AddRange(accountantSignJournals);
             dbContext.BulkSaveChanges();
-            response = ResponseUtil.Success();
+            response.Success();            
 
             return response;
         }
@@ -134,12 +128,12 @@ namespace SealTypographicWebAPI.Services.Implements
                 }
                 else
                 {
-                    response = ResponseUtil.DbNoData();
+                    response.DbNoData();                     
                     return response;
                 }
             }            
             dbContext.SaveChanges();
-            response = ResponseUtil.Success();
+            response.Success();            
             return response;
         }
 
@@ -158,11 +152,11 @@ namespace SealTypographicWebAPI.Services.Implements
             {
                 accountantSignJournalQuery.DeleteStatus = DeleteStatus.Yes;
                 dbContext.SaveChanges();
-                response = ResponseUtil.Success();
+                response.Success();
             }
             else
             {
-                response = ResponseUtil.DbNoData();
+                response.DbNoData();
             }
             return response;
         }
