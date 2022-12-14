@@ -25,9 +25,24 @@ namespace SealTypographicWebAPI.Entities
         public string StockCode { get; set; }
 
         /// <summary>
-        /// 地址
+        /// 地址：城市
         /// </summary>
-        public string Address { get; set; }
+        public string AddressCity { get; set; }
+
+        /// <summary>
+        /// 地址：市區
+        /// </summary>
+        public string AddressCityArea { get; set; }
+
+        /// <summary>
+        /// 地址：路街
+        /// </summary>
+        public string AddressStreet { get; set; }
+
+        /// <summary>
+        /// 巷弄樓
+        /// </summary>
+        public string AddressLocate { get; set; }
 
         /// <summary>
         /// 電話

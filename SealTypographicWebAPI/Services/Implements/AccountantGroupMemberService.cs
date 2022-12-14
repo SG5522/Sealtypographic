@@ -39,8 +39,7 @@ namespace SealTypographicWebAPI.Services.Implements
         public AccountantGroupMembers GetAccountantGroupMembers(AccountantGroupMemberSearch accountantGroupMemberSearch)
         {
             AccountantGroupMembers accountantGroupMembers = new();
-            List<AccountantGroupMember> accountantMembers = new();
-            int totalPage = 0;
+            List<AccountantGroupMember> accountantMembers = new();            
             IQueryable<Accountant> accountantQuery = dbContext.Accountants
                                            .Where(accountant => accountant.AccountantGroupId == accountantGroupMemberSearch.AccountantGroupId)
                                            .OrderBy(accountant => accountant.Id);
@@ -52,8 +51,7 @@ namespace SealTypographicWebAPI.Services.Implements
                                             .Skip((accountantGroupMemberSearch.PageNumber - 1) * accountantGroupMemberSearch.PageSize)
                                             .Take(accountantGroupMemberSearch.PageSize)
                                             .ToList();
-                //計算總頁數
-                totalPage = TotalPageUtil.GetTotalPage(accountantQuery.Count(), accountantGroupMemberSearch.PageSize);                
+
                 foreach (Accountant accountant in accountants)
                 {
                     accountantMembers.Add(new()
@@ -63,15 +61,19 @@ namespace SealTypographicWebAPI.Services.Implements
                         Name = accountant.Name,
                     });
                 }
-                accountantGroupMembers.Members = accountantMembers;                
+                accountantGroupMembers.Members = accountantMembers;
+                accountantGroupMembers.PageNumber = accountantGroupMemberSearch.PageNumber;
+                accountantGroupMembers.PageSize = accountantGroupMemberSearch.PageSize;
+                //計算總頁數                
+                accountantGroupMembers.TotalPage = TotalPageUtil.GetTotalPage(accountantQuery.Count(), accountantGroupMemberSearch.PageSize);
+                accountantGroupMembers.TotalCount = accountantQuery.Count();
+                
                 accountantGroupMembers.Success();               
             }
             else
             {
                 accountantGroupMembers.DbNoData();                
             }
-            accountantGroupMembers.TotalPage = totalPage;
-            accountantGroupMembers.TotalCount = accountantQuery.Count();
 
             return accountantGroupMembers;
         }

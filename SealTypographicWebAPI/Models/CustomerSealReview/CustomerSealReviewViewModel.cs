@@ -30,9 +30,9 @@ namespace SealTypographicWebAPI.Models.CustomerSealReview
     }
 
     /// <summary>
-    /// 
+    /// 審核列表(分頁)
     /// </summary>
-    public class CustomerSealReviewViewModelResponse : ResponseViewModel
+    public class CustomerSealReviewViewModelResponse : PaginateViewModel
     {
 
         /// <summary>

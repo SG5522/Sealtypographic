@@ -61,6 +61,7 @@ builder.Services.AddAutoMapper(typeof(MapperProfile));
 //DB Process
 builder.Services.AddScoped<ICustomerService, CustomerService>();
 builder.Services.AddScoped<ICustomerSealService, CustomerSealService>();
+builder.Services.AddScoped<ICustomerSealReviewService, CustomerSealReviewService>();
 builder.Services.AddScoped<IAccountantService, AccountantService>();
 builder.Services.AddScoped<IAccountantGroupService, AccountantGroupService>();
 builder.Services.AddScoped<IAccountantGroupMemberService, AccountantGroupMemberService>();

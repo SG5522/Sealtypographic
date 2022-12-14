@@ -5,6 +5,7 @@ using SealTypographicWebAPI.Consts;
 using AutoMapper;
 using SealTypographicWebAPI.Util;
 using SealTypographicWebAPI.Utils;
+using SealTypographicWebAPI.Models.CustomerSealReview;
 
 namespace SealTypographicWebAPI.Services.Implements
 {
@@ -64,7 +65,7 @@ namespace SealTypographicWebAPI.Services.Implements
                 customerQuery = customerQuery.Where
                     (
                         customer =>
-                        customer.CustomerNumber.Contains(customerSearch.CustomerNumberOrName)
+                        customer.CustomerNumber.ToLower().Contains(customerSearch.CustomerNumberOrName.ToLower())
                         || customer.Name.Contains(customerSearch.CustomerNumberOrName)                        
                     );
             }
@@ -102,9 +103,9 @@ namespace SealTypographicWebAPI.Services.Implements
         /// 新增顧客基本資料
         /// </summary>
         /// <param name="customerForm">基本資料</param>
-        public ResponseViewModel CreateCustomer(CustomerForm customerForm)
+        public CreateCustomerResponse CreateCustomer(CustomerForm customerForm)
         {
-            ResponseViewModel response = new();
+            CreateCustomerResponse createCustomerResponse = new();
             IQueryable<Customer> customerQuery = dbContext.Customers
                                 .Where(customer => customer.CustomerNumber == customerForm.CustomerNumber);
 
@@ -114,14 +115,27 @@ namespace SealTypographicWebAPI.Services.Implements
                 dbCustomer.CreateDate = DateTime.Now;
                 dbCustomer.DeleteStatus = DeleteStatus.NO;
                 dbContext.Customers.Add(dbCustomer);
-                dbContext.SaveChanges();
-                response.Success();
+                dbContext.SaveChanges();                
+
+                //回傳剛建立的客戶基本資料 使建立客戶印鑑找到該ID
+                Customer? customer = dbContext.Customers
+                                    .Where(customer => customer.CustomerNumber == customerForm.CustomerNumber)
+                                    .FirstOrDefault();    
+                if (customer != null) 
+                {
+                    createCustomerResponse.CustomerId = customer.Id;
+                    createCustomerResponse.Success();
+                }                                      
+                else
+                {
+                    createCustomerResponse.CustomerCreateFailed();
+                }
             }
             else
             {
-                response.CustomerNumberRepeat();
+                createCustomerResponse.CustomerNumberRepeat();
             }
-            return response;
+            return createCustomerResponse;
         }
 
         /// <summary>

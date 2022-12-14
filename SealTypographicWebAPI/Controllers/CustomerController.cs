@@ -4,6 +4,7 @@ using SealTypographicWebAPI.Models.Customer;
 using SealTypographicWebAPI.Util;
 using SealTypographicWebAPI.Services;
 using Serilog;
+using SealTypographicWebAPI.Models.CustomerSealReview;
 
 namespace SealTypographicWebAPI.Controllers
 {
@@ -83,21 +84,21 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="customerForm">基本資料</param>
         /// <returns></returns>
         [HttpPost]
-        public ResponseViewModel Post(CustomerForm customerForm)
+        public CreateCustomerResponse Post(CustomerForm customerForm)
         {
-            ResponseViewModel response = new();
+            CreateCustomerResponse createCustomerResponse = new();
             try
             {
                 Log.Information("Customer post input {@Input}", customerForm);
-                response = customerService.CreateCustomer(customerForm);
-                Log.Information("Customer post output {@Input}", response);
-                return response;
+                createCustomerResponse = customerService.CreateCustomer(customerForm);
+                Log.Information("Customer post output {@Input}", createCustomerResponse);
+                return createCustomerResponse;
             }
             catch (Exception ex)
             {
                 Log.Error("Customer post error {@Error}", ex);
-                response.DbError();
-                return response;
+                createCustomerResponse.DbError();
+                return createCustomerResponse;
             }
         }
 

@@ -28,7 +28,7 @@ namespace SealTypographicWebAPI.Services
         /// 建立會計師資料
         /// </summary>
         /// <param name="accountantBaseData">基本資料</param>        
-        ResponseViewModel CreateAccountant(AccountantForm accountantBaseData);
+        AccountantCreateResponse CreateAccountant(AccountantForm accountantBaseData);
 
 
         /// <summary>

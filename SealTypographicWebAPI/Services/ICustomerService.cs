@@ -1,5 +1,6 @@
 ﻿using SealTypographicWebAPI.Models;
 using SealTypographicWebAPI.Models.Customer;
+using SealTypographicWebAPI.Models.CustomerSealReview;
 
 namespace SealTypographicWebAPI.Services
 {
@@ -26,7 +27,7 @@ namespace SealTypographicWebAPI.Services
         /// 建立顧客資料
         /// </summary>
         /// <param name="customer">基本資料</param>
-        ResponseViewModel CreateCustomer(CustomerForm customer);
+        CreateCustomerResponse CreateCustomer(CustomerForm customer);
 
         /// <summary>
         /// 更新客戶基本資料

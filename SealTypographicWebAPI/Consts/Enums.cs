@@ -54,7 +54,7 @@
         /// <summary>
         /// 最大值
         /// </summary>
-        Max = 100
+        Max = 20
     }
 
     /// <summary>

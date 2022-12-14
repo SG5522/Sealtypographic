@@ -40,7 +40,10 @@ namespace SealTypographicWebAPI.Services.Implements
             List<AccountantSignViewModel> accountantSignViewModels = new();            
             List<AccountantSignJournal> accountantSignJournalQuery = dbContext.AccountantSignJournals.Where
                                                                     (
-                                                                        accountantSignJournal => accountantSignJournal.AccountantId == accountantId                                                                        
+                                                                        accountantSignJournal => 
+                                                                        accountantSignJournal.AccountantId == accountantId   
+                                                                        && accountantSignJournal.DeleteStatus == DeleteStatus.NO
+                                                                        //&& accountantSignJournal.ReviewStatus == ReviewStatus.Approval
                                                                     )
                                                                     .Include(accountantSignJournal => accountantSignJournal.SealMappingConfig)                                                                    
                                                                     .OrderBy(accountantSignJournal => accountantSignJournal.SealMappingConfigId)

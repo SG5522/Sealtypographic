@@ -7,6 +7,8 @@ using SealTypographicWebAPI.Models.TypographicPDF;
 using SealTypographicWebAPI.Models.AccountantGroup;
 using SealTypographicWebAPI.Models.SealMappingConfig;
 using SealTypographicWebAPI.Models.AccountantGroupMember;
+using SealTypographicWebAPI.Models.CustomerSealReview;
+using AutoMapper.Internal;
 
 namespace SealTypographicWebAPI.Config
 {
@@ -43,6 +45,16 @@ namespace SealTypographicWebAPI.Config
             //客戶印鑑序號確認用
             CreateMap<CustomerSealForm, CustomerSealSequenceCheck>();
             CreateMap<CustomerSealJournal, CustomerSealSequenceCheck>();
+
+            //客戶印鑑審核
+            CreateMap<CustomerSealJournal, CustomerSealReviewViewModel>()
+                    .ForMember(x => x.Id, y => y.MapFrom(o => o.Customer.Id))
+                    .ForMember(x => x.Name, y => y.MapFrom(o => o.Customer.Name))
+                    .ForMember(x => x.CustomerNumber, y => y.MapFrom(o => o.Customer.CustomerNumber))
+                    .ForMember(x => x.BAN, y => y.MapFrom(o => o.Customer.BAN))
+                    .ForMember(x => x.Quarter, y => y.MapFrom(o => o.Quarter))
+                    .ForMember(x => x.ReviewStatus, y => y.MapFrom(o => o.ReviewStatus))
+                    .ReverseMap();
 
 
             //會計師基本資料

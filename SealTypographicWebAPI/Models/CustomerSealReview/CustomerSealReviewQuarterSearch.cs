@@ -5,7 +5,7 @@ namespace SealTypographicWebAPI.Models.CustomerSealReview
     /// <summary>
     /// 顯示一筆審核資料用的搜尋
     /// </summary>
-    public class CustomerSealReviewOneSearch
+    public class CustomerSealReviewQuarterSearch
     {
         /// <summary>
         /// ID

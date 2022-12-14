@@ -63,6 +63,15 @@ namespace SealTypographicWebAPI.Models
         }
 
         /// <summary>
+        /// CustomerSeal Sequence Repeat
+        /// </summary>
+        public void CustomerCreateFailed()
+        {
+            Code = (int)ResponseCode.CustomerCreateFailed;
+            Message = "Customer Create Failed";
+        }
+
+        /// <summary>
         /// Accountant Number Repeat
         /// </summary>
         public void AccountantNumberRepeat()
@@ -78,6 +87,15 @@ namespace SealTypographicWebAPI.Models
         {
             Code = (int)ResponseCode.AccountantSignRepeat;
             Message = "AccountantSign have data";
+        }
+
+        /// <summary>
+        /// CustomerSeal Sequence Repeat
+        /// </summary>
+        public void AccountantCreateFailed()
+        {
+            Code = (int)ResponseCode.AccountantCreateFailed;
+            Message = "Accountant Create Failed";
         }
 
         /// <summary>

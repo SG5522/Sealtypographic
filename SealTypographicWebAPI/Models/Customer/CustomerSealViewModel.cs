@@ -9,13 +9,6 @@ namespace SealTypographicWebAPI.Models.Customer
     public class CustomerSealViewModel : BaseSeal
     {
         /// <summary>
-        /// 客戶ID
-        /// </summary>
-        /// <example>aaa001</example>
-        [Required]
-        public int CustomerId { get; set; } 
-
-        /// <summary>
         /// 印鑑編號(排序) 1為起始
         /// </summary>
         /// <example>1</example>

@@ -76,6 +76,8 @@ namespace SealTypographicWebAPI.Services.Implements
                                                                     (
                                                                         customerSealJournal => customerSealJournal.CustomerId == customerSealQuarter.CustomerId
                                                                         && customerSealJournal.Quarter == customerSealQuarter.Quarter
+                                                                        && customerSealJournal.DeleteStatus == DeleteStatus.NO
+                                                                        //&& customerSealJournal.ReviewStatus == ReviewStatus.Approval
                                                                     )
                                                                     .Include(customerSealJournal => customerSealJournal.SealMappingConfig)
                                                                     .OrderBy(customerSealJournal => customerSealJournal.SealMappingConfigId)

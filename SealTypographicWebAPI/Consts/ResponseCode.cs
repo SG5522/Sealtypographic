@@ -27,6 +27,8 @@
         /// </summary>
         UniqueConstraintFailed = 1019,
 
+
+
         /// <summary>
         /// 資料庫客戶編號重複
         /// </summary>
@@ -38,6 +40,11 @@
         CustomerSealSequenceRepeat = 2002,
 
         /// <summary>
+        /// 資料庫客戶資料建立失敗
+        /// </summary>
+        CustomerCreateFailed = 2003,
+
+        /// <summary>
         /// 資料庫會計師編號重複
         /// </summary>
         AccountantNumberRepeat = 3001,
@@ -46,6 +53,11 @@
         /// 資料庫會計師簽印已有資料
         /// </summary>
         AccountantSignRepeat = 3002,
+
+        /// <summary>
+        /// 資料庫會計師資料建立失敗
+        /// </summary>
+        AccountantCreateFailed = 3003,
 
         /// <summary>
         /// 上傳失敗

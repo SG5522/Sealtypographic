@@ -7,6 +7,7 @@ using SealTypographicWebAPI.Utils;
 using Microsoft.EntityFrameworkCore;
 using AutoMapper;
 using System.Linq;
+using SealTypographicWebAPI.Models.Customer;
 
 namespace SealTypographicWebAPI.Services.Implements
 {
@@ -64,7 +65,7 @@ namespace SealTypographicWebAPI.Services.Implements
             AccountantPaginatesViewModel accountantPaginatesViewModel = new();
             List<AccountantViewModel> accountantViewModels = new();
             ResponseViewModel response = new();
-            IQueryable<Accountant> accountantQuery = dbContext.Accountants;
+            IQueryable<Accountant> accountantQuery = dbContext.Accountants.Where(accountant => accountant.DeleteStatus == DeleteStatus.NO);
             if (!string.IsNullOrWhiteSpace(accountantSearch.NumberOrNameOrGroupsName))
             {
                 accountantQuery = accountantQuery.Where
@@ -110,27 +111,40 @@ namespace SealTypographicWebAPI.Services.Implements
         /// </summary>
         /// <param name="accountantForm">基本資料</param>
         /// <returns></returns>
-        public ResponseViewModel CreateAccountant(AccountantForm accountantForm)
+        public AccountantCreateResponse CreateAccountant(AccountantForm accountantForm)
         {
-            ResponseViewModel response = new();
+            AccountantCreateResponse accountantCreateResponse = new();
             Accountant? accountantQuery = dbContext.Accountants
                                     .Where(accountant => accountant.AccountantNumber == accountantForm.AccountantNumber)
                                     .FirstOrDefault();
 
             if (accountantQuery == null)
             {
-                Accountant accountant = mapper.Map<Accountant>(accountantForm);
-                accountant.CreateDate = DateTime.Now;
-                accountant.DeleteStatus = DeleteStatus.NO;
-                dbContext.Accountants.Add(accountant);
+                Accountant dbaccountant = mapper.Map<Accountant>(accountantForm);
+                dbaccountant.CreateDate = DateTime.Now;
+                dbaccountant.DeleteStatus = DeleteStatus.NO;
+                dbContext.Accountants.Add(dbaccountant);
                 dbContext.SaveChanges();
-                response.Success();                
+
+                //回傳剛建立的客戶基本資料 使建立客戶印鑑找到該ID
+                Accountant? accountant = dbContext.Accountants
+                                    .Where(accountant => accountant.AccountantNumber == accountantForm.AccountantNumber)
+                                    .FirstOrDefault();
+                if (accountant != null)
+                {
+                    accountantCreateResponse.AccountantId = accountant.Id;
+                    accountantCreateResponse.Success();
+                }
+                else
+                {
+                    accountantCreateResponse.AccountantCreateFailed();
+                }                                
             }
             else
             {
-                response.AccountantNumberRepeat();                
+                accountantCreateResponse.AccountantNumberRepeat();                
             }
-            return response;
+            return accountantCreateResponse;
         }
 
         /// <summary>

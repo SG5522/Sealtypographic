@@ -85,21 +85,21 @@ namespace SealTypographicWebAPI.Controllers
         /// </summary>
         /// <param name="accountantBaseData"></param>
         [HttpPost]
-        public ResponseViewModel Post(AccountantForm accountantBaseData)
+        public AccountantCreateResponse Post(AccountantForm accountantBaseData)
         {
-            ResponseViewModel response = new();
+            AccountantCreateResponse accountantCreateResponse = new();
             try
             {
                 Log.Information("Accountant post input {@Input}", accountantBaseData);
-                response = accountantService.CreateAccountant(accountantBaseData);
-                Log.Information("Accountant post output {@Output}", response);
-                return response;                
+                accountantCreateResponse = accountantService.CreateAccountant(accountantBaseData);
+                Log.Information("Accountant post output {@Output}", accountantCreateResponse);
+                return accountantCreateResponse;                
             }
             catch (Exception ex)
             {
                 Log.Error("AccountantGroups post accountantFormUpdate error {@Error}", ex);
-                response.DbError();
-                return response;
+                accountantCreateResponse.DbError();
+                return accountantCreateResponse;
             }
         }
 
