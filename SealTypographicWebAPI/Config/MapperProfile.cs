@@ -52,9 +52,9 @@ namespace SealTypographicWebAPI.Config
                     .ForMember(x => x.Name, y => y.MapFrom(o => o.Customer.Name))
                     .ForMember(x => x.CustomerNumber, y => y.MapFrom(o => o.Customer.CustomerNumber))
                     .ForMember(x => x.BAN, y => y.MapFrom(o => o.Customer.BAN))
-                    .ForMember(x => x.Quarter, y => y.MapFrom(o => o.Quarter))
-                    .ForMember(x => x.ReviewStatus, y => y.MapFrom(o => o.ReviewStatus))
                     .ReverseMap();
+
+
 
 
             //會計師基本資料
