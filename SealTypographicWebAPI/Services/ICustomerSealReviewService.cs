@@ -1,4 +1,5 @@
-﻿using SealTypographicWebAPI.Models.CustomerSealReview;
+﻿using SealTypographicWebAPI.Models;
+using SealTypographicWebAPI.Models.CustomerSealReview;
 
 namespace SealTypographicWebAPI.Services
 {
@@ -12,5 +13,27 @@ namespace SealTypographicWebAPI.Services
         /// </summary>
         /// <returns></returns>
         CustomerSealReviewViewModelResponse GetCustomerSealReviewViewModel(CustomerSealReviewSearch customerSealReviewSearch);
+
+        /// <summary>
+        /// 基本資料與印鑑細項
+        /// </summary>
+        /// <param name="customerSealReviewQuarterSearch"></param>
+        /// <returns></returns>
+        CustomerSealReviewDetailResponse GetCustomerSealReviewDetail(CustomerSealReviewQuarterSearch customerSealReviewQuarterSearch);
+
+        /// <summary>
+        /// 審核通過
+        /// </summary>
+        /// <param name="customerSealIds">需要更新的ID</param>
+        /// <returns></returns>
+        ResponseViewModel ReviewApproval(List<int> customerSealIds);
+
+        /// <summary>
+        /// 審核退件
+        /// </summary>
+        /// <param name="customerSealIds"></param>
+        /// <returns></returns>
+        ResponseViewModel ReviewReject(List<int> customerSealIds);
+
     }
 }

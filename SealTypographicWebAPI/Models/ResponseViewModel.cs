@@ -45,16 +45,43 @@ namespace SealTypographicWebAPI.Models
         }
 
         /// <summary>
-        /// CustomerSeal Sequence Repeat
+        /// 客戶資料建立失敗
+        /// </summary>
+        public void CustomerCreateFailed()
+        {
+            Code = (int)ResponseCode.CustomerCreateFailed;
+            Message = "Customer create failed";
+        }
+
+        /// <summary>
+        /// 客戶編號重複
         /// </summary>
         public void CustomerNumberRepeat()
         {
             Code = (int)ResponseCode.CustomerNumberRepeat;
-            Message = "Customer Number Repeat";
+            Message = "Customer number repeat";
+        }
+
+        /// <summary>
+        /// 客戶無資料
+        /// </summary>
+        public void CustomeNoData()
+        {
+            Code = (int)ResponseCode.CustomeNoData;
+            Message = "Customer no data";
         }
 
         /// <summary>
         /// CustomerSeal Sequence Repeat
+        /// </summary>
+        public void CustomerSealCreateFailed()
+        {
+            Code = (int)ResponseCode.CustomerSealCreateFailed;
+            Message = "CustomerSeal Create Failed";
+        }
+
+        /// <summary>
+        /// 客戶印鑑序號重複(類別內重複序號)
         /// </summary>
         public void CustomerSealSequenceRepeat()
         {
@@ -63,25 +90,52 @@ namespace SealTypographicWebAPI.Models
         }
 
         /// <summary>
-        /// CustomerSeal Sequence Repeat
+        /// 客戶印鑑無資料
         /// </summary>
-        public void CustomerCreateFailed()
+        public void CustomerSealNoData()
         {
-            Code = (int)ResponseCode.CustomerCreateFailed;
-            Message = "Customer Create Failed";
+            Code = (int)ResponseCode.CustomerSealNoData;
+            Message = "CustomerSeal no data";
         }
 
         /// <summary>
-        /// Accountant Number Repeat
+        /// 會計師建立錯誤
+        /// </summary>
+        public void AccountantCreateFailed()
+        {
+            Code = (int)ResponseCode.AccountantCreateFailed;
+            Message = "Accountant create failed";
+        }
+
+        /// <summary>
+        /// 會計師編號重複
         /// </summary>
         public void AccountantNumberRepeat()
         {
             Code = (int)ResponseCode.AccountantNumberRepeat;
-            Message = "Accountant Number Repeat";
+            Message = "Accountant number repeat";
         }
 
         /// <summary>
-        /// AccountSign have data
+        /// 會計師無資料
+        /// </summary>
+        public void AccountantNoData()
+        {
+            Code = (int)ResponseCode.AccountantNoData;
+            Message = "Accountant no data";
+        }
+
+        /// <summary>
+        /// 會計師簽印建立失敗
+        /// </summary>
+        public void AccountantSignCreateFailed()
+        {
+            Code = (int)ResponseCode.AccountantSignCreateFailed;
+            Message = "AccountantSign create failed";
+        }
+
+        /// <summary>
+        /// 會計師簽印重複(該類別已有資料)
         /// </summary>
         public void AccountantSignRepeat()
         {
@@ -90,12 +144,12 @@ namespace SealTypographicWebAPI.Models
         }
 
         /// <summary>
-        /// CustomerSeal Sequence Repeat
+        /// 會計師簽印無資料
         /// </summary>
-        public void AccountantCreateFailed()
+        public void AccountantSignNoData()
         {
-            Code = (int)ResponseCode.AccountantCreateFailed;
-            Message = "Accountant Create Failed";
+            Code = (int)ResponseCode.AccountantSignNoData;
+            Message = "AccountantSign no data";
         }
 
         /// <summary>

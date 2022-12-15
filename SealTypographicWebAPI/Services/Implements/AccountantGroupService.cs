@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using EFCore.BulkExtensions;
+using SealTypographicWebAPI.Consts;
 using SealTypographicWebAPI.Entities;
 using SealTypographicWebAPI.Models;
 using SealTypographicWebAPI.Models.AccountantGroup;
@@ -35,17 +36,14 @@ namespace SealTypographicWebAPI.Services.Implements
             ResponseViewModel response;
             List<AccountantGroupViewModel> accountantGroupDatas = new();            
 
-            List<AccountantGroup> accountantGroups = dbContext.AccountantGroups.ToList();
+            List<AccountantGroup> accountantGroups = dbContext.AccountantGroups
+                                                    .Where(accountantGroup => accountantGroup.DeleteStatus == DeleteStatus.NO)
+                                                    .ToList();
             if (accountantGroups.Any())
             {
                 foreach (AccountantGroup accountantGroup in accountantGroups)
                 {
                     accountantGroupDatas.Add(mapper.Map<AccountantGroupViewModel>(accountantGroup));
-                    //accountantGroupDatas.Add(new()
-                    //{
-                    //    Id = accountantGroup.Id,
-                    //    Name = accountantGroup.Name,
-                    //});
                 }
                 response = ResponseUtil.Success();
             }
@@ -218,28 +216,23 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <param name="accountantGroupId">群組Id</param>
         public ResponseViewModel DeleteAccountantGroup(int accountantGroupId)
         {
-            ResponseViewModel response;
-            IQueryable<AccountantGroup> accountantGroupQuery = dbContext.AccountantGroups.Where
-                                                               (
-                                                                    accountantGroup =>
-                                                                    accountantGroup.Id == accountantGroupId
-                                                               );
-            if (accountantGroupQuery.Any())
+            ResponseViewModel response = new();
+            AccountantGroup? accountantGroupQuery = dbContext.AccountantGroups.Find(accountantGroupId);
+
+            if (accountantGroupQuery != null)
             {
+                accountantGroupQuery.DeleteStatus = DeleteStatus.Yes;
                 dbContext.Accountants.Where
                 (
                         accountant =>
-                        accountant.Id == accountantGroupId
-                ).BatchUpdate(new Accountant { AccountantGroupId = 1 });
-
-                AccountantGroup accountantGroup = accountantGroupQuery.First();
-                dbContext.AccountantGroups.Remove(accountantGroup);
+                        accountant.AccountantGroupId == accountantGroupId
+                ).BatchUpdate(new Accountant { AccountantGroupId = 1 });                                
                 dbContext.SaveChanges();
-                response = ResponseUtil.Success();
+                response.Success();
             }
             else
             {
-                response = ResponseUtil.DbNoData();
+                response.DbNoData();
             }
             return response;
         }

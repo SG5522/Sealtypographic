@@ -7,6 +7,7 @@ using SealTypographicWebAPI.Models;
 using SealTypographicWebAPI.Models.Customer;
 using SealTypographicWebAPI.Util;
 using SealTypographicWebAPI.Utils;
+using System.Linq;
 
 namespace SealTypographicWebAPI.Services.Implements
 {
@@ -76,20 +77,30 @@ namespace SealTypographicWebAPI.Services.Implements
                                                                     (
                                                                         customerSealJournal => customerSealJournal.CustomerId == customerSealQuarter.CustomerId
                                                                         && customerSealJournal.Quarter == customerSealQuarter.Quarter
-                                                                        && customerSealJournal.DeleteStatus == DeleteStatus.NO
-                                                                        //&& customerSealJournal.ReviewStatus == ReviewStatus.Approval
+                                                                        && customerSealJournal.DeleteStatus == DeleteStatus.NO                                                                        
                                                                     )
                                                                     .Include(customerSealJournal => customerSealJournal.SealMappingConfig)
                                                                     .OrderBy(customerSealJournal => customerSealJournal.SealMappingConfigId)
+                                                                    .ThenBy(customerSealJournal => customerSealJournal.Sequence)
                                                                     .ToList();
-            if (customerSealQuery.Any())
+            if (!customerSealQuery.Any(customerSealJournal => customerSealJournal.ReviewStatus == ReviewStatus.Pending))
             {
                 foreach (CustomerSealJournal customerSealJournal in customerSealQuery)
                 {
                     CustomerSealViewModel customerSealViewModel = mapper.Map<CustomerSealViewModel>(customerSealJournal);
-                    customerSealViewModel.ImageBase64 = "image/..."; //之後會在做BASE64轉換
+                    customerSealViewModel.ImageBase64 = customerSealJournal.ImagePath; //之後會在做BASE64轉換                    
                     sealViewModels.Add(customerSealViewModel);
                 }
+
+                if (customerSealQuery.Any(customerSealJournal => customerSealJournal.ReviewStatus == ReviewStatus.Reject))
+                {
+                    customerSealViewModels.ReviewStatus = ReviewStatusUtil.Reject();
+                }
+                else
+                {
+                    customerSealViewModels.ReviewStatus = ReviewStatusUtil.Approval();
+                }
+
                 customerSealViewModels.SealViewModels = sealViewModels;
                 customerSealViewModels.Success();                
             }
@@ -121,7 +132,7 @@ namespace SealTypographicWebAPI.Services.Implements
                     customerSealJournal.CreateDate = DateTime.Now;
                     customerSealJournal.StartDate = AvailableDateUtil.NotActivated();
                     customerSealJournal.EndDate = AvailableDateUtil.NotActivated(); //暫時加上                
-                    customerSealJournal.ReviewStatus = ReviewStatus.Pending;
+                    customerSealJournal.ReviewStatus = Consts.ReviewStatus.Pending;
                     customerSealJournal.DeleteStatus = DeleteStatus.NO;
                     customerSealJournals.Add(customerSealJournal);
                 }
@@ -173,7 +184,7 @@ namespace SealTypographicWebAPI.Services.Implements
                         customerSealJournalQuery.UpdateDate = DateTime.Now;
                         customerSealJournalQuery.StartDate = AvailableDateUtil.NotActivated();
                         customerSealJournalQuery.EndDate = AvailableDateUtil.NotActivated(); //暫時加上
-                        customerSealJournalQuery.ReviewStatus = ReviewStatus.Pending;
+                        customerSealJournalQuery.ReviewStatus = Consts.ReviewStatus.Pending;
                     }
                     else
                     {

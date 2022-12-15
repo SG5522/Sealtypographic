@@ -22,6 +22,11 @@ namespace SealTypographicWebAPI.Models.Customer
     public class CustomerSealViewModels : ResponseViewModel
     {
         /// <summary>
+        /// 審核狀態
+        /// </summary>
+        public string ReviewStatus { get; set; }
+
+        /// <summary>
         /// 客戶印鑑組
         /// </summary>
         public List<CustomerSealViewModel> SealViewModels { get; set; }

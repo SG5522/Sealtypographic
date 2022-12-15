@@ -5,7 +5,7 @@ namespace SealTypographicWebAPI.Utils
     /// <summary>
     /// 錯誤訊息
     /// </summary>
-    public class StatusUtil
+    public class ReviewStatusUtil
     {        
         /// <summary>
         /// 待審
@@ -13,7 +13,7 @@ namespace SealTypographicWebAPI.Utils
         /// <returns></returns>
         public static string Pending()
         {
-            return Get(ReviewStatus.Pending);
+            return Get(Consts.ReviewStatus.Pending);
         }
 
         /// <summary>
@@ -22,7 +22,7 @@ namespace SealTypographicWebAPI.Utils
         /// <returns></returns>
         public static string Approval()
         {
-            return Get(ReviewStatus.Approval);
+            return Get(Consts.ReviewStatus.Approval);
         }
 
         /// <summary>
@@ -31,7 +31,7 @@ namespace SealTypographicWebAPI.Utils
         /// <returns></returns>
         public static string Reject()
         {
-            return Get(ReviewStatus.Reject);
+            return Get(Consts.ReviewStatus.Reject);
         }
 
 
@@ -39,13 +39,13 @@ namespace SealTypographicWebAPI.Utils
         /// 取得Status名稱
         /// </summary>
         /// <returns></returns>
-        public static string Get(ReviewStatus status)
+        public static string Get(Consts.ReviewStatus status)
         {
             return status switch
             {
-                ReviewStatus.Pending => "待審",
-                ReviewStatus.Approval => "已審核",
-                ReviewStatus.Reject => "退件",                
+                Consts.ReviewStatus.Pending => "待審",
+                Consts.ReviewStatus.Approval => "通過",
+                Consts.ReviewStatus.Reject => "退件",                
                 _ => "",
             };
         }

@@ -6,7 +6,6 @@
     public enum ResponseCode
     {
 
-
         /// <summary>
         /// 回傳成功
         /// </summary>
@@ -28,6 +27,10 @@
         UniqueConstraintFailed = 1019,
 
 
+        /// <summary>
+        /// 資料庫客戶資料建立失敗
+        /// </summary>
+        CustomerCreateFailed = 2000,
 
         /// <summary>
         /// 資料庫客戶編號重複
@@ -35,14 +38,28 @@
         CustomerNumberRepeat = 2001,
 
         /// <summary>
-        /// 資料庫客戶印鑑序號重複
+        /// 資料庫客戶無資料
         /// </summary>
-        CustomerSealSequenceRepeat = 2002,
+        CustomeNoData = 2002,
 
         /// <summary>
-        /// 資料庫客戶資料建立失敗
+        /// 資料庫客戶印鑑建立失敗
         /// </summary>
-        CustomerCreateFailed = 2003,
+        CustomerSealCreateFailed = 2100,
+
+        /// <summary>
+        /// 資料庫客戶印鑑序號重複
+        /// </summary>
+        CustomerSealSequenceRepeat = 2101,
+        /// <summary>
+        /// 資料庫客戶印鑑無資料
+        /// </summary>
+        CustomerSealNoData = 2102,
+
+        /// <summary>
+        /// 資料庫會計師資料建立失敗
+        /// </summary>
+        AccountantCreateFailed = 3000,
 
         /// <summary>
         /// 資料庫會計師編號重複
@@ -50,14 +67,24 @@
         AccountantNumberRepeat = 3001,
 
         /// <summary>
-        /// 資料庫會計師簽印已有資料
+        /// 資料庫會計師無資料
         /// </summary>
-        AccountantSignRepeat = 3002,
+        AccountantNoData = 3002,
 
         /// <summary>
-        /// 資料庫會計師資料建立失敗
+        /// 資料庫會計師簽印建立失敗
         /// </summary>
-        AccountantCreateFailed = 3003,
+        AccountantSignCreateFailed = 3100,
+
+        /// <summary>
+        /// 資料庫會計師簽印已有資料
+        /// </summary>
+        AccountantSignRepeat = 3101,
+
+        /// <summary>
+        /// 資料庫會計師簽印無資料
+        /// </summary>
+        AccountantSignNoData = 3102,
 
         /// <summary>
         /// 上傳失敗

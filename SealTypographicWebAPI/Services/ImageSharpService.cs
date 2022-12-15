@@ -46,6 +46,7 @@ namespace SealTypographicWebAPI.Services
         /// <returns></returns>
         private static ResponseViewModel SaveImageFile(Image image,IImageFormat format, SaveImageInfo saveScanForm)
         {
+            ResponseViewModel response = new ();
             switch (format.Name)
             {
                 case "BMP":
@@ -58,9 +59,11 @@ namespace SealTypographicWebAPI.Services
                     image.SaveAsPng(saveScanForm.Folder + saveScanForm.Filename);
                     break;
                 default:
-                    return ResponseUtil.FileUploadFailed();
+                    response.FileUploadFailed();
+                    return response;
             }
-            return ResponseUtil.Success();
+            response.Success();
+            return response;
         }
 
         /// <summary>

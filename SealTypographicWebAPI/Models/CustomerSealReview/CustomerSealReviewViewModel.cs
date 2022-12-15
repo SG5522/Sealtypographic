@@ -26,7 +26,7 @@ namespace SealTypographicWebAPI.Models.CustomerSealReview
         /// <summary>
         /// 審核狀態
         /// </summary>
-        public ReviewStatus ReviewStatus { get; set; }
+        public string ReviewStatus { get; set; }
     }
 
     /// <summary>

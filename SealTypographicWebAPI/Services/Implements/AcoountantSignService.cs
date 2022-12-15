@@ -54,7 +54,7 @@ namespace SealTypographicWebAPI.Services.Implements
                 foreach (AccountantSignJournal accountantSignJournal in accountantSignJournalQuery)
                 {
                     AccountantSignViewModel customerSealViewModel = mapper.Map<AccountantSignViewModel>(accountantSignJournal);
-                    customerSealViewModel.ImageBase64 = "image/..."; //之後會在做BASE64轉換
+                    customerSealViewModel.ImageBase64 = accountantSignJournal.ImagePath; //之後會在做BASE64轉換
                     accountantSignViewModels.Add(customerSealViewModel);
                 }
                 signViewModels.SignViewModels = accountantSignViewModels;
@@ -87,7 +87,7 @@ namespace SealTypographicWebAPI.Services.Implements
                     AccountantSignJournal accountantSignJournal = mapper.Map<AccountantSignJournal>(accountantSignPostData);
                     accountantSignJournal.ImagePath = imagePath;
                     accountantSignJournal.CreateDate = DateTime.Now;
-                    accountantSignJournal.ReviewStatus = ReviewStatus.Pending;
+                    accountantSignJournal.ReviewStatus = Consts.ReviewStatus.Pending;
                     accountantSignJournal.DeleteStatus = DeleteStatus.NO;
                     accountantSignJournals.Add(accountantSignJournal);
                 }
@@ -127,7 +127,7 @@ namespace SealTypographicWebAPI.Services.Implements
 
                     accountantSignJournalQuery.ImagePath = imagePath;
                     accountantSignJournalQuery.UpdateDate = DateTime.Now;
-                    accountantSignJournalQuery.ReviewStatus = ReviewStatus.Pending;
+                    accountantSignJournalQuery.ReviewStatus = Consts.ReviewStatus.Pending;
                 }
                 else
                 {

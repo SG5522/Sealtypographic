@@ -24,6 +24,11 @@
         public string SealMappingConfigName { get; set; }
 
         /// <summary>
+        /// SubId
+        /// </summary>
+        public string SealMappingConfigSubId { get; set; }
+
+        /// <summary>
         /// 圖檔字串(Base64)
         /// </summary>
         /// <example>image/...</example>
