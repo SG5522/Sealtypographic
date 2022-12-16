@@ -5,11 +5,8 @@ namespace SealTypographicWebAPI.Models.Letterhead
     /// <summary>
     /// 信頭資料
     /// </summary>
-    public class LetterheadForm : BaseCreateName
+    public class LetterheadFormUpdate : BaseUpdateName
     {
-        /// <summary>
-        /// 信頭編號
-        /// </summary>
-        public string LetterheadNumber { get; set; }
+
     }
 }

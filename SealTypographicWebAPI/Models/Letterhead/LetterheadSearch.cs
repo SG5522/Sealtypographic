@@ -5,7 +5,7 @@ namespace SealTypographicWebAPI.Models.Customer
     /// <summary>
     /// 客戶分頁搜尋
     /// </summary>
-    public class LetterheadSearch : PaginateSearchWithReviewStatus
+    public class LetterheadSearch : PaginateSearch
     {
         /// <summary>
         /// 搜尋名字

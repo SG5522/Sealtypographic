@@ -112,19 +112,21 @@ namespace SealTypographicWebAPI.Controllers
         /// </summary>
         /// <param name="letterheadPostData"></param>
         [HttpPut]
-        public ResponseViewModel Put([FromBody] LetterheadForm letterheadPostData)
+        public ResponseViewModel Put([FromBody] LetterheadFormUpdate letterheadPostData)
         {
+            ResponseViewModel response = new();
             try
             {
                 Log.Information("Letterhead put letterheadPostData input {@Input}", letterheadPostData);
-                ResponseViewModel response = letterheadService.UpdateLetterhead(letterheadPostData);
+                response = letterheadService.UpdateLetterhead(letterheadPostData);
                 Log.Information("Letterhead put letterheadPostData output {@Output}", response);
                 return response;
             }
             catch (Exception ex)
             {
                 Log.Error("Letterhead put letterheadPostData error {@Error}", ex);
-                return ResponseUtil.DBError();
+                response.DbError();
+                return response;
             }
         }
 

@@ -135,7 +135,7 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <param name="customerSealIds"></param>
         public ResponseViewModel ReviewApproval(List<int> customerSealIds)
         {              
-            return ReviewStatusChange(customerSealIds, Consts.ReviewStatus.Approval);
+            return ReviewStatusChange(customerSealIds, ReviewStatus.Approval);
         }
 
         /// <summary>
@@ -144,7 +144,7 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <param name="customerSealIds"></param>
         public ResponseViewModel ReviewReject(List<int> customerSealIds)
         {
-            return ReviewStatusChange(customerSealIds, Consts.ReviewStatus.Reject);
+            return ReviewStatusChange(customerSealIds, ReviewStatus.Reject);
         }
 
         /// <summary>
@@ -154,7 +154,7 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <param name="reviewStatus">審核狀態</param>
         /// <returns></returns>
 
-        private ResponseViewModel ReviewStatusChange(List<int> customerSealIds, Consts.ReviewStatus reviewStatus)
+        private ResponseViewModel ReviewStatusChange(List<int> customerSealIds, ReviewStatus reviewStatus)
         {
             ResponseViewModel response = new();
             foreach (int customerSealJournalId in customerSealIds)

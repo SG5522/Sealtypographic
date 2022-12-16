@@ -393,6 +393,10 @@ namespace SealTypographicWebAPI.Migrations
                     b.Property<byte>("DeleteStatus")
                         .HasColumnType("INTEGER");
 
+                    b.Property<string>("LetterheadNumber")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("TEXT");

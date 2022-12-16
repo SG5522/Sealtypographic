@@ -8,6 +8,11 @@ namespace SealTypographicWebAPI.Entities
     public class Letterhead : BaseNameData
     {
         /// <summary>
+        /// 信頭編號
+        /// </summary>
+        public string LetterheadNumber { get; set; }
+
+        /// <summary>
         /// 信頭圖片資料(歷程)
         /// </summary>
         public List<LetterheadImageJournal> LetterheadImageJournals { get; set; }

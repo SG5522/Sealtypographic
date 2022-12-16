@@ -11,7 +11,7 @@ using SealTypographicWebAPI.Entities;
 namespace SealTypographicWebAPI.Migrations
 {
     [DbContext(typeof(SealTypographicDbContext))]
-    [Migration("20221214095122_InitialCreate")]
+    [Migration("20221216095155_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -394,6 +394,10 @@ namespace SealTypographicWebAPI.Migrations
 
                     b.Property<byte>("DeleteStatus")
                         .HasColumnType("INTEGER");
+
+                    b.Property<string>("LetterheadNumber")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("Name")
                         .IsRequired()

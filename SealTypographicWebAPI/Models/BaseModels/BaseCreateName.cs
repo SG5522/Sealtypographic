@@ -10,7 +10,7 @@ namespace SealTypographicWebAPI.Models.BaseModels
         /// <summary>
         /// 名稱
         /// </summary>
-        /// <example>公司名稱 Or 名字</example>
+        /// <example>公司名稱 Or 名稱</example>
         [Required]
         public string Name { get; set; }
 
