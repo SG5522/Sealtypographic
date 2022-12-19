@@ -92,4 +92,20 @@
         /// </summary>
         Letterhead = 3,
     }
+
+    /// <summary>
+    /// Db處理資料動作方式
+    /// </summary>
+    public enum DbActionMode : byte
+    {
+        /// <summary>
+        /// 建檔
+        /// </summary>
+        Create = 0,
+
+        /// <summary>
+        /// 更新檔案
+        /// </summary>
+        Update = 1,
+    }
 }
