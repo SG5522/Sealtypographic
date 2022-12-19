@@ -19,5 +19,10 @@ namespace SealTypographicWebAPI.Models.Customer
         /// <example>AAA001</example>
         [Required]        
         public string CustomerNumber { get; set; }
+
+        /// <summary>
+        /// 顯示最新季度
+        /// </summary>
+        public string Quarter { get; set; }
     }
 }

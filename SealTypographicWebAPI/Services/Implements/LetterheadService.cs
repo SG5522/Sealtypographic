@@ -110,9 +110,9 @@ namespace SealTypographicWebAPI.Services.Implements
         /// 建立信頭資料
         /// </summary>
         /// <param name="letterheadForm">基本資料</param>
-        public LetterheadCreateResronse CreateLetterhead(LetterheadForm letterheadForm)
+        public LetterheadCreateResponse CreateLetterhead(LetterheadForm letterheadForm)
         {
-            LetterheadCreateResronse resronse = new();
+            LetterheadCreateResponse response = new();
             IQueryable<Letterhead> letterheadQuery = dbContext.Letterheads
                     .Where(letterhead => letterhead.LetterheadNumber == letterheadForm.LetterheadNumber);
 
@@ -122,15 +122,25 @@ namespace SealTypographicWebAPI.Services.Implements
                 dbContext.Letterheads.Add(dbLetterhead);
                 dbContext.SaveChanges();
 
-                //回傳剛建立的客戶基本資料 使建立客戶印鑑找到該ID
-                Letterhead? letterhead = dbContext.Letterheads.Where(letterhead => letterhead.LetterheadNumber == letterheadForm.LetterheadNumber).FirstOrDefault();
-                resronse.LetterheadId = letterhead.Id;
-                resronse.Success();
+                //回傳剛建立的信頭基本資料 使建立信頭圖片時找到該ID
+                Letterhead? letterhead = dbContext.Letterheads
+                                        .Where(letterhead => letterhead.LetterheadNumber == letterheadForm.LetterheadNumber)
+                                        .FirstOrDefault();
+                if (letterhead != null)
+                {
+                    response.LetterheadId = letterhead.Id;
+                    response.Success();
+                }
+                else
+                {
+                    response.LetterheadCreateFailed();    
+                }                
             }
-
-
-
-            return resronse;
+            else
+            {
+                response.LetterheadNumberRepeat();
+            }
+            return response;
         }
 
         /// <summary>

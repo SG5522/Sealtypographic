@@ -107,16 +107,17 @@ namespace SealTypographicWebAPI.Controllers
         /// <summary>
         /// 修改印鑑
         /// </summary>        
-        /// <param name="customerSealPostDatas">印鑑資料</param>
+        /// <param name="customerSealUpdate">印鑑資料</param>
         /// <returns></returns>
         [HttpPut]
-        public ResponseViewModel Put(List<CustomerSealFormUpdate> customerSealPostDatas)
-        {
+        //public ResponseViewModel Put(List<CustomerSealFormUpdate> customerSealPostDatas)
+        public ResponseViewModel Put(CustomerSealUpdate customerSealUpdate)
+        {            
             ResponseViewModel response = new();
             try
             {
-                Log.Information("CustomerSeal put input {@Input}", customerSealPostDatas);
-                response = customerSealService.UpdateCustomerSeals(customerSealPostDatas);
+                Log.Information("CustomerSeal put input {@Input}", customerSealUpdate);
+                //response = customerSealService.UpdateCustomerSeals(customerSealPostDatas);
                 Log.Information("CustomerSeal put output {@Output}", response);
                 return response;                
             }

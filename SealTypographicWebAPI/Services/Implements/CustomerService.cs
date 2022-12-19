@@ -6,6 +6,8 @@ using AutoMapper;
 using SealTypographicWebAPI.Util;
 using SealTypographicWebAPI.Utils;
 using SealTypographicWebAPI.Models.CustomerSealReview;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Http.Metadata;
 
 namespace SealTypographicWebAPI.Services.Implements
 {
@@ -58,15 +60,17 @@ namespace SealTypographicWebAPI.Services.Implements
         public CustomerPaginateViewModel GetCustomerPaginatesViewModel(CustomerSearch customerSearch)
         {
             CustomerPaginateViewModel customerPaginateViewModel = new();
-            List<CustomerViewModel> customerViewModels = new();            
-            IQueryable<Customer> customerQuery = dbContext.Customers.Where(customer => customer.DeleteStatus == DeleteStatus.NO);            
+            List<CustomerViewModel> customerViewModels = new();
+            IQueryable<Customer> customerQuery = dbContext.Customers.Where(customer => customer.DeleteStatus == DeleteStatus.NO)
+                                                .Include(customer => customer.CustomerSealJournals);
+            
             if (!string.IsNullOrWhiteSpace(customerSearch.CustomerNumberOrName))
             {
                 customerQuery = customerQuery.Where
                     (
                         customer =>
                         customer.CustomerNumber.ToLower().Contains(customerSearch.CustomerNumberOrName.ToLower())
-                        || customer.Name.Contains(customerSearch.CustomerNumberOrName)                        
+                        || customer.Name.Contains(customerSearch.CustomerNumberOrName)                       
                     );
             }
             customerQuery = customerQuery.OrderBy(customer => customer.Id);
@@ -76,12 +80,18 @@ namespace SealTypographicWebAPI.Services.Implements
                 //取得該頁            
                 List<Customer> pageNumberCustomers = customerQuery
                                           .Skip((customerSearch.PageNumber - 1) * customerSearch.PageSize)
-                                          .Take(customerSearch.PageSize)
+                                          .Take(customerSearch.PageSize)                                   
                                           .ToList();
                 
-                foreach (var customerBase in pageNumberCustomers)
+                foreach (Customer customerBase in pageNumberCustomers)
                 {
-                    customerViewModels.Add(mapper.Map<CustomerViewModel>(customerBase));
+                    CustomerViewModel customerViewModel = mapper.Map<CustomerViewModel>(customerBase);
+                    string? quarter = customerBase.CustomerSealJournals.Select(x => x.Quarter).Max();
+                    if (quarter != null)
+                    {
+                        customerViewModel.Quarter = quarter;
+                    }
+                    customerViewModels.Add(customerViewModel);
                 }
                 customerPaginateViewModel.Customers = customerViewModels;
                 customerPaginateViewModel.PageNumber = customerSearch.PageNumber;

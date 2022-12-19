@@ -87,8 +87,38 @@
         AccountantSignNoData = 3102,
 
         /// <summary>
+        /// 資料庫信頭資料建立失敗
+        /// </summary>
+        LetterheadCreateFailed = 4000,
+
+        /// <summary>
+        /// 資料庫信頭編號重複
+        /// </summary>
+        LetterheadNumberRepeat = 4001,
+
+        /// <summary>
+        /// 資料庫信頭無資料
+        /// </summary>
+        LetterheadNoData = 4002,
+
+        /// <summary>
+        /// 資料庫信頭圖像建立失敗
+        /// </summary>
+        LetterheadImageCreateFailed = 4100,
+
+        /// <summary>
+        /// 資料庫信頭圖像序號重複
+        /// </summary>
+        LetterheadImageSequenceRepeat = 4101,
+
+        /// <summary>
+        /// 資料庫信頭圖像無資料
+        /// </summary>
+        LetterheadImageNoData = 4102,
+
+        /// <summary>
         /// 上傳失敗
         /// </summary>
-        FileUploadFailed = 4001,
+        FileUploadFailed = 5001,
     }
 }

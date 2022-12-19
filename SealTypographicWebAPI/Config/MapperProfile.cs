@@ -30,6 +30,7 @@ namespace SealTypographicWebAPI.Config
 
             //客戶印鑑
             CreateMap<CustomerSealJournal, CustomerSealViewModel>()
+                    .ForMember(x => x.SealMappingConfigId, y => y.MapFrom(o => o.SealMappingConfig.Id))
                     .ForMember(x => x.SealMappingConfigName, y => y.MapFrom(o => o.SealMappingConfig.Name))
                     .ForMember(x => x.SealMappingConfigSubId, y => y.MapFrom(o => o.SealMappingConfig.SubId))
                     .ForMember(x => x.ImageBase64, y => y.Ignore()) // <---imagebase64要額外處理所以要忽略

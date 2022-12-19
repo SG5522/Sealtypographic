@@ -27,7 +27,7 @@ namespace SealTypographicWebAPI.Services
         /// 建立信頭資料
         /// </summary>
         /// <param name="letterheadPostData">基本資料</param>
-        LetterheadCreateResronse CreateLetterhead(LetterheadForm letterheadPostData);
+        LetterheadCreateResponse CreateLetterhead(LetterheadForm letterheadPostData);
 
         /// <summary>
         /// 更新建立信頭資料

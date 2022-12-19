@@ -6,7 +6,11 @@
     public class BaseSeal : BaseData
     {
         /// <summary>
-        /// 客戶印鑑群組ID 
+        /// 印鑑簽印ID
+        /// </summary>
+        public int SealMappingConfigId { get; set; }
+
+        /// <summary>         
         /// (目前暫定)
         /// 1.公司章
         /// 2.負責人
@@ -27,6 +31,7 @@
         /// SubId
         /// </summary>
         public string SealMappingConfigSubId { get; set; }
+
 
         /// <summary>
         /// 圖檔字串(Base64)

@@ -23,11 +23,6 @@ namespace SealTypographicWebAPI.Models.Customer
         [Required]
         public string Quarter { get; set; }
 
-        /// <summary>
-        /// 印鑑審核() 
-        /// </summary>        
-        [Required]
-        public ReviewStatus ReviewStatus { get; set; }
     }
 
     /// <summary>

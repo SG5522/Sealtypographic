@@ -77,7 +77,7 @@ namespace SealTypographicWebAPI.Models
         public void CustomerSealCreateFailed()
         {
             Code = (int)ResponseCode.CustomerSealCreateFailed;
-            Message = "CustomerSeal Create Failed";
+            Message = "Customer seal Create Failed";
         }
 
         /// <summary>
@@ -86,7 +86,7 @@ namespace SealTypographicWebAPI.Models
         public void CustomerSealSequenceRepeat()
         {
             Code = (int)ResponseCode.CustomerSealSequenceRepeat;
-            Message = "CustomerSeal Sequence Repeat";
+            Message = "Customer seal Sequence Repeat";
         }
 
         /// <summary>
@@ -95,11 +95,11 @@ namespace SealTypographicWebAPI.Models
         public void CustomerSealNoData()
         {
             Code = (int)ResponseCode.CustomerSealNoData;
-            Message = "CustomerSeal no data";
+            Message = "Customer seal no data";
         }
 
         /// <summary>
-        /// 會計師建立錯誤
+        /// 會計師建立失敗
         /// </summary>
         public void AccountantCreateFailed()
         {
@@ -140,7 +140,7 @@ namespace SealTypographicWebAPI.Models
         public void AccountantSignRepeat()
         {
             Code = (int)ResponseCode.AccountantSignRepeat;
-            Message = "AccountantSign have data";
+            Message = "Accountant sign repeat";
         }
 
         /// <summary>
@@ -150,6 +150,60 @@ namespace SealTypographicWebAPI.Models
         {
             Code = (int)ResponseCode.AccountantSignNoData;
             Message = "AccountantSign no data";
+        }
+
+        /// <summary>
+        /// 信頭建立失敗
+        /// </summary>
+        public void LetterheadCreateFailed()
+        {
+            Code = (int)ResponseCode.LetterheadCreateFailed;
+            Message = "Letterhead create failed";
+        }
+
+        /// <summary>
+        /// 信頭編號重複
+        /// </summary>
+        public void LetterheadNumberRepeat()
+        {
+            Code = (int)ResponseCode.LetterheadNumberRepeat;
+            Message = "Letterhead number repeat";
+        }
+
+        /// <summary>
+        /// 信頭無資料
+        /// </summary>
+        public void LetterheadNoData()
+        {
+            Code = (int)ResponseCode.LetterheadNoData;
+            Message = "Letterhead no data";
+        }
+
+        /// <summary>
+        /// 信頭圖像建立失敗
+        /// </summary>
+        public void LetterheadImageCreateFailed()
+        {
+            Code = (int)ResponseCode.LetterheadImageCreateFailed;
+            Message = "AccountantSign create failed";
+        }
+
+        /// <summary>
+        /// 信頭圖像序號重複
+        /// </summary>
+        public void LetterheadImageSequenceRepeat()
+        {
+            Code = (int)ResponseCode.LetterheadImageSequenceRepeat;
+            Message = "LetterheadImage sequence repeat";
+        }
+
+        /// <summary>
+        /// 會計師簽印無資料
+        /// </summary>
+        public void LetterheadImageNoData()
+        {
+            Code = (int)ResponseCode.LetterheadImageNoData;
+            Message = "Letterhead image no Data";
         }
 
         /// <summary>

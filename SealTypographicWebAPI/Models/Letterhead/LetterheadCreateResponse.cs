@@ -3,7 +3,7 @@
     /// <summary>
     /// 建完信頭後回傳ID
     /// </summary>
-    public class LetterheadCreateResronse : ResponseViewModel
+    public class LetterheadCreateResponse : ResponseViewModel
     {
         /// <summary>
         /// 信頭Id
