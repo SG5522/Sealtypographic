@@ -133,12 +133,12 @@ namespace SealTypographicWebAPI.Services.Implements
                 }
                 else
                 {
-                    response.LetterheadCreateFailed();    
+                    response.CreateLetterheadFailed();    
                 }                
             }
             else
             {
-                response.LetterheadNumberRepeat();
+                response.CreateLetterheadNumberRepeat();
             }
             return response;
         }

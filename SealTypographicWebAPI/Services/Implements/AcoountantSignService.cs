@@ -79,7 +79,7 @@ namespace SealTypographicWebAPI.Services.Implements
             List<AccountantSignJournal> accountantSignJournals = new();
             foreach (AccountantSignForm accountantSignPostData in accountantSignPostDatas)
             {
-                if(CheckRepeatSealMappingConfigId(mapper.Map<AccountantSignCheck>(accountantSignPostData)))
+                if(CheckRepeatAccountantSign(mapper.Map<AccountantSignCheck>(accountantSignPostData)))
                 {
                     //這段之後會做成IMAGE64的處理並另存在指定的位置
                     string imagePath = accountantSignPostData.ImageBase64;
@@ -107,35 +107,66 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <summary>
         /// 修改印鑑組
         /// </summary>
-        /// <param name="accountantSignFormUpdate">印鑑組</param>
+        /// <param name="accountantSignUpdate">印鑑組</param>
         /// <returns></returns>
-        public ResponseViewModel UpdateAccountantSigns(List<AccountantSignFormUpdate> accountantSignFormUpdate)
+        public ResponseViewModel UpdateAccountantSigns(AccountantSignUpdate accountantSignUpdate)
         {
             ResponseViewModel response = new();
-            foreach (AccountantSignFormUpdate accountantSignUpdate in accountantSignFormUpdate)
+            List<AccountantSignJournal> accountantSignJournals = new();
+            //刪除會計師簽印(Hide)
+            foreach(int accountantSignId in accountantSignUpdate.DeleteAccountantSignIds)
             {
-                AccountantSignJournal? accountantSignJournalQuery = dbContext.AccountantSignJournals.Where
-                                           (
-                                                accountantSignJournal =>
-                                                accountantSignJournal.Id == accountantSignUpdate.Id
-                                           ).FirstOrDefault();
-                if (accountantSignJournalQuery != null)
+                AccountantSignJournal? deleteAccountantSignQuery = dbContext.AccountantSignJournals.Find(accountantSignId);
+                if(deleteAccountantSignQuery != null)
                 {
-                    //這段之後會做成IMAGE64的處理並另存在指定的位置
-                    string imagePath = accountantSignUpdate.ImageBase64;
-                    mapper.Map(accountantSignUpdate, accountantSignJournalQuery);
-
-                    accountantSignJournalQuery.ImagePath = imagePath;
-                    accountantSignJournalQuery.UpdateDate = DateTime.Now;
-                    accountantSignJournalQuery.ReviewStatus = Consts.ReviewStatus.Pending;
+                    deleteAccountantSignQuery.DeleteStatus = DeleteStatus.Yes;
                 }
                 else
                 {
-                    response.DbNoData();                     
+                    response.DeleteAccountantSignNoData();
                     return response;
                 }
-            }            
-            dbContext.SaveChanges();
+            }
+            //修改
+            foreach(AccountantSignFormUpdate accountantSignFormUpdate in accountantSignUpdate.UpdateAccountantSigns)
+            {
+                AccountantSignJournal? UpdateaccountantSignQuery = dbContext.AccountantSignJournals.Find(accountantSignFormUpdate.Id);
+                if (UpdateaccountantSignQuery != null)
+                {
+                    mapper.Map(accountantSignFormUpdate, UpdateaccountantSignQuery);
+                    //這段之後會做成IMAGE64的處理並另存在指定的位置
+                    string imagePath = accountantSignFormUpdate.ImageBase64;
+                    
+                    UpdateaccountantSignQuery.ImagePath = imagePath;
+                    BaseInputAccountantSignJournal(UpdateaccountantSignQuery, DbActionMode.Update);                    
+                }
+                else
+                {
+                    response.UpdateAccountantSignNoData();                     
+                    return response;
+                }
+            }
+            //新增印鑑
+            foreach (AccountantSignForm CreateAccountantSign in accountantSignUpdate.CreateAccountantSigns)
+            {
+                if (CheckRepeatAccountantSign(mapper.Map<AccountantSignCheck>(CreateAccountantSign))) //確認序號是否重複
+                {
+                    //這段之後會做成IMAGE64的處理並另存在指定的位置
+                    string imagePath = CreateAccountantSign.ImageBase64;
+
+                    AccountantSignJournal accountantSignJournal = mapper.Map<AccountantSignJournal>(CreateAccountantSign);
+                    accountantSignJournal.ImagePath = imagePath;
+                    BaseInputAccountantSignJournal(accountantSignJournal, DbActionMode.Create);
+                    accountantSignJournals.Add(accountantSignJournal);
+                }
+                else
+                {
+                    response.CreateAccountantSignRepeat();
+                    return response;
+                }
+            }
+            dbContext.AccountantSignJournals.AddRange(accountantSignJournals);
+            dbContext.BulkSaveChanges();
             response.Success();            
             return response;
         }
@@ -165,11 +196,32 @@ namespace SealTypographicWebAPI.Services.Implements
         }
 
         /// <summary>
+        /// 客戶印鑑新增修改時基本的資料輸入
+        /// </summary>
+        /// <param name="accountantSignJournal">Db上的印鑑資料</param>
+        /// <param name="dbActionMode">對Db所做的行動</param>
+        private static void BaseInputAccountantSignJournal(AccountantSignJournal accountantSignJournal, DbActionMode dbActionMode)
+        {
+            if (DbActionMode.Create == dbActionMode)
+            {
+                accountantSignJournal.CreateDate = DateTime.Now;
+                accountantSignJournal.DeleteStatus = DeleteStatus.NO;
+            }
+            else if (DbActionMode.Update == dbActionMode)
+            {
+                accountantSignJournal.UpdateDate = DateTime.Now;
+            }
+            accountantSignJournal.StartDate = AvailableDateUtil.NotActivated();
+            accountantSignJournal.EndDate = AvailableDateUtil.NotActivated(); //暫時加上                
+            accountantSignJournal.ReviewStatus = ReviewStatus.Pending;
+        }
+
+        /// <summary>
         /// 確認會計簽章是否重複 true 不重複 false 重複
         /// </summary>
         /// <param name="accountantSignCheck">查詢參數</param>
         /// <returns></returns>
-        private bool CheckRepeatSealMappingConfigId(AccountantSignCheck accountantSignCheck)
+        private bool CheckRepeatAccountantSign(AccountantSignCheck accountantSignCheck)
         {
             AccountantSignJournal? accountantSignQuery = dbContext.AccountantSignJournals
                                 .Where

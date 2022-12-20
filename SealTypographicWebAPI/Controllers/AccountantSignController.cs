@@ -82,16 +82,16 @@ namespace SealTypographicWebAPI.Controllers
         /// <summary>
         /// 修改簽名印鑑
         /// </summary>
-        /// <param name="accountantSignUpdates">簽名印鑑資料</param>
+        /// <param name="accountantSignUpdate">簽名印鑑資料</param>
         /// <returns></returns>
         [HttpPut]
-        public ResponseViewModel Put(List<AccountantSignFormUpdate> accountantSignUpdates)
+        public ResponseViewModel Put(AccountantSignUpdate accountantSignUpdate)
         {
             ResponseViewModel response = new();
             try
             {
-                Log.Information("AccountantSign put input {@Input}", accountantSignUpdates);
-                response = accountantSignService.UpdateAccountantSigns(accountantSignUpdates);
+                Log.Information("AccountantSign put input {@Input}", accountantSignUpdate);
+                response = accountantSignService.UpdateAccountantSigns(accountantSignUpdate);
                 Log.Information("AccountantSign put output {@Output}", response);
                 return response;
             }

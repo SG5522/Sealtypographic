@@ -4,7 +4,7 @@ using SealTypographicWebAPI.Models.BaseModels;
 namespace SealTypographicWebAPI.Models.Customer
 {
     /// <summary>
-    /// 印鑑組資料(含ID)
+    /// 更新客戶印鑑組資料
     /// </summary>
     public class CustomerSealUpdate
     {
@@ -22,17 +22,17 @@ namespace SealTypographicWebAPI.Models.Customer
         public string Quarter { get; set; }
 
         /// <summary>
-        /// 刪除印鑑列表(ID)
+        /// 刪除客戶印鑑列表(ID)
         /// </summary>
         public List<int> DeleteCustomerSealIds { get; set; }
 
         /// <summary>
-        /// 更新印鑑列表
+        /// 更新客戶印鑑列表
         /// </summary>
         public List<CustomerSealFormUpdate> UpdateCustomerSeals { get; set; }
 
         /// <summary>
-        /// 新增印鑑列表
+        /// 新增客戶印鑑列表
         /// </summary>
         public List<CustomerSealForm> CreateCustomerSeals { get; set; }
    }

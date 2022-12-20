@@ -27,9 +27,9 @@ namespace SealTypographicWebAPI.Services
         /// <summary>
         /// 修改印鑑組
         /// </summary>
-        /// <param name="accountantSignUpdates">會計印鑑簽名資料</param>
+        /// <param name="AccountantSignUpdate">會計印鑑刪除修改新增資料</param>
         /// <returns></returns>
-        ResponseViewModel UpdateAccountantSigns(List<AccountantSignFormUpdate> accountantSignUpdates);
+        ResponseViewModel UpdateAccountantSigns(AccountantSignUpdate AccountantSignUpdate);
 
         /// <summary>
         /// 刪除會計師簽印 (隱藏)
