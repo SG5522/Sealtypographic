@@ -1,5 +1,4 @@
-﻿using SealTypographicWebAPI.Models.Customer;
-
+﻿
 namespace SealTypographicWebAPI.Models.Accountant
 {
     /// <summary>
@@ -11,6 +10,11 @@ namespace SealTypographicWebAPI.Models.Accountant
         /// 會計師Id
         /// </summary>
         public int AccountantSignId { get; set; }
+
+        /// <summary>
+        /// 啟用日期
+        /// </summary>
+        public DateTime StartDate { get; set; }
 
         /// <summary>
         /// 刪除會計師簽印列表(ID)

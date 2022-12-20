@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SealTypographicWebAPI.Models;
-using SealTypographicWebAPI.Models.AccountantGroupMember;
 using SealTypographicWebAPI.Models.CustomerSealReview;
 using SealTypographicWebAPI.Services;
 using Serilog;

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SealTypographicWebAPI.Models;
 using SealTypographicWebAPI.Models.Accountant;
+using SealTypographicWebAPI.Models.Customer;
 using SealTypographicWebAPI.Services;
 using SealTypographicWebAPI.Services.Implements;
 using SealTypographicWebAPI.Util;
@@ -31,32 +32,58 @@ namespace SealTypographicWebAPI.Controllers
             this.accountantSignService = accountantSignService;            
         }
 
+
+
         /// <summary>
-        /// 取得會計師簽名印鑑組
+        /// 取得會計師簽名啟用時間列
         /// </summary>
         /// <param name="accountantID">會計ID</param>        
         /// <returns></returns>
         [HttpGet("{accountantID}")]
-        public AccountantSignViewModels Get(int accountantID)
+        public AccountantSignStartDates Get(int accountantID)
         {
-            AccountantSignViewModels accountantSignViewModels = new ();
+            AccountantSignStartDates accountantSignStartDates = new ();
             try
             {
                 Log.Information("AccountantSign get{accountantID} input {@Input}", accountantID);
-                accountantSignViewModels = accountantSignService.GetAccountantSings(accountantID);
-                Log.Information("AccountantSign get{accountantID} output {@Output}", accountantSignViewModels);
-                return accountantSignViewModels;                
+                accountantSignStartDates = accountantSignService.GetAccountantStartDate(accountantID);
+                Log.Information("AccountantSign get{accountantID} output {@Output}", accountantSignStartDates);
+                return accountantSignStartDates;                
             }
             catch (Exception ex)
             {             
                 Log.Error("AccountantSign get{accountantID} error {@Error}", ex);
+                accountantSignStartDates.DbError();
+                return accountantSignStartDates;
+            }
+        }
+
+        /// <summary>
+        /// 取得會計師簽印組
+        /// </summary>
+        /// <param name="accountantSignStartDate">關鑑字</param>        
+        /// <returns></returns>        
+        [HttpGet]
+        public AccountantSignViewModels Get([FromQuery] AccountantSignStartDate accountantSignStartDate)
+        {
+            AccountantSignViewModels accountantSignViewModels = new();
+            try
+            {
+                Log.Information("CustomerSeal get[FromQuery] input {@Input}", accountantSignStartDate);
+                accountantSignViewModels = accountantSignService.GetAccountantSings(accountantSignStartDate);
+                Log.Information("CustomerSeal get[FromQuery] output {@Output}", accountantSignViewModels);
+                return accountantSignViewModels;
+            }
+            catch (Exception ex)
+            {
+                Log.Error("CustomerSeal get error {@Error}", ex);
                 accountantSignViewModels.DbError();
                 return accountantSignViewModels;
             }
         }
 
         /// <summary>
-        /// 建立會計師印鑑簽名組
+        /// 建立會計師印鑑簽印組
         /// </summary>
         /// <param name="accountantSignPosts"></param>
         /// <returns></returns>

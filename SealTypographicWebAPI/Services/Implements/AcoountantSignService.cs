@@ -5,8 +5,6 @@ using SealTypographicWebAPI.Consts;
 using SealTypographicWebAPI.Entities;
 using SealTypographicWebAPI.Models;
 using SealTypographicWebAPI.Models.Accountant;
-using SealTypographicWebAPI.Models.Customer;
-using SealTypographicWebAPI.Util;
 using SealTypographicWebAPI.Utils;
 
 namespace SealTypographicWebAPI.Services.Implements
@@ -34,18 +32,59 @@ namespace SealTypographicWebAPI.Services.Implements
         /// </summary>
         /// <param name="accountantId">搜尋條件</param>
         /// <returns></returns>
-        public AccountantSignViewModels GetAccountantSings(int accountantId)
+        public AccountantSignStartDates GetAccountantStartDate(int accountantId)
+        {
+            AccountantSignStartDates accountantSignStartDates = new();
+            List<AccountantSignStartDate> signStartDate = new();
+            List<DateTime> accountantSignStartDateQuery = dbContext.AccountantSignJournals
+                                           .Where
+                                           (
+                                                accountantSignJournal => accountantSignJournal.AccountantId == accountantId
+                                                //&& customerSealJournal.ReviewStatus != ReviewStatus.Pending //待審狀態過濾用
+                                           )
+                                           .Select(accountantSignJournal => accountantSignJournal.StartDate)
+                                           .Distinct()
+                                           .ToList();
+
+            if (accountantSignStartDateQuery.Any())
+            {
+                foreach (DateTime startDate in accountantSignStartDateQuery)
+                {
+                    signStartDate.Add(new()
+                    {
+                        AccountantId = accountantId,
+                        StartDate = startDate
+                    });
+                }
+                accountantSignStartDates.StartDates = signStartDate;
+                accountantSignStartDates.Success();
+            }
+            else
+            {
+                accountantSignStartDates.DbNoData();
+            }
+
+            return accountantSignStartDates;
+        }
+
+        /// <summary>
+        /// 取得會計師簽印組
+        /// </summary>
+        /// <param name="accountantSignStartDate"></param>
+        /// <returns></returns>
+        public AccountantSignViewModels GetAccountantSings(AccountantSignStartDate accountantSignStartDate)
         {
             AccountantSignViewModels signViewModels = new();
-            List<AccountantSignViewModel> accountantSignViewModels = new();            
+            List<AccountantSignViewModel> accountantSignViewModels = new();
             List<AccountantSignJournal> accountantSignJournalQuery = dbContext.AccountantSignJournals.Where
                                                                     (
-                                                                        accountantSignJournal => 
-                                                                        accountantSignJournal.AccountantId == accountantId   
+                                                                        accountantSignJournal =>
+                                                                        accountantSignJournal.AccountantId == accountantSignStartDate.AccountantId
                                                                         && accountantSignJournal.DeleteStatus == DeleteStatus.NO
+                                                                        && accountantSignJournal.StartDate == accountantSignStartDate.StartDate
                                                                         //&& accountantSignJournal.ReviewStatus == ReviewStatus.Approval
                                                                     )
-                                                                    .Include(accountantSignJournal => accountantSignJournal.SealMappingConfig)                                                                    
+                                                                    .Include(accountantSignJournal => accountantSignJournal.SealMappingConfig)
                                                                     .OrderBy(accountantSignJournal => accountantSignJournal.SealMappingConfigId)
                                                                     .ToList();
 
@@ -58,11 +97,11 @@ namespace SealTypographicWebAPI.Services.Implements
                     accountantSignViewModels.Add(customerSealViewModel);
                 }
                 signViewModels.SignViewModels = accountantSignViewModels;
-                signViewModels.Success();                
+                signViewModels.Success();
             }
             else
             {
-                signViewModels.DbNoData();                
+                signViewModels.DbNoData();
             }
 
             return signViewModels;

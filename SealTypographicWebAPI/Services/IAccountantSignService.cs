@@ -10,12 +10,18 @@ namespace SealTypographicWebAPI.Services
     public interface IAccountantSignService
     {
         /// <summary>
-        /// 取得會計印鑑
+        /// 取得會計取用時間列
         /// </summary>
         /// <param name="accountantId">會計師ID</param>        
         /// <returns></returns>
-        AccountantSignViewModels GetAccountantSings(int accountantId);
+        AccountantSignStartDates GetAccountantStartDate(int accountantId);
 
+        /// <summary>
+        /// 取得會計師簽印組
+        /// </summary>
+        /// <param name="accountantSignStartDate"></param>
+        /// <returns></returns>
+        public AccountantSignViewModels GetAccountantSings(AccountantSignStartDate accountantSignStartDate);
 
         /// <summary>
         /// 新增印鑑組

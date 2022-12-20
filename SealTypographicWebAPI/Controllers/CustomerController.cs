@@ -1,10 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SealTypographicWebAPI.Models;
 using SealTypographicWebAPI.Models.Customer;
-using SealTypographicWebAPI.Util;
 using SealTypographicWebAPI.Services;
 using Serilog;
-using SealTypographicWebAPI.Models.CustomerSealReview;
 
 namespace SealTypographicWebAPI.Controllers
 {

@@ -3,11 +3,8 @@ using SealTypographicWebAPI.Models.Customer;
 using SealTypographicWebAPI.Entities;
 using SealTypographicWebAPI.Consts;
 using AutoMapper;
-using SealTypographicWebAPI.Util;
 using SealTypographicWebAPI.Utils;
-using SealTypographicWebAPI.Models.CustomerSealReview;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Http.Metadata;
 
 namespace SealTypographicWebAPI.Services.Implements
 {

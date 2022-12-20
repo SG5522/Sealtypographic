@@ -1,6 +1,4 @@
-﻿using SealTypographicWebAPI.Consts;
-using SealTypographicWebAPI.Models.BaseModels;
-using System.ComponentModel.DataAnnotations;
+﻿using SealTypographicWebAPI.Models.BaseModels;
 
 namespace SealTypographicWebAPI.Models.Customer
 {

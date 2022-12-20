@@ -2,7 +2,6 @@
 using SealTypographicWebAPI.Services;
 using SealTypographicWebAPI.Models;
 using SealTypographicWebAPI.Consts;
-using SealTypographicWebAPI.Models.Accountant;
 using SealTypographicWebAPI.Util;
 using SealTypographicWebAPI.Models.SealMappingConfig;
 using Serilog;

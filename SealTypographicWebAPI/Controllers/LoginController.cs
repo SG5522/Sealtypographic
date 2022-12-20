@@ -1,7 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using SealTypographicWebAPI.Services;
-using SealTypographicWebAPI.Models;
+﻿using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 
 namespace SealTypographicWebAPI.Controllers

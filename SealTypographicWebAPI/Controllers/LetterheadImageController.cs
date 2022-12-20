@@ -1,6 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
-using SealTypographicWebAPI.Consts;
 using SealTypographicWebAPI.Models.Letterhead;
 using SealTypographicWebAPI.Services;
 using SealTypographicWebAPI.Util;

@@ -5,10 +5,8 @@ using SealTypographicWebAPI.Models.AccountantGroupMember;
 using SealTypographicWebAPI.Models.Accountant;
 using Microsoft.EntityFrameworkCore;
 using AutoMapper;
-using SealTypographicWebAPI.Consts;
 using SealTypographicWebAPI.Utils;
-using SealTypographicWebAPI.Models.Customer;
-using System.Linq;
+
 
 namespace SealTypographicWebAPI.Services.Implements
 {

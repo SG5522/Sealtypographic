@@ -3,7 +3,6 @@ using SealTypographicWebAPI.Entities;
 using SealTypographicWebAPI.Models.TypographicPDF;
 using SealTypographicWebAPI.Models;
 using SealTypographicWebAPI.Util;
-using System.Collections.Generic;
 
 namespace SealTypographicWebAPI.Services.Implements
 {
