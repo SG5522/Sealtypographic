@@ -63,6 +63,11 @@ namespace SealTypographicWebAPI.Config
             CreateMap<Accountant, AccountantViewModel>()                    
                     .ForMember(x => x.AccountantGroupName, y => y.MapFrom(o => o.AccountantGroup.Name))
                     .ReverseMap();
+
+            CreateMap<Accountant, AccountantViewModelWithCreateDate>()
+                    .ForMember(x => x.AccountantGroupName, y => y.MapFrom(o => o.AccountantGroup.Name))
+                    .ReverseMap();
+
             CreateMap<AccountantForm, Accountant>();
             CreateMap<AccountantFormUpdate, Accountant>();
 

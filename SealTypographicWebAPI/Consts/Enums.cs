@@ -1,5 +1,5 @@
 ﻿namespace SealTypographicWebAPI.Consts
-{    
+{
     /// <summary>
     /// 客戶、會計師、印鑑、簽名的狀態
     /// </summary>
@@ -16,6 +16,16 @@
         Approval = 0,
 
         /// <summary>
+        /// 啟用
+        /// </summary>
+        Activated = 1,
+
+        /// <summary>
+        /// 未啟用
+        /// </summary>
+        NotActivated = 2,
+
+        /// <summary>
         /// 待審
         /// </summary>
         Pending = 10,
@@ -24,6 +34,16 @@
         /// 退件
         /// </summary>
         Reject = 20,
+
+        /// <summary>
+        /// 暫存
+        /// </summary>
+        Temp = 30,
+
+        /// <summary>
+        /// 作廢
+        /// </summary>
+        SealsVoid = 40,
     }
 
     /// <summary>

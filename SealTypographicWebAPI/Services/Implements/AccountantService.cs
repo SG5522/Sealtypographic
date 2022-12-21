@@ -62,19 +62,20 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <returns></returns>
         public AccountantPaginatesViewModel GetAccountantViewModels(AccountantSearch accountantSearch)
         {
-            AccountantPaginatesViewModel accountantPaginatesViewModel = new();
-            List<AccountantViewModel> accountantViewModels = new();
+            AccountantPaginatesViewModel accountantPaginatesViewModels = new();
+            List<AccountantViewModelWithCreateDate> accountantViewModelWithStartDate = new();
             ResponseViewModel response = new();
-            IQueryable<Accountant> accountantQuery = dbContext.Accountants.Where(accountant => accountant.DeleteStatus == DeleteStatus.NO);
+            IQueryable<Accountant> accountantQuery = dbContext.Accountants.Where(accountant => accountant.DeleteStatus == DeleteStatus.NO)
+                                                    .Include(accountant => accountant.AccountantSignJournals);
             if (!string.IsNullOrWhiteSpace(accountantSearch.NumberOrNameOrGroupsName))
             {
                 accountantQuery = accountantQuery.Where
-                                                    (
-                                                        accountant =>
-                                                        accountant.AccountantNumber.ToLower().Contains(accountantSearch.NumberOrNameOrGroupsName.ToLower())                                                         
-                                                        || accountant.Name.Contains(accountantSearch.NumberOrNameOrGroupsName)
-                                                        || accountant.AccountantGroup.Name.Contains(accountantSearch.NumberOrNameOrGroupsName)
-                                                    );                                                   
+                                (
+                                    accountant =>
+                                    accountant.AccountantNumber.ToLower().Contains(accountantSearch.NumberOrNameOrGroupsName.ToLower())                                                         
+                                    || accountant.Name.Contains(accountantSearch.NumberOrNameOrGroupsName)
+                                    || accountant.AccountantGroup.Name.Contains(accountantSearch.NumberOrNameOrGroupsName)
+                                );                                                   
             }
 
             accountantQuery = accountantQuery.OrderBy(accountant => accountant.Id);
@@ -88,22 +89,27 @@ namespace SealTypographicWebAPI.Services.Implements
                                           .ToList();
                 foreach (Accountant accountant in thisPageAccountants)
                 {
-                    AccountantViewModel accountantViewModel = mapper.Map<AccountantViewModel>(accountant);
-                    accountantViewModels.Add(accountantViewModel);
+                    AccountantViewModelWithCreateDate accountantPaginatesViewModel = mapper.Map<AccountantViewModelWithCreateDate>(accountant);
+                    DateTime? createDate = accountant.AccountantSignJournals.Select(x => x.CreateDate).Max();
+                    if (createDate != null)
+                    {
+                        accountantPaginatesViewModel.CreateDate = createDate;
+                    }
+                    accountantViewModelWithStartDate.Add(accountantPaginatesViewModel);
                 }
-                accountantPaginatesViewModel.AccountantViewModels = accountantViewModels;
-                accountantPaginatesViewModel.PageNumber= accountantSearch.PageNumber;
-                accountantPaginatesViewModel.PageSize = accountantSearch.PageSize;
+                accountantPaginatesViewModels.AccountantViewModels = accountantViewModelWithStartDate;
+                accountantPaginatesViewModels.PageNumber= accountantSearch.PageNumber;
+                accountantPaginatesViewModels.PageSize = accountantSearch.PageSize;
                 //計算總頁數
-                accountantPaginatesViewModel.TotalPage = TotalPageUtil.GetTotalPage(accountantQuery.Count(), accountantSearch.PageSize);               
-                accountantPaginatesViewModel.TotalCount = accountantQuery.Count();
-                accountantPaginatesViewModel.Success();
+                accountantPaginatesViewModels.TotalPage = TotalPageUtil.GetTotalPage(accountantQuery.Count(), accountantSearch.PageSize);               
+                accountantPaginatesViewModels.TotalCount = accountantQuery.Count();
+                accountantPaginatesViewModels.Success();
             }
             else
             {
-                accountantPaginatesViewModel.DbNoData();                
+                accountantPaginatesViewModels.DbNoData();                
             }
-            return accountantPaginatesViewModel;
+            return accountantPaginatesViewModels;
         }
 
         /// <summary>

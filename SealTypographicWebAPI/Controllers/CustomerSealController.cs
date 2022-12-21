@@ -106,9 +106,9 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="customerSealUpdate">刪除修改新增的list</param>
         /// <returns></returns>
         [HttpPut]
-        public ResponseViewModel Put(CustomerSealUpdate customerSealUpdate)
+        public List<ResponseViewModel> Put(CustomerSealUpdate customerSealUpdate)
         {            
-            ResponseViewModel response = new();
+            List<ResponseViewModel> response = new();
             try
             {
                 Log.Information("CustomerSeal put input {@Input}", customerSealUpdate);                
@@ -119,7 +119,9 @@ namespace SealTypographicWebAPI.Controllers
             catch (Exception ex)
             {
                 Log.Error("CustomerSeal put error {@Error}", ex);
-                response.DbError();
+                ResponseViewModel responseViewModel = new();
+                responseViewModel.DbError();
+                response.Add(responseViewModel);
                 return response;
             }
         }

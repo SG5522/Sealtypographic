@@ -20,5 +20,10 @@ namespace SealTypographicWebAPI.Models.Accountant
         /// 5.其他(客戶)
         /// </summary>
         public int SealMappingConfigId { get; set; }
+
+        /// <summary>
+        /// 啟用日期
+        /// </summary>
+        public DateTime StartDate { get; set; }
     }
 }

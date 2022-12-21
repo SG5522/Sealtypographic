@@ -35,7 +35,7 @@ namespace SealTypographicWebAPI.Services
         /// </summary>
         /// <param name="customerSealUpdate">刪除修改新增的list</param>
         /// <returns></returns>        
-        ResponseViewModel UpdateCustomerSeals(CustomerSealUpdate customerSealUpdate);
+        List<ResponseViewModel> UpdateCustomerSeals(CustomerSealUpdate customerSealUpdate);
 
         /// <summary>
         /// 刪除印鑑 (隱藏)

@@ -6,7 +6,7 @@ namespace SealTypographicWebAPI.Models.Accountant
     /// <summary>
     /// 會計師簽印啟用日期搜尋
     /// </summary>
-    public class AccountantSignStartDate
+    public class AccountantSignCreateDate
     {
         /// <summary>
         /// 客戶Id
@@ -20,16 +20,16 @@ namespace SealTypographicWebAPI.Models.Accountant
         /// </summary>
         /// <example>2022/12/31 00:00:00</example>
         [Required]
-        public DateTime StartDate { get; set; }
+        public DateTime CreateDate { get; set; }
     }
     /// <summary>
     /// 客戶季度搜尋表
     /// </summary>
-    public class AccountantSignStartDates : ResponseViewModel
+    public class AccountantSignCreateDates : ResponseViewModel
     {
         /// <summary>
         /// 客戶季度搜尋表
         /// </summary>
-        public List<AccountantSignStartDate> StartDates { get; set; }
+        public List<AccountantSignCreateDate> CreateDates { get; set; }
     }
 }

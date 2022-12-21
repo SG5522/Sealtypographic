@@ -9,6 +9,11 @@ namespace SealTypographicWebAPI.Models
     public class ResponseViewModel
     {
         /// <summary>
+        /// 回傳錯誤項目
+        /// </summary>
+        public string? ErrorItem { get; set; }
+
+        /// <summary>
         /// 狀態號碼
         /// </summary>
         public int Code { get; set; }

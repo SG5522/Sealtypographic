@@ -3,6 +3,17 @@
 namespace SealTypographicWebAPI.Models.Accountant
 {
     /// <summary>
+    /// 會計師列表(含啟用時間)
+    /// </summary>
+    public class AccountantViewModelWithCreateDate : AccountantViewModel
+    {
+        /// <summary>
+        /// 啟用時間
+        /// </summary>
+        public DateTime? CreateDate { get; set; }
+    }
+
+    /// <summary>
     /// 依搜尋結果顯示會計師列表
     /// </summary>
     public class AccountantPaginatesViewModel : PaginateViewModel
@@ -10,6 +21,6 @@ namespace SealTypographicWebAPI.Models.Accountant
         /// <summary>
         /// 會計師列表
         /// </summary>
-        public List<AccountantViewModel> AccountantViewModels { get; set; }
+        public List<AccountantViewModelWithCreateDate> AccountantViewModels { get; set; }
     }
 }

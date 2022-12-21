@@ -1,4 +1,5 @@
-﻿using SealTypographicWebAPI.Entities.BaseEntities;
+﻿using SealTypographicWebAPI.Consts;
+using SealTypographicWebAPI.Entities.BaseEntities;
 
 namespace SealTypographicWebAPI.Entities
 {
@@ -16,6 +17,5 @@ namespace SealTypographicWebAPI.Entities
         /// 會計師資料表
         /// </summary>
         public Accountant Accountant { get; set; }
-
     }
 }

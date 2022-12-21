@@ -14,14 +14,14 @@ namespace SealTypographicWebAPI.Services
         /// </summary>
         /// <param name="accountantId">會計師ID</param>        
         /// <returns></returns>
-        AccountantSignStartDates GetAccountantStartDate(int accountantId);
+        AccountantSignCreateDates GetAccountantStartDate(int accountantId);
 
         /// <summary>
         /// 取得會計師簽印組
         /// </summary>
         /// <param name="accountantSignStartDate"></param>
         /// <returns></returns>
-        public AccountantSignViewModels GetAccountantSings(AccountantSignStartDate accountantSignStartDate);
+        public AccountantSignViewModels GetAccountantSings(AccountantSignCreateDate accountantSignStartDate);
 
         /// <summary>
         /// 新增印鑑組

@@ -7,7 +7,6 @@ using SealTypographicWebAPI.Models;
 using SealTypographicWebAPI.Services;
 using SealTypographicWebAPI.Util;
 using Serilog;
-using System.Text.RegularExpressions;
 
 namespace SealTypographicWebAPI.Controllers
 {

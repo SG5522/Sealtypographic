@@ -40,9 +40,9 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="accountantID">會計ID</param>        
         /// <returns></returns>
         [HttpGet("{accountantID}")]
-        public AccountantSignStartDates Get(int accountantID)
+        public AccountantSignCreateDates Get(int accountantID)
         {
-            AccountantSignStartDates accountantSignStartDates = new ();
+            AccountantSignCreateDates accountantSignStartDates = new ();
             try
             {
                 Log.Information("AccountantSign get{accountantID} input {@Input}", accountantID);
@@ -64,14 +64,14 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="accountantSignStartDate">關鑑字</param>        
         /// <returns></returns>        
         [HttpGet]
-        public AccountantSignViewModels Get([FromQuery] AccountantSignStartDate accountantSignStartDate)
+        public AccountantSignViewModels Get([FromQuery] AccountantSignCreateDate accountantSignStartDate)
         {
             AccountantSignViewModels accountantSignViewModels = new();
             try
             {
-                Log.Information("CustomerSeal get[FromQuery] input {@Input}", accountantSignStartDate);
+                Log.Information("AccountantSign get[FromQuery] input {@Input}", accountantSignStartDate);
                 accountantSignViewModels = accountantSignService.GetAccountantSings(accountantSignStartDate);
-                Log.Information("CustomerSeal get[FromQuery] output {@Output}", accountantSignViewModels);
+                Log.Information("AccountantSign get[FromQuery] output {@Output}", accountantSignViewModels);
                 return accountantSignViewModels;
             }
             catch (Exception ex)
@@ -107,7 +107,7 @@ namespace SealTypographicWebAPI.Controllers
         }
         
         /// <summary>
-        /// 修改簽名印鑑
+        /// 異動簽名印鑑
         /// </summary>
         /// <param name="accountantSignUpdate">簽名印鑑資料</param>
         /// <returns></returns>
