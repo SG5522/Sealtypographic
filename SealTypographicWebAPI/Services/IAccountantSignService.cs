@@ -33,15 +33,15 @@ namespace SealTypographicWebAPI.Services
         /// <summary>
         /// 修改印鑑組
         /// </summary>
-        /// <param name="AccountantSignUpdate">會計印鑑刪除修改新增資料</param>
+        /// <param name="accountantSignIds">會計師簽印id</param>
         /// <returns></returns>
-        ResponseViewModel UpdateAccountantSigns(AccountantSignUpdate AccountantSignUpdate);
+        List<ResponseViewModel> UpdateReviewStatusPendingAccountantSigns(List<int> accountantSignIds);
 
         /// <summary>
-        /// 刪除會計師簽印 (隱藏)
+        /// 刪除會計師簽印 (作廢)
         /// </summary>
-        /// <param name="accountantSignId"></param>
+        /// <param name="accountantSignIds">會計師簽印</param>
         /// <returns></returns>
-        ResponseViewModel DeleteAccountantSign(int accountantSignId);
+        List<ResponseViewModel> DeleteAccountantSign(List<int> accountantSignIds);
     }
 }

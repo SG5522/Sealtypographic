@@ -212,6 +212,15 @@ namespace SealTypographicWebAPI.Models
         }
 
         /// <summary>
+        /// 會計師簽印重複(該類別已有資料)
+        /// </summary>
+        public void AccountantSignHaveTemp()
+        {
+            Code = (int)ResponseCode.AccountantSignHaveTemp;
+            Message = "Accountant sign have temp";
+        }
+
+        /// <summary>
         /// 新增會計師簽印失敗
         /// </summary>
         public void CreateAccountantSignFailed()

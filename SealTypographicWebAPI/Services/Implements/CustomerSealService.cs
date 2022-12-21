@@ -7,7 +7,6 @@ using SealTypographicWebAPI.Models;
 using SealTypographicWebAPI.Models.Customer;
 using SealTypographicWebAPI.Util;
 using SealTypographicWebAPI.Utils;
-using System.Linq;
 
 namespace SealTypographicWebAPI.Services.Implements
 {
@@ -286,7 +285,7 @@ namespace SealTypographicWebAPI.Services.Implements
             }
             customerSealJournal.StartDate = AvailableDateUtil.NotActivated();
             customerSealJournal.EndDate = AvailableDateUtil.NotActivated(); //暫時加上                
-            customerSealJournal.ReviewStatus = ReviewStatus.Pending;
+            customerSealJournal.ReviewStatus = ReviewStatus.Temp;
         }
 
         /// <summary>

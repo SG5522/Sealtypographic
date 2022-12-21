@@ -6,6 +6,7 @@ using SealTypographicWebAPI.Entities;
 using SealTypographicWebAPI.Models;
 using SealTypographicWebAPI.Models.Accountant;
 using SealTypographicWebAPI.Utils;
+using System.Collections.Generic;
 
 namespace SealTypographicWebAPI.Services.Implements
 {
@@ -40,7 +41,7 @@ namespace SealTypographicWebAPI.Services.Implements
                                            .Where
                                            (
                                                 accountantSignJournal => accountantSignJournal.AccountantId == accountantId
-                                                //&& customerSealJournal.ReviewStatus != ReviewStatus.Pending //待審狀態過濾用
+                                                && accountantSignJournal.ReviewStatus <= ReviewStatus.Temp //暂存以下狀態過濾用
                                            )
                                            .Select(accountantSignJournal => accountantSignJournal.CreateDate)
                                            .Distinct()
@@ -116,131 +117,97 @@ namespace SealTypographicWebAPI.Services.Implements
         {
             ResponseViewModel response = new();
             List<AccountantSignJournal> accountantSignJournals = new();
-            DateTime createNowTime = DateTime.Now;//將建立日期為依據將此次建立的會計師簽印組成為一組Group
-            foreach (AccountantSignForm accountantSignPostData in accountantSignPostDatas)
+
+            AccountantSignJournal? accountantSignJournalQuery = dbContext.AccountantSignJournals
+                                .FirstOrDefault
+                                (
+                                    x => x.AccountantId == accountantSignPostDatas.First().AccountantId
+                                    && x.ReviewStatus == ReviewStatus.Temp
+                                );            
+            if(accountantSignJournalQuery == null)
             {
-                if(CheckRepeatAccountantSign(mapper.Map<AccountantSignCheck>(accountantSignPostData)))
+                DateTime createNowTime = DateTime.Now;//將建立日期為依據將此次建立的會計師簽印組成為一組Group
+                foreach (AccountantSignForm accountantSignPostData in accountantSignPostDatas)
                 {
                     //這段之後會做成IMAGE64的處理並另存在指定的位置
                     string imagePath = accountantSignPostData.ImageBase64;
 
                     AccountantSignJournal accountantSignJournal = mapper.Map<AccountantSignJournal>(accountantSignPostData);
-                    accountantSignJournal.ImagePath = imagePath;
-
-                    BaseInputAccountantSignJournal(accountantSignJournal, DbActionMode.Create);
+                    accountantSignJournal.ImagePath = imagePath;                    
+                    accountantSignJournal.DeleteStatus = DeleteStatus.NO;
+                    accountantSignJournal.ReviewStatus = ReviewStatus.Temp;
                     accountantSignJournal.CreateDate = createNowTime;
+                    //accountantSignJournal.StartDate = AvailableDateUtil.NotActivated();
+                    //accountantSignJournal.EndDate = AvailableDateUtil.NotActivated(); //暫時加上                                                                                    
                     accountantSignJournals.Add(accountantSignJournal);
                 }
-                else
-                {
-                    response.AccountantSignRepeat();
-                    return response;
-                }
+                dbContext.AccountantSignJournals.AddRange(accountantSignJournals);
+                dbContext.BulkSaveChanges();
+                response.Success();
+            }                   
+            else
+            {
+                response.AccountantSignHaveTemp();
             }
-            dbContext.AccountantSignJournals.AddRange(accountantSignJournals);
-            dbContext.BulkSaveChanges();
-            response.Success();            
-
             return response;
         }
 
         /// <summary>
         /// 修改印鑑組
         /// </summary>
-        /// <param name="accountantSignUpdate">印鑑組</param>
+        /// <param name="accountantSignIds">會計師簽印Id</param>        
         /// <returns></returns>
-        public ResponseViewModel UpdateAccountantSigns(AccountantSignUpdate accountantSignUpdate)
-        {
-            ResponseViewModel response = new();
-            List<AccountantSignJournal> accountantSignJournals = new();
-
-            //新增印鑑
-            foreach (AccountantSignForm CreateAccountantSign in accountantSignUpdate.CreateAccountantSigns)
-            {
-                if (CheckRepeatAccountantSign(mapper.Map<AccountantSignCheck>(CreateAccountantSign))) //確認序號是否重複
-                {
-                    //這段之後會做成IMAGE64的處理並另存在指定的位置
-                    string imagePath = CreateAccountantSign.ImageBase64;
-
-                    AccountantSignJournal accountantSignJournal = mapper.Map<AccountantSignJournal>(CreateAccountantSign);
-                    accountantSignJournal.ImagePath = imagePath;
-                    BaseInputAccountantSignJournal(accountantSignJournal, DbActionMode.Create);
-                    accountantSignJournals.Add(accountantSignJournal);
-                }
-                else
-                {
-                    response.CreateAccountantSignRepeat();
-                    return response;
-                }
-            }
-            dbContext.AccountantSignJournals.AddRange(accountantSignJournals);
-            dbContext.BulkSaveChanges();
-            response.Success();            
-            return response;
+        public List<ResponseViewModel> UpdateReviewStatusPendingAccountantSigns(List<int> accountantSignIds)
+        {            
+            List<ResponseViewModel> responseViewModels = ChangeTempReviewStatusAccountantSigns(accountantSignIds, ReviewStatus.Pending);
+            return responseViewModels;
         }
-
+        
         /// <summary>
         /// 變更此客戶狀態為刪除。
         /// </summary>
-        /// <param name="accountantSignId">客戶ID</param>        
-        public ResponseViewModel DeleteAccountantSign(int accountantSignId)
+        /// <param name="accountantSignIds">會計師簽印Id</param>        
+        public List<ResponseViewModel> DeleteAccountantSign(List<int> accountantSignIds)
         {
-            ResponseViewModel response = new();
-            AccountantSignJournal? accountantSignJournalQuery = dbContext.AccountantSignJournals
-                                .Where(customerSealJournal => customerSealJournal.Id == accountantSignId)
-                                .FirstOrDefault();
+            List<ResponseViewModel> responseViewModels = ChangeTempReviewStatusAccountantSigns(accountantSignIds, ReviewStatus.SealsVoid);
+            return responseViewModels;
+        }
 
-            if (accountantSignJournalQuery != null)
+        /// <summary>
+        /// 會計師印鑑待審狀態變更。
+        /// </summary>
+        /// <param name="accountantSignIds">會計師簽印Id</param>
+        /// <param name="reviewStatus">審查狀態</param>        
+        private List<ResponseViewModel> ChangeTempReviewStatusAccountantSigns(List<int> accountantSignIds, ReviewStatus reviewStatus)
+        {
+            List<ResponseViewModel> responseViewModels = new();
+            foreach (int accountantSignId in accountantSignIds)
             {
-                accountantSignJournalQuery.DeleteStatus = DeleteStatus.Yes;
+                AccountantSignJournal? accountantSignJournalQuery = dbContext.AccountantSignJournals.FirstOrDefault
+                                                                    (
+                                                                        accountantSignJournal => accountantSignJournal.Id == accountantSignId
+                                                                        && accountantSignJournal.ReviewStatus == ReviewStatus.Temp
+                                                                    );
+                ResponseViewModel response = new();
+                if (accountantSignJournalQuery != null)
+                {
+                    accountantSignJournalQuery.ReviewStatus = reviewStatus;
+                }
+                else
+                {
+                    response.DbNoData();
+                    response.ErrorItem = "accountantSignId:" + accountantSignId;
+                    responseViewModels.Add(response);
+                }
+            }
+            if (responseViewModels.Count == 0)
+            {
+                ResponseViewModel response = new();
                 dbContext.SaveChanges();
                 response.Success();
+                responseViewModels.Add(response);
             }
-            else
-            {
-                response.DbNoData();
-            }
-            return response;
-        }
-
-        /// <summary>
-        /// 客戶印鑑新增修改時基本的資料輸入
-        /// </summary>
-        /// <param name="accountantSignJournal">Db上的印鑑資料</param>
-        /// <param name="dbActionMode">對Db所做的行動</param>
-        private static void BaseInputAccountantSignJournal(AccountantSignJournal accountantSignJournal, DbActionMode dbActionMode)
-        {
-            if (DbActionMode.Create == dbActionMode)
-            {                
-                accountantSignJournal.DeleteStatus = DeleteStatus.NO;
-                accountantSignJournal.ReviewStatus = ReviewStatus.Temp;
-            }
-            else if (DbActionMode.Update == dbActionMode)
-            {
-                accountantSignJournal.UpdateDate = DateTime.Now;
-            }
-            accountantSignJournal.StartDate = AvailableDateUtil.NotActivated();
-            accountantSignJournal.EndDate = AvailableDateUtil.NotActivated(); //暫時加上                
-            
-        }
-
-        /// <summary>
-        /// 確認會計簽章是否重複 true 不重複 false 重複
-        /// </summary>
-        /// <param name="accountantSignCheck">查詢參數</param>
-        /// <returns></returns>
-        private bool CheckRepeatAccountantSign(AccountantSignCheck accountantSignCheck)
-        {
-            AccountantSignJournal? accountantSignQuery = dbContext.AccountantSignJournals
-                                .FirstOrDefault
-                                (
-                                    customerSealJournal => customerSealJournal.AccountantId == accountantSignCheck.AccountantId
-                                    && customerSealJournal.SealMappingConfigId == accountantSignCheck.SealMappingConfigId
-                                    && customerSealJournal.StartDate == accountantSignCheck.StartDate
-                                    && customerSealJournal.DeleteStatus == DeleteStatus.NO
-                                );
-
-            return accountantSignQuery == null;
+            return responseViewModels;
         }
     }
 }

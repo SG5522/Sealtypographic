@@ -47,15 +47,14 @@ namespace SealTypographicWebAPI.Controllers
             {
                 Log.Information("AccountantSign get{accountantID} input {@Input}", accountantID);
                 accountantSignStartDates = accountantSignService.GetAccountantStartDate(accountantID);
-                Log.Information("AccountantSign get{accountantID} output {@Output}", accountantSignStartDates);
-                return accountantSignStartDates;                
+                Log.Information("AccountantSign get{accountantID} output {@Output}", accountantSignStartDates);                        
             }
             catch (Exception ex)
             {             
                 Log.Error("AccountantSign get{accountantID} error {@Error}", ex);
-                accountantSignStartDates.DbError();
-                return accountantSignStartDates;
+                accountantSignStartDates.DbError();                
             }
+            return accountantSignStartDates;
         }
 
         /// <summary>
@@ -72,14 +71,13 @@ namespace SealTypographicWebAPI.Controllers
                 Log.Information("AccountantSign get[FromQuery] input {@Input}", accountantSignStartDate);
                 accountantSignViewModels = accountantSignService.GetAccountantSings(accountantSignStartDate);
                 Log.Information("AccountantSign get[FromQuery] output {@Output}", accountantSignViewModels);
-                return accountantSignViewModels;
             }
             catch (Exception ex)
             {
                 Log.Error("CustomerSeal get error {@Error}", ex);
-                accountantSignViewModels.DbError();
-                return accountantSignViewModels;
+                accountantSignViewModels.DbError();                
             }
+            return accountantSignViewModels;
         }
 
         /// <summary>
@@ -95,63 +93,64 @@ namespace SealTypographicWebAPI.Controllers
             {
                 Log.Information("AccountantSign post input {@Input}", accountantSignPosts);
                 response = accountantSignService.CreateAccountantSigns(accountantSignPosts);
-                Log.Information("AccountantSign post output {@Output}", response);
-                return response;                
+                Log.Information("AccountantSign post output {@Output}", response);                             
             }
             catch (Exception ex)
             {                
                 Log.Error("AccountantSign post error {@Error}", ex);
                 response.DbError();
-                return response;
             }
+            return response;
         }
-        
+
         /// <summary>
-        /// 異動簽名印鑑
+        /// 將暫存的簽印組變更為待審
         /// </summary>
-        /// <param name="accountantSignUpdate">簽名印鑑資料</param>
+        /// <param name="accountantSignIds"></param>        
         /// <returns></returns>
         [HttpPut]
-        public ResponseViewModel Put(AccountantSignUpdate accountantSignUpdate)
+        public List<ResponseViewModel> Put(List<int> accountantSignIds)
         {
-            ResponseViewModel response = new();
+            List<ResponseViewModel> responseViewModels = new();
             try
             {
-                Log.Information("AccountantSign put input {@Input}", accountantSignUpdate);
-                response = accountantSignService.UpdateAccountantSigns(accountantSignUpdate);
-                Log.Information("AccountantSign put output {@Output}", response);
-                return response;
+                Log.Information("AccountantSign put input {@Input}", accountantSignIds);
+                responseViewModels = accountantSignService.UpdateReviewStatusPendingAccountantSigns(accountantSignIds);
+                Log.Information("AccountantSign put output {@Output}", responseViewModels);                
             }
             catch (Exception ex)
             {                
                 Log.Error("AccountantSign put error {@Error}", ex);
+                ResponseViewModel response = new();
                 response.DbError();
-                return response;
+                responseViewModels.Add(response);
             }
+            return responseViewModels;
         }
 
         /// <summary>
-        /// 刪除會計師簽印，(隱藏)
+        /// 刪除會計師簽印，(作廢)
         /// </summary>
-        /// <param name="accountantSignId"></param>
+        /// <param name="accountantSignIds"></param>
         /// <returns></returns>
-        [HttpDelete("{accountantSignId}")]
-        public ResponseViewModel Delete(int accountantSignId)
+        [HttpDelete]
+        public List<ResponseViewModel> Delete(List<int> accountantSignIds)
         {
-            ResponseViewModel response = new();
+            List<ResponseViewModel> responseViewModels = new();
             try
             {
-                Log.Information("CustomerSeal delete input {@Input}", accountantSignId);
-                response = accountantSignService.DeleteAccountantSign(accountantSignId);
-                Log.Information("CustomerSeal delete output {@Ouput}", response);
-                return response;
+                Log.Information("CustomerSeal delete input {@Input}", accountantSignIds);
+                responseViewModels = accountantSignService.DeleteAccountantSign(accountantSignIds);
+                Log.Information("CustomerSeal delete output {@Ouput}", responseViewModels);                
             }
             catch (Exception ex)
             {
                 Log.Error("Customer delete error {@Error}", ex);
+                ResponseViewModel response = new();
                 response.DbError();
-                return response;
+                responseViewModels.Add(response);                
             }
+            return responseViewModels;
         }
     }
 }

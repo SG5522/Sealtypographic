@@ -10,6 +10,6 @@ namespace SealTypographicWebAPI.Models.Accountant
         /// <summary>
         /// 會計師ID
         /// </summary>
-        public int AccountantID { get; set; }
+        public int AccountantId { get; set; }
     }
 }

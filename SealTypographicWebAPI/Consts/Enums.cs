@@ -26,19 +26,19 @@
         NotActivated = 2,
 
         /// <summary>
-        /// 待審
-        /// </summary>
-        Pending = 10,
-
-        /// <summary>
         /// 退件
         /// </summary>
-        Reject = 20,
+        Reject = 10,
 
         /// <summary>
         /// 暫存
         /// </summary>
-        Temp = 30,
+        Temp = 20,
+
+        /// <summary>
+        /// 待審
+        /// </summary>
+        Pending = 30,
 
         /// <summary>
         /// 作廢

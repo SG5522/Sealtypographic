@@ -119,6 +119,11 @@
         AccountantSignNoData = 3102,
 
         /// <summary>
+        /// 資料庫會計師簽印已有暂存
+        /// </summary>
+        AccountantSignHaveTemp = 3103,
+
+        /// <summary>
         /// 資料庫會計師簽印建立失敗
         /// </summary>
         CreateAccountantSignFailed = 3110,
