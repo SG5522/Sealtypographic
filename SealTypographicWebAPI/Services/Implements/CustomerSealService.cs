@@ -161,8 +161,7 @@ namespace SealTypographicWebAPI.Services.Implements
         public List<ResponseViewModel> UpdateCustomerSeals(CustomerSealUpdate customerSealUpdate)
         {
             List<ResponseViewModel> responseViewModels = new();                        
-            List<CustomerSealJournal> customerSealJournals = new();
-            ResponseViewModel response = new();
+            List<CustomerSealJournal> customerSealJournals = new();            
             //刪除印鑑
             foreach (int customerSealId in customerSealUpdate.DeleteCustomerSealIds)
             {
@@ -178,7 +177,7 @@ namespace SealTypographicWebAPI.Services.Implements
                 }
                 else
                 {
-                    //ResponseViewModel response = new();
+                    ResponseViewModel response = new();
                     response.CustomerSealNoData();
                     response.ErrorItem = "Delete CustomerSealId:" + customerSealId;
                     responseViewModels.Add(response);
@@ -202,7 +201,7 @@ namespace SealTypographicWebAPI.Services.Implements
                 }
                 else
                 {
-                    //ResponseViewModel response = new();
+                    ResponseViewModel response = new();
                     response.UpdateCustomerSealNoData();                    
                     response.ErrorItem = "Update CustomerSealId:" + customerSealFormUpdate.Id;
                     responseViewModels.Add(response);
@@ -223,7 +222,7 @@ namespace SealTypographicWebAPI.Services.Implements
                 }
                 else
                 {
-                    //ResponseViewModel response = new();
+                    ResponseViewModel response = new();
                     response.CreateCustomerSealSequenceRepeat();
                     response.ErrorItem = "Create CustomerId:" + createCustomerSeal.CustomerId
                                        + " SealMappingConfigId:" + createCustomerSeal.SealMappingConfigId
@@ -234,7 +233,7 @@ namespace SealTypographicWebAPI.Services.Implements
             //更新資料庫
             if (!responseViewModels.Any())
             {
-                //ResponseViewModel response = new();
+                ResponseViewModel response = new();
                 dbContext.CustomerSealJournals.AddRange(customerSealJournals);
                 dbContext.BulkSaveChanges();
                 response.Success();
