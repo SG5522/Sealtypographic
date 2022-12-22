@@ -41,7 +41,7 @@ namespace SealTypographicWebAPI.Services.Implements
                                            .Where
                                            (
                                                 accountantSignJournal => accountantSignJournal.AccountantId == accountantId
-                                                && accountantSignJournal.ReviewStatus <= ReviewStatus.Temp //暂存以下狀態過濾用
+                                                && accountantSignJournal.ReviewStatus <= ReviewStatus.Draft //暂存以下狀態過濾用
                                            )
                                            .Select(accountantSignJournal => accountantSignJournal.CreateDate)
                                            .Distinct()
@@ -122,7 +122,7 @@ namespace SealTypographicWebAPI.Services.Implements
                                 .FirstOrDefault
                                 (
                                     x => x.AccountantId == accountantSignPostDatas.First().AccountantId
-                                    && x.ReviewStatus == ReviewStatus.Temp
+                                    && x.ReviewStatus == ReviewStatus.Draft
                                 );            
             if(accountantSignJournalQuery == null)
             {
@@ -135,7 +135,7 @@ namespace SealTypographicWebAPI.Services.Implements
                     AccountantSignJournal accountantSignJournal = mapper.Map<AccountantSignJournal>(accountantSignPostData);
                     accountantSignJournal.ImagePath = imagePath;                    
                     accountantSignJournal.DeleteStatus = DeleteStatus.NO;
-                    accountantSignJournal.ReviewStatus = ReviewStatus.Temp;
+                    accountantSignJournal.ReviewStatus = ReviewStatus.Draft;
                     accountantSignJournal.CreateDate = createNowTime;
                     //accountantSignJournal.StartDate = AvailableDateUtil.NotActivated();
                     //accountantSignJournal.EndDate = AvailableDateUtil.NotActivated(); //暫時加上                                                                                    
@@ -169,7 +169,7 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <param name="accountantSignIds">會計師簽印Id</param>        
         public List<ResponseViewModel> DeleteAccountantSign(List<int> accountantSignIds)
         {
-            List<ResponseViewModel> responseViewModels = ChangeTempReviewStatusAccountantSigns(accountantSignIds, ReviewStatus.SealsVoid);
+            List<ResponseViewModel> responseViewModels = ChangeTempReviewStatusAccountantSigns(accountantSignIds, ReviewStatus.Invalid);
             return responseViewModels;
         }
 
@@ -186,7 +186,7 @@ namespace SealTypographicWebAPI.Services.Implements
                 AccountantSignJournal? accountantSignJournalQuery = dbContext.AccountantSignJournals.FirstOrDefault
                                                                     (
                                                                         accountantSignJournal => accountantSignJournal.Id == accountantSignId
-                                                                        && accountantSignJournal.ReviewStatus == ReviewStatus.Temp
+                                                                        && accountantSignJournal.ReviewStatus == ReviewStatus.Draft
                                                                     );
                 ResponseViewModel response = new();
                 if (accountantSignJournalQuery != null)

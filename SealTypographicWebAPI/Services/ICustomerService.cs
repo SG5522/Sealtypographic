@@ -36,6 +36,15 @@ namespace SealTypographicWebAPI.Services
         ResponseViewModel UpdateCustomer(CustomerFormUpdate customer);
 
         /// <summary>
+        /// 變更此季度印鑑待審。
+        /// </summary>
+        /// <param name="customerSealQuarter">客戶ID與季度</param>      
+        ResponseViewModel PendingCustomerSeal(CustomerSealQuarter customerSealQuarter);
+
+
+
+
+        /// <summary>
         /// 刪除客戶基本資料(變更狀態使其一般USER無法看到)
         /// </summary>
         /// <param name="customerId"></param>

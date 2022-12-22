@@ -31,9 +31,9 @@
         Reject = 10,
 
         /// <summary>
-        /// 暫存
+        /// 草稿
         /// </summary>
-        Temp = 20,
+        Draft = 20,
 
         /// <summary>
         /// 待審
@@ -43,7 +43,7 @@
         /// <summary>
         /// 作廢
         /// </summary>
-        SealsVoid = 40,
+        Invalid = 40,
     }
 
     /// <summary>

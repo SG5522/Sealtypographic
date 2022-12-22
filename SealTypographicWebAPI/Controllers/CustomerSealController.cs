@@ -127,6 +127,33 @@ namespace SealTypographicWebAPI.Controllers
         }
 
         /// <summary>
+        /// 異動客戶印鑑
+        /// </summary>        
+        /// <param name="customerSealQuarter">客戶Id與季度</param>
+        /// <returns></returns>
+        [HttpPut("Pending")]
+        public List<ResponseViewModel> PutPendingAccountantSign(CustomerSealQuarter customerSealQuarter)
+        {
+            List<ResponseViewModel> response = new();
+            try
+            {
+                Log.Information("CustomerSeal put input {@Input}", customerSealQuarter);
+                response = customerSealService.UpdateCustomerSeals(customerSealQuarter);
+                Log.Information("CustomerSeal put output {@Output}", response);
+                return response;
+            }
+            catch (Exception ex)
+            {
+                Log.Error("CustomerSeal put error {@Error}", ex);
+                ResponseViewModel responseViewModel = new();
+                responseViewModel.DbError();
+                response.Add(responseViewModel);
+                return response;
+            }
+        }
+
+
+        /// <summary>
         /// 刪除印鑑，(隱藏)
         /// </summary>
         /// <param name="customerSealId"></param>

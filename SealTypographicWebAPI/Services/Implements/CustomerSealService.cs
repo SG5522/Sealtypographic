@@ -266,7 +266,24 @@ namespace SealTypographicWebAPI.Services.Implements
             }
             return response;
         }
-
+        /// <summary>
+        /// 變更此季度印鑑待審。
+        /// </summary>
+        /// <param name="customerSealQuarter">客戶ID與季度</param>        
+        public ResponseViewModel PendingCustomerSeal(CustomerSealQuarter customerSealQuarter)
+        {
+            ResponseViewModel response = ChangeDraftReviewStatusCustomerSeal(customerSealQuarter, ReviewStatus.Pending);
+            return response;
+        }
+        /// <summary>
+        /// 變更此季度印鑑作廢。
+        /// </summary>
+        /// <param name="customerSealQuarter">客戶ID與季度</param>        
+        public ResponseViewModel DeleteCustomerSeal(CustomerSealQuarter customerSealQuarter)
+        {
+            ResponseViewModel response = ChangeDraftReviewStatusCustomerSeal(customerSealQuarter, ReviewStatus.Invalid);
+            return response;
+        }
         /// <summary>
         /// 客戶印鑑新增修改時基本的資料輸入
         /// </summary>
@@ -285,7 +302,7 @@ namespace SealTypographicWebAPI.Services.Implements
             }
             customerSealJournal.StartDate = AvailableDateUtil.NotActivated();
             customerSealJournal.EndDate = AvailableDateUtil.NotActivated(); //暫時加上                
-            customerSealJournal.ReviewStatus = ReviewStatus.Temp;
+            customerSealJournal.ReviewStatus = ReviewStatus.Draft;
         }
 
         /// <summary>
@@ -364,6 +381,38 @@ namespace SealTypographicWebAPI.Services.Implements
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// 客戶印鑑草稿狀態變更。
+        /// </summary>
+        /// <param name="customerSealQuarter">客戶ID與季度</param>
+        /// <param name="reviewStatus">審查狀態</param>        
+        private ResponseViewModel ChangeDraftReviewStatusCustomerSeal(CustomerSealQuarter customerSealQuarter, ReviewStatus reviewStatus)
+        {
+            ResponseViewModel response = new();            
+            IQueryable<CustomerSealJournal> customerSealJournalQuery = dbContext.CustomerSealJournals.Where
+                                                            (
+                                                                customerSeal => customerSeal.CustomerId == customerSealQuarter.CustomerId
+                                                                && customerSeal.Quarter == customerSealQuarter.Quarter
+                                                                && customerSeal.ReviewStatus == ReviewStatus.Draft
+                                                            );
+            
+            if (customerSealJournalQuery.Any())
+            {
+                foreach(CustomerSealJournal customerSealJournal in customerSealJournalQuery)               
+                {
+                    customerSealJournal.ReviewStatus = reviewStatus;                        
+                }
+                dbContext.SaveChanges();
+                response.Success();
+            }
+            else
+            {
+                response.DbNoData();                                
+            }
+
+            return response;
         }
     }
 }

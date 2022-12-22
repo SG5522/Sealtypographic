@@ -59,9 +59,9 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="accountantId">會計師ID</param>        
         /// <returns></returns>
         [HttpGet("{accountantId}")]
-        public AccountantResponse Get(int accountantId)
+        public AccountantDetailResponse Get(int accountantId)
         {
-            AccountantResponse accountantResponse = new();
+            AccountantDetailResponse accountantResponse = new();
             try
             {
                 Log.Information("Accountant get{accountantId} input {@Input}", accountantId);

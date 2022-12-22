@@ -15,7 +15,7 @@ namespace SealTypographicWebAPI.Services
         /// </summary>
         /// <param name="accountantId"></param>
         /// <returns></returns>
-        AccountantResponse GetAccountant(int accountantId);
+        AccountantDetailResponse GetAccountant(int accountantId);
 
         /// <summary>
         /// 依搜尋條件獲得會計資料列表

@@ -35,17 +35,17 @@ namespace SealTypographicWebAPI.Services.Implements
         /// </summary>
         /// <param name="accountantId"></param>
         /// <returns></returns>
-        public AccountantResponse GetAccountant(int accountantId)
+        public AccountantDetailResponse GetAccountant(int accountantId)
         {
-            AccountantResponse accountantResponse = new();
+            AccountantDetailResponse accountantResponse = new();
             ResponseViewModel response = new();
-            Accountant? accountantQuery = dbContext.Accountants.Where(accountant => accountant.Id == accountantId)
-                                                                .Include(accountant => accountant.AccountantGroup)
-                                                                .FirstOrDefault();
+
+            Accountant? accountantQuery = dbContext.Accountants.Include(accountant => accountant.AccountantGroup)
+                                                               .FirstOrDefault(accountant => accountant.Id == accountantId);
 
             if (accountantQuery != null)
             {
-                accountantResponse.AccountantViewModel = mapper.Map<AccountantViewModel>(accountantQuery);
+                accountantResponse.AccountantDetailViewModel = mapper.Map<AccountantDetailViewModel>(accountantQuery);
                 accountantResponse.Success();
             }
             else
