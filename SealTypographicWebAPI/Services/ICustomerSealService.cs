@@ -38,6 +38,20 @@ namespace SealTypographicWebAPI.Services
         List<ResponseViewModel> UpdateCustomerSeals(CustomerSealUpdate customerSealUpdate);
 
         /// <summary>
+        /// 變更此季度印鑑待審
+        /// </summary>
+        /// <param name="customerSealQuarter">客戶Id與季度</param>
+        /// <returns></returns>
+        ResponseViewModel PendingCustomerSeal(CustomerSealQuarter customerSealQuarter);
+
+        /// <summary>
+        /// 變更此季度印鑑作廢
+        /// </summary>
+        /// <param name="customerSealQuarter">客戶Id與季度</param>
+        /// <returns></returns>
+        ResponseViewModel InvalidCustomerSeal(CustomerSealQuarter customerSealQuarter);
+
+        /// <summary>
         /// 刪除印鑑 (隱藏)
         /// </summary>
         /// <param name="customerSealId"></param>

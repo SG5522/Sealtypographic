@@ -24,6 +24,6 @@ namespace SealTypographicWebAPI.Models.Accountant
         /// <summary>
         /// 啟用日期
         /// </summary>
-        public DateTime StartDate { get; set; }
+        public DateTime GroupCreateDate { get; set; }
     }
 }

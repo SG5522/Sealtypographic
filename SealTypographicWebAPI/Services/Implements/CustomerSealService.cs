@@ -36,34 +36,33 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <returns></returns>
         public CustomerSealQuarters GetCustomerSealQuarters(int customerId)
         {
-            CustomerSealQuarters customerSealQuarters = new();
-            List<CustomerSealQuarter> sealQuarters = new();
-            List<string> customerSealQuarterQuery = dbContext.CustomerSealJournals
+            CustomerSealQuarters customerSealQuarters = new();            
+            List<CustomerSealQuarter> customerSealQuarterQuery = dbContext.CustomerSealJournals
                                            .Where
                                            (
                                                 customerSealJournal => customerSealJournal.CustomerId == customerId
-                                                //&& customerSealJournal.ReviewStatus != ReviewStatus.Pending //待審狀態過濾用
+                                                && customerSealJournal.ReviewStatus <= ReviewStatus.Draft //過濾待審或退件的狀態                                                
+                                                && customerSealJournal.DeleteStatus == DeleteStatus.NO
                                            )
-                                           .Select(customerSealJournal => customerSealJournal.Quarter)
-                                           .Distinct()
-                                           .ToList();
+                                           .Select(customerSealJournal => new CustomerSealQuarter()
+                                           {
+                                               CustomerId = customerSealJournal.CustomerId,
+                                               Quarter = customerSealJournal.Quarter,
+                                               ReviewStatusString = ReviewStatusUtil.Get(customerSealJournal.ReviewStatus)
+                                           })
+                                           .GroupBy(customerSealJournal => customerSealJournal.Quarter)
+                                           .Select(customerSealJournal => customerSealJournal.First())
+                                           .ToList();                                                                                    
+
 
             if (customerSealQuarterQuery.Any())
             {
-                foreach (string quarter in customerSealQuarterQuery)
-                {
-                    sealQuarters.Add(new()
-                    {
-                        CustomerId = customerId,
-                        Quarter = quarter
-                    });
-                }
-                customerSealQuarters.Quarters = sealQuarters;
+                customerSealQuarters.Quarters = customerSealQuarterQuery;
                 customerSealQuarters.Success();
             }
             else
             {
-                customerSealQuarters.DbNoData();
+                customerSealQuarters.CustomerSealNoData();
             }
 
             return customerSealQuarters;
@@ -90,8 +89,7 @@ namespace SealTypographicWebAPI.Services.Implements
                                                                     .Include(customerSealJournal => customerSealJournal.SealMappingConfig)
                                                                     .OrderBy(customerSealJournal => customerSealJournal.SealMappingConfigId)
                                                                     .ThenBy(customerSealJournal => customerSealJournal.Sequence)
-                                                                    .ToList();
-            //if (!customerSealQuery.Any(customerSealJournal => customerSealJournal.ReviewStatus == ReviewStatus.Pending))
+                                                                    .ToList();            
             if (customerSealQuery.Any())
             {
                 foreach (CustomerSealJournal customerSealJournal in customerSealQuery)
@@ -267,7 +265,7 @@ namespace SealTypographicWebAPI.Services.Implements
             return response;
         }
         /// <summary>
-        /// 變更此季度印鑑待審。
+        /// 變更此季度印鑑待審
         /// </summary>
         /// <param name="customerSealQuarter">客戶ID與季度</param>        
         public ResponseViewModel PendingCustomerSeal(CustomerSealQuarter customerSealQuarter)
@@ -276,10 +274,10 @@ namespace SealTypographicWebAPI.Services.Implements
             return response;
         }
         /// <summary>
-        /// 變更此季度印鑑作廢。
+        /// 變更此季度印鑑作廢
         /// </summary>
         /// <param name="customerSealQuarter">客戶ID與季度</param>        
-        public ResponseViewModel DeleteCustomerSeal(CustomerSealQuarter customerSealQuarter)
+        public ResponseViewModel InvalidCustomerSeal(CustomerSealQuarter customerSealQuarter)
         {
             ResponseViewModel response = ChangeDraftReviewStatusCustomerSeal(customerSealQuarter, ReviewStatus.Invalid);
             return response;
@@ -312,24 +310,16 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <returns></returns>
         private bool CheckRepeatSequence(CustomerSealSequenceCheck customerSealSequenceCheck)
         {
-            CustomerSealJournal? customerSealQuery = dbContext.CustomerSealJournals
-                                .Where
-                                (
-                                    customerSealJournal => customerSealJournal.CustomerId == customerSealSequenceCheck.CustomerId
-                                    && customerSealJournal.SealMappingConfigId == customerSealSequenceCheck.SealMappingConfigId
-                                    && customerSealJournal.Quarter == customerSealSequenceCheck.Quarter
-                                    && customerSealJournal.Sequence == customerSealSequenceCheck.Sequence
-                                    && customerSealJournal.DeleteStatus == DeleteStatus.NO
-                                ).FirstOrDefault();
+            CustomerSealJournal? customerSealQuery = dbContext.CustomerSealJournals.FirstOrDefault
+                                                    (
+                                                        customerSealJournal => customerSealJournal.CustomerId == customerSealSequenceCheck.CustomerId
+                                                        && customerSealJournal.SealMappingConfigId == customerSealSequenceCheck.SealMappingConfigId
+                                                        && customerSealJournal.Quarter == customerSealSequenceCheck.Quarter
+                                                        && customerSealJournal.Sequence == customerSealSequenceCheck.Sequence
+                                                        && customerSealJournal.DeleteStatus == DeleteStatus.NO
+                                                    );
 
-            if (customerSealQuery == null)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            return customerSealQuery == null;
         }
 
         /// <summary>

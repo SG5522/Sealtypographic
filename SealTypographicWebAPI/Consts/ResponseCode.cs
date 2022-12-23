@@ -51,7 +51,7 @@
         /// <summary>
         /// 資料庫客戶印鑑無資料
         /// </summary>
-        CustomerSealNoData = 2103,
+        CustomerSealNoData = 2102,
 
         /// <summary>
         /// 資料庫客戶印鑑建立失敗

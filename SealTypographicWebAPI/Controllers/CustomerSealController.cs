@@ -127,31 +127,52 @@ namespace SealTypographicWebAPI.Controllers
         }
 
         /// <summary>
-        /// 異動客戶印鑑
+        /// 變更此季度印鑑待審
         /// </summary>        
         /// <param name="customerSealQuarter">客戶Id與季度</param>
         /// <returns></returns>
         [HttpPut("Pending")]
-        public List<ResponseViewModel> PutPendingAccountantSign(CustomerSealQuarter customerSealQuarter)
+        public ResponseViewModel PutPendingCustomerSeal(CustomerSealQuarter customerSealQuarter)
         {
-            List<ResponseViewModel> response = new();
+            ResponseViewModel response = new();
             try
             {
                 Log.Information("CustomerSeal put input {@Input}", customerSealQuarter);
-                response = customerSealService.UpdateCustomerSeals(customerSealQuarter);
+                response = customerSealService.PendingCustomerSeal(customerSealQuarter);
                 Log.Information("CustomerSeal put output {@Output}", response);
                 return response;
             }
             catch (Exception ex)
             {
                 Log.Error("CustomerSeal put error {@Error}", ex);
-                ResponseViewModel responseViewModel = new();
-                responseViewModel.DbError();
-                response.Add(responseViewModel);
+                response.DbError();                
                 return response;
             }
         }
 
+        /// <summary>
+        /// 變更此季度印鑑作廢
+        /// </summary>        
+        /// <param name="customerSealQuarter">客戶Id與季度</param>
+        /// <returns></returns>
+        [HttpPut("Invalid")]
+        public ResponseViewModel PutInvalidCustomerSeal(CustomerSealQuarter customerSealQuarter)
+        {
+            ResponseViewModel response = new();
+            try
+            {
+                Log.Information("CustomerSeal put input {@Input}", customerSealQuarter);
+                response = customerSealService.InvalidCustomerSeal(customerSealQuarter);
+                Log.Information("CustomerSeal put output {@Output}", response);
+                return response;
+            }
+            catch (Exception ex)
+            {
+                Log.Error("CustomerSeal put error {@Error}", ex);
+                response.DbError();
+                return response;
+            }
+        }
 
         /// <summary>
         /// 刪除印鑑，(隱藏)

@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using SealTypographicWebAPI.Consts;
+using System.ComponentModel.DataAnnotations;
 
 namespace SealTypographicWebAPI.Models.Customer
 {
@@ -20,6 +21,11 @@ namespace SealTypographicWebAPI.Models.Customer
         /// <example>111年Q1</example>
         [Required]
         public string Quarter { get; set; }
+
+        /// <summary>
+        /// 印鑑審查狀態
+        /// </summary>
+        public string ReviewStatusString { get; set; }
 
     }
 

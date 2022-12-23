@@ -40,13 +40,13 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="accountantID">會計ID</param>        
         /// <returns></returns>
         [HttpGet("{accountantID}")]
-        public AccountantSignCreateDates Get(int accountantID)
+        public AccountantSignGroupCreateDates Get(int accountantID)
         {
-            AccountantSignCreateDates accountantSignStartDates = new ();
+            AccountantSignGroupCreateDates accountantSignStartDates = new ();
             try
             {
                 Log.Information("AccountantSign get{accountantID} input {@Input}", accountantID);
-                accountantSignStartDates = accountantSignService.GetAccountantStartDate(accountantID);
+                accountantSignStartDates = accountantSignService.GetAccountantWithGruopCreateDate(accountantID);
                 Log.Information("AccountantSign get{accountantID} output {@Output}", accountantSignStartDates);                        
             }
             catch (Exception ex)
@@ -63,7 +63,7 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="accountantSignStartDate">關鑑字</param>        
         /// <returns></returns>        
         [HttpGet]
-        public AccountantSignViewModels Get([FromQuery] AccountantSignCreateDate accountantSignStartDate)
+        public AccountantSignViewModels Get([FromQuery] AccountantSignGroupCreateDate accountantSignStartDate)
         {
             AccountantSignViewModels accountantSignViewModels = new();
             try
