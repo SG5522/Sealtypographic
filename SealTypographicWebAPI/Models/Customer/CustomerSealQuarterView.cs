@@ -4,9 +4,9 @@ using System.ComponentModel.DataAnnotations;
 namespace SealTypographicWebAPI.Models.Customer
 {
     /// <summary>
-    /// 客戶季度搜尋
+    /// 客戶印鑑季度
     /// </summary>
-    public class CustomerSealQuarter
+    public class CustomerSealQuarterView
     {
         /// <summary>
         /// 客戶Id
@@ -25,18 +25,18 @@ namespace SealTypographicWebAPI.Models.Customer
         /// <summary>
         /// 印鑑審查狀態
         /// </summary>
-        public string ReviewStatusString { get; set; }
+        public ReviewStatus ReviewStatus { get; set; }
 
     }
 
     /// <summary>
-    /// 客戶季度搜尋表
+    /// 客戶印鑑季度列表
     /// </summary>
-    public class CustomerSealQuarters : ResponseViewModel
+    public class CustomerSealQuarterViews : ResponseViewModel
     {
         /// <summary>
         /// 客戶季度搜尋表
         /// </summary>
-        public List<CustomerSealQuarter> Quarters { get; set; }
+        public List<CustomerSealQuarterView> Quarters { get; set; }
     }
 }

@@ -83,10 +83,9 @@ namespace SealTypographicWebAPI.Services.Implements
                 foreach (Customer customerBase in pageNumberCustomers)
                 {
                     CustomerViewModel customerViewModel = mapper.Map<CustomerViewModel>(customerBase);
-                    string? quarter = customerBase.CustomerSealJournals.Select(x => x.Quarter).Max();
-                    if (quarter != null)
-                    {
-                        customerViewModel.Quarter = quarter;
+                    if(customerBase.CustomerSealJournals.Count > 0)
+                    {                        
+                        customerViewModel.Quarter = customerBase.CustomerSealJournals.Max(x => x.Quarter);
                     }
                     customerViewModels.Add(customerViewModel);
                 }
@@ -113,12 +112,14 @@ namespace SealTypographicWebAPI.Services.Implements
         public CreateCustomerResponse CreateCustomer(CustomerForm customerForm)
         {
             CreateCustomerResponse createCustomerResponse = new();
+            int userid = 0; //帳號驗證取得ID
             IQueryable<Customer> customerQuery = dbContext.Customers
                                 .Where(customer => customer.CustomerNumber == customerForm.CustomerNumber);
 
             if (!customerQuery.Any())
             {
                 Customer dbCustomer = mapper.Map<Customer>(customerForm);
+                dbCustomer.CreateUserId = userid;
                 dbCustomer.CreateDate = DateTime.Now;
                 dbCustomer.DeleteStatus = DeleteStatus.NO;
                 dbContext.Customers.Add(dbCustomer);
@@ -152,11 +153,13 @@ namespace SealTypographicWebAPI.Services.Implements
         public ResponseViewModel UpdateCustomer(CustomerFormUpdate customerFormUpdate)
         {
             ResponseViewModel response = new();
+            int userid = 0;//帳號驗證取得ID
             Customer? customerQuery = dbContext.Customers.Find(customerFormUpdate.Id);
 
             if (customerQuery != null)
             {
-                mapper.Map(customerFormUpdate, customerQuery);                
+                mapper.Map(customerFormUpdate, customerQuery);
+                customerQuery.UpdateUserId = userid;
                 customerQuery.UpdateDate = DateTime.Now;
 
                 dbContext.SaveChanges();
@@ -176,10 +179,13 @@ namespace SealTypographicWebAPI.Services.Implements
         public ResponseViewModel DeleteCustomer(int customerId)
         {
             ResponseViewModel response = new();
+            int userId = 0;//帳號驗證取得ID
             Customer? customerQuery = dbContext.Customers.Find(customerId);
 
             if (customerQuery != null)
             {
+                customerQuery.UpdateUserId = userId;
+                customerQuery.UpdateDate = DateTime.Now;
                 customerQuery.DeleteStatus = DeleteStatus.Yes;
                 dbContext.SaveChanges();
                 response.Success();

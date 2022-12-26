@@ -30,7 +30,7 @@ namespace SealTypographicWebAPI.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<DateTime>("CreateDate")
+                    b.Property<DateTime>("GroupCreateDate")
                         .HasColumnType("TEXT");
 
                     b.Property<int>("CreateUserId")
@@ -66,7 +66,7 @@ namespace SealTypographicWebAPI.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<DateTime>("CreateDate")
+                    b.Property<DateTime>("GroupCreateDate")
                         .HasColumnType("TEXT");
 
                     b.Property<int>("CreateUserId")
@@ -99,7 +99,7 @@ namespace SealTypographicWebAPI.Migrations
                     b.Property<int>("AccountantId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<DateTime>("CreateDate")
+                    b.Property<DateTime>("GroupCreateDate")
                         .HasColumnType("TEXT");
 
                     b.Property<int>("CreateUserId")
@@ -157,7 +157,7 @@ namespace SealTypographicWebAPI.Migrations
                     b.Property<int>("AccountantSignJournalId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<DateTime>("CreateDate")
+                    b.Property<DateTime>("GroupCreateDate")
                         .HasColumnType("TEXT");
 
                     b.Property<int>("CreateUserId")
@@ -228,7 +228,7 @@ namespace SealTypographicWebAPI.Migrations
                     b.Property<string>("ContactTitle")
                         .HasColumnType("TEXT");
 
-                    b.Property<DateTime>("CreateDate")
+                    b.Property<DateTime>("GroupCreateDate")
                         .HasColumnType("TEXT");
 
                     b.Property<int>("CreateUserId")
@@ -277,7 +277,7 @@ namespace SealTypographicWebAPI.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<DateTime>("CreateDate")
+                    b.Property<DateTime>("GroupCreateDate")
                         .HasColumnType("TEXT");
 
                     b.Property<int>("CreateUserId")
@@ -339,7 +339,7 @@ namespace SealTypographicWebAPI.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<DateTime>("CreateDate")
+                    b.Property<DateTime>("GroupCreateDate")
                         .HasColumnType("TEXT");
 
                     b.Property<int>("CreateUserId")
@@ -387,7 +387,7 @@ namespace SealTypographicWebAPI.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<DateTime>("CreateDate")
+                    b.Property<DateTime>("GroupCreateDate")
                         .HasColumnType("TEXT");
 
                     b.Property<int>("CreateUserId")
@@ -421,7 +421,7 @@ namespace SealTypographicWebAPI.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<DateTime>("CreateDate")
+                    b.Property<DateTime>("GroupCreateDate")
                         .HasColumnType("TEXT");
 
                     b.Property<int>("CreateUserId")
@@ -479,7 +479,7 @@ namespace SealTypographicWebAPI.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<DateTime>("CreateDate")
+                    b.Property<DateTime>("GroupCreateDate")
                         .HasColumnType("TEXT");
 
                     b.Property<int>("CreateUserId")
@@ -552,7 +552,7 @@ namespace SealTypographicWebAPI.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<DateTime>("CreateDate")
+                    b.Property<DateTime>("GroupCreateDate")
                         .HasColumnType("TEXT");
 
                     b.Property<int>("CreateUserId")
@@ -586,7 +586,7 @@ namespace SealTypographicWebAPI.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<DateTime>("CreateDate")
+                    b.Property<DateTime>("GroupCreateDate")
                         .HasColumnType("TEXT");
 
                     b.Property<int>("CreateUserId")

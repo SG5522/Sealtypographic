@@ -13,7 +13,7 @@ namespace SealTypographicWebAPI.Services
         /// </summary>
         /// <param name="customerID">顧客ID</param>        
         /// <returns></returns>
-        CustomerSealQuarters GetCustomerSealQuarters(int customerID);
+        CustomerSealQuarterViews GetCustomerSealQuarters(int customerID);
 
 
         /// <summary>
@@ -21,14 +21,14 @@ namespace SealTypographicWebAPI.Services
         /// </summary>
         /// <param name="customerSealQuarter"></param>
         /// <returns></returns>
-        CustomerSealViewModels GetCustomerSealViewModels(CustomerSealQuarter customerSealQuarter);
+        CustomerSealViewModels GetCustomerSealViewModels(CustomerSealQuarterSearch customerSealQuarter);
 
         /// <summary>
         /// 新增印鑑組
         /// </summary>
         /// <param name="customerSeals">印鑑資料</param>
         /// <returns></returns>
-        ResponseViewModel CreateCustomerSeals(List<CustomerSealForm> customerSeals);
+        List<ResponseViewModel> CreateCustomerSeals(List<CustomerSealForm> customerSeals);
 
         /// <summary>
         /// 異動客戶印鑑
@@ -42,14 +42,14 @@ namespace SealTypographicWebAPI.Services
         /// </summary>
         /// <param name="customerSealQuarter">客戶Id與季度</param>
         /// <returns></returns>
-        ResponseViewModel PendingCustomerSeal(CustomerSealQuarter customerSealQuarter);
+        ResponseViewModel PendingCustomerSeal(CustomerSealQuarterSearch customerSealQuarter);
 
         /// <summary>
         /// 變更此季度印鑑作廢
         /// </summary>
         /// <param name="customerSealQuarter">客戶Id與季度</param>
         /// <returns></returns>
-        ResponseViewModel InvalidCustomerSeal(CustomerSealQuarter customerSealQuarter);
+        ResponseViewModel InvalidCustomerSeal(CustomerSealQuarterSearch customerSealQuarter);
 
         /// <summary>
         /// 刪除印鑑 (隱藏)

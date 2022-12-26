@@ -1,4 +1,5 @@
 ﻿using SealTypographicWebAPI.Models;
+using SealTypographicWebAPI.Models.Customer;
 using SealTypographicWebAPI.Models.CustomerSealReview;
 
 namespace SealTypographicWebAPI.Services
@@ -17,9 +18,9 @@ namespace SealTypographicWebAPI.Services
         /// <summary>
         /// 基本資料與印鑑細項
         /// </summary>
-        /// <param name="customerSealReviewQuarterSearch"></param>
+        /// <param name="customerSealQuarter"></param>
         /// <returns></returns>
-        CustomerSealReviewDetailResponse GetCustomerSealReviewDetail(CustomerSealReviewQuarterSearch customerSealReviewQuarterSearch);
+        CustomerSealReviewDetailResponse GetCustomerSealReviewDetail(CustomerSealQuarterSearch customerSealQuarter);
 
         /// <summary>
         /// 審核通過

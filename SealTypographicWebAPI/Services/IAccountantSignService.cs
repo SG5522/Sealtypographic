@@ -14,14 +14,14 @@ namespace SealTypographicWebAPI.Services
         /// </summary>
         /// <param name="accountantId">會計師ID</param>        
         /// <returns></returns>
-        AccountantSignGroupCreateDates GetAccountantWithGruopCreateDate(int accountantId);
+        AccountantSignGroupCreateDateViews GetAccountantWithGruopCreateDate(int accountantId);
 
         /// <summary>
         /// 取得會計師簽印組
         /// </summary>
         /// <param name="accountantSignStartDate"></param>
         /// <returns></returns>
-        public AccountantSignViewModels GetAccountantSings(AccountantSignGroupCreateDate accountantSignStartDate);
+        public AccountantSignViewModels GetAccountantSings(AccountantSignGroupCreateDateSearch accountantSignStartDate);
 
         /// <summary>
         /// 新增印鑑組
@@ -31,17 +31,24 @@ namespace SealTypographicWebAPI.Services
         ResponseViewModel CreateAccountantSigns(List<AccountantSignForm> accountantSignPosts);
 
         /// <summary>
+        /// 異動會計師簽印的處理(審查狀態退回或是草稿才進行修改)
+        /// </summary>
+        /// <param name="accountantSignUpdate">刪除修改新增的list</param>
+        /// <returns></returns>
+        List<ResponseViewModel> UpdateAccountantSign(AccountantSignUpdate accountantSignUpdate);
+
+        /// <summary>
         /// 修改印鑑組
         /// </summary>
-        /// <param name="accountantSignIds">會計師簽印id</param>
+        /// <param name="accountantSignGroupCreateDateSearch">會計師簽印id</param>
         /// <returns></returns>
-        List<ResponseViewModel> UpdateReviewStatusPendingAccountantSigns(List<int> accountantSignIds);
+        ResponseViewModel UpdateReviewStatusPendingAccountantSigns(AccountantSignGroupCreateDateSearch accountantSignGroupCreateDateSearch);
 
         /// <summary>
         /// 刪除會計師簽印 (作廢)
         /// </summary>
-        /// <param name="accountantSignIds">會計師簽印</param>
+        /// <param name="accountantSignGroupCreateDateSearch">會計師簽印</param>
         /// <returns></returns>
-        List<ResponseViewModel> DeleteAccountantSign(List<int> accountantSignIds);
+        ResponseViewModel UpdateReviewStatusInvalidAccountantSigns(AccountantSignGroupCreateDateSearch accountantSignGroupCreateDateSearch);
     }
 }

@@ -10,7 +10,7 @@ namespace SealTypographicWebAPI.Models.Accountant
         /// <summary>
         /// 啟用時間
         /// </summary>
-        public DateTime? CreateDate { get; set; }
+        public DateTime? GroupCreateDate { get; set; }
     }
 
     /// <summary>

@@ -23,6 +23,6 @@ namespace SealTypographicWebAPI.Models.Customer
         /// <summary>
         /// 顯示最新季度
         /// </summary>
-        public string Quarter { get; set; }
+        public string? Quarter { get; set; }
     }
 }

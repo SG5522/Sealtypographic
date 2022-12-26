@@ -84,23 +84,23 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <summary>
         /// 依照客戶ID與季度列出詳細資料與印鑑
         /// </summary>
-        /// <param name="customerSealReviewQuarterSearch">搜尋條件</param>
+        /// <param name="customerSealQuarter">搜尋條件</param>
         /// <returns></returns>
 
-        public CustomerSealReviewDetailResponse GetCustomerSealReviewDetail(CustomerSealReviewQuarterSearch customerSealReviewQuarterSearch)
+        public CustomerSealReviewDetailResponse GetCustomerSealReviewDetail(CustomerSealQuarterSearch customerSealQuarter)
         {
             CustomerSealReviewDetailResponse customerSealReviewDetailResponse = new();
             List<CustomerSealViewModel> customerSealViewModels = new();
             
-            Customer? customerQuery = dbContext.Customers.Find(customerSealReviewQuarterSearch.CustomerId);
+            Customer? customerQuery = dbContext.Customers.Find(customerSealQuarter.CustomerId);
             if(customerQuery != null) 
             {
                 IQueryable<CustomerSealJournal> customerSealJournalQuery = dbContext.CustomerSealJournals
                                                                             .Include(customerSealJournal => customerSealJournal.SealMappingConfig)
                                                                             .Where
                                                                             (
-                                                                                customerSealJournal => customerSealJournal.CustomerId == customerSealReviewQuarterSearch.CustomerId
-                                                                                && customerSealJournal.Quarter == customerSealReviewQuarterSearch.Quarter
+                                                                                customerSealJournal => customerSealJournal.CustomerId == customerSealQuarter.CustomerId
+                                                                                && customerSealJournal.Quarter == customerSealQuarter.Quarter
                                                                             )
                                                                             .OrderBy(customerSealJournal => customerSealJournal.SealMappingConfigId)
                                                                             .ThenBy(customerSealJournal => customerSealJournal.Sequence);
@@ -114,7 +114,7 @@ namespace SealTypographicWebAPI.Services.Implements
                     }
                     customerSealReviewDetailResponse.CustomerSealReviewDetail = mapper.Map<CustomerSealReviewDetail>(customerQuery);
                     customerSealReviewDetailResponse.CustomerSealReviewDetail.CustomerSealViewModels = customerSealViewModels;                    
-                    customerSealReviewDetailResponse.CustomerSealReviewDetail.Quarter = customerSealReviewQuarterSearch.Quarter;
+                    customerSealReviewDetailResponse.CustomerSealReviewDetail.Quarter = customerSealQuarter.Quarter;
                     customerSealReviewDetailResponse.Success();
                 }
                 else

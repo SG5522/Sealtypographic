@@ -1,4 +1,5 @@
-﻿using SealTypographicWebAPI.Models.BaseModels;
+﻿using SealTypographicWebAPI.Consts;
+using SealTypographicWebAPI.Models.BaseModels;
 
 namespace SealTypographicWebAPI.Models.Customer
 {
@@ -33,7 +34,7 @@ namespace SealTypographicWebAPI.Models.Customer
         /// <summary>
         /// 審核狀態
         /// </summary>
-        public string ReviewStatus { get; set; }
+        public ReviewStatus ReviewStatus { get; set; }
 
         /// <summary>
         /// 客戶印鑑組

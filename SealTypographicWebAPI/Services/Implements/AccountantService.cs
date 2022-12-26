@@ -90,10 +90,9 @@ namespace SealTypographicWebAPI.Services.Implements
                 foreach (Accountant accountant in thisPageAccountants)
                 {
                     AccountantViewModelWithCreateDate accountantPaginatesViewModel = mapper.Map<AccountantViewModelWithCreateDate>(accountant);
-                    DateTime? createDate = accountant.AccountantSignJournals.Select(x => x.CreateDate).Max();
-                    if (createDate != null)
+                    if (accountant.AccountantSignJournals.Count > 0)
                     {
-                        accountantPaginatesViewModel.CreateDate = createDate;
+                        accountantPaginatesViewModel.GroupCreateDate = accountant.AccountantSignJournals.Max(x => x.GroupCreateDate);
                     }
                     accountantViewModelWithStartDate.Add(accountantPaginatesViewModel);
                 }
@@ -120,16 +119,18 @@ namespace SealTypographicWebAPI.Services.Implements
         public AccountantCreateResponse CreateAccountant(AccountantForm accountantForm)
         {
             AccountantCreateResponse accountantCreateResponse = new();
+            int userid = 0;//帳號驗證取得ID
             Accountant? accountantQuery = dbContext.Accountants
                                     .Where(accountant => accountant.AccountantNumber == accountantForm.AccountantNumber)
                                     .FirstOrDefault();
 
             if (accountantQuery == null)
             {
-                Accountant dbaccountant = mapper.Map<Accountant>(accountantForm);
-                dbaccountant.CreateDate = DateTime.Now;
-                dbaccountant.DeleteStatus = DeleteStatus.NO;
-                dbContext.Accountants.Add(dbaccountant);
+                Accountant dBAccountant = mapper.Map<Accountant>(accountantForm);
+                dBAccountant.CreateUserId = userid;
+                dBAccountant.CreateDate = DateTime.Now;
+                dBAccountant.DeleteStatus = DeleteStatus.NO;
+                dbContext.Accountants.Add(dBAccountant);
                 dbContext.SaveChanges();
 
                 //回傳剛建立的客戶基本資料 使建立客戶印鑑找到該ID
@@ -160,11 +161,13 @@ namespace SealTypographicWebAPI.Services.Implements
         public ResponseViewModel UpdateAccountant(AccountantFormUpdate accountantFormUpdate)
         {
             ResponseViewModel response = new();
+            int userid = 0;//帳號驗證取得ID
             Accountant? accountantQuery = dbContext.Accountants.Find(accountantFormUpdate.Id);
 
             if (accountantQuery != null)
             {
                 mapper.Map(accountantFormUpdate, accountantQuery);
+                accountantFormUpdate.UpdateUserId = userid;
                 accountantQuery.UpdateDate = DateTime.Now;
                 dbContext.SaveChanges();
                 response.Success();
@@ -183,10 +186,13 @@ namespace SealTypographicWebAPI.Services.Implements
         public ResponseViewModel DeleteAccountant(int accountantId)
         {
             ResponseViewModel response = new();
+            int userid = 0;//帳號驗證取得ID
             Accountant? accountantQuery = dbContext.Accountants.Find(accountantId);
 
             if (accountantQuery != null)
             {
+                accountantQuery.UpdateUserId = userid;
+                accountantQuery.UpdateDate = DateTime.Now;
                 accountantQuery.DeleteStatus = DeleteStatus.Yes;
                 dbContext.SaveChanges();
                 response.Success();

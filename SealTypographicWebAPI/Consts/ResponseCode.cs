@@ -119,9 +119,9 @@
         AccountantSignNoData = 3102,
 
         /// <summary>
-        /// 資料庫會計師簽印已有暂存
+        /// 資料庫會計師簽印中已有草稿或是待審的簽印
         /// </summary>
-        AccountantSignHaveTemp = 3103,
+        AccountantSignHaveDraftOrPendingReviewStatus = 3103,
 
         /// <summary>
         /// 資料庫會計師簽印建立失敗

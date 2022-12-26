@@ -34,22 +34,21 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="customerId">顧客ID</param>
         /// <returns></returns>
         [HttpGet("{customerId}")]
-        public CustomerSealQuarters Get(int customerId)
+        public CustomerSealQuarterViews Get(int customerId)
         {
-            CustomerSealQuarters customerSealQuarters = new ();
+            CustomerSealQuarterViews customerSealQuarters = new ();
             try
             {
                 Log.Information("CustomerSeal get{customerId} input {@Input}", customerId);
                 customerSealQuarters = customerSealService.GetCustomerSealQuarters(customerId);
-                Log.Information("CustomerSeal get{customerId} output {@Output}", customerSealQuarters);
-                return customerSealQuarters;
+                Log.Information("CustomerSeal get{customerId} output {@Output}", customerSealQuarters);                
             }
             catch (Exception ex)
             {
                 Log.Error("CustomerSeal get{customerId} error {@Error}", ex);                
-                customerSealQuarters.DbError();
-                return customerSealQuarters;
+                customerSealQuarters.DbError();                
             }
+            return customerSealQuarters;
         }
 
         /// <summary>
@@ -58,22 +57,21 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="customerSealQuarter">關鑑字</param>        
         /// <returns></returns>        
         [HttpGet]
-        public CustomerSealViewModels Get([FromQuery]CustomerSealQuarter customerSealQuarter)
+        public CustomerSealViewModels Get([FromQuery] CustomerSealQuarterSearch customerSealQuarter)
         {
-            CustomerSealViewModels customerSealViewModels = new ();
+            CustomerSealViewModels customerSealViewModels = new();
             try
             {
                 Log.Information("CustomerSeal get[FromQuery] input {@Input}", customerSealQuarter);
                 customerSealViewModels = customerSealService.GetCustomerSealViewModels(customerSealQuarter);
-                Log.Information("CustomerSeal get[FromQuery] output {@Output}", customerSealViewModels);
-                return customerSealViewModels;
+                Log.Information("CustomerSeal get[FromQuery] output {@Output}", customerSealViewModels);                
             }
             catch (Exception ex)
             {
                 Log.Error("CustomerSeal get error {@Error}", ex);                
-                customerSealViewModels.DbError();
-                return customerSealViewModels;
+                customerSealViewModels.DbError();                
             }
+            return customerSealViewModels;
         }        
 
         /// <summary>
@@ -82,22 +80,24 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="customerSeals">客戶印鑑組資料(Json)</param>
         /// <returns></returns>
         [HttpPost]
-        public ResponseViewModel Post(List<CustomerSealForm> customerSeals)
+        public List<ResponseViewModel> Post(List<CustomerSealForm> customerSeals)
         {
-            ResponseViewModel response = new();
+            List<ResponseViewModel> responses = new();
             try
             {
                 Log.Information("CustomerSeal post input {@Input}", customerSeals);
-                response = customerSealService.CreateCustomerSeals(customerSeals);
-                Log.Information("CustomerSeal post output {@Output}", response);
-                return response;
+                responses = customerSealService.CreateCustomerSeals(customerSeals);
+                Log.Information("CustomerSeal post output {@Output}", responses);
+                
             }
             catch (Exception ex)
             {
+                ResponseViewModel response = new();
                 Log.Error("CustomerSeal post error {@Error}", ex);
                 response.DbError();
-                return response;
+                responses.Add(response);
             }
+            return responses;
         }
 
         /// <summary>
@@ -108,22 +108,21 @@ namespace SealTypographicWebAPI.Controllers
         [HttpPut]
         public List<ResponseViewModel> Put(CustomerSealUpdate customerSealUpdate)
         {            
-            List<ResponseViewModel> response = new();
+            List<ResponseViewModel> responses = new();
             try
             {
                 Log.Information("CustomerSeal put input {@Input}", customerSealUpdate);                
-                response = customerSealService.UpdateCustomerSeals(customerSealUpdate);
-                Log.Information("CustomerSeal put output {@Output}", response);
-                return response;                
+                responses = customerSealService.UpdateCustomerSeals(customerSealUpdate);
+                Log.Information("CustomerSeal put output {@Output}", responses);                               
             }
             catch (Exception ex)
             {
                 Log.Error("CustomerSeal put error {@Error}", ex);
                 ResponseViewModel responseViewModel = new();
                 responseViewModel.DbError();
-                response.Add(responseViewModel);
-                return response;
+                responses.Add(responseViewModel);                
             }
+            return responses;
         }
 
         /// <summary>
@@ -132,22 +131,21 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="customerSealQuarter">客戶Id與季度</param>
         /// <returns></returns>
         [HttpPut("Pending")]
-        public ResponseViewModel PutPendingCustomerSeal(CustomerSealQuarter customerSealQuarter)
+        public ResponseViewModel PutPendingCustomerSeal(CustomerSealQuarterSearch customerSealQuarter)
         {
             ResponseViewModel response = new();
             try
             {
                 Log.Information("CustomerSeal put input {@Input}", customerSealQuarter);
                 response = customerSealService.PendingCustomerSeal(customerSealQuarter);
-                Log.Information("CustomerSeal put output {@Output}", response);
-                return response;
+                Log.Information("CustomerSeal put output {@Output}", response);                
             }
             catch (Exception ex)
             {
                 Log.Error("CustomerSeal put error {@Error}", ex);
-                response.DbError();                
-                return response;
+                response.DbError();                                
             }
+            return response;
         }
 
         /// <summary>
@@ -156,7 +154,7 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="customerSealQuarter">客戶Id與季度</param>
         /// <returns></returns>
         [HttpPut("Invalid")]
-        public ResponseViewModel PutInvalidCustomerSeal(CustomerSealQuarter customerSealQuarter)
+        public ResponseViewModel PutInvalidCustomerSeal(CustomerSealQuarterSearch customerSealQuarter)
         {
             ResponseViewModel response = new();
             try
@@ -164,14 +162,13 @@ namespace SealTypographicWebAPI.Controllers
                 Log.Information("CustomerSeal put input {@Input}", customerSealQuarter);
                 response = customerSealService.InvalidCustomerSeal(customerSealQuarter);
                 Log.Information("CustomerSeal put output {@Output}", response);
-                return response;
             }
             catch (Exception ex)
             {
                 Log.Error("CustomerSeal put error {@Error}", ex);
-                response.DbError();
-                return response;
+                response.DbError();                
             }
+            return response;
         }
 
         /// <summary>
@@ -187,15 +184,14 @@ namespace SealTypographicWebAPI.Controllers
             {
                 Log.Information("CustomerSeal delete input {@Input}", customerSealId);
                 response = customerSealService.DeleteCustomerSeal(customerSealId);
-                Log.Information("CustomerSeal delete output {@Ouput}", response);
-                return response;
+                Log.Information("CustomerSeal delete output {@Ouput}", response);                
             }
             catch (Exception ex)
             {
                 Log.Error("Customer delete error {@Error}", ex);
-                response.DbError();
-                return response;
+                response.DbError();                
             }
+            return response;
         }
     }
 }

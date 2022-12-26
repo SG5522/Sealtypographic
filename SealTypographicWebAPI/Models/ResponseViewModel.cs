@@ -214,10 +214,10 @@ namespace SealTypographicWebAPI.Models
         /// <summary>
         /// 會計師簽印重複(該類別已有資料)
         /// </summary>
-        public void AccountantSignHaveTemp()
+        public void AccountantSignHaveDraftOrPendingReviewStatus()
         {
-            Code = (int)ResponseCode.AccountantSignHaveTemp;
-            Message = "Accountant sign have temp";
+            Code = (int)ResponseCode.AccountantSignHaveDraftOrPendingReviewStatus;
+            Message = "Accountant sign 'GroupCreateDate' have draft or pending reviewStatus";
         }
 
         /// <summary>

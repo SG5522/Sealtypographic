@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SealTypographicWebAPI.Models;
+using SealTypographicWebAPI.Models.Customer;
 using SealTypographicWebAPI.Models.CustomerSealReview;
 using SealTypographicWebAPI.Services;
 using Serilog;
@@ -56,17 +57,17 @@ namespace SealTypographicWebAPI.Controllers
         /// <summary>
         /// 客戶基本資料與該季所有印鑑
         /// </summary>
-        /// <param name="customerSealReviewQuarterSearch"></param>
+        /// <param name="customerSealQuarter"></param>
         /// <returns></returns>
         [HttpGet("getCustomerSealReviewDetail")]
-        public CustomerSealReviewDetailResponse GetCustomerSealReviewDetail([FromQuery]CustomerSealReviewQuarterSearch customerSealReviewQuarterSearch)
+        public CustomerSealReviewDetailResponse GetCustomerSealReviewDetail([FromQuery] CustomerSealQuarterSearch customerSealQuarter)
         {                                    
             CustomerSealReviewDetailResponse customerSealReviewDetailResponse = new();
             try
             {
-                Log.Information("CustomerSealReviewViewModelResponse getCustomerSealReviewDetail input {@Input}", customerSealReviewQuarterSearch);
-                customerSealReviewDetailResponse = customerSealReviewService.GetCustomerSealReviewDetail(customerSealReviewQuarterSearch);
-                Log.Information("CustomerSealReviewViewModelResponse getCustomerSealReviewDetail output {@Output}", customerSealReviewQuarterSearch);
+                Log.Information("CustomerSealReviewViewModelResponse getCustomerSealReviewDetail input {@Input}", customerSealQuarter);
+                customerSealReviewDetailResponse = customerSealReviewService.GetCustomerSealReviewDetail(customerSealQuarter);
+                Log.Information("CustomerSealReviewViewModelResponse getCustomerSealReviewDetail output {@Output}", customerSealQuarter);
                 return customerSealReviewDetailResponse;
             }
             catch (Exception ex)
