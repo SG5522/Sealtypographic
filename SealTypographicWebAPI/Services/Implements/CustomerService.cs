@@ -44,7 +44,7 @@ namespace SealTypographicWebAPI.Services.Implements
             }
             else
             {
-                customerDetailViewModel.CustomerSealNoData();                
+                customerDetailViewModel.CustomeNoData();                
             }
             return customerDetailViewModel;
         }
@@ -99,7 +99,7 @@ namespace SealTypographicWebAPI.Services.Implements
             }
             else
             {
-                customerPaginateViewModel.DbNoData();                
+                customerPaginateViewModel.CustomeNoData();                
             }
 
             return customerPaginateViewModel;
@@ -163,7 +163,7 @@ namespace SealTypographicWebAPI.Services.Implements
             }
             else
             {
-                response.CustomerSealNoData();
+                response.UpdateCustomerNoData();
             }
             return response;
         }
@@ -187,7 +187,7 @@ namespace SealTypographicWebAPI.Services.Implements
             }
             else
             {
-                response.CustomerSealNoData();
+                response.DeleteCustomerNoData();
             }
             return response;
         }

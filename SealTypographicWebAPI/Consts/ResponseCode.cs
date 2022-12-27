@@ -147,19 +147,14 @@
         DeleteAccountantNoData = 3031,
 
         /// <summary>
-        /// 資料庫會計師簽印已有資料
-        /// </summary>
-        AccountantSignRepeat = 3101,
-
-        /// <summary>
         /// 資料庫會計師簽印無資料
         /// </summary>
-        AccountantSignNoData = 3102,
+        AccountantSignNoData = 3101,
 
         /// <summary>
         /// 資料庫會計師簽印中已有草稿或是待審的簽印
         /// </summary>
-        AccountantSignHaveDraftOrPendingReviewStatus = 3103,
+        AccountantSignHaveDraftOrPendingReviewStatus = 3102,
 
         /// <summary>
         /// 資料庫會計師簽印建立失敗
@@ -196,11 +191,47 @@
         /// </summary>
         DeleteAccountantSignNoData = 3131,
 
+
+        /// <summary>
+        /// 會計師群組找不到資料
+        /// </summary>
+        AccountantGroupNoData = 3200,
+
+        /// <summary>
+        /// 會計師群組建立失敗
+        /// </summary>
+        CreateAccountantGroupFailed = 3210,
+
+        /// <summary>
+        /// 會計師群組建立時編號重複
+        /// </summary>
+        CreateAccountantGroupNumberRepeat = 3211,
+
+        /// <summary>
+        /// 更新會計師群組失敗
+        /// </summary>
+        UpdateAccountantGroupFailed = 3220,
+
+        /// <summary>
+        /// 更新會計師群組找不到資料
+        /// </summary>
+        UpdateAccountantGroupNoData = 3221,
+
+        /// <summary>
+        /// 刪除(Hide)會計師群組失敗
+        /// </summary>
+        DeleteAccountantGroupFailed = 3230,
+
         /// <summary>
         /// 刪除(Hide)會計師群組時找不到資料
         /// </summary>
-        DeleteAccountantSignGroupNoData = 3200,
+        DeleteAccountantGroupNoData = 3231,
 
+        /// <summary>
+        /// 加入會計群組失敗
+        /// </summary>
+        JoinAccountantGroupFailed = 3300,
+        
         /// <summary>
         /// 信頭無資料
         /// </summary>
@@ -239,7 +270,7 @@
         /// <summary>
         /// 刪除(Hide)信頭時找不到資料
         /// </summary>
-        DeleteLetterheadNoData = 4030,
+        DeleteLetterheadNoData = 4031,
 
         /// <summary>
         /// 資料庫信頭圖像序號重複
@@ -257,7 +288,7 @@
         CreateLetterheadImageFailed = 4110,
 
         /// <summary>
-        /// 資料庫信頭圖像建立失敗
+        /// 資料庫信頭圖像序號重複
         /// </summary>
         CreateLetterheadImageSequenceRepeat = 4111,
 
@@ -267,15 +298,24 @@
         UpdateLetterheadImageFailed = 4120,
 
         /// <summary>
-        /// 資料庫信頭圖像更新失敗
+        /// 資料庫信頭圖像更新時序號重複
         /// </summary>
         UpdateLetterheadImageSequenceRepeat = 4121,
 
         /// <summary>
-        /// 資料庫信頭圖像更新失敗
+        /// 資料庫信頭圖像更新時找不到資料
         /// </summary>
         UpdateLetterheadImageNoData = 4122,
 
+        /// <summary>
+        /// 資料庫信頭圖像刪除失敗
+        /// </summary>
+        DeleteLetterheadImageFailed = 4130,
+
+        /// <summary>
+        /// 資料庫信頭圖像刪除時找不到資料
+        /// </summary>
+        DeleteLetterheadImageNoData = 4131,
 
 
         /// <summary>

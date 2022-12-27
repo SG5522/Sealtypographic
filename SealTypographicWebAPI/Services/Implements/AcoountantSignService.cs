@@ -232,7 +232,7 @@ namespace SealTypographicWebAPI.Services.Implements
                 else
                 {
                     ResponseViewModel response = new();
-                    response.AccountantSignRepeat();
+                    response.CreateAccountantSignRepeat();
                     response.ErrorItem = "Create AccountantId:" + accountantSignForm.AccountantId
                                        + " SealMappingConfigId:" + accountantSignForm.SealMappingConfigId;
                     responseViewModels.Add(response);
@@ -345,7 +345,7 @@ namespace SealTypographicWebAPI.Services.Implements
             }
             else
             {
-                response.DbNoData();                                
+                response.UpdateAccountantSignNoData();                                
             }
             return response;
         }

@@ -46,9 +46,9 @@ namespace SealTypographicWebAPI.Util
         /// 會計師簽印已有資料
         /// </summary>
         /// <returns></returns>
-        public static ResponseViewModel AccountSignHaveData()
+        public static ResponseViewModel CreateAccountantSignRepeat()
         {
-            return Get(ResponseCode.AccountantSignRepeat);
+            return Get(ResponseCode.CreateAccountantSignRepeat);
         }
 
         /// <summary>
@@ -101,11 +101,11 @@ namespace SealTypographicWebAPI.Util
                         Code = (int)ResponseCode.CustomerSealSequenceRepeat,
                         Message = "CustomerSeal Sequence Repeat"
                     };
-                case ResponseCode.AccountantSignRepeat:
+                case ResponseCode.CreateAccountantSignRepeat:
                     return new ResponseViewModel()
                     {
-                        Code = (int)ResponseCode.AccountantSignRepeat,
-                        Message = "AccountSign have data"
+                        Code = (int)ResponseCode.CreateAccountantSignRepeat,
+                        Message = "Create accountantsign repeat"
                     };
                 case ResponseCode.UniqueConstraintFailed:
                     return new ResponseViewModel()

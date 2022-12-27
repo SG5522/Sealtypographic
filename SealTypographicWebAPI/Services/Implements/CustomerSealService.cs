@@ -105,7 +105,7 @@ namespace SealTypographicWebAPI.Services.Implements
             }
             else
             {
-                customerSealViewModels.CustomeNoData();
+                customerSealViewModels.CustomerSealNoData();
             }
 
             return customerSealViewModels;
@@ -183,7 +183,7 @@ namespace SealTypographicWebAPI.Services.Implements
                 else
                 {
                     ResponseViewModel response = new();
-                    response.CustomerSealNoData();
+                    response.DeleteCustomerNoData();
                     response.ErrorItem = "Delete CustomerSealId:" + customerSealId;
                     responseViewModels.Add(response);
                 }
@@ -413,7 +413,7 @@ namespace SealTypographicWebAPI.Services.Implements
             }
             else
             {
-                response.CustomerSealNoData();                                
+                response.UpdateCustomerSealNoData();                                
             }
 
             return response;

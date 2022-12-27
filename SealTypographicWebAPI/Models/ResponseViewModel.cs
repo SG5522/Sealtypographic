@@ -267,24 +267,6 @@ namespace SealTypographicWebAPI.Models
         }
 
         /// <summary>
-        /// 會計師簽印建立失敗
-        /// </summary>
-        public void AccountantSignCreateFailed()
-        {
-            Code = (int)ResponseCode.CreateAccountantSignFailed;
-            Message = "Accountant sign create failed";
-        }
-
-        /// <summary>
-        /// 會計師簽印重複(該類別已有資料)
-        /// </summary>
-        public void AccountantSignRepeat()
-        {
-            Code = (int)ResponseCode.AccountantSignRepeat;
-            Message = "Accountant sign repeat";
-        }
-
-        /// <summary>
         /// 會計師簽印無資料
         /// </summary>
         public void AccountantSignNoData()
@@ -303,7 +285,7 @@ namespace SealTypographicWebAPI.Models
         }
 
         /// <summary>
-        /// 新增會計師簽印失敗
+        /// 會計師簽印建立失敗
         /// </summary>
         public void CreateAccountantSignFailed()
         {
@@ -367,7 +349,88 @@ namespace SealTypographicWebAPI.Models
         }
 
         /// <summary>
-        /// 信頭建立失敗
+        /// 會計師群組找不到資料
+        /// </summary>
+        public void AccountantGroupNoData()
+        {
+            Code = (int)ResponseCode.AccountantGroupNoData;
+            Message = "Accountant group no data";
+        }
+
+        /// <summary>
+        /// 會計師群組建立失敗
+        /// </summary>
+        public void CreateAccountantGroupFailed()
+        {
+            Code = (int)ResponseCode.CreateAccountantGroupFailed;
+            Message = "Create accountant group failed";
+        }
+
+        /// <summary>
+        /// 會計師群組建立時編號重複
+        /// </summary>
+        public void CreateAccountantGroupNumberRepeat()
+        {
+            Code = (int)ResponseCode.CreateAccountantGroupNumberRepeat;
+            Message = "Create accountant group number repeat";
+        }
+
+        /// <summary>
+        /// 更新會計師群組失敗
+        /// </summary>
+        public void UpdateAccountantGroupFailed()
+        {
+            Code = (int)ResponseCode.UpdateAccountantGroupFailed;
+            Message = "Update accountant group failed";
+        }
+
+        /// <summary>
+        /// 更新會計師群組找不到資料
+        /// </summary>
+        public void UpdateAccountantGroupNoData()
+        {
+            Code = (int)ResponseCode.UpdateAccountantGroupNoData;
+            Message = "Update accountant group no data";
+        }
+
+        /// <summary>
+        /// 刪除(Hide)會計師群組失敗
+        /// </summary>
+        public void DeleteAccountantGroupFailed()
+        {
+            Code = (int)ResponseCode.DeleteAccountantGroupFailed;
+            Message = "Delete accountant group failed";
+        }
+
+        /// <summary>
+        /// 刪除(Hide)會計師簽印時找不到資料
+        /// </summary>
+        public void DeleteAccountantGroupNoData()
+        {
+            Code = (int)ResponseCode.DeleteAccountantGroupNoData;
+            Message = "Delete accountant group no data";
+        }
+
+        /// <summary>
+        /// 加入會計群組失敗
+        /// </summary>
+        public void JoinAccountantGroupFailed()
+        {
+            Code = (int)ResponseCode.JoinAccountantGroupFailed;
+            Message = "Join accountant group failed";
+        }
+
+        /// <summary>
+        /// 資料庫信頭編號重複
+        /// </summary>
+        public void LetterheadNoData()
+        {
+            Code = (int)ResponseCode.LetterheadNoData;
+            Message = "Letterhead no data";
+        }
+
+        /// <summary>
+        /// 信頭資料建立失敗
         /// </summary>
         public void CreateLetterheadFailed()
         {
@@ -376,7 +439,7 @@ namespace SealTypographicWebAPI.Models
         }
 
         /// <summary>
-        /// 信頭編號重複
+        /// 資料庫信頭編號重複
         /// </summary>
         public void CreateLetterheadNumberRepeat()
         {
@@ -385,21 +448,48 @@ namespace SealTypographicWebAPI.Models
         }
 
         /// <summary>
-        /// 信頭無資料
+        /// 資料庫信頭無資料
         /// </summary>
         public void CreateLetterheadNoData()
         {
             Code = (int)ResponseCode.CreateLetterheadNoData;
             Message = "Create letterhead no data";
+        } 
+
+        /// <summary>
+        /// 更新信頭資料失敗
+        /// </summary>
+        public void UpdateLetterheadFailed()
+        {
+            Code = (int)ResponseCode.UpdateLetterheadFailed;
+            Message = "Update letterhead failed";
         }
 
         /// <summary>
-        /// 信頭圖像建立失敗
+        /// 更新信頭找不到資料
         /// </summary>
-        public void CreateLetterheadImageFailed()
+        public void UpdateLetterheadNoData()
         {
-            Code = (int)ResponseCode.CreateLetterheadImageFailed;
-            Message = "AccountantSign create failed";
+            Code = (int)ResponseCode.UpdateLetterheadNoData;
+            Message = "Update letterhead no data";
+        }
+
+        /// <summary>
+        /// 刪除(Hide)信頭失敗
+        /// </summary>
+        public void DeleteLetterheadFailed()
+        {
+            Code = (int)ResponseCode.DeleteLetterheadFailed;
+            Message = "Delete letterhead failed";
+        }
+
+        /// <summary>
+        /// 刪除(Hide)信頭時找不到資料
+        /// </summary>
+        public void DeleteLetterheadNoData()
+        {
+            Code = (int)ResponseCode.DeleteLetterheadNoData;
+            Message = "Delete letterhead no data";
         }
 
         /// <summary>
@@ -418,6 +508,69 @@ namespace SealTypographicWebAPI.Models
         {
             Code = (int)ResponseCode.LetterheadImageNoData;
             Message = "Letterhead image no Data";
+        }
+
+        /// <summary>
+        /// 信頭圖像建立失敗
+        /// </summary>
+        public void CreateLetterheadImageFailed()
+        {
+            Code = (int)ResponseCode.CreateLetterheadImageFailed;
+            Message = "Create letterhead image failed";
+        }
+
+        /// <summary>
+        /// 資料庫信頭圖像序號重複
+        /// </summary>
+        public void CreateLetterheadImageSequenceRepeat()
+        {
+            Code = (int)ResponseCode.CreateLetterheadImageSequenceRepeat;
+            Message = "Create letterhead image sequence repeat";
+        }
+
+        /// <summary>
+        /// 資料庫信頭圖像更新失敗
+        /// </summary>
+        public void UpdateLetterheadImageFailed()
+        {
+            Code = (int)ResponseCode.UpdateLetterheadImageFailed;
+            Message = "Update letterhead image failed";
+        }
+
+        /// <summary>
+        /// 資料庫信頭圖像更新時序號重複
+        /// </summary>
+        public void UpdateLetterheadImageSequenceRepeat()
+        {
+            Code = (int)ResponseCode.UpdateLetterheadImageSequenceRepeat;
+            Message = "Update letterhead image sequence repeat";
+        }
+
+        /// <summary>
+        /// 資料庫信頭圖像更新時找不到資料
+        /// </summary>
+        public void UpdateLetterheadImageNoData()
+        {
+            Code = (int)ResponseCode.UpdateLetterheadImageNoData;
+            Message = "Update letterhead image no data";
+        }
+
+        /// <summary>
+        /// 資料庫信頭圖像更新時找不到資料
+        /// </summary>
+        public void DeleteLetterheadImageFailed()
+        {
+            Code = (int)ResponseCode.DeleteLetterheadImageFailed;
+            Message = "Delete letterhead image failed";
+        }
+
+        /// <summary>
+        /// 資料庫信頭圖像刪除失敗
+        /// </summary>
+        public void DeleteLetterheadImageNoData()
+        {
+            Code = (int)ResponseCode.DeleteLetterheadImageNoData;
+            Message = "Delete letterhead image no data";
         }
 
         /// <summary>

@@ -4,7 +4,9 @@ using SealTypographicWebAPI.Consts;
 using SealTypographicWebAPI.Entities;
 using SealTypographicWebAPI.Models;
 using SealTypographicWebAPI.Models.AccountantGroup;
+using SealTypographicWebAPI.Models.Customer;
 using SealTypographicWebAPI.Util;
+using SealTypographicWebAPI.Utils;
 
 namespace SealTypographicWebAPI.Services.Implements
 {
@@ -33,7 +35,7 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <returns></returns>
         public AccountantGroupList GetAccountantGroupList()
         {
-            ResponseViewModel response;
+            AccountantGroupList accountantGroupList = new();
             List<AccountantGroupViewModel> accountantGroupDatas = new();            
 
             List<AccountantGroup> accountantGroups = dbContext.AccountantGroups
@@ -45,21 +47,16 @@ namespace SealTypographicWebAPI.Services.Implements
                 {
                     accountantGroupDatas.Add(mapper.Map<AccountantGroupViewModel>(accountantGroup));
                 }
-                response = ResponseUtil.Success();
+                accountantGroupList.AccountantGroupDatas = accountantGroupDatas;
+                accountantGroupList.Success();
+                
             }
             else
             {
-                response = ResponseUtil.DbNoData();
+                accountantGroupList.AccountantGroupNoData();
             }
 
-            return new()
-            {
-                //回傳結果訊息用
-                Code = response.Code,
-                Message = response.Message,
-
-                AccountantGroupDatas = accountantGroupDatas
-            };
+            return accountantGroupList;
         }
 
         /// <summary>
@@ -69,8 +66,9 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <returns></returns>
         public AccountantGroupResponse GetAccountantGroupData(int accountantGroupId)
         {
+            AccountantGroupResponse accountantGroupResponse = new();
             AccountantGroupViewModel accountantGroupData = new();
-            ResponseViewModel response;
+            
             AccountantGroup? accountantGroupQuery = dbContext.AccountantGroups
                                                     .Where(accountantGroup => accountantGroup.Id == accountantGroupId)
                                                     .FirstOrDefault();
@@ -78,24 +76,15 @@ namespace SealTypographicWebAPI.Services.Implements
             if (accountantGroupQuery != null)
             {
                 accountantGroupData = mapper.Map<AccountantGroupViewModel>(accountantGroupQuery);
-                //accountantGroupData.Id = accountantGroupQuery.Id;
-                //accountantGroupData.Name = accountantGroupQuery.Name;
-
-                response = ResponseUtil.Success();
+                accountantGroupResponse.AccountantGroupData = accountantGroupData;
+                accountantGroupResponse.Success();                
             }
             else
             {
-                response = ResponseUtil.DbNoData();
+                accountantGroupResponse.AccountantGroupNoData();
             }
 
-            return new AccountantGroupResponse()
-            {
-                //回傳結果訊息用
-                Code = response.Code,
-                Message = response.Message,
-
-                AccountantGroupData = accountantGroupData
-            };
+            return accountantGroupResponse;
         }
 
         /// <summary>
@@ -105,10 +94,9 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <returns></returns>
         public AccountantGroupResponses GetAccountantGroups(AccountantGroupSearch accountantGroupQueryPage)
         {
+            AccountantGroupResponses accountantGroupResponses = new();
             List<AccountantGroupViewModel> accountantGroups = new();
-            ResponseViewModel response;
-            int totalPage = 0;
-            int totalCount = 0;
+            
             IQueryable<AccountantGroup> accountantGroupsQuery = dbContext.AccountantGroups;
             if (!string.IsNullOrWhiteSpace(accountantGroupQueryPage.GroupName))
             {
@@ -127,37 +115,25 @@ namespace SealTypographicWebAPI.Services.Implements
                                                                 .Skip((accountantGroupQueryPage.PageNumber - 1) * accountantGroupQueryPage.PageSize)
                                                                 .Take(accountantGroupQueryPage.PageSize)
                                                                 .ToList();
-                //計算總頁數
-                totalPage = accountantGroupsQuery.Count() / accountantGroupQueryPage.PageSize + (accountantGroupsQuery.Count() % accountantGroupQueryPage.PageSize == 0 ? 0 : 1);
-                totalCount = accountantGroupsQuery.Count();
+
                 foreach (AccountantGroup accountantGroup in thisPageAccountantGroups)
                 {
                     accountantGroups.Add(mapper.Map<AccountantGroupViewModel>(accountantGroup));
-                    //accountantGroups.Add(new AccountantGroupViewModel()
-                    //{
-                    //    Id = accountantGroup.Id,
-                    //    Name = accountantGroup.Name,
-                    //});
                 }
-                //取得成功訊息
-                response = ResponseUtil.Success();
+                accountantGroupResponses.AccountantGroups = accountantGroups;
+                accountantGroupResponses.PageNumber = accountantGroupQueryPage.PageNumber;
+                accountantGroupResponses.PageSize = accountantGroupQueryPage.PageSize;
+                //計算總頁數
+                accountantGroupResponses.TotalPage = TotalPageUtil.GetTotalPage(accountantGroupsQuery.Count(), accountantGroupQueryPage.PageSize);
+                accountantGroupResponses.TotalCount = accountantGroupsQuery.Count();
+                accountantGroupResponses.Success();
             }
             else
             {
-                response = ResponseUtil.DbNoData();
+                accountantGroupResponses.AccountantGroupNoData();
             }
 
-            return new AccountantGroupResponses()
-            {
-                PageNumber = accountantGroupQueryPage.PageNumber,
-                PageSize = accountantGroupQueryPage.PageSize,
-                TotalCount = totalCount,
-                TotalPage = totalPage,
-                AccountantGroups = accountantGroups,
-                //回傳結果訊息用
-                Code = response.Code,
-                Message = response.Message,
-            };
+            return accountantGroupResponses;
         }       
 
         /// <summary>
@@ -166,7 +142,8 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <param name="accountantGroupForm">群組資料</param>        
         public ResponseViewModel CreateAccountantGroup(AccountantGroupForm accountantGroupForm)
         {
-            ResponseViewModel response;
+            ResponseViewModel response = new();
+
             AccountantGroup? accountantGroupQuery = dbContext.AccountantGroups
                                                 .Where(accountantGroup => accountantGroup.AccountantGroupNumber == accountantGroupForm.AccountantGroupNumber)
                                                 .FirstOrDefault();
@@ -177,11 +154,11 @@ namespace SealTypographicWebAPI.Services.Implements
                 accountantGroup.CreateDate = DateTime.Now;
                 dbContext.AccountantGroups.Add(accountantGroup);
                 dbContext.SaveChanges();
-                response = ResponseUtil.Success();
+                response.Success();                
             }
             else
             {
-                response = ResponseUtil.UniqueConstraintFailed();
+                response.CreateAccountantGroupNumberRepeat();
             }
             return response;
         }
@@ -192,7 +169,7 @@ namespace SealTypographicWebAPI.Services.Implements
     /// <param name="accountantGroupFormUpdate">群組資料</param>
     public ResponseViewModel UpdateAccountantGroup(AccountantGroupFormUpdate accountantGroupFormUpdate)
         {
-            ResponseViewModel response;
+            ResponseViewModel response = new();
             AccountantGroup? accountantGroupQuery = dbContext.AccountantGroups
                                                     .Where(accountantGroup => accountantGroup.Id == accountantGroupFormUpdate.Id)
                                                     .FirstOrDefault();
@@ -201,11 +178,11 @@ namespace SealTypographicWebAPI.Services.Implements
                 mapper.Map(accountantGroupFormUpdate, accountantGroupQuery);
                 accountantGroupQuery.UpdateDate = DateTime.Now;
                 dbContext.SaveChanges();
-                response = ResponseUtil.Success();
+                response.Success();
             }
             else
             {
-                response = ResponseUtil.DbNoData();
+                response.UpdateAccountantGroupNoData();
             }
             return response;
         }
@@ -232,7 +209,7 @@ namespace SealTypographicWebAPI.Services.Implements
             }
             else
             {
-                response.DbNoData();
+                response.DeleteAccountantGroupNoData();
             }
             return response;
         }
