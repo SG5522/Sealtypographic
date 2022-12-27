@@ -9,7 +9,7 @@ namespace SealTypographicWebAPI.Models.Accountant
     public class AccountantSignUpdate
     {
         /// <summary>
-        /// 會計師Id
+        /// 會計師簽印Id
         /// </summary>
         public int AccountantSignId { get; set; }
 

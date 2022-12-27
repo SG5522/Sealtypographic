@@ -14,7 +14,7 @@ namespace SealTypographicWebAPI.Services
         /// </summary>
         /// <param name="letterheadSearch">信頭搜尋條件</param>         
         /// <returns></returns>
-        LetterheadViewModels GetLetterheadViewModels(LetterheadSearch letterheadSearch);
+        LetterheadPaginateViewModel GetLetterheadViewModels(LetterheadSearch letterheadSearch);
 
         /// <summary>
         /// 取得信頭基本資料

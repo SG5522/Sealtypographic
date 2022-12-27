@@ -1,31 +1,32 @@
 ﻿using SealTypographicWebAPI.Consts;
 using SealTypographicWebAPI.Models.BaseModels;
 
-namespace SealTypographicWebAPI.Models.Accountant
+namespace SealTypographicWebAPI.Models.Letterhead
 {
     /// <summary>
-    /// 會計師印鑑簽名
+    /// 信頭圖組
     /// </summary>
-    public class AccountantSignViewModel : BaseSeal
+    public class LetterheadImageViewModel : BaseSeal
     {
         /// <summary>
-        /// 信頭編號(排序) 1為起始
+        /// 印鑑編號(排序) 1為起始
         /// </summary>
         /// <example>1</example>
         public int Sequence { get; set; }
     }
+
     /// <summary>
-    /// 會計師印鑑簽名組
+    /// 信頭圖片組
     /// </summary>
-    public class AccountantSignViewModels : ResponseViewModel
+    public class LetterheadImageViewModels: ResponseViewModel
     {
         /// <summary>
-        /// 會計師ID
+        /// 信頭ID
         /// </summary>
-        public int AccountantId { get; set; }
+        public int LetterheadID { get; set; }
 
         /// <summary>
-        /// 會計簽印群組建立日期
+        /// 建立日期
         /// </summary>
         public DateTime GroupCreateDate { get; set; }
 
@@ -35,8 +36,8 @@ namespace SealTypographicWebAPI.Models.Accountant
         public ReviewStatus ReviewStatus { get; set; }
 
         /// <summary>
-        /// 會計師印鑑簽名組
+        /// 信頭圖片組
         /// </summary>
-        public List<AccountantSignViewModel> SignViewModels { get; set; }
+        public List<LetterheadImageViewModel> LetterheadImageViewModel { get; set; }
     }
 }

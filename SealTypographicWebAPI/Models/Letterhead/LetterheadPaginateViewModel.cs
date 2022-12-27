@@ -3,13 +3,13 @@
 namespace SealTypographicWebAPI.Models.Letterhead
 {
     /// <summary>
-    /// 信頭資料
+    /// /// 信頭資料列表
     /// </summary>
-    public class LetterheadViewModel : BaseName
+    public class LetterheadPaginateViewModel : PaginateViewModel
     {
         /// <summary>
-        /// 信頭圖片群組創建日期
+        /// 信頭資料列表
         /// </summary>
-        public DateTime? GroupCreateDate { get; set; }
+        public List<LetterheadViewModel> ViewModels { get; set; }
     }
 }

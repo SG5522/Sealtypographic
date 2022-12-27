@@ -56,20 +56,21 @@ namespace SealTypographicWebAPI.Services.Implements
         /// </summary>
         /// <param name="letterheadSearch"></param>
         /// <returns></returns>
-        public LetterheadViewModels GetLetterheadViewModels(LetterheadSearch letterheadSearch)
+        public LetterheadPaginateViewModel GetLetterheadViewModels(LetterheadSearch letterheadSearch)
         {
-            LetterheadViewModels letterheadViewModels = new ();
-            List<LetterheadViewModel> viewModels = new();
+            LetterheadPaginateViewModel letterheadPaginateViewModel = new ();
+            List<LetterheadViewModel> letterheadViewModels = new();
             ResponseViewModel response = new();
-            int totalPage = 0;
-            int totalCount = 0;
-            IQueryable<Letterhead> letterheadQuery = dbContext.Letterheads;
-            if (!string.IsNullOrWhiteSpace(letterheadSearch.Name))
+
+            IQueryable<Letterhead> letterheadQuery = dbContext.Letterheads.Where(letterhead => letterhead.DeleteStatus == DeleteStatus.NO)
+                                                    .Include(letterhead => letterhead.LetterheadImageJournals);
+            if (!string.IsNullOrWhiteSpace(letterheadSearch.LetterheadOrName))
             {
                 letterheadQuery = letterheadQuery.Where
                                 (
                                     letterhead =>
-                                    letterhead.Name.Contains(letterheadSearch.Name)
+                                    letterhead.LetterheadNumber.ToLower().Contains(letterheadSearch.LetterheadOrName.ToLower())
+                                    && letterhead.Name.Contains(letterheadSearch.LetterheadOrName)
                                 );
             }
 
@@ -81,29 +82,32 @@ namespace SealTypographicWebAPI.Services.Implements
                 List<Letterhead> pageNumberLetterheads = letterheadQuery
                                                       .Skip((letterheadSearch.PageNumber - 1) * letterheadSearch.PageSize)
                                                       .Take(letterheadSearch.PageSize)
-                                                      .ToList();
-                //計算總頁數
-                totalPage = letterheadQuery.Count() / letterheadSearch.PageSize + (letterheadQuery.Count() % letterheadSearch.PageSize == 0 ? 0 : 1);
-                totalCount = letterheadQuery.Count();
+                                                      .ToList();                                
+
                 foreach (Letterhead letterheadData in pageNumberLetterheads)
                 {
-                    viewModels.Add(mapper.Map<LetterheadViewModel>(letterheadData));
+                    LetterheadViewModel letterheadViewModel = mapper.Map<LetterheadViewModel>(letterheadData);
+                    
+                    if (letterheadData.LetterheadImageJournals.Count > 0)
+                    {
+                        letterheadViewModel.GroupCreateDate = letterheadData.LetterheadImageJournals.Max(x => x.GroupCreateDate);
+                    }
+                    letterheadViewModels.Add(letterheadViewModel);
                 }
 
-                letterheadViewModels.ViewModels = viewModels;
-                letterheadViewModels.PageNumber = letterheadSearch.PageNumber;
-                letterheadViewModels.PageSize = letterheadSearch.PageSize;
+                letterheadPaginateViewModel.ViewModels = letterheadViewModels;
+                letterheadPaginateViewModel.PageNumber = letterheadSearch.PageNumber;
+                letterheadPaginateViewModel.PageSize = letterheadSearch.PageSize;
                 //計算總頁數
-                letterheadViewModels.TotalPage = TotalPageUtil.GetTotalPage(letterheadQuery.Count(), letterheadQuery.Count());
-                letterheadViewModels.TotalCount = letterheadQuery.Count();
-                letterheadViewModels.Success();
+                letterheadPaginateViewModel.TotalPage = TotalPageUtil.GetTotalPage(letterheadQuery.Count(), letterheadSearch.PageSize);
+                letterheadPaginateViewModel.TotalCount = letterheadQuery.Count();
+                letterheadPaginateViewModel.Success();
             }
             else
             {
-                letterheadViewModels.DbNoData();                
+                letterheadPaginateViewModel.DbNoData();                
             }
-
-            return letterheadViewModels;
+            return letterheadPaginateViewModel;
         }
 
         /// <summary>
@@ -113,22 +117,23 @@ namespace SealTypographicWebAPI.Services.Implements
         public LetterheadCreateResponse CreateLetterhead(LetterheadForm letterheadForm)
         {
             LetterheadCreateResponse response = new();
+            int userId = 0;//帳號驗證取得Id
             IQueryable<Letterhead> letterheadQuery = dbContext.Letterheads
                     .Where(letterhead => letterhead.LetterheadNumber == letterheadForm.LetterheadNumber);
 
             if(!letterheadQuery.Any())
             {
-                Letterhead dbLetterhead = mapper.Map<Letterhead>(letterheadForm);
+                Letterhead dbLetterhead = mapper.Map<Letterhead>(letterheadForm);                
+                BaseInputLetterhead(dbLetterhead, true, userId);
                 dbContext.Letterheads.Add(dbLetterhead);
                 dbContext.SaveChanges();
-
                 //回傳剛建立的信頭基本資料 使建立信頭圖片時找到該ID
                 Letterhead? letterhead = dbContext.Letterheads
-                                        .Where(letterhead => letterhead.LetterheadNumber == letterheadForm.LetterheadNumber)
-                                        .FirstOrDefault();
+                                        .FirstOrDefault(letterhead => letterhead.LetterheadNumber == letterheadForm.LetterheadNumber);              
+                
                 if (letterhead != null)
                 {
-                    response.LetterheadId = letterhead.Id;
+                    response.LetterheadId = letterhead.Id;                    
                     response.Success();
                 }
                 else
@@ -150,11 +155,13 @@ namespace SealTypographicWebAPI.Services.Implements
         public ResponseViewModel UpdateLetterhead(LetterheadFormUpdate letterheadFormUpdate)
         {
             ResponseViewModel response = new();
+            int userId = 0;//帳號驗證取得Id
             Letterhead? letterheadQuery = dbContext.Letterheads.Find(letterheadFormUpdate.Id);
 
             if (letterheadQuery != null)
             {                
                 mapper.Map(letterheadFormUpdate, letterheadQuery);
+                BaseInputLetterhead(letterheadQuery, false, userId);
                 dbContext.SaveChanges();
                 response.Success();
             }
@@ -172,11 +179,13 @@ namespace SealTypographicWebAPI.Services.Implements
         public ResponseViewModel DeleteLetterhead(int litterheadID)
         {
             ResponseViewModel response = new();
+            int userId = 0;//帳號驗證取得Id
             Letterhead? letterheadQuery = dbContext.Letterheads.Find(litterheadID);
 
             if (letterheadQuery != null)
             {
                 letterheadQuery.DeleteStatus = DeleteStatus.Yes;
+                BaseInputLetterhead(letterheadQuery, false, userId);
                 dbContext.SaveChanges();
                 response.Success();
             }
@@ -185,6 +194,27 @@ namespace SealTypographicWebAPI.Services.Implements
                 response.DbNoData();
             }
             return response;            
+        }
+
+        /// <summary>
+        /// 信頭資料新增修改時基本資料輸入
+        /// </summary>
+        /// <param name="letterhead">DB上的信頭資料</param>
+        /// <param name="isCreate">確認是否新增的動作</param>
+        /// <param name="userid">使用者ID</param>
+        private static void BaseInputLetterhead(Letterhead letterhead, bool isCreate, int userid)
+        {
+            if(isCreate)
+            {
+                letterhead.CreateUserId = userid;
+                letterhead.CreateDate = DateTime.Now;
+                letterhead.DeleteStatus = DeleteStatus.NO;
+            }
+            else
+            {
+                letterhead.UpdateUserId = userid;
+                letterhead.UpdateDate = DateTime.Now;
+            }            
         }
     }
 

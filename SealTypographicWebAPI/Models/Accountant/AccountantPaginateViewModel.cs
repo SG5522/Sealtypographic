@@ -21,6 +21,6 @@ namespace SealTypographicWebAPI.Models.Accountant
         /// <summary>
         /// 會計師列表
         /// </summary>
-        public List<AccountantViewModelWithCreateDate> AccountantViewModels { get; set; }
+        public List<AccountantViewModelWithCreateDate> ViewModels { get; set; }
     }
 }

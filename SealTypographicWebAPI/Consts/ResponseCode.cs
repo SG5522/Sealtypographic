@@ -26,22 +26,40 @@
         /// </summary>
         UniqueConstraintFailed = 1019,
 
+        /// <summary>
+        /// 資料庫客戶無資料
+        /// </summary>
+        CustomeNoData = 2001,
 
         /// <summary>
         /// 資料庫客戶資料建立失敗
         /// </summary>
-        CustomerCreateFailed = 2000,
+        CreateCustomerFailed = 2010,
 
         /// <summary>
         /// 資料庫客戶編號重複
         /// </summary>
-        CustomerNumberRepeat = 2001,
+        CreateCustomerNumberRepeat = 2011,
 
         /// <summary>
-        /// 資料庫客戶無資料
+        /// 更新客戶資料失敗
         /// </summary>
-        CustomeNoData = 2002,
+        UpdateCustomerFailed = 2020,
 
+        /// <summary>
+        /// 更新客戶資料找不到檔案
+        /// </summary>
+        UpdateCustomerNoData = 2021,
+
+        /// <summary>
+        /// 刪除(Hide)客戶失敗
+        /// </summary>
+        DeleteCustomerFailed = 2030,
+
+        /// <summary>
+        /// 刪除(Hide)客戶時找不到檔案
+        /// </summary>
+        DeleteCustomerNoData = 2031,
 
         /// <summary>
         /// 資料庫客戶印鑑序號重複
@@ -86,27 +104,47 @@
         /// <summary>
         /// 刪除(Hide)客戶印鑑時找不到檔案
         /// </summary>
-        DeleteCustomerSealNoData = 2131,        
-
-        /// <summary>
-        /// 資料庫會計師資料建立失敗
-        /// </summary>
-        AccountantCreateFailed = 3000,
-
-        /// <summary>
-        /// 資料庫會計師編號重複
-        /// </summary>
-        AccountantNumberRepeat = 3001,
+        DeleteCustomerSealNoData = 2131,
 
         /// <summary>
         /// 資料庫會計師無資料
         /// </summary>
-        AccountantNoData = 3002,
+        AccountantNoData = 3001,
 
         /// <summary>
-        /// 資料庫會計師簽印建立失敗
+        /// 資料庫會計師編號重複
         /// </summary>
-        AccountantSignCreateFailed = 3100,
+        AccountantNumberRepeat = 3002,
+
+        /// <summary>
+        /// 資料庫會計師資料建立失敗
+        /// </summary>
+        CreateAccountantFailed = 3010,
+
+        /// <summary>
+        /// 資料庫會計師編號重複
+        /// </summary>
+        CreateAccountantNumberRepeat = 3011,
+
+        /// <summary>
+        /// 資料庫會計師資料更新失敗
+        /// </summary>
+        UpdateAccountantFailed = 3020,
+
+        /// <summary>
+        /// 資料庫會計師資料更新找不到資料
+        /// </summary>
+        UpdateAccountantNoData = 3021,
+
+        /// <summary>
+        /// 資料庫會計師資料刪除失敗
+        /// </summary>
+        DeleteAccountantFailed = 3030,
+
+        /// <summary>
+        /// 資料庫會計師資料刪除找不到資料
+        /// </summary>
+        DeleteAccountantNoData = 3031,
 
         /// <summary>
         /// 資料庫會計師簽印已有資料
@@ -159,7 +197,17 @@
         DeleteAccountantSignNoData = 3131,
 
         /// <summary>
-        /// 資料庫信頭資料建立失敗
+        /// 刪除(Hide)會計師群組時找不到資料
+        /// </summary>
+        DeleteAccountantSignGroupNoData = 3200,
+
+        /// <summary>
+        /// 信頭無資料
+        /// </summary>
+        LetterheadNoData = 4001,
+
+        /// <summary>
+        /// 信頭資料建立失敗
         /// </summary>
         CreateLetterheadFailed = 4010,
 
@@ -174,9 +222,24 @@
         CreateLetterheadNoData = 4012,
 
         /// <summary>
-        /// 資料庫信頭圖像建立失敗
+        /// 更新信頭資料失敗
         /// </summary>
-        LetterheadImageCreateFailed = 4100,
+        UpdateLetterheadFailed = 4020,
+
+        /// <summary>
+        /// 更新信頭找不到資料
+        /// </summary>
+        UpdateLetterheadNoData = 4021,
+
+        /// <summary>
+        /// 刪除(Hide)信頭失敗
+        /// </summary>
+        DeleteLetterheadFailed = 4030,
+
+        /// <summary>
+        /// 刪除(Hide)信頭時找不到資料
+        /// </summary>
+        DeleteLetterheadNoData = 4030,
 
         /// <summary>
         /// 資料庫信頭圖像序號重複
@@ -189,8 +252,35 @@
         LetterheadImageNoData = 4102,
 
         /// <summary>
+        /// 資料庫信頭圖像建立失敗
+        /// </summary>
+        CreateLetterheadImageFailed = 4110,
+
+        /// <summary>
+        /// 資料庫信頭圖像建立失敗
+        /// </summary>
+        CreateLetterheadImageSequenceRepeat = 4111,
+
+        /// <summary>
+        /// 資料庫信頭圖像更新失敗
+        /// </summary>
+        UpdateLetterheadImageFailed = 4120,
+
+        /// <summary>
+        /// 資料庫信頭圖像更新失敗
+        /// </summary>
+        UpdateLetterheadImageSequenceRepeat = 4121,
+
+        /// <summary>
+        /// 資料庫信頭圖像更新失敗
+        /// </summary>
+        UpdateLetterheadImageNoData = 4122,
+
+
+
+        /// <summary>
         /// 上傳失敗
         /// </summary>
-        FileUploadFailed = 5001,
+        FileUploadFailed = 6001,
     }
 }

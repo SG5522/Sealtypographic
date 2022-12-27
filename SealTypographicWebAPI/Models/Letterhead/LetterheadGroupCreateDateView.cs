@@ -1,23 +1,22 @@
 ﻿using SealTypographicWebAPI.Consts;
-using SealTypographicWebAPI.Models.Customer;
 using System.ComponentModel.DataAnnotations;
 
-namespace SealTypographicWebAPI.Models.Accountant
+namespace SealTypographicWebAPI.Models.Letterhead
 {
     /// <summary>
-    /// 會計師簽印群組創建日期
+    /// 信頭圖片群組創建日期
     /// </summary>
-    public class AccountantSignGroupCreateDateView
+    public class LetterheadGroupCreateDateView
     {
         /// <summary>
         /// 會計師Id
         /// </summary>
         /// <example>1</example>
         [Required]
-        public int AccountantId { get; set; }
+        public int LetterheadId { get; set; }
 
         /// <summary>
-        /// 簽印群組創建日期
+        /// 群組創建日期
         /// </summary>
         /// <example>0001/01/01 00:00:00</example>
         [Required]
@@ -26,18 +25,18 @@ namespace SealTypographicWebAPI.Models.Accountant
         /// <summary>
         /// 審查狀態
         /// </summary>
-        [Required]       
+        [Required]
         public ReviewStatus ReviewStatus { get; set; }
     }
 
     /// <summary>
-    /// 會計師簽印群組創建日期列表
+    /// 信頭圖片群組創建日期列表
     /// </summary>
-    public class AccountantSignGroupCreateDateViews : ResponseViewModel
+    public class LetterheadGroupCreateDateViews : ResponseViewModel
     {
         /// <summary>
-        /// 客戶季度搜尋表
+        /// 信頭圖片創建日期搜尋表
         /// </summary>
-        public List<AccountantSignGroupCreateDateView> GroupCreateDates { get; set; }
+        public List<LetterheadGroupCreateDateView> LetterheadGroupCreateDateView { get; set; }
     }
 }

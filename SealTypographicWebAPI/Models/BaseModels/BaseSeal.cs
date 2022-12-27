@@ -22,7 +22,8 @@
         /// 8.英文簽名
         /// 9.舊式簽名
         /// 10.其他(會計)
-        /// 11.信頭
+        /// 11.信頭LOGO
+        /// 12.信頭地址
         /// </summary>
         /// <example>1</example>
         public string SealMappingConfigName { get; set; }

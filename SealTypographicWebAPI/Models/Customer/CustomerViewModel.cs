@@ -23,6 +23,7 @@ namespace SealTypographicWebAPI.Models.Customer
         /// <summary>
         /// 顯示最新季度
         /// </summary>
+        [RegularExpression(@"^[a-zA-Z0-9]*$")]
         public string? Quarter { get; set; }
     }
 }

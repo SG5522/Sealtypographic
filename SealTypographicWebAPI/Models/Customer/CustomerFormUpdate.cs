@@ -6,7 +6,7 @@ namespace SealTypographicWebAPI.Models.Customer
     /// <summary>
     /// 客戶資料(新增或是更新使用)
     /// </summary>
-    public class CustomerFormUpdate : BaseUpdateName
+    public class CustomerFormUpdate : BaseName
     {
         /// <summary>
         /// 公司負責人

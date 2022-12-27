@@ -70,7 +70,7 @@ namespace SealTypographicWebAPI.Services.Implements
             }
             else
             {
-                accountantGroupMembers.DbNoData();                
+                accountantGroupMembers.AccountantNoData();                
             }
 
             return accountantGroupMembers;

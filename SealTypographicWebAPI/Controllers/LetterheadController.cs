@@ -37,18 +37,18 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="letterheadSearch"></param>
         /// <returns></returns>
         [HttpGet]
-        public LetterheadViewModels Get([FromQuery] LetterheadSearch letterheadSearch)
+        public LetterheadPaginateViewModel Get([FromQuery] LetterheadSearch letterheadSearch)
         {
             try
             {
-                Log.Information("Letterhead get LetterheadViewModels input {@Input}", letterheadSearch);
-                LetterheadViewModels letterheadResponse = letterheadService.GetLetterheadViewModels(letterheadSearch);
-                Log.Information("Letterhead get LetterheadViewModels output {@Output}", letterheadResponse);
+                Log.Information("Letterhead get ViewModels input {@Input}", letterheadSearch);
+                LetterheadPaginateViewModel letterheadResponse = letterheadService.GetLetterheadViewModels(letterheadSearch);
+                Log.Information("Letterhead get ViewModels output {@Output}", letterheadResponse);
                 return letterheadResponse;
             }
             catch (Exception ex)
             {
-                Log.Error("Letterhead get LetterheadViewModels error {@Error}", ex);
+                Log.Error("Letterhead get ViewModels error {@Error}", ex);
                 ResponseViewModel response = ResponseUtil.DBError();
                 return new()
                 {

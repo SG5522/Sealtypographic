@@ -44,7 +44,7 @@ namespace SealTypographicWebAPI.Services.Implements
             }
             else
             {
-                customerDetailViewModel.DbNoData();                
+                customerDetailViewModel.CustomerSealNoData();                
             }
             return customerDetailViewModel;
         }
@@ -89,7 +89,7 @@ namespace SealTypographicWebAPI.Services.Implements
                     }
                     customerViewModels.Add(customerViewModel);
                 }
-                customerPaginateViewModel.Customers = customerViewModels;
+                customerPaginateViewModel.ViewModels = customerViewModels;
                 customerPaginateViewModel.PageNumber = customerSearch.PageNumber;
                 customerPaginateViewModel.PageSize= customerSearch.PageSize;
                 //計算總頁數
@@ -119,16 +119,14 @@ namespace SealTypographicWebAPI.Services.Implements
             if (!customerQuery.Any())
             {
                 Customer dbCustomer = mapper.Map<Customer>(customerForm);
-                dbCustomer.CreateUserId = userid;
-                dbCustomer.CreateDate = DateTime.Now;
-                dbCustomer.DeleteStatus = DeleteStatus.NO;
+                BaseInputCustomer(dbCustomer, true, userid);
                 dbContext.Customers.Add(dbCustomer);
-                dbContext.SaveChanges();                
+                dbContext.SaveChanges();
 
                 //回傳剛建立的客戶基本資料 使建立客戶印鑑找到該ID
                 Customer? customer = dbContext.Customers
-                                    .Where(customer => customer.CustomerNumber == customerForm.CustomerNumber)
-                                    .FirstOrDefault();    
+                                    .FirstOrDefault(customer => customer.CustomerNumber == customerForm.CustomerNumber);
+                                     
                 if (customer != null) 
                 {
                     createCustomerResponse.CustomerId = customer.Id;
@@ -136,12 +134,12 @@ namespace SealTypographicWebAPI.Services.Implements
                 }                                      
                 else
                 {
-                    createCustomerResponse.CustomerCreateFailed();
+                    createCustomerResponse.CreateCustomerFailed();
                 }
             }
             else
             {
-                createCustomerResponse.CustomerNumberRepeat();
+                createCustomerResponse.CreateCustomerNumberRepeat();
             }
             return createCustomerResponse;
         }
@@ -153,21 +151,19 @@ namespace SealTypographicWebAPI.Services.Implements
         public ResponseViewModel UpdateCustomer(CustomerFormUpdate customerFormUpdate)
         {
             ResponseViewModel response = new();
-            int userid = 0;//帳號驗證取得ID
+            int userId = 0;//帳號驗證取得ID
             Customer? customerQuery = dbContext.Customers.Find(customerFormUpdate.Id);
 
             if (customerQuery != null)
             {
                 mapper.Map(customerFormUpdate, customerQuery);
-                customerQuery.UpdateUserId = userid;
-                customerQuery.UpdateDate = DateTime.Now;
-
+                BaseInputCustomer(customerQuery, false, userId);
                 dbContext.SaveChanges();
                 response.Success();
             }
             else
             {
-                response.DbNoData();
+                response.CustomerSealNoData();
             }
             return response;
         }
@@ -184,17 +180,37 @@ namespace SealTypographicWebAPI.Services.Implements
 
             if (customerQuery != null)
             {
-                customerQuery.UpdateUserId = userId;
-                customerQuery.UpdateDate = DateTime.Now;
                 customerQuery.DeleteStatus = DeleteStatus.Yes;
+                BaseInputCustomer(customerQuery, false, userId);
                 dbContext.SaveChanges();
                 response.Success();
             }
             else
             {
-                response.DbNoData();
+                response.CustomerSealNoData();
             }
             return response;
+        }
+
+        /// <summary>
+        /// 信頭資料新增修改時基本資料輸入
+        /// </summary>
+        /// <param name="customer">DB上的客戶資料</param>
+        /// <param name="isCreate">確認是否新增的動作</param>
+        /// <param name="userid">使用者ID</param>
+        private static void BaseInputCustomer(Customer customer, bool isCreate, int userid)
+        {
+            if (isCreate)
+            {
+                customer.CreateUserId = userid;
+                customer.CreateDate = DateTime.Now;
+                customer.DeleteStatus = DeleteStatus.NO;
+            }
+            else
+            {
+                customer.UpdateUserId = userid;
+                customer.UpdateDate = DateTime.Now;
+            }
         }
     }
 }

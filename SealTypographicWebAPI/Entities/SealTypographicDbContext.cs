@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using SealTypographicWebAPI.Consts;
 
 namespace SealTypographicWebAPI.Entities
 {
@@ -83,5 +84,113 @@ namespace SealTypographicWebAPI.Entities
         public SealTypographicDbContext(DbContextOptions<SealTypographicDbContext> options) : base(options)
         {
         }
+
+        #region Required
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="modelBuilder"></param>
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            //建立DB前先建置SealMappingConfig資料
+            modelBuilder.Entity<SealMappingConfig>().HasData(new SealMappingConfig
+            {
+                Id = 1,
+                SealType = SealType.Customer,
+                SubId = "companySeal",
+                Name = "公司章"
+            },
+            new SealMappingConfig
+            {
+                Id = 2,
+                SealType = SealType.Customer,
+                SubId = "ceoSeal",
+                Name = "負責人"
+            },
+            new SealMappingConfig
+            {
+                Id = 3,
+                SealType = SealType.Customer,
+                SubId = "managerSeal",
+                Name = "經理"
+            },
+            new SealMappingConfig
+            {
+                Id = 4,
+                SealType = SealType.Customer,
+                SubId = "accountantDirectorSeal",
+                Name = "會計主管"
+            },
+            new SealMappingConfig
+            {
+                Id = 5,
+                SealType = SealType.Customer,
+                SubId = "customerOther",
+                Name = "其他"
+            },
+            new SealMappingConfig
+            {
+                Id = 6,
+                SealType = SealType.Accountant,
+                SubId = "accountantSeal",
+                Name = "會計師印鑑"
+            },
+            new SealMappingConfig
+            {
+                Id = 7,
+                SealType = SealType.Accountant,
+                SubId = "accountantCHSign",
+                Name = "中文簽名"
+            },
+            new SealMappingConfig
+            {
+                Id = 8,
+                SealType = SealType.Accountant,
+                SubId = "accountantENSign",
+                Name = "英文簽名"
+            },
+            new SealMappingConfig
+            {
+                Id = 9,
+                SealType = SealType.Accountant,
+                SubId = "accountantOldSign",
+                Name = "舊式簽名"
+            },
+            new SealMappingConfig
+            {
+                Id = 10,
+                SealType = SealType.Accountant,
+                SubId = "accountantOther",
+                Name = "其他"
+            },
+            new SealMappingConfig
+            {
+                Id = 11,
+                SealType = SealType.Letterhead,
+                SubId = "letterheadLogo",
+                Name = "信頭商標"
+            },
+            new SealMappingConfig
+            {
+                Id = 12,
+                SealType = SealType.Letterhead,
+                SubId = "letterheadAddress",
+                Name = "信頭地址"
+            });
+
+            //建立DB前先建置AccountantGroup無群組資料
+            modelBuilder.Entity<AccountantGroup>().HasData(new AccountantGroup
+            {
+                Id = 1,
+                AccountantGroupNumber = "NO000",
+                CreateDate = DateTime.Parse("0001/01/01 00:00:00"),
+                UpdateDate = DateTime.Parse("0001/01/01 00:00:00"),
+                CreateUserId = 0,
+                UpdateUserId = 0,
+                DeleteStatus = 0,
+                Name = "無群組"
+            });
+        }
+        #endregion
     }
 }

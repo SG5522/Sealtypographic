@@ -94,7 +94,7 @@ namespace SealTypographicWebAPI.Controllers
             {
                 ResponseViewModel response = new();
                 Log.Error("CustomerSeal post error {@Error}", ex);
-                response.DbError();
+                response.DbError();                
                 responses.Add(response);
             }
             return responses;

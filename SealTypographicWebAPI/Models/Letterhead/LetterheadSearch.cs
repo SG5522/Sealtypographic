@@ -11,6 +11,6 @@ namespace SealTypographicWebAPI.Models.Customer
         /// 搜尋名字
         /// </summary>
         /// <example>信頭名稱</example>
-        public string? Name { get; set; }
+        public string? LetterheadOrName { get; set; }
     }
 }

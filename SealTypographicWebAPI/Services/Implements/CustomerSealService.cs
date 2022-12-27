@@ -105,7 +105,7 @@ namespace SealTypographicWebAPI.Services.Implements
             }
             else
             {
-                customerSealViewModels.DbNoData();
+                customerSealViewModels.CustomeNoData();
             }
 
             return customerSealViewModels;
@@ -413,7 +413,7 @@ namespace SealTypographicWebAPI.Services.Implements
             }
             else
             {
-                response.DbNoData();                                
+                response.CustomerSealNoData();                                
             }
 
             return response;

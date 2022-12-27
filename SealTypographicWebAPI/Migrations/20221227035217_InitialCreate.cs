@@ -29,7 +29,7 @@ namespace SealTypographicWebAPI.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Customers",
+                name: "ViewModels",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
@@ -155,7 +155,7 @@ namespace SealTypographicWebAPI.Migrations
                     table.ForeignKey(
                         name: "FK_TypographicPDFs_Customers_CustomerId",
                         column: x => x.CustomerId,
-                        principalTable: "Customers",
+                        principalTable: "ViewModels",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -188,7 +188,7 @@ namespace SealTypographicWebAPI.Migrations
                     table.ForeignKey(
                         name: "FK_CustomerSealJournals_Customers_CustomerId",
                         column: x => x.CustomerId,
-                        principalTable: "Customers",
+                        principalTable: "ViewModels",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
@@ -207,6 +207,7 @@ namespace SealTypographicWebAPI.Migrations
                         .Annotation("Sqlite:Autoincrement", true),
                     Sequence = table.Column<int>(type: "INTEGER", nullable: false),
                     LetterheadId = table.Column<int>(type: "INTEGER", nullable: false),
+                    GroupCreateDate = table.Column<DateTime>(type: "TEXT", nullable: false),
                     CreateDate = table.Column<DateTime>(type: "TEXT", nullable: false),
                     UpdateDate = table.Column<DateTime>(type: "TEXT", nullable: false),
                     CreateUserId = table.Column<int>(type: "INTEGER", nullable: false),
@@ -405,6 +406,71 @@ namespace SealTypographicWebAPI.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.InsertData(
+                table: "AccountantGroups",
+                columns: new[] { "Id", "AccountantGroupNumber", "CreateDate", "CreateUserId", "DeleteStatus", "Name", "UpdateDate", "UpdateUserId" },
+                values: new object[] { 1, "NO000", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 0, (byte)0, "無群組", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 0 });
+
+            migrationBuilder.InsertData(
+                table: "SealMappingConfigs",
+                columns: new[] { "Id", "Name", "SealType", "SubId" },
+                values: new object[] { 1, "公司章", (byte)1, "companySeal" });
+
+            migrationBuilder.InsertData(
+                table: "SealMappingConfigs",
+                columns: new[] { "Id", "Name", "SealType", "SubId" },
+                values: new object[] { 2, "負責人", (byte)1, "ceoSeal" });
+
+            migrationBuilder.InsertData(
+                table: "SealMappingConfigs",
+                columns: new[] { "Id", "Name", "SealType", "SubId" },
+                values: new object[] { 3, "經理", (byte)1, "managerSeal" });
+
+            migrationBuilder.InsertData(
+                table: "SealMappingConfigs",
+                columns: new[] { "Id", "Name", "SealType", "SubId" },
+                values: new object[] { 4, "會計主管", (byte)1, "accountantDirectorSeal" });
+
+            migrationBuilder.InsertData(
+                table: "SealMappingConfigs",
+                columns: new[] { "Id", "Name", "SealType", "SubId" },
+                values: new object[] { 5, "其他", (byte)1, "customerOther" });
+
+            migrationBuilder.InsertData(
+                table: "SealMappingConfigs",
+                columns: new[] { "Id", "Name", "SealType", "SubId" },
+                values: new object[] { 6, "會計師印鑑", (byte)2, "accountantSeal" });
+
+            migrationBuilder.InsertData(
+                table: "SealMappingConfigs",
+                columns: new[] { "Id", "Name", "SealType", "SubId" },
+                values: new object[] { 7, "中文簽名", (byte)2, "accountantCHSign" });
+
+            migrationBuilder.InsertData(
+                table: "SealMappingConfigs",
+                columns: new[] { "Id", "Name", "SealType", "SubId" },
+                values: new object[] { 8, "英文簽名", (byte)2, "accountantENSign" });
+
+            migrationBuilder.InsertData(
+                table: "SealMappingConfigs",
+                columns: new[] { "Id", "Name", "SealType", "SubId" },
+                values: new object[] { 9, "舊式簽名", (byte)2, "accountantOldSign" });
+
+            migrationBuilder.InsertData(
+                table: "SealMappingConfigs",
+                columns: new[] { "Id", "Name", "SealType", "SubId" },
+                values: new object[] { 10, "其他", (byte)2, "accountantOther" });
+
+            migrationBuilder.InsertData(
+                table: "SealMappingConfigs",
+                columns: new[] { "Id", "Name", "SealType", "SubId" },
+                values: new object[] { 11, "信頭商標", (byte)3, "letterheadLogo" });
+
+            migrationBuilder.InsertData(
+                table: "SealMappingConfigs",
+                columns: new[] { "Id", "Name", "SealType", "SubId" },
+                values: new object[] { 12, "信頭地址", (byte)3, "letterheadAddress" });
+
             migrationBuilder.CreateIndex(
                 name: "IX_Accountants_AccountantGroupId",
                 table: "Accountants",
@@ -529,7 +595,7 @@ namespace SealTypographicWebAPI.Migrations
                 name: "AccountantGroups");
 
             migrationBuilder.DropTable(
-                name: "Customers");
+                name: "ViewModels");
         }
     }
 }

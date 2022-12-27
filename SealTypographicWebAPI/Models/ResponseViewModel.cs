@@ -50,24 +50,6 @@ namespace SealTypographicWebAPI.Models
         }
 
         /// <summary>
-        /// 客戶資料建立失敗
-        /// </summary>
-        public void CustomerCreateFailed()
-        {
-            Code = (int)ResponseCode.CustomerCreateFailed;
-            Message = "Customer create failed";
-        }
-
-        /// <summary>
-        /// 客戶編號重複
-        /// </summary>
-        public void CustomerNumberRepeat()
-        {
-            Code = (int)ResponseCode.CustomerNumberRepeat;
-            Message = "Customer number repeat";
-        }
-
-        /// <summary>
         /// 客戶無資料
         /// </summary>
         public void CustomeNoData()
@@ -77,12 +59,57 @@ namespace SealTypographicWebAPI.Models
         }
 
         /// <summary>
-        /// CustomerSeal Sequence Repeat
+        /// 客戶資料建立失敗
         /// </summary>
-        public void CreateCustomerSealFailed()
+        public void CreateCustomerFailed()
         {
-            Code = (int)ResponseCode.CreateCustomerSealFailed;
-            Message = "Customer seal Create Failed";
+            Code = (int)ResponseCode.CreateCustomerFailed;
+            Message = "Create Customer failed";
+        }
+
+        /// <summary>
+        /// 資料庫客戶編號重複
+        /// </summary>
+        public void CreateCustomerNumberRepeat()
+        {
+            Code = (int)ResponseCode.CreateCustomerNumberRepeat;
+            Message = "Create Customer number repeat";
+        }
+
+        /// <summary>
+        /// 更新客戶資料失敗
+        /// </summary>
+        public void UpdateCustomerFailed()
+        {
+            Code = (int)ResponseCode.UpdateCustomerFailed;
+            Message = "Update customer failed";
+        }
+
+        /// <summary>
+        /// 更新客戶資料找不到檔案
+        /// </summary>
+        public void UpdateCustomerNoData()
+        {
+            Code = (int)ResponseCode.UpdateCustomerNoData;
+            Message = "Update customer no data";
+        }
+
+        /// <summary>
+        /// 刪除(Hide)客戶失敗
+        /// </summary>
+        public void DeleteCustomerFailed()
+        {
+            Code = (int)ResponseCode.DeleteCustomerFailed;
+            Message = "Delete customer failed";
+        }
+
+        /// <summary>
+        /// 刪除(Hide)客戶時找不到資料
+        /// </summary>
+        public void DeleteCustomerNoData()
+        {
+            Code = (int)ResponseCode.DeleteCustomerNoData;
+            Message = "Delete customer noData";
         }
 
         /// <summary>
@@ -104,12 +131,30 @@ namespace SealTypographicWebAPI.Models
         }
 
         /// <summary>
+        /// 資料庫客戶印鑑建立失敗
+        /// </summary>
+        public void CreateCustomerSealFailed()
+        {
+            Code = (int)ResponseCode.CreateCustomerSealFailed;
+            Message = "Customer seal Create Failed";
+        }
+
+        /// <summary>
         /// 客戶印鑑新增時序號重複
         /// </summary>
         public void CreateCustomerSealSequenceRepeat()
         {
             Code = (int)ResponseCode.CreateCustomerSealSequenceRepeat;
             Message = "Create customer seal sequence repeat";
+        }
+
+        /// <summary>
+        /// 客戶印鑑刪除失敗
+        /// </summary>
+        public void UpdateCustomerSealFailed()
+        {
+            Code = (int)ResponseCode.UpdateCustomerSealFailed;
+            Message = "Update customer seal failed";
         }
 
         /// <summary>
@@ -133,10 +178,10 @@ namespace SealTypographicWebAPI.Models
         /// <summary>
         /// 客戶印鑑刪除失敗
         /// </summary>
-        public void UpdateCustomerSealFailed()
+        public void DeleteCustomerSealFailed()
         {
-            Code = (int)ResponseCode.UpdateCustomerSealFailed;
-            Message = "Update customer seal failed";
+            Code = (int)ResponseCode.DeleteCustomerSealFailed;
+            Message = "Delete customer seal failed";
         }
 
         /// <summary>
@@ -148,22 +193,14 @@ namespace SealTypographicWebAPI.Models
             Message = "Customer seal delete no data";
         }
 
+
         /// <summary>
-        /// 客戶印鑑刪除失敗
+        /// 會計師無資料
         /// </summary>
-        public void DeleteCustomerSealFailed()
+        public void AccountantNoData()
         {
-            Code = (int)ResponseCode.DeleteCustomerSealFailed;
-            Message = "Delete customer seal failed";
-        }
-        
-        /// <summary>
-        /// 會計師建立失敗
-        /// </summary>
-        public void AccountantCreateFailed()
-        {
-            Code = (int)ResponseCode.AccountantCreateFailed;
-            Message = "Accountant create failed";
+            Code = (int)ResponseCode.AccountantNoData;
+            Message = "Accountant no data";
         }
 
         /// <summary>
@@ -176,12 +213,57 @@ namespace SealTypographicWebAPI.Models
         }
 
         /// <summary>
-        /// 會計師無資料
+        /// 會計師建立失敗
         /// </summary>
-        public void AccountantNoData()
+        public void CreateAccountantFailed()
         {
-            Code = (int)ResponseCode.AccountantNoData;
-            Message = "Accountant no data";
+            Code = (int)ResponseCode.CreateAccountantFailed;
+            Message = "Create accountant failed";
+        }
+
+        /// <summary>
+        /// 會計師編號重複
+        /// </summary>
+        public void CreateAccountantNumberRepeat()
+        {
+            Code = (int)ResponseCode.CreateAccountantNumberRepeat;
+            Message = "Create accountant number repeat";
+        }
+
+        /// <summary>
+        /// 資料庫會計師資料更新失敗
+        /// </summary>
+        public void UpdateAccountantFailed()
+        {
+            Code = (int)ResponseCode.UpdateAccountantFailed;
+            Message = "Update accountant no data";
+        }
+
+        /// <summary>
+        /// 會計師資料更新找不到資料
+        /// </summary>
+        public void UpdateAccountantNoData()
+        {
+            Code = (int)ResponseCode.UpdateAccountantNoData;
+            Message = "Update accountant no data";
+        }
+
+        /// <summary>
+        /// 資料庫會計師資料刪除找不到資料
+        /// </summary>
+        public void DeleteAccountantFailed()
+        {
+            Code = (int)ResponseCode.DeleteAccountantFailed;
+            Message = "Delete accountant failed";
+        }
+
+        /// <summary>
+        /// 資料庫會計師資料刪除找不到資料
+        /// </summary>
+        public void DeleteAccountantNoData()
+        {
+            Code = (int)ResponseCode.DeleteAccountantNoData;
+            Message = "Delete accountant no data";
         }
 
         /// <summary>
@@ -189,8 +271,8 @@ namespace SealTypographicWebAPI.Models
         /// </summary>
         public void AccountantSignCreateFailed()
         {
-            Code = (int)ResponseCode.AccountantSignCreateFailed;
-            Message = "AccountantSign create failed";
+            Code = (int)ResponseCode.CreateAccountantSignFailed;
+            Message = "Accountant sign create failed";
         }
 
         /// <summary>
@@ -314,9 +396,9 @@ namespace SealTypographicWebAPI.Models
         /// <summary>
         /// 信頭圖像建立失敗
         /// </summary>
-        public void LetterheadImageCreateFailed()
+        public void CreateLetterheadImageFailed()
         {
-            Code = (int)ResponseCode.LetterheadImageCreateFailed;
+            Code = (int)ResponseCode.CreateLetterheadImageFailed;
             Message = "AccountantSign create failed";
         }
 

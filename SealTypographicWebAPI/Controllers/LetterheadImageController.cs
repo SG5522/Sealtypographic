@@ -57,7 +57,7 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="letterheadImages"></param>
         /// <returns></returns>
         [HttpPost]
-        public IActionResult Post(List<LetterheadImage> letterheadImages)
+        public IActionResult Post(List<LetterheadImageViewModel> letterheadImages)
         {
             try
             {
@@ -75,7 +75,7 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="letterheadImages"></param>
         /// <returns></returns>
         [HttpPut("{id}")]
-        public IActionResult Put(List<LetterheadImageWithId> letterheadImages)
+        public IActionResult Put(List<LetterheadFormUpdate> letterheadImages)
         {
             try
             {

@@ -13,9 +13,14 @@ namespace SealTypographicWebAPI.Entities
         public int Sequence { get; set; }
         
         /// <summary>
-        /// 事務所信頭ID
+        /// 信頭ID
         /// </summary>
         public int LetterheadId { get; set; }
+
+        /// <summary>
+        /// 信頭圖片群組創建日期
+        /// </summary>
+        public DateTime GroupCreateDate { get; set; }
 
         /// <summary>
         /// 事務所信頭資料表

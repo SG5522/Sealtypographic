@@ -72,7 +72,7 @@ namespace SealTypographicWebAPI.Controllers
             catch (Exception ex)
             {
                 Log.Error("Customer get{Customerid} error {@Error}", ex);                
-                customerDetailViewModel.DbNoData();
+                customerDetailViewModel.DbError();
                 return customerDetailViewModel;
             }
         }

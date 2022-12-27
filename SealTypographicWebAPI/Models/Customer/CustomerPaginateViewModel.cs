@@ -10,6 +10,6 @@ namespace SealTypographicWebAPI.Models.Customer
         /// <summary>
         /// 顧客列表
         /// </summary>
-        public List<CustomerViewModel> Customers { get; set; }
+        public List<CustomerViewModel> ViewModels { get; set; }
     }
 }

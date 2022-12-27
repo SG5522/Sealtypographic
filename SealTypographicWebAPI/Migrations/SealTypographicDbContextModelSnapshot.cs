@@ -30,7 +30,7 @@ namespace SealTypographicWebAPI.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<DateTime>("GroupCreateDate")
+                    b.Property<DateTime>("CreateDate")
                         .HasColumnType("TEXT");
 
                     b.Property<int>("CreateUserId")
@@ -66,7 +66,7 @@ namespace SealTypographicWebAPI.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<DateTime>("GroupCreateDate")
+                    b.Property<DateTime>("CreateDate")
                         .HasColumnType("TEXT");
 
                     b.Property<int>("CreateUserId")
@@ -88,6 +88,19 @@ namespace SealTypographicWebAPI.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("AccountantGroups");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            AccountantGroupNumber = "NO000",
+                            CreateDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreateUserId = 0,
+                            DeleteStatus = (byte)0,
+                            Name = "無群組",
+                            UpdateDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            UpdateUserId = 0
+                        });
                 });
 
             modelBuilder.Entity("SealTypographicWebAPI.Entities.AccountantSignJournal", b =>
@@ -99,7 +112,7 @@ namespace SealTypographicWebAPI.Migrations
                     b.Property<int>("AccountantId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<DateTime>("GroupCreateDate")
+                    b.Property<DateTime>("CreateDate")
                         .HasColumnType("TEXT");
 
                     b.Property<int>("CreateUserId")
@@ -157,7 +170,7 @@ namespace SealTypographicWebAPI.Migrations
                     b.Property<int>("AccountantSignJournalId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<DateTime>("GroupCreateDate")
+                    b.Property<DateTime>("CreateDate")
                         .HasColumnType("TEXT");
 
                     b.Property<int>("CreateUserId")
@@ -228,7 +241,7 @@ namespace SealTypographicWebAPI.Migrations
                     b.Property<string>("ContactTitle")
                         .HasColumnType("TEXT");
 
-                    b.Property<DateTime>("GroupCreateDate")
+                    b.Property<DateTime>("CreateDate")
                         .HasColumnType("TEXT");
 
                     b.Property<int>("CreateUserId")
@@ -268,7 +281,7 @@ namespace SealTypographicWebAPI.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Customers");
+                    b.ToTable("ViewModels");
                 });
 
             modelBuilder.Entity("SealTypographicWebAPI.Entities.CustomerSealJournal", b =>
@@ -277,7 +290,7 @@ namespace SealTypographicWebAPI.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<DateTime>("GroupCreateDate")
+                    b.Property<DateTime>("CreateDate")
                         .HasColumnType("TEXT");
 
                     b.Property<int>("CreateUserId")
@@ -339,7 +352,7 @@ namespace SealTypographicWebAPI.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<DateTime>("GroupCreateDate")
+                    b.Property<DateTime>("CreateDate")
                         .HasColumnType("TEXT");
 
                     b.Property<int>("CreateUserId")
@@ -387,7 +400,7 @@ namespace SealTypographicWebAPI.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<DateTime>("GroupCreateDate")
+                    b.Property<DateTime>("CreateDate")
                         .HasColumnType("TEXT");
 
                     b.Property<int>("CreateUserId")
@@ -421,7 +434,7 @@ namespace SealTypographicWebAPI.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<DateTime>("GroupCreateDate")
+                    b.Property<DateTime>("CreateDate")
                         .HasColumnType("TEXT");
 
                     b.Property<int>("CreateUserId")
@@ -431,6 +444,9 @@ namespace SealTypographicWebAPI.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<DateTime>("EndDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("GroupCreateDate")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("ImagePath")
@@ -479,7 +495,7 @@ namespace SealTypographicWebAPI.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<DateTime>("GroupCreateDate")
+                    b.Property<DateTime>("CreateDate")
                         .HasColumnType("TEXT");
 
                     b.Property<int>("CreateUserId")
@@ -544,6 +560,92 @@ namespace SealTypographicWebAPI.Migrations
                         .IsUnique();
 
                     b.ToTable("SealMappingConfigs");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Name = "公司章",
+                            SealType = (byte)1,
+                            SubId = "companySeal"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Name = "負責人",
+                            SealType = (byte)1,
+                            SubId = "ceoSeal"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Name = "經理",
+                            SealType = (byte)1,
+                            SubId = "managerSeal"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Name = "會計主管",
+                            SealType = (byte)1,
+                            SubId = "accountantDirectorSeal"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Name = "其他",
+                            SealType = (byte)1,
+                            SubId = "customerOther"
+                        },
+                        new
+                        {
+                            Id = 6,
+                            Name = "會計師印鑑",
+                            SealType = (byte)2,
+                            SubId = "accountantSeal"
+                        },
+                        new
+                        {
+                            Id = 7,
+                            Name = "中文簽名",
+                            SealType = (byte)2,
+                            SubId = "accountantCHSign"
+                        },
+                        new
+                        {
+                            Id = 8,
+                            Name = "英文簽名",
+                            SealType = (byte)2,
+                            SubId = "accountantENSign"
+                        },
+                        new
+                        {
+                            Id = 9,
+                            Name = "舊式簽名",
+                            SealType = (byte)2,
+                            SubId = "accountantOldSign"
+                        },
+                        new
+                        {
+                            Id = 10,
+                            Name = "其他",
+                            SealType = (byte)2,
+                            SubId = "accountantOther"
+                        },
+                        new
+                        {
+                            Id = 11,
+                            Name = "信頭商標",
+                            SealType = (byte)3,
+                            SubId = "letterheadLogo"
+                        },
+                        new
+                        {
+                            Id = 12,
+                            Name = "信頭地址",
+                            SealType = (byte)3,
+                            SubId = "letterheadAddress"
+                        });
                 });
 
             modelBuilder.Entity("SealTypographicWebAPI.Entities.TypographicPage", b =>
@@ -552,7 +654,7 @@ namespace SealTypographicWebAPI.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<DateTime>("GroupCreateDate")
+                    b.Property<DateTime>("CreateDate")
                         .HasColumnType("TEXT");
 
                     b.Property<int>("CreateUserId")
@@ -586,7 +688,7 @@ namespace SealTypographicWebAPI.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<DateTime>("GroupCreateDate")
+                    b.Property<DateTime>("CreateDate")
                         .HasColumnType("TEXT");
 
                     b.Property<int>("CreateUserId")

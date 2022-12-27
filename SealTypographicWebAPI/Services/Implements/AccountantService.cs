@@ -50,7 +50,7 @@ namespace SealTypographicWebAPI.Services.Implements
             }
             else
             {
-                accountantResponse.DbNoData();
+                accountantResponse.AccountantNoData();
             }
             return accountantResponse;
         }
@@ -96,7 +96,7 @@ namespace SealTypographicWebAPI.Services.Implements
                     }
                     accountantViewModelWithStartDate.Add(accountantPaginatesViewModel);
                 }
-                accountantPaginatesViewModels.AccountantViewModels = accountantViewModelWithStartDate;
+                accountantPaginatesViewModels.ViewModels = accountantViewModelWithStartDate;
                 accountantPaginatesViewModels.PageNumber= accountantSearch.PageNumber;
                 accountantPaginatesViewModels.PageSize = accountantSearch.PageSize;
                 //計算總頁數
@@ -106,7 +106,7 @@ namespace SealTypographicWebAPI.Services.Implements
             }
             else
             {
-                accountantPaginatesViewModels.DbNoData();                
+                accountantPaginatesViewModels.AccountantNoData();                
             }
             return accountantPaginatesViewModels;
         }
@@ -126,11 +126,9 @@ namespace SealTypographicWebAPI.Services.Implements
 
             if (accountantQuery == null)
             {
-                Accountant dBAccountant = mapper.Map<Accountant>(accountantForm);
-                dBAccountant.CreateUserId = userid;
-                dBAccountant.CreateDate = DateTime.Now;
-                dBAccountant.DeleteStatus = DeleteStatus.NO;
-                dbContext.Accountants.Add(dBAccountant);
+                Accountant dbAccountant = mapper.Map<Accountant>(accountantForm);
+                BaseInputAccountant(dbAccountant, true, userid);
+                dbContext.Accountants.Add(dbAccountant);
                 dbContext.SaveChanges();
 
                 //回傳剛建立的客戶基本資料 使建立客戶印鑑找到該ID
@@ -144,7 +142,7 @@ namespace SealTypographicWebAPI.Services.Implements
                 }
                 else
                 {
-                    accountantCreateResponse.AccountantCreateFailed();
+                    accountantCreateResponse.CreateAccountantFailed();
                 }                                
             }
             else
@@ -167,14 +165,13 @@ namespace SealTypographicWebAPI.Services.Implements
             if (accountantQuery != null)
             {
                 mapper.Map(accountantFormUpdate, accountantQuery);
-                accountantFormUpdate.UpdateUserId = userid;
-                accountantQuery.UpdateDate = DateTime.Now;
+                BaseInputAccountant(accountantQuery, true, userid);
                 dbContext.SaveChanges();
                 response.Success();
             }
             else
             {
-                response.DbNoData();
+                response.UpdateAccountantNoData();
             }
             return response;
         }
@@ -191,18 +188,36 @@ namespace SealTypographicWebAPI.Services.Implements
 
             if (accountantQuery != null)
             {
-                accountantQuery.UpdateUserId = userid;
-                accountantQuery.UpdateDate = DateTime.Now;
                 accountantQuery.DeleteStatus = DeleteStatus.Yes;
+                BaseInputAccountant(accountantQuery, true, userid);
                 dbContext.SaveChanges();
                 response.Success();
             }
             else
             {
-                response.DbNoData();
+                response.DeleteAccountantNoData();
             }
             return response;
         }
-
+        /// <summary>
+        /// 信頭資料新增修改時基本資料輸入
+        /// </summary>
+        /// <param name="accountant">DB上的客戶資料</param>
+        /// <param name="isCreate">確認是否新增的動作</param>
+        /// <param name="userid">使用者ID</param>
+        private static void BaseInputAccountant(Accountant accountant, bool isCreate, int userid)
+        {
+            if (isCreate)
+            {
+                accountant.CreateUserId = userid;
+                accountant.CreateDate = DateTime.Now;
+                accountant.DeleteStatus = DeleteStatus.NO;
+            }
+            else
+            {
+                accountant.UpdateUserId = userid;
+                accountant.UpdateDate = DateTime.Now;
+            }
+        }
     }
 }
