@@ -6,24 +6,12 @@ namespace SealTypographicWebAPI.Models.Customer
     /// <summary>
     /// 客戶
     /// </summary>
-    public class CustomerViewModel : BaseName
+    public class CustomerViewModel : CustomerViewBase
     {
-        /// <summary>
-        /// 統一編號 (Business administration number)
-        /// </summary>
-        public string BAN { get; set; }
-
-        /// <summary>
-        /// 客戶編號(更新或搜尋使用)
-        /// </summary>
-        /// <example>AAA001</example>
-        [Required]        
-        public string CustomerNumber { get; set; }
-
         /// <summary>
         /// 顯示最新季度
         /// </summary>
-        [RegularExpression(@"^[a-zA-Z0-9]*$")]
+        /// <example>111YQ1</example>        
         public string? Quarter { get; set; }
     }
 }

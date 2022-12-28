@@ -82,6 +82,11 @@
         CreateCustomerSealSequenceRepeat = 2111,
 
         /// <summary>
+        /// 資料庫客戶印鑑建立時季度重複
+        /// </summary>
+        CreateCustomerSealQuarterRepeat = 2112,
+
+        /// <summary>
         /// 更新客戶印鑑失敗
         /// </summary>
         UpdateCustomerSealFailed = 2120,
@@ -276,11 +281,16 @@
         /// 資料庫信頭圖像序號重複
         /// </summary>
         LetterheadImageSequenceRepeat = 4101,
-
+       
         /// <summary>
         /// 資料庫信頭圖像無資料
         /// </summary>
         LetterheadImageNoData = 4102,
+
+        /// <summary>
+        /// 資料庫信頭圖片中已有草稿或是待審的資料
+        /// </summary>
+        LetterheadImageHaveDraftOrPendingReviewStatus = 4103,
 
         /// <summary>
         /// 資料庫信頭圖像建立失敗

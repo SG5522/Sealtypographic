@@ -52,15 +52,14 @@ namespace SealTypographicWebAPI.Controllers
             {
                 Log.Information("AccountantGroupMember get FromQuery input {@Input}", accountantGroupMemberSearch);
                 accountantGroupMembers = accountantGroupMemberService.GetAccountantGroupMembers(accountantGroupMemberSearch);                
-                Log.Information("AccountantGroupMember get FromQuery output {@Output}", accountantGroupMembers);
-                return accountantGroupMembers;
+                Log.Information("AccountantGroupMember get FromQuery output {@Output}", accountantGroupMembers);                
             }
             catch (Exception ex)
             {
                 Log.Error("AccountantGroupMember get FromQuery error {@Error}", ex);
-                accountantGroupMembers.DbError();                
-                return accountantGroupMembers;
+                accountantGroupMembers.DbError();
             }
+            return accountantGroupMembers;
         }
 
         /// <summary>
@@ -76,15 +75,14 @@ namespace SealTypographicWebAPI.Controllers
             {                
                 Log.Information("AccountantGroupMember get(NotTheGroup) input {@Input}", notThisGroupMemberSearch);
                 notThisGroupMember = accountantGroupMemberService.GetNotThisGroupMember(notThisGroupMemberSearch);
-                Log.Information("AccountantGroupMember get(NotTheGroup) output {@Output}", notThisGroupMember);
-                return notThisGroupMember;
+                Log.Information("AccountantGroupMember get(NotTheGroup) output {@Output}", notThisGroupMember);                
             }
             catch (Exception ex)
             {
                 Log.Error("AccountantGroupMember get(NotTheGroup) error {@Error}", ex);                
-                notThisGroupMember.DbError();
-                return notThisGroupMember;
+                notThisGroupMember.DbError();                
             }
+            return notThisGroupMember;
         }
 
         /// <summary>
@@ -101,14 +99,13 @@ namespace SealTypographicWebAPI.Controllers
                 Log.Information("AccountantGroupMember get{accountantId} input {@Input}", accountantId);
                 accountantResponse = accountantService.GetAccountant(accountantId);
                 Log.Information("AccountantGroupMember get{accountantId} output {@Output}", accountantResponse);
-                return accountantResponse;
             }
             catch (Exception ex)
             {
                 Log.Error("AccountantGroupMember get{accountantId} error {@Error}", ex);                
-                accountantResponse.DbError();
-                return accountantResponse;
+                accountantResponse.DbError();                
             }
+            return accountantResponse;
         }
 
         /// <summary>
@@ -123,15 +120,14 @@ namespace SealTypographicWebAPI.Controllers
             {
                 Log.Information("AccountantGroupMember put input {@Input}", accountantGroupChangeForm);
                 response = accountantGroupMemberService.UpdateAccountantGroup(accountantGroupChangeForm);
-                Log.Information("AccountantGroupMember put output {@Output}", response);
-                return response;
+                Log.Information("AccountantGroupMember put output {@Output}", response);                
             }
             catch (Exception ex)
             {
                 Log.Error("AccountantGroupMember put error {@Error}", ex);
-                response.DbError();
-                return response;
+                response.DbError();                
             }
+            return response;
         }
 
 
@@ -148,14 +144,13 @@ namespace SealTypographicWebAPI.Controllers
                 Log.Information("AccountantGroupMember put(NotTheGroup) input {@Input}", accountantGroupMemberForm);
                 response = accountantGroupMemberService.ChangeNotTheGroupMember(accountantGroupMemberForm);
                 Log.Information("AccountantGroupMember put(NotTheGroup) output {@Output}", response);
-                return response;
             }
             catch (Exception ex)
             {
                 Log.Error("AccountantGroupMember put(NotTheGroup) error {@Error}", ex);
-                response.DbError();
-                return response;
+                response.DbError();                
             }
+            return response;
         }
     }
 }

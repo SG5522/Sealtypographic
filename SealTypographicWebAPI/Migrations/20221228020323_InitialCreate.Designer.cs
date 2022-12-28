@@ -11,7 +11,7 @@ using SealTypographicWebAPI.Entities;
 namespace SealTypographicWebAPI.Migrations
 {
     [DbContext(typeof(SealTypographicDbContext))]
-    [Migration("20221227035217_InitialCreate")]
+    [Migration("20221228020323_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -283,7 +283,7 @@ namespace SealTypographicWebAPI.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ViewModels");
+                    b.ToTable("Customers");
                 });
 
             modelBuilder.Entity("SealTypographicWebAPI.Entities.CustomerSealJournal", b =>

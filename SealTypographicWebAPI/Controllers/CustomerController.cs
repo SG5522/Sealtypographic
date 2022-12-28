@@ -42,14 +42,13 @@ namespace SealTypographicWebAPI.Controllers
                 Log.Information("Customer get FromQuery input {@Input}", customerQuery);
                 customerResponsePage = customerService.GetCustomerPaginatesViewModel(customerQuery);
                 Log.Information("Customer get FromQuery output {@Output}", customerResponsePage);
-                return customerResponsePage;
             }
             catch (Exception ex)
             {
                 Log.Error("Customer get FromQuery error {@Error}", ex);                
-                customerResponsePage.DbError();
-                return customerResponsePage;
+                customerResponsePage.DbError();                
             }
+            return customerResponsePage;
         }
 
 
@@ -66,15 +65,14 @@ namespace SealTypographicWebAPI.Controllers
             {
                 Log.Information("Customer get{Customerid} input {@Input}", Customerid);
                 customerDetailViewModel = customerService.GetCustomerDetailViewModel(Customerid);
-                Log.Information("Customer get{Customerid} output {@Output}", customerDetailViewModel);
-                return customerDetailViewModel;
+                Log.Information("Customer get{Customerid} output {@Output}", customerDetailViewModel);                
             }
             catch (Exception ex)
             {
                 Log.Error("Customer get{Customerid} error {@Error}", ex);                
-                customerDetailViewModel.DbError();
-                return customerDetailViewModel;
+                customerDetailViewModel.DbError();                
             }
+            return customerDetailViewModel;
         }
         /// <summary>
         /// 建立顧客基本資料
@@ -89,15 +87,14 @@ namespace SealTypographicWebAPI.Controllers
             {
                 Log.Information("Customer post input {@Input}", customerForm);
                 createCustomerResponse = customerService.CreateCustomer(customerForm);
-                Log.Information("Customer post output {@Input}", createCustomerResponse);
-                return createCustomerResponse;
+                Log.Information("Customer post output {@Input}", createCustomerResponse);                
             }
             catch (Exception ex)
             {
                 Log.Error("Customer post error {@Error}", ex);
-                createCustomerResponse.DbError();
-                return createCustomerResponse;
+                createCustomerResponse.DbError();                
             }
+            return createCustomerResponse;
         }
 
         /// <summary>
@@ -112,15 +109,14 @@ namespace SealTypographicWebAPI.Controllers
             {               
                 Log.Information("Customer put input {@Input}", customerForm);
                 response = customerService.UpdateCustomer(customerForm);
-                Log.Information("Customer put output {@Output}", response);
-                return response;
+                Log.Information("Customer put output {@Output}", response);                
             }
             catch (Exception ex)
             {
                 Log.Error("Customer put error {@Error}", ex);
-                response.DbError();
-                return response;
+                response.DbError();                
             }
+            return response;
         }
 
         /// <summary>
@@ -138,15 +134,14 @@ namespace SealTypographicWebAPI.Controllers
             {
                 Log.Information("Customer delete input {@Input}", customerId);
                 response = customerService.DeleteCustomer(customerId);
-                Log.Information("Customer delete input {@Input}", response);
-                return response;
+                Log.Information("Customer delete input {@Input}", response);                
             }
             catch (Exception ex)
             {
                 Log.Error("Customer delete error {@Error}", ex);
                 response.DbError();
-                return response;
             }
+            return response;
         }
     }
 }

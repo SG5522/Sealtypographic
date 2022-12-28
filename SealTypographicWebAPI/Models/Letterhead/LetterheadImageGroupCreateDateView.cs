@@ -6,7 +6,7 @@ namespace SealTypographicWebAPI.Models.Letterhead
     /// <summary>
     /// 信頭圖片群組創建日期
     /// </summary>
-    public class LetterheadGroupCreateDateView
+    public class LetterheadImageGroupCreateDateView
     {
         /// <summary>
         /// 會計師Id
@@ -37,6 +37,6 @@ namespace SealTypographicWebAPI.Models.Letterhead
         /// <summary>
         /// 信頭圖片創建日期搜尋表
         /// </summary>
-        public List<LetterheadGroupCreateDateView> LetterheadGroupCreateDateView { get; set; }
+        public List<LetterheadImageGroupCreateDateView> GroupCreateDateViews { get; set; }
     }
 }

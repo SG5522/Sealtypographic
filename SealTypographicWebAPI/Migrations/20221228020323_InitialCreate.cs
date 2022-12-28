@@ -29,7 +29,7 @@ namespace SealTypographicWebAPI.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "ViewModels",
+                name: "Customers",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
@@ -155,7 +155,7 @@ namespace SealTypographicWebAPI.Migrations
                     table.ForeignKey(
                         name: "FK_TypographicPDFs_Customers_CustomerId",
                         column: x => x.CustomerId,
-                        principalTable: "ViewModels",
+                        principalTable: "Customers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -188,7 +188,7 @@ namespace SealTypographicWebAPI.Migrations
                     table.ForeignKey(
                         name: "FK_CustomerSealJournals_Customers_CustomerId",
                         column: x => x.CustomerId,
-                        principalTable: "ViewModels",
+                        principalTable: "Customers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
@@ -595,7 +595,7 @@ namespace SealTypographicWebAPI.Migrations
                 name: "AccountantGroups");
 
             migrationBuilder.DropTable(
-                name: "ViewModels");
+                name: "Customers");
         }
     }
 }

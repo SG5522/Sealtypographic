@@ -147,6 +147,16 @@ namespace SealTypographicWebAPI.Models
             Code = (int)ResponseCode.CreateCustomerSealSequenceRepeat;
             Message = "Create customer seal sequence repeat";
         }
+        //CreateCustomerSealQuarterRepeat
+
+        /// <summary>
+        /// 客戶印鑑新增時季度重複
+        /// </summary>
+        public void CreateCustomerSealQuarterRepeat()
+        {
+            Code = (int)ResponseCode.CreateCustomerSealQuarterRepeat;
+            Message = "Create customer seal quarter repeat";
+        }
 
         /// <summary>
         /// 客戶印鑑刪除失敗
@@ -276,7 +286,7 @@ namespace SealTypographicWebAPI.Models
         }
 
         /// <summary>
-        /// 會計師簽印重複(該類別已有資料)
+        /// 會計師簽印已有一筆草稿或是待審狀態
         /// </summary>
         public void AccountantSignHaveDraftOrPendingReviewStatus()
         {
@@ -508,6 +518,15 @@ namespace SealTypographicWebAPI.Models
         {
             Code = (int)ResponseCode.LetterheadImageNoData;
             Message = "Letterhead image no Data";
+        }
+
+        /// <summary>
+        /// 信頭圖像已有一筆草稿或是待審
+        /// </summary>
+        public void LetterheadImageHaveDraftOrPendingReviewStatus()
+        {
+            Code = (int)ResponseCode.LetterheadImageHaveDraftOrPendingReviewStatus;
+            Message = "Letterhead image have draft or pending review status";
         }
 
         /// <summary>

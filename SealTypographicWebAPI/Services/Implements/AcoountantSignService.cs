@@ -180,7 +180,7 @@ namespace SealTypographicWebAPI.Services.Implements
                 {
                     ResponseViewModel response = new();
                     response.DeleteAccountantSignNoData();
-                    response.ErrorItem = "Delete AccountantSignid:" + accountantSignId;
+                    response.ErrorItem = "Delete AccountantSignid: " + accountantSignId;
                     responseViewModels.Add(response);
                 }
             }
@@ -205,7 +205,7 @@ namespace SealTypographicWebAPI.Services.Implements
                 {
                     ResponseViewModel response = new();
                     response.UpdateAccountantSignNoData();
-                    response.ErrorItem = "Update AccountantSignId:" + accountantSignFormUpdate.Id;
+                    response.ErrorItem = "Update AccountantSignid: " + accountantSignFormUpdate.Id;
                     responseViewModels.Add(response);
                 }
             }
@@ -221,7 +221,7 @@ namespace SealTypographicWebAPI.Services.Implements
                     GroupCreateDate = accountantSignUpdate.GroupCreateDate         
                 };                
                 
-                if (!CheckAccountSignRepeat(accountantSignCheck))
+                if (!CheckAccountSignRepeat(accountantSignCheck, accountantSignUpdate.DeleteAccountantSignIds))
                 {
                     AccountantSignJournal accountantSignJournal = mapper.Map<AccountantSignJournal>(accountantSignForm);
                     accountantSignJournal.ImagePath = imagePath;
@@ -238,10 +238,24 @@ namespace SealTypographicWebAPI.Services.Implements
                     responseViewModels.Add(response);
                 }
             }
+
             //沒有任何回傳訊息(錯誤訊息)就更新資料庫
             if (!responseViewModels.Any())
             {
                 ResponseViewModel response = new();
+
+                //將此創建日期的簽印審查狀態全變更為草稿(更新時需要重審)
+                IQueryable<AccountantSignJournal> accountantSignJournalQuery = dbContext.AccountantSignJournals.Where
+                                                (
+                                                    accountantSign => accountantSign.AccountantId == accountantSignUpdate.AccountantId                                                    
+                                                    && accountantSign.GroupCreateDate == accountantSignUpdate.GroupCreateDate
+                                                    && accountantSign.DeleteStatus == DeleteStatus.NO
+                                                );
+                foreach(AccountantSignJournal accountantSignJournal in accountantSignJournalQuery)
+                {
+                    accountantSignJournal.ReviewStatus = ReviewStatus.Draft;
+                }
+
                 dbContext.AccountantSignJournals.AddRange(accountantSignJournals);
                 dbContext.BulkSaveChanges();
                 response.Success();
@@ -298,20 +312,22 @@ namespace SealTypographicWebAPI.Services.Implements
         }
 
         /// <summary>
-        /// 確認此類別會計師簽印是否有草稿狀態或待審狀態 true 重複 false 不重複
+        /// 確認此類別會計師簽印是否重覆建立 true 重複 false 不重複
         /// </summary>
         /// <param name="accountantSignCheck">查詢參數</param>
+        /// <param name="DeleteAccountantSignIds">異動中刪除的簽印</param>
         /// <returns></returns>
-        private bool CheckAccountSignRepeat(AccountantSignCheck accountantSignCheck)
+        private bool CheckAccountSignRepeat(AccountantSignCheck accountantSignCheck ,List<int> DeleteAccountantSignIds)
         {
-            AccountantSignJournal? AccountantSignQuery = dbContext.AccountantSignJournals.FirstOrDefault
+            AccountantSignJournal? AccountantSignQuery = dbContext.AccountantSignJournals
+                                                        .FirstOrDefault
                                                         (
                                                             accountantSign => accountantSign.AccountantId == accountantSignCheck.AccountantId
                                                             && accountantSign.SealMappingConfigId == accountantSignCheck.SealMappingConfigId
                                                             && accountantSign.GroupCreateDate == accountantSignCheck.GroupCreateDate
                                                             && accountantSign.DeleteStatus == DeleteStatus.NO
-                                                            && accountantSign.ReviewStatus >= ReviewStatus.Draft
-                                                            && accountantSign.ReviewStatus <= ReviewStatus.Pending                                                            
+                                                            && accountantSign.ReviewStatus <= ReviewStatus.Pending       
+                                                            && !DeleteAccountantSignIds.Contains(accountantSign.Id)
                                                         );
             return AccountantSignQuery != null;
         }

@@ -2,7 +2,7 @@
 namespace SealTypographicWebAPI.Models.Accountant
 {
     /// <summary>
-    /// 印鑑序號是否重複確認用
+    /// 會計師簽印是否重複建立確認用
     /// </summary>
     public class AccountantSignCheck
     {
@@ -13,11 +13,11 @@ namespace SealTypographicWebAPI.Models.Accountant
 
         /// <summary>
         /// 客戶印鑑群組ID 
-        /// 1.公司章
-        /// 2.負責人
-        /// 3.經理
-        /// 4.會計主管    
-        /// 5.其他(客戶)
+        /// 6.會計印鑑
+        /// 7.中文簽名
+        /// 8.英文簽名
+        /// 9.舊式簽名    
+        /// 10.其他(會計)
         /// </summary>
         public int SealMappingConfigId { get; set; }
 

@@ -281,7 +281,7 @@ namespace SealTypographicWebAPI.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ViewModels");
+                    b.ToTable("Customers");
                 });
 
             modelBuilder.Entity("SealTypographicWebAPI.Entities.CustomerSealJournal", b =>

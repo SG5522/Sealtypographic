@@ -11,6 +11,12 @@ namespace SealTypographicWebAPI.Models.CustomerSealReview
     public class CustomerSealReviewDetail : CustomerDetail
     {
         /// <summary>
+        /// 顯示最新季度
+        /// </summary>
+        /// <example>111YQ1</example>        
+        public string Quarter { get; set; }
+
+        /// <summary>
         /// 客戶印鑑
         /// </summary>
         public List<CustomerSealViewModel> CustomerSealViewModels { get; set; }

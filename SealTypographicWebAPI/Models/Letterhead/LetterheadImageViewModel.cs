@@ -23,7 +23,7 @@ namespace SealTypographicWebAPI.Models.Letterhead
         /// <summary>
         /// 信頭ID
         /// </summary>
-        public int LetterheadID { get; set; }
+        public int LetterheadId { get; set; }
 
         /// <summary>
         /// 建立日期
@@ -38,6 +38,6 @@ namespace SealTypographicWebAPI.Models.Letterhead
         /// <summary>
         /// 信頭圖片組
         /// </summary>
-        public List<LetterheadImageViewModel> LetterheadImageViewModel { get; set; }
+        public List<LetterheadImageViewModel> ImageViewModels { get; set; }
     }
 }

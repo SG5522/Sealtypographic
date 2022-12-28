@@ -41,15 +41,14 @@ namespace SealTypographicWebAPI.Controllers
             try
             {                
                 accountantGroupList = accountantGroupService.GetAccountantGroupList();
-                Log.Information("AccountantGroups get(List) output {@Output}", accountantGroupList);
-                return accountantGroupList;
+                Log.Information("AccountantGroups get(List) output {@Output}", accountantGroupList);                
             }
             catch (Exception ex)
             {
                 Log.Error("AccountantGroups get(List) error {@Error}", ex);
-                accountantGroupList.DbError();
-                return accountantGroupList;
+                accountantGroupList.DbError();                
             }
+            return accountantGroupList;
         }
 
         /// <summary>
@@ -60,21 +59,20 @@ namespace SealTypographicWebAPI.Controllers
         [HttpGet]
         public AccountantGroupResponses GetAccountGroupViewModels([FromQuery]AccountantGroupSearch accountantGroupQueryPage)
         {
-            AccountantGroupResponses accountantGroupResponses = new ();
+            AccountantGroupResponses accountantGroupResponses = new();
             try
             {
                 Log.Information("AccountantGroups get FromQuery input {@Input}", accountantGroupQueryPage);
                 accountantGroupResponses = accountantGroupService.GetAccountantGroups(accountantGroupQueryPage);
-                Log.Information("AccountantGroups get FromQuery output {@Output}", accountantGroupResponses);
-                return accountantGroupResponses;
+                Log.Information("AccountantGroups get FromQuery output {@Output}", accountantGroupResponses);                
                 
             }
             catch (Exception ex)
             {
                 Log.Error("AccountantGroups get accountantGroupDatas error {@Error}", ex);                
-                accountantGroupResponses.DbError();
-                return accountantGroupResponses;
+                accountantGroupResponses.DbError();                
             }
+            return accountantGroupResponses;
         }
 
         /// <summary>
@@ -90,15 +88,14 @@ namespace SealTypographicWebAPI.Controllers
             {
                 Log.Information("AccountantGroups get{accountantGroupId} input {@Input}", accountantGroupId);
                 accountantGroupResponse = accountantGroupService.GetAccountantGroupData(accountantGroupId);
-                Log.Information("AccountantGroups get{accountantGroupId} output {@Output}", accountantGroupResponse);
-                return accountantGroupResponse;                
+                Log.Information("AccountantGroups get{accountantGroupId} output {@Output}", accountantGroupResponse);                
             }
             catch (Exception ex)
             {
                 Log.Error("AccountantGroups get{accountantGroupId} error {@Error}", ex);                
-                accountantGroupResponse.DbError();
-                return accountantGroupResponse;
+                accountantGroupResponse.DbError();                
             }
+            return accountantGroupResponse;
         }                
       
         /// <summary>
@@ -113,15 +110,14 @@ namespace SealTypographicWebAPI.Controllers
             {
                 Log.Information("AccountantGroups post input {@Input}", accountantGroupForm);
                 response = accountantGroupService.CreateAccountantGroup(accountantGroupForm);
-                Log.Information("AccountantGroups post output {@Output}", response);
-                return response;
+                Log.Information("AccountantGroups post output {@Output}", response);                
             }
             catch (Exception ex)
             {
                 Log.Error("AccountantGroups post error {@Error}", ex);
-                response.DbError();
-                return response;
+                response.DbError();                
             }
+            return response;
         }
 
         /// <summary>
@@ -137,14 +133,13 @@ namespace SealTypographicWebAPI.Controllers
                 Log.Information("AccountantGroups put accountantGroupForm input {@Input}", accountantGroupFormUpdate);
                 response = accountantGroupService.UpdateAccountantGroup(accountantGroupFormUpdate);
                 Log.Information("AccountantGroups put accountantGroupForm output {@Output}", response);
-                return response;                
             }
             catch (Exception ex)
             {
                 Log.Error("AccountantGroups put accountantGroupForm error {@Error}", ex);
-                response.DbError();
-                return response;
+                response.DbError();                
             }
+            return response;
         }
 
         /// <summary>
@@ -160,15 +155,14 @@ namespace SealTypographicWebAPI.Controllers
             {
                 Log.Information("AccountantGroups delete input {@Input}", accountantGroupDataId);
                 response = accountantGroupService.DeleteAccountantGroup(accountantGroupDataId);
-                Log.Information("AccountantGroups delete output {@Output}", response);
-                return response;
+                Log.Information("AccountantGroups delete output {@Output}", response);                
             }
             catch (Exception ex)
             {
                 Log.Error("AccountantGroups delete error {@Error}", ex);
-                response.DbError();
-                return response;
+                response.DbError();                
             }
+            return response;
         }
     }
 }

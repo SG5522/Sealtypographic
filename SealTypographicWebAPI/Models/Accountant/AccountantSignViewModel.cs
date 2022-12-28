@@ -8,11 +8,6 @@ namespace SealTypographicWebAPI.Models.Accountant
     /// </summary>
     public class AccountantSignViewModel : BaseSeal
     {
-        /// <summary>
-        /// 信頭編號(排序) 1為起始
-        /// </summary>
-        /// <example>1</example>
-        public int Sequence { get; set; }
     }
     /// <summary>
     /// 會計師印鑑簽名組

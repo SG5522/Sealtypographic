@@ -5,7 +5,7 @@ namespace SealTypographicWebAPI.Models.Letterhead
     /// <summary>
     /// 信頭圖片搜尋(依信頭ID與群組創建日期)
     /// </summary>
-    public class LetterheadGroupCreateDateSearch
+    public class LetterheadImageGroupCreateDateSearch
     {
         /// <summary>
         /// 信頭Id

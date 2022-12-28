@@ -3,7 +3,6 @@ using SealTypographicWebAPI.Models;
 using SealTypographicWebAPI.Models.Customer;
 using SealTypographicWebAPI.Models.Letterhead;
 using SealTypographicWebAPI.Services;
-using SealTypographicWebAPI.Util;
 using Serilog;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -14,6 +13,7 @@ namespace SealTypographicWebAPI.Controllers
     /// 信頭資料管理
     /// </summary>
     [Route("api/[controller]")]
+    [Produces("application/json")]
     [ApiController]
     public class LetterheadController : ControllerBase
     {
@@ -39,23 +39,19 @@ namespace SealTypographicWebAPI.Controllers
         [HttpGet]
         public LetterheadPaginateViewModel Get([FromQuery] LetterheadSearch letterheadSearch)
         {
+            LetterheadPaginateViewModel letterheadPaginateViewModel = new();
             try
             {
-                Log.Information("Letterhead get ViewModels input {@Input}", letterheadSearch);
-                LetterheadPaginateViewModel letterheadResponse = letterheadService.GetLetterheadViewModels(letterheadSearch);
-                Log.Information("Letterhead get ViewModels output {@Output}", letterheadResponse);
-                return letterheadResponse;
+                Log.Information("Letterhead get input {@Input}", letterheadSearch);
+                letterheadPaginateViewModel = letterheadService.GetLetterheadViewModels(letterheadSearch);
+                Log.Information("Letterhead get output {@Output}", letterheadPaginateViewModel);                
             }
             catch (Exception ex)
             {
-                Log.Error("Letterhead get ViewModels error {@Error}", ex);
-                ResponseViewModel response = ResponseUtil.DBError();
-                return new()
-                {
-                    Code = response.Code,
-                    Message = response.Message,
-                };
+                Log.Error("Letterhead get error {@Error}", ex);
+                letterheadPaginateViewModel.DbError();                
             }
+            return letterheadPaginateViewModel;
         }
 
         /// <summary>
@@ -66,23 +62,19 @@ namespace SealTypographicWebAPI.Controllers
         [HttpGet("{letterheadId}")]
         public LetterheadResponse Get(int letterheadId)
         {
+            LetterheadResponse letterheadResponse = new ();
             try
             {
-                Log.Information("Letterhead get LetterheadViewModel input {@Input}", letterheadId);
-                LetterheadResponse letterheadResponse = letterheadService.GetLetterheadViewModel(letterheadId);
-                Log.Information("Letterhead get LetterheadViewModel output {@Output}", letterheadResponse);
-                return letterheadResponse;
+                Log.Information("Letterhead get{letterheadId} input {@Input}", letterheadId);
+                letterheadResponse = letterheadService.GetLetterheadViewModel(letterheadId);
+                Log.Information("Letterhead get{letterheadId} output {@Output}", letterheadResponse);                
             }
             catch (Exception ex)
             {
-                Log.Error("Letterhead get LetterheadViewModel error {@Error}", ex);
-                ResponseViewModel response = ResponseUtil.DBError();
-                return new ()
-                {
-                    Code = response.Code,
-                    Message = response.Message,
-                };
+                Log.Error("Letterhead get{letterheadId} error {@Error}", ex);
+                letterheadResponse.DbError();
             }
+            return letterheadResponse;
         }
 
         /// <summary>
@@ -92,18 +84,19 @@ namespace SealTypographicWebAPI.Controllers
         [HttpPost]
         public ResponseViewModel Post([FromBody] LetterheadForm letterheadPostData)
         {
+            ResponseViewModel responseViewModel = new();
             try
             {
-                Log.Information("Letterhead post letterheadPostData input {@Input}", letterheadPostData);
-                ResponseViewModel response = letterheadService.CreateLetterhead(letterheadPostData);
-                Log.Information("Letterhead post letterheadPostData output {@Output}", response);
-                return response;
+                Log.Information("Letterhead post input {@Input}", letterheadPostData);
+                responseViewModel = letterheadService.CreateLetterhead(letterheadPostData);
+                Log.Information("Letterhead post output {@Output}", responseViewModel);       
             }
             catch(Exception ex) 
             {
-                Log.Error("Letterhead post letterheadPostData error {@Error}", ex);
-                return ResponseUtil.DBError();
+                Log.Error("Letterhead post error {@Error}", ex);
+                responseViewModel.DbError();
             }
+            return responseViewModel;
         }
 
         /// <summary>
@@ -116,14 +109,14 @@ namespace SealTypographicWebAPI.Controllers
             ResponseViewModel response = new();
             try
             {
-                Log.Information("Letterhead put letterheadPostData input {@Input}", letterheadPostData);
+                Log.Information("Letterhead put input {@Input}", letterheadPostData);
                 response = letterheadService.UpdateLetterhead(letterheadPostData);
-                Log.Information("Letterhead put letterheadPostData output {@Output}", response);
+                Log.Information("Letterhead put output {@Output}", response);
                 return response;
             }
             catch (Exception ex)
             {
-                Log.Error("Letterhead put letterheadPostData error {@Error}", ex);
+                Log.Error("Letterhead put error {@Error}", ex);
                 response.DbError();
                 return response;
             }
@@ -139,18 +132,19 @@ namespace SealTypographicWebAPI.Controllers
         [HttpDelete("{letterheadId}")]
         public ResponseViewModel Delete(int letterheadId)
         {
+            ResponseViewModel responseViewModel = new();
             try
             {
-                Log.Information("Letterhead delete(hide) letterheadPostData input {@Input}", letterheadId);
-                ResponseViewModel response = letterheadService.DeleteLetterhead(letterheadId);
-                Log.Information("Letterhead delete(hide) letterheadPostData output {@Output}", response);
-                return response;
+                Log.Information("Letterhead delete(hide) input {@Input}", letterheadId);
+                responseViewModel = letterheadService.DeleteLetterhead(letterheadId);
+                Log.Information("Letterhead delete(hide) output {@Output}", responseViewModel);                
             }
             catch (Exception ex)
             {
-                Log.Error("Letterhead delete(hide) letterheadPostData error {@Error}", ex);
-                return ResponseUtil.DBError();
+                Log.Error("Letterhead delete(hide) error {@Error}", ex);
+                responseViewModel.DbError();                
             }
+            return responseViewModel;
         }
     }
 }

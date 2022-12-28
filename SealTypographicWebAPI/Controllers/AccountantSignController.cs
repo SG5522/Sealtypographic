@@ -104,7 +104,7 @@ namespace SealTypographicWebAPI.Controllers
         }
 
         /// <summary>
-        /// 
+        /// 異動會計師簽印
         /// </summary>
         /// <param name="accountantSignUpdate"></param>
         /// <returns></returns>

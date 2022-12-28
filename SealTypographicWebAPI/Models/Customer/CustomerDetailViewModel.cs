@@ -4,7 +4,7 @@ namespace SealTypographicWebAPI.Models.Customer
     /// <summary>
     /// 客戶資料
     /// </summary>
-    public class CustomerDetail : CustomerViewModel
+    public class CustomerDetail : CustomerViewBase
     {        
         /// <summary>
         /// 公司負責人

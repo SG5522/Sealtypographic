@@ -75,29 +75,27 @@ namespace SealTypographicWebAPI.Controllers
         }        
 
         /// <summary>
-        /// 建立客戶資料
+        /// 建立客戶印鑑組資料
         /// </summary>        
         /// <param name="customerSeals">客戶印鑑組資料(Json)</param>
         /// <returns></returns>
         [HttpPost]
-        public List<ResponseViewModel> Post(List<CustomerSealForm> customerSeals)
+        public ResponseViewModel Post(List<CustomerSealForm> customerSeals)
         {
-            List<ResponseViewModel> responses = new();
+            ResponseViewModel response = new();
             try
             {
                 Log.Information("CustomerSeal post input {@Input}", customerSeals);
-                responses = customerSealService.CreateCustomerSeals(customerSeals);
-                Log.Information("CustomerSeal post output {@Output}", responses);
+                response = customerSealService.CreateCustomerSeals(customerSeals);
+                Log.Information("CustomerSeal post output {@Output}", response);
                 
             }
             catch (Exception ex)
-            {
-                ResponseViewModel response = new();
+            {                
                 Log.Error("CustomerSeal post error {@Error}", ex);
-                response.DbError();                
-                responses.Add(response);
+                response.DbError();                                
             }
-            return responses;
+            return response;
         }
 
         /// <summary>

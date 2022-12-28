@@ -4,8 +4,10 @@ using Microsoft.EntityFrameworkCore;
 using SealTypographicWebAPI.Consts;
 using SealTypographicWebAPI.Entities;
 using SealTypographicWebAPI.Models;
+using SealTypographicWebAPI.Models.Accountant;
 using SealTypographicWebAPI.Models.Customer;
 using SealTypographicWebAPI.Utils;
+using System.Linq;
 
 namespace SealTypographicWebAPI.Services.Implements
 {
@@ -116,14 +118,21 @@ namespace SealTypographicWebAPI.Services.Implements
         /// </summary>
         /// <param name="customerSeals">印鑑組</param>
         /// <returns></returns>
-        public List<ResponseViewModel> CreateCustomerSeals(List<CustomerSealForm> customerSeals)
+        public ResponseViewModel CreateCustomerSeals(List<CustomerSealForm> customerSeals)
         {
-            List<ResponseViewModel> responseViewModels = new();
+            ResponseViewModel response = new();
             List<CustomerSealJournal> customerSealJournals = new();
             int userId = 0; //以後從帳號驗證取得Id
-            foreach (CustomerSealForm customerSeal in customerSeals)
+
+            CustomerSealJournal? customerSealJournalQuery = dbContext.CustomerSealJournals
+                                                        .FirstOrDefault
+                                                        (
+                                                            x => x.CustomerId == customerSeals.First().CustomerId
+                                                            && x.Quarter == customerSeals.First().Quarter                        
+                                                        );
+            if(customerSealJournalQuery == null)
             {
-                if (CheckRepeatSequence(mapper.Map<CustomerSealSequenceCheck>(customerSeal))) //確認序號是否重複
+                foreach (CustomerSealForm customerSeal in customerSeals)
                 {
                     //這段之後會做成IMAGE64的處理並另存在指定的位置
                     string imagePath = customerSeal.ImageBase64;
@@ -133,27 +142,16 @@ namespace SealTypographicWebAPI.Services.Implements
                     BaseInputCustomerSealJournal(customerSealJournal, true, userId);
                     customerSealJournals.Add(customerSealJournal);
                 }
-                else
-                {
-                    ResponseViewModel response = new();
-                    response.CreateCustomerSealSequenceRepeat();
-                    response.ErrorItem = "Create CustomerId:" + customerSeal.CustomerId
-                                       + " SealMappingConfigId:" + customerSeal.SealMappingConfigId
-                                       + " Sequence:" + customerSeal.Sequence;
-                    responseViewModels.Add(response);                   
-                }
-            }
-            //無任何回傳訊息(錯誤訊息)就更新資料庫
-            if (!responseViewModels.Any())
-            {
-                ResponseViewModel response = new();
                 dbContext.CustomerSealJournals.AddRange(customerSealJournals);
                 dbContext.BulkSaveChanges();
                 response.Success();
-                responseViewModels.Add(response);
+            }
+            else
+            {
+                response.CreateCustomerSealQuarterRepeat();
             }
 
-            return responseViewModels;
+            return response;
         }
 
         /// <summary>
@@ -215,7 +213,7 @@ namespace SealTypographicWebAPI.Services.Implements
             //新增印鑑
             foreach (CustomerSealForm createCustomerSeal in customerSealUpdate.CreateCustomerSeals)
             {
-                if (CheckRepeatSequence(mapper.Map<CustomerSealSequenceCheck>(createCustomerSeal))) //確認序號是否重複
+                if (CheckRepeatSequence(mapper.Map<CustomerSealSequenceCheck>(createCustomerSeal), customerSealUpdate.DeleteCustomerSealIds)) //確認序號是否重複
                 {
                     //這段之後會做成IMAGE64的處理並另存在指定的位置
                     string imagePath = createCustomerSeal.ImageBase64;
@@ -239,6 +237,19 @@ namespace SealTypographicWebAPI.Services.Implements
             if (!responseViewModels.Any())
             {
                 ResponseViewModel response = new();
+
+                //將此季度的印鑑審查狀態全變更為草稿(更新時需要重審)
+                IQueryable<CustomerSealJournal> customerSealJournalQuery = dbContext.CustomerSealJournals.Where
+                                                (
+                                                    customerSeal => customerSeal.CustomerId == customerSealUpdate.CustomerId
+                                                    && customerSeal.Quarter == customerSealUpdate.Quarter
+                                                    && customerSeal.DeleteStatus == DeleteStatus.NO
+                                                );
+                foreach (CustomerSealJournal customerSealJournal in customerSealJournalQuery)
+                {
+                    customerSealJournal.ReviewStatus = ReviewStatus.Draft;
+                }
+
                 dbContext.CustomerSealJournals.AddRange(customerSealJournals);
                 dbContext.BulkSaveChanges();
                 response.Success();
@@ -318,8 +329,9 @@ namespace SealTypographicWebAPI.Services.Implements
         /// 確認客戶序號是否重複 true 不重複 false 重複
         /// </summary>
         /// <param name="customerSealSequenceCheck">查詢參數</param>
+        /// <param name="deleteCustomerSealIds">異動中刪除的印鑑</param>
         /// <returns></returns>
-        private bool CheckRepeatSequence(CustomerSealSequenceCheck customerSealSequenceCheck)
+        private bool CheckRepeatSequence(CustomerSealSequenceCheck customerSealSequenceCheck, List<int> deleteCustomerSealIds)
         {
             CustomerSealJournal? customerSealQuery = dbContext.CustomerSealJournals.FirstOrDefault
                                                     (
@@ -328,6 +340,7 @@ namespace SealTypographicWebAPI.Services.Implements
                                                         && customerSealJournal.Quarter == customerSealSequenceCheck.Quarter
                                                         && customerSealJournal.Sequence == customerSealSequenceCheck.Sequence
                                                         && customerSealJournal.DeleteStatus == DeleteStatus.NO
+                                                        && !deleteCustomerSealIds.Contains(customerSealJournal.Id)
                                                     );
 
             return customerSealQuery == null;

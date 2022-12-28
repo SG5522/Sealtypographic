@@ -4,8 +4,6 @@ using SealTypographicWebAPI.Consts;
 using SealTypographicWebAPI.Entities;
 using SealTypographicWebAPI.Models;
 using SealTypographicWebAPI.Models.AccountantGroup;
-using SealTypographicWebAPI.Models.Customer;
-using SealTypographicWebAPI.Util;
 using SealTypographicWebAPI.Utils;
 
 namespace SealTypographicWebAPI.Services.Implements

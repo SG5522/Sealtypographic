@@ -42,15 +42,14 @@ namespace SealTypographicWebAPI.Controllers
             {
                 Log.Information("Accountant get FromQuery input {@Input}", accountantQueryPage);
                 accountantPaginatesViewModel = accountantService.GetAccountantViewModels(accountantQueryPage);
-                Log.Information("Accountant get FromQuery output {@Output}", accountantPaginatesViewModel);
-                return accountantPaginatesViewModel;
+                Log.Information("Accountant get FromQuery output {@Output}", accountantPaginatesViewModel);                
             }
             catch (Exception ex) 
             {
                 Log.Error("AccountantGroups get FromQuery error {@Error}", ex);
-                accountantPaginatesViewModel.DbError();                
-                return accountantPaginatesViewModel;
+                accountantPaginatesViewModel.DbError();                                
             }
+            return accountantPaginatesViewModel;
         }
 
         /// <summary>
@@ -66,15 +65,14 @@ namespace SealTypographicWebAPI.Controllers
             {
                 Log.Information("Accountant get{accountantId} input {@Input}", accountantId);
                 accountantResponse = accountantService.GetAccountant(accountantId);
-                Log.Information("Accountant get{accountantId} output {@Output}", accountantResponse);
-                return accountantResponse;
+                Log.Information("Accountant get{accountantId} output {@Output}", accountantResponse);                
             }
             catch (Exception ex)
             {
                 Log.Error("AccountantGroups get{accountantId} error {@Error}", ex);
-                accountantResponse.DbError();                
-                return accountantResponse;
+                accountantResponse.DbError();                                
             }
+            return accountantResponse;
         }
 
         /// <summary>
@@ -89,15 +87,14 @@ namespace SealTypographicWebAPI.Controllers
             {
                 Log.Information("Accountant post input {@Input}", accountantBaseData);
                 accountantCreateResponse = accountantService.CreateAccountant(accountantBaseData);
-                Log.Information("Accountant post output {@Output}", accountantCreateResponse);
-                return accountantCreateResponse;                
+                Log.Information("Accountant post output {@Output}", accountantCreateResponse);                       
             }
             catch (Exception ex)
             {
                 Log.Error("AccountantGroups post accountantFormUpdate error {@Error}", ex);
-                accountantCreateResponse.DbError();
-                return accountantCreateResponse;
+                accountantCreateResponse.DbError();                
             }
+            return accountantCreateResponse;
         }
 
         /// <summary>
@@ -112,15 +109,14 @@ namespace SealTypographicWebAPI.Controllers
             {
                 Log.Information("Accountant put input {@Input}", accountantFormUpdate);
                 response = accountantService.UpdateAccountant(accountantFormUpdate);
-                Log.Information("Accountant put output {@Output}", response);
-                return response;
+                Log.Information("Accountant put output {@Output}", response);                
             }
             catch (Exception ex)
             {
                 Log.Error("AccountantGroups put accountantFormUpdate error {@Error}", ex);
-                response.DbError();
-                return response;
+                response.DbError();                
             }
+            return response;
         }
 
         /// <summary>
@@ -138,14 +134,13 @@ namespace SealTypographicWebAPI.Controllers
                 Log.Information("Accountant delete(hide) input {@Input}", accountantId);
                 response = accountantService.DeleteAccountant(accountantId);
                 Log.Information("Accountant delete(hide) output {@Output}", response);
-                return response;
             }
             catch (Exception ex)
             { 
                 Log.Error("AccountantGroups delete(hide) error {@Error}", ex);
-                response.DbError();
-                return response; 
+                response.DbError();                
             }
+            return response;
         }
     }
 }

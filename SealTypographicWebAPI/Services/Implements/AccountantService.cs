@@ -2,12 +2,9 @@
 using SealTypographicWebAPI.Models.Accountant;
 using SealTypographicWebAPI.Entities;
 using SealTypographicWebAPI.Consts;
-using SealTypographicWebAPI.Util;
 using SealTypographicWebAPI.Utils;
 using Microsoft.EntityFrameworkCore;
 using AutoMapper;
-using System.Linq;
-using SealTypographicWebAPI.Models.Customer;
 
 namespace SealTypographicWebAPI.Services.Implements
 {

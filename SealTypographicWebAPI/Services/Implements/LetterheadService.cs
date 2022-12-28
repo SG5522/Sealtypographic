@@ -5,7 +5,6 @@ using SealTypographicWebAPI.Entities;
 using SealTypographicWebAPI.Models;
 using SealTypographicWebAPI.Models.Customer;
 using SealTypographicWebAPI.Models.Letterhead;
-using SealTypographicWebAPI.Util;
 using SealTypographicWebAPI.Utils;
 
 namespace SealTypographicWebAPI.Services.Implements
