@@ -104,8 +104,14 @@ namespace SealTypographicWebAPI.Config
             CreateMap<LetterheadFormUpdate, Letterhead>();
 
             //信頭圖片
-            CreateMap<LetterheadImageViewModel, LetterheadImageViewModel>();
-            CreateMap<LetterheadImageForm, LetterheadImageJournal>();
+            CreateMap<LetterheadImageJournal, LetterheadImageViewModel>()
+                    .ForMember(x => x.SealMappingConfigName, y => y.MapFrom(o => o.SealMappingConfig.Name))
+                    .ForMember(x => x.ImageBase64, y => y.Ignore()) // <---imagebase64要額外處理所以要忽略
+                    .ReverseMap();
+
+            CreateMap<LetterheadImageForm, LetterheadImageJournal>()
+                    .ForMember(x => x.ImagePath, y => y.Ignore()) // <---imagebase64要額外處理所以要忽略
+                    .ReverseMap();
             CreateMap<LetterheadImageFormUpdate, LetterheadImageJournal>()
                     .ForMember(x => x.ImagePath, y => y.Ignore()) // <---ImagePath要額外處理所以要忽略
                     .ReverseMap();

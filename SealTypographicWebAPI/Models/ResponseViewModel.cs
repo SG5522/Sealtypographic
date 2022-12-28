@@ -521,12 +521,12 @@ namespace SealTypographicWebAPI.Models
         }
 
         /// <summary>
-        /// 信頭圖像已有一筆草稿或是待審
+        /// 信頭圖像已有一筆草稿
         /// </summary>
-        public void LetterheadImageHaveDraftOrPendingReviewStatus()
+        public void LetterheadImageHaveDraftReviewStatus()
         {
-            Code = (int)ResponseCode.LetterheadImageHaveDraftOrPendingReviewStatus;
-            Message = "Letterhead image have draft or pending review status";
+            Code = (int)ResponseCode.LetterheadImageHaveDraftReviewStatus;
+            Message = "Letterhead image have draft review status";
         }
 
         /// <summary>

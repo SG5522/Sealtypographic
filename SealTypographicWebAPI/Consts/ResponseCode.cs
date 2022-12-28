@@ -290,7 +290,7 @@
         /// <summary>
         /// 資料庫信頭圖片中已有草稿或是待審的資料
         /// </summary>
-        LetterheadImageHaveDraftOrPendingReviewStatus = 4103,
+        LetterheadImageHaveDraftReviewStatus = 4103,
 
         /// <summary>
         /// 資料庫信頭圖像建立失敗

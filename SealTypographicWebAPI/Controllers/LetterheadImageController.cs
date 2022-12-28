@@ -35,7 +35,7 @@ namespace SealTypographicWebAPI.Controllers
         /// </summary>
         /// <param name="letterheadId"></param>
         /// <returns></returns>
-        [HttpGet("{id}")]
+        [HttpGet("{letterheadId}")]
         public LetterheadGroupCreateDateViews Get(int letterheadId)
         {
             LetterheadGroupCreateDateViews letterheadGroupCreateDateViews = new();

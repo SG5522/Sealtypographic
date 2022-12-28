@@ -130,6 +130,7 @@ namespace SealTypographicWebAPI.Services.Implements
                                                         );
             if (letterheadImageJournalQuery == null)
             {
+                DateTime createNowTime = DateTime.Now;//將建立日期為依據將此次建立的會計師簽印組成為一組Group
                 foreach (LetterheadImageForm letterheadImageForm in letterheadImageForms)
                 {
                     //這段之後會做成IMAGE64的處理並另存在指定的位置
@@ -137,6 +138,7 @@ namespace SealTypographicWebAPI.Services.Implements
 
                     LetterheadImageJournal letterheadImageJournal = mapper.Map<LetterheadImageJournal>(letterheadImageForm);
                     letterheadImageJournal.ImagePath = imagePath;
+                    letterheadImageJournal.GroupCreateDate = createNowTime;
                     BaseInputLetterheadImageJournal(letterheadImageJournal, true, userId);
                     letterheadImageJournals.Add(letterheadImageJournal);                    
                 }
@@ -146,7 +148,7 @@ namespace SealTypographicWebAPI.Services.Implements
             }
             else
             {
-                response.LetterheadImageHaveDraftOrPendingReviewStatus();
+                response.LetterheadImageHaveDraftReviewStatus();
             }
             return response;
         }
@@ -184,14 +186,14 @@ namespace SealTypographicWebAPI.Services.Implements
                     responseViewModels.Add(response);
                 }
             }
-            //修改印鑑
+            //修改信頭圖像
             foreach (LetterheadImageFormUpdate letterheadImageFormUpdate in letterheadImageUpdate.UpdateLetterheadImages)
             {
                 LetterheadImageJournal? letterheadImageJournal = dbContext.LetterheadImageJournals.FirstOrDefault
                                                             (
-                                                                updateLetterheadImage => updateLetterheadImage.Id == updateLetterheadImage.Id
-                                                                && updateLetterheadImage.DeleteStatus == DeleteStatus.NO
-                                                                && updateLetterheadImage.ReviewStatus <= ReviewStatus.Draft
+                                                                letterheadImage => letterheadImage.Id == letterheadImageFormUpdate.Id
+                                                                && letterheadImage.DeleteStatus == DeleteStatus.NO
+                                                                && letterheadImage.ReviewStatus <= ReviewStatus.Draft
                                                             );
                 if (letterheadImageJournal != null)
                 {
@@ -209,7 +211,7 @@ namespace SealTypographicWebAPI.Services.Implements
                     responseViewModels.Add(response);
                 }
             }
-            //新增印鑑
+            //新增信頭圖像
             foreach (LetterheadImageForm letterheadImageForm in letterheadImageUpdate.CreateLetterheadImages)
             {
                 //這段之後會做成IMAGE64的處理並另存在指定的位置
@@ -218,7 +220,8 @@ namespace SealTypographicWebAPI.Services.Implements
                 {
                     LetterheadId = letterheadImageForm.LetterheadId,
                     SealMappingConfigId = letterheadImageForm.SealMappingConfigId,
-                    GroupCreateDate = letterheadImageUpdate.GroupCreateDate
+                    GroupCreateDate = letterheadImageUpdate.GroupCreateDate,
+                    Sequence = letterheadImageForm.Sequence
                 };
 
                 if (!CheckLetterheadImageRepeat(letterheadImageCheck, letterheadImageUpdate.DeleteLetterheadImageIds))
@@ -232,7 +235,7 @@ namespace SealTypographicWebAPI.Services.Implements
                 else
                 {
                     ResponseViewModel response = new();
-                    response.CreateLetterheadNumberRepeat();
+                    response.CreateLetterheadImageSequenceRepeat();
                     response.ErrorItem = "Create LetterheadId:" + letterheadImageForm.LetterheadId
                                        + " SealMappingConfigId:" + letterheadImageForm.SealMappingConfigId;
                     responseViewModels.Add(response);
@@ -275,7 +278,7 @@ namespace SealTypographicWebAPI.Services.Implements
         }
 
         /// <summary>
-        /// 變更此群組群組創建日期的信頭圖片審核為作廢(啟用)
+        /// 變更此群組群組創建日期的信頭圖片審核為作廢
         /// </summary>
         /// <param name="letterheadImageGroupCreateDateSearch">會計師簽印群組創建日期</param>        
         public ResponseViewModel UpdateReviewStatusInvalidLetterheadImages(LetterheadImageGroupCreateDateSearch letterheadImageGroupCreateDateSearch)
