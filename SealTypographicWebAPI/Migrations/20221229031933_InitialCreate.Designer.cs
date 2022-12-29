@@ -11,7 +11,7 @@ using SealTypographicWebAPI.Entities;
 namespace SealTypographicWebAPI.Migrations
 {
     [DbContext(typeof(SealTypographicDbContext))]
-    [Migration("20221228020323_InitialCreate")]
+    [Migration("20221229031933_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

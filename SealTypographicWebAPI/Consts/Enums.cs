@@ -1,4 +1,6 @@
-﻿namespace SealTypographicWebAPI.Consts
+﻿using System.ComponentModel;
+
+namespace SealTypographicWebAPI.Consts
 {
     /// <summary>
     /// 客戶、會計師、印鑑、簽名的狀態
@@ -13,36 +15,43 @@
         /// <summary>
         /// 通過(審核完成)(啟用)
         /// </summary>
+        [Description("通過")]
         Approval = 0,
 
         /// <summary>
         /// 啟用
         /// </summary>
+        [Description("啟用")]
         Activated = 1,
 
         /// <summary>
         /// 未啟用
         /// </summary>
+        [Description("未啟用")]
         NotActivated = 2,
 
         /// <summary>
         /// 退件
         /// </summary>
+        [Description("退件")]
         Reject = 10,
 
         /// <summary>
         /// 草稿
         /// </summary>
+        [Description("草稿")]
         Draft = 20,
 
         /// <summary>
         /// 待審
         /// </summary>
+        [Description("待審")]
         Pending = 30,
 
         /// <summary>
         /// 作廢
         /// </summary>
+        [Description("作廢")]
         Invalid = 40,
     }
 
@@ -111,21 +120,5 @@
         /// 信頭
         /// </summary>
         Letterhead = 3,
-    }
-
-    /// <summary>
-    /// Db處理資料動作方式
-    /// </summary>
-    public enum DbActionMode : byte
-    {
-        /// <summary>
-        /// 建檔
-        /// </summary>
-        Create = 0,
-
-        /// <summary>
-        /// 更新檔案
-        /// </summary>
-        Update = 1,
     }
 }

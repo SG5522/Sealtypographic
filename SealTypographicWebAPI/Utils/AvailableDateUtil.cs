@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.SignalR;
-using SealTypographicWebAPI.Consts;
-using SealTypographicWebAPI.Models;
+﻿using SealTypographicWebAPI.Consts;
 
 namespace SealTypographicWebAPI.Utils
 {

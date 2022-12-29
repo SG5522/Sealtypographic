@@ -183,8 +183,8 @@ namespace SealTypographicWebAPI.Entities
             {
                 Id = 1,
                 AccountantGroupNumber = "NO000",
-                CreateDate = DateTime.Parse("0001/01/01 00:00:00"),
-                UpdateDate = DateTime.Parse("0001/01/01 00:00:00"),
+                //CreateDate = DateTime.Parse("0001/01/01 00:00:00"),
+                //UpdateDate = DateTime.Parse("0001/01/01 00:00:00"),
                 CreateUserId = 0,
                 UpdateUserId = 0,
                 DeleteStatus = 0,

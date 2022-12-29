@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using EFCore.BulkExtensions;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Extensions;
 using SealTypographicWebAPI.Consts;
 using SealTypographicWebAPI.Entities;
 using SealTypographicWebAPI.Models;
@@ -36,7 +37,7 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <param name="customerId">客戶ID</param>        
         /// <returns></returns>
         public CustomerSealQuarterViews GetCustomerSealQuarters(int customerId)
-        {
+        {            
             CustomerSealQuarterViews customerSealQuarters = new();
             List<CustomerSealQuarterView> customerSealQuarterQuery = dbContext.CustomerSealJournals
                                            .Where
