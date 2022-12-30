@@ -1,8 +1,6 @@
-﻿using SealTypographicWebAPI.Models;
-using SealTypographicWebAPI.Util;
-using SixLabors.ImageSharp;
+﻿using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Formats;
-using System.Drawing.Imaging;
+
 
 namespace SealTypographicWebAPI.Utils
 {

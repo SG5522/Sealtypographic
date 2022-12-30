@@ -302,7 +302,7 @@ namespace SealTypographicWebAPI.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "AccountantSingLocaltions",
+                name: "AccountantSignLocaltions",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
@@ -321,15 +321,15 @@ namespace SealTypographicWebAPI.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_AccountantSingLocaltions", x => x.Id);
+                    table.PrimaryKey("PK_AccountantSignLocaltions", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_AccountantSingLocaltions_AccountantSignJournals_AccountantSignJournalId",
+                        name: "FK_AccountantSignLocaltions_AccountantSignJournals_AccountantSignJournalId",
                         column: x => x.AccountantSignJournalId,
                         principalTable: "AccountantSignJournals",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_AccountantSingLocaltions_TypographicPages_TypographicPageId",
+                        name: "FK_AccountantSignLocaltions_TypographicPages_TypographicPageId",
                         column: x => x.TypographicPageId,
                         principalTable: "TypographicPages",
                         principalColumn: "Id",
@@ -487,13 +487,13 @@ namespace SealTypographicWebAPI.Migrations
                 column: "SealMappingConfigId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_AccountantSingLocaltions_AccountantSignJournalId",
-                table: "AccountantSingLocaltions",
+                name: "IX_AccountantSignLocaltions_AccountantSignJournalId",
+                table: "AccountantSignLocaltions",
                 column: "AccountantSignJournalId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_AccountantSingLocaltions_TypographicPageId",
-                table: "AccountantSingLocaltions",
+                name: "IX_AccountantSignLocaltions_TypographicPageId",
+                table: "AccountantSignLocaltions",
                 column: "TypographicPageId");
 
             migrationBuilder.CreateIndex(
@@ -556,7 +556,7 @@ namespace SealTypographicWebAPI.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "AccountantSingLocaltions");
+                name: "AccountantSignLocaltions");
 
             migrationBuilder.DropTable(
                 name: "CustomerSealLocaltions");

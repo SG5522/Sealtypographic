@@ -65,7 +65,7 @@ namespace SealTypographicWebAPI.Entities
         /// <summary>
         /// 會計師印鑑簽名ID
         /// </summary>
-        public DbSet<AccountantSingLocation> AccountantSingLocaltions { get; set; }
+        public DbSet<AccountantSignLocation> AccountantSignLocaltions { get; set; }
 
         /// <summary>
         /// 信頭圖片排版位置

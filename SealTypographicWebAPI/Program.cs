@@ -7,7 +7,6 @@ using Microsoft.EntityFrameworkCore;
 using Serilog;
 using SealTypographicWebAPI.Services.Implements;
 using SealTypographicWebAPI.Config;
-using Microsoft.Extensions.Hosting;
 
 string allowSpecificOrigins = "allowSpecificOrigins";
 string allowAllOrigins = "allowSpecificOrigins";

@@ -128,7 +128,7 @@ namespace SealTypographicWebAPI.Config
 
             CreateMap<TypographicPageForm, TypographicPage>();
             CreateMap<CustomerSealLocationForm, CustomerSealLocation>();
-            CreateMap<AccountantSingLocationForm, AccountantSingLocation>();
+            CreateMap<AccountantSingLocationForm, AccountantSignLocation>();
             CreateMap<LetterheadImageLocationForm, LetterheadImageLocation>();
 
 

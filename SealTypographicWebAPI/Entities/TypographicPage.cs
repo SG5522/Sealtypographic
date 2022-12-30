@@ -31,7 +31,7 @@ namespace SealTypographicWebAPI.Entities
         /// <summary>
         /// 會計師印鑑簽名排版位置
         /// </summary>
-        public List<AccountantSingLocation> AccountantSingLocaltions { get; set; }
+        public List<AccountantSignLocation> AccountantSignLocaltions { get; set; }
 
         /// <summary>
         /// 信頭圖片排版位置

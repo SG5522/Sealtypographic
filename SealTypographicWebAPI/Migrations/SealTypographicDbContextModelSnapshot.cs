@@ -161,7 +161,7 @@ namespace SealTypographicWebAPI.Migrations
                     b.ToTable("AccountantSignJournals");
                 });
 
-            modelBuilder.Entity("SealTypographicWebAPI.Entities.AccountantSingLocation", b =>
+            modelBuilder.Entity("SealTypographicWebAPI.Entities.AccountantSignLocation", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -206,7 +206,7 @@ namespace SealTypographicWebAPI.Migrations
 
                     b.HasIndex("TypographicPageId");
 
-                    b.ToTable("AccountantSingLocaltions");
+                    b.ToTable("AccountantSignLocaltions");
                 });
 
             modelBuilder.Entity("SealTypographicWebAPI.Entities.Customer", b =>
@@ -778,7 +778,7 @@ namespace SealTypographicWebAPI.Migrations
                     b.Navigation("SealMappingConfig");
                 });
 
-            modelBuilder.Entity("SealTypographicWebAPI.Entities.AccountantSingLocation", b =>
+            modelBuilder.Entity("SealTypographicWebAPI.Entities.AccountantSignLocation", b =>
                 {
                     b.HasOne("SealTypographicWebAPI.Entities.AccountantSignJournal", "AccountantSignJournal")
                         .WithMany()
@@ -787,7 +787,7 @@ namespace SealTypographicWebAPI.Migrations
                         .IsRequired();
 
                     b.HasOne("SealTypographicWebAPI.Entities.TypographicPage", "TypographicPage")
-                        .WithMany("AccountantSingLocaltions")
+                        .WithMany("AccountantSignLocaltions")
                         .HasForeignKey("TypographicPageId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -926,7 +926,7 @@ namespace SealTypographicWebAPI.Migrations
 
             modelBuilder.Entity("SealTypographicWebAPI.Entities.TypographicPage", b =>
                 {
-                    b.Navigation("AccountantSingLocaltions");
+                    b.Navigation("AccountantSignLocaltions");
 
                     b.Navigation("CustomerSealLocaltions");
 
