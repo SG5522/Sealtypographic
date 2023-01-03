@@ -2,7 +2,9 @@
 using SealTypographicWebAPI.Services;
 using SealTypographicWebAPI.Models;
 using Microsoft.Extensions.Options;
-using SealTypographicWebAPI.Utils;
+using DJLib;
+using DJLib.Models;
+using SealTypographicWebAPI.Consts;
 
 namespace SealTypographicWebAPI.Controllers
 {
@@ -14,19 +16,21 @@ namespace SealTypographicWebAPI.Controllers
     [ApiController]
     public class ImageController : ControllerBase
     {
-        private readonly ScanConfigPath _scanConfig;
+        private readonly SealConfigPath sealConfig;
 
-        private readonly ImageSharpService imageService;
+        private readonly ImageSharpService imageSharpService;
+
+
 
         /// <summary>
         /// 注入appsetting的ScanConfigPath資料
         /// </summary>
         /// <param name="options"></param>
-        /// <param name="imageService"></param>
-        public ImageController(IOptionsMonitor<ScanConfigPath> options, ImageSharpService imageService)
+        /// <param name="imageSharpService"></param>
+        public ImageController(IOptionsMonitor<SealConfigPath> options, ImageSharpService imageSharpService)
         {
-            _scanConfig = options.CurrentValue;
-            this.imageService = imageService;
+            sealConfig = options.CurrentValue;            
+            this.imageSharpService = imageSharpService;
         }
        
         /// <summary>
@@ -43,6 +47,28 @@ namespace SealTypographicWebAPI.Controllers
 
             return ImageSharpUtil.PathImageFileToBase64(imagePath);
 
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="imagePathtest"></param>
+        [HttpGet("imagePathtest")]
+        public void Test(string imagePathtest)
+        {
+            
+            imagePathtest = @"C:\\DJimage\\TmpScanImage\\3010017_2208191313553_F.jpg";
+            SealConfigPath sealConfigPath = sealConfig;            
+
+            string base64 = ImageSharpUtil.PathImageFileToBase64(imagePathtest);
+            imageSharpService.SaveBase64ToFile(SealType.Customer, base64, "AAA000");
+            //SaveImageInfo saveImageInfo = new()
+            //{
+            //    Filename = "test.jpg",
+            //    Folder = sealConfigPath.SealImagePath + sealConfigPath.Customer
+            //};
+
+            //ImageSharpUtil.Base64ToSaveImage(base64, saveImageInfo);
         }
     }
 }

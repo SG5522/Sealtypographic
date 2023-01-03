@@ -29,15 +29,15 @@ namespace SealTypographicWebAPI.Services
         /// </summary>
         /// <param name="uploadScanForms">上傳資料</param>
         /// <returns></returns>
-        public ResponseViewModel SaveImageBase64(List<UploadScanForm> uploadScanForms)
-        {            
-            foreach(UploadScanForm uploadScanForm in uploadScanForms)
-            {
-                SaveImageInfo saveImageInfo = GetSaveImageInfo(uploadScanForm.SealType, uploadScanForm.ClientFileName);
-                imageSharpService.Base64ToSaveImage(uploadScanForm.ImageBase64, saveImageInfo);
-            }
-            return new();
-        }
+        //public ResponseViewModel SaveImageBase64(List<UploadScanForm> uploadScanForms)
+        //{            
+        //    foreach(UploadScanForm uploadScanForm in uploadScanForms)
+        //    {
+        //        SaveImageInfo saveImageInfo = GetSaveImageInfo(uploadScanForm.SealType, uploadScanForm.ClientFileName);
+        //        imageSharpService.Base64ToSaveImage(uploadScanForm.ImageBase64, saveImageInfo);
+        //    }
+        //    return new();
+        //}
 
         /// <summary>
         /// 上傳圖檔(IFormFile)
@@ -45,38 +45,38 @@ namespace SealTypographicWebAPI.Services
         /// <param name="formFiles"></param>
         /// <param name="uploadType"></param>        
         /// <returns></returns>
-        public ResponseViewModel SaveImageIFormFile(int uploadType, List<IFormFile> formFiles)
-        {
-            foreach (IFormFile formFile in formFiles)
-            {
-                SaveImageInfo saveImageInfo = GetSaveImageInfo((SealType)uploadType, formFile.FileName);
-                imageSharpService.IFromToSaveImage(formFile, saveImageInfo);
-            }
-            return new();
-        }
+        //public ResponseViewModel SaveImageIFormFile(int uploadType, List<IFormFile> formFiles)
+        //{
+        //    foreach (IFormFile formFile in formFiles)
+        //    {
+        //        SaveImageInfo saveImageInfo = GetSaveImageInfo((SealType)uploadType, formFile.FileName);
+        //        imageSharpService.IFromToSaveImage(formFile, saveImageInfo);
+        //    }
+        //    return new();
+        //}
 
-        private SaveImageInfo GetSaveImageInfo(SealType sealType, string clientFileName)
-        {
-            SaveImageInfo saveScanForm = new();
-            string targetFolder = DateTime.Now.ToString("yyyy") + "/" + DateTime.Now.ToString("MM") + "/" + DateTime.Now.ToString("dd") + "/";
-            string fileName = clientFileName; //暫時使用來源資料之後會變動為SERVER上的名稱
-            switch (sealType)
-            {
-                case SealType.Customer :                    
-                    saveScanForm.Folder = scanConfig.ScanImagePath + scanConfig.CustomerFolder + targetFolder;
-                    break;
-                case SealType.Accountant:
-                    saveScanForm.Folder = scanConfig.ScanImagePath + scanConfig.AccountantFolder + targetFolder;
-                    break;
-                case SealType.Letterhead:
-                    saveScanForm.Folder = scanConfig.ScanImagePath + scanConfig.LetterheadFolder + targetFolder;
-                    break;
-            }
-            FolderUtil.CheckFolder(saveScanForm.Folder);
-            saveScanForm.Filename = fileName;
+        //private SaveImageInfo GetSaveImageInfo(SealType sealType, string clientFileName)
+        //{
+        //    SaveImageInfo saveScanForm = new();
+        //    string targetFolder = DateTime.Now.ToString("yyyy") + "/" + DateTime.Now.ToString("MM") + "/" + DateTime.Now.ToString("dd") + "/";
+        //    string fileName = clientFileName; //暫時使用來源資料之後會變動為SERVER上的名稱
+        //    switch (sealType)
+        //    {
+        //        case SealType.Customer :                    
+        //            saveScanForm.Folder = scanConfig.ScanImagePath + scanConfig.CustomerFolder + targetFolder;
+        //            break;
+        //        case SealType.Accountant:
+        //            saveScanForm.Folder = scanConfig.ScanImagePath + scanConfig.AccountantFolder + targetFolder;
+        //            break;
+        //        case SealType.Letterhead:
+        //            saveScanForm.Folder = scanConfig.ScanImagePath + scanConfig.LetterheadFolder + targetFolder;
+        //            break;
+        //    }
+        //    FolderUtil.CheckFolder(saveScanForm.Folder);
+        //    saveScanForm.Filename = fileName;
 
-            return saveScanForm;
-        }
+        //    return saveScanForm;
+        //}
         
     }
 }

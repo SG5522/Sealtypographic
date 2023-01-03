@@ -162,20 +162,6 @@ namespace SealTypographicWebAPI.Entities
                 SealType = SealType.Accountant,
                 SubId = "accountantOther",
                 Name = "其他"
-            },
-            new SealMappingConfig
-            {
-                Id = 11,
-                SealType = SealType.Letterhead,
-                SubId = "letterheadLogo",
-                Name = "信頭商標"
-            },
-            new SealMappingConfig
-            {
-                Id = 12,
-                SealType = SealType.Letterhead,
-                SubId = "letterheadAddress",
-                Name = "信頭地址"
             });
 
             //建立DB前先建置AccountantGroup無群組資料

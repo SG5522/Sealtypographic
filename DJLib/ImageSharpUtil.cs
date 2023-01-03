@@ -1,8 +1,10 @@
 ﻿using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Formats;
+using DJLib.Models;
+using System;
+using System.IO;
 
-
-namespace SealTypographicWebAPI.Utils
+namespace DJLib
 {
     /// <summary>
     /// 圖片處理
@@ -29,6 +31,40 @@ namespace SealTypographicWebAPI.Utils
         {
             Image image = Image.Load(fullPath, out IImageFormat format);
             return ImageToBase64(image, format);
+        }
+
+        /// <summary>
+        /// Base64轉圖存檔
+        /// </summary>
+        /// <param name="ImageBase64">BASE64圖檔字串</param>
+        /// <param name="saveImageInfo">存檔資訊</param>        
+        /// <returns></returns>
+        public static void Base64ToSaveImage(string ImageBase64, SaveImageInfo saveImageInfo)
+        {
+            string base64string = ImageBase64.Substring(ImageBase64.IndexOf("base64,") + 7);
+            byte[] bytes = Convert.FromBase64String(base64string);
+            Image image = Image.Load(bytes, out IImageFormat format);
+            SaveImageFile(image, format, saveImageInfo);
+        }
+
+        private static void SaveImageFile(Image image, IImageFormat format, SaveImageInfo saveScanForm)
+        {
+            if (!Directory.Exists(saveScanForm.Folder))
+            {
+                Directory.CreateDirectory(saveScanForm.Folder);
+            }
+            switch (format.Name)
+            {
+                case "BMP":
+                    image.SaveAsBmp(saveScanForm.Folder + saveScanForm.Filename + ".bmp");
+                    break;
+                case "JPEG":
+                    image.SaveAsJpeg(saveScanForm.Folder + saveScanForm.Filename + ".jpg");
+                    break;
+                case "PNG":
+                    image.SaveAsPng(saveScanForm.Folder + saveScanForm.Filename + "png");
+                    break;                                   
+            }
         }
     }
 }

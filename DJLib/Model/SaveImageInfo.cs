@@ -1,4 +1,4 @@
-﻿namespace SealTypographicWebAPI.Models
+﻿namespace DJLib.Models
 {
     /// <summary>
     /// 存到SERVER端

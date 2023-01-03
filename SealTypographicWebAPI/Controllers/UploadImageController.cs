@@ -38,10 +38,11 @@ namespace SealTypographicWebAPI.Controllers
         [Route("uploadScanForms")]        
         public ResponseViewModel PostImagebase64(List<UploadScanForm> uploadScanForms)
         {
+            ResponseViewModel response = new();
             try
             {
                 Log.Information("UploadImage post uploadScanForms input {@Input}", uploadScanForms);                
-                ResponseViewModel response = uploadService.SaveImageBase64(uploadScanForms);
+                //ResponseViewModel response = uploadService.SaveImageBase64(uploadScanForms);
                 Log.Information("UploadImage post uploadScanForms output {@Output}", response);
                 return response;
             }
@@ -62,10 +63,11 @@ namespace SealTypographicWebAPI.Controllers
         [Route("uploadIFormFiles")]
         public ResponseViewModel PostImage([FromForm]List<IFormFile> formFiles, int uploadType)
         {
+            ResponseViewModel response = new();
             try
             {
                 Log.Information("UploadImage post uploadScanForms input {@Input}", formFiles);
-                ResponseViewModel response = uploadService.SaveImageIFormFile(uploadType,formFiles);                    
+                //ResponseViewModel response = uploadService.SaveImageIFormFile(uploadType,formFiles);                    
                 Log.Information("UploadImage post uploadScanForms output {@Output}", response);
                 return response;                
             }

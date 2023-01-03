@@ -20,6 +20,9 @@ Log.Logger = new LoggerConfiguration()
 builder.Services.Configure<ScanConfigPath>(
     builder.Configuration.GetSection("ScanConfigPath"));
 
+builder.Services.Configure<SealConfigPath>(
+    builder.Configuration.GetSection("SealPath"));
+
 //addCors
 builder.Services.AddCors(options =>
 {
