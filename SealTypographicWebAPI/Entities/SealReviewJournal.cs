@@ -5,10 +5,10 @@ namespace SealTypographicWebAPI.Entities
     /// <summary>
     /// 客戶印鑑組歷程資料表
     /// </summary>
-    public class CustomerSealJournal : BaseSealJournal
+    public class SealReviewJournal : BaseReviewData
     {
         /// <summary>
-        /// 印鑑編號(排序) 1為起始
+        /// 印鑑編號(排序)
         /// </summary>
         public int Sequence { get; set; }
 
@@ -18,14 +18,14 @@ namespace SealTypographicWebAPI.Entities
         public string Quarter { get; set; }
 
         /// <summary>
-        /// 客戶ID
+        /// 印鑑歷程id
         /// </summary>
-        public int CustomerId { get; set; }
+        public int SealJournalId { get; set; }
 
         /// <summary>
         /// 客戶資料表
         /// </summary>
-        public Customer Customer { get; set; }
+        public SealJournal SealJournal { get; set; }
 
     }
 }

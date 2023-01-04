@@ -66,7 +66,7 @@ namespace SealTypographicWebAPI.Services.Implements
                 customerQuery = customerQuery.Where
                     (
                         customer =>
-                        customer.CustomerNumber.ToLower().Contains(customerSearch.CustomerNumberOrName.ToLower())
+                        customer.Code.ToLower().Contains(customerSearch.CustomerNumberOrName.ToLower())
                         || customer.Name.Contains(customerSearch.CustomerNumberOrName)                       
                     );
             }
@@ -114,7 +114,7 @@ namespace SealTypographicWebAPI.Services.Implements
             CreateCustomerResponse createCustomerResponse = new();
             int userid = 0; //帳號驗證取得ID
             IQueryable<Customer> customerQuery = dbContext.Customers
-                                .Where(customer => customer.CustomerNumber == customerForm.CustomerNumber);
+                                .Where(customer => customer.Code == customerForm.Code);
 
             if (!customerQuery.Any())
             {
@@ -125,7 +125,7 @@ namespace SealTypographicWebAPI.Services.Implements
 
                 //回傳剛建立的客戶基本資料 使建立客戶印鑑找到該ID
                 Customer? customer = dbContext.Customers
-                                    .FirstOrDefault(customer => customer.CustomerNumber == customerForm.CustomerNumber);
+                                    .FirstOrDefault(customer => customer.Code == customerForm.Code);
                                      
                 if (customer != null) 
                 {

@@ -34,18 +34,19 @@ namespace SealTypographicWebAPI.Migrations
                 {
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
+                    Code = table.Column<string>(type: "TEXT", nullable: false),
                     President = table.Column<string>(type: "TEXT", nullable: false),
-                    CustomerNumber = table.Column<string>(type: "TEXT", nullable: false),
                     BAN = table.Column<string>(type: "TEXT", nullable: false),
                     StockCode = table.Column<string>(type: "TEXT", nullable: false),
+                    PostalCode = table.Column<string>(type: "TEXT", nullable: false),
                     AddressCity = table.Column<string>(type: "TEXT", nullable: false),
-                    AddressCityArea = table.Column<string>(type: "TEXT", nullable: false),
+                    AddressArea = table.Column<string>(type: "TEXT", nullable: false),
                     AddressStreet = table.Column<string>(type: "TEXT", nullable: false),
                     AddressLocate = table.Column<string>(type: "TEXT", nullable: false),
+                    ContactName = table.Column<string>(type: "TEXT", nullable: true),
+                    ContactTitle = table.Column<string>(type: "TEXT", nullable: true),
                     Telephone = table.Column<string>(type: "TEXT", nullable: false),
                     Fax = table.Column<string>(type: "TEXT", nullable: true),
-                    ContactPerson = table.Column<string>(type: "TEXT", nullable: true),
-                    ContactTitle = table.Column<string>(type: "TEXT", nullable: true),
                     CreateDate = table.Column<DateTime>(type: "TEXT", nullable: false),
                     UpdateDate = table.Column<DateTime>(type: "TEXT", nullable: false),
                     CreateUserId = table.Column<int>(type: "INTEGER", nullable: false),
@@ -277,6 +278,43 @@ namespace SealTypographicWebAPI.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "SealJournals",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    SealMappingConfigType = table.Column<int>(type: "INTEGER", nullable: false),
+                    ImagePath = table.Column<string>(type: "TEXT", nullable: false),
+                    CustomerId = table.Column<int>(type: "INTEGER", nullable: true),
+                    AccountantId = table.Column<int>(type: "INTEGER", nullable: true),
+                    LetterheadId = table.Column<int>(type: "INTEGER", nullable: true),
+                    CreateDate = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    UpdateDate = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    CreateUserId = table.Column<int>(type: "INTEGER", nullable: false),
+                    UpdateUserId = table.Column<int>(type: "INTEGER", nullable: false),
+                    DeleteStatus = table.Column<byte>(type: "INTEGER", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_SealJournals", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_SealJournals_Accountants_AccountantId",
+                        column: x => x.AccountantId,
+                        principalTable: "Accountants",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_SealJournals_Customers_CustomerId",
+                        column: x => x.CustomerId,
+                        principalTable: "Customers",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_SealJournals_Letterheads_LetterheadId",
+                        column: x => x.LetterheadId,
+                        principalTable: "Letterheads",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "TypographicPages",
                 columns: table => new
                 {
@@ -297,6 +335,37 @@ namespace SealTypographicWebAPI.Migrations
                         name: "FK_TypographicPages_TypographicPDFs_TypographicPDFId",
                         column: x => x.TypographicPDFId,
                         principalTable: "TypographicPDFs",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "SealReviewJournals",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Sequence = table.Column<int>(type: "INTEGER", nullable: false),
+                    Quarter = table.Column<string>(type: "TEXT", nullable: false),
+                    SealJournalId = table.Column<int>(type: "INTEGER", nullable: false),
+                    CreateDate = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    UpdateDate = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    CreateUserId = table.Column<int>(type: "INTEGER", nullable: false),
+                    UpdateUserId = table.Column<int>(type: "INTEGER", nullable: false),
+                    DeleteStatus = table.Column<byte>(type: "INTEGER", nullable: false),
+                    ReviewUserId = table.Column<int>(type: "INTEGER", nullable: true),
+                    ReviewDate = table.Column<DateTime>(type: "TEXT", nullable: true),
+                    StartDate = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    EndDate = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    ReviewStatus = table.Column<sbyte>(type: "INTEGER", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_SealReviewJournals", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_SealReviewJournals_SealJournals_SealJournalId",
+                        column: x => x.SealJournalId,
+                        principalTable: "SealJournals",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -461,16 +530,6 @@ namespace SealTypographicWebAPI.Migrations
                 columns: new[] { "Id", "Name", "SealType", "SubId" },
                 values: new object[] { 10, "其他", (byte)2, "accountantOther" });
 
-            migrationBuilder.InsertData(
-                table: "SealMappingConfigs",
-                columns: new[] { "Id", "Name", "SealType", "SubId" },
-                values: new object[] { 11, "信頭商標", (byte)3, "letterheadLogo" });
-
-            migrationBuilder.InsertData(
-                table: "SealMappingConfigs",
-                columns: new[] { "Id", "Name", "SealType", "SubId" },
-                values: new object[] { 12, "信頭地址", (byte)3, "letterheadAddress" });
-
             migrationBuilder.CreateIndex(
                 name: "IX_Accountants_AccountantGroupId",
                 table: "Accountants",
@@ -537,9 +596,30 @@ namespace SealTypographicWebAPI.Migrations
                 column: "TypographicPageId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_SealJournals_AccountantId",
+                table: "SealJournals",
+                column: "AccountantId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_SealJournals_CustomerId",
+                table: "SealJournals",
+                column: "CustomerId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_SealJournals_LetterheadId",
+                table: "SealJournals",
+                column: "LetterheadId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_SealMappingConfigs_SubId",
                 table: "SealMappingConfigs",
                 column: "SubId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_SealReviewJournals_SealJournalId",
+                table: "SealReviewJournals",
+                column: "SealJournalId",
                 unique: true);
 
             migrationBuilder.CreateIndex(
@@ -565,6 +645,9 @@ namespace SealTypographicWebAPI.Migrations
                 name: "LetterheadImageLocaltions");
 
             migrationBuilder.DropTable(
+                name: "SealReviewJournals");
+
+            migrationBuilder.DropTable(
                 name: "Users");
 
             migrationBuilder.DropTable(
@@ -580,10 +663,7 @@ namespace SealTypographicWebAPI.Migrations
                 name: "TypographicPages");
 
             migrationBuilder.DropTable(
-                name: "Accountants");
-
-            migrationBuilder.DropTable(
-                name: "Letterheads");
+                name: "SealJournals");
 
             migrationBuilder.DropTable(
                 name: "SealMappingConfigs");
@@ -592,10 +672,16 @@ namespace SealTypographicWebAPI.Migrations
                 name: "TypographicPDFs");
 
             migrationBuilder.DropTable(
-                name: "AccountantGroups");
+                name: "Accountants");
+
+            migrationBuilder.DropTable(
+                name: "Letterheads");
 
             migrationBuilder.DropTable(
                 name: "Customers");
+
+            migrationBuilder.DropTable(
+                name: "AccountantGroups");
         }
     }
 }

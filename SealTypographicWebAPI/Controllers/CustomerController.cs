@@ -55,21 +55,21 @@ namespace SealTypographicWebAPI.Controllers
         /// <summary>
         /// 取得客戶基本資料
         /// </summary>
-        /// <param name="Customerid">顧客ID</param>
+        /// <param name="customerId">顧客ID</param>
         /// <returns></returns>
-        [HttpGet("{Customerid}")]
-        public CustomerDetailViewModel Get(int Customerid)
+        [HttpGet("{customerId}")]
+        public CustomerDetailViewModel Get(int customerId)
         {
             CustomerDetailViewModel customerDetailViewModel = new();
             try
             {
-                Log.Information("Customer get{Customerid} input {@Input}", Customerid);
-                customerDetailViewModel = customerService.GetCustomerDetailViewModel(Customerid);
-                Log.Information("Customer get{Customerid} output {@Output}", customerDetailViewModel);                
+                Log.Information("Customer get{customerId} input {@Input}", customerId);
+                customerDetailViewModel = customerService.GetCustomerDetailViewModel(customerId);
+                Log.Information("Customer get{customerId} output {@Output}", customerDetailViewModel);                
             }
             catch (Exception ex)
             {
-                Log.Error("Customer get{Customerid} error {@Error}", ex);                
+                Log.Error("Customer get{customerId} error {@Error}", ex);                
                 customerDetailViewModel.DbError();                
             }
             return customerDetailViewModel;

@@ -47,22 +47,31 @@ namespace DJLib
             SaveImageFile(image, format, saveImageInfo);
         }
 
-        private static void SaveImageFile(Image image, IImageFormat format, SaveImageInfo saveScanForm)
-        {
-            if (!Directory.Exists(saveScanForm.Folder))
+        /// <summary>
+        /// 存檔
+        /// </summary>
+        /// <param name="image">影像</param>
+        /// <param name="format">格式</param>
+        /// <param name="saveImageInfo">存檔資訊</param>
+        private static void SaveImageFile(Image image, IImageFormat format, SaveImageInfo saveImageInfo)
+        {            
+            if (!Directory.Exists(saveImageInfo.Folder))
             {
-                Directory.CreateDirectory(saveScanForm.Folder);
-            }
+                Directory.CreateDirectory(saveImageInfo.Folder);
+            }            
             switch (format.Name)
             {
                 case "BMP":
-                    image.SaveAsBmp(saveScanForm.Folder + saveScanForm.Filename + ".bmp");
+                    saveImageInfo.Filename += ".bmp";
+                    image.SaveAsBmp(saveImageInfo.Folder + saveImageInfo.Filename);                    
                     break;
                 case "JPEG":
-                    image.SaveAsJpeg(saveScanForm.Folder + saveScanForm.Filename + ".jpg");
+                    saveImageInfo.Filename += ".jpg";
+                    image.SaveAsJpeg(saveImageInfo.Folder + saveImageInfo.Filename);
                     break;
                 case "PNG":
-                    image.SaveAsPng(saveScanForm.Folder + saveScanForm.Filename + "png");
+                    saveImageInfo.Filename += ".png";
+                    image.SaveAsPng(saveImageInfo.Folder + saveImageInfo.Filename);
                     break;                                   
             }
         }

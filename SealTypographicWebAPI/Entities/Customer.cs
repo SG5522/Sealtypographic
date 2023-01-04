@@ -7,13 +7,14 @@ namespace SealTypographicWebAPI.Entities
     /// </summary>        
     public class Customer : BaseNameData
     {
-        /// 公司負責人
-        public string President { get; set; }
-
         /// <summary>
         /// 客戶編號
         /// </summary>
-        public string CustomerNumber { get; set; }
+        public string Code { get; set; }
+
+        /// 公司負責人
+        public string President { get; set; }
+
         /// <summary>
         /// 統一編號 (business administration number)
         /// </summary>
@@ -25,6 +26,11 @@ namespace SealTypographicWebAPI.Entities
         public string StockCode { get; set; }
 
         /// <summary>
+        /// 郵遞區號
+        /// </summary>
+        public string PostalCode { get; set; }
+
+        /// <summary>
         /// 地址：城市
         /// </summary>
         public string AddressCity { get; set; }
@@ -32,7 +38,7 @@ namespace SealTypographicWebAPI.Entities
         /// <summary>
         /// 地址：市區
         /// </summary>
-        public string AddressCityArea { get; set; }
+        public string AddressArea { get; set; }
 
         /// <summary>
         /// 地址：路街
@@ -45,6 +51,16 @@ namespace SealTypographicWebAPI.Entities
         public string AddressLocate { get; set; }
 
         /// <summary>
+        /// 聯絡人
+        /// </summary>
+        public string? ContactName { get; set; }
+
+        /// <summary>
+        /// 聯絡人職稱
+        /// </summary>
+        public string? ContactTitle { get; set; }
+
+        /// <summary>
         /// 電話
         /// </summary>
         public string Telephone { get; set; }
@@ -55,14 +71,9 @@ namespace SealTypographicWebAPI.Entities
         public string? Fax { get; set; }
 
         /// <summary>
-        /// 聯絡人
+        /// 印鑑歷程表
         /// </summary>
-        public string? ContactPerson { get; set; }
-
-        /// <summary>
-        /// 聯絡人職稱
-        /// </summary>
-        public string? ContactTitle { get; set; }
+        public List<SealJournal> SealJournals { get; set; }
 
         /// <summary>
         /// 客戶印鑑資料(歷程)

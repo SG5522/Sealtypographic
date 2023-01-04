@@ -45,7 +45,7 @@ namespace SealTypographicWebAPI.Services.Implements
                                                                     && customerSealJournal.Customer.DeleteStatus == DeleteStatus.NO
                                                                     && customerSealJournal.ReviewStatus == ReviewStatus.Pending
                                                                 )
-                                                                .OrderBy(customerSealJournal => customerSealJournal.Customer.CustomerNumber)
+                                                                .OrderBy(customerSealJournal => customerSealJournal.Customer.Code)
                                                                 .GroupBy(customerSealJournal => new { 
                                                                                                         customerSealJournal.CustomerId,
                                                                                                         customerSealJournal.Quarter,                                                                                                        

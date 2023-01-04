@@ -6,7 +6,7 @@ namespace SealTypographicWebAPI.Entities
     /// <summary>
     /// 會計師印鑑簽名組歷程資料表
     /// </summary>
-    public class AccountantSignJournal : SealJournal
+    public class AccountantSignJournal : BaseSealJournal
     {      
         /// <summary>
         /// 會計師ID

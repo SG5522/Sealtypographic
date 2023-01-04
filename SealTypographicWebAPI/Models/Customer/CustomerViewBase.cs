@@ -18,7 +18,7 @@ namespace SealTypographicWebAPI.Models.Customer
         /// </summary>
         /// <example>AAA001</example>
         [Required]        
-        public string CustomerNumber { get; set; }
+        public string Code { get; set; }
 
     }
 }

@@ -20,7 +20,7 @@ namespace SealTypographicWebAPI.Models.Customer
         /// <example>AAA001</example>
         [Required]
         [RegularExpression(@"^[a-zA-Z0-9]*$")]
-        public string CustomerNumber { get; set; }
+        public string Code { get; set; }
 
         /// <summary>
         /// 統一編號 (business administration number)
@@ -36,6 +36,12 @@ namespace SealTypographicWebAPI.Models.Customer
         [RegularExpression(@"^[0-9]*$")]
         public string StockCode { get; set; }
 
+        /// <summary>
+        /// 郵遞區號
+        /// </summary>
+        [StringLength(6)]
+        [RegularExpression(@"^[0-9]*$")]
+        public string PostalCode { get; set; }
 
         /// <summary>
         /// 地址：城市
@@ -47,7 +53,7 @@ namespace SealTypographicWebAPI.Models.Customer
         /// 地址：市區
         /// </summary>
         /// <example>大同區</example>
-        public string AddressCityArea { get; set; }
+        public string AddressArea { get; set; }
 
         /// <summary>
         /// 地址：路街
@@ -79,7 +85,7 @@ namespace SealTypographicWebAPI.Models.Customer
         /// 聯絡人
         /// </summary>
         /// <example>映先生</example>
-        public string? ContactPerson { get; set; }
+        public string? ContactName { get; set; }
 
         /// <summary>
         /// 聯絡人職稱

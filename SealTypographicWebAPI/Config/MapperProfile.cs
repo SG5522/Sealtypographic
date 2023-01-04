@@ -40,6 +40,12 @@ namespace SealTypographicWebAPI.Config
                     .ForMember(x => x.ImagePath, y => y.Ignore()) // <---ImagePath要額外處理所以要忽略
                     .ReverseMap();
 
+            CreateMap<CustomerSealForm, SealJournal>()
+                    .ForMember(x => x.ImagePath, y => y.Ignore()) // <---ImagePath要額外處理所以要忽略
+                    .ReverseMap();
+
+            CreateMap<CustomerSealForm, SealReviewJournal>();                    
+
             CreateMap<CustomerSealFormUpdate, CustomerSealJournal>()
                     .ForMember(x => x.ImagePath, y => y.Ignore()) // <---ImagePath要額外處理所以要忽略
                     .ReverseMap();
@@ -52,7 +58,7 @@ namespace SealTypographicWebAPI.Config
             CreateMap<CustomerSealJournal, CustomerSealReviewViewModel>()
                     .ForMember(x => x.Id, y => y.MapFrom(o => o.Customer.Id))
                     .ForMember(x => x.Name, y => y.MapFrom(o => o.Customer.Name))
-                    .ForMember(x => x.CustomerNumber, y => y.MapFrom(o => o.Customer.CustomerNumber))
+                    .ForMember(x => x.CustomerNumber, y => y.MapFrom(o => o.Customer.Code))
                     .ForMember(x => x.BAN, y => y.MapFrom(o => o.Customer.BAN))
                     .ReverseMap();
 

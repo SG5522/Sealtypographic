@@ -1,4 +1,6 @@
 ﻿
+using System.ComponentModel.DataAnnotations;
+
 namespace SealTypographicWebAPI.Models.Customer
 {
     /// <summary>
@@ -17,6 +19,11 @@ namespace SealTypographicWebAPI.Models.Customer
         /// <example>9666</example>
         public string StockCode { get; set; }
 
+        /// <summary>
+        /// 郵遞區號
+        /// </summary>
+        /// <example>123</example>
+        public string PostalCode { get; set; }
 
         /// <summary>
         /// 地址：城市
@@ -28,7 +35,7 @@ namespace SealTypographicWebAPI.Models.Customer
         /// 地址：市區
         /// </summary>
         /// <example>大同區</example>
-        public string AddressCityArea { get; set; }
+        public string AddressArea { get; set; }
 
         /// <summary>
         /// 地址：路街
@@ -54,12 +61,10 @@ namespace SealTypographicWebAPI.Models.Customer
         /// <example>28825252</example>
         public string Fax { get; set; }
 
-
-
         /// <summary>
         /// 聯絡人
         /// </summary>
-        public string? ContactPerson { get; set; }
+        public string? ContactName { get; set; }
 
         /// <summary>
         /// 聯絡人職稱

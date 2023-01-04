@@ -12,6 +12,17 @@ namespace SealTypographicWebAPI.Entities
         /// 顧客資料表
         /// </summary>
         public DbSet<Customer> Customers { get; set; }
+
+        /// <summary>
+        /// 印鑑歷程資料表
+        /// </summary>
+        public DbSet<SealJournal> SealJournals { get; set; }
+
+        /// <summary>
+        /// 印鑑審查歷程資料表
+        /// </summary>
+        public DbSet<SealReviewJournal> SealReviewJournals { get; set; }
+
         /// <summary>
         /// 顧客印鑑歷程資料表
         /// </summary>
