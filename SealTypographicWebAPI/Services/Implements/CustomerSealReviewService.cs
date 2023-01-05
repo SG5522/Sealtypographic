@@ -95,14 +95,13 @@ namespace SealTypographicWebAPI.Services.Implements
             Customer? customerQuery = dbContext.Customers.Find(customerSealQuarter.CustomerId);
             if(customerQuery != null) 
             {
-                IQueryable<CustomerSealJournal> customerSealJournalQuery = dbContext.CustomerSealJournals
-                                                                            .Include(customerSealJournal => customerSealJournal.SealMappingConfig)
+                IQueryable<CustomerSealJournal> customerSealJournalQuery = dbContext.CustomerSealJournals                                                                            
                                                                             .Where
                                                                             (
                                                                                 customerSealJournal => customerSealJournal.CustomerId == customerSealQuarter.CustomerId
                                                                                 && customerSealJournal.Quarter == customerSealQuarter.Quarter
                                                                             )
-                                                                            .OrderBy(customerSealJournal => customerSealJournal.SealMappingConfigId)
+                                                                            .OrderBy(customerSealJournal => customerSealJournal.ConfigType)
                                                                             .ThenBy(customerSealJournal => customerSealJournal.Sequence);
                 if(customerSealJournalQuery.Any())
                 {                    

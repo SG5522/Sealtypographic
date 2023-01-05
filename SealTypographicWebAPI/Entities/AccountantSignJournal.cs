@@ -19,6 +19,11 @@ namespace SealTypographicWebAPI.Entities
         public DateTime GroupCreateDate { get; set; }
 
         /// <summary>
+        /// 簽印配置類別
+        /// </summary>
+        public AccountantSignConfigType ConfigType { get; set; }
+
+        /// <summary>
         /// 會計師資料表
         /// </summary>
         public Accountant Accountant { get; set; }

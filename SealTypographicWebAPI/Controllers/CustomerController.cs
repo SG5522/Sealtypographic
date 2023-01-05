@@ -63,13 +63,13 @@ namespace SealTypographicWebAPI.Controllers
             CustomerDetailViewModel customerDetailViewModel = new();
             try
             {
-                Log.Information("Customer get{customerId} input {@Input}", customerId);
+                Log.Information("Customer get customerId input {@Input}", customerId);
                 customerDetailViewModel = customerService.GetCustomerDetailViewModel(customerId);
-                Log.Information("Customer get{customerId} output {@Output}", customerDetailViewModel);                
+                Log.Information("Customer get customerId output {@Output}", customerDetailViewModel);                
             }
             catch (Exception ex)
             {
-                Log.Error("Customer get{customerId} error {@Error}", ex);                
+                Log.Error("Customer get customerId error {@Error}", ex);                
                 customerDetailViewModel.DbError();                
             }
             return customerDetailViewModel;

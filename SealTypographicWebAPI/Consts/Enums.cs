@@ -125,6 +125,78 @@ namespace SealTypographicWebAPI.Consts
     }
 
     /// <summary>
+    /// 客戶印鑑類別類別
+    /// </summary>
+    public enum CustomerSealConfigType
+    {
+        /// <summary>
+        /// 公司章
+        /// </summary>
+        [Description("CompanySeal")]
+        CompanySeal = 1,
+
+        /// <summary>
+        /// 負責人
+        /// </summary>
+        [Description("CeoSeal")]
+        CeoSeal = 2,
+
+        /// <summary>
+        /// 經理
+        /// </summary>
+        [Description("ManagerSeal")]
+        ManagerSeal = 3,
+
+        /// <summary>
+        /// 會計主管
+        /// </summary>
+        [Description("AccountantDirectorSeal")]
+        AccountantDirectorSeal = 4,
+
+        /// <summary>
+        /// 其他
+        /// </summary>
+        [Description("CustomerOther")]
+        CustomerOther = 5,
+    }
+
+    /// <summary>
+    /// 客戶印鑑類別類別
+    /// </summary>
+    public enum AccountantSignConfigType
+    {
+        /// <summary>
+        /// 會計師印鑑
+        /// </summary>
+        [Description("AccountantSeal")]
+        AccountantSeal = 1,
+
+        /// <summary>
+        /// 中文簽名
+        /// </summary>
+        [Description("AccountantCHSign")]
+        AccountantCHSign = 2,
+
+        /// <summary>
+        /// 英文簽名
+        /// </summary>
+        [Description("AccountantENSign")]
+        AccountantENSign = 3,
+
+        /// <summary>
+        /// 舊式簽名
+        /// </summary>
+        [Description("AccountantOldSign")]
+        AccountantOldSign = 4,
+
+        /// <summary>
+        /// 其他
+        /// </summary>
+        [Description("AccountantOther")]
+        AccountantOther = 5,
+    }
+
+    /// <summary>
     /// 印鑑Or 簽印種類
     /// </summary>
     public enum SealMappingConfigType 

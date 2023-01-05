@@ -16,16 +16,26 @@ namespace SealTypographicWebAPI.Entities
         /// 印鑑季度
         /// </summary>
         public string Quarter { get; set; }
+        
+        ///// <summary>
+        ///// 印鑑Id
+        ///// </summary>
+        //public int CustomerSealJournalId { get; set; }
 
         /// <summary>
-        /// 印鑑歷程id
+        /// 客戶印鑑歷程表
         /// </summary>
-        public int SealJournalId { get; set; }
+        public CustomerSealJournal? CustomerSealJournal { get; set; }
 
         /// <summary>
-        /// 客戶資料表
+        /// 會計簽印歷程表
         /// </summary>
-        public SealJournal SealJournal { get; set; }
+        public AccountantSignJournal? AccountantSignJournal { get; set; }
+
+        /// <summary>
+        /// 信頭圖片歷程表
+        /// </summary>
+        public LetterheadImageJournal? LetterheadImageJournal { get; set; }
 
     }
 }

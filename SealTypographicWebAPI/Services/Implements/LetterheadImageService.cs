@@ -85,9 +85,7 @@ namespace SealTypographicWebAPI.Services.Implements
                                                                         && letterheadImageJournal.GroupCreateDate == letterheadGroupCreateDateSearch.GroupCreateDate
                                                                         && letterheadImageJournal.DeleteStatus == DeleteStatus.NO
                                                                     )
-                                                                    .Include(letterheadImageJournal => letterheadImageJournal.SealMappingConfig)
-                                                                    .OrderBy(letterheadImageJournal => letterheadImageJournal.SealMappingConfigId)
-                                                                    .ThenBy(letterheadImageJournal => letterheadImageJournal.Sequence)
+                                                                    .OrderBy(letterheadImageJournal => letterheadImageJournal.Sequence)
                                                                     .ToList();
             if (letterheadImageQuery.Any())
             {
@@ -322,8 +320,7 @@ namespace SealTypographicWebAPI.Services.Implements
             LetterheadImageJournal? LetterheadImageQuery = dbContext.LetterheadImageJournals
                                                         .FirstOrDefault
                                                         (
-                                                            letterheadImage => letterheadImage.LetterheadId == ltterheadImageCheck.LetterheadId
-                                                            && letterheadImage.SealMappingConfigId == ltterheadImageCheck.SealMappingConfigId
+                                                            letterheadImage => letterheadImage.Letterhead.Id == ltterheadImageCheck.LetterheadId                                                            
                                                             && letterheadImage.GroupCreateDate == ltterheadImageCheck.GroupCreateDate
                                                             && letterheadImage.Sequence == ltterheadImageCheck.Sequence
                                                             && letterheadImage.DeleteStatus == DeleteStatus.NO

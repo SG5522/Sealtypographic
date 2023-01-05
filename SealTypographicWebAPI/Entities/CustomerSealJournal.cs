@@ -1,4 +1,5 @@
-﻿using SealTypographicWebAPI.Entities.BaseEntities;
+﻿using SealTypographicWebAPI.Consts;
+using SealTypographicWebAPI.Entities.BaseEntities;
 
 namespace SealTypographicWebAPI.Entities
 {
@@ -16,6 +17,11 @@ namespace SealTypographicWebAPI.Entities
         /// 印鑑季度
         /// </summary>
         public string Quarter { get; set; }
+
+        /// <summary>
+        /// 印鑑配置類別
+        /// </summary>
+        public CustomerSealConfigType ConfigType { get; set; }
 
         /// <summary>
         /// 客戶ID

@@ -84,9 +84,8 @@ namespace SealTypographicWebAPI.Services.Implements
                                                                         && accountantSignJournal.DeleteStatus == DeleteStatus.NO
                                                                         && accountantSignJournal.GroupCreateDate == accountantSignGroupCreateDateSearch.GroupCreateDate
                                                                         && accountantSignJournal.ReviewStatus <= ReviewStatus.Draft
-                                                                    )
-                                                                    .Include(accountantSignJournal => accountantSignJournal.SealMappingConfig)
-                                                                    .OrderBy(accountantSignJournal => accountantSignJournal.SealMappingConfigId)
+                                                                    )                                                                    
+                                                                    .OrderBy(accountantSignJournal => accountantSignJournal.ConfigType)
                                                                     .ToList();
 
             if (accountantSignJournalQuery.Any())
@@ -323,7 +322,7 @@ namespace SealTypographicWebAPI.Services.Implements
                                                         .FirstOrDefault
                                                         (
                                                             accountantSign => accountantSign.AccountantId == accountantSignCheck.AccountantId
-                                                            && accountantSign.SealMappingConfigId == accountantSignCheck.SealMappingConfigId
+                                                            && accountantSign.ConfigType == (AccountantSignConfigType)accountantSignCheck.SealMappingConfigId
                                                             && accountantSign.GroupCreateDate == accountantSignCheck.GroupCreateDate
                                                             && accountantSign.DeleteStatus == DeleteStatus.NO
                                                             && accountantSign.ReviewStatus <= ReviewStatus.Pending       

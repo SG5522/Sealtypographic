@@ -39,9 +39,9 @@ namespace SealTypographicWebAPI.Controllers
             CustomerSealQuarterViews customerSealQuarters = new ();
             try
             {
-                Log.Information("CustomerSeal get{customerId} input {@Input}", customerId);
+                Log.Information("CustomerSeal get customerId input {@Input}", customerId);
                 customerSealQuarters = customerSealService.GetCustomerSealQuarters(customerId);
-                Log.Information("CustomerSeal get{customerId} output {@Output}", customerSealQuarters);                
+                Log.Information("CustomerSeal get customerId output {@Output}", customerSealQuarters);                
             }
             catch (Exception ex)
             {
@@ -62,9 +62,9 @@ namespace SealTypographicWebAPI.Controllers
             CustomerSealViewModels customerSealViewModels = new();
             try
             {
-                Log.Information("CustomerSeal get[FromQuery] input {@Input}", customerSealQuarter);
+                Log.Information("CustomerSeal get input {@Input}", customerSealQuarter);
                 customerSealViewModels = customerSealService.GetCustomerSealViewModels(customerSealQuarter);
-                Log.Information("CustomerSeal get[FromQuery] output {@Output}", customerSealViewModels);                
+                Log.Information("CustomerSeal get output {@Output}", customerSealViewModels);                
             }
             catch (Exception ex)
             {
