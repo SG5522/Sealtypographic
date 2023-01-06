@@ -36,13 +36,17 @@ namespace SealTypographicWebAPI.Config
                     .ForMember(x => x.ImageBase64, y => y.Ignore()) // <---imagebase64要額外處理所以要忽略
                     .ReverseMap();
 
+            CreateMap<SealReviewJournal, CustomerSealViewModel>()
+                    .ForMember(x => x.ImageBase64, y => y.Ignore()) // <---imagebase64要額外處理所以要忽略
+                    .ReverseMap();
+
             CreateMap<CustomerSealForm, CustomerSealJournal>()
                     .ForMember(x => x.ImagePath, y => y.Ignore()) // <---ImagePath要額外處理所以要忽略
                     .ReverseMap();
 
-            CreateMap<CustomerSealForm, SealJournal>()
-                    .ForMember(x => x.ImagePath, y => y.Ignore()) // <---ImagePath要額外處理所以要忽略
-                    .ReverseMap();
+            //CreateMap<CustomerSealForm, SealJournal>()
+            //        .ForMember(x => x.ImagePath, y => y.Ignore()) // <---ImagePath要額外處理所以要忽略
+            //        .ReverseMap();
 
             CreateMap<CustomerSealForm, SealReviewJournal>();                    
 

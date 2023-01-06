@@ -12,16 +12,13 @@ namespace SealTypographicWebAPI.Models.Customer
         /// 客戶Id
         /// </summary>
         /// <example>1</example>
-        [Required]
         public int CustomerId { get; set; }
 
         /// <summary>
         /// 印鑑季度
         /// </summary>
-        /// <example>111YQ1</example>
-        [Required]
-        [RegularExpression(@"^[a-zA-Z0-9]*$")]
-        public string Quarter { get; set; }
+        /// <example>111Q1</example>
+        public string? Quarter { get; set; }
 
         /// <summary>
         /// 印鑑審查狀態

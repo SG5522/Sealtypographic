@@ -43,12 +43,12 @@ namespace SealTypographicWebAPI.Services.Implements
                                                                 (
                                                                     customerSealJournal => customerSealJournal.DeleteStatus == DeleteStatus.NO                                                                    
                                                                     && customerSealJournal.Customer.DeleteStatus == DeleteStatus.NO
-                                                                    && customerSealJournal.ReviewStatus == ReviewStatus.Pending
+                                                                    //&& customerSealJournal.ReviewStatus == ReviewStatus.Pending
                                                                 )
                                                                 .OrderBy(customerSealJournal => customerSealJournal.Customer.Code)
                                                                 .GroupBy(customerSealJournal => new { 
                                                                                                         customerSealJournal.CustomerId,
-                                                                                                        customerSealJournal.Quarter,                                                                                                        
+                                                                                                        //customerSealJournal.Quarter,                                                                                                        
                                                                                                     })
                                                                 .Select(customerSealJournal => customerSealJournal.First())
                                                                 .ToList();
@@ -62,7 +62,7 @@ namespace SealTypographicWebAPI.Services.Implements
                 foreach (CustomerSealJournal customerSealJournal in thisPageCustomerSealJournals)
                 {
                     CustomerSealReviewViewModel customerSealReviewViewModel = mapper.Map<CustomerSealReviewViewModel>(customerSealJournal);
-                    customerSealReviewViewModel.ReviewStatus = ReviewStatusUtil.Get(customerSealJournal.ReviewStatus);
+                    //customerSealReviewViewModel.ReviewStatus = ReviewStatusUtil.Get(customerSealJournal.ReviewStatus);
                     customerSealReviewViewModels.Add(customerSealReviewViewModel);
                 }
 
@@ -99,10 +99,10 @@ namespace SealTypographicWebAPI.Services.Implements
                                                                             .Where
                                                                             (
                                                                                 customerSealJournal => customerSealJournal.CustomerId == customerSealQuarter.CustomerId
-                                                                                && customerSealJournal.Quarter == customerSealQuarter.Quarter
+                                                                                //&& customerSealJournal.Quarter == customerSealQuarter.Quarter
                                                                             )
                                                                             .OrderBy(customerSealJournal => customerSealJournal.ConfigType)
-                                                                            .ThenBy(customerSealJournal => customerSealJournal.Sequence);
+                                                                            .ThenBy(customerSealJournal => customerSealJournal.SealReviewJournal.Sequence);
                 if(customerSealJournalQuery.Any())
                 {                    
                     foreach (CustomerSealJournal customerSealJournal in customerSealJournalQuery)
@@ -161,9 +161,9 @@ namespace SealTypographicWebAPI.Services.Implements
                 CustomerSealJournal? customerSealJournal = dbContext.CustomerSealJournals.Find(customerSealJournalId);
                 if (customerSealJournal != null)
                 {
-                    customerSealJournal.ReviewUserId = 1; //之後要調整從驗證帳號中取得ID
-                    customerSealJournal.ReviewStatus = reviewStatus;
-                    customerSealJournal.ReviewDate = DateTime.Now;
+                    //customerSealJournal.ReviewUserId = 1; //之後要調整從驗證帳號中取得ID
+                    //customerSealJournal.ReviewStatus = reviewStatus;
+                    //customerSealJournal.ReviewDate = DateTime.Now;
                 }
                 else
                 {

@@ -71,11 +71,6 @@ namespace SealTypographicWebAPI.Entities
         public string? Fax { get; set; }
 
         /// <summary>
-        /// 印鑑歷程表
-        /// </summary>
-        public List<SealJournal> SealJournals { get; set; }
-
-        /// <summary>
         /// 客戶印鑑資料(歷程)
         /// </summary>
         public List<CustomerSealJournal> CustomerSealJournals { get; set; }

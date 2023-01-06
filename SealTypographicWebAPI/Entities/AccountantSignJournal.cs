@@ -27,5 +27,10 @@ namespace SealTypographicWebAPI.Entities
         /// 會計師資料表
         /// </summary>
         public Accountant Accountant { get; set; }
+
+        /// <summary>
+        /// 印鑑組歷程資料表
+        /// </summary>
+        public SealReviewJournal SealReviewJournal { get; set; }
     }
 }

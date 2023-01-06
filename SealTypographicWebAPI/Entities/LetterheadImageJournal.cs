@@ -27,5 +27,9 @@ namespace SealTypographicWebAPI.Entities
         /// </summary>
         public Letterhead Letterhead { get; set; }
 
+        /// <summary>
+        /// 印鑑組歷程資料表
+        /// </summary>
+        public SealReviewJournal SealReviewJournal { get; set; }
     }
 }

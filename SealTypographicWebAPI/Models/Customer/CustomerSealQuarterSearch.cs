@@ -17,7 +17,7 @@ namespace SealTypographicWebAPI.Models.Customer
         /// <summary>
         /// 印鑑季度
         /// </summary>
-        /// <example>111YQ1</example>
+        /// <example>111Q1</example>
         [Required]
         [RegularExpression(@"^[a-zA-Z0-9]*$")]
         public string Quarter { get; set; }

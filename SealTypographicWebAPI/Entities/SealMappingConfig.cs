@@ -31,11 +31,6 @@ namespace SealTypographicWebAPI.Entities
         public string Name { get; set; }
 
         /// <summary>
-        /// 客戶印鑑組歷程資料表
-        /// </summary>
-        public List<CustomerSealJournal> CustomerSealJournals { get; set; }
-
-        /// <summary>
         /// 會計師印鑑簽名組歷程資料表
         /// </summary>
         public List<AccountantSignJournal> AccountantSignJournals { get; set; }

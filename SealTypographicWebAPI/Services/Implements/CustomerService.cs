@@ -58,8 +58,7 @@ namespace SealTypographicWebAPI.Services.Implements
         {
             CustomerPaginateViewModel customerPaginateViewModel = new();
             List<CustomerViewModel> customerViewModels = new();
-            IQueryable<Customer> customerQuery = dbContext.Customers.Where(customer => customer.DeleteStatus == DeleteStatus.NO)
-                                                .Include(customer => customer.CustomerSealJournals);
+            IQueryable<Customer> customerQuery = dbContext.Customers.Where(customer => customer.DeleteStatus == DeleteStatus.NO);                                                
             
             if (!string.IsNullOrWhiteSpace(customerSearch.CustomerNumberOrName))
             {
@@ -83,10 +82,22 @@ namespace SealTypographicWebAPI.Services.Implements
                 foreach (Customer customerBase in pageNumberCustomers)
                 {
                     CustomerViewModel customerViewModel = mapper.Map<CustomerViewModel>(customerBase);
-                    if(customerBase.CustomerSealJournals.Count > 0)
-                    {                        
-                        customerViewModel.Quarter = customerBase.CustomerSealJournals.Max(x => x.Quarter);
+                    string? Quarter = dbContext.SealReviewJournals.Where
+                                        (
+                                            x => x.CustomerSealJournal.CustomerId == customerBase.Id
+                                        ).Max(x => x.Quarter);
+                    if(Quarter != null)
+                    {
+                        customerViewModel.Quarter = Quarter;
                     }
+                    //if (customerBase.CustomerSealJournals.Count > 0)
+                    //{
+                    //    string? Quarter = dbContext.SealReviewJournals.Where
+                    //                    (
+                    //                        x => x.CustomerSealJournal.CustomerId == customerBase.Id
+                    //                    ).Max(x => x.Quarter);                        
+                        
+                    //}
                     customerViewModels.Add(customerViewModel);
                 }
                 customerPaginateViewModel.ViewModels = customerViewModels;
