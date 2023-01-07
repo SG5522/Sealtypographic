@@ -10,7 +10,7 @@ namespace SealTypographicWebAPI.Entities
         /// <summary>
         /// 會計編號
         /// </summary>
-        public string AccountantNumber { get; set; }
+        public string Code { get; set; }
 
         /// <summary>
         /// 會計師群組ID

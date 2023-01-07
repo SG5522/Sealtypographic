@@ -10,7 +10,7 @@ namespace SealTypographicWebAPI.Entities
         /// <summary>
         /// 信頭編號
         /// </summary>
-        public string LetterheadNumber { get; set; }
+        public string Code { get; set; }
 
         /// <summary>
         /// 信頭圖片資料(歷程)

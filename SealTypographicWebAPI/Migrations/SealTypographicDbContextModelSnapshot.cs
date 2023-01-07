@@ -26,7 +26,7 @@ namespace SealTypographicWebAPI.Migrations
                     b.Property<int>("AccountantGroupId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("AccountantNumber")
+                    b.Property<string>("Code")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
@@ -124,30 +124,12 @@ namespace SealTypographicWebAPI.Migrations
                     b.Property<byte>("DeleteStatus")
                         .HasColumnType("INTEGER");
 
-                    b.Property<DateTime>("EndDate")
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime>("GroupCreateDate")
-                        .HasColumnType("TEXT");
-
                     b.Property<string>("ImagePath")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<DateTime?>("ReviewDate")
-                        .HasColumnType("TEXT");
-
-                    b.Property<sbyte>("ReviewStatus")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int?>("ReviewUserId")
-                        .HasColumnType("INTEGER");
-
                     b.Property<int?>("SealMappingConfigId")
                         .HasColumnType("INTEGER");
-
-                    b.Property<DateTime>("StartDate")
-                        .HasColumnType("TEXT");
 
                     b.Property<DateTime>("UpdateDate")
                         .HasColumnType("TEXT");
@@ -219,23 +201,18 @@ namespace SealTypographicWebAPI.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("AddressArea")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("AddressCity")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("AddressLocate")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("AddressStreet")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("BAN")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Code")
@@ -265,19 +242,18 @@ namespace SealTypographicWebAPI.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("PostalCode")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("President")
-                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("ShortName")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("StockCode")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Telephone")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime>("UpdateDate")
@@ -383,6 +359,10 @@ namespace SealTypographicWebAPI.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
                     b.Property<DateTime>("CreateDate")
                         .HasColumnType("TEXT");
 
@@ -391,10 +371,6 @@ namespace SealTypographicWebAPI.Migrations
 
                     b.Property<byte>("DeleteStatus")
                         .HasColumnType("INTEGER");
-
-                    b.Property<string>("LetterheadNumber")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -426,12 +402,6 @@ namespace SealTypographicWebAPI.Migrations
                     b.Property<byte>("DeleteStatus")
                         .HasColumnType("INTEGER");
 
-                    b.Property<DateTime>("EndDate")
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime>("GroupCreateDate")
-                        .HasColumnType("TEXT");
-
                     b.Property<string>("ImagePath")
                         .IsRequired()
                         .HasColumnType("TEXT");
@@ -439,23 +409,8 @@ namespace SealTypographicWebAPI.Migrations
                     b.Property<int>("LetterheadId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<DateTime?>("ReviewDate")
-                        .HasColumnType("TEXT");
-
-                    b.Property<sbyte>("ReviewStatus")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int?>("ReviewUserId")
-                        .HasColumnType("INTEGER");
-
                     b.Property<int?>("SealMappingConfigId")
                         .HasColumnType("INTEGER");
-
-                    b.Property<int>("Sequence")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<DateTime>("StartDate")
-                        .HasColumnType("TEXT");
 
                     b.Property<DateTime>("UpdateDate")
                         .HasColumnType("TEXT");

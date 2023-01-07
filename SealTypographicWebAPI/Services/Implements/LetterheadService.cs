@@ -68,7 +68,7 @@ namespace SealTypographicWebAPI.Services.Implements
                 letterheadQuery = letterheadQuery.Where
                                 (
                                     letterhead =>
-                                    letterhead.LetterheadNumber.ToLower().Contains(letterheadSearch.LetterheadOrName.ToLower())
+                                    letterhead.Code.ToLower().Contains(letterheadSearch.LetterheadOrName.ToLower())
                                     && letterhead.Name.Contains(letterheadSearch.LetterheadOrName)
                                 );
             }
@@ -86,10 +86,12 @@ namespace SealTypographicWebAPI.Services.Implements
                 foreach (Letterhead letterheadData in pageNumberLetterheads)
                 {
                     LetterheadViewModel letterheadViewModel = mapper.Map<LetterheadViewModel>(letterheadData);
-                    
+
                     if (letterheadData.LetterheadImageJournals.Count > 0)
                     {
-                        letterheadViewModel.GroupCreateDate = letterheadData.LetterheadImageJournals.Max(x => x.GroupCreateDate);
+                        letterheadViewModel.GroupCreateDate = dbContext.SealReviewJournals
+                                                            .Where(x => x.LetterheadImageJournal.LetterheadId == letterheadData.Id)
+                                                            .Max(x => x.CreateDate);
                     }
                     letterheadViewModels.Add(letterheadViewModel);
                 }
@@ -118,7 +120,7 @@ namespace SealTypographicWebAPI.Services.Implements
             LetterheadCreateResponse response = new();
             int userId = 0;//帳號驗證取得Id
             IQueryable<Letterhead> letterheadQuery = dbContext.Letterheads
-                    .Where(letterhead => letterhead.LetterheadNumber == letterheadForm.LetterheadNumber);
+                    .Where(letterhead => letterhead.Code == letterheadForm.LetterheadNumber);
 
             if(!letterheadQuery.Any())
             {
@@ -128,7 +130,7 @@ namespace SealTypographicWebAPI.Services.Implements
                 dbContext.SaveChanges();
                 //回傳剛建立的信頭基本資料 使建立信頭圖片時找到該ID
                 Letterhead? letterhead = dbContext.Letterheads
-                                        .FirstOrDefault(letterhead => letterhead.LetterheadNumber == letterheadForm.LetterheadNumber);              
+                                        .FirstOrDefault(letterhead => letterhead.Code == letterheadForm.LetterheadNumber);              
                 
                 if (letterhead != null)
                 {

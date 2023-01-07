@@ -13,10 +13,6 @@ namespace SealTypographicWebAPI.Entities
         /// </summary>
         public int AccountantId { get; set; }
 
-        /// <summary>
-        /// 會計師簽印群組創建日期
-        /// </summary>
-        public DateTime GroupCreateDate { get; set; }
 
         /// <summary>
         /// 簽印配置類別

@@ -12,43 +12,48 @@ namespace SealTypographicWebAPI.Entities
         /// </summary>
         public string Code { get; set; }
 
+        /// <summary>
+        /// 簡稱
+        /// </summary>
+        public string? ShortName { get; set; }
+
         /// 公司負責人
-        public string President { get; set; }
+        public string? President { get; set; }
 
         /// <summary>
         /// 統一編號 (business administration number)
         /// </summary>
-        public string BAN { get; set; }
+        public string? BAN { get; set; }
 
         /// <summary>
         /// 證券代號
         /// </summary>
-        public string StockCode { get; set; }
+        public string? StockCode { get; set; }
 
         /// <summary>
         /// 郵遞區號
         /// </summary>
-        public string PostalCode { get; set; }
+        public string? PostalCode { get; set; }
 
         /// <summary>
         /// 地址：城市
         /// </summary>
-        public string AddressCity { get; set; }
+        public string? AddressCity { get; set; }
 
         /// <summary>
         /// 地址：市區
         /// </summary>
-        public string AddressArea { get; set; }
+        public string? AddressArea { get; set; }
 
         /// <summary>
         /// 地址：路街
         /// </summary>
-        public string AddressStreet { get; set; }
+        public string? AddressStreet { get; set; }
 
         /// <summary>
         /// 巷弄樓
         /// </summary>
-        public string AddressLocate { get; set; }
+        public string? AddressLocate { get; set; }
 
         /// <summary>
         /// 聯絡人
@@ -63,7 +68,7 @@ namespace SealTypographicWebAPI.Entities
         /// <summary>
         /// 電話
         /// </summary>
-        public string Telephone { get; set; }
+        public string? Telephone { get; set; }
 
         /// <summary>
         /// 傳真

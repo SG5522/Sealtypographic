@@ -111,21 +111,24 @@ namespace SealTypographicWebAPI.Consts
         /// <summary>
         /// 客戶
         /// </summary>        
+        [Description("Customer")]
         Customer = 1,
 
         /// <summary>
         /// 會計師
         /// </summary>
+        [Description("Accountant")]
         Accountant = 2,
 
         /// <summary>
         /// 信頭
         /// </summary>
+        [Description("Letterhead")]
         Letterhead = 3,
     }
 
     /// <summary>
-    /// 客戶印鑑類別類別
+    /// 客戶印鑑類別
     /// </summary>
     public enum CustomerSealConfigType
     {
@@ -133,35 +136,40 @@ namespace SealTypographicWebAPI.Consts
         /// 公司章
         /// </summary>
         [Description("CompanySeal")]
+        //[Description("公司章")]
         CompanySeal = 1,
 
         /// <summary>
         /// 負責人
         /// </summary>
         [Description("CeoSeal")]
+        //[Description("負責人")]
         CeoSeal = 2,
 
         /// <summary>
         /// 經理
         /// </summary>
         [Description("ManagerSeal")]
+       //[Description("經理")]
         ManagerSeal = 3,
 
         /// <summary>
         /// 會計主管
         /// </summary>
         [Description("AccountantDirectorSeal")]
+        //[Description("會計主管")]
         AccountantDirectorSeal = 4,
 
         /// <summary>
         /// 其他
         /// </summary>
         [Description("CustomerOther")]
+        //[Description("其他")]
         CustomerOther = 5,
     }
 
     /// <summary>
-    /// 客戶印鑑類別類別
+    /// 會計師簽印類別
     /// </summary>
     public enum AccountantSignConfigType
     {
@@ -169,98 +177,70 @@ namespace SealTypographicWebAPI.Consts
         /// 會計師印鑑
         /// </summary>
         [Description("AccountantSeal")]
+        //[Description("會計師印鑑")]
         AccountantSeal = 1,
 
         /// <summary>
         /// 中文簽名
         /// </summary>
         [Description("AccountantCHSign")]
+        //[Description("中文簽名")]
         AccountantCHSign = 2,
 
         /// <summary>
         /// 英文簽名
         /// </summary>
         [Description("AccountantENSign")]
+        ///[Description("英文簽名")]
         AccountantENSign = 3,
 
         /// <summary>
         /// 舊式簽名
         /// </summary>
         [Description("AccountantOldSign")]
+        //[Description("舊式簽名")]
         AccountantOldSign = 4,
 
         /// <summary>
         /// 其他
         /// </summary>
         [Description("AccountantOther")]
+        //[Description("其他")]
         AccountantOther = 5,
-    }
-
-    /// <summary>
-    /// 印鑑Or 簽印種類
-    /// </summary>
-    public enum SealMappingConfigType 
-    {
-        /// <summary>
-        /// 公司章
-        /// </summary>
-        [Description("CompanySeal")]
-        CompanySeal = 1,
-
-        /// <summary>
-        /// 負責人
-        /// </summary>
-        [Description("CeoSeal")]
-        CeoSeal = 2,
-
-        /// <summary>
-        /// 經理
-        /// </summary>
-        [Description("ManagerSeal")]
-        ManagerSeal = 3,
-
-        /// <summary>
-        /// 負責人
-        /// </summary>
-        [Description("AccountantDirectorSeal")]
-        AccountantDirectorSeal = 4,
-
-        /// <summary>
-        /// 其他
-        /// </summary>
-        [Description("CustomerOther")]
-        CustomerOther = 5,
-
-
 
         /// <summary>
         /// 會計師印鑑
         /// </summary>
-        [Description("AccountantSeal")]
-        AccountantSeal = 6,
+        //[Description("AccountantSeal")]
+        [Description("會計師印鑑")]
+        test1 = 6,
 
         /// <summary>
         /// 中文簽名
         /// </summary>
-        [Description("AccountantCHSign")]
-        AccountantCHSign = 7,
+        //[Description("AccountantCHSign")]
+        [Description("中文簽名")]
+        test2 = 7,
 
         /// <summary>
         /// 英文簽名
         /// </summary>
-        [Description("AccountantENSign")]
-        AccountantENSign = 8,
+        //[Description("AccountantENSign")]
+        [Description("英文簽名")]
+        test3 = 8,
 
         /// <summary>
         /// 舊式簽名
         /// </summary>
-        [Description("AccountantOldSign")]
-        AccountantOldSign = 9,
+        //[Description("AccountantOldSign")]
+        [Description("舊式簽名")]
+        test4 = 9,
 
         /// <summary>
         /// 其他
         /// </summary>
-        [Description("AccountantOther")]
-        AccountantOther = 10,
+        //[Description("AccountantOther")]
+        [Description("其他")]
+        test5 = 10,
     }
 }

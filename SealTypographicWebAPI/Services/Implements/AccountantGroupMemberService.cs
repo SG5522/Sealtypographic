@@ -54,7 +54,7 @@ namespace SealTypographicWebAPI.Services.Implements
                     accountantMembers.Add(new()
                     {
                         Id = accountant.Id,
-                        AccountantNumber = accountant.AccountantNumber,
+                        AccountantNumber = accountant.Code,
                         Name = accountant.Name,
                     });
                 }
@@ -92,7 +92,7 @@ namespace SealTypographicWebAPI.Services.Implements
             {
                 accountantQuery = accountantQuery.Where
                                 (
-                                    accountant => accountant.AccountantNumber.Contains(notThisGroupMemberSearch.AccountantNumberOrName)
+                                    accountant => accountant.Code.Contains(notThisGroupMemberSearch.AccountantNumberOrName)
                                     || accountant.Name.Contains(notThisGroupMemberSearch.AccountantNumberOrName)
                                 );
             }

@@ -82,22 +82,15 @@ namespace SealTypographicWebAPI.Services.Implements
                 foreach (Customer customerBase in pageNumberCustomers)
                 {
                     CustomerViewModel customerViewModel = mapper.Map<CustomerViewModel>(customerBase);
-                    string? Quarter = dbContext.SealReviewJournals.Where
-                                        (
-                                            x => x.CustomerSealJournal.CustomerId == customerBase.Id
-                                        ).Max(x => x.Quarter);
-                    if(Quarter != null)
+                    
+                    string? quarter = dbContext.SealReviewJournals
+                                    .Where(x => x.CustomerSealJournal.CustomerId == customerBase.Id)
+                                    .Max(x => x.Quarter);
+
+                    if (quarter != null)
                     {
-                        customerViewModel.Quarter = Quarter;
+                        customerViewModel.Quarter = quarter;
                     }
-                    //if (customerBase.CustomerSealJournals.Count > 0)
-                    //{
-                    //    string? Quarter = dbContext.SealReviewJournals.Where
-                    //                    (
-                    //                        x => x.CustomerSealJournal.CustomerId == customerBase.Id
-                    //                    ).Max(x => x.Quarter);                        
-                        
-                    //}
                     customerViewModels.Add(customerViewModel);
                 }
                 customerPaginateViewModel.ViewModels = customerViewModels;

@@ -5,9 +5,8 @@ using SealTypographicWebAPI.Consts;
 using SealTypographicWebAPI.Entities;
 using SealTypographicWebAPI.Models;
 using SealTypographicWebAPI.Models.Accountant;
-using SealTypographicWebAPI.Models.Customer;
+using SealTypographicWebAPI.Models.Letterhead;
 using SealTypographicWebAPI.Utils;
-using System.Collections.Generic;
 
 namespace SealTypographicWebAPI.Services.Implements
 {
@@ -16,17 +15,21 @@ namespace SealTypographicWebAPI.Services.Implements
     /// </summary>
     public class AcoountantSignService : IAccountantSignService
     {
-        private readonly SealTypographicDbContext dbContext;        
+        private readonly SealTypographicDbContext dbContext;
+        private readonly ImageSharpService imageSharpService;
         private readonly IMapper mapper;
         /// <summary>
         /// 取得DB與ResponseService
         /// </summary>
         /// <param name="dbContext"></param>        
         /// <param name="mapper"></param>
-        public AcoountantSignService(SealTypographicDbContext dbContext, IMapper mapper)
+        /// <param name="imageSharpService"></param>
+        public AcoountantSignService(SealTypographicDbContext dbContext, IMapper mapper, ImageSharpService imageSharpService)
         {
             this.dbContext = dbContext;            
             this.mapper = mapper;
+            this.imageSharpService = imageSharpService;
+
         }
 
         /// <summary>
@@ -37,21 +40,22 @@ namespace SealTypographicWebAPI.Services.Implements
         public AccountantSignGroupCreateDateViews GetAccountantWithGruopCreateDate(int accountantId)
         {
             AccountantSignGroupCreateDateViews accountantSignStartDates = new();
-            List<AccountantSignGroupCreateDateView> signGroupCreateDate = dbContext.AccountantSignJournals
+            List<AccountantSignGroupCreateDateView> signGroupCreateDate = dbContext.SealReviewJournals
                                            .Where
                                            (
-                                                accountantSignJournal => accountantSignJournal.AccountantId == accountantId
-                                                && accountantSignJournal.ReviewStatus <= ReviewStatus.Draft //暂存以下狀態過濾用
+                                                sealReviewJournal => sealReviewJournal.AccountantSignJournal.AccountantId == accountantId
+                                                && sealReviewJournal.ReviewStatus <= ReviewStatus.Draft
+                                                && sealReviewJournal.DeleteStatus == DeleteStatus.NO
                                            )
-                                           .Select(accountantSignJournal => new AccountantSignGroupCreateDateView()
+                                           .Select(sealReviewJournal => new AccountantSignGroupCreateDateView()
                                            {
-                                               AccountantId = accountantSignJournal.AccountantId,
-                                               GroupCreateDate = accountantSignJournal.GroupCreateDate,
-                                               ReviewStatus = accountantSignJournal.ReviewStatus
+                                               AccountantId = accountantId,
+                                               GroupCreateDate = sealReviewJournal.CreateDate,
+                                               ReviewStatus = sealReviewJournal.ReviewStatus
                                            })
-                                           .GroupBy(accountantSignJournal => accountantSignJournal.GroupCreateDate)
+                                           .GroupBy(accountantSignGroupCreateDateView => accountantSignGroupCreateDateView.GroupCreateDate)
                                            .OrderByDescending(g => g.Key)
-                                           .Select(accountantSignJournal => accountantSignJournal.First())
+                                           .Select(accountantSignGroupCreateDate => accountantSignGroupCreateDate.First())
                                            .ToList();
 
             if (signGroupCreateDate.Any())
@@ -75,28 +79,34 @@ namespace SealTypographicWebAPI.Services.Implements
         {
             AccountantSignViewModels signViewModels = new();
             List<AccountantSignViewModel> accountantSignViewModels = new();
+
             signViewModels.AccountantId = accountantSignGroupCreateDateSearch.AccountantId;
             signViewModels.GroupCreateDate = accountantSignGroupCreateDateSearch.GroupCreateDate;            
-            List<AccountantSignJournal> accountantSignJournalQuery = dbContext.AccountantSignJournals.Where
+            List<SealReviewJournal> sealReviewJournalQuery = dbContext.SealReviewJournals.Where
                                                                     (
                                                                         accountantSignJournal =>
-                                                                        accountantSignJournal.AccountantId == accountantSignGroupCreateDateSearch.AccountantId
+                                                                        accountantSignJournal.AccountantSignJournal.AccountantId == accountantSignGroupCreateDateSearch.AccountantId                                                                        
+                                                                        && accountantSignJournal.CreateDate == accountantSignGroupCreateDateSearch.GroupCreateDate
                                                                         && accountantSignJournal.DeleteStatus == DeleteStatus.NO
-                                                                        && accountantSignJournal.GroupCreateDate == accountantSignGroupCreateDateSearch.GroupCreateDate
                                                                         && accountantSignJournal.ReviewStatus <= ReviewStatus.Draft
-                                                                    )                                                                    
-                                                                    .OrderBy(accountantSignJournal => accountantSignJournal.ConfigType)
+                                                                    )
+                                                                    .Include(sealReviewJournal => sealReviewJournal.AccountantSignJournal)
+                                                                    .OrderBy(accountantSignJournal => accountantSignJournal.AccountantSignJournal.ConfigType)
                                                                     .ToList();
 
-            if (accountantSignJournalQuery.Any())
+            if (sealReviewJournalQuery.Any())
             {
-                foreach (AccountantSignJournal accountantSignJournal in accountantSignJournalQuery)
+                foreach (SealReviewJournal sealReviewJournal in sealReviewJournalQuery)
                 {
-                    AccountantSignViewModel customerSealViewModel = mapper.Map<AccountantSignViewModel>(accountantSignJournal);
-                    customerSealViewModel.ImageBase64 = accountantSignJournal.ImagePath; //之後會在做BASE64轉換
-                    accountantSignViewModels.Add(customerSealViewModel);
+                    AccountantSignViewModel accountantSignViewModel = mapper.Map<AccountantSignViewModel>(sealReviewJournal);                    
+                    //accountantSignViewModel.ImageBase64 = sealReviewJournal.AccountantSignJournal.ImagePath; //之後會在做BASE64轉換
+                    accountantSignViewModel.ImageBase64 = imageSharpService.GetPathToBase64(sealReviewJournal.AccountantSignJournal.ImagePath, SealType.Accountant); //資料庫取得圖檔路徑轉BASE64                   
+                    accountantSignViewModel.SealMappingConfigId = (int)sealReviewJournal.AccountantSignJournal.ConfigType;
+                    //accountantSignViewModel.SealMappingConfigName = EnumExtenstionUtil.GetDescription(sealReviewJournal.AccountantSignJournal.ConfigType);
+                    //accountantSignViewModel.SealMappingConfigSubId = EnumExtenstionUtil.GetDescription(sealReviewJournal.AccountantSignJournal.ConfigType -5);
+                    accountantSignViewModels.Add(accountantSignViewModel);
                 }
-                signViewModels.ReviewStatus = accountantSignJournalQuery.First().ReviewStatus;
+                signViewModels.ReviewStatus = sealReviewJournalQuery.First().ReviewStatus;
                 signViewModels.SignViewModels = accountantSignViewModels;
                 signViewModels.Success();
             }
@@ -111,37 +121,53 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <summary>
         /// 新增會計師簽印組
         /// </summary>
-        /// <param name="accountantSignPostDatas">簽名印鑑組</param>
+        /// <param name="accountantSigns">簽名印鑑組</param>
         /// <returns></returns>
-        public ResponseViewModel CreateAccountantSigns(List<AccountantSignForm> accountantSignPostDatas)
+        public ResponseViewModel CreateAccountantSigns(List<AccountantSignForm> accountantSigns)
         {
             ResponseViewModel response = new();
             List<AccountantSignJournal> accountantSignJournals = new();
             int userId = 0; //從帳號驗證取得Id
+
             //確認是否有一組草稿或待審的會計師簽印
-            AccountantSignJournal? accountantSignJournalQuery = dbContext.AccountantSignJournals
+            SealReviewJournal? sealReviewJournalQuery = dbContext.SealReviewJournals
                                 .FirstOrDefault
                                 (
-                                    x => x.AccountantId == accountantSignPostDatas.First().AccountantId
+                                    x => x.AccountantSignJournal.AccountantId == accountantSigns.First().AccountantId
                                     && x.ReviewStatus >= ReviewStatus.Draft
                                     && x.ReviewStatus <= ReviewStatus.Pending                                    
                                 );
-            if (accountantSignJournalQuery == null)
+            if (sealReviewJournalQuery == null)
             {
-                DateTime createNowTime = DateTime.Now;//將建立日期為依據將此次建立的會計師簽印組成為一組Group
-                foreach (AccountantSignForm accountantSignPostData in accountantSignPostDatas)
+                int count = 1;
+                ImageBase64Info imageBase64Info = new()
                 {
-                    //這段之後會做成IMAGE64的處理並另存在指定的位置
-                    string imagePath = accountantSignPostData.ImageBase64;
+                    Code = GetCode(accountantSigns.First().AccountantId),
+                    CreateTime = DateTime.Now,
+                    SealType = SealType.Accountant
+                };
 
-                    AccountantSignJournal accountantSignJournal = mapper.Map<AccountantSignJournal>(accountantSignPostData);
-                    accountantSignJournal.ImagePath = imagePath;
-                    accountantSignJournal.GroupCreateDate = createNowTime;
-                    BaseInputAccountantSignJournal(accountantSignJournal, true, userId);                                                            
-                    accountantSignJournals.Add(accountantSignJournal);
+                DateTime createNowTime = DateTime.Now;//將建立日期為依據將此次建立的會計師簽印組成為一組Group
+                foreach (AccountantSignForm accountantSign in accountantSigns)
+                {
+                    AccountantSignJournal accountantSignJournal = new();
+                    SealReviewJournal sealReviewJournal = new();
+                                        
+                    accountantSignJournal.AccountantId = accountantSign.AccountantId;
+                    accountantSignJournal.ConfigType = (AccountantSignConfigType)accountantSign.SealMappingConfigId;
+                    imageBase64Info.ImageBase64 = accountantSign.ImageBase64;
+                    accountantSignJournal.ImagePath = imageSharpService.SaveBase64ToFile(imageBase64Info, count);
+
+                    sealReviewJournal.CreateDate = createNowTime;
+
+                    BaseInputAccountantSignJournal(accountantSignJournal, true, userId);
+                    BaseInputSealReviewJournal(sealReviewJournal, true, userId);
+
+                    sealReviewJournal.AccountantSignJournal = accountantSignJournal;
+                    dbContext.SealReviewJournals.Add(sealReviewJournal);
                 }
-                dbContext.AccountantSignJournals.AddRange(accountantSignJournals);
-                dbContext.BulkSaveChanges();
+
+                dbContext.SaveChanges();
                 response.Success();
             }                   
             else
@@ -158,16 +184,26 @@ namespace SealTypographicWebAPI.Services.Implements
         public List<ResponseViewModel> UpdateAccountantSign(AccountantSignUpdate accountantSignUpdate)
         {
             List<ResponseViewModel> responseViewModels = new();
-            List<AccountantSignJournal> accountantSignJournals = new();
+            //List<AccountantSignJournal> accountantSignJournals = new();
             int userId = 0;//之後會從帳號驗證中取得userid
-            //刪除印鑑
-            foreach (int accountantSignId in accountantSignUpdate.DeleteAccountantSignIds)
+            int count = 1;
+            ImageBase64Info imageBase64Info = new()
             {
-                AccountantSignJournal? deleteAccountantSignQuery = dbContext.AccountantSignJournals.FirstOrDefault
+                Code = GetCode(accountantSignUpdate.AccountantId),
+                SealType = SealType.Accountant,
+                CreateTime = DateTime.Now,
+            };
+
+            //刪除印鑑
+            foreach (int sealReviewId in accountantSignUpdate.DeleteAccountantSignIds)
+            {
+                SealReviewJournal? deleteAccountantSignQuery = dbContext.SealReviewJournals
+                                                                .Include(sealReview => sealReview.AccountantSignJournal)
+                                                                .FirstOrDefault
                                                                 (
-                                                                    accountantSign => accountantSign.Id == accountantSignId
-                                                                    && accountantSign.DeleteStatus == DeleteStatus.NO
-                                                                    && accountantSign.ReviewStatus <= ReviewStatus.Draft
+                                                                    sealReview => sealReview.Id == sealReviewId
+                                                                    && sealReview.DeleteStatus == DeleteStatus.NO
+                                                                    && sealReview.ReviewStatus <= ReviewStatus.Draft
                                                                 );
                 if (deleteAccountantSignQuery != null)
                 {
@@ -179,26 +215,50 @@ namespace SealTypographicWebAPI.Services.Implements
                 {
                     ResponseViewModel response = new();
                     response.DeleteAccountantSignNoData();
-                    response.ErrorItem = "Delete AccountantSignid: " + accountantSignId;
+                    response.ErrorItem = "Delete AccountantSignid: " + sealReviewId;
                     responseViewModels.Add(response);
                 }
             }
             //修改印鑑
             foreach (AccountantSignFormUpdate accountantSignFormUpdate in accountantSignUpdate.UpdateAccountantSigns)
             {
-                AccountantSignJournal? updateAccountantSignQuery = dbContext.AccountantSignJournals.FirstOrDefault
+                SealReviewJournal? updateSealQuery = dbContext.SealReviewJournals
+                                                            .Include(sealReview => sealReview.AccountantSignJournal)
+                                                            .FirstOrDefault
                                                             (
-                                                                accountantSign => accountantSign.Id == accountantSignFormUpdate.Id
-                                                                && accountantSign.DeleteStatus == DeleteStatus.NO      
-                                                                && accountantSign.ReviewStatus <= ReviewStatus.Draft
+                                                                sealReview => sealReview.Id == accountantSignFormUpdate.Id
+                                                                && sealReview.DeleteStatus == DeleteStatus.NO      
+                                                                && sealReview.ReviewStatus <= ReviewStatus.Draft
                                                             );
-                if (updateAccountantSignQuery != null)
+                if (updateSealQuery != null)
                 {
-                    //mapper.Map(accountantSignFormUpdate, updateAccountantSignQuery);
-                    string imagePath = accountantSignFormUpdate.ImageBase64;//這段之後會做成IMAGE64的處理並另存在指定的位置
+                    SealReviewJournal sealReviewJournal = new()
+                    {
+                        CreateDate = accountantSignUpdate.GroupCreateDate
+                    };
 
-                    updateAccountantSignQuery.ImagePath = imagePath;
-                    BaseInputAccountantSignJournal(updateAccountantSignQuery, false, userId);
+                    AccountantSignJournal accountantSignJournal = new()
+                    {
+                        AccountantId = accountantSignFormUpdate.Id,
+                        ConfigType = updateSealQuery.AccountantSignJournal.ConfigType,
+                    };
+
+                    //ImageBase64轉圖檔並存到指定資料夾                    
+                    imageBase64Info.ImageBase64 = accountantSignFormUpdate.ImageBase64;                    
+                    accountantSignJournal.ImagePath = imageSharpService.SaveBase64ToFile(imageBase64Info, count);
+                    BaseInputAccountantSignJournal(accountantSignJournal, true, userId);
+                    BaseInputSealReviewJournal(sealReviewJournal, true, userId);
+
+                    sealReviewJournal.AccountantSignJournal = accountantSignJournal;
+                    dbContext.SealReviewJournals.Add(sealReviewJournal);
+
+                    //原印鑑刪除(Hide)
+                    updateSealQuery.DeleteStatus = DeleteStatus.Yes;
+                    updateSealQuery.AccountantSignJournal.DeleteStatus = DeleteStatus.Yes;
+                    BaseInputAccountantSignJournal(updateSealQuery.AccountantSignJournal, false, userId);
+                    BaseInputSealReviewJournal(updateSealQuery, false, userId);                    
+
+                    count++;
                 }
                 else
                 {
@@ -209,31 +269,47 @@ namespace SealTypographicWebAPI.Services.Implements
                 }
             }
             //新增印鑑
-            foreach (AccountantSignForm accountantSignForm in accountantSignUpdate.CreateAccountantSigns)
+            foreach (AccountantSignForm createAccountantSign in accountantSignUpdate.CreateAccountantSigns)
             {
                 //這段之後會做成IMAGE64的處理並另存在指定的位置
-                string imagePath = accountantSignForm.ImageBase64;
+                string imagePath = createAccountantSign.ImageBase64;
                 AccountantSignCheck accountantSignCheck = new() 
                 {
-                    AccountantId = accountantSignForm.AccountantId,
-                    SealMappingConfigId = accountantSignForm.SealMappingConfigId,
+                    AccountantId = createAccountantSign.AccountantId,
+                    SealMappingConfigId = createAccountantSign.SealMappingConfigId,
                     GroupCreateDate = accountantSignUpdate.GroupCreateDate         
                 };                
                 
                 if (!CheckAccountSignRepeat(accountantSignCheck, accountantSignUpdate.DeleteAccountantSignIds))
                 {
-                    AccountantSignJournal accountantSignJournal = mapper.Map<AccountantSignJournal>(accountantSignForm);
-                    accountantSignJournal.ImagePath = imagePath;
-                    accountantSignJournal.GroupCreateDate = accountantSignUpdate.GroupCreateDate;
+                    AccountantSignJournal accountantSignJournal = new()
+                    {
+                        AccountantId = createAccountantSign.AccountantId,
+                        ConfigType = (AccountantSignConfigType)accountantSignCheck.SealMappingConfigId
+                    };
+                    SealReviewJournal sealReviewJournal = new()
+                    {
+                        CreateDate = accountantSignUpdate.GroupCreateDate
+                    };
+                    //AccountantSignJournal accountantSignJournal = mapper.Map<AccountantSignJournal>(accountantSignForm);
+                    imageBase64Info.ImageBase64 = createAccountantSign.ImageBase64;
+                    accountantSignJournal.ImagePath = imageSharpService.SaveBase64ToFile(imageBase64Info, count);
+
                     BaseInputAccountantSignJournal(accountantSignJournal, true, userId);
-                    accountantSignJournals.Add(accountantSignJournal);
+                    BaseInputSealReviewJournal(sealReviewJournal, true, userId);
+
+                    sealReviewJournal.AccountantSignJournal = accountantSignJournal;
+                    dbContext.SealReviewJournals.Add(sealReviewJournal);
+
+                    count++;
+                    //accountantSignJournals.Add(accountantSignJournal);
                 }
                 else
                 {
                     ResponseViewModel response = new();
                     response.CreateAccountantSignRepeat();
-                    response.ErrorItem = "Create AccountantId:" + accountantSignForm.AccountantId
-                                       + " SealMappingConfigId:" + accountantSignForm.SealMappingConfigId;
+                    response.ErrorItem = "Create AccountantId:" + createAccountantSign.AccountantId
+                                       + " SealMappingConfigId:" + createAccountantSign.SealMappingConfigId;
                     responseViewModels.Add(response);
                 }
             }
@@ -244,19 +320,19 @@ namespace SealTypographicWebAPI.Services.Implements
                 ResponseViewModel response = new();
 
                 //將此創建日期的簽印審查狀態全變更為草稿(更新時需要重審)
-                IQueryable<AccountantSignJournal> accountantSignJournalQuery = dbContext.AccountantSignJournals.Where
+                IQueryable<SealReviewJournal> sealReviewJournalQuery = dbContext.SealReviewJournals.Where
                                                 (
-                                                    accountantSign => accountantSign.AccountantId == accountantSignUpdate.AccountantId                                                    
-                                                    && accountantSign.GroupCreateDate == accountantSignUpdate.GroupCreateDate
-                                                    && accountantSign.DeleteStatus == DeleteStatus.NO
+                                                    sealReview => sealReview.AccountantSignJournal.AccountantId == accountantSignUpdate.AccountantId                                                    
+                                                    && sealReview.CreateDate == accountantSignUpdate.GroupCreateDate
+                                                    && sealReview.DeleteStatus == DeleteStatus.NO
                                                 );
-                foreach(AccountantSignJournal accountantSignJournal in accountantSignJournalQuery)
+                foreach(SealReviewJournal sealReviewJournal in sealReviewJournalQuery)
                 {
-                    accountantSignJournal.ReviewStatus = ReviewStatus.Draft;
+                    sealReviewJournal.ReviewStatus = ReviewStatus.Draft;
                 }
 
-                dbContext.AccountantSignJournals.AddRange(accountantSignJournals);
-                dbContext.BulkSaveChanges();
+
+                dbContext.SaveChanges();
                 response.Success();
                 responseViewModels.Add(response);
             }
@@ -270,9 +346,9 @@ namespace SealTypographicWebAPI.Services.Implements
         /// </summary>
         /// <param name="accountantSignGroupCreateDateSearch">會計師簽印群組創建日期</param>        
         /// <returns></returns>
-        public ResponseViewModel UpdateReviewStatusPendingAccountantSigns(AccountantSignGroupCreateDateSearch accountantSignGroupCreateDateSearch)
+        public ResponseViewModel PendingAccountantSigns(AccountantSignGroupCreateDateSearch accountantSignGroupCreateDateSearch)
         {            
-            ResponseViewModel response = ChangeTempReviewStatusAccountantSigns(accountantSignGroupCreateDateSearch, ReviewStatus.Pending);
+            ResponseViewModel response = ChangeDraftReviewStatus(accountantSignGroupCreateDateSearch, ReviewStatus.Pending);
             return response;
         }
 
@@ -280,9 +356,9 @@ namespace SealTypographicWebAPI.Services.Implements
         /// 變更此群組創建日期的會計師簽印為作廢。
         /// </summary>
         /// <param name="accountantSignGroupCreateDateSearch">會計師簽印群組創建日期</param>        
-        public ResponseViewModel UpdateReviewStatusInvalidAccountantSigns(AccountantSignGroupCreateDateSearch accountantSignGroupCreateDateSearch)
+        public ResponseViewModel InvalidAccountantSigns(AccountantSignGroupCreateDateSearch accountantSignGroupCreateDateSearch)
         {
-            ResponseViewModel response = ChangeTempReviewStatusAccountantSigns(accountantSignGroupCreateDateSearch, ReviewStatus.Invalid);
+            ResponseViewModel response = ChangeDraftReviewStatus(accountantSignGroupCreateDateSearch, ReviewStatus.Invalid);
             return response;
         }
 
@@ -305,9 +381,30 @@ namespace SealTypographicWebAPI.Services.Implements
                 accountantSignJournal.UpdateUserId = userId;
                 accountantSignJournal.UpdateDate = DateTime.Now;                
             }
-            accountantSignJournal.StartDate = AvailableDateUtil.NotActivated();
-            accountantSignJournal.EndDate = AvailableDateUtil.NotActivated(); //暫時加上                
-            accountantSignJournal.ReviewStatus = ReviewStatus.Draft; //建立或是更新簽印都會變成草稿狀態
+
+        }
+
+        /// <summary>
+        /// 客戶印鑑新增修改時基本的資料輸入
+        /// </summary>
+        /// <param name="sealReviewJournal">Db上的印鑑資料</param>
+        /// <param name="isCreate">對Db所做的行動</param>
+        /// <param name="userId">userId</param>
+        private static void BaseInputSealReviewJournal(SealReviewJournal sealReviewJournal, bool isCreate, int userId)
+        {
+            if (isCreate)
+            {
+                sealReviewJournal.CreateUserId = userId;                
+                sealReviewJournal.DeleteStatus = DeleteStatus.NO;
+            }
+            else
+            {
+                sealReviewJournal.UpdateUserId = userId;
+                sealReviewJournal.UpdateDate = DateTime.Now;
+            }
+            sealReviewJournal.StartDate = AvailableDateUtil.NotActivated();
+            sealReviewJournal.EndDate = AvailableDateUtil.NotActivated(); //暫時加上                
+            sealReviewJournal.ReviewStatus = ReviewStatus.Draft;
         }
 
         /// <summary>
@@ -318,17 +415,17 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <returns></returns>
         private bool CheckAccountSignRepeat(AccountantSignCheck accountantSignCheck ,List<int> DeleteAccountantSignIds)
         {
-            AccountantSignJournal? AccountantSignQuery = dbContext.AccountantSignJournals
-                                                        .FirstOrDefault
-                                                        (
-                                                            accountantSign => accountantSign.AccountantId == accountantSignCheck.AccountantId
-                                                            && accountantSign.ConfigType == (AccountantSignConfigType)accountantSignCheck.SealMappingConfigId
-                                                            && accountantSign.GroupCreateDate == accountantSignCheck.GroupCreateDate
-                                                            && accountantSign.DeleteStatus == DeleteStatus.NO
-                                                            && accountantSign.ReviewStatus <= ReviewStatus.Pending       
-                                                            && !DeleteAccountantSignIds.Contains(accountantSign.Id)
-                                                        );
-            return AccountantSignQuery != null;
+            SealReviewJournal? sealQuery = dbContext.SealReviewJournals
+                                            .FirstOrDefault
+                                            (
+                                                sealReviewJournal => sealReviewJournal.AccountantSignJournal.AccountantId == accountantSignCheck.AccountantId
+                                                && sealReviewJournal.AccountantSignJournal.ConfigType == (AccountantSignConfigType)accountantSignCheck.SealMappingConfigId
+                                                && sealReviewJournal.CreateDate == accountantSignCheck.GroupCreateDate
+                                                && sealReviewJournal.DeleteStatus == DeleteStatus.NO
+                                                && sealReviewJournal.ReviewStatus <= ReviewStatus.Pending
+                                                && !DeleteAccountantSignIds.Contains(sealReviewJournal.Id)
+                                            );
+            return sealQuery != null;
         }
 
         /// <summary>
@@ -336,24 +433,26 @@ namespace SealTypographicWebAPI.Services.Implements
         /// </summary>
         /// <param name="accountantSignGroupCreateDateSearch"></param>
         /// <param name="reviewStatus">審查狀態</param>        
-        private ResponseViewModel ChangeTempReviewStatusAccountantSigns(AccountantSignGroupCreateDateSearch accountantSignGroupCreateDateSearch, ReviewStatus reviewStatus)
+        private ResponseViewModel ChangeDraftReviewStatus(AccountantSignGroupCreateDateSearch accountantSignGroupCreateDateSearch, ReviewStatus reviewStatus)
         {
             ResponseViewModel response = new();
             int userid = 0; //從帳號驗證取得Id
-            List<AccountantSignJournal>? accountantSignJournalQuery = dbContext.AccountantSignJournals.Where
-                                                                (
-                                                                    accountantSignJournal => accountantSignJournal.AccountantId == accountantSignGroupCreateDateSearch.AccountantId
-                                                                    && accountantSignJournal.GroupCreateDate == accountantSignGroupCreateDateSearch.GroupCreateDate
-                                                                    && accountantSignJournal.DeleteStatus == DeleteStatus.NO
-                                                                    && accountantSignJournal.ReviewStatus == ReviewStatus.Draft
-                                                                ).ToList();
-            if(accountantSignJournalQuery.Any())
+            IQueryable<SealReviewJournal>? sealReviewJournalQuery = dbContext.SealReviewJournals
+                                                                        .Where
+                                                                        (
+                                                                            sealReviewJournal => 
+                                                                            sealReviewJournal.AccountantSignJournal.AccountantId == accountantSignGroupCreateDateSearch.AccountantId
+                                                                            && sealReviewJournal.CreateDate == accountantSignGroupCreateDateSearch.GroupCreateDate
+                                                                            && sealReviewJournal.DeleteStatus == DeleteStatus.NO
+                                                                            && sealReviewJournal.ReviewStatus == ReviewStatus.Draft
+                                                                        );
+            if(sealReviewJournalQuery.Any())
             {
-                foreach (AccountantSignJournal accountantSign in accountantSignJournalQuery)
+                foreach (SealReviewJournal sealReview in sealReviewJournalQuery)
                 {
-                    accountantSign.ReviewStatus = reviewStatus;
-                    accountantSign.UpdateUserId = userid;
-                    accountantSign.UpdateDate = DateTime.Now;
+                    sealReview.ReviewStatus = reviewStatus;
+                    sealReview.UpdateUserId = userid;
+                    sealReview.UpdateDate = DateTime.Now;
                 }
                 dbContext.SaveChanges();
                 response.Success();
@@ -363,6 +462,20 @@ namespace SealTypographicWebAPI.Services.Implements
                 response.UpdateAccountantSignNoData();                                
             }
             return response;
+        }
+        private string GetCode(int accountantId)
+        {
+            string code;
+            Accountant? accountant = dbContext.Accountants.Find(accountantId);
+            if (accountant != null)
+            {
+                code = accountant.Code;
+            }
+            else
+            {
+                code = string.Empty;
+            }
+            return code;
         }
     }
 }

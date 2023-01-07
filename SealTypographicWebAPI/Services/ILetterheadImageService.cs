@@ -41,12 +41,12 @@ namespace SealTypographicWebAPI.Services
         /// </summary>
         /// <param name="letterheadImageGroupCreateDateSearch">信頭圖片群組創建日期</param>        
         /// <returns></returns>
-        ResponseViewModel UpdateReviewStatusApprovalLetterheadImages(LetterheadImageGroupCreateDateSearch letterheadImageGroupCreateDateSearch);
+        ResponseViewModel ApprovalLetterheadImages(LetterheadImageGroupCreateDateSearch letterheadImageGroupCreateDateSearch);
 
         /// <summary>
         /// 變更此群組創建日期的信頭圖片審核為作廢
         /// </summary>
         /// <param name="letterheadImageGroupCreateDateSearch">信頭圖片群組創建日期</param>        
-        ResponseViewModel UpdateReviewStatusInvalidLetterheadImages(LetterheadImageGroupCreateDateSearch letterheadImageGroupCreateDateSearch);
+        ResponseViewModel InvalidLetterheadImages(LetterheadImageGroupCreateDateSearch letterheadImageGroupCreateDateSearch);
     }
 }

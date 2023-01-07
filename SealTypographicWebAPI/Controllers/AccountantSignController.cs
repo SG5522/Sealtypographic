@@ -140,7 +140,7 @@ namespace SealTypographicWebAPI.Controllers
             try
             {
                 Log.Information("AccountantSign put input {@Input}", accountantSignGroupCreateDateSearch);
-                response = accountantSignService.UpdateReviewStatusPendingAccountantSigns(accountantSignGroupCreateDateSearch);
+                response = accountantSignService.PendingAccountantSigns(accountantSignGroupCreateDateSearch);
                 Log.Information("AccountantSign put output {@Output}", response);                
             }
             catch (Exception ex)
@@ -163,7 +163,7 @@ namespace SealTypographicWebAPI.Controllers
             try
             {
                 Log.Information("CustomerSeal delete input {@Input}", accountantSignGroupCreateDateSearch);
-                response = accountantSignService.UpdateReviewStatusInvalidAccountantSigns(accountantSignGroupCreateDateSearch);
+                response = accountantSignService.InvalidAccountantSigns(accountantSignGroupCreateDateSearch);
                 Log.Information("CustomerSeal delete output {@Ouput}", response);                
             }
             catch (Exception ex)

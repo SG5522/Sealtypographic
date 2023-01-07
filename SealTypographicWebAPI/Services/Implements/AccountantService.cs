@@ -69,7 +69,7 @@ namespace SealTypographicWebAPI.Services.Implements
                 accountantQuery = accountantQuery.Where
                                 (
                                     accountant =>
-                                    accountant.AccountantNumber.ToLower().Contains(accountantSearch.NumberOrNameOrGroupsName.ToLower())                                                         
+                                    accountant.Code.ToLower().Contains(accountantSearch.NumberOrNameOrGroupsName.ToLower())                                                         
                                     || accountant.Name.Contains(accountantSearch.NumberOrNameOrGroupsName)
                                     || accountant.AccountantGroup.Name.Contains(accountantSearch.NumberOrNameOrGroupsName)
                                 );                                                   
@@ -87,9 +87,12 @@ namespace SealTypographicWebAPI.Services.Implements
                 foreach (Accountant accountant in thisPageAccountants)
                 {
                     AccountantViewModelWithCreateDate accountantPaginatesViewModel = mapper.Map<AccountantViewModelWithCreateDate>(accountant);
+
                     if (accountant.AccountantSignJournals.Count > 0)
                     {
-                        accountantPaginatesViewModel.GroupCreateDate = accountant.AccountantSignJournals.Max(x => x.GroupCreateDate);
+                        accountantPaginatesViewModel.GroupCreateDate = dbContext.SealReviewJournals
+                                                                        .Where(x => x.AccountantSignJournal.AccountantId == accountant.Id)
+                                                                        .Max(x => x.CreateDate);
                     }
                     accountantViewModelWithStartDate.Add(accountantPaginatesViewModel);
                 }
@@ -118,7 +121,7 @@ namespace SealTypographicWebAPI.Services.Implements
             AccountantCreateResponse accountantCreateResponse = new();
             int userid = 0;//帳號驗證取得ID
             Accountant? accountantQuery = dbContext.Accountants
-                                    .Where(accountant => accountant.AccountantNumber == accountantForm.AccountantNumber)
+                                    .Where(accountant => accountant.Code == accountantForm.AccountantNumber)
                                     .FirstOrDefault();
 
             if (accountantQuery == null)
@@ -130,7 +133,7 @@ namespace SealTypographicWebAPI.Services.Implements
 
                 //回傳剛建立的客戶基本資料 使建立客戶印鑑找到該ID
                 Accountant? accountant = dbContext.Accountants
-                                    .Where(accountant => accountant.AccountantNumber == accountantForm.AccountantNumber)
+                                    .Where(accountant => accountant.Code == accountantForm.AccountantNumber)
                                     .FirstOrDefault();
                 if (accountant != null)
                 {

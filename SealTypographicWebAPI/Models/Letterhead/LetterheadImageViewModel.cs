@@ -6,8 +6,14 @@ namespace SealTypographicWebAPI.Models.Letterhead
     /// <summary>
     /// 信頭圖組
     /// </summary>
-    public class LetterheadImageViewModel : BaseSeal
+    public class LetterheadImageViewModel : BaseData
     {
+        /// <summary>
+        /// 圖檔字串(Base64)
+        /// </summary>
+        /// <example>image/...</example>
+        public string ImageBase64 { get; set; }
+
         /// <summary>
         /// 印鑑編號(排序) 1為起始
         /// </summary>

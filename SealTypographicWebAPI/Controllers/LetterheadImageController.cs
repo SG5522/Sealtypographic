@@ -136,7 +136,7 @@ namespace SealTypographicWebAPI.Controllers
             try
             {
                 Log.Information("LetterheadImage put(Approval) input {@Input}", letterheadImageGroupCreateDateSearch);
-                response = letterheadImageService.UpdateReviewStatusApprovalLetterheadImages(letterheadImageGroupCreateDateSearch);
+                response = letterheadImageService.ApprovalLetterheadImages(letterheadImageGroupCreateDateSearch);
                 Log.Information("LetterheadImage put(Approval) output {@Output}", response);
             }
             catch (Exception ex)
@@ -159,7 +159,7 @@ namespace SealTypographicWebAPI.Controllers
             try
             {
                 Log.Information("LetterheadImage put(Invalid) input {@Input}", letterheadImageGroupCreateDateSearch);
-                response = letterheadImageService.UpdateReviewStatusInvalidLetterheadImages(letterheadImageGroupCreateDateSearch);
+                response = letterheadImageService.InvalidLetterheadImages(letterheadImageGroupCreateDateSearch);
                 Log.Information("LetterheadImage put(Invalid) output {@Ouput}", response);
             }
             catch (Exception ex)

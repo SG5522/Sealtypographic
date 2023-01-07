@@ -6,7 +6,7 @@ namespace SealTypographicWebAPI.Entities
     /// <summary>
     /// 客戶印鑑組歷程資料表
     /// </summary>
-    public class CustomerSealJournal : BaseData
+    public class CustomerSealJournal : BaseSealJournal
     {
         ///// <summary>
         ///// 印鑑編號(排序) 1為起始
