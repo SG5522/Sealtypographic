@@ -206,7 +206,7 @@ namespace SealTypographicWebAPI.Consts
         /// 英文簽名
         /// </summary>
         [Description("AccountantENSign")]
-        ///[Description("英文簽名")]
+        //[Description("英文簽名")]
         AccountantENSign = 3,
 
         /// <summary>

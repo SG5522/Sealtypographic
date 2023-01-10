@@ -5,7 +5,7 @@ using SealTypographicWebAPI.Models.Customer;
 namespace SealTypographicWebAPI.Services
 {
     /// <summary>
-    /// 顧客印鑑組Interface
+    /// 會計師簽印管理
     /// </summary>
     public interface IAccountantSignService
     {

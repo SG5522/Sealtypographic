@@ -4,7 +4,7 @@ using SealTypographicWebAPI.Models.Customer;
 namespace SealTypographicWebAPI.Services
 {
     /// <summary>
-    /// 顧客印鑑組Interface
+    /// 客戶印鑑管理
     /// </summary>
     public interface ICustomerSealService
     {

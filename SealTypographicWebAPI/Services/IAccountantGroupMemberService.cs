@@ -6,7 +6,7 @@ using SealTypographicWebAPI.Models.Customer;
 namespace SealTypographicWebAPI.Services
 {
     /// <summary>
-    /// 會計師
+    /// 會計師群組成員管理
     /// </summary>
     public interface IAccountantGroupMemberService
     {       

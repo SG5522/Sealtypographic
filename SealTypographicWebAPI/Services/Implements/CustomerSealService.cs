@@ -12,7 +12,7 @@ using System.Linq;
 namespace SealTypographicWebAPI.Services.Implements
 {
     /// <summary>
-    /// 顧客印鑑管理
+    /// 客戶印鑑管理
     /// </summary>
     public class CustomerSealService : ICustomerSealService
     {
