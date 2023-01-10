@@ -1,7 +1,7 @@
 ﻿namespace SealTypographicWebAPI.Consts
 {
     /// <summary>
-    /// API傳輸結果代碼(暫定)
+    /// API傳輸結果代碼
     /// </summary>
     public enum ResponseCode
     {
@@ -47,7 +47,7 @@
         UpdateCustomerFailed = 2020,
 
         /// <summary>
-        /// 更新客戶資料找不到檔案
+        /// 更新客戶資料找不到資料
         /// </summary>
         UpdateCustomerNoData = 2021,
 
@@ -57,7 +57,7 @@
         DeleteCustomerFailed = 2030,
 
         /// <summary>
-        /// 刪除(Hide)客戶時找不到檔案
+        /// 刪除(Hide)客戶時找不到資料
         /// </summary>
         DeleteCustomerNoData = 2031,
 
@@ -97,7 +97,7 @@
         UpdateCustomerSealSequenceRepeat = 2121,
 
         /// <summary>
-        /// 更新客戶印鑑時找不到檔案
+        /// 更新客戶印鑑時找不到資料
         /// </summary>
         UpdateCustomerSealNoData = 2122,
 
@@ -107,7 +107,7 @@
         DeleteCustomerSealFailed = 2130,
 
         /// <summary>
-        /// 刪除(Hide)客戶印鑑時找不到檔案
+        /// 刪除(Hide)客戶印鑑時找不到資料
         /// </summary>
         DeleteCustomerSealNoData = 2131,
 
@@ -122,52 +122,52 @@
         AccountantNumberRepeat = 3002,
 
         /// <summary>
-        /// 資料庫會計師資料建立失敗
+        /// 會計師資料建立失敗
         /// </summary>
         CreateAccountantFailed = 3010,
 
         /// <summary>
-        /// 資料庫會計師編號重複
+        /// 會計師編號重複
         /// </summary>
         CreateAccountantNumberRepeat = 3011,
 
         /// <summary>
-        /// 資料庫會計師資料更新失敗
+        /// 會計師資料更新失敗
         /// </summary>
         UpdateAccountantFailed = 3020,
 
         /// <summary>
-        /// 資料庫會計師資料更新找不到資料
+        /// 會計師資料更新找不到資料
         /// </summary>
         UpdateAccountantNoData = 3021,
 
         /// <summary>
-        /// 資料庫會計師資料刪除失敗
+        /// 會計師資料刪除失敗
         /// </summary>
         DeleteAccountantFailed = 3030,
 
         /// <summary>
-        /// 資料庫會計師資料刪除找不到資料
+        /// 會計師資料刪除找不到資料
         /// </summary>
         DeleteAccountantNoData = 3031,
 
         /// <summary>
-        /// 資料庫會計師簽印無資料
+        /// 會計師簽印無資料
         /// </summary>
         AccountantSignNoData = 3101,
 
         /// <summary>
-        /// 資料庫會計師簽印中已有草稿或是待審的簽印
+        /// 會計師簽印中已有草稿或是待審的簽印
         /// </summary>
         AccountantSignHaveDraftOrPendingReviewStatus = 3102,
 
         /// <summary>
-        /// 資料庫會計師簽印建立失敗
+        /// 會計師簽印建立失敗
         /// </summary>
         CreateAccountantSignFailed = 3110,
 
         /// <summary>
-        /// 資料庫會計簽印建立時發現重複(依類別確認)
+        /// 會計簽印建立時發現重複(依類別確認)
         /// </summary>
         CreateAccountantSignRepeat = 3111,
 
@@ -182,7 +182,7 @@
         UpdateAccountantSignRepeat = 3121,
 
         /// <summary>
-        /// 更新會計師簽印時找不到檔案
+        /// 更新會計師簽印時找不到資料
         /// </summary>
         UpdateAccountantSignNoData = 3122,
 
@@ -248,12 +248,12 @@
         CreateLetterheadFailed = 4010,
 
         /// <summary>
-        /// 資料庫信頭編號重複
+        /// 信頭編號重複
         /// </summary>
         CreateLetterheadNumberRepeat = 4011,
 
         /// <summary>
-        /// 資料庫信頭無資料
+        /// 信頭無資料
         /// </summary>
         CreateLetterheadNoData = 4012,
 
@@ -278,52 +278,52 @@
         DeleteLetterheadNoData = 4031,
 
         /// <summary>
-        /// 資料庫信頭圖像序號重複
+        /// 信頭圖像序號重複
         /// </summary>
         LetterheadImageSequenceRepeat = 4101,
        
         /// <summary>
-        /// 資料庫信頭圖像無資料
+        /// 信頭圖像無資料
         /// </summary>
         LetterheadImageNoData = 4102,
 
         /// <summary>
-        /// 資料庫信頭圖片中已有草稿或是待審的資料
+        /// 信頭圖片中已有草稿或是待審的資料
         /// </summary>
         LetterheadImageHaveDraftReviewStatus = 4103,
 
         /// <summary>
-        /// 資料庫信頭圖像建立失敗
+        /// 信頭圖像建立失敗
         /// </summary>
         CreateLetterheadImageFailed = 4110,
 
         /// <summary>
-        /// 資料庫信頭圖像序號重複
+        /// 信頭圖像序號重複
         /// </summary>
         CreateLetterheadImageSequenceRepeat = 4111,
 
         /// <summary>
-        /// 資料庫信頭圖像更新失敗
+        /// 信頭圖像更新失敗
         /// </summary>
         UpdateLetterheadImageFailed = 4120,
 
         /// <summary>
-        /// 資料庫信頭圖像更新時序號重複
+        /// 信頭圖像更新時序號重複
         /// </summary>
         UpdateLetterheadImageSequenceRepeat = 4121,
 
         /// <summary>
-        /// 資料庫信頭圖像更新時找不到資料
+        /// 信頭圖像更新時找不到資料
         /// </summary>
         UpdateLetterheadImageNoData = 4122,
 
         /// <summary>
-        /// 資料庫信頭圖像刪除失敗
+        /// 信頭圖像刪除失敗
         /// </summary>
         DeleteLetterheadImageFailed = 4130,
 
         /// <summary>
-        /// 資料庫信頭圖像刪除時找不到資料
+        /// 信頭圖像刪除時找不到資料
         /// </summary>
         DeleteLetterheadImageNoData = 4131,
 

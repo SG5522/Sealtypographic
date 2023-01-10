@@ -38,7 +38,7 @@ namespace SealTypographicWebAPI.Services.Implements
         /// </summary>
         /// <param name="letterheadId">信頭Id</param>
         /// <returns></returns>
-        public LetterheadGroupCreateDateViews GetLetterheadGroupCreateDateViews(int letterheadId)
+        public LetterheadGroupCreateDateViews GetLetterheadCreateDateViews(int letterheadId)
         {
             LetterheadGroupCreateDateViews letterheadGroupCreateDateViews = new();
             List<LetterheadImageGroupCreateDateView> groupCreateDateViews = dbContext.SealReviewJournals
@@ -91,7 +91,8 @@ namespace SealTypographicWebAPI.Services.Implements
                                                                         && sealReviewJournal.CreateDate == letterheadGroupCreateDateSearch.GroupCreateDate
                                                                         && sealReviewJournal.DeleteStatus == DeleteStatus.NO
                                                                         && sealReviewJournal.ReviewStatus <= ReviewStatus.Draft
-                                                                    )                                                                                                                                     
+                                                                    )                         
+                                                                    .Include(sealReviewJournal => sealReviewJournal.LetterheadImageJournal)
                                                                     .OrderBy(sealReviewJournal => sealReviewJournal.Sequence)
                                                                     .ToList();
             if (sealReviewJournalQuery.Any())
@@ -100,8 +101,7 @@ namespace SealTypographicWebAPI.Services.Implements
                 {
                     LetterheadImageViewModel letterheadImageViewModel = mapper.Map<LetterheadImageViewModel>(sealReviewJournal);
                     letterheadImageViewModel.ImageBase64 = imageSharpService.GetPathToBase64(sealReviewJournal.LetterheadImageJournal.ImagePath, SealType.Letterhead); //資料庫取得圖檔路徑轉BASE64                   
-                    //customerSealViewModel.ImageBase64 = sealReviewJournal.LetterheadImageJournal.ImagePath;                    
-
+                                   
                     ImageViewModels.Add(letterheadImageViewModel);
                 }
                 letterheadImageViewModels.ReviewStatus = sealReviewJournalQuery.First().ReviewStatus;
@@ -119,9 +119,9 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <summary>
         /// 新增圖片組
         /// </summary>
-        /// <param name="letterheadImages">信頭圖片組</param>
+        /// <param name="letterheadImageForms">信頭圖片組</param>
         /// <returns></returns>
-        public ResponseViewModel CreateLetterheadImages(List<LetterheadImageForm> letterheadImages)
+        public ResponseViewModel Create(LetterheadImageForms letterheadImageForms)
         {
             ResponseViewModel response = new();
             List<LetterheadImageJournal> letterheadImageJournals = new();
@@ -129,7 +129,7 @@ namespace SealTypographicWebAPI.Services.Implements
 
             SealReviewJournal? sealReviewJournalQuery = dbContext.SealReviewJournals.FirstOrDefault
                                                             (
-                                                                x => x.LetterheadImageJournal.LetterheadId == letterheadImages.First().LetterheadId                                                                                                
+                                                                x => x.LetterheadImageJournal.LetterheadId == letterheadImageForms.LetterheadId                                                                                                
                                                                 && x.ReviewStatus >= ReviewStatus.Draft
                                                                 && x.ReviewStatus <= ReviewStatus.Pending
                                                             );
@@ -138,17 +138,16 @@ namespace SealTypographicWebAPI.Services.Implements
                 int count = 1;
                 ImageBase64Info imageBase64Info = new()
                 {
-                    Code = GetCode(letterheadImages.First().LetterheadId),
-                    CreateTime = DateTime.Now,
+                    Code = GetCode(letterheadImageForms.LetterheadId),
                     SealType = SealType.Customer
                 };
 
                 DateTime createNowTime = DateTime.Now;//將建立日期為依據將此次建立的會計師簽印組成為一組Group
-                foreach (LetterheadImageForm letterheadImage in letterheadImages)
+                foreach (LetterheadImageForm letterheadImage in letterheadImageForms.ImageForms)
                 {
                     LetterheadImageJournal letterheadImageJournal = new()
                     {
-                        LetterheadId = letterheadImage.LetterheadId
+                        LetterheadId = letterheadImageForms.LetterheadId
                     };
                     SealReviewJournal sealReviewJournal = new()
                     {                        
@@ -158,9 +157,8 @@ namespace SealTypographicWebAPI.Services.Implements
 
                     //ImageBase64轉圖檔並存到指定資料夾
                     imageBase64Info.ImageBase64 = letterheadImage.ImageBase64;
-                    letterheadImageJournal.ImagePath = imageSharpService.SaveBase64ToFile(imageBase64Info, count);
-                    //ltterheadImageJournal.ImagePath = customerSeal.ImageBase64;
-                                                            
+                    letterheadImageJournal.ImagePath = imageSharpService.SaveBase64ToFile(imageBase64Info, count);                    
+
                     BaseInputLetterheadImageJournal(letterheadImageJournal, true, userId);
                     BaseInputSealReviewJournal(sealReviewJournal, true, userId);
 
@@ -184,7 +182,7 @@ namespace SealTypographicWebAPI.Services.Implements
         /// </summary>
         /// <param name="letterheadImageUpdate">刪除修改新增的list</param>
         /// <returns></returns>
-        public List<ResponseViewModel> UpdateLetterheadImage(LetterheadImageUpdate letterheadImageUpdate)
+        public List<ResponseViewModel> Update(LetterheadImageUpdate letterheadImageUpdate)
         {
             List<ResponseViewModel> responseViewModels = new();            
             int userId = 0;//之後會從帳號驗證中取得userid
@@ -192,8 +190,7 @@ namespace SealTypographicWebAPI.Services.Implements
             ImageBase64Info imageBase64Info = new()
             {
                 Code = GetCode(letterheadImageUpdate.LetterheadId),
-                SealType = SealType.Letterhead,
-                CreateTime = letterheadImageUpdate.GroupCreateDate
+                SealType = SealType.Letterhead,                
             };
 
             //刪除印鑑
@@ -246,11 +243,9 @@ namespace SealTypographicWebAPI.Services.Implements
                         LetterheadId = letterheadImageUpdate.LetterheadId
                     };
                     //ImageBase64轉圖檔並存到指定資料夾                    
-                    imageBase64Info.ImageBase64 = letterheadImageFormUpdate.ImageBase64;
-                    imageBase64Info.CreateTime = DateTime.Now;
-                    letterheadImageJournal.ImagePath = imageSharpService.SaveBase64ToFile(imageBase64Info, count);
+                    imageBase64Info.ImageBase64 = letterheadImageFormUpdate.ImageBase64;                    
+                    letterheadImageJournal.ImagePath = imageSharpService.SaveBase64ToFile(imageBase64Info, count);                    
 
-                    //customerSealJournal.ImagePath = letterheadImageFormUpdate.ImageBase64;
                     BaseInputLetterheadImageJournal(letterheadImageJournal, true, userId);
                     BaseInputSealReviewJournal(sealReviewJournal, true, userId);
 
@@ -259,7 +254,7 @@ namespace SealTypographicWebAPI.Services.Implements
 
                     //原圖片刪除(Hide)
                     updateSealQuery.DeleteStatus = DeleteStatus.Yes;
-                    updateSealQuery.CustomerSealJournal.DeleteStatus = DeleteStatus.Yes;
+                    updateSealQuery.LetterheadImageJournal.DeleteStatus = DeleteStatus.Yes;
                     BaseInputLetterheadImageJournal(updateSealQuery.LetterheadImageJournal, false, userId);
                     BaseInputSealReviewJournal(updateSealQuery, false, userId);
 
@@ -280,13 +275,14 @@ namespace SealTypographicWebAPI.Services.Implements
                 string imagePath = createLetterheadImage.ImageBase64;
                 LetterheadImageCheck letterheadImageCheck = new()
                 {
-                    LetterheadId = createLetterheadImage.LetterheadId,
-                    //SealMappingConfigId = letterheadImageForm.SealMappingConfigId,
+                    LetterheadId = letterheadImageUpdate.LetterheadId,                    
                     GroupCreateDate = letterheadImageUpdate.GroupCreateDate,
                     Sequence = createLetterheadImage.Sequence
                 };
 
-                if (!CheckLetterheadImageRepeat(letterheadImageCheck, letterheadImageUpdate.DeleteLetterheadImageIds))
+                List<int> updateLetterheadImageIds = letterheadImageUpdate.UpdateLetterheadImages.Select(x => x.Id).ToList();
+
+                if (!CheckLetterheadImageRepeat(letterheadImageCheck, letterheadImageUpdate.DeleteLetterheadImageIds, updateLetterheadImageIds))
                 {
                     //新增印鑑                    
                     LetterheadImageJournal letterheadImageJournal = new()
@@ -301,7 +297,7 @@ namespace SealTypographicWebAPI.Services.Implements
 
                     imageBase64Info.ImageBase64 = createLetterheadImage.ImageBase64;
                     letterheadImageJournal.ImagePath = imageSharpService.SaveBase64ToFile(imageBase64Info, count);
-
+                    
                     BaseInputLetterheadImageJournal(letterheadImageJournal, true, userId);
                     BaseInputSealReviewJournal(sealReviewJournal, true, userId);
 
@@ -314,8 +310,8 @@ namespace SealTypographicWebAPI.Services.Implements
                 {
                     ResponseViewModel response = new();
                     response.CreateLetterheadImageSequenceRepeat();
-                    response.ErrorItem = "Create LetterheadId:" + createLetterheadImage.LetterheadId
-                                       + " SealMappingConfigId:" + createLetterheadImage.SealMappingConfigId;
+                    response.ErrorItem = "Create LetterheadId:" + letterheadImageUpdate.LetterheadId
+                                       + " Sequence:" + createLetterheadImage.Sequence;
                     responseViewModels.Add(response);
                 }
             }
@@ -412,9 +408,10 @@ namespace SealTypographicWebAPI.Services.Implements
         /// 確認此類別會計師簽印是否重覆建立 true 重複 false 不重複
         /// </summary>
         /// <param name="ltterheadImageCheck">查詢參數</param>
-        /// <param name="DeleteLetterheadImageIds"></param>
+        /// <param name="deleteLetterheadImageIds">異動中刪除的圖片Id</param>
+        /// <param name="updateLetterheadImageIds">異動中更新的圖片Id(也會被標上刪除)</param>
         /// <returns></returns>
-        private bool CheckLetterheadImageRepeat(LetterheadImageCheck ltterheadImageCheck, List<int> DeleteLetterheadImageIds)
+        private bool CheckLetterheadImageRepeat(LetterheadImageCheck ltterheadImageCheck, List<int> deleteLetterheadImageIds, List<int> updateLetterheadImageIds)
         {
             SealReviewJournal? sealReviewQuery = dbContext.SealReviewJournals
                                                         .FirstOrDefault
@@ -424,7 +421,8 @@ namespace SealTypographicWebAPI.Services.Implements
                                                             && sealReviewJournal.Sequence == ltterheadImageCheck.Sequence
                                                             && sealReviewJournal.DeleteStatus == DeleteStatus.NO
                                                             && sealReviewJournal.ReviewStatus <= ReviewStatus.Pending
-                                                            && !DeleteLetterheadImageIds.Contains(sealReviewJournal.Id)
+                                                            && !deleteLetterheadImageIds.Contains(sealReviewJournal.Id)
+                                                            && !updateLetterheadImageIds.Contains(sealReviewJournal.Id)
                                                         );
             return sealReviewQuery != null;
         }

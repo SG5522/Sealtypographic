@@ -5,7 +5,7 @@ namespace SealTypographicWebAPI.Models.Accountant
     /// <summary>
     /// 會計師簽印搜尋(依會計師ID與創建群組日期)
     /// </summary>
-    public class AccountantSignGroupCreateDateSearch
+    public class AccountantSignCreateDate
     {
         /// <summary>
         /// 會計師Id

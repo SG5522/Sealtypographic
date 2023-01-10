@@ -11,13 +11,6 @@
         public int LetterheadId { get; set; }
 
         /// <summary>
-        /// 印鑑群組ID 
-        /// 11.LOGO
-        /// 12.地址
-        /// </summary>
-        public int SealMappingConfigId { get; set; }
-
-        /// <summary>
         /// 啟用日期
         /// </summary>
         public DateTime GroupCreateDate { get; set; }

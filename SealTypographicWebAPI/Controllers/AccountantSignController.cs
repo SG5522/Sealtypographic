@@ -46,7 +46,7 @@ namespace SealTypographicWebAPI.Controllers
             try
             {
                 Log.Information("AccountantSign get{accountantID} input {@Input}", accountantID);
-                accountantSignStartDates = accountantSignService.GetAccountantWithGruopCreateDate(accountantID);
+                accountantSignStartDates = accountantSignService.GetAccountantCreateDate(accountantID);
                 Log.Information("AccountantSign get{accountantID} output {@Output}", accountantSignStartDates);                        
             }
             catch (Exception ex)
@@ -63,13 +63,13 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="accountantSignStartDate">關鑑字</param>        
         /// <returns></returns>        
         [HttpGet]
-        public AccountantSignViewModels Get([FromQuery] AccountantSignGroupCreateDateSearch accountantSignStartDate)
+        public AccountantSignViewModels Get([FromQuery] AccountantSignCreateDate accountantSignStartDate)
         {
             AccountantSignViewModels accountantSignViewModels = new();
             try
             {
                 Log.Information("AccountantSign get[FromQuery] input {@Input}", accountantSignStartDate);
-                accountantSignViewModels = accountantSignService.GetAccountantSings(accountantSignStartDate);
+                accountantSignViewModels = accountantSignService.Get(accountantSignStartDate);
                 Log.Information("AccountantSign get[FromQuery] output {@Output}", accountantSignViewModels);
             }
             catch (Exception ex)
@@ -83,16 +83,16 @@ namespace SealTypographicWebAPI.Controllers
         /// <summary>
         /// 建立會計師印鑑簽印組
         /// </summary>
-        /// <param name="accountantSignPosts"></param>
+        /// <param name="accountantSignForms"></param>
         /// <returns></returns>
         [HttpPost]
-        public ResponseViewModel Post(List<AccountantSignForm> accountantSignPosts)
+        public ResponseViewModel Post(AccountantSignForms accountantSignForms)
         {
             ResponseViewModel response = new ();
             try
             {
-                Log.Information("AccountantSign post input {@Input}", accountantSignPosts);
-                response = accountantSignService.CreateAccountantSigns(accountantSignPosts);
+                Log.Information("AccountantSign post input {@Input}", accountantSignForms);
+                response = accountantSignService.Create(accountantSignForms);
                 Log.Information("AccountantSign post output {@Output}", response);                             
             }
             catch (Exception ex)
@@ -115,7 +115,7 @@ namespace SealTypographicWebAPI.Controllers
             try
             {
                 Log.Information("AccountantSign post input {@Input}", accountantSignUpdate);
-                responses = accountantSignService.UpdateAccountantSign(accountantSignUpdate);
+                responses = accountantSignService.Update(accountantSignUpdate);
                 Log.Information("AccountantSign post output {@Output}", responses);
             }
             catch (Exception ex)
@@ -134,7 +134,7 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="accountantSignGroupCreateDateSearch"></param>        
         /// <returns></returns>
         [HttpPut("Pending")]
-        public ResponseViewModel PutPendingAccountantSign(AccountantSignGroupCreateDateSearch accountantSignGroupCreateDateSearch)
+        public ResponseViewModel PutPendingAccountantSign(AccountantSignCreateDate accountantSignGroupCreateDateSearch)
         {
             ResponseViewModel response = new();
             try
@@ -157,7 +157,7 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="accountantSignGroupCreateDateSearch"></param>
         /// <returns></returns>
         [HttpPut("Invalid")]
-        public ResponseViewModel PutInvalidAccountantSign(AccountantSignGroupCreateDateSearch accountantSignGroupCreateDateSearch)
+        public ResponseViewModel PutInvalidAccountantSign(AccountantSignCreateDate accountantSignGroupCreateDateSearch)
         {
             ResponseViewModel response = new();
             try

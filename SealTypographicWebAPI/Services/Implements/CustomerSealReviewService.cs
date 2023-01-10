@@ -87,7 +87,7 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <param name="customerSealQuarter">搜尋條件</param>
         /// <returns></returns>
 
-        public CustomerSealReviewDetailResponse GetCustomerSealReviewDetail(CustomerSealQuarterSearch customerSealQuarter)
+        public CustomerSealReviewDetailResponse GetCustomerSealReviewDetail(CustomerSealQuarter customerSealQuarter)
         {
             CustomerSealReviewDetailResponse customerSealReviewDetailResponse = new();
             List<CustomerSealViewModel> customerSealViewModels = new();

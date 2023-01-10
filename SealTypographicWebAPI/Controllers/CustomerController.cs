@@ -86,7 +86,7 @@ namespace SealTypographicWebAPI.Controllers
             try
             {
                 Log.Information("Customer post input {@Input}", customerForm);
-                createCustomerResponse = customerService.CreateCustomer(customerForm);
+                createCustomerResponse = customerService.Create(customerForm);
                 Log.Information("Customer post output {@Input}", createCustomerResponse);                
             }
             catch (Exception ex)
@@ -108,7 +108,7 @@ namespace SealTypographicWebAPI.Controllers
             try
             {               
                 Log.Information("Customer put input {@Input}", customerForm);
-                response = customerService.UpdateCustomer(customerForm);
+                response = customerService.Update(customerForm);
                 Log.Information("Customer put output {@Output}", response);                
             }
             catch (Exception ex)
@@ -133,7 +133,7 @@ namespace SealTypographicWebAPI.Controllers
             try
             {
                 Log.Information("Customer delete input {@Input}", customerId);
-                response = customerService.DeleteCustomer(customerId);
+                response = customerService.Delete(customerId);
                 Log.Information("Customer delete input {@Input}", response);                
             }
             catch (Exception ex)

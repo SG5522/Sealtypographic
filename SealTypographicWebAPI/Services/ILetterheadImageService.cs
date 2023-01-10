@@ -13,7 +13,7 @@ namespace SealTypographicWebAPI.Services
         /// </summary>
         /// <param name="letterheadId">信頭Id</param>
         /// <returns></returns>
-        LetterheadGroupCreateDateViews GetLetterheadGroupCreateDateViews(int letterheadId);
+        LetterheadGroupCreateDateViews GetLetterheadCreateDateViews(int letterheadId);
 
         /// <summary>
         /// 取得信頭圖片
@@ -27,14 +27,14 @@ namespace SealTypographicWebAPI.Services
         /// </summary>
         /// <param name="letterheadImageForms">信頭圖片組</param>
         /// <returns></returns>
-        ResponseViewModel CreateLetterheadImages(List<LetterheadImageForm> letterheadImageForms);
+        ResponseViewModel Create(LetterheadImageForms letterheadImageForms);
 
         /// <summary>
         /// 異動信頭圖片的處理(審查狀態是草稿才進行修改)
         /// </summary>
         /// <param name="letterheadImageUpdate">刪除修改新增的list</param>
         /// <returns></returns>
-        List<ResponseViewModel> UpdateLetterheadImage(LetterheadImageUpdate letterheadImageUpdate);
+        List<ResponseViewModel> Update(LetterheadImageUpdate letterheadImageUpdate);
 
         /// <summary>
         /// 變更此群組創建日期的信頭圖片審核為通過(啟用)

@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using SealTypographicWebAPI.Consts;
+using System.ComponentModel.DataAnnotations;
 
 namespace SealTypographicWebAPI.Models.BaseModels
 {
@@ -23,8 +24,9 @@ namespace SealTypographicWebAPI.Models.BaseModels
         /// 11.信頭
         /// </summary>
         /// <example>1</example>
-        [Required]
-        public int SealMappingConfigId { get; set; }
+        //[Required]
+        //public int SealMappingConfigId { get; set; }
+        //public CustomerSealConfigType SealMappingConfigId { get; set; }
 
         /// <summary>
         /// 圖檔字串(Base64)

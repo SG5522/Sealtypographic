@@ -88,7 +88,7 @@ namespace SealTypographicWebAPI.Controllers
             try
             {
                 Log.Information("Letterhead post input {@Input}", letterheadPostData);
-                responseViewModel = letterheadService.CreateLetterhead(letterheadPostData);
+                responseViewModel = letterheadService.Create(letterheadPostData);
                 Log.Information("Letterhead post output {@Output}", responseViewModel);       
             }
             catch(Exception ex) 
@@ -110,7 +110,7 @@ namespace SealTypographicWebAPI.Controllers
             try
             {
                 Log.Information("Letterhead put input {@Input}", letterheadPostData);
-                response = letterheadService.UpdateLetterhead(letterheadPostData);
+                response = letterheadService.Update(letterheadPostData);
                 Log.Information("Letterhead put output {@Output}", response);
                 return response;
             }
@@ -136,7 +136,7 @@ namespace SealTypographicWebAPI.Controllers
             try
             {
                 Log.Information("Letterhead delete(hide) input {@Input}", letterheadId);
-                responseViewModel = letterheadService.DeleteLetterhead(letterheadId);
+                responseViewModel = letterheadService.Delete(letterheadId);
                 Log.Information("Letterhead delete(hide) output {@Output}", responseViewModel);                
             }
             catch (Exception ex)

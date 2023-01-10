@@ -6,6 +6,11 @@ namespace SealTypographicWebAPI.Consts
 {
     /// <summary>
     /// 客戶、會計師、印鑑、簽名的狀態
+    /// 0 : 通過
+    /// 10 : 退件
+    /// 20 : 草搞
+    /// 30 : 待審
+    /// 40 : 作廢
     /// </summary>
     public enum ReviewStatus : sbyte
     {
@@ -128,7 +133,12 @@ namespace SealTypographicWebAPI.Consts
     }
 
     /// <summary>
-    /// 客戶印鑑類別
+    /// 客戶印鑑類別    
+    /// 1.公司章
+    /// 2.負責人
+    /// 3.經理
+    /// 4.會計主管    
+    /// 5.其他(客戶)
     /// </summary>
     public enum CustomerSealConfigType
     {
@@ -170,6 +180,11 @@ namespace SealTypographicWebAPI.Consts
 
     /// <summary>
     /// 會計師簽印類別
+    /// 1.會計印鑑
+    /// 2.中文簽名
+    /// 3.英文簽名
+    /// 4.舊式簽名
+    /// 5.其他(會計)  
     /// </summary>
     public enum AccountantSignConfigType
     {
@@ -206,41 +221,6 @@ namespace SealTypographicWebAPI.Consts
         /// </summary>
         [Description("AccountantOther")]
         //[Description("其他")]
-        AccountantOther = 5,
-
-        /// <summary>
-        /// 會計師印鑑
-        /// </summary>
-        //[Description("AccountantSeal")]
-        [Description("會計師印鑑")]
-        test1 = 6,
-
-        /// <summary>
-        /// 中文簽名
-        /// </summary>
-        //[Description("AccountantCHSign")]
-        [Description("中文簽名")]
-        test2 = 7,
-
-        /// <summary>
-        /// 英文簽名
-        /// </summary>
-        //[Description("AccountantENSign")]
-        [Description("英文簽名")]
-        test3 = 8,
-
-        /// <summary>
-        /// 舊式簽名
-        /// </summary>
-        //[Description("AccountantOldSign")]
-        [Description("舊式簽名")]
-        test4 = 9,
-
-        /// <summary>
-        /// 其他
-        /// </summary>
-        //[Description("AccountantOther")]
-        [Description("其他")]
-        test5 = 10,
+        AccountantOther = 5,        
     }
 }

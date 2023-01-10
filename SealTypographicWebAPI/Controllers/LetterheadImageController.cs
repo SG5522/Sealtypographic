@@ -42,7 +42,7 @@ namespace SealTypographicWebAPI.Controllers
             try
             {
                 Log.Information("LetterheadImage get{letterheadId} input {@Input}", letterheadId);
-                letterheadGroupCreateDateViews = letterheadImageService.GetLetterheadGroupCreateDateViews(letterheadId);
+                letterheadGroupCreateDateViews = letterheadImageService.GetLetterheadCreateDateViews(letterheadId);
                 Log.Information("LetterheadImage get{letterheadId} output {@Output}", letterheadGroupCreateDateViews);
             }
             catch (Exception ex)
@@ -82,13 +82,13 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="letterheadImageForms">信頭圖片組</param>
         /// <returns></returns>
         [HttpPost]
-        public ResponseViewModel Post(List<LetterheadImageForm> letterheadImageForms)
+        public ResponseViewModel Post(LetterheadImageForms letterheadImageForms)
         {
             ResponseViewModel responseViewModel = new();
             try
             {
                 Log.Information("LetterheadImage post input {@Input}", letterheadImageForms);
-                responseViewModel = letterheadImageService.CreateLetterheadImages(letterheadImageForms);
+                responseViewModel = letterheadImageService.Create(letterheadImageForms);
                 Log.Information("LetterheadImage post output {@Output}", responseViewModel);
             }
             catch (Exception ex)
@@ -111,7 +111,7 @@ namespace SealTypographicWebAPI.Controllers
             try
             {
                 Log.Information("LetterheadImage put input {@Input}", letterheadImageUpdate);
-                responseViewModels = letterheadImageService.UpdateLetterheadImage(letterheadImageUpdate);
+                responseViewModels = letterheadImageService.Update(letterheadImageUpdate);
                 Log.Information("LetterheadImage put output {@Output}", responseViewModels);
             }            
             catch (Exception ex)

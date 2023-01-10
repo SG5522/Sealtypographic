@@ -10,7 +10,7 @@ using SealTypographicWebAPI.Utils;
 namespace SealTypographicWebAPI.Services.Implements
 {
     /// <summary>
-    /// 勤業用的顧客資料
+    /// 信頭管理
     /// </summary>
     public class LetterheadService : ILetterheadService
     {
@@ -63,6 +63,7 @@ namespace SealTypographicWebAPI.Services.Implements
 
             IQueryable<Letterhead> letterheadQuery = dbContext.Letterheads.Where(letterhead => letterhead.DeleteStatus == DeleteStatus.NO)
                                                     .Include(letterhead => letterhead.LetterheadImageJournals);
+
             if (!string.IsNullOrWhiteSpace(letterheadSearch.LetterheadOrName))
             {
                 letterheadQuery = letterheadQuery.Where
@@ -73,7 +74,7 @@ namespace SealTypographicWebAPI.Services.Implements
                                 );
             }
 
-            letterheadQuery = letterheadQuery.OrderBy(letterhead => letterhead.Id);
+            letterheadQuery = letterheadQuery.OrderBy(letterhead => letterhead.Code);
 
             if (letterheadQuery.Any())
             {
@@ -115,22 +116,21 @@ namespace SealTypographicWebAPI.Services.Implements
         /// 建立信頭資料
         /// </summary>
         /// <param name="letterheadForm">基本資料</param>
-        public LetterheadCreateResponse CreateLetterhead(LetterheadForm letterheadForm)
+        public LetterheadCreateResponse Create(LetterheadForm letterheadForm)
         {
             LetterheadCreateResponse response = new();
             int userId = 0;//帳號驗證取得Id
-            IQueryable<Letterhead> letterheadQuery = dbContext.Letterheads
-                    .Where(letterhead => letterhead.Code == letterheadForm.LetterheadNumber);
+            Letterhead? letterheadQuery = dbContext.Letterheads
+                            .FirstOrDefault(letterhead => letterhead.Code == letterheadForm.LetterheadNumber);
 
-            if(!letterheadQuery.Any())
+            if(letterheadQuery == null)
             {
                 Letterhead dbLetterhead = mapper.Map<Letterhead>(letterheadForm);                
                 BaseInputLetterhead(dbLetterhead, true, userId);
                 dbContext.Letterheads.Add(dbLetterhead);
                 dbContext.SaveChanges();
                 //回傳剛建立的信頭基本資料 使建立信頭圖片時找到該ID
-                Letterhead? letterhead = dbContext.Letterheads
-                                        .FirstOrDefault(letterhead => letterhead.Code == letterheadForm.LetterheadNumber);              
+                Letterhead? letterhead = dbContext.Letterheads.Find(dbLetterhead.Id);                                        
                 
                 if (letterhead != null)
                 {
@@ -153,7 +153,7 @@ namespace SealTypographicWebAPI.Services.Implements
         /// 更新建立信頭資料
         /// </summary>
         /// <param name="letterheadFormUpdate">基本資料</param>
-        public ResponseViewModel UpdateLetterhead(LetterheadFormUpdate letterheadFormUpdate)
+        public ResponseViewModel Update(LetterheadFormUpdate letterheadFormUpdate)
         {
             ResponseViewModel response = new();
             int userId = 0;//帳號驗證取得Id
@@ -177,7 +177,7 @@ namespace SealTypographicWebAPI.Services.Implements
         /// 刪除信頭資料(變更狀態使其一般USER無法看到)
         /// </summary>
         /// <param name="litterheadID"></param>
-        public ResponseViewModel DeleteLetterhead(int litterheadID)
+        public ResponseViewModel Delete(int litterheadID)
         {
             ResponseViewModel response = new();
             int userId = 0;//帳號驗證取得Id

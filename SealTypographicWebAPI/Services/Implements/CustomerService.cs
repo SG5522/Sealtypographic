@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 namespace SealTypographicWebAPI.Services.Implements
 {
     /// <summary>
-    /// 勤業用的顧客資料
+    /// 顧客資料管理
     /// </summary>
     public class CustomerService : ICustomerService
     {
@@ -35,7 +35,8 @@ namespace SealTypographicWebAPI.Services.Implements
         public CustomerDetailViewModel GetCustomerDetailViewModel(int customerId)
         {
             CustomerDetailViewModel customerDetailViewModel = new();                        
-            Customer? customerQuery = dbContext.Customers.Find(customerId);                                    
+            Customer? customerQuery = dbContext.Customers.Find(customerId);         
+            
             if (customerQuery != null)
             {
 
@@ -56,8 +57,7 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <returns></returns>
         public CustomerPaginateViewModel GetCustomerPaginatesViewModel(CustomerSearch customerSearch)
         {
-            CustomerPaginateViewModel customerPaginateViewModel = new();
-            List<CustomerViewModel> customerViewModels = new();
+            CustomerPaginateViewModel customerPaginateViewModel = new();            
             IQueryable<Customer> customerQuery = dbContext.Customers.Where(customer => customer.DeleteStatus == DeleteStatus.NO);                                                
             
             if (!string.IsNullOrWhiteSpace(customerSearch.CustomerNumberOrName))
@@ -69,7 +69,7 @@ namespace SealTypographicWebAPI.Services.Implements
                         || customer.Name.Contains(customerSearch.CustomerNumberOrName)                       
                     );
             }
-            customerQuery = customerQuery.OrderBy(customer => customer.Id);
+            customerQuery = customerQuery.OrderBy(customer => customer.Code);
 
             if (customerQuery.Any())
             {
@@ -91,9 +91,8 @@ namespace SealTypographicWebAPI.Services.Implements
                     {
                         customerViewModel.Quarter = quarter;
                     }
-                    customerViewModels.Add(customerViewModel);
-                }
-                customerPaginateViewModel.ViewModels = customerViewModels;
+                    customerPaginateViewModel.ViewModels.Add(customerViewModel);                    
+                }                
                 customerPaginateViewModel.PageNumber = customerSearch.PageNumber;
                 customerPaginateViewModel.PageSize= customerSearch.PageSize;
                 //計算總頁數
@@ -113,14 +112,15 @@ namespace SealTypographicWebAPI.Services.Implements
         /// 新增顧客基本資料
         /// </summary>
         /// <param name="customerForm">基本資料</param>
-        public CreateCustomerResponse CreateCustomer(CustomerForm customerForm)
+        public CreateCustomerResponse Create(CustomerForm customerForm)
         {
             CreateCustomerResponse createCustomerResponse = new();
             int userid = 0; //帳號驗證取得ID
-            IQueryable<Customer> customerQuery = dbContext.Customers
-                                .Where(customer => customer.Code == customerForm.Code);
 
-            if (!customerQuery.Any())
+            Customer? customerQuery = dbContext.Customers
+                                .FirstOrDefault(customer => customer.Code == customerForm.Code);
+
+            if (customerQuery == null)
             {
                 Customer dbCustomer = mapper.Map<Customer>(customerForm);
                 BaseInputCustomer(dbCustomer, true, userid);
@@ -128,8 +128,7 @@ namespace SealTypographicWebAPI.Services.Implements
                 dbContext.SaveChanges();
 
                 //回傳剛建立的客戶基本資料 使建立客戶印鑑找到該ID
-                Customer? customer = dbContext.Customers
-                                    .FirstOrDefault(customer => customer.Code == customerForm.Code);
+                Customer? customer = dbContext.Customers.Find(dbCustomer.Id);
                                      
                 if (customer != null) 
                 {
@@ -152,7 +151,7 @@ namespace SealTypographicWebAPI.Services.Implements
         /// 更新客戶基本資料
         /// </summary>
         /// <param name="customerFormUpdate">客戶基本資料 customerForm.CustomerNumber 為搜尋條件</param>        
-        public ResponseViewModel UpdateCustomer(CustomerFormUpdate customerFormUpdate)
+        public ResponseViewModel Update(CustomerFormUpdate customerFormUpdate)
         {
             ResponseViewModel response = new();
             int userId = 0;//帳號驗證取得ID
@@ -176,7 +175,7 @@ namespace SealTypographicWebAPI.Services.Implements
         /// 變更此客戶狀態為刪除。
         /// </summary>
         /// <param name="customerId">客戶ID</param>        
-        public ResponseViewModel DeleteCustomer(int customerId)
+        public ResponseViewModel Delete(int customerId)
         {
             ResponseViewModel response = new();
             int userId = 0;//帳號驗證取得ID

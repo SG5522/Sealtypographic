@@ -9,6 +9,11 @@ namespace SealTypographicWebAPI.Models.Customer
     public class CustomerSealViewModel : BaseSeal
     {
         /// <summary>
+        /// 印鑑簽印ID
+        /// </summary>
+        public CustomerSealConfigType SealMappingConfigId { get; set; }
+
+        /// <summary>
         /// 印鑑編號(排序) 1為起始
         /// </summary>
         /// <example>1</example>
@@ -21,6 +26,14 @@ namespace SealTypographicWebAPI.Models.Customer
     /// </summary>
     public class CustomerSealViewModels : ResponseViewModel
     {
+        /// <summary>
+        /// new SealViewModels
+        /// </summary>
+        public CustomerSealViewModels()
+        {
+            SealViewModels = new();
+        }
+
         /// <summary>
         /// 客戶ID
         /// </summary>

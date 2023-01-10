@@ -9,7 +9,7 @@ using AutoMapper;
 namespace SealTypographicWebAPI.Services.Implements
 {
     /// <summary>
-    /// 勤業用 管理會計師資料
+    /// 會計師資料管理
     /// </summary>
     public class AccountantService : IAccountantService
     {
@@ -34,8 +34,7 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <returns></returns>
         public AccountantDetailResponse GetAccountant(int accountantId)
         {
-            AccountantDetailResponse accountantResponse = new();
-            ResponseViewModel response = new();
+            AccountantDetailResponse accountantResponse = new();            
 
             Accountant? accountantQuery = dbContext.Accountants.Include(accountant => accountant.AccountantGroup)
                                                                .FirstOrDefault(accountant => accountant.Id == accountantId);
@@ -59,9 +58,8 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <returns></returns>
         public AccountantPaginatesViewModel GetAccountantViewModels(AccountantSearch accountantSearch)
         {
-            AccountantPaginatesViewModel accountantPaginatesViewModels = new();
-            List<AccountantViewModelWithCreateDate> accountantViewModelWithStartDate = new();
-            ResponseViewModel response = new();
+            AccountantPaginatesViewModel accountantPaginatesViewModels = new();            
+
             IQueryable<Accountant> accountantQuery = dbContext.Accountants.Where(accountant => accountant.DeleteStatus == DeleteStatus.NO)
                                                     .Include(accountant => accountant.AccountantSignJournals);
             if (!string.IsNullOrWhiteSpace(accountantSearch.NumberOrNameOrGroupsName))
@@ -94,9 +92,8 @@ namespace SealTypographicWebAPI.Services.Implements
                                                                         .Where(x => x.AccountantSignJournal.AccountantId == accountant.Id)
                                                                         .Max(x => x.CreateDate);
                     }
-                    accountantViewModelWithStartDate.Add(accountantPaginatesViewModel);
-                }
-                accountantPaginatesViewModels.ViewModels = accountantViewModelWithStartDate;
+                    accountantPaginatesViewModels.ViewModels.Add(accountantPaginatesViewModel);                    
+                }                
                 accountantPaginatesViewModels.PageNumber= accountantSearch.PageNumber;
                 accountantPaginatesViewModels.PageSize = accountantSearch.PageSize;
                 //計算總頁數
@@ -116,13 +113,12 @@ namespace SealTypographicWebAPI.Services.Implements
         /// </summary>
         /// <param name="accountantForm">基本資料</param>
         /// <returns></returns>
-        public AccountantCreateResponse CreateAccountant(AccountantForm accountantForm)
+        public AccountantCreateResponse Create(AccountantForm accountantForm)
         {
             AccountantCreateResponse accountantCreateResponse = new();
             int userid = 0;//帳號驗證取得ID
             Accountant? accountantQuery = dbContext.Accountants
-                                    .Where(accountant => accountant.Code == accountantForm.AccountantNumber)
-                                    .FirstOrDefault();
+                                    .FirstOrDefault(accountant => accountant.Code == accountantForm.AccountantNumber);                               
 
             if (accountantQuery == null)
             {
@@ -132,9 +128,8 @@ namespace SealTypographicWebAPI.Services.Implements
                 dbContext.SaveChanges();
 
                 //回傳剛建立的客戶基本資料 使建立客戶印鑑找到該ID
-                Accountant? accountant = dbContext.Accountants
-                                    .Where(accountant => accountant.Code == accountantForm.AccountantNumber)
-                                    .FirstOrDefault();
+                Accountant? accountant = dbContext.Accountants.Find(dbAccountant.Id);
+                                    
                 if (accountant != null)
                 {
                     accountantCreateResponse.AccountantId = accountant.Id;
@@ -156,7 +151,7 @@ namespace SealTypographicWebAPI.Services.Implements
         /// 更新會計師基本資料
         /// </summary>
         /// <param name="accountantFormUpdate">會計師基本資料 accountantBaseData.id 為搜尋條件</param>        
-        public ResponseViewModel UpdateAccountant(AccountantFormUpdate accountantFormUpdate)
+        public ResponseViewModel Update(AccountantFormUpdate accountantFormUpdate)
         {
             ResponseViewModel response = new();
             int userid = 0;//帳號驗證取得ID
@@ -180,7 +175,7 @@ namespace SealTypographicWebAPI.Services.Implements
         /// 變更此客戶狀態為刪除(隱藏)。
         /// </summary>
         /// <param name="accountantId">會計師ID</param>        
-        public ResponseViewModel DeleteAccountant(int accountantId)
+        public ResponseViewModel Delete(int accountantId)
         {
             ResponseViewModel response = new();
             int userid = 0;//帳號驗證取得ID

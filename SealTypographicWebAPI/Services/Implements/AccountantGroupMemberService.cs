@@ -5,12 +5,13 @@ using SealTypographicWebAPI.Models.Accountant;
 using Microsoft.EntityFrameworkCore;
 using AutoMapper;
 using SealTypographicWebAPI.Utils;
+using SealTypographicWebAPI.Consts;
 
 
 namespace SealTypographicWebAPI.Services.Implements
 {
     /// <summary>
-    /// 勤業用 管理會計群組成員
+    /// 會計師群組成員管理
     /// </summary>
     public class AccountantGroupMemberService : IAccountantGroupMemberService
     {
@@ -136,18 +137,16 @@ namespace SealTypographicWebAPI.Services.Implements
         {
             ResponseViewModel response = new();
 
-            Accountant? accountant = dbContext.Accountants.Find(accountantGroupChangeForm.Id);            
-            if (accountant != null)
+            if(ChangeGroupMember(accountantGroupChangeForm.Id, accountantGroupChangeForm.AccountantGroupId))    
             {
-                accountant.AccountantGroupId = accountantGroupChangeForm.AccountantGroupId;
                 dbContext.SaveChanges();
                 response.Success();
             }
             else
-            {
+            {                
                 response.UpdateAccountantNoData();
             }
-
+            
             return response;
         }
 
@@ -160,24 +159,41 @@ namespace SealTypographicWebAPI.Services.Implements
         {
             ResponseViewModel response = new();
             
-            foreach (int AccountantId in accountantGroupMemberForm.AccountantIds)
+            foreach (int accountantId in accountantGroupMemberForm.AccountantIds)
             {
-                Accountant? accountantQuery = dbContext.Accountants.Find(AccountantId);
-
-                if (accountantQuery != null)
+                if(!ChangeGroupMember(accountantId, accountantGroupMemberForm.AccountantGroupId))
                 {
-                    accountantQuery.AccountantGroupId = accountantGroupMemberForm.AccountantGroupId;
-                }                
-                else
-                {
-                    response.UpdateAccountantNoData();
-                    return response;
+                    if(response.Message == null)
+                    {
+                        response.Message = $"Update accountant no data accountantId:";
+                    }
+                    response.Code = (int)ResponseCode.UpdateAccountantNoData;
+                    response.Message += $" {accountantId},";
                 }
             }
 
-            dbContext.SaveChanges();
-            response.Success();
+            if(response.Message == null)
+            {
+                dbContext.SaveChanges();
+                response.Success();
+            }
             return response;
+        }
+
+        private bool ChangeGroupMember(int accountantId, int AccountantGroupId)
+        {
+            bool result;
+            Accountant? accountantQuery = dbContext.Accountants.Find(accountantId);
+            if (accountantQuery != null)
+            {
+                accountantQuery.AccountantGroupId = AccountantGroupId;
+                result = true;
+            }
+            else
+            {
+                result = false;
+            }
+            return result;
         }
     }
 }

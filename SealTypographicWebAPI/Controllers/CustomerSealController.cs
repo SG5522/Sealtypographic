@@ -57,7 +57,7 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="customerSealQuarter">關鑑字</param>        
         /// <returns></returns>        
         [HttpGet]
-        public CustomerSealViewModels Get([FromQuery] CustomerSealQuarterSearch customerSealQuarter)
+        public CustomerSealViewModels Get([FromQuery] CustomerSealQuarter customerSealQuarter)
         {
             CustomerSealViewModels customerSealViewModels = new();
             try
@@ -72,21 +72,21 @@ namespace SealTypographicWebAPI.Controllers
                 customerSealViewModels.DbError();                
             }
             return customerSealViewModels;
-        }        
+        }
 
         /// <summary>
         /// 建立客戶印鑑組資料
         /// </summary>        
-        /// <param name="customerSeals">客戶印鑑組資料(Json)</param>
+        /// <param name="customerSealForms">客戶印鑑組資料(Json)</param>
         /// <returns></returns>
         [HttpPost]
-        public ResponseViewModel Post(List<CustomerSealForm> customerSeals)
+        public ResponseViewModel Post(CustomerSealForms customerSealForms)
         {
             ResponseViewModel response = new();
             try
             {
-                Log.Information("CustomerSeal post input {@Input}", customerSeals);
-                response = customerSealService.CreateCustomerSeals(customerSeals);
+                Log.Information("CustomerSeal post input {@Input}", customerSealForms);
+                response = customerSealService.Create(customerSealForms);
                 Log.Information("CustomerSeal post output {@Output}", response);
                 
             }
@@ -110,7 +110,7 @@ namespace SealTypographicWebAPI.Controllers
             try
             {
                 Log.Information("CustomerSeal put input {@Input}", customerSealUpdate);                
-                responses = customerSealService.UpdateCustomerSeals(customerSealUpdate);
+                responses = customerSealService.Update(customerSealUpdate);
                 Log.Information("CustomerSeal put output {@Output}", responses);                               
             }
             catch (Exception ex)
@@ -129,7 +129,7 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="customerSealQuarter">客戶Id與季度</param>
         /// <returns></returns>
         [HttpPut("Pending")]
-        public ResponseViewModel PutPendingCustomerSeal(CustomerSealQuarterSearch customerSealQuarter)
+        public ResponseViewModel PutPendingCustomerSeal(CustomerSealQuarter customerSealQuarter)
         {
             ResponseViewModel response = new();
             try
@@ -152,7 +152,7 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="customerSealQuarter">客戶Id與季度</param>
         /// <returns></returns>
         [HttpPut("Invalid")]
-        public ResponseViewModel PutInvalidCustomerSeal(CustomerSealQuarterSearch customerSealQuarter)
+        public ResponseViewModel PutInvalidCustomerSeal(CustomerSealQuarter customerSealQuarter)
         {
             ResponseViewModel response = new();
             try
@@ -168,28 +168,6 @@ namespace SealTypographicWebAPI.Controllers
             }
             return response;
         }
-
-        /// <summary>
-        /// 刪除印鑑，(隱藏)
-        /// </summary>
-        /// <param name="customerSealId"></param>
-        /// <returns></returns>
-        [HttpDelete("{customerSealId}")]
-        public ResponseViewModel Delete(int customerSealId)
-        {
-            ResponseViewModel response = new();
-            try
-            {
-                Log.Information("CustomerSeal delete input {@Input}", customerSealId);
-                response = customerSealService.DeleteCustomerSeal(customerSealId);
-                Log.Information("CustomerSeal delete output {@Ouput}", response);                
-            }
-            catch (Exception ex)
-            {
-                Log.Error("Customer delete error {@Error}", ex);
-                response.DbError();                
-            }
-            return response;
-        }
+        
     }
 }

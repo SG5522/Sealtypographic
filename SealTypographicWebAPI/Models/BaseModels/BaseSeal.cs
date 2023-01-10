@@ -8,7 +8,7 @@
         /// <summary>
         /// 印鑑簽印ID
         /// </summary>
-        public int SealMappingConfigId { get; set; }
+        //public int SealMappingConfigId { get; set; }
 
         /// <summary>         
         /// (目前暫定)
@@ -26,12 +26,12 @@
         /// 12.信頭地址
         /// </summary>
         /// <example>1</example>
-        public string SealMappingConfigName { get; set; }
+        //public string SealMappingConfigName { get; set; }
 
         /// <summary>
         /// SubId
         /// </summary>
-        public string SealMappingConfigSubId { get; set; }
+        //public string SealMappingConfigSubId { get; set; }
 
 
         /// <summary>

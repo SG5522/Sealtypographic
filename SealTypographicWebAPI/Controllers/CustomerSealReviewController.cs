@@ -60,7 +60,7 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="customerSealQuarter"></param>
         /// <returns></returns>
         [HttpGet("getCustomerSealReviewDetail")]
-        public CustomerSealReviewDetailResponse GetCustomerSealReviewDetail([FromQuery] CustomerSealQuarterSearch customerSealQuarter)
+        public CustomerSealReviewDetailResponse GetCustomerSealReviewDetail([FromQuery] CustomerSealQuarter customerSealQuarter)
         {                                    
             CustomerSealReviewDetailResponse customerSealReviewDetailResponse = new();
             try

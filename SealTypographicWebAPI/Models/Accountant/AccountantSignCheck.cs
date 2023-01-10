@@ -1,4 +1,6 @@
 ﻿
+using SealTypographicWebAPI.Consts;
+
 namespace SealTypographicWebAPI.Models.Accountant
 {
     /// <summary>
@@ -12,14 +14,9 @@ namespace SealTypographicWebAPI.Models.Accountant
         public int AccountantId { get; set; }
 
         /// <summary>
-        /// 客戶印鑑群組ID 
-        /// 6.會計印鑑
-        /// 7.中文簽名
-        /// 8.英文簽名
-        /// 9.舊式簽名    
-        /// 10.其他(會計)
+        /// 會計師簽印類別 
         /// </summary>
-        public int SealMappingConfigId { get; set; }
+        public AccountantSignConfigType SealMappingConfigId { get; set; }
 
         /// <summary>
         /// 啟用日期

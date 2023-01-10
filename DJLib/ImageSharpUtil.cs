@@ -44,7 +44,7 @@ namespace DJLib
             string base64string = ImageBase64.Substring(ImageBase64.IndexOf("base64,") + 7);
             byte[] bytes = Convert.FromBase64String(base64string);
             Image image = Image.Load(bytes, out IImageFormat format);
-            SaveImageFile(image, format, saveImageInfo);
+            SaveFile(image, format, saveImageInfo);
         }
 
         /// <summary>
@@ -53,7 +53,7 @@ namespace DJLib
         /// <param name="image">影像</param>
         /// <param name="format">格式</param>
         /// <param name="saveImageInfo">存檔資訊</param>
-        private static void SaveImageFile(Image image, IImageFormat format, SaveImageInfo saveImageInfo)
+        public static void SaveFile(Image image, IImageFormat format, SaveImageInfo saveImageInfo)
         {            
             if (!Directory.Exists(saveImageInfo.Folder))
             {

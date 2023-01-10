@@ -20,7 +20,7 @@ namespace SealTypographicWebAPI.Services
         /// </summary>
         /// <param name="customerSealQuarter"></param>
         /// <returns></returns>
-        CustomerSealReviewDetailResponse GetCustomerSealReviewDetail(CustomerSealQuarterSearch customerSealQuarter);
+        CustomerSealReviewDetailResponse GetCustomerSealReviewDetail(CustomerSealQuarter customerSealQuarter);
 
         /// <summary>
         /// 審核通過

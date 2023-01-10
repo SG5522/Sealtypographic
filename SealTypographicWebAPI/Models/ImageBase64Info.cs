@@ -1,4 +1,6 @@
-﻿using SealTypographicWebAPI.Consts;
+﻿using Microsoft.EntityFrameworkCore;
+using SealTypographicWebAPI.Consts;
+using SealTypographicWebAPI.Entities;
 
 namespace SealTypographicWebAPI.Models
 {
@@ -25,6 +27,11 @@ namespace SealTypographicWebAPI.Models
         /// <summary>
         /// 建檔時間
         /// </summary>
-        public DateTime CreateTime { get; set; }
+        public DateTime CreateTime {
+            get
+            {
+                return DateTime.Now;
+            }           
+        }        
     }
 }

@@ -28,20 +28,20 @@ namespace SealTypographicWebAPI.Services
         /// 建立會計師資料
         /// </summary>
         /// <param name="accountantBaseData">基本資料</param>        
-        AccountantCreateResponse CreateAccountant(AccountantForm accountantBaseData);
+        AccountantCreateResponse Create(AccountantForm accountantBaseData);
 
 
         /// <summary>
         /// 更新客戶基本資料
         /// </summary>
         /// <param name="accountantBaseData">基本資料</param>
-        ResponseViewModel UpdateAccountant(AccountantFormUpdate accountantBaseData);
+        ResponseViewModel Update(AccountantFormUpdate accountantBaseData);
 
         /// <summary>
         /// 刪除客戶基本資料(變更狀態使其一般USER無法看到)
         /// </summary>
         /// <param name="accountantId"></param>
-        ResponseViewModel DeleteAccountant(int accountantId);
+        ResponseViewModel Delete(int accountantId);
     }
 
 }

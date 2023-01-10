@@ -33,6 +33,14 @@ namespace SealTypographicWebAPI.Models.Customer
     public class CustomerSealQuarterViews : ResponseViewModel
     {
         /// <summary>
+        /// new CustomerSealQuarterView
+        /// </summary>
+        public CustomerSealQuarterViews() 
+        {
+            Quarters = new();
+        }
+
+        /// <summary>
         /// 客戶季度搜尋表
         /// </summary>
         public List<CustomerSealQuarterView> Quarters { get; set; }

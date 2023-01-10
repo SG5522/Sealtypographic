@@ -5,10 +5,8 @@ using SealTypographicWebAPI.Models.Accountant;
 using SealTypographicWebAPI.Models.Letterhead;
 using SealTypographicWebAPI.Models.TypographicPDF;
 using SealTypographicWebAPI.Models.AccountantGroup;
-using SealTypographicWebAPI.Models.SealMappingConfig;
-using SealTypographicWebAPI.Models.AccountantGroupMember;
 using SealTypographicWebAPI.Models.CustomerSealReview;
-using AutoMapper.Internal;
+
 
 namespace SealTypographicWebAPI.Config
 {
@@ -48,8 +46,9 @@ namespace SealTypographicWebAPI.Config
                     .ReverseMap();
 
             //客戶印鑑序號確認用
-            CreateMap<CustomerSealForm, CustomerSealSequenceCheck>();
+            CreateMap<CustomerSealForm, CustomerSealSequenceCheck>();            
             CreateMap<CustomerSealJournal, CustomerSealSequenceCheck>();
+                             
 
             //客戶印鑑審核
             CreateMap<CustomerSealJournal, CustomerSealReviewViewModel>()
@@ -82,7 +81,7 @@ namespace SealTypographicWebAPI.Config
             CreateMap<AccountantFormUpdate, Accountant>();
 
             //會計師群組
-            CreateMap<AccountantGroup, AccountantGroupViewModel>();
+            CreateMap<AccountantGroup, AccountantGroupViewModel>();            
             CreateMap<AccountantGroupForm, AccountantGroup>();
             CreateMap<AccountantGroupFormUpdate,AccountantGroup>();            
 
@@ -106,10 +105,12 @@ namespace SealTypographicWebAPI.Config
             CreateMap<AccountantSignFormUpdate, AccountantSignCheck>();
 
             //信頭基本資料
-            CreateMap<Letterhead, LetterheadViewModel>();            
+            CreateMap<Letterhead, LetterheadViewModel>();
+
             CreateMap<LetterheadForm, Letterhead>()
                     .ForMember(x => x.Code, y => y.MapFrom(o => o.LetterheadNumber))
                     .ReverseMap();
+
             CreateMap<LetterheadFormUpdate, Letterhead>();
 
             //信頭圖片
@@ -118,18 +119,16 @@ namespace SealTypographicWebAPI.Config
                     .ForMember(x => x.ImageBase64, y => y.Ignore()) // <---imagebase64要額外處理所以要忽略
                     .ReverseMap();
 
+            CreateMap<SealReviewJournal, LetterheadImageViewModel>()
+                    .ReverseMap();
+
             CreateMap<LetterheadImageForm, LetterheadImageJournal>()
                     .ForMember(x => x.ImagePath, y => y.Ignore()) // <---imagebase64要額外處理所以要忽略
                     .ReverseMap();
+
             CreateMap<LetterheadImageFormUpdate, LetterheadImageJournal>()
                     .ForMember(x => x.ImagePath, y => y.Ignore()) // <---ImagePath要額外處理所以要忽略
                     .ReverseMap();
-
-            //印鑑種類資料
-            CreateMap<SealMappingConfig, SealMappingConfigViewModel>();
-            CreateMap<SealMappingConfigViewModel, SealMappingConfig>()
-                .ForMember(x => x.Id, y => y.Ignore())
-                .ReverseMap();
 
             //PDF排版資訊
             CreateMap<TypographicPDFForm, TypographicPDF>()

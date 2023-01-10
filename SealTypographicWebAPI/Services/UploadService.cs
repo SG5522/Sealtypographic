@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Options;
 using SealTypographicWebAPI.Consts;
 using SealTypographicWebAPI.Models;
+using SealTypographicWebAPI.Services.Implements;
 using SealTypographicWebAPI.Utils;
 
 namespace SealTypographicWebAPI.Services

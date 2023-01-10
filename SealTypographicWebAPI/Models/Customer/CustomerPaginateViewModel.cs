@@ -8,6 +8,14 @@ namespace SealTypographicWebAPI.Models.Customer
     public class CustomerPaginateViewModel : PaginateViewModel
     {
         /// <summary>
+        /// new ViewModels
+        /// </summary>
+        public CustomerPaginateViewModel()
+        {
+            ViewModels = new();
+        }
+
+        /// <summary>
         /// 顧客列表
         /// </summary>
         public List<CustomerViewModel> ViewModels { get; set; }

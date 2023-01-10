@@ -86,7 +86,7 @@ namespace SealTypographicWebAPI.Controllers
             try
             {
                 Log.Information("Accountant post input {@Input}", accountantBaseData);
-                accountantCreateResponse = accountantService.CreateAccountant(accountantBaseData);
+                accountantCreateResponse = accountantService.Create(accountantBaseData);
                 Log.Information("Accountant post output {@Output}", accountantCreateResponse);                       
             }
             catch (Exception ex)
@@ -108,7 +108,7 @@ namespace SealTypographicWebAPI.Controllers
             try
             {
                 Log.Information("Accountant put input {@Input}", accountantFormUpdate);
-                response = accountantService.UpdateAccountant(accountantFormUpdate);
+                response = accountantService.Update(accountantFormUpdate);
                 Log.Information("Accountant put output {@Output}", response);                
             }
             catch (Exception ex)
@@ -132,7 +132,7 @@ namespace SealTypographicWebAPI.Controllers
             try
             {
                 Log.Information("Accountant delete(hide) input {@Input}", accountantId);
-                response = accountantService.DeleteAccountant(accountantId);
+                response = accountantService.Delete(accountantId);
                 Log.Information("Accountant delete(hide) output {@Output}", response);
             }
             catch (Exception ex)

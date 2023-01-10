@@ -1,4 +1,6 @@
 ﻿
+using SealTypographicWebAPI.Consts;
+
 namespace SealTypographicWebAPI.Models.Customer
 {
     /// <summary>
@@ -19,7 +21,7 @@ namespace SealTypographicWebAPI.Models.Customer
         /// 4.會計主管    
         /// 5.其他(客戶)
         /// </summary>
-        public int SealMappingConfigId { get; set; }
+        public CustomerSealConfigType SealMappingConfigId { get; set; }
 
         /// <summary>
         /// 印鑑序號

@@ -40,7 +40,7 @@ namespace SealTypographicWebAPI.Controllers
             AccountantGroupList accountantGroupList = new ();
             try
             {                
-                accountantGroupList = accountantGroupService.GetAccountantGroupList();
+                accountantGroupList = accountantGroupService.GetAll();
                 Log.Information("AccountantGroups get(List) output {@Output}", accountantGroupList);                
             }
             catch (Exception ex)
@@ -63,7 +63,7 @@ namespace SealTypographicWebAPI.Controllers
             try
             {
                 Log.Information("AccountantGroups get FromQuery input {@Input}", accountantGroupQueryPage);
-                accountantGroupResponses = accountantGroupService.GetAccountantGroups(accountantGroupQueryPage);
+                accountantGroupResponses = accountantGroupService.Get(accountantGroupQueryPage);
                 Log.Information("AccountantGroups get FromQuery output {@Output}", accountantGroupResponses);                
                 
             }
@@ -87,7 +87,7 @@ namespace SealTypographicWebAPI.Controllers
             try
             {
                 Log.Information("AccountantGroups get{accountantGroupId} input {@Input}", accountantGroupId);
-                accountantGroupResponse = accountantGroupService.GetAccountantGroupData(accountantGroupId);
+                accountantGroupResponse = accountantGroupService.GetAccountantData(accountantGroupId);
                 Log.Information("AccountantGroups get{accountantGroupId} output {@Output}", accountantGroupResponse);                
             }
             catch (Exception ex)
@@ -109,7 +109,7 @@ namespace SealTypographicWebAPI.Controllers
             try
             {
                 Log.Information("AccountantGroups post input {@Input}", accountantGroupForm);
-                response = accountantGroupService.CreateAccountantGroup(accountantGroupForm);
+                response = accountantGroupService.Create(accountantGroupForm);
                 Log.Information("AccountantGroups post output {@Output}", response);                
             }
             catch (Exception ex)
@@ -131,7 +131,7 @@ namespace SealTypographicWebAPI.Controllers
             try
             {
                 Log.Information("AccountantGroups put accountantGroupForm input {@Input}", accountantGroupFormUpdate);
-                response = accountantGroupService.UpdateAccountantGroup(accountantGroupFormUpdate);
+                response = accountantGroupService.Update(accountantGroupFormUpdate);
                 Log.Information("AccountantGroups put accountantGroupForm output {@Output}", response);
             }
             catch (Exception ex)
@@ -154,7 +154,7 @@ namespace SealTypographicWebAPI.Controllers
             try
             {
                 Log.Information("AccountantGroups delete input {@Input}", accountantGroupDataId);
-                response = accountantGroupService.DeleteAccountantGroup(accountantGroupDataId);
+                response = accountantGroupService.Delete(accountantGroupDataId);
                 Log.Information("AccountantGroups delete output {@Output}", response);                
             }
             catch (Exception ex)
