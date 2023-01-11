@@ -21,14 +21,14 @@ namespace SealTypographicWebAPI.Services
         /// </summary>
         /// <param name="accountantGroupId">群組ID</param>
         /// <returns></returns>
-        AccountantGroupResponse GetAccountantData(int accountantGroupId);
+        AccountantGroupResponse GetData(int accountantGroupId);
 
         /// <summary>
         /// 依搜尋條件獲得會計資料列表
         /// </summary>
         /// <param name="accountantGroupQueryPage">會計師群組分頁搜尋</param> 
         /// <returns></returns>
-        AccountantGroupResponses Get(AccountantGroupSearch accountantGroupQueryPage);
+        AccountantGroupResponses GetPaginate(AccountantGroupSearch accountantGroupQueryPage);
 
         /// <summary>
         /// 建立會計師群組資料

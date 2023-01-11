@@ -13,7 +13,7 @@ namespace SealTypographicWebAPI.Models.Accountant
         /// </summary>
         /// <example>1</example>
         [Required]        
-        public AccountantSignConfigType SealMappingConfigId { get; set; }
+        public AccountantSignType SealMappingConfigId { get; set; }
     }
 
     /// <summary>

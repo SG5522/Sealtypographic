@@ -33,7 +33,7 @@ namespace SealTypographicWebAPI.Services.Implements
         /// </summary>
         /// <param name="litterheadId">信頭ID</param>
         /// <returns></returns>
-        public LetterheadResponse GetLetterheadViewModel(int litterheadId)
+        public LetterheadResponse GetData(int litterheadId)
         {
             LetterheadResponse letterheadResponse = new();
             Letterhead? letterheadQuery = dbContext.Letterheads.Find(litterheadId);
@@ -55,7 +55,7 @@ namespace SealTypographicWebAPI.Services.Implements
         /// </summary>
         /// <param name="letterheadSearch"></param>
         /// <returns></returns>
-        public LetterheadPaginateViewModel GetLetterheadViewModels(LetterheadSearch letterheadSearch)
+        public LetterheadPaginateViewModel GetPaginate(LetterheadSearch letterheadSearch)
         {
             LetterheadPaginateViewModel letterheadPaginateViewModel = new ();
             List<LetterheadViewModel> letterheadViewModels = new();

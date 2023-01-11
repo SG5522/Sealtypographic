@@ -42,7 +42,7 @@ namespace SealTypographicWebAPI.Controllers
             try
             {
                 Log.Information("LetterheadImage get{letterheadId} input {@Input}", letterheadId);
-                letterheadGroupCreateDateViews = letterheadImageService.GetLetterheadCreateDateViews(letterheadId);
+                letterheadGroupCreateDateViews = letterheadImageService.GetLetterheadCreateDate(letterheadId);
                 Log.Information("LetterheadImage get{letterheadId} output {@Output}", letterheadGroupCreateDateViews);
             }
             catch (Exception ex)
@@ -65,7 +65,7 @@ namespace SealTypographicWebAPI.Controllers
             try
             {
                 Log.Information("LetterheadImage get input {@Input}", letterheadImageGroupCreateDateSearch);
-                letterheadImageViewModels = letterheadImageService.GetLetterheadImages(letterheadImageGroupCreateDateSearch);
+                letterheadImageViewModels = letterheadImageService.GetImage(letterheadImageGroupCreateDateSearch);
                 Log.Information("LetterheadImage get output {@Output}", letterheadImageViewModels);
             }
             catch (Exception ex)
@@ -136,7 +136,7 @@ namespace SealTypographicWebAPI.Controllers
             try
             {
                 Log.Information("LetterheadImage put(Approval) input {@Input}", letterheadImageGroupCreateDateSearch);
-                response = letterheadImageService.ApprovalLetterheadImages(letterheadImageGroupCreateDateSearch);
+                response = letterheadImageService.ApprovalImage(letterheadImageGroupCreateDateSearch);
                 Log.Information("LetterheadImage put(Approval) output {@Output}", response);
             }
             catch (Exception ex)
@@ -159,7 +159,7 @@ namespace SealTypographicWebAPI.Controllers
             try
             {
                 Log.Information("LetterheadImage put(Invalid) input {@Input}", letterheadImageGroupCreateDateSearch);
-                response = letterheadImageService.InvalidLetterheadImages(letterheadImageGroupCreateDateSearch);
+                response = letterheadImageService.InvalidImage(letterheadImageGroupCreateDateSearch);
                 Log.Information("LetterheadImage put(Invalid) output {@Ouput}", response);
             }
             catch (Exception ex)

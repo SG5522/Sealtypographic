@@ -21,7 +21,7 @@ namespace SealTypographicWebAPI.Models.Customer
         /// 4.會計主管    
         /// 5.其他(客戶)
         /// </summary>
-        public CustomerSealConfigType SealMappingConfigId { get; set; }
+        public CustomerSealType SealMappingConfigId { get; set; }
 
         /// <summary>
         /// 印鑑序號

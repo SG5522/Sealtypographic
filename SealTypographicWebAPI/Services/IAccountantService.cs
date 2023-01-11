@@ -15,14 +15,14 @@ namespace SealTypographicWebAPI.Services
         /// </summary>
         /// <param name="accountantId"></param>
         /// <returns></returns>
-        AccountantDetailResponse GetAccountant(int accountantId);
+        AccountantDetailResponse GetDetail(int accountantId);
 
         /// <summary>
         /// 依搜尋條件獲得會計資料列表
         /// </summary>
         /// <param name="accountantQueryPage">會計師分頁搜尋</param>  
         /// <returns></returns>
-        AccountantPaginatesViewModel GetAccountantViewModels(AccountantSearch accountantQueryPage);
+        AccountantPaginateViewModel GetPaginate(AccountantSearch accountantQueryPage);
 
         /// <summary>
         /// 建立會計師資料

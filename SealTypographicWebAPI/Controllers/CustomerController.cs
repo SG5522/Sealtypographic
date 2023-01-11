@@ -40,7 +40,7 @@ namespace SealTypographicWebAPI.Controllers
             try
             {
                 Log.Information("Customer get FromQuery input {@Input}", customerQuery);
-                customerResponsePage = customerService.GetCustomerPaginatesViewModel(customerQuery);
+                customerResponsePage = customerService.GetPaginate(customerQuery);
                 Log.Information("Customer get FromQuery output {@Output}", customerResponsePage);
             }
             catch (Exception ex)
@@ -64,7 +64,7 @@ namespace SealTypographicWebAPI.Controllers
             try
             {
                 Log.Information("Customer get customerId input {@Input}", customerId);
-                customerDetailViewModel = customerService.GetCustomerDetailViewModel(customerId);
+                customerDetailViewModel = customerService.GetDetail(customerId);
                 Log.Information("Customer get customerId output {@Output}", customerDetailViewModel);                
             }
             catch (Exception ex)
@@ -102,7 +102,7 @@ namespace SealTypographicWebAPI.Controllers
         /// </summary>
         /// <param name="customerForm">基本資料</param>
         [HttpPut]
-        public ResponseViewModel Put(CustomerFormUpdate customerForm)
+        public ResponseViewModel Put(CustomerUpdateForm customerForm)
         {
             ResponseViewModel response = new();
             try

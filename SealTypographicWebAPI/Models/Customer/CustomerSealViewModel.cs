@@ -11,7 +11,7 @@ namespace SealTypographicWebAPI.Models.Customer
         /// <summary>
         /// 印鑑簽印ID
         /// </summary>
-        public CustomerSealConfigType SealMappingConfigId { get; set; }
+        public CustomerSealType SealMappingConfigId { get; set; }
 
         /// <summary>
         /// 印鑑編號(排序) 1為起始

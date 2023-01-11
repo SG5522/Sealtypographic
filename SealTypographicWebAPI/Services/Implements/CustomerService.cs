@@ -32,7 +32,7 @@ namespace SealTypographicWebAPI.Services.Implements
         /// </summary>
         /// <param name="customerId">顧客ID</param>
         /// <returns></returns>
-        public CustomerDetailViewModel GetCustomerDetailViewModel(int customerId)
+        public CustomerDetailViewModel GetDetail(int customerId)
         {
             CustomerDetailViewModel customerDetailViewModel = new();                        
             Customer? customerQuery = dbContext.Customers.Find(customerId);         
@@ -55,7 +55,7 @@ namespace SealTypographicWebAPI.Services.Implements
         /// </summary>
         /// <param name="customerSearch">搜尋條件</param>  
         /// <returns></returns>
-        public CustomerPaginateViewModel GetCustomerPaginatesViewModel(CustomerSearch customerSearch)
+        public CustomerPaginateViewModel GetPaginate(CustomerSearch customerSearch)
         {
             CustomerPaginateViewModel customerPaginateViewModel = new();            
             IQueryable<Customer> customerQuery = dbContext.Customers.Where(customer => customer.DeleteStatus == DeleteStatus.NO);                                                
@@ -151,7 +151,7 @@ namespace SealTypographicWebAPI.Services.Implements
         /// 更新客戶基本資料
         /// </summary>
         /// <param name="customerFormUpdate">客戶基本資料 customerForm.CustomerNumber 為搜尋條件</param>        
-        public ResponseViewModel Update(CustomerFormUpdate customerFormUpdate)
+        public ResponseViewModel Update(CustomerUpdateForm customerFormUpdate)
         {
             ResponseViewModel response = new();
             int userId = 0;//帳號驗證取得ID

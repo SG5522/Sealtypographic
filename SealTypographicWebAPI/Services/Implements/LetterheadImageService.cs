@@ -17,7 +17,7 @@ namespace SealTypographicWebAPI.Services.Implements
     public class LetterheadImageService : ILetterheadImageService
     {
         private readonly SealTypographicDbContext dbContext;
-        private readonly ImageSharpService imageSharpService;
+        private readonly ImageService imageSharpService;
         private readonly IMapper mapper;
 
         /// <summary>
@@ -26,7 +26,7 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <param name="dbContext"></param>        
         /// <param name="mapper"></param>
         /// <param name="imageSharpService"></param>
-        public LetterheadImageService(SealTypographicDbContext dbContext, IMapper mapper, ImageSharpService imageSharpService)
+        public LetterheadImageService(SealTypographicDbContext dbContext, IMapper mapper, ImageService imageSharpService)
         {
             this.dbContext = dbContext;
             this.mapper = mapper;
@@ -38,7 +38,7 @@ namespace SealTypographicWebAPI.Services.Implements
         /// </summary>
         /// <param name="letterheadId">信頭Id</param>
         /// <returns></returns>
-        public LetterheadGroupCreateDateViews GetLetterheadCreateDateViews(int letterheadId)
+        public LetterheadGroupCreateDateViews GetLetterheadCreateDate(int letterheadId)
         {
             LetterheadGroupCreateDateViews letterheadGroupCreateDateViews = new();
             List<LetterheadImageGroupCreateDateView> groupCreateDateViews = dbContext.SealReviewJournals
@@ -77,7 +77,7 @@ namespace SealTypographicWebAPI.Services.Implements
         /// </summary>
         /// <param name="letterheadGroupCreateDateSearch">搜尋條件</param>
         /// <returns></returns>
-        public LetterheadImageViewModels GetLetterheadImages (LetterheadImageGroupCreateDateSearch letterheadGroupCreateDateSearch)
+        public LetterheadImageViewModels GetImage (LetterheadImageGroupCreateDateSearch letterheadGroupCreateDateSearch)
         {
             LetterheadImageViewModels letterheadImageViewModels = new();
             List<LetterheadImageViewModel> ImageViewModels = new();
@@ -344,7 +344,7 @@ namespace SealTypographicWebAPI.Services.Implements
         /// </summary>
         /// <param name="letterheadImageGroupCreateDateSearch">會計師簽印群組創建日期</param>        
         /// <returns></returns>
-        public ResponseViewModel ApprovalLetterheadImages(LetterheadImageGroupCreateDateSearch letterheadImageGroupCreateDateSearch)
+        public ResponseViewModel ApprovalImage(LetterheadImageGroupCreateDateSearch letterheadImageGroupCreateDateSearch)
         {
             ResponseViewModel response = ChangeDraftReviewStatus(letterheadImageGroupCreateDateSearch, ReviewStatus.Approval);
             return response;
@@ -354,7 +354,7 @@ namespace SealTypographicWebAPI.Services.Implements
         /// 變更此群組群組創建日期的信頭圖片審核為作廢
         /// </summary>
         /// <param name="letterheadImageGroupCreateDateSearch">會計師簽印群組創建日期</param>        
-        public ResponseViewModel InvalidLetterheadImages(LetterheadImageGroupCreateDateSearch letterheadImageGroupCreateDateSearch)
+        public ResponseViewModel InvalidImage(LetterheadImageGroupCreateDateSearch letterheadImageGroupCreateDateSearch)
         {
             ResponseViewModel response = ChangeDraftReviewStatus(letterheadImageGroupCreateDateSearch, ReviewStatus.Invalid);
             return response;

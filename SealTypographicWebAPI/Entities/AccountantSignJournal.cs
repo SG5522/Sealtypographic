@@ -12,7 +12,7 @@ namespace SealTypographicWebAPI.Entities
         /// <summary>
         /// 簽印配置類別
         /// </summary>
-        public AccountantSignConfigType ConfigType { get; set; }
+        public AccountantSignType ConfigType { get; set; }
 
         /// <summary>
         /// 會計師ID

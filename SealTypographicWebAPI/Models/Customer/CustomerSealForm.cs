@@ -7,7 +7,7 @@ namespace SealTypographicWebAPI.Models.Customer
     /// <summary>
     /// 客戶印鑑
     /// </summary>
-    public class CustomerSealForm : BaseCreateSeal
+    public class CustomerSeal : BaseCreateSeal
     {
         /// <summary>
         /// 客戶印鑑群組ID 
@@ -19,7 +19,7 @@ namespace SealTypographicWebAPI.Models.Customer
         /// </summary>
         /// <example>1</example>
         [Required]        
-        public CustomerSealConfigType SealMappingConfigId { get; set; }
+        public CustomerSealType SealMappingConfigId { get; set; }
 
         /// <summary>
         /// 印鑑編號(排序) 1為起始
@@ -33,7 +33,7 @@ namespace SealTypographicWebAPI.Models.Customer
     /// <summary>
     /// 客戶印鑑組
     /// </summary>
-    public class CustomerSealForms
+    public class CustomerSealForm
     {
         /// <summary>
         /// 客戶ID
@@ -53,6 +53,6 @@ namespace SealTypographicWebAPI.Models.Customer
         /// <summary>
         /// 客戶印鑑
         /// </summary>
-        public List<CustomerSealForm> SealForms { get; set; }
+        public List<CustomerSeal> Seals { get; set; }
     }
 }

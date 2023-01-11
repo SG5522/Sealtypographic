@@ -51,7 +51,7 @@ namespace SealTypographicWebAPI.Controllers
             try
             {
                 Log.Information("AccountantGroupMember get FromQuery input {@Input}", accountantGroupMemberSearch);
-                accountantGroupMembers = accountantGroupMemberService.GetAccountantGroupMembers(accountantGroupMemberSearch);                
+                accountantGroupMembers = accountantGroupMemberService.GetMembers(accountantGroupMemberSearch);                
                 Log.Information("AccountantGroupMember get FromQuery output {@Output}", accountantGroupMembers);                
             }
             catch (Exception ex)
@@ -97,7 +97,7 @@ namespace SealTypographicWebAPI.Controllers
             try
             {
                 Log.Information("AccountantGroupMember get{accountantId} input {@Input}", accountantId);
-                accountantResponse = accountantService.GetAccountant(accountantId);
+                accountantResponse = accountantService.GetDetail(accountantId);
                 Log.Information("AccountantGroupMember get{accountantId} output {@Output}", accountantResponse);
             }
             catch (Exception ex)

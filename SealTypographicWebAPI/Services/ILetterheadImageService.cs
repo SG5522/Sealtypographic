@@ -13,14 +13,14 @@ namespace SealTypographicWebAPI.Services
         /// </summary>
         /// <param name="letterheadId">信頭Id</param>
         /// <returns></returns>
-        LetterheadGroupCreateDateViews GetLetterheadCreateDateViews(int letterheadId);
+        LetterheadGroupCreateDateViews GetLetterheadCreateDate(int letterheadId);
 
         /// <summary>
         /// 取得信頭圖片
         /// </summary>
         /// <param name="letterheadGroupCreateDateSearch">搜尋條件</param>
         /// <returns></returns>
-        LetterheadImageViewModels GetLetterheadImages(LetterheadImageGroupCreateDateSearch letterheadGroupCreateDateSearch);
+        LetterheadImageViewModels GetImage(LetterheadImageGroupCreateDateSearch letterheadGroupCreateDateSearch);
 
         /// <summary>
         /// 新增信頭圖片組
@@ -41,12 +41,12 @@ namespace SealTypographicWebAPI.Services
         /// </summary>
         /// <param name="letterheadImageGroupCreateDateSearch">信頭圖片群組創建日期</param>        
         /// <returns></returns>
-        ResponseViewModel ApprovalLetterheadImages(LetterheadImageGroupCreateDateSearch letterheadImageGroupCreateDateSearch);
+        ResponseViewModel ApprovalImage(LetterheadImageGroupCreateDateSearch letterheadImageGroupCreateDateSearch);
 
         /// <summary>
         /// 變更此群組創建日期的信頭圖片審核為作廢
         /// </summary>
         /// <param name="letterheadImageGroupCreateDateSearch">信頭圖片群組創建日期</param>        
-        ResponseViewModel InvalidLetterheadImages(LetterheadImageGroupCreateDateSearch letterheadImageGroupCreateDateSearch);
+        ResponseViewModel InvalidImage(LetterheadImageGroupCreateDateSearch letterheadImageGroupCreateDateSearch);
     }
 }

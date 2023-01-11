@@ -3,12 +3,12 @@
     /// <summary>
     /// 上傳 (IFromFile)
     /// </summary>
-    public class UploadIFormFile
+    public class UploadFileInfo
     {
         /// <summary>
         /// 檔名
         /// </summary>
-        public string ClientFileName { get; set; }
+        public string OrgangeFileName { get; set; }
 
         /// <summary>
         /// IFormFile取得檔案

@@ -11,7 +11,7 @@ namespace SealTypographicWebAPI.Services
     /// <summary>
     /// 取得圖像資料
     /// </summary>
-    public class ImageSharpService
+    public class ImageService
     {
         private readonly SealConfigPath sealConfig;
 
@@ -20,9 +20,9 @@ namespace SealTypographicWebAPI.Services
         /// </summary>
         /// <param name="options"></param>
 
-        public ImageSharpService(IOptionsMonitor<SealConfigPath> options)
+        public ImageService(IOptionsSnapshot<SealConfigPath> options)
         {
-            sealConfig = options.CurrentValue;
+            sealConfig = options.Value;
         }
 
         /// <summary>
@@ -34,7 +34,7 @@ namespace SealTypographicWebAPI.Services
         public string GetPathToBase64(string path,SealType sealType)
         {
             string folderPath = GetImageFolder(sealType);
-            return ImageSharpUtil.PathImageFileToBase64(folderPath + path);            
+            return ImageSharpUtil.PathImageFileToBase64($"{folderPath}{path}");            
         }
         
         /// <summary>
@@ -45,16 +45,16 @@ namespace SealTypographicWebAPI.Services
         public string SaveBase64ToFile(ImageBase64Info imageBase64Info, int count)
         {
             string folderPath = GetImageFolder(imageBase64Info.SealType);            
-            string dateFolder = imageBase64Info.CreateTime.Year + "//" + imageBase64Info.CreateTime.Month + "//" + imageBase64Info.CreateTime.Day + "//" ;            
+            string dateFolder = $"{imageBase64Info.CreateTime.Year}/{imageBase64Info.CreateTime.Month}/{imageBase64Info.CreateTime.Day}/" ;
             SaveImageInfo saveImageInfo = new()
             {
-                Filename = imageBase64Info.Code + imageBase64Info.CreateTime.ToString("yyyyMMHHmmss") + count,
-                Folder = folderPath + dateFolder
+                Filename = $"{imageBase64Info.Code}{imageBase64Info.CreateTime:yyyyMMHHmmss}{count}",
+                Folder = $"{folderPath}{dateFolder}"
             };
 
             ImageSharpUtil.Base64ToSaveImage(imageBase64Info.ImageBase64, saveImageInfo);
 
-            return dateFolder + saveImageInfo.Filename;            
+            return $"{dateFolder}{saveImageInfo.Filename}";            
         }
 
         /// <summary>
@@ -68,18 +68,19 @@ namespace SealTypographicWebAPI.Services
             switch (sealType)
             {
                 case SealType.Customer:
-                    folderPath = sealConfig.SealImagePath + sealConfig.Customer;
-                    return folderPath;
+                    folderPath = $"{sealConfig.SealRootPath}{sealConfig.Customer}";
+                    break;
                 case SealType.Accountant:
-                    folderPath = sealConfig.SealImagePath + sealConfig.Accountant;
-                    return folderPath;
+                    folderPath = $"{sealConfig.SealRootPath}{sealConfig.Accountant}";
+                    break;
                 case SealType.Letterhead:
-                    folderPath = sealConfig.SealImagePath + sealConfig.Letterhead;
-                    return folderPath;
+                    folderPath = $"{sealConfig.SealRootPath}{sealConfig.Letterhead}";
+                    break;
                 default :
                     folderPath = string.Empty;
-                    return folderPath;
+                    break;
             }
+            return folderPath;
         }        
     }
 }

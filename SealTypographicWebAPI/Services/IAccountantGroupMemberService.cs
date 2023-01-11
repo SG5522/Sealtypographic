@@ -15,7 +15,7 @@ namespace SealTypographicWebAPI.Services
         /// </summary>
         /// <param name="accountantGroupMemberSearch">會計群組搜尋條件(分頁)</param>
         /// <returns></returns>
-        AccountantGroupMembers GetAccountantGroupMembers(AccountantGroupMemberSearch accountantGroupMemberSearch);
+        AccountantGroupMembers GetMembers(AccountantGroupMemberSearch accountantGroupMemberSearch);
 
         /// <summary>
         /// 取得非此群組的成員

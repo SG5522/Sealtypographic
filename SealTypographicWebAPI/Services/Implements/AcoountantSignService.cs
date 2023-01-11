@@ -16,7 +16,7 @@ namespace SealTypographicWebAPI.Services.Implements
     public class AcoountantSignService : IAccountantSignService
     {
         private readonly SealTypographicDbContext dbContext;
-        private readonly ImageSharpService imageSharpService;
+        private readonly ImageService imageSharpService;
         private readonly IMapper mapper;
         /// <summary>
         /// 取得DB與ResponseService
@@ -24,7 +24,7 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <param name="dbContext"></param>        
         /// <param name="mapper"></param>
         /// <param name="imageSharpService"></param>
-        public AcoountantSignService(SealTypographicDbContext dbContext, IMapper mapper, ImageSharpService imageSharpService)
+        public AcoountantSignService(SealTypographicDbContext dbContext, IMapper mapper, ImageService imageSharpService)
         {
             this.dbContext = dbContext;            
             this.mapper = mapper;
@@ -150,7 +150,7 @@ namespace SealTypographicWebAPI.Services.Implements
                     SealReviewJournal sealReviewJournal = new();
                                         
                     accountantSignJournal.AccountantId = accountantSignForms.AccountantId;
-                    accountantSignJournal.ConfigType = (AccountantSignConfigType)accountantSign.SealMappingConfigId;
+                    accountantSignJournal.ConfigType = (AccountantSignType)accountantSign.SealMappingConfigId;
                     imageBase64Info.ImageBase64 = accountantSign.ImageBase64;
                     accountantSignJournal.ImagePath = imageSharpService.SaveBase64ToFile(imageBase64Info, count);                    
                     sealReviewJournal.CreateDate = createNowTime;
@@ -339,7 +339,7 @@ namespace SealTypographicWebAPI.Services.Implements
         /// </summary>
         /// <param name="accountantSignCreateDate">會計師簽印群組創建日期</param>        
         /// <returns></returns>
-        public ResponseViewModel PendingAccountantSigns(AccountantSignCreateDate accountantSignCreateDate)
+        public ResponseViewModel PendingSigns(AccountantSignCreateDate accountantSignCreateDate)
         {            
             ResponseViewModel response = ChangeDraftReviewStatus(accountantSignCreateDate, ReviewStatus.Pending);
             return response;
@@ -349,7 +349,7 @@ namespace SealTypographicWebAPI.Services.Implements
         /// 變更此群組創建日期的會計師簽印為作廢。
         /// </summary>
         /// <param name="accountantSignCreateDate">會計師簽印群組創建日期</param>        
-        public ResponseViewModel InvalidAccountantSigns(AccountantSignCreateDate accountantSignCreateDate)
+        public ResponseViewModel InvalidSigns(AccountantSignCreateDate accountantSignCreateDate)
         {
             ResponseViewModel response = ChangeDraftReviewStatus(accountantSignCreateDate, ReviewStatus.Invalid);
             return response;

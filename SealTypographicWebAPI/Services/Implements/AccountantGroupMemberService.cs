@@ -34,7 +34,7 @@ namespace SealTypographicWebAPI.Services.Implements
         /// </summary>
         /// <param name="accountantGroupMemberSearch">會計群組搜尋條件(分頁)</param>
         /// <returns></returns>
-        public AccountantGroupMembers GetAccountantGroupMembers(AccountantGroupMemberSearch accountantGroupMemberSearch)
+        public AccountantGroupMembers GetMembers(AccountantGroupMemberSearch accountantGroupMemberSearch)
         {
             AccountantGroupMembers accountantGroupMembers = new();
             List<AccountantGroupMember> accountantMembers = new();            

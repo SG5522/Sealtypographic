@@ -17,7 +17,6 @@ namespace DJLib
         /// <returns></returns>
         public static Bitmap ReDrawImage(string fullname, float widthScale, float heightScale)
         {
-
             FileStream fileStream = File.OpenRead(fullname);
             Image image = Image.FromStream(fileStream);
             int width = (int)(image.Width * widthScale);

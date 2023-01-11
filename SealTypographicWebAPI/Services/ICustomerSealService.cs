@@ -13,7 +13,7 @@ namespace SealTypographicWebAPI.Services
         /// </summary>
         /// <param name="customerID">顧客ID</param>        
         /// <returns></returns>
-        CustomerSealQuarterViews GetCustomerSealQuarters(int customerID);
+        CustomerSealQuarterViews GetQuarter(int customerID);
 
 
         /// <summary>
@@ -21,14 +21,14 @@ namespace SealTypographicWebAPI.Services
         /// </summary>
         /// <param name="customerSealQuarter"></param>
         /// <returns></returns>
-        CustomerSealViewModels GetCustomerSealViewModels(CustomerSealQuarter customerSealQuarter);
+        CustomerSealViewModels GetSeal(CustomerSealQuarter customerSealQuarter);
 
         /// <summary>
         /// 新增印鑑組
         /// </summary>
         /// <param name="customerSealForms">印鑑資料</param>
         /// <returns></returns>
-        ResponseViewModel Create(CustomerSealForms customerSealForms);
+        ResponseViewModel Create(CustomerSealForm customerSealForms);
 
         /// <summary>
         /// 異動客戶印鑑

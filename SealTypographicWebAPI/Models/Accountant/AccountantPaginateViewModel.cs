@@ -16,12 +16,12 @@ namespace SealTypographicWebAPI.Models.Accountant
     /// <summary>
     /// 依搜尋結果顯示會計師列表
     /// </summary>
-    public class AccountantPaginatesViewModel : PaginateViewModel
+    public class AccountantPaginateViewModel : PaginateViewModel
     {
         /// <summary>
         /// new ViewModels
         /// </summary>
-        public AccountantPaginatesViewModel()
+        public AccountantPaginateViewModel()
         {
             ViewModels = new();
         }

@@ -5,6 +5,7 @@ using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using SealTypographicWebAPI.Models;
 using SealTypographicWebAPI.Services;
+using SealTypographicWebAPI.Services.Implements;
 using SealTypographicWebAPI.Util;
 using Serilog;
 
@@ -19,14 +20,17 @@ namespace SealTypographicWebAPI.Controllers
     public class UploadImageController : ControllerBase
     {
         private readonly UploadService uploadService;
+        private readonly ImageService imageService;
 
         /// <summary>
         /// 注入UploadService
         /// </summary>
-        /// <param name="uploadService"></param>        
-        public UploadImageController(UploadService uploadService)
+        /// <param name="uploadService"></param>
+        /// <param name="imageService"></param>        
+        public UploadImageController(UploadService uploadService, ImageService imageService)
         {
             this.uploadService = uploadService;            
+            this.imageService = imageService;
         }
 
         /// <summary>
@@ -43,6 +47,7 @@ namespace SealTypographicWebAPI.Controllers
             {
                 Log.Information("UploadImage post uploadScanForms input {@Input}", uploadScanForms);                
                 //ResponseViewModel response = uploadService.SaveImageBase64(uploadScanForms);
+
                 Log.Information("UploadImage post uploadScanForms output {@Output}", response);
                 return response;
             }
@@ -61,21 +66,21 @@ namespace SealTypographicWebAPI.Controllers
         /// <returns></returns>
         [HttpPost]
         [Route("uploadIFormFiles")]
-        public ResponseViewModel PostImage([FromForm]List<IFormFile> formFiles, int uploadType)
+        public async Task<ResponseViewModel> PostImage([FromForm]List<IFormFile> formFiles, int uploadType)
         {
             ResponseViewModel response = new();
             try
             {
-                Log.Information("UploadImage post uploadScanForms input {@Input}", formFiles);
-                //ResponseViewModel response = uploadService.SaveImageIFormFile(uploadType,formFiles);                    
-                Log.Information("UploadImage post uploadScanForms output {@Output}", response);
-                return response;                
+                Log.Information("UploadImage post uploadScanForms input {@Input}", formFiles);                        
+                response = await uploadService.SaveImageIFormFile(uploadType, formFiles);
+                Log.Information("UploadImage post uploadScanForms output {@Output}", response);                       
             }
             catch (Exception ex)
             {
                 Log.Error("UploadImage Post error {@Error}", ex);
-                return ResponseUtil.DBError();
+                response.DbError();
             }
+            return response;
         }
     }
 }

@@ -42,13 +42,13 @@ namespace SealTypographicWebAPI.Services
         /// </summary>
         /// <param name="accountantSignGroupCreateDateSearch">會計師簽印id</param>
         /// <returns></returns>
-        ResponseViewModel PendingAccountantSigns(AccountantSignCreateDate accountantSignGroupCreateDateSearch);
+        ResponseViewModel PendingSigns(AccountantSignCreateDate accountantSignGroupCreateDateSearch);
 
         /// <summary>
         /// 刪除會計師簽印 (作廢)
         /// </summary>
         /// <param name="accountantSignGroupCreateDateSearch">會計師簽印</param>
         /// <returns></returns>
-        ResponseViewModel InvalidAccountantSigns(AccountantSignCreateDate accountantSignGroupCreateDateSearch);
+        ResponseViewModel InvalidSigns(AccountantSignCreateDate accountantSignGroupCreateDateSearch);
     }
 }

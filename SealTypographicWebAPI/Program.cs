@@ -17,8 +17,8 @@ Log.Logger = new LoggerConfiguration()
                 .ReadFrom.Configuration(config)
                 .CreateLogger();
 
-builder.Services.Configure<ScanConfigPath>(
-    builder.Configuration.GetSection("ScanConfigPath"));
+builder.Services.Configure<UploadConfigPath>(
+    builder.Configuration.GetSection("UploadPath"));
 
 builder.Services.Configure<SealConfigPath>(
     builder.Configuration.GetSection("SealPath"));
@@ -56,8 +56,8 @@ builder.Services.AddDbContextPool<SealTypographicDbContext>(optionsBuilder =>
 
 #region -- Service --
 
-builder.Services.AddSingleton<ImageSharpService>();
-builder.Services.AddSingleton<UploadService>();
+builder.Services.AddScoped<ImageService>();
+builder.Services.AddScoped<UploadService>();
 builder.Services.AddAutoMapper(typeof(MapperProfile));
 
 //DB Process
@@ -70,6 +70,7 @@ builder.Services.AddScoped<IAccountantGroupMemberService, AccountantGroupMemberS
 builder.Services.AddScoped<IAccountantSignService, AcoountantSignService>();
 builder.Services.AddScoped<ILetterheadService, LetterheadService>();
 builder.Services.AddScoped<ILetterheadImageService, LetterheadImageService>();
+builder.Services.AddScoped<SealMappingConfigService>();
 
 #endregion
 

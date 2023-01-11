@@ -35,13 +35,13 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="accountantQueryPage">會計師分頁搜尋</param>
         /// <returns></returns>
         [HttpGet]
-        public AccountantPaginatesViewModel Get([FromQuery]AccountantSearch accountantQueryPage)
+        public AccountantPaginateViewModel Get([FromQuery]AccountantSearch accountantQueryPage)
         {
-            AccountantPaginatesViewModel accountantPaginatesViewModel = new();
+            AccountantPaginateViewModel accountantPaginatesViewModel = new();
             try
             {
                 Log.Information("Accountant get FromQuery input {@Input}", accountantQueryPage);
-                accountantPaginatesViewModel = accountantService.GetAccountantViewModels(accountantQueryPage);
+                accountantPaginatesViewModel = accountantService.GetPaginate(accountantQueryPage);
                 Log.Information("Accountant get FromQuery output {@Output}", accountantPaginatesViewModel);                
             }
             catch (Exception ex) 
@@ -64,7 +64,7 @@ namespace SealTypographicWebAPI.Controllers
             try
             {
                 Log.Information("Accountant get{accountantId} input {@Input}", accountantId);
-                accountantResponse = accountantService.GetAccountant(accountantId);
+                accountantResponse = accountantService.GetDetail(accountantId);
                 Log.Information("Accountant get{accountantId} output {@Output}", accountantResponse);                
             }
             catch (Exception ex)

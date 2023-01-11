@@ -11,7 +11,7 @@ namespace SealTypographicWebAPI.Entities
         /// <summary>
         /// 印鑑配置類別
         /// </summary>
-        public CustomerSealConfigType ConfigType { get; set; }
+        public CustomerSealType ConfigType { get; set; }
 
         /// <summary>
         /// 客戶ID

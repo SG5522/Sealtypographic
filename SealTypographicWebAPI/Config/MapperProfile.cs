@@ -24,7 +24,7 @@ namespace SealTypographicWebAPI.Config
             CreateMap<Customer, CustomerDetail>();
             CreateMap<Customer, CustomerViewModel>();
             CreateMap<CustomerForm, Customer>();
-            CreateMap<CustomerFormUpdate, Customer>();
+            CreateMap<CustomerUpdateForm, Customer>();
 
             //客戶印鑑
             CreateMap<CustomerSealJournal, CustomerSealViewModel>()
@@ -35,18 +35,18 @@ namespace SealTypographicWebAPI.Config
                     .ForMember(x => x.ImageBase64, y => y.Ignore()) // <---imagebase64要額外處理所以要忽略
                     .ReverseMap();
 
-            CreateMap<CustomerSealForm, CustomerSealJournal>()
+            CreateMap<CustomerSeal, CustomerSealJournal>()
                     .ForMember(x => x.ImagePath, y => y.Ignore()) // <---ImagePath要額外處理所以要忽略
                     .ReverseMap();
 
-            CreateMap<CustomerSealForm, SealReviewJournal>();                    
+            CreateMap<CustomerSeal, SealReviewJournal>();                    
 
-            CreateMap<CustomerSealFormUpdate, CustomerSealJournal>()
+            CreateMap<CustomerSealUpdateForm, CustomerSealJournal>()
                     .ForMember(x => x.ImagePath, y => y.Ignore()) // <---ImagePath要額外處理所以要忽略
                     .ReverseMap();
 
             //客戶印鑑序號確認用
-            CreateMap<CustomerSealForm, CustomerSealSequenceCheck>();            
+            CreateMap<CustomerSeal, CustomerSealSequenceCheck>();            
             CreateMap<CustomerSealJournal, CustomerSealSequenceCheck>();
                              
 

@@ -40,7 +40,7 @@ namespace SealTypographicWebAPI.Controllers
             try
             {
                 Log.Information("CustomerSeal get customerId input {@Input}", customerId);
-                customerSealQuarters = customerSealService.GetCustomerSealQuarters(customerId);
+                customerSealQuarters = customerSealService.GetQuarter(customerId);
                 Log.Information("CustomerSeal get customerId output {@Output}", customerSealQuarters);                
             }
             catch (Exception ex)
@@ -63,7 +63,7 @@ namespace SealTypographicWebAPI.Controllers
             try
             {
                 Log.Information("CustomerSeal get input {@Input}", customerSealQuarter);
-                customerSealViewModels = customerSealService.GetCustomerSealViewModels(customerSealQuarter);
+                customerSealViewModels = customerSealService.GetSeal(customerSealQuarter);
                 Log.Information("CustomerSeal get output {@Output}", customerSealViewModels);                
             }
             catch (Exception ex)
@@ -80,7 +80,7 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="customerSealForms">客戶印鑑組資料(Json)</param>
         /// <returns></returns>
         [HttpPost]
-        public ResponseViewModel Post(CustomerSealForms customerSealForms)
+        public ResponseViewModel Post(CustomerSealForm customerSealForms)
         {
             ResponseViewModel response = new();
             try

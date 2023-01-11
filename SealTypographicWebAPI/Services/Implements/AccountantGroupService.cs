@@ -56,7 +56,7 @@ namespace SealTypographicWebAPI.Services.Implements
         /// </summary>
         /// <param name="accountantGroupId">群組ID</param>
         /// <returns></returns>
-        public AccountantGroupResponse GetAccountantData(int accountantGroupId)
+        public AccountantGroupResponse GetData(int accountantGroupId)
         {
             AccountantGroupResponse accountantGroupResponse = new();            
 
@@ -81,7 +81,7 @@ namespace SealTypographicWebAPI.Services.Implements
         /// </summary>
         /// <param name="accountantGroupQueryPage">accountantGroupData</param>
         /// <returns></returns>
-        public AccountantGroupResponses Get(AccountantGroupSearch accountantGroupQueryPage)
+        public AccountantGroupResponses GetPaginate(AccountantGroupSearch accountantGroupQueryPage)
         {
             AccountantGroupResponses accountantGroupResponses = new();            
             

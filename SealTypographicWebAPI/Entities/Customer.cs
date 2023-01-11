@@ -17,7 +17,9 @@ namespace SealTypographicWebAPI.Entities
         /// </summary>
         public string? ShortName { get; set; }
 
+        /// <summary>
         /// 公司負責人
+        /// </summary>
         public string? President { get; set; }
 
         /// <summary>

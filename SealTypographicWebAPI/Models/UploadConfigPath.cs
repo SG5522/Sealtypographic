@@ -3,27 +3,32 @@
     /// <summary>
     /// 匯入AppConfig資料
     /// </summary>
-    public class SealConfigPath
+    public class UploadConfigPath
     {
         /// <summary>
-        /// 印鑑路徑
+        /// 上傳資料根目錄放置路徑
         /// </summary>
-        public string SealRootPath { get; set; } = string.Empty;
+        public string UploadRootPath { get; set; }
 
         /// <summary>
-        /// 客戶印鑑放置路徑
+        /// 客戶印鑑授權書放置路徑
         /// </summary>
         public string Customer { get; set; } = string.Empty;
 
         /// <summary>
-        /// 會計師簽印放置路徑
+        /// 會計師授權書放置路徑
         /// </summary>
         public string Accountant { get; set; } = string.Empty;
 
         /// <summary>
-        /// 信頭放置路徑
+        /// 信頭授權書放置路徑
         /// </summary>
         public string Letterhead { get; set; } = string.Empty;
+
+        /// <summary>
+        /// PDF放置路徑
+        /// </summary>
+        public string PDF { get; set; } = string.Empty;
 
     }
 }

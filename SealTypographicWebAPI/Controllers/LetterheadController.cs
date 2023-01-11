@@ -43,7 +43,7 @@ namespace SealTypographicWebAPI.Controllers
             try
             {
                 Log.Information("Letterhead get input {@Input}", letterheadSearch);
-                letterheadPaginateViewModel = letterheadService.GetLetterheadViewModels(letterheadSearch);
+                letterheadPaginateViewModel = letterheadService.GetPaginate(letterheadSearch);
                 Log.Information("Letterhead get output {@Output}", letterheadPaginateViewModel);                
             }
             catch (Exception ex)
@@ -66,7 +66,7 @@ namespace SealTypographicWebAPI.Controllers
             try
             {
                 Log.Information("Letterhead get{letterheadId} input {@Input}", letterheadId);
-                letterheadResponse = letterheadService.GetLetterheadViewModel(letterheadId);
+                letterheadResponse = letterheadService.GetData(letterheadId);
                 Log.Information("Letterhead get{letterheadId} output {@Output}", letterheadResponse);                
             }
             catch (Exception ex)

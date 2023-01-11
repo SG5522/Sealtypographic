@@ -32,7 +32,7 @@ namespace SealTypographicWebAPI.Services.Implements
         /// </summary>
         /// <param name="accountantId"></param>
         /// <returns></returns>
-        public AccountantDetailResponse GetAccountant(int accountantId)
+        public AccountantDetailResponse GetDetail(int accountantId)
         {
             AccountantDetailResponse accountantResponse = new();            
 
@@ -56,9 +56,9 @@ namespace SealTypographicWebAPI.Services.Implements
         /// </summary>
         /// <param name="accountantSearch">會計師分頁搜尋</param> 
         /// <returns></returns>
-        public AccountantPaginatesViewModel GetAccountantViewModels(AccountantSearch accountantSearch)
+        public AccountantPaginateViewModel GetPaginate(AccountantSearch accountantSearch)
         {
-            AccountantPaginatesViewModel accountantPaginatesViewModels = new();            
+            AccountantPaginateViewModel accountantPaginatesViewModels = new();            
 
             IQueryable<Accountant> accountantQuery = dbContext.Accountants.Where(accountant => accountant.DeleteStatus == DeleteStatus.NO)
                                                     .Include(accountant => accountant.AccountantSignJournals);

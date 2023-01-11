@@ -7,10 +7,11 @@ namespace SealTypographicWebAPI.Consts
     /// <summary>
     /// 客戶、會計師、印鑑、簽名的狀態
     /// 0 : 通過
-    /// 10 : 退件
-    /// 20 : 草搞
-    /// 30 : 待審
-    /// 40 : 作廢
+    /// 10 : 草搞   
+    /// 20 : 待審
+    /// 30 : 退件
+    /// 40 : 停用
+    /// 50 : 作廢
     /// </summary>
     public enum ReviewStatus : sbyte
     {
@@ -26,40 +27,34 @@ namespace SealTypographicWebAPI.Consts
         Approval = 0,
 
         /// <summary>
-        /// 啟用
-        /// </summary>
-        [Description("啟用")]
-        Activated = 1,
-
-        /// <summary>
-        /// 未啟用
-        /// </summary>
-        [Description("未啟用")]
-        NotActivated = 2,
-
-        /// <summary>
-        /// 退件
-        /// </summary>
-        [Description("退件")]
-        Reject = 10,
-
-        /// <summary>
         /// 草稿
         /// </summary>
         [Description("草稿")]
-        Draft = 20,
+        Draft = 10,
 
         /// <summary>
         /// 待審
         /// </summary>
         [Description("待審")]
-        Pending = 30,
+        Pending = 20,
+
+        /// <summary>
+        /// 退件
+        /// </summary>
+        [Description("退件")]
+        Reject = 30,
+
+        /// <summary>
+        /// 停用
+        /// </summary>
+        [Description("停用")]
+        Disabled = 40,
 
         /// <summary>
         /// 作廢
         /// </summary>
         [Description("作廢")]
-        Invalid = 40,
+        Invalid = 50,
     }
 
     /// <summary>
@@ -140,41 +135,36 @@ namespace SealTypographicWebAPI.Consts
     /// 4.會計主管    
     /// 5.其他(客戶)
     /// </summary>
-    public enum CustomerSealConfigType
+    public enum CustomerSealType
     {
         /// <summary>
         /// 公司章
         /// </summary>
-        [Description("CompanySeal")]
-        //[Description("公司章")]
+        [Description("CompanySeal")]        
         CompanySeal = 1,
 
         /// <summary>
         /// 負責人
         /// </summary>
-        [Description("CeoSeal")]
-        //[Description("負責人")]
+        [Description("CeoSeal")]        
         CeoSeal = 2,
 
         /// <summary>
         /// 經理
         /// </summary>
-        [Description("ManagerSeal")]
-       //[Description("經理")]
+        [Description("ManagerSeal")]       
         ManagerSeal = 3,
 
         /// <summary>
         /// 會計主管
         /// </summary>
-        [Description("AccountantDirectorSeal")]
-        //[Description("會計主管")]
+        [Description("AccountantDirectorSeal")]        
         AccountantDirectorSeal = 4,
 
         /// <summary>
         /// 其他
         /// </summary>
-        [Description("CustomerOther")]
-        //[Description("其他")]
+        [Description("CustomerOther")]        
         CustomerOther = 5,
     }
 
@@ -186,41 +176,36 @@ namespace SealTypographicWebAPI.Consts
     /// 4.舊式簽名
     /// 5.其他(會計)  
     /// </summary>
-    public enum AccountantSignConfigType
+    public enum AccountantSignType
     {
         /// <summary>
         /// 會計師印鑑
         /// </summary>
-        [Description("AccountantSeal")]
-        //[Description("會計師印鑑")]
+        [Description("AccountantSeal")]        
         AccountantSeal = 1,
 
         /// <summary>
         /// 中文簽名
         /// </summary>
-        [Description("AccountantCHSign")]
-        //[Description("中文簽名")]
+        [Description("AccountantCHSign")]        
         AccountantCHSign = 2,
 
         /// <summary>
         /// 英文簽名
         /// </summary>
-        [Description("AccountantENSign")]
-        //[Description("英文簽名")]
+        [Description("AccountantENSign")]        
         AccountantENSign = 3,
 
         /// <summary>
         /// 舊式簽名
         /// </summary>
-        [Description("AccountantOldSign")]
-        //[Description("舊式簽名")]
+        [Description("AccountantOldSign")]        
         AccountantOldSign = 4,
 
         /// <summary>
         /// 其他
         /// </summary>
-        [Description("AccountantOther")]
-        //[Description("其他")]
+        [Description("AccountantOther")]        
         AccountantOther = 5,        
     }
 }

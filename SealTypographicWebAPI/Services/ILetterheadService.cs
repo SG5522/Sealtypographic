@@ -14,14 +14,14 @@ namespace SealTypographicWebAPI.Services
         /// </summary>
         /// <param name="letterheadSearch">信頭搜尋條件</param>         
         /// <returns></returns>
-        LetterheadPaginateViewModel GetLetterheadViewModels(LetterheadSearch letterheadSearch);
+        LetterheadPaginateViewModel GetPaginate(LetterheadSearch letterheadSearch);
 
         /// <summary>
         /// 取得信頭基本資料
         /// </summary>
         /// <param name="litterheadID">信頭ID</param>
         /// <returns></returns>
-        LetterheadResponse GetLetterheadViewModel(int litterheadID);
+        LetterheadResponse GetData(int litterheadID);
 
         /// <summary>
         /// 建立信頭資料

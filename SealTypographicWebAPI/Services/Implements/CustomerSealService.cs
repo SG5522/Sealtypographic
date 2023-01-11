@@ -17,7 +17,7 @@ namespace SealTypographicWebAPI.Services.Implements
     public class CustomerSealService : ICustomerSealService
     {
         private readonly SealTypographicDbContext dbContext;
-        private readonly ImageSharpService imageSharpService;
+        private readonly ImageService imageSharpService;
         private readonly IMapper mapper;
 
         /// <summary>
@@ -26,7 +26,7 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <param name="dbContext"></param>        
         /// <param name="mapper"></param>
         /// <param name="imageSharpService"></param>
-        public CustomerSealService(SealTypographicDbContext dbContext, IMapper mapper, ImageSharpService imageSharpService)
+        public CustomerSealService(SealTypographicDbContext dbContext, IMapper mapper, ImageService imageSharpService)
         {
             this.dbContext = dbContext;
             this.mapper = mapper;
@@ -38,7 +38,7 @@ namespace SealTypographicWebAPI.Services.Implements
         /// </summary>
         /// <param name="customerId">客戶ID</param>        
         /// <returns></returns>
-        public CustomerSealQuarterViews GetCustomerSealQuarters(int customerId)
+        public CustomerSealQuarterViews GetQuarter(int customerId)
         {
             CustomerSealQuarterViews customerSealQuarters = new();
             customerSealQuarters.Quarters = dbContext.SealReviewJournals
@@ -76,7 +76,7 @@ namespace SealTypographicWebAPI.Services.Implements
         /// </summary>
         /// <param name="customerSealQuarter">搜尋條件</param>
         /// <returns></returns>
-        public CustomerSealViewModels GetCustomerSealViewModels(CustomerSealQuarter customerSealQuarter)
+        public CustomerSealViewModels GetSeal(CustomerSealQuarter customerSealQuarter)
         {
             CustomerSealViewModels customerSealViewModels = new()
             {                
@@ -119,7 +119,7 @@ namespace SealTypographicWebAPI.Services.Implements
         /// </summary>
         /// <param name="customerSealForms">印鑑組</param>
         /// <returns></returns>
-        public ResponseViewModel Create(CustomerSealForms customerSealForms)
+        public ResponseViewModel Create(CustomerSealForm customerSealForms)
         {
             ResponseViewModel response = new();
             List<CustomerSealJournal> customerSealJournals = new();
@@ -141,7 +141,7 @@ namespace SealTypographicWebAPI.Services.Implements
                     SealType = SealType.Customer
                 };
 
-                foreach (CustomerSealForm customerSeal in customerSealForms.SealForms)
+                foreach (CustomerSeal customerSeal in customerSealForms.Seals)
                 {
                     CustomerSealJournal customerSealJournal = new()
                     {
@@ -222,7 +222,7 @@ namespace SealTypographicWebAPI.Services.Implements
                 }
             }
             //修改印鑑
-            foreach (CustomerSealFormUpdate customerSealFormUpdate in customerSealUpdate.UpdateCustomerSeals)
+            foreach (CustomerSealUpdateForm customerSealFormUpdate in customerSealUpdate.UpdateCustomerSeals)
             {
                 SealReviewJournal? updateSealQuery = dbContext.SealReviewJournals
                                             .Include(sealReview => sealReview.CustomerSealJournal)
@@ -274,7 +274,7 @@ namespace SealTypographicWebAPI.Services.Implements
 
             //新增印鑑
             count = 1;
-            foreach (CustomerSealForm createCustomerSeal in customerSealUpdate.CreateCustomerSeals)
+            foreach (CustomerSeal createCustomerSeal in customerSealUpdate.CreateCustomerSeals)
             {
                 CustomerSealSequenceCheck customerSealSequenceCheck = new()
                 {

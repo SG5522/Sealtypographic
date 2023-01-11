@@ -29,11 +29,11 @@ namespace SealTypographicWebAPI.Models.Customer
         /// <summary>
         /// 更新客戶印鑑列表
         /// </summary>
-        public List<CustomerSealFormUpdate> UpdateCustomerSeals { get; set; }
+        public List<CustomerSealUpdateForm> UpdateCustomerSeals { get; set; }
 
         /// <summary>
         /// 新增客戶印鑑列表
         /// </summary>
-        public List<CustomerSealForm> CreateCustomerSeals { get; set; }
+        public List<CustomerSeal> CreateCustomerSeals { get; set; }
    }
 }

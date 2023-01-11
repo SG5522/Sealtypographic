@@ -6,7 +6,7 @@ namespace SealTypographicWebAPI.Models.Customer
     /// <summary>
     /// 印鑑組資料(含ID)
     /// </summary>
-    public class CustomerSealFormUpdate : BaseUpdateSeal
+    public class CustomerSealUpdateForm : BaseUpdateSeal
     {
         /// <summary>
         /// 印鑑編號(排序) 1為起始
