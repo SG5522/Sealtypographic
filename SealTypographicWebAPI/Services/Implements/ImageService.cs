@@ -13,14 +13,14 @@ namespace SealTypographicWebAPI.Services
     /// </summary>
     public class ImageService
     {
-        private readonly SealConfigPath sealConfig;
+        private readonly SealPathConfig sealConfig;
 
         /// <summary>
         /// 注入appsetting的ScanConfigPath資料
         /// </summary>
         /// <param name="options"></param>
 
-        public ImageService(IOptionsSnapshot<SealConfigPath> options)
+        public ImageService(IOptionsSnapshot<SealPathConfig> options)
         {
             sealConfig = options.Value;
         }

@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using SealTypographicWebAPI.Models;
+using SealTypographicWebAPI.Models.Upload;
 using SealTypographicWebAPI.Services;
 using SealTypographicWebAPI.Services.Implements;
 using SealTypographicWebAPI.Util;
@@ -66,7 +67,7 @@ namespace SealTypographicWebAPI.Controllers
         /// <returns></returns>
         [HttpPost]
         [Route("uploadIFormFiles")]
-        public async Task<ResponseViewModel> PostImage([FromForm]List<IFormFile> formFiles, int uploadType)
+        public async Task<ResponseViewModel> Post([FromForm]List<IFormFile> formFiles, int uploadType)
         {
             ResponseViewModel response = new();
             try

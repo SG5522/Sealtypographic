@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Serilog;
 using SealTypographicWebAPI.Services.Implements;
 using SealTypographicWebAPI.Config;
+using SealTypographicWebAPI.Models.Upload;
 
 string allowSpecificOrigins = "allowSpecificOrigins";
 string allowAllOrigins = "allowSpecificOrigins";
@@ -17,10 +18,10 @@ Log.Logger = new LoggerConfiguration()
                 .ReadFrom.Configuration(config)
                 .CreateLogger();
 
-builder.Services.Configure<UploadConfigPath>(
+builder.Services.Configure<UploadPathConfig>(
     builder.Configuration.GetSection("UploadPath"));
 
-builder.Services.Configure<SealConfigPath>(
+builder.Services.Configure<SealPathConfig>(
     builder.Configuration.GetSection("SealPath"));
 
 //addCors

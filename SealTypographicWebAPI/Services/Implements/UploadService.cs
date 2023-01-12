@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Options;
 using SealTypographicWebAPI.Consts;
 using SealTypographicWebAPI.Models;
+using SealTypographicWebAPI.Models.Upload;
 
 namespace SealTypographicWebAPI.Services.Implements
 {
@@ -11,17 +12,26 @@ namespace SealTypographicWebAPI.Services.Implements
     public class UploadService
     {
         private readonly ImageService imageSharpService;
-        private readonly UploadConfigPath uploadConfigPath;
+        private readonly UploadPathConfig uploadConfigPath;
 
         /// <summary>
         /// 注入ImageSharpService
         /// </summary>
         /// <param name="imageSharpService"></param>
         /// <param name="options"></param>       
-        public UploadService(ImageService imageSharpService, IOptionsSnapshot<UploadConfigPath> options)
+        public UploadService(ImageService imageSharpService, IOptionsSnapshot<UploadPathConfig> options)
         {
             this.imageSharpService = imageSharpService;
             uploadConfigPath = options.Value;
+        }
+
+        /// <summary>
+        /// 取得檔案名稱
+        /// </summary>
+        /// <returns></returns>
+        public async Task<UploadFolderFile> GetFileName()
+        {
+            return new();
         }
 
 
@@ -57,19 +67,18 @@ namespace SealTypographicWebAPI.Services.Implements
         private string GetSavePath(SealType sealType, string OriginalfileName, int count)
         {            
             string folder = string.Empty;            
-            DateTime dateTime = DateTime.Now;
-            string dateFolder = $"{dateTime.Year}/{dateTime.Month}/{dateTime.Day}/";
+            DateTime dateTime = DateTime.Now;            
 
             switch (sealType)
             {
                 case SealType.Customer:
-                    folder = $"{uploadConfigPath.UploadRootPath}{uploadConfigPath.Customer}{dateFolder}";
+                    folder = $"{uploadConfigPath.UploadRootPath}{uploadConfigPath.Customer}";
                     break;
                 case SealType.Accountant:
-                    folder = $"{uploadConfigPath.UploadRootPath}{uploadConfigPath.Accountant}{dateFolder}";
+                    folder = $"{uploadConfigPath.UploadRootPath}{uploadConfigPath.Accountant}";
                     break;
                 case SealType.Letterhead:
-                    folder = $"{uploadConfigPath.UploadRootPath}{uploadConfigPath.Letterhead}{dateFolder}";
+                    folder = $"{uploadConfigPath.UploadRootPath}{uploadConfigPath.Letterhead}";
                     break;
             }
 
