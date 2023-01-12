@@ -2,7 +2,6 @@
 using SealTypographicWebAPI.Entities;
 using SealTypographicWebAPI.Models.TypographicPDF;
 using SealTypographicWebAPI.Models;
-using SealTypographicWebAPI.Util;
 
 namespace SealTypographicWebAPI.Services.Implements
 {
@@ -65,14 +64,14 @@ namespace SealTypographicWebAPI.Services.Implements
 
                 dbContext.TypographicPDFs.Add(dbtypographicPDF);
                 dbContext.SaveChanges();
-                response = ResponseUtil.Success();
+                response.Success();
             }
             else
             {
-                response = ResponseUtil.UniqueConstraintFailed();
+                response.UniqueConstraintFailed();
             }
 
-            return new();
+            return response;
         }
 
         /// <summary>

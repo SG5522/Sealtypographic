@@ -1,10 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SealTypographicWebAPI.Models;
 using SealTypographicWebAPI.Models.Accountant;
-using SealTypographicWebAPI.Models.Customer;
 using SealTypographicWebAPI.Services;
-using SealTypographicWebAPI.Services.Implements;
-using SealTypographicWebAPI.Util;
 using Serilog;
 
 

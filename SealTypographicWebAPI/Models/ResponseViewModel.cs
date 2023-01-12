@@ -1,5 +1,4 @@
 ﻿using SealTypographicWebAPI.Consts;
-using SealTypographicWebAPI.Util;
 
 namespace SealTypographicWebAPI.Models
 {

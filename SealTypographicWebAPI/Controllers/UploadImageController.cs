@@ -1,13 +1,8 @@
-﻿using Microsoft.AspNetCore.Hosting.Server;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
-using Newtonsoft.Json;
+﻿using Microsoft.AspNetCore.Mvc;
 using SealTypographicWebAPI.Models;
 using SealTypographicWebAPI.Models.Upload;
 using SealTypographicWebAPI.Services;
 using SealTypographicWebAPI.Services.Implements;
-using SealTypographicWebAPI.Util;
 using Serilog;
 
 namespace SealTypographicWebAPI.Controllers
@@ -49,14 +44,14 @@ namespace SealTypographicWebAPI.Controllers
                 Log.Information("UploadImage post uploadScanForms input {@Input}", uploadScanForms);                
                 //ResponseViewModel response = uploadService.SaveImageBase64(uploadScanForms);
 
-                Log.Information("UploadImage post uploadScanForms output {@Output}", response);
-                return response;
+                Log.Information("UploadImage post uploadScanForms output {@Output}", response);                
             }
             catch (Exception ex)
             {
                 Log.Error("UploadImage Post error {@Error}", ex);
-                return ResponseUtil.DBError();
+                response.DbError();                
             }
+            return response;
         }
 
         /// <summary>
