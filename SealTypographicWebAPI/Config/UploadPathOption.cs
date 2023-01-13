@@ -1,9 +1,9 @@
-﻿namespace SealTypographicWebAPI.Models.Upload
+﻿namespace SealTypographicWebAPI.Config
 {
     /// <summary>
     /// 匯入AppConfig資料
     /// </summary>
-    public class UploadPathConfig
+    public class UploadPathOption
     {
         /// <summary>
         /// 上傳資料根目錄放置路徑

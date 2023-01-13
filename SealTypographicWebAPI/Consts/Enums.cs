@@ -111,7 +111,7 @@ namespace SealTypographicWebAPI.Consts
         /// <summary>
         /// 客戶
         /// </summary>        
-        [Description("Customer")]
+        [Description("Other")]
         Customer = 1,
 
         /// <summary>
@@ -128,6 +128,48 @@ namespace SealTypographicWebAPI.Consts
     }
 
     /// <summary>
+    /// 上傳檔案類別 (資料夾分類)
+    /// </summary>
+    public enum UploadType : byte
+    {
+        /// <summary>
+        /// 客戶授權書
+        /// </summary>        
+        [Description("Customer Seal Authorization")]
+        CustomerSealAuthorization = 1,
+
+        /// <summary>
+        /// 會計師授權書
+        /// </summary>
+        [Description("Accountant Sign Authorization")]
+        AccountantSignAuthorization = 2,
+
+        /// <summary>
+        /// 信頭圖片
+        /// </summary>
+        [Description("Letterhead Image")]
+        LetterheadImage = 3,
+
+        /// <summary>
+        /// PDF檔(報表)
+        /// </summary>
+        [Description("PDF")]
+        PDF = 4,
+
+        /// <summary>
+        /// 會計師證明書
+        /// </summary>
+        [Description("Accountant Sign Certificate")]
+        AccountantSignCertificate = 5,
+
+        /// <summary>
+        /// 臨時檔
+        /// </summary>
+        [Description("Temporary")]
+        Temporary = 6,
+    }
+
+    /// <summary>
     /// 客戶印鑑類別    
     /// 1.公司章
     /// 2.負責人
@@ -140,32 +182,32 @@ namespace SealTypographicWebAPI.Consts
         /// <summary>
         /// 公司章
         /// </summary>
-        [Description("CompanySeal")]        
-        CompanySeal = 1,
+        [Description("Company")]        
+        Company = 1,
 
         /// <summary>
         /// 負責人
         /// </summary>
-        [Description("CeoSeal")]        
-        CeoSeal = 2,
+        [Description("Ceo")]        
+        Ceo = 2,
 
         /// <summary>
         /// 經理
         /// </summary>
-        [Description("ManagerSeal")]       
-        ManagerSeal = 3,
+        [Description("Manager")]       
+        Manager = 3,
 
         /// <summary>
         /// 會計主管
         /// </summary>
-        [Description("AccountantDirectorSeal")]        
-        AccountantDirectorSeal = 4,
+        [Description("Accountant Director")]        
+        AccountantDirector = 4,
 
         /// <summary>
         /// 其他
         /// </summary>
-        [Description("CustomerOther")]        
-        CustomerOther = 5,
+        [Description("Other")]        
+        Other = 5,
     }
 
     /// <summary>
@@ -187,25 +229,25 @@ namespace SealTypographicWebAPI.Consts
         /// <summary>
         /// 中文簽名
         /// </summary>
-        [Description("AccountantCHSign")]        
-        AccountantCHSign = 2,
+        [Description("CHSign")]        
+        CHSign = 2,
 
         /// <summary>
         /// 英文簽名
         /// </summary>
-        [Description("AccountantENSign")]        
-        AccountantENSign = 3,
+        [Description("ENSign")]        
+        ENSign = 3,
 
         /// <summary>
         /// 舊式簽名
         /// </summary>
-        [Description("AccountantOldSign")]        
-        AccountantOldSign = 4,
+        [Description("OldSign")]        
+        OldSign = 4,
 
         /// <summary>
         /// 其他
         /// </summary>
-        [Description("AccountantOther")]        
-        AccountantOther = 5,        
+        [Description("Other")]        
+        Other = 5,        
     }
 }

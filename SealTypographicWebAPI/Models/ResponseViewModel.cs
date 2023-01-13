@@ -54,7 +54,7 @@ namespace SealTypographicWebAPI.Models
         public void CustomeNoData()
         {
             Code = (int)ResponseCode.CustomeNoData;
-            Message = "Customer no data";
+            Message = "Other no data";
         }
 
         /// <summary>
@@ -63,7 +63,7 @@ namespace SealTypographicWebAPI.Models
         public void CreateCustomerFailed()
         {
             Code = (int)ResponseCode.CreateCustomerFailed;
-            Message = "Create Customer failed";
+            Message = "Create Other failed";
         }
 
         /// <summary>
@@ -72,7 +72,7 @@ namespace SealTypographicWebAPI.Models
         public void CreateCustomerNumberRepeat()
         {
             Code = (int)ResponseCode.CreateCustomerNumberRepeat;
-            Message = "Create Customer number repeat";
+            Message = "Create Other number repeat";
         }
 
         /// <summary>
@@ -117,7 +117,7 @@ namespace SealTypographicWebAPI.Models
         public void CustomerSealSequenceRepeat()
         {
             Code = (int)ResponseCode.CustomerSealSequenceRepeat;
-            Message = "Customer seal Sequence Repeat";
+            Message = "Other seal Sequence Repeat";
         }
 
         /// <summary>
@@ -126,7 +126,7 @@ namespace SealTypographicWebAPI.Models
         public void CustomerSealNoData()
         {
             Code = (int)ResponseCode.CustomerSealNoData;
-            Message = "Customer seal no data";
+            Message = "Other seal no data";
         }
 
         /// <summary>
@@ -135,7 +135,7 @@ namespace SealTypographicWebAPI.Models
         public void CreateCustomerSealFailed()
         {
             Code = (int)ResponseCode.CreateCustomerSealFailed;
-            Message = "Customer seal Create Failed";
+            Message = "Other seal Create Failed";
         }
 
         /// <summary>
@@ -199,7 +199,7 @@ namespace SealTypographicWebAPI.Models
         public void DeleteCustomerSealNoData()
         {
             Code = (int)ResponseCode.DeleteCustomerSealNoData;
-            Message = "Customer seal delete no data";
+            Message = "Other seal delete no data";
         }
 
 

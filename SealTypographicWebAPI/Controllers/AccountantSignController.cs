@@ -165,7 +165,7 @@ namespace SealTypographicWebAPI.Controllers
             }
             catch (Exception ex)
             {
-                Log.Error("Customer delete error {@Error}", ex);                
+                Log.Error("Other delete error {@Error}", ex);                
                 response.DbError();                  
             }
             return response;

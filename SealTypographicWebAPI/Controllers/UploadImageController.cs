@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using SealTypographicWebAPI.Consts;
 using SealTypographicWebAPI.Models;
 using SealTypographicWebAPI.Models.Upload;
 using SealTypographicWebAPI.Services;
@@ -57,12 +58,12 @@ namespace SealTypographicWebAPI.Controllers
         /// <summary>
         /// 上傳圖檔
         /// </summary>
+        /// <param name="uploadType" example="1">上傳類別 1.客戶印鑑授權書 2.會計印鑑簽名授權書 3.信頭</param>      
         /// <param name="formFiles">圖檔資料</param>
-        /// <param name="uploadType" example="1">上傳類別 1.客戶印鑑授權書 2.會計印鑑簽名授權書 3.信頭</param>        
         /// <returns></returns>
         [HttpPost]
         [Route("uploadIFormFiles")]
-        public async Task<ResponseViewModel> Post([FromForm]List<IFormFile> formFiles, int uploadType)
+        public async Task<ResponseViewModel> Post(UploadType uploadType , [FromForm]List<IFormFile> formFiles)
         {
             ResponseViewModel response = new();
             try

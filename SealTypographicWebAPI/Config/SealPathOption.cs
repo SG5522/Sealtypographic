@@ -1,9 +1,9 @@
-﻿namespace SealTypographicWebAPI.Models
+﻿namespace SealTypographicWebAPI.Config
 {
     /// <summary>
     /// 匯入AppConfig資料
     /// </summary>
-    public class SealPathConfig
+    public class SealPathOption
     {
         /// <summary>
         /// 印鑑路徑

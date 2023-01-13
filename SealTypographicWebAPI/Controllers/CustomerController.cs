@@ -39,13 +39,13 @@ namespace SealTypographicWebAPI.Controllers
             CustomerPaginateViewModel customerResponsePage = new ();
             try
             {
-                Log.Information("Customer get FromQuery input {@Input}", customerQuery);
+                Log.Information("Other get FromQuery input {@Input}", customerQuery);
                 customerResponsePage = customerService.GetPaginate(customerQuery);
-                Log.Information("Customer get FromQuery output {@Output}", customerResponsePage);
+                Log.Information("Other get FromQuery output {@Output}", customerResponsePage);
             }
             catch (Exception ex)
             {
-                Log.Error("Customer get FromQuery error {@Error}", ex);                
+                Log.Error("Other get FromQuery error {@Error}", ex);                
                 customerResponsePage.DbError();                
             }
             return customerResponsePage;
@@ -63,13 +63,13 @@ namespace SealTypographicWebAPI.Controllers
             CustomerDetailViewModel customerDetailViewModel = new();
             try
             {
-                Log.Information("Customer get customerId input {@Input}", customerId);
+                Log.Information("Other get customerId input {@Input}", customerId);
                 customerDetailViewModel = customerService.GetDetail(customerId);
-                Log.Information("Customer get customerId output {@Output}", customerDetailViewModel);                
+                Log.Information("Other get customerId output {@Output}", customerDetailViewModel);                
             }
             catch (Exception ex)
             {
-                Log.Error("Customer get customerId error {@Error}", ex);                
+                Log.Error("Other get customerId error {@Error}", ex);                
                 customerDetailViewModel.DbError();                
             }
             return customerDetailViewModel;
@@ -85,13 +85,13 @@ namespace SealTypographicWebAPI.Controllers
             CreateCustomerResponse createCustomerResponse = new();
             try
             {
-                Log.Information("Customer post input {@Input}", customerForm);
+                Log.Information("Other post input {@Input}", customerForm);
                 createCustomerResponse = customerService.Create(customerForm);
-                Log.Information("Customer post output {@Input}", createCustomerResponse);                
+                Log.Information("Other post output {@Input}", createCustomerResponse);                
             }
             catch (Exception ex)
             {
-                Log.Error("Customer post error {@Error}", ex);
+                Log.Error("Other post error {@Error}", ex);
                 createCustomerResponse.DbError();                
             }
             return createCustomerResponse;
@@ -107,13 +107,13 @@ namespace SealTypographicWebAPI.Controllers
             ResponseViewModel response = new();
             try
             {               
-                Log.Information("Customer put input {@Input}", customerForm);
+                Log.Information("Other put input {@Input}", customerForm);
                 response = customerService.Update(customerForm);
-                Log.Information("Customer put output {@Output}", response);                
+                Log.Information("Other put output {@Output}", response);                
             }
             catch (Exception ex)
             {
-                Log.Error("Customer put error {@Error}", ex);
+                Log.Error("Other put error {@Error}", ex);
                 response.DbError();                
             }
             return response;
@@ -132,13 +132,13 @@ namespace SealTypographicWebAPI.Controllers
             ResponseViewModel response = new();
             try
             {
-                Log.Information("Customer delete input {@Input}", customerId);
+                Log.Information("Other delete input {@Input}", customerId);
                 response = customerService.Delete(customerId);
-                Log.Information("Customer delete input {@Input}", response);                
+                Log.Information("Other delete input {@Input}", response);                
             }
             catch (Exception ex)
             {
-                Log.Error("Customer delete error {@Error}", ex);
+                Log.Error("Other delete error {@Error}", ex);
                 response.DbError();
             }
             return response;

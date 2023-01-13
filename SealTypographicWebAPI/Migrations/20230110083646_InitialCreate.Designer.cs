@@ -191,7 +191,7 @@ namespace SealTypographicWebAPI.Migrations
                     b.ToTable("AccountantSignLocaltions");
                 });
 
-            modelBuilder.Entity("SealTypographicWebAPI.Entities.Customer", b =>
+            modelBuilder.Entity("SealTypographicWebAPI.Entities.Other", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -675,13 +675,13 @@ namespace SealTypographicWebAPI.Migrations
 
             modelBuilder.Entity("SealTypographicWebAPI.Entities.CustomerSealJournal", b =>
                 {
-                    b.HasOne("SealTypographicWebAPI.Entities.Customer", "Customer")
+                    b.HasOne("SealTypographicWebAPI.Entities.Other", "Other")
                         .WithMany("CustomerSealJournals")
                         .HasForeignKey("CustomerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Customer");
+                    b.Navigation("Other");
                 });
 
             modelBuilder.Entity("SealTypographicWebAPI.Entities.CustomerSealLocation", b =>
@@ -767,13 +767,13 @@ namespace SealTypographicWebAPI.Migrations
 
             modelBuilder.Entity("SealTypographicWebAPI.Entities.TypographicPDF", b =>
                 {
-                    b.HasOne("SealTypographicWebAPI.Entities.Customer", "Customer")
+                    b.HasOne("SealTypographicWebAPI.Entities.Other", "Other")
                         .WithMany()
                         .HasForeignKey("CustomerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Customer");
+                    b.Navigation("Other");
                 });
 
             modelBuilder.Entity("SealTypographicWebAPI.Entities.Accountant", b =>
@@ -792,7 +792,7 @@ namespace SealTypographicWebAPI.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("SealTypographicWebAPI.Entities.Customer", b =>
+            modelBuilder.Entity("SealTypographicWebAPI.Entities.Other", b =>
                 {
                     b.Navigation("CustomerSealJournals");
                 });

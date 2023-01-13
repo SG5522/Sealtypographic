@@ -1,6 +1,7 @@
 ﻿using DJLib;
 using DJLib.Models;
 using Microsoft.Extensions.Options;
+using SealTypographicWebAPI.Config;
 using SealTypographicWebAPI.Consts;
 using SealTypographicWebAPI.Models;
 using SealTypographicWebAPI.Utils;
@@ -13,14 +14,14 @@ namespace SealTypographicWebAPI.Services
     /// </summary>
     public class ImageService
     {
-        private readonly SealPathConfig sealConfig;
+        private readonly SealPathOption sealConfig;
 
         /// <summary>
         /// 注入appsetting的ScanConfigPath資料
         /// </summary>
         /// <param name="options"></param>
 
-        public ImageService(IOptionsSnapshot<SealPathConfig> options)
+        public ImageService(IOptionsSnapshot<SealPathOption> options)
         {
             sealConfig = options.Value;
         }
