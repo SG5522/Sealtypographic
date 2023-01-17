@@ -14,11 +14,6 @@ namespace SealTypographicWebAPI.Models.Letterhead
         /// <example>image/...</example>
         public string ImageBase64 { get; set; }
 
-        /// <summary>
-        /// 印鑑編號(排序) 1為起始
-        /// </summary>
-        /// <example>1</example>
-        public int Sequence { get; set; }
     }
 
     /// <summary>
@@ -26,6 +21,14 @@ namespace SealTypographicWebAPI.Models.Letterhead
     /// </summary>
     public class LetterheadImageViewModels: ResponseViewModel
     {
+        /// <summary>
+        /// new ImageViewModels
+        /// </summary>
+        public LetterheadImageViewModels()
+        {
+            ImageViewModels = new();
+        }            
+
         /// <summary>
         /// 信頭ID
         /// </summary>

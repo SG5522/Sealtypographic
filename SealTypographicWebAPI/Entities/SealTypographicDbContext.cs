@@ -43,6 +43,12 @@ namespace SealTypographicWebAPI.Entities
         /// </summary>
         public DbSet<Letterhead> Letterheads { get; set; }
 
+
+        /// <summary>
+        /// 事務所信頭圖片建立日期歷程資料表
+        /// </summary>
+        public DbSet<LetterheadImageCreateDateJournal> LetterheadImageCreateDateJournal { get; set; }
+
         /// <summary>
         /// 事務所信頭圖片歷程資料表
         /// </summary>

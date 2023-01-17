@@ -13,8 +13,8 @@ namespace SealTypographicWebAPI.Entities
         public string Code { get; set; }
 
         /// <summary>
-        /// 信頭圖片資料(歷程)
+        /// 信頭建立日期歷程
         /// </summary>
-        public List<LetterheadImageJournal> LetterheadImageJournals { get; set; }
+        public List<LetterheadImageCreateDateJournal> LetterheadImageCreateJournals { get; set; }
     }
 }

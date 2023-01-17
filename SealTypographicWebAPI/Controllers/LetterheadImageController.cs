@@ -122,52 +122,6 @@ namespace SealTypographicWebAPI.Controllers
                 responseViewModels.Add(responseViewModel);
             }
             return responseViewModels;
-        }
-
-        /// <summary>
-        /// 變更此群組創建日期的信頭圖片審核為通過(啟用)
-        /// </summary>
-        /// <param name="letterheadImageGroupCreateDateSearch"></param>        
-        /// <returns></returns>
-        [HttpPut("Approval")]
-        public ResponseViewModel PutApprovalLetterheadImage(LetterheadImageGroupCreateDateSearch letterheadImageGroupCreateDateSearch)
-        {
-            ResponseViewModel response = new();
-            try
-            {
-                Log.Information("LetterheadImage put(Approval) input {@Input}", letterheadImageGroupCreateDateSearch);
-                response = letterheadImageService.ApprovalImage(letterheadImageGroupCreateDateSearch);
-                Log.Information("LetterheadImage put(Approval) output {@Output}", response);
-            }
-            catch (Exception ex)
-            {
-                Log.Error("LetterheadImage put(Approval) error {@Error}", ex);
-                response.DbError();
-            }
-            return response;
-        }
-
-        /// <summary>
-        /// 變更此群組創建日期的信頭圖片審核為作廢
-        /// </summary>
-        /// <param name="letterheadImageGroupCreateDateSearch"></param>
-        /// <returns></returns>
-        [HttpPut("Invalid")]
-        public ResponseViewModel PutInvalidLetterheadImage(LetterheadImageGroupCreateDateSearch letterheadImageGroupCreateDateSearch)
-        {
-            ResponseViewModel response = new();
-            try
-            {
-                Log.Information("LetterheadImage put(Invalid) input {@Input}", letterheadImageGroupCreateDateSearch);
-                response = letterheadImageService.InvalidImage(letterheadImageGroupCreateDateSearch);
-                Log.Information("LetterheadImage put(Invalid) output {@Ouput}", response);
-            }
-            catch (Exception ex)
-            {
-                Log.Error("LetterheadImage put(Invalid) error {@Error}", ex);
-                response.DbError();
-            }
-            return response;
-        }
+        }        
     }
 }

@@ -9,21 +9,21 @@ namespace SealTypographicWebAPI.Models.Letterhead
     public class LetterheadImageUpdate
     {
         /// <summary>
-        /// 客戶Id
+        /// 信頭Id
         /// </summary>        
         [Required]
         public int LetterheadId { get; set; }
 
+        /// <summary>
+        /// 信頭圖片建立日期Id
+        /// </summary>        
+        [Required]
+        public int LetterheadImageCreateDateId { get; set; }
 
         /// <summary>
         /// 建立日期
         /// </summary>
         public DateTime GroupCreateDate { get; set; }
-
-        /// <summary>
-        /// 刪除客戶印鑑列表(ID)
-        /// </summary>
-        public List<int> DeleteLetterheadImageIds { get; set; }
 
         /// <summary>
         /// 更新客戶印鑑列表

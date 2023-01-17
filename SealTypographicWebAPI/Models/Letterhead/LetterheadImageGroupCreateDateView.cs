@@ -9,11 +9,18 @@ namespace SealTypographicWebAPI.Models.Letterhead
     public class LetterheadImageGroupCreateDateView
     {
         /// <summary>
-        /// 會計師Id
+        /// 信頭Id
         /// </summary>
         /// <example>1</example>
         [Required]
         public int LetterheadId { get; set; }
+
+        /// <summary>
+        /// 信頭圖片建立日期Id
+        /// </summary>
+        /// <example>1</example>
+        [Required]
+        public int LetterheadImageCreateId { get; set; }
 
         /// <summary>
         /// 群組創建日期

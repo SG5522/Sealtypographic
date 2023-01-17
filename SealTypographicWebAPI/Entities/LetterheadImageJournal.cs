@@ -8,18 +8,8 @@ namespace SealTypographicWebAPI.Entities
     public class LetterheadImageJournal : BaseSealJournal
     {        
         /// <summary>
-        /// 信頭ID
+        /// 信頭圖片建立日期歷程
         /// </summary>
-        public int LetterheadId { get; set; }
-
-        /// <summary>
-        /// 事務所信頭資料表
-        /// </summary>
-        public Letterhead Letterhead { get; set; }
-
-        /// <summary>
-        /// 印鑑組歷程資料表
-        /// </summary>
-        public SealReviewJournal SealReviewJournal { get; set; }
+        public LetterheadImageCreateDateJournal LetterheadImageCreateJournal { get; set; }
     }
 }

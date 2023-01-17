@@ -62,7 +62,7 @@ namespace SealTypographicWebAPI.Services.Implements
             ResponseViewModel response = new();
 
             IQueryable<Letterhead> letterheadQuery = dbContext.Letterheads.Where(letterhead => letterhead.DeleteStatus == DeleteStatus.NO)
-                                                    .Include(letterhead => letterhead.LetterheadImageJournals);
+                                                    .Include(letterhead => letterhead.LetterheadImageCreateJournals);
 
             if (!string.IsNullOrWhiteSpace(letterheadSearch.LetterheadOrName))
             {
@@ -88,10 +88,10 @@ namespace SealTypographicWebAPI.Services.Implements
                 {
                     LetterheadViewModel letterheadViewModel = mapper.Map<LetterheadViewModel>(letterheadData);
 
-                    if (letterheadData.LetterheadImageJournals.Count > 0)
+                    if (letterheadData.LetterheadImageCreateJournals.Count > 0)
                     {
-                        letterheadViewModel.GroupCreateDate = dbContext.SealReviewJournals
-                                                            .Where(x => x.LetterheadImageJournal.LetterheadId == letterheadData.Id)
+                        letterheadViewModel.GroupCreateDate = dbContext.LetterheadImageCreateDateJournal
+                                                            .Where(x => x.Letterhead.Id == letterheadData.Id)
                                                             .Max(x => x.CreateDate);
                     }
                     letterheadViewModels.Add(letterheadViewModel);

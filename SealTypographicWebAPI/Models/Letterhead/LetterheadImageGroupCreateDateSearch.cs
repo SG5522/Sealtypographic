@@ -15,6 +15,13 @@ namespace SealTypographicWebAPI.Models.Letterhead
         public int LetterheadId { get; set; }
 
         /// <summary>
+        /// 信頭建立日期Id
+        /// </summary>
+        /// <example>1</example>
+        [Required]
+        public int LetterheadImageCreateId { get; set; }
+
+        /// <summary>
         /// 啟用時間
         /// </summary>
         /// <example>0001-01-01T00:00:00.000000</example>

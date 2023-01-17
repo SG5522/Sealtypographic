@@ -174,7 +174,7 @@ namespace SealTypographicWebAPI.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "LetterheadImageJournals",
+                name: "LetterheadImageCreateDateJournal",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
@@ -185,13 +185,17 @@ namespace SealTypographicWebAPI.Migrations
                     CreateUserId = table.Column<int>(type: "INTEGER", nullable: false),
                     UpdateUserId = table.Column<int>(type: "INTEGER", nullable: false),
                     DeleteStatus = table.Column<byte>(type: "INTEGER", nullable: false),
-                    ImagePath = table.Column<string>(type: "TEXT", nullable: false)
+                    ReviewUserId = table.Column<int>(type: "INTEGER", nullable: true),
+                    ReviewDate = table.Column<DateTime>(type: "TEXT", nullable: true),
+                    StartDate = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    EndDate = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    ReviewStatus = table.Column<sbyte>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_LetterheadImageJournals", x => x.Id);
+                    table.PrimaryKey("PK_LetterheadImageCreateDateJournal", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_LetterheadImageJournals_Letterheads_LetterheadId",
+                        name: "FK_LetterheadImageCreateDateJournal_Letterheads_LetterheadId",
                         column: x => x.LetterheadId,
                         principalTable: "Letterheads",
                         principalColumn: "Id",
@@ -250,45 +254,28 @@ namespace SealTypographicWebAPI.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "SealReviewJournals",
+                name: "LetterheadImageJournals",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    Sequence = table.Column<int>(type: "INTEGER", nullable: true),
-                    Quarter = table.Column<string>(type: "TEXT", nullable: true),
-                    CustomerSealJournalId = table.Column<int>(type: "INTEGER", nullable: true),
-                    AccountantSignJournalId = table.Column<int>(type: "INTEGER", nullable: true),
-                    LetterheadImageJournalId = table.Column<int>(type: "INTEGER", nullable: true),
+                    LetterheadImageCreateJournalId = table.Column<int>(type: "INTEGER", nullable: false),
                     CreateDate = table.Column<DateTime>(type: "TEXT", nullable: false),
                     UpdateDate = table.Column<DateTime>(type: "TEXT", nullable: false),
                     CreateUserId = table.Column<int>(type: "INTEGER", nullable: false),
                     UpdateUserId = table.Column<int>(type: "INTEGER", nullable: false),
                     DeleteStatus = table.Column<byte>(type: "INTEGER", nullable: false),
-                    ReviewUserId = table.Column<int>(type: "INTEGER", nullable: true),
-                    ReviewDate = table.Column<DateTime>(type: "TEXT", nullable: true),
-                    StartDate = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    EndDate = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    ReviewStatus = table.Column<sbyte>(type: "INTEGER", nullable: false)
+                    ImagePath = table.Column<string>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_SealReviewJournals", x => x.Id);
+                    table.PrimaryKey("PK_LetterheadImageJournals", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_SealReviewJournals_AccountantSignJournals_AccountantSignJournalId",
-                        column: x => x.AccountantSignJournalId,
-                        principalTable: "AccountantSignJournals",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_SealReviewJournals_CustomerSealJournals_CustomerSealJournalId",
-                        column: x => x.CustomerSealJournalId,
-                        principalTable: "CustomerSealJournals",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_SealReviewJournals_LetterheadImageJournals_LetterheadImageJournalId",
-                        column: x => x.LetterheadImageJournalId,
-                        principalTable: "LetterheadImageJournals",
-                        principalColumn: "Id");
+                        name: "FK_LetterheadImageJournals_LetterheadImageCreateDateJournal_LetterheadImageCreateJournalId",
+                        column: x => x.LetterheadImageCreateJournalId,
+                        principalTable: "LetterheadImageCreateDateJournal",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -396,6 +383,48 @@ namespace SealTypographicWebAPI.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "SealReviewJournals",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Sequence = table.Column<int>(type: "INTEGER", nullable: true),
+                    Quarter = table.Column<string>(type: "TEXT", nullable: true),
+                    CustomerSealJournalId = table.Column<int>(type: "INTEGER", nullable: true),
+                    AccountantSignJournalId = table.Column<int>(type: "INTEGER", nullable: true),
+                    LetterheadImageJournalId = table.Column<int>(type: "INTEGER", nullable: true),
+                    CreateDate = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    UpdateDate = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    CreateUserId = table.Column<int>(type: "INTEGER", nullable: false),
+                    UpdateUserId = table.Column<int>(type: "INTEGER", nullable: false),
+                    DeleteStatus = table.Column<byte>(type: "INTEGER", nullable: false),
+                    ReviewUserId = table.Column<int>(type: "INTEGER", nullable: true),
+                    ReviewDate = table.Column<DateTime>(type: "TEXT", nullable: true),
+                    StartDate = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    EndDate = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    ReviewStatus = table.Column<sbyte>(type: "INTEGER", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_SealReviewJournals", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_SealReviewJournals_AccountantSignJournals_AccountantSignJournalId",
+                        column: x => x.AccountantSignJournalId,
+                        principalTable: "AccountantSignJournals",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_SealReviewJournals_CustomerSealJournals_CustomerSealJournalId",
+                        column: x => x.CustomerSealJournalId,
+                        principalTable: "CustomerSealJournals",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_SealReviewJournals_LetterheadImageJournals_LetterheadImageJournalId",
+                        column: x => x.LetterheadImageJournalId,
+                        principalTable: "LetterheadImageJournals",
+                        principalColumn: "Id");
+                });
+
             migrationBuilder.InsertData(
                 table: "AccountantGroups",
                 columns: new[] { "Id", "AccountantGroupNumber", "CreateDate", "CreateUserId", "DeleteStatus", "Name", "UpdateDate", "UpdateUserId" },
@@ -437,9 +466,14 @@ namespace SealTypographicWebAPI.Migrations
                 column: "TypographicPageId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_LetterheadImageJournals_LetterheadId",
-                table: "LetterheadImageJournals",
+                name: "IX_LetterheadImageCreateDateJournal_LetterheadId",
+                table: "LetterheadImageCreateDateJournal",
                 column: "LetterheadId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_LetterheadImageJournals_LetterheadImageCreateJournalId",
+                table: "LetterheadImageJournals",
+                column: "LetterheadImageCreateJournalId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_LetterheadImageLocaltions_LetterheadImageJournalId",
@@ -466,8 +500,7 @@ namespace SealTypographicWebAPI.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_SealReviewJournals_LetterheadImageJournalId",
                 table: "SealReviewJournals",
-                column: "LetterheadImageJournalId",
-                unique: true);
+                column: "LetterheadImageJournalId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_TypographicPages_TypographicPDFId",
@@ -516,13 +549,16 @@ namespace SealTypographicWebAPI.Migrations
                 name: "Accountants");
 
             migrationBuilder.DropTable(
-                name: "Letterheads");
+                name: "LetterheadImageCreateDateJournal");
 
             migrationBuilder.DropTable(
                 name: "Customers");
 
             migrationBuilder.DropTable(
                 name: "AccountantGroups");
+
+            migrationBuilder.DropTable(
+                name: "Letterheads");
         }
     }
 }

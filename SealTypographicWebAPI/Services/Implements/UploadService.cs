@@ -42,7 +42,7 @@ namespace SealTypographicWebAPI.Services.Implements
         /// 取得檔案名稱
         /// </summary>
         /// <returns></returns>
-        public async Task<UploadFolderFile> GetFileName()
+        public UploadFolderFile GetFileName()
         {
             return new();
         }

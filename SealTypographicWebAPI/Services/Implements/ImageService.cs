@@ -55,7 +55,7 @@ namespace SealTypographicWebAPI.Services
 
             ImageSharpUtil.Base64ToSaveImage(imageBase64Info.ImageBase64, saveImageInfo);
 
-            return $"{dateFolder}{saveImageInfo.Filename}";            
+            return $"{saveImageInfo.Folder}{saveImageInfo.Filename}";            
         }
 
         /// <summary>

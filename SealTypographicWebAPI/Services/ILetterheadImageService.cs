@@ -35,18 +35,5 @@ namespace SealTypographicWebAPI.Services
         /// <param name="letterheadImageUpdate">刪除修改新增的list</param>
         /// <returns></returns>
         List<ResponseViewModel> Update(LetterheadImageUpdate letterheadImageUpdate);
-
-        /// <summary>
-        /// 變更此群組創建日期的信頭圖片審核為通過(啟用)
-        /// </summary>
-        /// <param name="letterheadImageGroupCreateDateSearch">信頭圖片群組創建日期</param>        
-        /// <returns></returns>
-        ResponseViewModel ApprovalImage(LetterheadImageGroupCreateDateSearch letterheadImageGroupCreateDateSearch);
-
-        /// <summary>
-        /// 變更此群組創建日期的信頭圖片審核為作廢
-        /// </summary>
-        /// <param name="letterheadImageGroupCreateDateSearch">信頭圖片群組創建日期</param>        
-        ResponseViewModel InvalidImage(LetterheadImageGroupCreateDateSearch letterheadImageGroupCreateDateSearch);
     }
 }
