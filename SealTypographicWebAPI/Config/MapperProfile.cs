@@ -107,27 +107,16 @@ namespace SealTypographicWebAPI.Config
             //信頭基本資料
             CreateMap<Letterhead, LetterheadViewModel>();
 
-            CreateMap<LetterheadForm, Letterhead>()
-                    .ForMember(x => x.Code, y => y.MapFrom(o => o.LetterheadNumber))
-                    .ReverseMap();
-
             CreateMap<LetterheadFormUpdate, Letterhead>();
 
             //信頭圖片
-            CreateMap<LetterheadImageJournal, LetterheadImageViewModel>()
-                    //.ForMember(x => x.SealMappingConfigName, y => y.MapFrom(o => o.SealMappingConfig.Name))
-                    .ForMember(x => x.ImageBase64, y => y.Ignore()) // <---imagebase64要額外處理所以要忽略
-                    .ReverseMap();
-
-            CreateMap<SealReviewJournal, LetterheadImageViewModel>()
-                    .ReverseMap();
 
             CreateMap<LetterheadImageForm, LetterheadImageJournal>()
-                    .ForMember(x => x.ImagePath, y => y.Ignore()) // <---imagebase64要額外處理所以要忽略
+                    .ForMember(x => x.ImageFullPath, y => y.Ignore()) // <---imagebase64要額外處理所以要忽略
                     .ReverseMap();
 
             CreateMap<LetterheadImageFormUpdate, LetterheadImageJournal>()
-                    .ForMember(x => x.ImagePath, y => y.Ignore()) // <---ImagePath要額外處理所以要忽略
+                    .ForMember(x => x.ImageFullPath, y => y.Ignore()) // <---ImagePath要額外處理所以要忽略
                     .ReverseMap();
 
             //PDF排版資訊

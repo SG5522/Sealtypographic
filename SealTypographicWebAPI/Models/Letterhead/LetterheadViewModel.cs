@@ -8,8 +8,8 @@ namespace SealTypographicWebAPI.Models.Letterhead
     public class LetterheadViewModel : BaseName
     {
         /// <summary>
-        /// 信頭圖片群組創建日期
+        /// 信頭圖片Id
         /// </summary>
-        public DateTime? GroupCreateDate { get; set; }
+        public int LetterheadImageId { get; set; }
     }
 }

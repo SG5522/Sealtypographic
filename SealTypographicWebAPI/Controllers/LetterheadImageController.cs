@@ -36,13 +36,13 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="letterheadId"></param>
         /// <returns></returns>
         [HttpGet("{letterheadId}")]
-        public LetterheadGroupCreateDateViews Get(int letterheadId)
+        public LetterheadCreateDateViews Get(int letterheadId)
         {
-            LetterheadGroupCreateDateViews letterheadGroupCreateDateViews = new();
+            LetterheadCreateDateViews letterheadGroupCreateDateViews = new();
             try
             {
                 Log.Information("LetterheadImage get{letterheadId} input {@Input}", letterheadId);
-                letterheadGroupCreateDateViews = letterheadImageService.GetLetterheadCreateDate(letterheadId);
+                letterheadGroupCreateDateViews = letterheadImageService.GetCreateDate(letterheadId);
                 Log.Information("LetterheadImage get{letterheadId} output {@Output}", letterheadGroupCreateDateViews);
             }
             catch (Exception ex)
@@ -59,9 +59,9 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="letterheadImageGroupCreateDateSearch">搜尋條件</param>
         /// <returns></returns>
         [HttpGet]
-        public LetterheadImageViewModels Get([FromQuery]LetterheadImageGroupCreateDateSearch letterheadImageGroupCreateDateSearch)
+        public LetterheadImageViewModel Get([FromQuery]LetterheadImageSearch letterheadImageGroupCreateDateSearch)
         {
-            LetterheadImageViewModels letterheadImageViewModels = new();
+            LetterheadImageViewModel letterheadImageViewModels = new();
             try
             {
                 Log.Information("LetterheadImage get input {@Input}", letterheadImageGroupCreateDateSearch);
@@ -105,23 +105,21 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="letterheadImageUpdate">刪除修改新增的list</param>
         /// <returns></returns>
         [HttpPut]
-        public List<ResponseViewModel> Put(LetterheadImageUpdate letterheadImageUpdate)
+        public ResponseViewModel Put(LetterheadImageUpdate letterheadImageUpdate)
         {
-            List<ResponseViewModel> responseViewModels = new();
+            ResponseViewModel response = new();
             try
             {
                 Log.Information("LetterheadImage put input {@Input}", letterheadImageUpdate);
-                responseViewModels = letterheadImageService.Update(letterheadImageUpdate);
-                Log.Information("LetterheadImage put output {@Output}", responseViewModels);
+                response = letterheadImageService.Update(letterheadImageUpdate);
+                Log.Information("LetterheadImage put output {@Output}", response);
             }            
             catch (Exception ex)
             {
-                ResponseViewModel responseViewModel = new();
-                Log.Error("LetterheadImage put error {@Error}", ex);                
-                responseViewModel.DbError();
-                responseViewModels.Add(responseViewModel);
+                Log.Error("LetterheadImage put error {@Error}", ex);
+                response.DbError();
             }
-            return responseViewModels;
+            return response;
         }        
     }
 }

@@ -38,27 +38,28 @@ namespace SealTypographicWebAPI.Services.Implements
         /// </summary>
         /// <param name="letterheadId">信頭Id</param>
         /// <returns></returns>
-        public LetterheadGroupCreateDateViews GetLetterheadCreateDate(int letterheadId)
+        public LetterheadCreateDateViews GetCreateDate(int letterheadId)
         {
-            LetterheadGroupCreateDateViews letterheadGroupCreateDateViews = new();
-            List<LetterheadImageGroupCreateDateView> groupCreateDateViews = dbContext.LetterheadImageCreateDateJournal
+            LetterheadCreateDateViews letterheadGroupCreateDateViews = new();
+            List<LetterheadImageCreateDateView> groupCreateDateViews = dbContext.LetterheadImageJournals
                                                                             .Include(x => x.Letterhead)
                                                                            .Where
                                                                            (
-                                                                                letterheadImageCreateJournal => letterheadImageCreateJournal.Letterhead.Id == letterheadId                                                                                
+                                                                                letterheadImageCreateJournal => letterheadImageCreateJournal.Letterhead.Id == letterheadId
                                                                                 && letterheadImageCreateJournal.DeleteStatus == DeleteStatus.NO
                                                                            )
-                                                                           .Select(letterheadImageCreateJournal => new LetterheadImageGroupCreateDateView()
+                                                                           .Select(letterheadImageJournal => new LetterheadImageCreateDateView()
                                                                            {
-                                                                               LetterheadId = letterheadId,
-                                                                               LetterheadImageCreateId = letterheadImageCreateJournal.Id,
-                                                                               GroupCreateDate = letterheadImageCreateJournal.CreateDate,
-                                                                               ReviewStatus = letterheadImageCreateJournal.ReviewStatus
+                                                                               LetterheadImageId = letterheadImageJournal.Id,
+                                                                               GroupCreateDate = letterheadImageJournal.CreateDate,
+                                                                               Status = EnumExtenstionUtil.GetDescription(letterheadImageJournal.Status)
                                                                            })
+                                                                           .OrderBy(x => x.LetterheadImageId)
                                                                            .ToList();
 
             if (groupCreateDateViews.Any())
             {
+                letterheadGroupCreateDateViews.LetterheadId = letterheadId;
                 letterheadGroupCreateDateViews.GroupCreateDateViews = groupCreateDateViews;
                 letterheadGroupCreateDateViews.Success();
             }
@@ -72,28 +73,20 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <summary>
         /// 取得信頭圖片
         /// </summary>
-        /// <param name="letterheadGroupCreateDateSearch">搜尋條件</param>
+        /// <param name="letterheadImageSearch">搜尋條件</param>
         /// <returns></returns>
-        public LetterheadImageViewModels GetImage (LetterheadImageGroupCreateDateSearch letterheadGroupCreateDateSearch)
+        public LetterheadImageViewModel GetImage (LetterheadImageSearch letterheadImageSearch)
         {
-            LetterheadImageViewModels letterheadImageViewModels = new()
-            {
-                LetterheadId = letterheadGroupCreateDateSearch.LetterheadId,
-                GroupCreateDate = letterheadGroupCreateDateSearch.GroupCreateDate
+            LetterheadImageViewModel letterheadImageViewModels = new()
+            {                
+                LetterheadImageId = letterheadImageSearch.LetterheadImageId,
             };
 
-            LetterheadImageCreateDateJournal? letterheadImageCreateJournalQuery = dbContext.LetterheadImageCreateDateJournal.Find(letterheadGroupCreateDateSearch.LetterheadImageCreateId);      
+            LetterheadImageJournal? letterheadImageJournalQuery = dbContext.LetterheadImageJournals.Find(letterheadImageSearch.LetterheadImageId);      
                 
-            if (letterheadImageCreateJournalQuery != null)
-            {
-                foreach (LetterheadImageJournal letterheadImageJournal in letterheadImageCreateJournalQuery.LetterheadImageJournals)
-                {
-                    LetterheadImageViewModel letterheadImageViewModel = mapper.Map<LetterheadImageViewModel>(letterheadImageJournal);
-                    letterheadImageViewModel.ImageBase64 = imageSharpService.GetPathToBase64(letterheadImageJournal.ImagePath, SealType.Letterhead); //資料庫取得圖檔路徑轉BASE64                                                      
-                    letterheadImageViewModels.ImageViewModels.Add(letterheadImageViewModel);
-                    //ImageViewModels.Add(letterheadImageViewModel);
-                }
-                letterheadImageViewModels.ReviewStatus = letterheadImageCreateJournalQuery.ReviewStatus;                
+            if (letterheadImageJournalQuery != null)
+            {                                
+                letterheadImageViewModels.ImageBase64 = imageSharpService.GetPathToBase64(letterheadImageJournalQuery.ImageFullPath, SealType.Letterhead); //資料庫取得圖檔路徑轉BASE64                                                                                  
                 letterheadImageViewModels.Success();
             }
             else
@@ -112,37 +105,30 @@ namespace SealTypographicWebAPI.Services.Implements
         public ResponseViewModel Create(LetterheadImageForms letterheadImageForms)
         {
             ResponseViewModel response = new();
-            //List<LetterheadImageJournal> letterheadImageJournals = new();
+            //DateTime createNowTime = DateTime.Now;//建立日期            
+            Letterhead letterhead = new();
+            LetterheadImageJournal letterheadImage = new();
+            List<LetterheadImageJournal> letterheadImages = new();
             int userId = 0; //以後從帳號驗證取得Id
             int count = 1;
-            ImageBase64Info imageBase64Info = new()
-            {
-                Code = GetCode(letterheadImageForms.LetterheadId),
-                SealType = SealType.Customer
-            };
-            DateTime createNowTime = DateTime.Now;//將建立日期為依據將此次建立的會計師簽印組成為一組Group
-            LetterheadImageCreateDateJournal letterheadImageCreateJournal = new()
-            {
-                CreateDate = createNowTime
+            ImageBase64Info imageBase64Info = new() 
+            {                                 
+                SealType = SealType.Letterhead 
             };
 
-            BaseInputCreateDateJournal(letterheadImageCreateJournal, true, userId);
-
-            foreach (LetterheadImageForm letterheadImage in letterheadImageForms.ImageForms)
-            {
-                LetterheadImageJournal letterheadImageJournal = new();
-
-
-                //ImageBase64轉圖檔並存到指定資料夾
-                imageBase64Info.ImageBase64 = letterheadImage.ImageBase64;
-                letterheadImageJournal.ImagePath = imageSharpService.SaveBase64ToFile(imageBase64Info, count);                    
-
-                BaseInputImageJournal(letterheadImageJournal, true, userId);
-                
-                letterheadImageCreateJournal.LetterheadImageJournals.Add(letterheadImageJournal);                
-                count++;                                      
-            }
-            dbContext.LetterheadImageCreateDateJournal.Add(letterheadImageCreateJournal);
+            //信頭基本資料
+            letterhead.Name = letterheadImageForms.Name;            
+            BaseInputLetterhead(letterhead, true, userId);
+            //ImageBase64轉圖檔並存到指定資料夾
+            imageBase64Info.ImageBase64 = letterheadImageForms.ImageBase64;
+            letterheadImage.ImageFullPath = imageSharpService.SaveBase64ToFile(imageBase64Info, count);
+            //新增信頭圖片
+            BaseInputImageJournal(letterheadImage, true, userId);
+            letterheadImages.Add(letterheadImage);
+            //關連信頭基本資料
+            letterhead.LetterheadImageJournals = letterheadImages;
+            
+            dbContext.Letterheads.Add(letterhead);
             dbContext.SaveChanges();
             response.Success();
             
@@ -154,86 +140,52 @@ namespace SealTypographicWebAPI.Services.Implements
         /// </summary>
         /// <param name="letterheadImageUpdate">刪除修改新增的list</param>
         /// <returns></returns>
-        public List<ResponseViewModel> Update(LetterheadImageUpdate letterheadImageUpdate)
+        public ResponseViewModel Update(LetterheadImageUpdate letterheadImageUpdate)
         {
-            List<ResponseViewModel> responseViewModels = new();            
+            ResponseViewModel response = new();            
             int userId = 0;//之後會從帳號驗證中取得userid
             int count = 1;
             ImageBase64Info imageBase64Info = new()
-            {
-                Code = GetCode(letterheadImageUpdate.LetterheadId),
+            {                
                 SealType = SealType.Letterhead,                
             };
-            LetterheadImageCreateDateJournal? createDateJournalQuery = dbContext.LetterheadImageCreateDateJournal.Find(letterheadImageUpdate.LetterheadImageCreateDateId);
+            LetterheadImageJournal? updateImageQuery = dbContext.LetterheadImageJournals
+                                                        .Include(letterheadImageJournal => letterheadImageJournal.Letterhead)
+                                                        .FirstOrDefault(letterheadImageJournal => letterheadImageJournal.Id == letterheadImageUpdate.Id);
+            if (updateImageQuery != null)
+            {
+                LetterheadImageJournal letterheadImageJournal = new();
 
-            if(createDateJournalQuery != null)
+                //ImageBase64轉圖檔並存到指定資料夾                    
+                imageBase64Info.ImageBase64 = letterheadImageUpdate.ImageBase64;
+                letterheadImageJournal.ImageFullPath = imageSharpService.SaveBase64ToFile(imageBase64Info, count);
+
+                BaseInputImageJournal(letterheadImageJournal, true, userId);
+                letterheadImageJournal.Letterhead = updateImageQuery.Letterhead;
+
+                dbContext.LetterheadImageJournals.Add(letterheadImageJournal);
+
+                updateImageQuery.Letterhead.Name = letterheadImageUpdate.LetterheadName;
+                BaseInputLetterhead(updateImageQuery.Letterhead, false, userId);
+
+                //原圖片狀態變更停用                
+                BaseInputImageJournal(updateImageQuery, false, userId);
+
+                dbContext.SaveChanges();
+                response.Success();                
+            }
+            else
             {                
-                //修改信頭圖像
-                foreach (LetterheadImageFormUpdate letterheadImageFormUpdate in letterheadImageUpdate.UpdateLetterheadImages)
-                {
-                    LetterheadImageJournal? updateImageQuery = dbContext.LetterheadImageJournals.Find(letterheadImageFormUpdate.Id);
-
-                    if (updateImageQuery != null)
-                    {
-                        LetterheadImageJournal letterheadImageJournal = new();
-
-                        //ImageBase64轉圖檔並存到指定資料夾                    
-                        imageBase64Info.ImageBase64 = letterheadImageFormUpdate.ImageBase64;
-                        letterheadImageJournal.ImagePath = imageSharpService.SaveBase64ToFile(imageBase64Info, count);
-
-                        BaseInputImageJournal(letterheadImageJournal, true, userId);
-
-                        createDateJournalQuery.LetterheadImageJournals.Add(letterheadImageJournal);
-                        //dbContext.SealReviewJournals.Add(sealReviewJournal);
-
-                        //原圖片刪除(Hide)
-                        updateImageQuery.DeleteStatus = DeleteStatus.Yes;                        
-                        BaseInputImageJournal(updateImageQuery, false, userId);                        
-
-                        count++;
-                    }
-                    else
-                    {
-                        ResponseViewModel response = new();
-                        response.UpdateAccountantSignNoData();
-                        response.ErrorItem = "Update updateLetterheadImageId: " + letterheadImageFormUpdate.Id;
-                        responseViewModels.Add(response);
-                    }
-                }
-                //新增信頭圖像
-                foreach (LetterheadImageForm createLetterheadImage in letterheadImageUpdate.CreateLetterheadImages)
-                {
-                    LetterheadImageJournal letterheadImageJournal = new();
-
-
-                    //ImageBase64轉圖檔並存到指定資料夾
-                    imageBase64Info.ImageBase64 = createLetterheadImage.ImageBase64;
-                    letterheadImageJournal.ImagePath = imageSharpService.SaveBase64ToFile(imageBase64Info, count);
-                    BaseInputImageJournal(letterheadImageJournal, true, userId);
-                    createDateJournalQuery.LetterheadImageJournals.Add(letterheadImageJournal);
-                    count++;                    
-                }
-
-                //沒有任何回傳訊息(錯誤訊息)就更新資料庫
-                if (!responseViewModels.Any())
-                {
-                    ResponseViewModel response = new();
-
-                    //將此創建日期的圖片審查狀態全變更為草稿(更新時需要重審)
-                    createDateJournalQuery.ReviewStatus = ReviewStatus.Draft;
-
-                    dbContext.SaveChanges();
-                    response.Success();
-                    responseViewModels.Add(response);
-                }
+                response.UpdateAccountantSignNoData();
+                response.ErrorItem = "Update updateLetterheadImageId: " + letterheadImageUpdate.Id;                
             }
             
-            return responseViewModels;
+            return response;
         }
         
 
         /// <summary>
-        /// 客戶印鑑新增修改時基本的資料輸入
+        /// 信頭圖片新增修改時基本的資料輸入
         /// </summary>
         /// <param name="letterheadImageJournal">Db上的印鑑資料</param>
         /// <param name="isCreate">對Db所做的行動</param>
@@ -245,51 +197,29 @@ namespace SealTypographicWebAPI.Services.Implements
                 letterheadImageJournal.CreateUserId = userId;
                 letterheadImageJournal.CreateDate = DateTime.Now;
                 letterheadImageJournal.DeleteStatus = DeleteStatus.NO;
+                letterheadImageJournal.Status = LetterheadImageStatus.Enable;
             }
             else
             {
                 letterheadImageJournal.UpdateUserId = userId;
                 letterheadImageJournal.UpdateDate = DateTime.Now;
-            }
+                letterheadImageJournal.Status = LetterheadImageStatus.Disabled;
+            }  
+            
         }
-
-        /// <summary>
-        /// 客戶印鑑新增修改時基本的資料輸入
-        /// </summary>
-        /// <param name="letterheadImageCreateDateJournal">Db上的印鑑資料</param>
-        /// <param name="isCreate">對Db所做的行動</param>
-        /// <param name="userId">userId</param>
-        private static void BaseInputCreateDateJournal(LetterheadImageCreateDateJournal letterheadImageCreateDateJournal, bool isCreate, int userId)
+        private static void BaseInputLetterhead(Letterhead letterhead, bool isCreate, int userid)
         {
             if (isCreate)
             {
-                letterheadImageCreateDateJournal.CreateUserId = userId;                
-                letterheadImageCreateDateJournal.DeleteStatus = DeleteStatus.NO;
+                letterhead.CreateUserId = userid;
+                letterhead.CreateDate = DateTime.Now;
+                letterhead.DeleteStatus = DeleteStatus.NO;
             }
             else
             {
-                letterheadImageCreateDateJournal.UpdateUserId = userId;
-                letterheadImageCreateDateJournal.UpdateDate = DateTime.Now;
+                letterhead.UpdateUserId = userid;
+                letterhead.UpdateDate = DateTime.Now;
             }
-            letterheadImageCreateDateJournal.StartDate = AvailableDateUtil.NotActivated();
-            letterheadImageCreateDateJournal.EndDate = AvailableDateUtil.NotActivated(); //暫時加上                
-            letterheadImageCreateDateJournal.ReviewStatus = ReviewStatus.Draft;
-        }
-        
-
-        private string GetCode(int letterheadId)
-        {
-            string code;
-            Letterhead? letterhead = dbContext.Letterheads.Find(letterheadId);
-            if (letterhead != null)
-            {
-                code = letterhead.Code;
-            }
-            else
-            {
-                code = string.Empty;
-            }
-            return code;
         }
     }
 }

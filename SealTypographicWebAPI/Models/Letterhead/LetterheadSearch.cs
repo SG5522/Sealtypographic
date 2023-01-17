@@ -8,9 +8,9 @@ namespace SealTypographicWebAPI.Models.Customer
     public class LetterheadSearch : PaginateSearch
     {
         /// <summary>
-        /// 搜尋名字
+        /// 搜尋信頭名稱
         /// </summary>
         /// <example>信頭名稱</example>
-        public string? LetterheadOrName { get; set; }
+        public string? Name { get; set; }
     }
 }

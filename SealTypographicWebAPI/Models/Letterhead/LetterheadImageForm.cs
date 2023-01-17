@@ -9,13 +9,7 @@ namespace SealTypographicWebAPI.Models.Letterhead
     /// </summary>
     public class LetterheadImageForm : BaseCreateSeal
     {
-        /// <summary>
-        /// 印鑑編號(排序) 1為起始
-        /// </summary>
-        /// <example>1</example>
-        [Required]
-        [Range(1, 99)]
-        public int Sequence { get; set; }
+
     }
     /// <summary>
     /// 信頭圖片組
@@ -23,15 +17,19 @@ namespace SealTypographicWebAPI.Models.Letterhead
     public class LetterheadImageForms
     {
         /// <summary>
-        /// 客戶ID
+        /// 信頭名稱
         /// </summary>
         /// <example>1</example>
         [Required]
-        public int LetterheadId { get; set; }
+        public string Name { get; set; }
+
 
         /// <summary>
-        /// 信頭圖片組
+        /// 圖檔字串(Base64)
         /// </summary>
-        public List<LetterheadImageForm> ImageForms { get; set; }
+        /// <example>image/...</example>
+        [Required]
+        public string ImageBase64 { get; set; }
+
     }
 }

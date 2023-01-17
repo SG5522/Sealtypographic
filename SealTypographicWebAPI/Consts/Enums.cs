@@ -58,6 +58,24 @@ namespace SealTypographicWebAPI.Consts
     }
 
     /// <summary>
+    /// 信頭圖片狀態
+    /// </summary>
+    public enum LetterheadImageStatus : sbyte
+    {
+        /// <summary>
+        /// 啟用
+        /// </summary>
+        [Description("啟用")]
+        Enable = 0,
+
+        /// <summary>
+        /// 停用
+        /// </summary>
+        [Description("停用")]
+        Disabled = 10,
+    }
+
+    /// <summary>
     /// 刪除狀態
     /// </summary>
     public enum DeleteStatus : byte

@@ -1,52 +1,25 @@
 ﻿using SealTypographicWebAPI.Consts;
 using SealTypographicWebAPI.Models.BaseModels;
+using System.ComponentModel.DataAnnotations;
 
 namespace SealTypographicWebAPI.Models.Letterhead
 {
     /// <summary>
-    /// 信頭圖組
+    /// 信頭圖片組
     /// </summary>
-    public class LetterheadImageViewModel : BaseData
-    {
+    public class LetterheadImageViewModel: ResponseViewModel
+    {       
+        /// <summary>
+        /// 信頭圖片ID
+        /// </summary>
+        /// <example>0</example>        
+        [Required]
+        public int LetterheadImageId { get; set; }
+
         /// <summary>
         /// 圖檔字串(Base64)
         /// </summary>
         /// <example>image/...</example>
         public string ImageBase64 { get; set; }
-
-    }
-
-    /// <summary>
-    /// 信頭圖片組
-    /// </summary>
-    public class LetterheadImageViewModels: ResponseViewModel
-    {
-        /// <summary>
-        /// new ImageViewModels
-        /// </summary>
-        public LetterheadImageViewModels()
-        {
-            ImageViewModels = new();
-        }            
-
-        /// <summary>
-        /// 信頭ID
-        /// </summary>
-        public int LetterheadId { get; set; }
-
-        /// <summary>
-        /// 建立日期
-        /// </summary>
-        public DateTime GroupCreateDate { get; set; }
-
-        /// <summary>
-        /// 審核狀態
-        /// </summary>
-        public ReviewStatus ReviewStatus { get; set; }
-
-        /// <summary>
-        /// 信頭圖片組
-        /// </summary>
-        public List<LetterheadImageViewModel> ImageViewModels { get; set; }
     }
 }

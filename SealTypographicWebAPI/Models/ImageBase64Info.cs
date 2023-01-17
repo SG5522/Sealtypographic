@@ -9,10 +9,6 @@ namespace SealTypographicWebAPI.Models
     /// </summary>
     public class ImageBase64Info
     {
-        /// <summary>
-        /// Base64圖片字串
-        /// </summary>
-        public string ImageBase64 { get; set; }
 
         /// <summary>
         /// 印鑑類型
@@ -23,6 +19,11 @@ namespace SealTypographicWebAPI.Models
         /// 客戶、會計、信頭 編號
         /// </summary>
         public string Code { get; set; }
+
+        /// <summary>
+        /// Base64圖片字串
+        /// </summary>
+        public string? ImageBase64 { get; set; }
 
         /// <summary>
         /// 建檔時間
