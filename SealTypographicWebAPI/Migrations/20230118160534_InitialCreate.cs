@@ -203,25 +203,28 @@ namespace SealTypographicWebAPI.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "AccountantSignJournals",
+                name: "AccountantSignCreateDateJournals",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    ConfigType = table.Column<int>(type: "INTEGER", nullable: false),
                     AccountantId = table.Column<int>(type: "INTEGER", nullable: false),
                     CreateDate = table.Column<DateTime>(type: "TEXT", nullable: false),
                     UpdateDate = table.Column<DateTime>(type: "TEXT", nullable: false),
                     CreateUserId = table.Column<int>(type: "INTEGER", nullable: false),
                     UpdateUserId = table.Column<int>(type: "INTEGER", nullable: false),
                     DeleteStatus = table.Column<byte>(type: "INTEGER", nullable: false),
-                    ImagePath = table.Column<string>(type: "TEXT", nullable: false)
+                    ReviewUserId = table.Column<int>(type: "INTEGER", nullable: true),
+                    ReviewDate = table.Column<DateTime>(type: "TEXT", nullable: true),
+                    StartDate = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    EndDate = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    ReviewStatus = table.Column<sbyte>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_AccountantSignJournals", x => x.Id);
+                    table.PrimaryKey("PK_AccountantSignCreateDateJournals", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_AccountantSignJournals_Accountants_AccountantId",
+                        name: "FK_AccountantSignCreateDateJournals_Accountants_AccountantId",
                         column: x => x.AccountantId,
                         principalTable: "Accountants",
                         principalColumn: "Id",
@@ -281,78 +284,27 @@ namespace SealTypographicWebAPI.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "SealReviewJournals",
+                name: "AccountantSignJournals",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    Sequence = table.Column<int>(type: "INTEGER", nullable: true),
-                    Quarter = table.Column<string>(type: "TEXT", nullable: true),
-                    CustomerSealJournalId = table.Column<int>(type: "INTEGER", nullable: true),
-                    AccountantSignJournalId = table.Column<int>(type: "INTEGER", nullable: true),
-                    LetterheadImageJournalId = table.Column<int>(type: "INTEGER", nullable: true),
+                    ConfigType = table.Column<int>(type: "INTEGER", nullable: false),
+                    AccountantSignCreateDateJournalId = table.Column<int>(type: "INTEGER", nullable: false),
                     CreateDate = table.Column<DateTime>(type: "TEXT", nullable: false),
                     UpdateDate = table.Column<DateTime>(type: "TEXT", nullable: false),
                     CreateUserId = table.Column<int>(type: "INTEGER", nullable: false),
                     UpdateUserId = table.Column<int>(type: "INTEGER", nullable: false),
                     DeleteStatus = table.Column<byte>(type: "INTEGER", nullable: false),
-                    ReviewUserId = table.Column<int>(type: "INTEGER", nullable: true),
-                    ReviewDate = table.Column<DateTime>(type: "TEXT", nullable: true),
-                    StartDate = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    EndDate = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    ReviewStatus = table.Column<sbyte>(type: "INTEGER", nullable: false)
+                    ImagePath = table.Column<string>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_SealReviewJournals", x => x.Id);
+                    table.PrimaryKey("PK_AccountantSignJournals", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_SealReviewJournals_AccountantSignJournals_AccountantSignJournalId",
-                        column: x => x.AccountantSignJournalId,
-                        principalTable: "AccountantSignJournals",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_SealReviewJournals_CustomerSealJournals_CustomerSealJournalId",
-                        column: x => x.CustomerSealJournalId,
-                        principalTable: "CustomerSealJournals",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_SealReviewJournals_LetterheadImageJournals_LetterheadImageJournalId",
-                        column: x => x.LetterheadImageJournalId,
-                        principalTable: "LetterheadImageJournals",
-                        principalColumn: "Id");
-                });
-
-            migrationBuilder.CreateTable(
-                name: "AccountantSignLocaltions",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    AccountantSignJournalId = table.Column<int>(type: "INTEGER", nullable: false),
-                    CreateDate = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    UpdateDate = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    CreateUserId = table.Column<int>(type: "INTEGER", nullable: false),
-                    UpdateUserId = table.Column<int>(type: "INTEGER", nullable: false),
-                    DeleteStatus = table.Column<byte>(type: "INTEGER", nullable: false),
-                    Top = table.Column<float>(type: "REAL", nullable: false),
-                    Left = table.Column<float>(type: "REAL", nullable: false),
-                    Width = table.Column<int>(type: "INTEGER", nullable: false),
-                    Height = table.Column<int>(type: "INTEGER", nullable: false),
-                    TypographicPageId = table.Column<int>(type: "INTEGER", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_AccountantSignLocaltions", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_AccountantSignLocaltions_AccountantSignJournals_AccountantSignJournalId",
-                        column: x => x.AccountantSignJournalId,
-                        principalTable: "AccountantSignJournals",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_AccountantSignLocaltions_TypographicPages_TypographicPageId",
-                        column: x => x.TypographicPageId,
-                        principalTable: "TypographicPages",
+                        name: "FK_AccountantSignJournals_AccountantSignCreateDateJournals_AccountantSignCreateDateJournalId",
+                        column: x => x.AccountantSignCreateDateJournalId,
+                        principalTable: "AccountantSignCreateDateJournals",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -427,6 +379,41 @@ namespace SealTypographicWebAPI.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "AccountantSignLocaltions",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    AccountantSignJournalId = table.Column<int>(type: "INTEGER", nullable: false),
+                    CreateDate = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    UpdateDate = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    CreateUserId = table.Column<int>(type: "INTEGER", nullable: false),
+                    UpdateUserId = table.Column<int>(type: "INTEGER", nullable: false),
+                    DeleteStatus = table.Column<byte>(type: "INTEGER", nullable: false),
+                    Top = table.Column<float>(type: "REAL", nullable: false),
+                    Left = table.Column<float>(type: "REAL", nullable: false),
+                    Width = table.Column<int>(type: "INTEGER", nullable: false),
+                    Height = table.Column<int>(type: "INTEGER", nullable: false),
+                    TypographicPageId = table.Column<int>(type: "INTEGER", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AccountantSignLocaltions", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_AccountantSignLocaltions_AccountantSignJournals_AccountantSignJournalId",
+                        column: x => x.AccountantSignJournalId,
+                        principalTable: "AccountantSignJournals",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_AccountantSignLocaltions_TypographicPages_TypographicPageId",
+                        column: x => x.TypographicPageId,
+                        principalTable: "TypographicPages",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.InsertData(
                 table: "AccountantGroups",
                 columns: new[] { "Id", "AccountantGroupNumber", "CreateDate", "CreateUserId", "DeleteStatus", "Name", "UpdateDate", "UpdateUserId" },
@@ -438,9 +425,14 @@ namespace SealTypographicWebAPI.Migrations
                 column: "AccountantGroupId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_AccountantSignJournals_AccountantId",
-                table: "AccountantSignJournals",
+                name: "IX_AccountantSignCreateDateJournals_AccountantId",
+                table: "AccountantSignCreateDateJournals",
                 column: "AccountantId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AccountantSignJournals_AccountantSignCreateDateJournalId",
+                table: "AccountantSignJournals",
+                column: "AccountantSignCreateDateJournalId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_AccountantSignLocaltions_AccountantSignJournalId",
@@ -488,22 +480,6 @@ namespace SealTypographicWebAPI.Migrations
                 column: "TypographicPageId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_SealReviewJournals_AccountantSignJournalId",
-                table: "SealReviewJournals",
-                column: "AccountantSignJournalId",
-                unique: true);
-
-            migrationBuilder.CreateIndex(
-                name: "IX_SealReviewJournals_CustomerSealJournalId",
-                table: "SealReviewJournals",
-                column: "CustomerSealJournalId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_SealReviewJournals_LetterheadImageJournalId",
-                table: "SealReviewJournals",
-                column: "LetterheadImageJournalId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_TypographicPages_TypographicPDFId",
                 table: "TypographicPages",
                 column: "TypographicPDFId");
@@ -526,13 +502,7 @@ namespace SealTypographicWebAPI.Migrations
                 name: "LetterheadImageLocaltions");
 
             migrationBuilder.DropTable(
-                name: "SealReviewJournals");
-
-            migrationBuilder.DropTable(
                 name: "Users");
-
-            migrationBuilder.DropTable(
-                name: "TypographicPages");
 
             migrationBuilder.DropTable(
                 name: "AccountantSignJournals");
@@ -544,10 +514,10 @@ namespace SealTypographicWebAPI.Migrations
                 name: "LetterheadImageJournals");
 
             migrationBuilder.DropTable(
-                name: "TypographicPDFs");
+                name: "TypographicPages");
 
             migrationBuilder.DropTable(
-                name: "Accountants");
+                name: "AccountantSignCreateDateJournals");
 
             migrationBuilder.DropTable(
                 name: "CustomerSealQuarterJournals");
@@ -556,10 +526,16 @@ namespace SealTypographicWebAPI.Migrations
                 name: "Letterheads");
 
             migrationBuilder.DropTable(
-                name: "AccountantGroups");
+                name: "TypographicPDFs");
+
+            migrationBuilder.DropTable(
+                name: "Accountants");
 
             migrationBuilder.DropTable(
                 name: "Customers");
+
+            migrationBuilder.DropTable(
+                name: "AccountantGroups");
         }
     }
 }

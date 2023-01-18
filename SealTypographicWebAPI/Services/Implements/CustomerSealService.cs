@@ -46,7 +46,7 @@ namespace SealTypographicWebAPI.Services.Implements
                 Quarters = dbContext.CustomerSealQuarterJournals.Where
                             (
                                 customerSealQuarterJournal => customerSealQuarterJournal.Customer.Id == customerId
-                                && customerSealQuarterJournal.ReviewStatus <= ReviewStatus.Pending
+                                && customerSealQuarterJournal.ReviewStatus <= ReviewStatus.Reject
                                 && customerSealQuarterJournal.DeleteStatus == DeleteStatus.No
                             )
                             .Select(customerSealQuarterJournal => new CustomerSealQuarterView()
@@ -56,9 +56,6 @@ namespace SealTypographicWebAPI.Services.Implements
                                 ReviewStatus = customerSealQuarterJournal.ReviewStatus
                             })
                             .OrderByDescending(customerSealQuarterJournal => customerSealQuarterJournal.Quarter)
-                            //.GroupBy(customerSealQuarterView => customerSealQuarterView.Quarter)
-                            //.OrderByDescending(g => g.Key)
-                            //.Select(customerSealQuarter => customerSealQuarter.First())
                             .ToList()
             };
 
@@ -94,7 +91,7 @@ namespace SealTypographicWebAPI.Services.Implements
                                                                             && customerSealQuarterJournal.Quarter == customerSealQuarter.Quarter
                                                                             //&& customerSealQuarterJournal.Id = customerSealQuarter.Id
                                                                             && customerSealQuarterJournal.DeleteStatus == DeleteStatus.No
-                                                                            && customerSealQuarterJournal.ReviewStatus <= ReviewStatus.Pending
+                                                                            && customerSealQuarterJournal.ReviewStatus <= ReviewStatus.Reject
                                                                         );  
                                                                                                                                                                                                         
 
@@ -129,12 +126,13 @@ namespace SealTypographicWebAPI.Services.Implements
             int userId = 0; //以後從帳號驗證取得Id
 
 
-            Customer? customerQuery = dbContext.Customers.Include(x => x.CustomerSealQuarterJournals)
+            Customer? customerQuery = dbContext.Customers.Include(customer => customer.CustomerSealQuarterJournals)
                                        .FirstOrDefault(x => x.Id == customerSealForms.CustomerId);            
 
             if (customerQuery != null)
             {
-                CustomerSealQuarterJournal? sealQuarterJournalQuery = customerQuery.CustomerSealQuarterJournals.FirstOrDefault(x => x.Quarter == customerSealForms.Quarter);
+                CustomerSealQuarterJournal? sealQuarterJournalQuery = customerQuery.CustomerSealQuarterJournals
+                                                                    .FirstOrDefault(customerSealQuarterJournal => customerSealQuarterJournal.Quarter == customerSealForms.Quarter);
 
                 if (sealQuarterJournalQuery == null)
                 {
@@ -149,7 +147,6 @@ namespace SealTypographicWebAPI.Services.Implements
                     customerSealQuarterJournal.Quarter = customerSealForms.Quarter;                    
                     BaseInputQuarterJournal(customerSealQuarterJournal, true, userId);
                     
-
                     foreach (CustomerSeal customerSeal in customerSealForms.Seals)
                     {
                         CustomerSealJournal customerSealJournal = new()
@@ -201,8 +198,10 @@ namespace SealTypographicWebAPI.Services.Implements
                 SealType = SealType.Customer
             };
 
+            List<int> updateCustomerSealIds = customerSealUpdate.UpdateCustomerSeals.Select(x => x.Id).ToList();
+
             CustomerSealQuarterJournal? customerSealQuarterQuery = dbContext.CustomerSealQuarterJournals
-                                                                    .Include( customerSealQuarterJournal => customerSealQuarterJournal.CustomerSealJournals)
+                                                                    .Include(customerSealQuarterJournal => customerSealQuarterJournal.CustomerSealJournals)
                                                                     .FirstOrDefault
                                                                     (
                                                                         customerSealQuarterJournal => customerSealQuarterJournal.Quarter == customerSealUpdate.Quarter
@@ -211,11 +210,11 @@ namespace SealTypographicWebAPI.Services.Implements
             if(customerSealQuarterQuery != null)
             {
                 //刪除印鑑
-                foreach (int sealReviewId in customerSealUpdate.DeleteCustomerSealIds)
+                foreach (int deleteSealId in customerSealUpdate.DeleteCustomerSealIds)
                 {
                     CustomerSealJournal? deleteSealQuery = dbContext.CustomerSealJournals.FirstOrDefault
                                                             (
-                                                                customerSealJournal => customerSealJournal.Id == sealReviewId
+                                                                customerSealJournal => customerSealJournal.Id == deleteSealId
                                                                 && customerSealJournal.DeleteStatus == DeleteStatus.No
                                                             );
                     if (deleteSealQuery != null)
@@ -228,10 +227,11 @@ namespace SealTypographicWebAPI.Services.Implements
                     {
                         ResponseViewModel response = new();
                         response.DeleteCustomerNoData();
-                        response.ErrorItem = "Delete CustomerSealId:" + sealReviewId;
+                        response.ErrorItem = $"Delete CustomerSealId:{deleteSealId}";
                         responseViewModels.Add(response);
                     }
                 }
+
                 //修改印鑑
                 foreach (CustomerSealUpdateForm customerSealFormUpdate in customerSealUpdate.UpdateCustomerSeals)
                 {
@@ -269,7 +269,7 @@ namespace SealTypographicWebAPI.Services.Implements
                     {
                         ResponseViewModel response = new();
                         response.UpdateCustomerSealNoData();
-                        response.ErrorItem = "Update CustomerSealId:" + customerSealFormUpdate.Id;
+                        response.ErrorItem = $"Update CustomerSealId:{customerSealFormUpdate.Id}";
                         responseViewModels.Add(response);
                     }
                 }
@@ -284,8 +284,7 @@ namespace SealTypographicWebAPI.Services.Implements
                         SealMappingConfigId = createCustomerSeal.SealMappingConfigId,
                         Sequence = createCustomerSeal.Sequence,
                     };
-
-                    List<int> updateCustomerSealIds = customerSealUpdate.UpdateCustomerSeals.Select(x => x.Id).ToList();
+                    
 
                     if (!CheckRepeatSequence(customerSealSequenceCheck, customerSealUpdate.DeleteCustomerSealIds, updateCustomerSealIds)) //確認序號是否重複
                     {
@@ -308,9 +307,8 @@ namespace SealTypographicWebAPI.Services.Implements
                     {
                         ResponseViewModel response = new();
                         response.CreateCustomerSealSequenceRepeat();
-                        response.ErrorItem = "New CustomerId:" + customerSealUpdate.CustomerId
-                                           + " SealMappingConfigId:" + createCustomerSeal.SealMappingConfigId
-                                           + " Sequence:" + createCustomerSeal.Sequence;
+                        response.ErrorItem = $"New SealMappingConfigId:{createCustomerSeal.SealMappingConfigId} " +
+                                             $"Sequence:{ createCustomerSeal.Sequence}";
                         responseViewModels.Add(response);
                     }
                 }
@@ -398,7 +396,7 @@ namespace SealTypographicWebAPI.Services.Implements
         /// </summary>
         /// <param name="customerSealSequenceCheck">查詢參數</param>
         /// <param name="deleteCustomerSealIds">異動中刪除的印鑑Id</param>
-        /// <param name="updateCustomerSealIds">異動中更新的印鑑Id(也會被標上刪除)</param>
+        /// <param name="updateCustomerSealIds">異動中更新的印鑑Id(也會標上刪除)</param>
         /// <returns></returns>
         private bool CheckRepeatSequence(CustomerSealSequenceCheck customerSealSequenceCheck, List<int> deleteCustomerSealIds, List<int> updateCustomerSealIds)
         {
@@ -428,7 +426,8 @@ namespace SealTypographicWebAPI.Services.Implements
             CustomerSealQuarterJournal? customerSealQuarterQuery = dbContext.CustomerSealQuarterJournals                                                                    
                                                                     .FirstOrDefault
                                                                     (
-                                                                        customerSealQuarterJournal => customerSealQuarterJournal.Customer.Id == customerSealQuarter.CustomerId
+                                                                        customerSealQuarterJournal => 
+                                                                        customerSealQuarterJournal.Customer.Id == customerSealQuarter.CustomerId
                                                                         && customerSealQuarterJournal.Quarter == customerSealQuarter.Quarter
                                                                         && customerSealQuarterJournal.ReviewStatus == ReviewStatus.Draft
                                                                     );

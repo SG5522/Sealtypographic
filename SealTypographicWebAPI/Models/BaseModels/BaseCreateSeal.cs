@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 namespace SealTypographicWebAPI.Models.BaseModels
 {
     /// <summary>
-    /// 印鑑
+    /// 新增客戶印鑑、會計師簽印時所需要的base64圖片資料
     /// </summary>
     public class BaseCreateSeal
     {

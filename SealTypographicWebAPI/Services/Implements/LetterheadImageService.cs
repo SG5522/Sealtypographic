@@ -75,7 +75,7 @@ namespace SealTypographicWebAPI.Services.Implements
         /// </summary>
         /// <param name="id">信頭圖片Id</param>
         /// <returns></returns>
-        public LetterheadImageViewModel GetImageViewModel (int id)
+        public LetterheadImageViewModel GetImageViewModel(int id)
         {
             LetterheadImageViewModel letterheadImageViewModels = new()
             {                
@@ -181,7 +181,7 @@ namespace SealTypographicWebAPI.Services.Implements
             else
             {                
                 response.UpdateAccountantSignNoData();
-                response.ErrorItem = "Update updateLetterheadImageId: " + letterheadImageUpdate.Id;                
+                response.ErrorItem = $"Update updateLetterheadImageId:{letterheadImageUpdate.Id}";
             }
             
             return response;

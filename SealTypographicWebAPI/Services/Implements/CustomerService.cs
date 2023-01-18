@@ -78,18 +78,14 @@ namespace SealTypographicWebAPI.Services.Implements
                                           .Take(customerSearch.PageSize)                                   
                                           .ToList();
                 
-                foreach (Customer customerBase in pageNumberCustomers)
+                foreach (Customer customer in pageNumberCustomers)
                 {
-                    CustomerViewModel customerViewModel = mapper.Map<CustomerViewModel>(customerBase);
-                    
-                    string? quarter = dbContext.CustomerSealQuarterJournals
-                                    .Where(x => x.Customer.Id == customerBase.Id)
-                                    .Max(x => x.Quarter);
+                    CustomerViewModel customerViewModel = mapper.Map<CustomerViewModel>(customer);
 
-                    if (quarter != null)
-                    {
-                        customerViewModel.Quarter = quarter;
-                    }
+                    customerViewModel.Quarter = dbContext.CustomerSealQuarterJournals
+                                                .Where(x => x.Customer.Id == customer.Id)
+                                                .Max(x => x.Quarter);
+
                     customerPaginateViewModel.ViewModels.Add(customerViewModel);                    
                 }                
                 customerPaginateViewModel.PageNumber = customerSearch.PageNumber;

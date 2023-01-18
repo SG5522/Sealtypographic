@@ -3,7 +3,7 @@
 namespace SealTypographicWebAPI.Models.BaseModels
 {
     /// <summary>
-    /// 新增更新資料時會填入的資料
+    /// 新增客戶、會計師、會計師群組時填入的名稱
     /// </summary>
     public class BaseCreateName
     {

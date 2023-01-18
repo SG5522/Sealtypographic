@@ -3,7 +3,7 @@
 namespace SealTypographicWebAPI.Models.BaseModels
 {
     /// <summary>
-    /// 印鑑
+    /// 更新客戶印鑑、會計師簽印、信頭圖片的基本資料
     /// </summary>
     public class BaseUpdateSeal : BaseData
     {

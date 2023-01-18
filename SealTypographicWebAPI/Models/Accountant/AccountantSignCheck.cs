@@ -9,18 +9,14 @@ namespace SealTypographicWebAPI.Models.Accountant
     public class AccountantSignCheck
     {
         /// <summary>
-        /// 客戶ID
-        /// </summary>
-        public int AccountantId { get; set; }
-
-        /// <summary>
         /// 會計師簽印類別 
         /// </summary>
         public AccountantSignType SealMappingConfigId { get; set; }
 
         /// <summary>
-        /// 啟用日期
+        /// 會計師簽印建立日期Id
         /// </summary>
-        public DateTime GroupCreateDate { get; set; }
+        public int AccountantSignCreateDateJournalId { get; set; }
+
     }
 }

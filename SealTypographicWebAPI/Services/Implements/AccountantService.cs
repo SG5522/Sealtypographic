@@ -58,10 +58,11 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <returns></returns>
         public AccountantPaginateViewModel GetPaginate(AccountantSearch accountantSearch)
         {
-            AccountantPaginateViewModel accountantPaginatesViewModels = new();            
+            AccountantPaginateViewModel accountantPaginatesViewModels = new();
 
-            IQueryable<Accountant> accountantQuery = dbContext.Accountants.Where(accountant => accountant.DeleteStatus == DeleteStatus.No)
-                                                    .Include(accountant => accountant.AccountantSignJournals);
+            IQueryable<Accountant> accountantQuery = dbContext.Accountants.Include(accountant => accountant.AccountantSignCreateDateJournals)
+                                                    .Where(accountant => accountant.DeleteStatus == DeleteStatus.No);     
+            
             if (!string.IsNullOrWhiteSpace(accountantSearch.NumberOrNameOrGroupsName))
             {
                 accountantQuery = accountantQuery.Where
@@ -86,12 +87,12 @@ namespace SealTypographicWebAPI.Services.Implements
                 {
                     AccountantViewModelWithCreateDate accountantPaginatesViewModel = mapper.Map<AccountantViewModelWithCreateDate>(accountant);
 
-                    if (accountant.AccountantSignJournals.Count > 0)
+                    if(accountant.AccountantSignCreateDateJournals.Count > 0)
                     {
-                        accountantPaginatesViewModel.GroupCreateDate = dbContext.SealReviewJournals
-                                                                        .Where(x => x.AccountantSignJournal.AccountantId == accountant.Id)
-                                                                        .Max(x => x.CreateDate);
+                        accountantPaginatesViewModel.GroupCreateDate = accountant.AccountantSignCreateDateJournals
+                                                                    .Max(x => x.CreateDate);
                     }
+                   
                     accountantPaginatesViewModels.ViewModels.Add(accountantPaginatesViewModel);                    
                 }                
                 accountantPaginatesViewModels.PageNumber= accountantSearch.PageNumber;

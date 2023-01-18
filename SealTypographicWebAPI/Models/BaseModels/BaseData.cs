@@ -3,7 +3,7 @@
 namespace SealTypographicWebAPI.Models.BaseModels
 {
     /// <summary>
-    /// 更新資料時會填入的資料
+    /// 各項目搜尋或更新時需要的基本資料
     /// </summary>
     public class BaseData
     {

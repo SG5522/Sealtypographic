@@ -20,6 +20,13 @@ namespace SealTypographicWebAPI.Models.Accountant
     public class AccountantSignViewModels : ResponseViewModel
     {
         /// <summary>
+        /// new SignViewModels
+        /// </summary>
+        public AccountantSignViewModels()
+        {
+            SignViewModels = new();
+        }
+        /// <summary>
         /// 會計師ID
         /// </summary>
         public int AccountantId { get; set; }

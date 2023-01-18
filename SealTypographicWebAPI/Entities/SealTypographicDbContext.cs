@@ -14,11 +14,6 @@ namespace SealTypographicWebAPI.Entities
         public DbSet<Customer> Customers { get; set; }
 
         /// <summary>
-        /// 印鑑審查歷程資料表
-        /// </summary>
-        public DbSet<SealReviewJournal> SealReviewJournals { get; set; }
-
-        /// <summary>
         /// 客戶印鑑歷程資料表
         /// </summary>
         public DbSet<CustomerSealJournal> CustomerSealJournals { get; set; }
@@ -39,9 +34,14 @@ namespace SealTypographicWebAPI.Entities
         public DbSet<AccountantGroup> AccountantGroups { get; set; }
 
         /// <summary>
-        /// 會計師印鑑簽名組歷程資料表
+        /// 會計師簽印歷程表
         /// </summary>
         public DbSet<AccountantSignJournal> AccountantSignJournals { get; set; }
+
+        /// <summary>
+        /// 會計師簽印建立日期歷程表
+        /// </summary>
+        public DbSet<AccountantSignCreateDateJournal> AccountantSignCreateDateJournals { get; set; }
 
         /// <summary>
         /// 事務所信頭資料表

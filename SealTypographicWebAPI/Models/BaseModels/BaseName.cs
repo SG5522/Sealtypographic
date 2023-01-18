@@ -1,7 +1,7 @@
 ﻿namespace SealTypographicWebAPI.Models.BaseModels
 {
     /// <summary>
-    /// 新增更新資料時會填入的資料
+    /// 需要使用到Name使用的基本資料
     /// </summary>
     public class BaseName : BaseData
     {

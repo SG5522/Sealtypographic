@@ -32,7 +32,7 @@ namespace SealTypographicWebAPI.Models.Accountant
         /// <summary>
         /// 更新會計師簽印列表
         /// </summary>
-        public List<AccountantSignForm> CreateAccountantSigns { get; set; }
+        public List<AccountantSign> CreateAccountantSigns { get; set; }
 
     }
 }

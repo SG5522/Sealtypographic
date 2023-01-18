@@ -31,7 +31,7 @@ namespace SealTypographicWebAPI.Config
                     .ForMember(x => x.ImageBase64, y => y.Ignore()) // <---imagebase64要額外處理所以要忽略
                     .ReverseMap();
 
-            CreateMap<SealReviewJournal, CustomerSealViewModel>()
+            CreateMap<AccountantSignCreateDateJournal, CustomerSealViewModel>()
                     .ForMember(x => x.ImageBase64, y => y.Ignore()) // <---imagebase64要額外處理所以要忽略
                     .ReverseMap();
 
@@ -39,7 +39,7 @@ namespace SealTypographicWebAPI.Config
                     .ForMember(x => x.ImagePath, y => y.Ignore()) // <---ImagePath要額外處理所以要忽略
                     .ReverseMap();
 
-            CreateMap<CustomerSeal, SealReviewJournal>();                    
+            CreateMap<CustomerSeal, AccountantSignCreateDateJournal>();                    
 
             CreateMap<CustomerSealUpdateForm, CustomerSealJournal>()
                     .ForMember(x => x.ImagePath, y => y.Ignore()) // <---ImagePath要額外處理所以要忽略
@@ -92,9 +92,9 @@ namespace SealTypographicWebAPI.Config
                     .ForMember(x => x.ImageBase64, y => y.Ignore()) // <---imagebase64要額外處理所以要忽略
                     .ReverseMap();
 
-            CreateMap<SealReviewJournal, AccountantSignViewModel>();
+            CreateMap<AccountantSignCreateDateJournal, AccountantSignViewModel>();
 
-            CreateMap<AccountantSignForm, AccountantSignJournal>()
+            CreateMap<AccountantSign, AccountantSignJournal>()
                     .ForMember(x => x.ImagePath, y => y.Ignore()) // <---imagebase64要額外處理所以要忽略
                     .ReverseMap();
             
@@ -102,18 +102,12 @@ namespace SealTypographicWebAPI.Config
                     .ForMember(x => x.ImagePath, y => y.Ignore()) // <---imagebase64要額外處理所以要忽略
                     .ReverseMap();
             //會計師簽名重複確認用
-            CreateMap<AccountantSignForm, AccountantSignCheck>();
+            CreateMap<AccountantSign, AccountantSignCheck>();
             CreateMap<AccountantSignFormUpdate, AccountantSignCheck>();
 
             //信頭基本資料
-            CreateMap<Letterhead, LetterheadViewModel>();
+            CreateMap<Letterhead, LetterheadViewModel>();            
 
-            CreateMap<LetterheadFormUpdate, Letterhead>();
-
-            //信頭圖片
-            CreateMap<LetterheadImageFormUpdate, LetterheadImageJournal>()
-                    .ForMember(x => x.ImageFullPath, y => y.Ignore()) // <---ImagePath要額外處理所以要忽略
-                    .ReverseMap();
 
             //PDF排版資訊
             CreateMap<TypographicPDFForm, TypographicPDF>()
