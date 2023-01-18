@@ -3,7 +3,7 @@
 namespace SealTypographicWebAPI.Entities.BaseEntities
 {
     /// <summary>
-    /// 各類別基本資料
+    /// 客戶印鑑季度、會計師簽印審核基本資料
     /// </summary>
     public class BaseReviewData : BaseData
     {

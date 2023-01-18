@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations;
 namespace SealTypographicWebAPI.Models.Letterhead
 {
     /// <summary>
-    /// 更新信頭圖片組資料
+    /// 異動信頭圖片資料
     /// </summary>
     public class LetterheadImageUpdate : BaseUpdateSeal
     {

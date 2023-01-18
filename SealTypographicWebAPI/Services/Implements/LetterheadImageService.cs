@@ -34,55 +34,59 @@ namespace SealTypographicWebAPI.Services.Implements
         }
 
         /// <summary>
-        /// 取得信頭圖片群組創建日期列表
+        /// 取得信頭圖片建立日期
         /// </summary>
         /// <param name="letterheadId">信頭Id</param>
         /// <returns></returns>
-        public LetterheadCreateDateViews GetCreateDate(int letterheadId)
+        public LetterheadImageCreateDateViews GetCreateDates(int letterheadId)
         {
-            LetterheadCreateDateViews letterheadGroupCreateDateViews = new();
-            List<LetterheadImageCreateDateView> groupCreateDateViews = dbContext.LetterheadImageJournals
-                                                                            .Include(x => x.Letterhead)
-                                                                           .Where
-                                                                           (
-                                                                                letterheadImageCreateJournal => letterheadImageCreateJournal.Letterhead.Id == letterheadId
-                                                                                && letterheadImageCreateJournal.DeleteStatus == DeleteStatus.NO
-                                                                           )
-                                                                           .Select(letterheadImageJournal => new LetterheadImageCreateDateView()
-                                                                           {
-                                                                               LetterheadImageId = letterheadImageJournal.Id,
-                                                                               GroupCreateDate = letterheadImageJournal.CreateDate,
-                                                                               Status = EnumExtenstionUtil.GetDescription(letterheadImageJournal.Status)
-                                                                           })
-                                                                           .OrderBy(x => x.LetterheadImageId)
-                                                                           .ToList();
-
-            if (groupCreateDateViews.Any())
+            LetterheadImageCreateDateViews letterheadImageCreateDateViews = new()
             {
-                letterheadGroupCreateDateViews.LetterheadId = letterheadId;
-                letterheadGroupCreateDateViews.GroupCreateDateViews = groupCreateDateViews;
-                letterheadGroupCreateDateViews.Success();
+                CreateDateViews = dbContext.LetterheadImageJournals
+                                    .Include(x => x.Letterhead)
+                                    .Where
+                                    (
+                                        letterheadImageCreateJournal => letterheadImageCreateJournal.Letterhead.Id == letterheadId
+                                        && letterheadImageCreateJournal.DeleteStatus == DeleteStatus.No
+                                    )
+                                    .Select(letterheadImageJournal => new LetterheadImageCreateDateView()
+                                    {
+                                        Id = letterheadImageJournal.Id,
+                                        GroupCreateDate = letterheadImageJournal.CreateDate,
+                                        Status = EnumExtenstionUtil.GetDescription(letterheadImageJournal.Status)
+                                    })
+                                    .OrderByDescending(x => x.Id)
+                                    .ToList()
+            };
+
+            if (letterheadImageCreateDateViews.CreateDateViews.Any())
+            {                                
+                letterheadImageCreateDateViews.Success();
             }
             else
             {
-                letterheadGroupCreateDateViews.LetterheadImageNoData();
+                letterheadImageCreateDateViews.LetterheadImageNoData();
             }
-            return letterheadGroupCreateDateViews;
+            return letterheadImageCreateDateViews;
         }
 
         /// <summary>
         /// 取得信頭圖片
         /// </summary>
-        /// <param name="letterheadImageSearch">搜尋條件</param>
+        /// <param name="id">信頭圖片Id</param>
         /// <returns></returns>
-        public LetterheadImageViewModel GetImage (LetterheadImageSearch letterheadImageSearch)
+        public LetterheadImageViewModel GetImageViewModel (int id)
         {
             LetterheadImageViewModel letterheadImageViewModels = new()
             {                
-                LetterheadImageId = letterheadImageSearch.LetterheadImageId,
+                Id = id,
             };
 
-            LetterheadImageJournal? letterheadImageJournalQuery = dbContext.LetterheadImageJournals.Find(letterheadImageSearch.LetterheadImageId);      
+            LetterheadImageJournal? letterheadImageJournalQuery = dbContext.LetterheadImageJournals.FirstOrDefault
+                                                                    (
+                                                                        x => x.Id == id
+                                                                        && x.DeleteStatus == DeleteStatus.No                    
+                                                                    );      
                 
             if (letterheadImageJournalQuery != null)
             {                                
@@ -98,11 +102,11 @@ namespace SealTypographicWebAPI.Services.Implements
         }
 
         /// <summary>
-        /// 新增圖片組
+        /// 新增信頭圖片
         /// </summary>
-        /// <param name="letterheadImageForms">信頭圖片組</param>
+        /// <param name="letterheadImageForms">信頭圖片</param>
         /// <returns></returns>
-        public ResponseViewModel Create(LetterheadImageForms letterheadImageForms)
+        public ResponseViewModel New(LetterheadImageForm letterheadImageForms)
         {
             ResponseViewModel response = new();
             //DateTime createNowTime = DateTime.Now;//建立日期            
@@ -136,9 +140,9 @@ namespace SealTypographicWebAPI.Services.Implements
         }
 
         /// <summary>
-        /// 異動會計師簽印的處理(審查狀態退回或是草稿才進行修改)
+        /// 異動信頭圖片
         /// </summary>
-        /// <param name="letterheadImageUpdate">刪除修改新增的list</param>
+        /// <param name="letterheadImageUpdate">異動信頭圖片資料</param>
         /// <returns></returns>
         public ResponseViewModel Update(LetterheadImageUpdate letterheadImageUpdate)
         {
@@ -196,7 +200,7 @@ namespace SealTypographicWebAPI.Services.Implements
             {
                 letterheadImageJournal.CreateUserId = userId;
                 letterheadImageJournal.CreateDate = DateTime.Now;
-                letterheadImageJournal.DeleteStatus = DeleteStatus.NO;
+                letterheadImageJournal.DeleteStatus = DeleteStatus.No;
                 letterheadImageJournal.Status = LetterheadImageStatus.Enable;
             }
             else
@@ -213,7 +217,7 @@ namespace SealTypographicWebAPI.Services.Implements
             {
                 letterhead.CreateUserId = userid;
                 letterhead.CreateDate = DateTime.Now;
-                letterhead.DeleteStatus = DeleteStatus.NO;
+                letterhead.DeleteStatus = DeleteStatus.No;
             }
             else
             {

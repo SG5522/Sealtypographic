@@ -51,11 +51,12 @@ namespace SealTypographicWebAPI.Config
                              
 
             //客戶印鑑審核
-            CreateMap<CustomerSealJournal, CustomerSealReviewViewModel>()
+            CreateMap<CustomerSealQuarterJournal, CustomerSealQuarterViewModel>()
                     .ForMember(x => x.Id, y => y.MapFrom(o => o.Customer.Id))
                     .ForMember(x => x.Name, y => y.MapFrom(o => o.Customer.Name))
-                    .ForMember(x => x.CustomerNumber, y => y.MapFrom(o => o.Customer.Code))
-                    .ForMember(x => x.BAN, y => y.MapFrom(o => o.Customer.BAN))
+                    .ForMember(x => x.Code, y => y.MapFrom(o => o.Customer.Code))
+                    .ForMember(x => x.Quarter, y => y.MapFrom(o => o.Quarter))
+                    .ForMember(x => x.ReviewStatus, y => y.MapFrom(o => o.ReviewStatus))
                     .ReverseMap();
 
             CreateMap<Customer, CustomerSealReviewDetail>();
@@ -110,11 +111,6 @@ namespace SealTypographicWebAPI.Config
             CreateMap<LetterheadFormUpdate, Letterhead>();
 
             //信頭圖片
-
-            CreateMap<LetterheadImageForm, LetterheadImageJournal>()
-                    .ForMember(x => x.ImageFullPath, y => y.Ignore()) // <---imagebase64要額外處理所以要忽略
-                    .ReverseMap();
-
             CreateMap<LetterheadImageFormUpdate, LetterheadImageJournal>()
                     .ForMember(x => x.ImageFullPath, y => y.Ignore()) // <---ImagePath要額外處理所以要忽略
                     .ReverseMap();

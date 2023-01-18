@@ -13,7 +13,7 @@ namespace SealTypographicWebAPI.Models.Letterhead
         /// </summary>
         /// <example>1</example>
         [Required]
-        public int LetterheadImageId { get; set; }
+        public int Id { get; set; }
 
         /// <summary>
         /// 群組創建日期
@@ -32,18 +32,11 @@ namespace SealTypographicWebAPI.Models.Letterhead
     /// <summary>
     /// 信頭圖片群組創建日期列表
     /// </summary>
-    public class LetterheadCreateDateViews : ResponseViewModel
+    public class LetterheadImageCreateDateViews : ResponseViewModel
     {
-        /// <summary>
-        /// 信頭Id
-        /// </summary>
-        /// <example>1</example>
-        [Required]
-        public int LetterheadId { get; set; }
-
         /// <summary>
         /// 信頭圖片創建日期搜尋表
         /// </summary>
-        public List<LetterheadImageCreateDateView> GroupCreateDateViews { get; set; }
+        public List<LetterheadImageCreateDateView> CreateDateViews { get; set; }
     }
 }

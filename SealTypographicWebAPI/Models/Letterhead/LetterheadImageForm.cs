@@ -7,14 +7,7 @@ namespace SealTypographicWebAPI.Models.Letterhead
     /// <summary>
     /// 信頭圖片
     /// </summary>
-    public class LetterheadImageForm : BaseCreateSeal
-    {
-
-    }
-    /// <summary>
-    /// 信頭圖片組
-    /// </summary>
-    public class LetterheadImageForms
+    public class LetterheadImageForm
     {
         /// <summary>
         /// 信頭名稱

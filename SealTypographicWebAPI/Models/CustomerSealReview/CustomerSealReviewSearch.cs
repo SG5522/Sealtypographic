@@ -14,5 +14,10 @@ namespace SealTypographicWebAPI.Models.CustomerSealReview
         /// </summary>
         /// <example>AAA001 or 公司</example>
         public string? CustomerNumberOrName { get; set; }
+
+        /// <summary>
+        /// 審查狀態
+        /// </summary>
+        public ReviewStatus ReviewStatus { get; set; }
     }
 }

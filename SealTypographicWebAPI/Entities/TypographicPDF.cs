@@ -28,7 +28,7 @@ namespace SealTypographicWebAPI.Entities
         public int CustomerId { get; set; }
 
         /// <summary>
-        /// 顧客
+        /// 客戶
         /// </summary>
         public Customer Customer { get; set; }
 

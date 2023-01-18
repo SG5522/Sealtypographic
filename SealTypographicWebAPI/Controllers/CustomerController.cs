@@ -9,89 +9,88 @@ namespace SealTypographicWebAPI.Controllers
     /// <summary>
     /// 管理客戶基本資料
     /// </summary>
-    [Route("api/[controller]")]
-    [Produces("application/json")]
+    [Route("api/[controller]")]    
     [ApiController]
     public class CustomerController : ControllerBase
-    {        
+    {
         /// <summary>
-        /// 宣告顧客資料處理的interface
+        /// 管理客戶資料的Service
         /// </summary>
-        protected readonly ICustomerService customerService;
+        private readonly ICustomerService customerService;
 
         /// <summary>
-        /// 注入Service
+        /// 建構:注入Service
         /// </summary>
-        /// <param name="customerService">管理客戶資料</param>
+        /// <param name="customerService">管理客戶資料的Service</param>
         public CustomerController(ICustomerService customerService)
         {
             this.customerService = customerService;                        
         }
 
         /// <summary>
-        /// 依搜尋條件獲得客戶資料列表
+        /// 取得客戶資料列表(分頁)
         /// </summary>
-        /// <param name="customerQuery">客戶分頁搜尋</param>        
+        /// <param name="customerSearch">客戶分頁搜尋</param>        
         /// <returns></returns>
         [HttpGet]        
-        public CustomerPaginateViewModel Get([FromQuery]CustomerSearch customerQuery)
+        public CustomerPaginateViewModel Paginate([FromQuery]CustomerSearch customerSearch)
         {
-            CustomerPaginateViewModel customerResponsePage = new ();
+            CustomerPaginateViewModel customerPaginateViewModel = new ();
             try
             {
-                Log.Information("Other get FromQuery input {@Input}", customerQuery);
-                customerResponsePage = customerService.GetPaginate(customerQuery);
-                Log.Information("Other get FromQuery output {@Output}", customerResponsePage);
+                Log.Information("Customer get paginate input {@Input}", customerSearch);
+                customerPaginateViewModel = customerService.GetPaginate(customerSearch);
+                Log.Information("Customer get paginate output {@Output}", customerPaginateViewModel);
             }
             catch (Exception ex)
             {
-                Log.Error("Other get FromQuery error {@Error}", ex);                
-                customerResponsePage.DbError();                
+                Log.Error("Customer get paginate error {@Error}", ex);                
+                customerPaginateViewModel.DbError();                
             }
-            return customerResponsePage;
+            return customerPaginateViewModel;
         }
 
-
         /// <summary>
-        /// 取得客戶基本資料
+        /// 取得客戶詳細基本資料
         /// </summary>
-        /// <param name="customerId">顧客ID</param>
+        /// <param name="customerId">客戶ID</param>
         /// <returns></returns>
         [HttpGet("{customerId}")]
-        public CustomerDetailViewModel Get(int customerId)
+        public CustomerDetailViewModel Detail(int customerId)
         {
             CustomerDetailViewModel customerDetailViewModel = new();
             try
             {
-                Log.Information("Other get customerId input {@Input}", customerId);
+                Log.Information("Customer get detail input {@Input}", customerId);
                 customerDetailViewModel = customerService.GetDetail(customerId);
-                Log.Information("Other get customerId output {@Output}", customerDetailViewModel);                
+                Log.Information("Customer get detail output {@Output}", customerDetailViewModel);                
             }
             catch (Exception ex)
             {
-                Log.Error("Other get customerId error {@Error}", ex);                
+                Log.Error("Customer get customerId error {@Error}", ex);                
                 customerDetailViewModel.DbError();                
             }
             return customerDetailViewModel;
         }
+
         /// <summary>
-        /// 建立顧客基本資料
+        /// 新增客戶基本資料
         /// </summary>
         /// <param name="customerForm">基本資料</param>
         /// <returns></returns>
         [HttpPost]
-        public CreateCustomerResponse Post(CustomerForm customerForm)
+        public CreateCustomerResponse New(CustomerForm customerForm)
         {
             CreateCustomerResponse createCustomerResponse = new();
             try
             {
-                Log.Information("Other post input {@Input}", customerForm);
-                createCustomerResponse = customerService.Create(customerForm);
-                Log.Information("Other post output {@Input}", createCustomerResponse);                
+                Log.Information("Customer new input {@Input}", customerForm);
+                createCustomerResponse = customerService.New(customerForm);
+                Log.Information("Customer new output {@Input}", createCustomerResponse);                
             }
             catch (Exception ex)
             {
-                Log.Error("Other post error {@Error}", ex);
+                Log.Error("Customer new error {@Error}", ex);
                 createCustomerResponse.DbError();                
             }
             return createCustomerResponse;
@@ -100,20 +99,20 @@ namespace SealTypographicWebAPI.Controllers
         /// <summary>
         /// 更新基本資料
         /// </summary>
-        /// <param name="customerForm">基本資料</param>
+        /// <param name="customerUpdateForm">基本資料</param>
         [HttpPut]
-        public ResponseViewModel Put(CustomerUpdateForm customerForm)
+        public ResponseViewModel Update(CustomerUpdateForm customerUpdateForm)
         {
             ResponseViewModel response = new();
             try
             {               
-                Log.Information("Other put input {@Input}", customerForm);
-                response = customerService.Update(customerForm);
-                Log.Information("Other put output {@Output}", response);                
+                Log.Information("Customer update input {@Input}", customerUpdateForm);
+                response = customerService.Update(customerUpdateForm);
+                Log.Information("Customer update output {@Output}", response);                
             }
             catch (Exception ex)
             {
-                Log.Error("Other put error {@Error}", ex);
+                Log.Error("Customer update error {@Error}", ex);
                 response.DbError();                
             }
             return response;
@@ -124,7 +123,7 @@ namespace SealTypographicWebAPI.Controllers
         /// 此刪除為更動狀態使其一般使用者看不到資料，
         /// 而不是真正的刪除。
         /// </summary>
-        /// <param name="customerId"></param>
+        /// <param name="customerId">客戶Id</param>
         /// <returns></returns>
         [HttpDelete("{customerId}")]
         public ResponseViewModel Delete(int customerId)
@@ -132,13 +131,13 @@ namespace SealTypographicWebAPI.Controllers
             ResponseViewModel response = new();
             try
             {
-                Log.Information("Other delete input {@Input}", customerId);
+                Log.Information("Customer delete input {@Input}", customerId);
                 response = customerService.Delete(customerId);
-                Log.Information("Other delete input {@Input}", response);                
+                Log.Information("Customer delete output {@Output}", response);                
             }
             catch (Exception ex)
             {
-                Log.Error("Other delete error {@Error}", ex);
+                Log.Error("Customer delete error {@Error}", ex);
                 response.DbError();
             }
             return response;

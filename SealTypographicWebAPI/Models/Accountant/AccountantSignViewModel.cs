@@ -15,7 +15,7 @@ namespace SealTypographicWebAPI.Models.Accountant
         public AccountantSignType SealMappingConfigId { get; set; }
     }
     /// <summary>
-    /// 會計師印鑑簽名組
+    /// 會計師印鑑簽印組
     /// </summary>
     public class AccountantSignViewModels : ResponseViewModel
     {

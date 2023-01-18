@@ -9,44 +9,43 @@ namespace SealTypographicWebAPI.Controllers
     /// <summary>
     /// 客戶章
     /// </summary>
-    [Route("api/[controller]")]
-    [Produces("application/json")]
+    [Route("api/[controller]")]    
     [ApiController]
     public class CustomerSealController : ControllerBase
     {
         /// <summary>
-        /// 宣告顧客資料處理的interface
+        /// 客戶印鑑管理的service
         /// </summary>
-        protected readonly ICustomerSealService customerSealService;
+        private readonly ICustomerSealService customerSealService;
 
         /// <summary>
-        /// 注入顧客interface
+        /// 建構:注入客戶印鑑管理的service
         /// </summary>
-        /// <param name="customerSealService"></param>        
+        /// <param name="customerSealService">客戶印鑑管理的service</param>        
         public CustomerSealController(ICustomerSealService customerSealService)
         {
-            this.customerSealService = customerSealService;            
+            this.customerSealService = customerSealService;
         }
 
         /// <summary>
-        /// 取得顧客印鑑季度表
+        /// 取得客戶印鑑季度表
         /// </summary>
-        /// <param name="customerId">顧客ID</param>
+        /// <param name="customerId">客戶ID</param>
         /// <returns></returns>
         [HttpGet("{customerId}")]
-        public CustomerSealQuarterViews Get(int customerId)
+        public CustomerSealQuarterViews Quarter(int customerId)
         {
-            CustomerSealQuarterViews customerSealQuarters = new ();
+            CustomerSealQuarterViews customerSealQuarters = new();
             try
             {
-                Log.Information("CustomerSeal get customerId input {@Input}", customerId);
+                Log.Information("CustomerSeal get quarter input {@Input}", customerId);
                 customerSealQuarters = customerSealService.GetQuarter(customerId);
-                Log.Information("CustomerSeal get customerId output {@Output}", customerSealQuarters);                
+                Log.Information("CustomerSeal get quarter output {@Output}", customerSealQuarters);
             }
             catch (Exception ex)
             {
-                Log.Error("CustomerSeal get{customerId} error {@Error}", ex);                
-                customerSealQuarters.DbError();                
+                Log.Error("CustomerSeal get quarter error {@Error}", ex);
+                customerSealQuarters.DbError();
             }
             return customerSealQuarters;
         }
@@ -54,46 +53,46 @@ namespace SealTypographicWebAPI.Controllers
         /// <summary>
         /// 取得客戶印鑑組
         /// </summary>
-        /// <param name="customerSealQuarter">關鑑字</param>        
+        /// <param name="customerSealQuarterSearch">客戶印鑑搜尋(依客戶ID與季度)</param>        
         /// <returns></returns>        
         [HttpGet]
-        public CustomerSealViewModels Get([FromQuery] CustomerSealQuarter customerSealQuarter)
+        public CustomerSealViewModels Seals([FromQuery] CustomerSealQuarterSearch customerSealQuarterSearch)
         {
             CustomerSealViewModels customerSealViewModels = new();
             try
             {
-                Log.Information("CustomerSeal get input {@Input}", customerSealQuarter);
-                customerSealViewModels = customerSealService.GetSeal(customerSealQuarter);
-                Log.Information("CustomerSeal get output {@Output}", customerSealViewModels);                
+                Log.Information("CustomerSeal get seals input {@Input}", customerSealQuarterSearch);
+                customerSealViewModels = customerSealService.GetSeals(customerSealQuarterSearch);
+                Log.Information("CustomerSeal get seals output {@Output}", customerSealViewModels);
             }
             catch (Exception ex)
             {
-                Log.Error("CustomerSeal get error {@Error}", ex);                
-                customerSealViewModels.DbError();                
+                Log.Error("CustomerSeal get seals error {@Error}", ex);
+                customerSealViewModels.DbError();
             }
             return customerSealViewModels;
         }
 
         /// <summary>
-        /// 建立客戶印鑑組資料
+        /// 新增客戶印鑑組資料
         /// </summary>        
-        /// <param name="customerSealForms">客戶印鑑組資料(Json)</param>
+        /// <param name="customerSealForms">客戶印鑑組資料</param>
         /// <returns></returns>
         [HttpPost]
-        public ResponseViewModel Post(CustomerSealForm customerSealForms)
+        public ResponseViewModel New(CustomerSealForm customerSealForms)
         {
             ResponseViewModel response = new();
             try
             {
-                Log.Information("CustomerSeal post input {@Input}", customerSealForms);
-                response = customerSealService.Create(customerSealForms);
-                Log.Information("CustomerSeal post output {@Output}", response);
-                
+                Log.Information("CustomerSeal new input {@Input}", customerSealForms);
+                response = customerSealService.New(customerSealForms);
+                Log.Information("CustomerSeal new output {@Output}", response);
+
             }
             catch (Exception ex)
-            {                
-                Log.Error("CustomerSeal post error {@Error}", ex);
-                response.DbError();                                
+            {
+                Log.Error("CustomerSeal new error {@Error}", ex);
+                response.DbError();
             }
             return response;
         }
@@ -101,69 +100,69 @@ namespace SealTypographicWebAPI.Controllers
         /// <summary>
         /// 異動客戶印鑑
         /// </summary>        
-        /// <param name="customerSealUpdate">刪除修改新增的list</param>
+        /// <param name="customerSealUpdate">需要異動客戶印鑑資料</param>
         /// <returns></returns>
         [HttpPut]
-        public List<ResponseViewModel> Put(CustomerSealUpdate customerSealUpdate)
-        {            
+        public List<ResponseViewModel> Update(CustomerSealUpdate customerSealUpdate)
+        {
             List<ResponseViewModel> responses = new();
             try
             {
-                Log.Information("CustomerSeal put input {@Input}", customerSealUpdate);                
+                Log.Information("CustomerSeal update input {@Input}", customerSealUpdate);
                 responses = customerSealService.Update(customerSealUpdate);
-                Log.Information("CustomerSeal put output {@Output}", responses);                               
+                Log.Information("CustomerSeal update output {@Output}", responses);
             }
             catch (Exception ex)
             {
-                Log.Error("CustomerSeal put error {@Error}", ex);
+                Log.Error("CustomerSeal update error {@Error}", ex);
                 ResponseViewModel responseViewModel = new();
                 responseViewModel.DbError();
-                responses.Add(responseViewModel);                
+                responses.Add(responseViewModel);
             }
             return responses;
         }
 
         /// <summary>
-        /// 變更此季度印鑑待審
+        /// 此季度印鑑從草稿狀態變更為待審
         /// </summary>        
-        /// <param name="customerSealQuarter">客戶Id與季度</param>
+        /// <param name="customerSealQuarterSearch">客戶印鑑搜尋(依客戶ID與季度)</param>
         /// <returns></returns>
-        [HttpPut("Pending")]
-        public ResponseViewModel PutPendingCustomerSeal(CustomerSealQuarter customerSealQuarter)
+        [HttpPut("[Action]")]
+        public ResponseViewModel Pending(CustomerSealQuarterSearch customerSealQuarterSearch)
         {
             ResponseViewModel response = new();
             try
             {
-                Log.Information("CustomerSeal put input {@Input}", customerSealQuarter);
-                response = customerSealService.PendingCustomerSeal(customerSealQuarter);
-                Log.Information("CustomerSeal put output {@Output}", response);                
+                Log.Information("CustomerSeal pending input {@Input}", customerSealQuarterSearch);
+                response = customerSealService.PendingSeals(customerSealQuarterSearch);
+                Log.Information("CustomerSeal pending output {@Output}", response);                
             }
             catch (Exception ex)
             {
-                Log.Error("CustomerSeal put error {@Error}", ex);
+                Log.Error("CustomerSeal pending error {@Error}", ex);
                 response.DbError();                                
             }
             return response;
         }
 
         /// <summary>
-        /// 變更此季度印鑑作廢
+        /// 此季度印鑑從草稿狀態變更為作廢
         /// </summary>        
-        /// <param name="customerSealQuarter">客戶Id與季度</param>
+        /// <param name="customerSealQuarterSearch">客戶印鑑搜尋(依客戶ID與季度)</param>
         /// <returns></returns>
-        [HttpPut("Invalid")]
-        public ResponseViewModel PutInvalidCustomerSeal(CustomerSealQuarter customerSealQuarter)
+        [HttpPut("[Action]")]
+        public ResponseViewModel Invalid(CustomerSealQuarterSearch customerSealQuarterSearch)
         {
             ResponseViewModel response = new();
             try
             {
-                Log.Information("CustomerSeal put input {@Input}", customerSealQuarter);
-                response = customerSealService.InvalidCustomerSeal(customerSealQuarter);
-                Log.Information("CustomerSeal put output {@Output}", response);
+                Log.Information("CustomerSeal invalid input {@Input}", customerSealQuarterSearch);
+                response = customerSealService.InvalidSeals(customerSealQuarterSearch);
+                Log.Information("CustomerSeal invalid output {@Output}", response);
             }
             catch (Exception ex)
             {
-                Log.Error("CustomerSeal put error {@Error}", ex);
+                Log.Error("CustomerSeal invalid error {@Error}", ex);
                 response.DbError();                
             }
             return response;

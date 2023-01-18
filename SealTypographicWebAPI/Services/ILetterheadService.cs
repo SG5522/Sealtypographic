@@ -5,22 +5,23 @@ using SealTypographicWebAPI.Models.Letterhead;
 namespace SealTypographicWebAPI.Services
 {
     /// <summary>
-    /// 顧客資料處理的interface
+    /// 管理信頭資料的interface
     /// </summary>
     public interface ILetterheadService
     {
         /// <summary>
-        /// 取得信頭基本資料列表
+        /// 取得信頭資料列表(分頁)
         /// </summary>
-        /// <param name="letterheadSearch">信頭搜尋條件</param>         
+        /// <param name="letterheadSearch">信頭分頁搜尋</param>         
         /// <returns></returns>
         LetterheadPaginateViewModel GetPaginate(LetterheadSearch letterheadSearch);
 
 
-        /// <summary>
-        /// 刪除信頭資料(變更狀態使其一般USER無法看到)
+        /// <summary>        
+        /// 此刪除為更動狀態使其一般使用者看不到資料，
+        /// 而不是真正的刪除。
         /// </summary>
-        /// <param name="litterheadID"></param>
-        ResponseViewModel Delete(int litterheadID);
+        /// <param name="Id">信頭Id</param>
+        ResponseViewModel Delete(int Id);
     }
 }

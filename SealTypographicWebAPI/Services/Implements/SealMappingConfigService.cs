@@ -11,7 +11,7 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <summary>
         /// 取得印鑑類型列表
         /// </summary>
-        /// <param name="sealType">印鑑類型</param>
+        /// <param name="sealType">印鑑類型 1.客戶 2.會計師</param>
         /// <returns></returns>
         public SealMappingConfigResponseList Get(SealType sealType)
         {

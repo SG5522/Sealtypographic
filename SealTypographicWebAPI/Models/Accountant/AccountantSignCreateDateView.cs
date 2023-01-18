@@ -33,12 +33,12 @@ namespace SealTypographicWebAPI.Models.Accountant
     /// <summary>
     /// 會計師簽印群組創建日期列表
     /// </summary>
-    public class AccountantSignGroupCreateDateViews : ResponseViewModel
+    public class AccountantSignCreateDateViews : ResponseViewModel
     {
         /// <summary>
         /// new GroupCreateDates 
         /// </summary>
-        public AccountantSignGroupCreateDateViews ()
+        public AccountantSignCreateDateViews ()
         {
             GroupCreateDates = new();
         }

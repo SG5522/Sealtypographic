@@ -9,47 +9,47 @@ namespace SealTypographicWebAPI.Services
     public interface ICustomerSealService
     {
         /// <summary>
-        /// 取得顧客印鑑季度表
+        /// 取得客戶印鑑季度表
         /// </summary>
-        /// <param name="customerID">顧客ID</param>        
+        /// <param name="customerID">客戶ID</param>        
         /// <returns></returns>
         CustomerSealQuarterViews GetQuarter(int customerID);
 
 
         /// <summary>
-        /// 取得顧客印鑑
+        /// 取得客戶印鑑組
         /// </summary>
-        /// <param name="customerSealQuarter"></param>
+        /// <param name="customerSealQuarter">客戶印鑑搜尋(依客戶ID與季度)</param>
         /// <returns></returns>
-        CustomerSealViewModels GetSeal(CustomerSealQuarter customerSealQuarter);
+        CustomerSealViewModels GetSeals(CustomerSealQuarterSearch customerSealQuarter);
 
         /// <summary>
-        /// 新增印鑑組
+        /// 新增客戶印鑑組資料
         /// </summary>
-        /// <param name="customerSealForms">印鑑資料</param>
+        /// <param name="customerSealForms">客戶印鑑組資料</param>
         /// <returns></returns>
-        ResponseViewModel Create(CustomerSealForm customerSealForms);
+        ResponseViewModel New(CustomerSealForm customerSealForms);
 
         /// <summary>
         /// 異動客戶印鑑
         /// </summary>
-        /// <param name="customerSealUpdate">刪除修改新增的list</param>
+        /// <param name="customerSealUpdate">需要異動客戶印鑑資料</param>
         /// <returns></returns>        
         List<ResponseViewModel> Update(CustomerSealUpdate customerSealUpdate);
 
         /// <summary>
-        /// 變更此季度印鑑待審
+        /// 此季度印鑑從草稿狀態變更為待審
         /// </summary>
-        /// <param name="customerSealQuarter">客戶Id與季度</param>
+        /// <param name="customerSealQuarter">客戶印鑑搜尋(依客戶ID與季度)</param>
         /// <returns></returns>
-        ResponseViewModel PendingCustomerSeal(CustomerSealQuarter customerSealQuarter);
+        ResponseViewModel PendingSeals(CustomerSealQuarterSearch customerSealQuarter);
 
         /// <summary>
-        /// 變更此季度印鑑作廢
+        /// 此季度印鑑從草稿狀態變更為作廢
         /// </summary>
-        /// <param name="customerSealQuarter">客戶Id與季度</param>
+        /// <param name="customerSealQuarter">客戶印鑑搜尋(依客戶ID與季度)</param>
         /// <returns></returns>
-        ResponseViewModel InvalidCustomerSeal(CustomerSealQuarter customerSealQuarter);
+        ResponseViewModel InvalidSeals(CustomerSealQuarterSearch customerSealQuarter);
 
 
     }

@@ -83,7 +83,7 @@ namespace SealTypographicWebAPI.Consts
         /// <summary>
         /// 無標記
         /// </summary>
-        NO = 0,
+        No = 0,
 
         /// <summary>
         /// 隱藏或標記刪除
@@ -206,8 +206,8 @@ namespace SealTypographicWebAPI.Consts
         /// <summary>
         /// 負責人
         /// </summary>
-        [Description("Ceo")]        
-        Ceo = 2,
+        [Description("President")]        
+        President = 2,
 
         /// <summary>
         /// 經理
@@ -219,7 +219,7 @@ namespace SealTypographicWebAPI.Consts
         /// 會計主管
         /// </summary>
         [Description("Accountant Director")]        
-        AccountantDirector = 4,
+        AccountingDirector = 4,
 
         /// <summary>
         /// 其他

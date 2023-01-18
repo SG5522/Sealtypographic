@@ -3,7 +3,7 @@
 namespace SealTypographicWebAPI.Models.AccountantGroup
 {
     /// <summary>
-    /// 會計師群組分頁搜尋
+    /// 會計師群組搜尋條件(分頁)
     /// </summary>
     public class AccountantGroupSearch : PaginateSearch
     {

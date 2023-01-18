@@ -24,17 +24,17 @@ namespace SealTypographicWebAPI.Services
         AccountantGroupResponse GetData(int accountantGroupId);
 
         /// <summary>
-        /// 依搜尋條件獲得會計資料列表
+        /// 依搜尋條件獲得會計師資料列表(分頁)
         /// </summary>
-        /// <param name="accountantGroupQueryPage">會計師群組分頁搜尋</param> 
+        /// <param name="accountantGroupSearch">會計師群組搜尋條件(分頁)</param> 
         /// <returns></returns>
-        AccountantGroupResponses GetPaginate(AccountantGroupSearch accountantGroupQueryPage);
+        AccountantGroupResponses GetPaginate(AccountantGroupSearch accountantGroupSearch);
 
         /// <summary>
-        /// 建立會計師群組資料
+        /// 新增會計師群組
         /// </summary>
         /// <param name="accountantGroupForm">群組資料</param>        
-        ResponseViewModel Create(AccountantGroupForm accountantGroupForm);
+        ResponseViewModel New(AccountantGroupForm accountantGroupForm);
 
         /// <summary>
         /// 更新會計師群組資料

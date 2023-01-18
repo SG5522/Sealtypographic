@@ -14,7 +14,7 @@ namespace SealTypographicWebAPI.Models.Letterhead
         /// </summary>
         /// <example>0</example>        
         [Required]
-        public int LetterheadImageId { get; set; }
+        public int Id { get; set; }
 
         /// <summary>
         /// 圖檔字串(Base64)

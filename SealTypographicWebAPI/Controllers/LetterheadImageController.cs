@@ -11,43 +11,42 @@ namespace SealTypographicWebAPI.Controllers
     /// <summary>
     /// 信頭資料處理
     /// </summary>
-    [Route("api/[controller]")]
-    [Produces("application/json")]
+    [Route("api/[controller]")]    
     [ApiController]
     public class LetterheadImageController : ControllerBase
     {
         /// <summary>
-        /// 宣告信頭的interface
+        /// 信頭圖片管理service
         /// </summary>
-        protected readonly ILetterheadImageService letterheadImageService;
+        private readonly ILetterheadImageService letterheadImageService;
 
         /// <summary>
-        /// 注入信頭interface
+        /// 建構:注入信頭圖片管理service
         /// </summary>
-        /// <param name="letterheadImageService"></param>
+        /// <param name="letterheadImageService">信頭圖片管理service</param>
         public LetterheadImageController(ILetterheadImageService letterheadImageService)
         {
             this.letterheadImageService = letterheadImageService;
         }
 
         /// <summary>
-        /// 取得信頭
+        /// 取得信頭圖片建立日期
         /// </summary>
-        /// <param name="letterheadId"></param>
+        /// <param name="letterheadId">信頭Id</param>
         /// <returns></returns>
         [HttpGet("{letterheadId}")]
-        public LetterheadCreateDateViews Get(int letterheadId)
+        public LetterheadImageCreateDateViews CreateDates(int letterheadId)
         {
-            LetterheadCreateDateViews letterheadGroupCreateDateViews = new();
+            LetterheadImageCreateDateViews letterheadGroupCreateDateViews = new();
             try
             {
-                Log.Information("LetterheadImage get{letterheadId} input {@Input}", letterheadId);
-                letterheadGroupCreateDateViews = letterheadImageService.GetCreateDate(letterheadId);
-                Log.Information("LetterheadImage get{letterheadId} output {@Output}", letterheadGroupCreateDateViews);
+                Log.Information("LetterheadImage get createDates input {@Input}", letterheadId);
+                letterheadGroupCreateDateViews = letterheadImageService.GetCreateDates(letterheadId);
+                Log.Information("LetterheadImage get createDates output {@Output}", letterheadGroupCreateDateViews);
             }
             catch (Exception ex)
             {
-                Log.Error("LetterheadImage get{letterheadId} error {@Error}", ex);
+                Log.Error("LetterheadImage get createDates error {@Error}", ex);
                 letterheadGroupCreateDateViews.DbError();
             }
             return letterheadGroupCreateDateViews;
@@ -56,56 +55,56 @@ namespace SealTypographicWebAPI.Controllers
         /// <summary>
         /// 取得信頭圖片
         /// </summary>
-        /// <param name="letterheadImageGroupCreateDateSearch">搜尋條件</param>
+        /// <param name="id">信頭圖片Id</param>
         /// <returns></returns>
         [HttpGet]
-        public LetterheadImageViewModel Get([FromQuery]LetterheadImageSearch letterheadImageGroupCreateDateSearch)
+        public LetterheadImageViewModel ImageViewModel(int id)
         {
-            LetterheadImageViewModel letterheadImageViewModels = new();
+            LetterheadImageViewModel letterheadImageViewModel = new();
             try
             {
-                Log.Information("LetterheadImage get input {@Input}", letterheadImageGroupCreateDateSearch);
-                letterheadImageViewModels = letterheadImageService.GetImage(letterheadImageGroupCreateDateSearch);
-                Log.Information("LetterheadImage get output {@Output}", letterheadImageViewModels);
+                Log.Information("LetterheadImage get imageViewModel input {@Input}", id);
+                letterheadImageViewModel = letterheadImageService.GetImageViewModel(id);
+                Log.Information("LetterheadImage get imageViewModel output {@Output}", letterheadImageViewModel);
             }
             catch (Exception ex)
             {
-                Log.Error("LetterheadImage get error {@Error}", ex);
-                letterheadImageViewModels.DbError();
+                Log.Error("LetterheadImage get imageViewModel error {@Error}", ex);
+                letterheadImageViewModel.DbError();
             }
-            return letterheadImageViewModels;
+            return letterheadImageViewModel;
         }
 
         /// <summary>
-        /// 新增信頭圖片組
+        /// 新增信頭圖片
         /// </summary>
-        /// <param name="letterheadImageForms">信頭圖片組</param>
+        /// <param name="letterheadImageForm">信頭圖片</param>
         /// <returns></returns>
         [HttpPost]
-        public ResponseViewModel Post(LetterheadImageForms letterheadImageForms)
+        public ResponseViewModel New(LetterheadImageForm letterheadImageForm)
         {
             ResponseViewModel responseViewModel = new();
             try
             {
-                Log.Information("LetterheadImage post input {@Input}", letterheadImageForms);
-                responseViewModel = letterheadImageService.Create(letterheadImageForms);
-                Log.Information("LetterheadImage post output {@Output}", responseViewModel);
+                Log.Information("LetterheadImage new input {@Input}", letterheadImageForm);
+                responseViewModel = letterheadImageService.New(letterheadImageForm);
+                Log.Information("LetterheadImage new output {@Output}", responseViewModel);
             }
             catch (Exception ex)
             {
-                Log.Error("LetterheadImage post error {@Error}", ex);
+                Log.Error("LetterheadImage new error {@Error}", ex);
                 responseViewModel.DbError();
             }
             return responseViewModel;
         }
 
         /// <summary>
-        /// 修改信頭圖片組
+        /// 異動信頭圖片
         /// </summary>
-        /// <param name="letterheadImageUpdate">刪除修改新增的list</param>
+        /// <param name="letterheadImageUpdate">異動信頭圖片資料</param>
         /// <returns></returns>
         [HttpPut]
-        public ResponseViewModel Put(LetterheadImageUpdate letterheadImageUpdate)
+        public ResponseViewModel Update(LetterheadImageUpdate letterheadImageUpdate)
         {
             ResponseViewModel response = new();
             try

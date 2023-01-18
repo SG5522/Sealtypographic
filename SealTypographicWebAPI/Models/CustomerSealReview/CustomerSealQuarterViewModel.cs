@@ -6,17 +6,12 @@ namespace SealTypographicWebAPI.Models.CustomerSealReview
     /// <summary>
     /// 客戶印鑑審核
     /// </summary>
-    public class CustomerSealReviewViewModel : BaseName
+    public class CustomerSealQuarterViewModel : BaseName
     {
         /// <summary>
         /// 客戶編號
         /// </summary>
-        public string CustomerNumber { get; set; }
-
-        /// <summary>
-        /// 統一編號
-        /// </summary>
-        public string BAN { get; set; }
+        public string Code { get; set; }
 
         /// <summary>
         /// 季度
@@ -32,12 +27,12 @@ namespace SealTypographicWebAPI.Models.CustomerSealReview
     /// <summary>
     /// 審核列表(分頁)
     /// </summary>
-    public class CustomerSealReviewViewModelResponse : PaginateViewModel
+    public class CustomerSealQuarterViewModelResponse : PaginateViewModel
     {
 
         /// <summary>
         /// 審核LIST
         /// </summary>
-        public List<CustomerSealReviewViewModel> CustomerSealReviewViewModels { get; set; }
+        public List<CustomerSealQuarterViewModel> CustomerSealReviewViewModels { get; set; }
     }
 }

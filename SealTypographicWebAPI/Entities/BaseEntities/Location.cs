@@ -1,7 +1,7 @@
 ﻿namespace SealTypographicWebAPI.Entities.BaseEntities
 {
     /// <summary>
-    /// 印鑑圖像ID 與 位置
+    /// 印鑑擺放位置
     /// </summary>
     public class Location : BaseData
     {

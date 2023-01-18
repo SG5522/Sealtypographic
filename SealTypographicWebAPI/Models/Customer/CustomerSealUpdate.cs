@@ -3,7 +3,7 @@
 namespace SealTypographicWebAPI.Models.Customer
 {
     /// <summary>
-    /// 更新客戶印鑑組資料
+    /// 需要異動客戶印鑑資料
     /// </summary>
     public class CustomerSealUpdate
     {
@@ -16,7 +16,7 @@ namespace SealTypographicWebAPI.Models.Customer
         /// <summary>
         /// 印鑑季度
         /// </summary>
-        /// <example>111YQ1</example>
+        /// <example>111Q1</example>
         [Required]
         [RegularExpression(@"^[a-zA-Z0-9]*$")]
         public string Quarter { get; set; }

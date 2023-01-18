@@ -25,7 +25,7 @@ namespace SealTypographicWebAPI.Services.Implements
         {
             this.dbContext = dbContext;            
             this.mapper = mapper;
-        }        
+        }
 
         /// <summary>
         /// 取得會計師群組所有資料
@@ -36,7 +36,7 @@ namespace SealTypographicWebAPI.Services.Implements
             AccountantGroupList accountantGroupList = new();            
 
             List<AccountantGroup> accountantGroups = dbContext.AccountantGroups
-                                                    .Where(accountantGroup => accountantGroup.DeleteStatus == DeleteStatus.NO)
+                                                    .Where(accountantGroup => accountantGroup.DeleteStatus == DeleteStatus.No)
                                                     .ToList();
             if (accountantGroups.Any())
             {
@@ -77,22 +77,22 @@ namespace SealTypographicWebAPI.Services.Implements
         }
 
         /// <summary>
-        /// 會計師群組分頁搜尋
+        /// 依搜尋條件獲得會計師資料列表(分頁)
         /// </summary>
-        /// <param name="accountantGroupQueryPage">accountantGroupData</param>
+        /// <param name="accountantGroupSearch">會計師群組搜尋條件(分頁)</param>
         /// <returns></returns>
-        public AccountantGroupResponses GetPaginate(AccountantGroupSearch accountantGroupQueryPage)
+        public AccountantGroupResponses GetPaginate(AccountantGroupSearch accountantGroupSearch)
         {
             AccountantGroupResponses accountantGroupResponses = new();            
             
             IQueryable<AccountantGroup> accountantGroupsQuery = dbContext.AccountantGroups;
-            if (!string.IsNullOrWhiteSpace(accountantGroupQueryPage.GroupName))
+            if (!string.IsNullOrWhiteSpace(accountantGroupSearch.GroupName))
             {
                 accountantGroupsQuery = accountantGroupsQuery.Where
                                         (
                                             accountantGroup =>                                            
-                                            accountantGroup.Name.Contains(accountantGroupQueryPage.GroupName)
-                                            && accountantGroup.AccountantGroupNumber.Contains(accountantGroupQueryPage.GroupName)
+                                            accountantGroup.Name.Contains(accountantGroupSearch.GroupName)
+                                            && accountantGroup.AccountantGroupNumber.Contains(accountantGroupSearch.GroupName)
                                         );
             }
             accountantGroupsQuery.OrderBy(accountantGroup => accountantGroup.AccountantGroupNumber);
@@ -101,15 +101,15 @@ namespace SealTypographicWebAPI.Services.Implements
             {
                 //取得該頁            
                 List<AccountantGroup> thisPageAccountantGroups = accountantGroupsQuery
-                                                                .Skip((accountantGroupQueryPage.PageNumber - 1) * accountantGroupQueryPage.PageSize)
-                                                                .Take(accountantGroupQueryPage.PageSize)
+                                                                .Skip((accountantGroupSearch.PageNumber - 1) * accountantGroupSearch.PageSize)
+                                                                .Take(accountantGroupSearch.PageSize)
                                                                 .ToList();
 
                 accountantGroupResponses.AccountantGroups = mapper.Map<List<AccountantGroupViewModel>>(thisPageAccountantGroups);                
-                accountantGroupResponses.PageNumber = accountantGroupQueryPage.PageNumber;
-                accountantGroupResponses.PageSize = accountantGroupQueryPage.PageSize;
+                accountantGroupResponses.PageNumber = accountantGroupSearch.PageNumber;
+                accountantGroupResponses.PageSize = accountantGroupSearch.PageSize;
                 //計算總頁數
-                accountantGroupResponses.TotalPage = TotalPageUtil.GetTotalPage(accountantGroupsQuery.Count(), accountantGroupQueryPage.PageSize);
+                accountantGroupResponses.TotalPage = TotalPageUtil.GetTotalPage(accountantGroupsQuery.Count(), accountantGroupSearch.PageSize);
                 accountantGroupResponses.TotalCount = accountantGroupsQuery.Count();
                 accountantGroupResponses.Success();
             }
@@ -119,16 +119,16 @@ namespace SealTypographicWebAPI.Services.Implements
             }
 
             return accountantGroupResponses;
-        }       
+        }
 
         /// <summary>
-        /// 建立會計師群組資料
+        /// 新增會計師群組
         /// </summary>
         /// <param name="accountantGroupForm">群組資料</param>        
-        public ResponseViewModel Create(AccountantGroupForm accountantGroupForm)
+        public ResponseViewModel New(AccountantGroupForm accountantGroupForm)
         {
             ResponseViewModel response = new();
-
+            //確認編號是否重複
             AccountantGroup? accountantGroupQuery = dbContext.AccountantGroups
                                                 .FirstOrDefault(accountantGroup => accountantGroup.AccountantGroupNumber == accountantGroupForm.AccountantGroupNumber);                                                
 

@@ -133,7 +133,7 @@ namespace SealTypographicWebAPI.Services.Implements
         /// </summary>
         /// <param name="accountantGroupChangeForm"></param>
         /// <returns></returns>
-        public ResponseViewModel UpdateAccountantGroup(AccountantGroupChangeForm accountantGroupChangeForm)
+        public ResponseViewModel UpdateGroup(AccountantGroupChangeForm accountantGroupChangeForm)
         {
             ResponseViewModel response = new();
 

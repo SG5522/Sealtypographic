@@ -63,7 +63,7 @@ namespace SealTypographicWebAPI.Models
         public void CreateCustomerFailed()
         {
             Code = (int)ResponseCode.CreateCustomerFailed;
-            Message = "Create Other failed";
+            Message = "New Other failed";
         }
 
         /// <summary>
@@ -72,7 +72,7 @@ namespace SealTypographicWebAPI.Models
         public void CreateCustomerNumberRepeat()
         {
             Code = (int)ResponseCode.CreateCustomerNumberRepeat;
-            Message = "Create Other number repeat";
+            Message = "New Other number repeat";
         }
 
         /// <summary>
@@ -135,7 +135,7 @@ namespace SealTypographicWebAPI.Models
         public void CreateCustomerSealFailed()
         {
             Code = (int)ResponseCode.CreateCustomerSealFailed;
-            Message = "Other seal Create Failed";
+            Message = "Other seal New Failed";
         }
 
         /// <summary>
@@ -144,7 +144,7 @@ namespace SealTypographicWebAPI.Models
         public void CreateCustomerSealSequenceRepeat()
         {
             Code = (int)ResponseCode.CreateCustomerSealSequenceRepeat;
-            Message = "Create customer seal sequence repeat";
+            Message = "New customer seal sequence repeat";
         }
         //CreateCustomerSealQuarterRepeat
 
@@ -154,7 +154,7 @@ namespace SealTypographicWebAPI.Models
         public void CreateCustomerSealQuarterRepeat()
         {
             Code = (int)ResponseCode.CreateCustomerSealQuarterRepeat;
-            Message = "Create customer seal quarter repeat";
+            Message = "New customer seal quarter repeat";
         }
 
         /// <summary>
@@ -227,7 +227,7 @@ namespace SealTypographicWebAPI.Models
         public void CreateAccountantFailed()
         {
             Code = (int)ResponseCode.CreateAccountantFailed;
-            Message = "Create accountant failed";
+            Message = "New accountant failed";
         }
 
         /// <summary>
@@ -236,7 +236,7 @@ namespace SealTypographicWebAPI.Models
         public void CreateAccountantNumberRepeat()
         {
             Code = (int)ResponseCode.CreateAccountantNumberRepeat;
-            Message = "Create accountant number repeat";
+            Message = "New accountant number repeat";
         }
 
         /// <summary>
@@ -299,7 +299,7 @@ namespace SealTypographicWebAPI.Models
         public void CreateAccountantSignFailed()
         {
             Code = (int)ResponseCode.CreateAccountantSignFailed;
-            Message = "Create accountant sign failed";
+            Message = "New accountant sign failed";
         }
 
         /// <summary>
@@ -308,7 +308,7 @@ namespace SealTypographicWebAPI.Models
         public void CreateAccountantSignRepeat()
         {
             Code = (int)ResponseCode.CreateAccountantSignRepeat;
-            Message = "Create accountant sign repeat";
+            Message = "New accountant sign repeat";
         }
 
         /// <summary>
@@ -372,7 +372,7 @@ namespace SealTypographicWebAPI.Models
         public void CreateAccountantGroupFailed()
         {
             Code = (int)ResponseCode.CreateAccountantGroupFailed;
-            Message = "Create accountant group failed";
+            Message = "New accountant group failed";
         }
 
         /// <summary>
@@ -381,7 +381,7 @@ namespace SealTypographicWebAPI.Models
         public void CreateAccountantGroupNumberRepeat()
         {
             Code = (int)ResponseCode.CreateAccountantGroupNumberRepeat;
-            Message = "Create accountant group number repeat";
+            Message = "New accountant group number repeat";
         }
 
         /// <summary>
@@ -444,7 +444,7 @@ namespace SealTypographicWebAPI.Models
         public void CreateLetterheadFailed()
         {
             Code = (int)ResponseCode.CreateLetterheadFailed;
-            Message = "Create letterhead failed";
+            Message = "New letterhead failed";
         }
 
         /// <summary>
@@ -453,7 +453,7 @@ namespace SealTypographicWebAPI.Models
         public void CreateLetterheadNumberRepeat()
         {
             Code = (int)ResponseCode.CreateLetterheadNumberRepeat;
-            Message = "Create letterhead number repeat";
+            Message = "New letterhead number repeat";
         }
 
         /// <summary>
@@ -462,7 +462,7 @@ namespace SealTypographicWebAPI.Models
         public void CreateLetterheadNoData()
         {
             Code = (int)ResponseCode.CreateLetterheadNoData;
-            Message = "Create letterhead no data";
+            Message = "New letterhead no data";
         } 
 
         /// <summary>
@@ -534,7 +534,7 @@ namespace SealTypographicWebAPI.Models
         public void CreateLetterheadImageFailed()
         {
             Code = (int)ResponseCode.CreateLetterheadImageFailed;
-            Message = "Create letterhead image failed";
+            Message = "New letterhead image failed";
         }
 
         /// <summary>
@@ -543,7 +543,7 @@ namespace SealTypographicWebAPI.Models
         public void CreateLetterheadImageSequenceRepeat()
         {
             Code = (int)ResponseCode.CreateLetterheadImageSequenceRepeat;
-            Message = "Create letterhead image sequence repeat";
+            Message = "New letterhead image sequence repeat";
         }
 
         /// <summary>

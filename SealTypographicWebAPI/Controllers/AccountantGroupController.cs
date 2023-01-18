@@ -3,6 +3,7 @@ using SealTypographicWebAPI.Models;
 using SealTypographicWebAPI.Services;
 using Serilog;
 using SealTypographicWebAPI.Models.AccountantGroup;
+using SealTypographicWebAPI.Services.Implements;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -11,20 +12,19 @@ namespace SealTypographicWebAPI.Controllers
     /// <summary>
     /// 管理會計師群組
     /// </summary>
-    [Route("api/[controller]")]
-    [Produces("application/json")]
+    [Route("api/[controller]")]    
     [ApiController]
     public class AccountantGroupController : ControllerBase
     {
         /// <summary>
-        /// 會計師群組管理的interface
+        /// 管理會計師群組的Service
         /// </summary>
-        protected readonly IAccountantGroupService accountantGroupService;
+        private readonly IAccountantGroupService accountantGroupService;
 
         /// <summary>
-        /// 注入Service
+        /// 建構:注入Service
         /// </summary>
-        /// <param name="accountantGroupService">管理會計師群組interface</param>        
+        /// <param name="accountantGroupService">管理會計師群組的Service</param>        
         public AccountantGroupController(IAccountantGroupService accountantGroupService)
         {
             this.accountantGroupService = accountantGroupService;
@@ -34,42 +34,42 @@ namespace SealTypographicWebAPI.Controllers
         /// 取得會計師群組所有資料
         /// </summary>
         /// <returns></returns>
-        [HttpGet("List")]
-        public AccountantGroupList GetAccountantGroupList()
+        [HttpGet("[Action]")]
+        public AccountantGroupList List()
         {
-            AccountantGroupList accountantGroupList = new ();
+            AccountantGroupList accountantGroupList = new ();            
             try
             {                
                 accountantGroupList = accountantGroupService.GetAll();
-                Log.Information("AccountantGroups get(List) output {@Output}", accountantGroupList);                
+                Log.Information("AccountantGroups get List output {@Output}", accountantGroupList);                
             }
             catch (Exception ex)
             {
-                Log.Error("AccountantGroups get(List) error {@Error}", ex);
+                Log.Error("AccountantGroups get List error {@Error}", ex);
                 accountantGroupList.DbError();                
             }
             return accountantGroupList;
         }
 
         /// <summary>
-        /// 依搜尋條件獲得會計師資料列表
+        /// 依搜尋條件獲得會計師資料列表(分頁)
         /// </summary>
-        /// <param name="accountantGroupQueryPage">會計師群組分頁搜尋</param>
+        /// <param name="accountantGroupSearch">會計師群組搜尋條件(分頁)</param>
         /// <returns></returns>
         [HttpGet]
-        public AccountantGroupResponses GetAccountGroupViewModels([FromQuery]AccountantGroupSearch accountantGroupQueryPage)
+        public AccountantGroupResponses Paginate([FromQuery]AccountantGroupSearch accountantGroupSearch)
         {
             AccountantGroupResponses accountantGroupResponses = new();
             try
             {
-                Log.Information("AccountantGroups get FromQuery input {@Input}", accountantGroupQueryPage);
-                accountantGroupResponses = accountantGroupService.GetPaginate(accountantGroupQueryPage);
-                Log.Information("AccountantGroups get FromQuery output {@Output}", accountantGroupResponses);                
+                Log.Information("AccountantGroups get paginate input {@Input}", accountantGroupSearch);
+                accountantGroupResponses = accountantGroupService.GetPaginate(accountantGroupSearch);
+                Log.Information("AccountantGroups get paginate output {@Output}", accountantGroupResponses);                
                 
             }
             catch (Exception ex)
             {
-                Log.Error("AccountantGroups get accountantGroupDatas error {@Error}", ex);                
+                Log.Error("AccountantGroups get paginate error {@Error}", ex);                
                 accountantGroupResponses.DbError();                
             }
             return accountantGroupResponses;
@@ -81,62 +81,62 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="accountantGroupId">群組ID</param>
         /// <returns></returns>
         [HttpGet("{accountantGroupId}")]        
-        public AccountantGroupResponse Get(int accountantGroupId)
+        public AccountantGroupResponse Data(int accountantGroupId)
         {
             AccountantGroupResponse accountantGroupResponse = new ();
             try
             {
-                Log.Information("AccountantGroups get{accountantGroupId} input {@Input}", accountantGroupId);
+                Log.Information("AccountantGroups get data input {@Input}", accountantGroupId);
                 accountantGroupResponse = accountantGroupService.GetData(accountantGroupId);
-                Log.Information("AccountantGroups get{accountantGroupId} output {@Output}", accountantGroupResponse);                
+                Log.Information("AccountantGroups get data output {@Output}", accountantGroupResponse);                
             }
             catch (Exception ex)
             {
-                Log.Error("AccountantGroups get{accountantGroupId} error {@Error}", ex);                
+                Log.Error("AccountantGroups get data error {@Error}", ex);                
                 accountantGroupResponse.DbError();                
             }
             return accountantGroupResponse;
         }                
       
         /// <summary>
-        /// 建立會計師群組
+        /// 新增會計師群組
         /// </summary>
         /// <param name="accountantGroupForm">群組資料</param>
         [HttpPost]
-        public ResponseViewModel Post(AccountantGroupForm accountantGroupForm)
+        public ResponseViewModel New(AccountantGroupForm accountantGroupForm)
         {
             ResponseViewModel response = new ();
             try
             {
-                Log.Information("AccountantGroups post input {@Input}", accountantGroupForm);
-                response = accountantGroupService.Create(accountantGroupForm);
-                Log.Information("AccountantGroups post output {@Output}", response);                
+                Log.Information("AccountantGroups new input {@Input}", accountantGroupForm);
+                response = accountantGroupService.New(accountantGroupForm);
+                Log.Information("AccountantGroups new output {@Output}", response);                
             }
             catch (Exception ex)
             {
-                Log.Error("AccountantGroups post error {@Error}", ex);
+                Log.Error("AccountantGroups new error {@Error}", ex);
                 response.DbError();                
             }
             return response;
         }
 
         /// <summary>
-        /// 更新群組資料
+        /// 更新會計師群組資料
         /// </summary>
         /// <param name="accountantGroupFormUpdate">群組資料</param>       
         [HttpPut]
-        public ResponseViewModel Put(AccountantGroupFormUpdate accountantGroupFormUpdate)
+        public ResponseViewModel Update(AccountantGroupFormUpdate accountantGroupFormUpdate)
         {
             ResponseViewModel response = new ();
             try
             {
-                Log.Information("AccountantGroups put accountantGroupForm input {@Input}", accountantGroupFormUpdate);
+                Log.Information("AccountantGroups update input {@Input}", accountantGroupFormUpdate);
                 response = accountantGroupService.Update(accountantGroupFormUpdate);
-                Log.Information("AccountantGroups put accountantGroupForm output {@Output}", response);
+                Log.Information("AccountantGroups update output {@Output}", response);
             }
             catch (Exception ex)
             {
-                Log.Error("AccountantGroups put accountantGroupForm error {@Error}", ex);
+                Log.Error("AccountantGroups update error {@Error}", ex);
                 response.DbError();                
             }
             return response;

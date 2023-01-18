@@ -9,11 +9,6 @@ namespace SealTypographicWebAPI.Models.Customer
     public class CustomerSealSequenceCheck
     {
         /// <summary>
-        /// 客戶ID
-        /// </summary>
-        public int CustomerId{ get; set; }
-
-        /// <summary>
         /// 客戶印鑑群組ID 
         /// 1.公司章
         /// 2.負責人
@@ -29,9 +24,9 @@ namespace SealTypographicWebAPI.Models.Customer
         public int Sequence { get; set; }
 
         /// <summary>
-        /// 印鑑季度
+        /// 客戶印鑑季度Id
         /// </summary>
-        /// <example>111年Q1</example>
-        public string Quarter { get; set; }
+        /// <example>1</example>
+        public int CustomerSealQuarterJournalId { get; set; }
     }
 }

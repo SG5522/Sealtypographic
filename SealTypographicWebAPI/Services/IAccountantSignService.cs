@@ -10,44 +10,44 @@ namespace SealTypographicWebAPI.Services
     public interface IAccountantSignService
     {
         /// <summary>
-        /// 取得會計取用時間列
+        /// 取得會計師簽印建立日期列表
         /// </summary>
         /// <param name="accountantId">會計師ID</param>        
         /// <returns></returns>
-        AccountantSignGroupCreateDateViews GetAccountantCreateDate(int accountantId);
+        AccountantSignCreateDateViews GetCreateDates(int accountantId);
 
         /// <summary>
-        /// 取得會計師簽印組
+        /// 依建立日期取得會計師簽印組
         /// </summary>
         /// <param name="accountantSignStartDate"></param>
         /// <returns></returns>
-        public AccountantSignViewModels Get(AccountantSignCreateDate accountantSignStartDate);
+        public AccountantSignViewModels GetSignViewModels(AccountantSignCreateDate accountantSignStartDate);
 
         /// <summary>
-        /// 新增印鑑組
+        /// 新增會計師簽印組
         /// </summary>
-        /// <param name="accountantSignForms">會計印鑑簽名資料</param>
+        /// <param name="accountantSignForms">會計師簽印組</param>
         /// <returns></returns>
-        ResponseViewModel Create(AccountantSignForms accountantSignForms);
+        ResponseViewModel New(AccountantSignForms accountantSignForms);
 
         /// <summary>
-        /// 異動會計師簽印的處理(審查狀態退回或是草稿才進行修改)
+        /// 異動會計師簽印
         /// </summary>
-        /// <param name="accountantSignUpdate">刪除修改新增的list</param>
+        /// <param name="accountantSignUpdate">需要異動會計師簽印資料</param>
         /// <returns></returns>
         List<ResponseViewModel> Update(AccountantSignUpdate accountantSignUpdate);
 
         /// <summary>
-        /// 修改印鑑組
+        /// 將草稿的簽印組狀態變更為待審
         /// </summary>
-        /// <param name="accountantSignGroupCreateDateSearch">會計師簽印id</param>
+        /// <param name="accountantSignGroupCreateDateSearch">會計師簽印搜尋(依會計師ID與創建群組日期)</param>
         /// <returns></returns>
         ResponseViewModel PendingSigns(AccountantSignCreateDate accountantSignGroupCreateDateSearch);
 
         /// <summary>
-        /// 刪除會計師簽印 (作廢)
+        /// 將草稿的簽印組狀態變更為作廢
         /// </summary>
-        /// <param name="accountantSignGroupCreateDateSearch">會計師簽印</param>
+        /// <param name="accountantSignGroupCreateDateSearch">會計師簽印搜尋(依會計師ID與創建群組日期)</param>
         /// <returns></returns>
         ResponseViewModel InvalidSigns(AccountantSignCreateDate accountantSignGroupCreateDateSearch);
     }

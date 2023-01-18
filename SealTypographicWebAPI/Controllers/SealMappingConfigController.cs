@@ -15,14 +15,14 @@ namespace SealTypographicWebAPI.Controllers
     public class SealMappingConfigController : ControllerBase
     {
         /// <summary>
-        /// 
+        /// 取得印鑑類型列表的service
         /// </summary>
-        protected readonly SealMappingConfigService sealMappingConfigService;
+        private readonly SealMappingConfigService sealMappingConfigService;
 
         /// <summary>
-        /// 注入Service
+        /// 建構:注入Service
         /// </summary>
-        /// <param name="sealMappingConfigService"></param>        
+        /// <param name="sealMappingConfigService">取得印鑑類型列表的service</param>        
         public SealMappingConfigController(SealMappingConfigService sealMappingConfigService)
         {
             this.sealMappingConfigService = sealMappingConfigService;            
@@ -34,18 +34,18 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="sealType">印鑑類別 1.客戶 2.會計師 </param>        
         /// <returns></returns>
         [HttpGet]
-        public SealMappingConfigResponseList Get(SealType sealType)
+        public SealMappingConfigResponseList ConfigList(SealType sealType)
         {
             SealMappingConfigResponseList sealMappingConfigResponseList = new ();
             try
             {
-                Log.Information("SealMappingConfig get input {@Input}", sealType);
+                Log.Information("SealMappingConfig get ConfigList input {@Input}", sealType);
                 sealMappingConfigResponseList = sealMappingConfigService.Get(sealType);
-                Log.Information("SealMappingConfig get output {@Output}", sealMappingConfigResponseList);                
+                Log.Information("SealMappingConfig get ConfigList output {@Output}", sealMappingConfigResponseList);                
             }
             catch (Exception ex)
             {
-                Log.Error("SealMappingConfig get error {@Error}", ex);
+                Log.Error("SealMappingConfig get ConfigList error {@Error}", ex);
                 sealMappingConfigResponseList.DbError();
             }
             return sealMappingConfigResponseList;

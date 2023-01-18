@@ -12,63 +12,61 @@ namespace SealTypographicWebAPI.Controllers
     /// <summary>
     /// 信頭資料管理
     /// </summary>
-    [Route("api/[controller]")]
-    [Produces("application/json")]
+    [Route("api/[controller]")]    
     [ApiController]
     public class LetterheadController : ControllerBase
     {
         /// <summary>
-        /// 宣告會計師資料處理的interface
+        /// 管理信頭資料的service
         /// </summary>
-        protected readonly ILetterheadService letterheadService;
+        private readonly ILetterheadService letterheadService;
 
         /// <summary>
-        /// 注入Service
+        /// 建構:注入Service
         /// </summary>
-        /// <param name="letterheadService"></param>
+        /// <param name="letterheadService">管理信頭資料的service</param>
         public LetterheadController(ILetterheadService letterheadService)
         {
             this.letterheadService = letterheadService;
         }
 
         /// <summary>
-        /// 取得信頭資料列表
+        /// 取得信頭資料列表(分頁)
         /// </summary>
-        /// <param name="letterheadSearch"></param>
+        /// <param name="letterheadSearch">信頭分頁搜尋</param>
         /// <returns></returns>
         [HttpGet]
-        public LetterheadPaginateViewModel Get([FromQuery] LetterheadSearch letterheadSearch)
+        public LetterheadPaginateViewModel Paginate([FromQuery] LetterheadSearch letterheadSearch)
         {
             LetterheadPaginateViewModel letterheadPaginateViewModel = new();
             try
             {
-                Log.Information("Letterhead get input {@Input}", letterheadSearch);
+                Log.Information("Letterhead get paginate input {@Input}", letterheadSearch);
                 letterheadPaginateViewModel = letterheadService.GetPaginate(letterheadSearch);
-                Log.Information("Letterhead get output {@Output}", letterheadPaginateViewModel);                
+                Log.Information("Letterhead get paginate output {@Output}", letterheadPaginateViewModel);                
             }
             catch (Exception ex)
             {
-                Log.Error("Letterhead get error {@Error}", ex);
+                Log.Error("Letterhead get paginate error {@Error}", ex);
                 letterheadPaginateViewModel.DbError();                
             }
             return letterheadPaginateViewModel;
         }
 
-        /// <summary>
-        /// 刪除基本資料，
+        /// <summary>       
         /// 此刪除為更動狀態使其一般使用者看不到資料，
-        /// 而不是真正的刪除。
+        /// 而不是真正的刪除。        
         /// </summary>
-        /// <param name="letterheadId"></param>
+        /// <param name="id"></param>
         /// <returns></returns>
-        [HttpDelete("{letterheadId}")]
-        public ResponseViewModel Delete(int letterheadId)
+        [HttpDelete("{id}")]
+        public ResponseViewModel Delete(int id)
         {
             ResponseViewModel responseViewModel = new();
             try
             {
-                Log.Information("Letterhead delete(hide) input {@Input}", letterheadId);
-                responseViewModel = letterheadService.Delete(letterheadId);
+                Log.Information("Letterhead delete(hide) input {@Input}", id);
+                responseViewModel = letterheadService.Delete(id);
                 Log.Information("Letterhead delete(hide) output {@Output}", responseViewModel);                
             }
             catch (Exception ex)

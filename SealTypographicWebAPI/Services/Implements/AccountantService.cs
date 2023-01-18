@@ -28,7 +28,7 @@ namespace SealTypographicWebAPI.Services.Implements
         }
 
         /// <summary>
-        /// 取得會計師資料
+        /// 取得會計師基本資料
         /// </summary>
         /// <param name="accountantId"></param>
         /// <returns></returns>
@@ -52,15 +52,15 @@ namespace SealTypographicWebAPI.Services.Implements
         }
 
         /// <summary>
-        /// 依搜尋條件獲得會計資料列表
+        /// 依搜尋條件獲得會計師資料列表
         /// </summary>
-        /// <param name="accountantSearch">會計師分頁搜尋</param> 
+        /// <param name="accountantSearch">搜尋條件</param> 
         /// <returns></returns>
         public AccountantPaginateViewModel GetPaginate(AccountantSearch accountantSearch)
         {
             AccountantPaginateViewModel accountantPaginatesViewModels = new();            
 
-            IQueryable<Accountant> accountantQuery = dbContext.Accountants.Where(accountant => accountant.DeleteStatus == DeleteStatus.NO)
+            IQueryable<Accountant> accountantQuery = dbContext.Accountants.Where(accountant => accountant.DeleteStatus == DeleteStatus.No)
                                                     .Include(accountant => accountant.AccountantSignJournals);
             if (!string.IsNullOrWhiteSpace(accountantSearch.NumberOrNameOrGroupsName))
             {
@@ -109,11 +109,11 @@ namespace SealTypographicWebAPI.Services.Implements
         }
 
         /// <summary>
-        /// 新增會計基本資料
+        /// 新增會計師基本資料
         /// </summary>
-        /// <param name="accountantForm">基本資料</param>
+        /// <param name="accountantForm">會計師基本資料</param>
         /// <returns></returns>
-        public AccountantCreateResponse Create(AccountantForm accountantForm)
+        public AccountantCreateResponse New(AccountantForm accountantForm)
         {
             AccountantCreateResponse accountantCreateResponse = new();
             int userid = 0;//帳號驗證取得ID
@@ -172,7 +172,9 @@ namespace SealTypographicWebAPI.Services.Implements
         }
 
         /// <summary>
-        /// 變更此客戶狀態為刪除(隱藏)。
+        /// 刪除基本資料，
+        /// 此刪除為更動狀態使其一般使用者看不到資料，
+        /// 而不是真正的刪除。
         /// </summary>
         /// <param name="accountantId">會計師ID</param>        
         public ResponseViewModel Delete(int accountantId)
@@ -206,7 +208,7 @@ namespace SealTypographicWebAPI.Services.Implements
             {
                 accountant.CreateUserId = userid;
                 accountant.CreateDate = DateTime.Now;
-                accountant.DeleteStatus = DeleteStatus.NO;
+                accountant.DeleteStatus = DeleteStatus.No;
             }
             else
             {

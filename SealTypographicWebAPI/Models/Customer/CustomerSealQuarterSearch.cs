@@ -3,9 +3,9 @@
 namespace SealTypographicWebAPI.Models.Customer
 {
     /// <summary>
-    /// 客戶印鑑搜尋(依客戶ID與季度ID)
+    /// 客戶印鑑搜尋(依客戶ID與季度)
     /// </summary>
-    public class CustomerSealQuarter
+    public class CustomerSealQuarterSearch
     {
         /// <summary>
         /// 客戶Id

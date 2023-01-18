@@ -9,30 +9,30 @@ namespace SealTypographicWebAPI.Services
     public interface ILetterheadImageService
     {
         /// <summary>
-        /// 取得信頭圖片群組創建日期列表
+        /// 取得信頭圖片建立日期
         /// </summary>
         /// <param name="letterheadId">信頭Id</param>
         /// <returns></returns>
-        LetterheadCreateDateViews GetCreateDate(int letterheadId);
+        LetterheadImageCreateDateViews GetCreateDates(int letterheadId);
 
         /// <summary>
         /// 取得信頭圖片
         /// </summary>
-        /// <param name="letterheadGroupCreateDateSearch">搜尋條件</param>
+        /// <param name="id">信頭圖片Id</param>
         /// <returns></returns>
-        LetterheadImageViewModel GetImage(LetterheadImageSearch letterheadGroupCreateDateSearch);
+        LetterheadImageViewModel GetImageViewModel(int id);
 
         /// <summary>
-        /// 新增信頭圖片組
+        /// 異動信頭圖片
         /// </summary>
-        /// <param name="letterheadImageForms">信頭圖片組</param>
+        /// <param name="letterheadImageForms">信頭圖片</param>
         /// <returns></returns>
-        ResponseViewModel Create(LetterheadImageForms letterheadImageForms);
+        ResponseViewModel New(LetterheadImageForm letterheadImageForms);
 
         /// <summary>
         /// 異動信頭圖片的處理(審查狀態是草稿才進行修改)
         /// </summary>
-        /// <param name="letterheadImageUpdate">刪除修改新增的list</param>
+        /// <param name="letterheadImageUpdate">異動信頭圖片資料</param>
         /// <returns></returns>
         ResponseViewModel Update(LetterheadImageUpdate letterheadImageUpdate);
     }

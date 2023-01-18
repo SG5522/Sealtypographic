@@ -10,18 +10,19 @@ namespace SealTypographicWebAPI.Controllers
     /// <summary>
     /// 管理會計師基本資料
     /// </summary>
-    [Route("api/[controller]")]
-    [Produces("application/json")]
+    [Route("api/[controller]")]    
     [ApiController]
     public class AccountantController : ControllerBase
     {
         /// <summary>
-        /// 宣告會計師資料處理的interface
+        /// 會計師資料管理Service
         /// </summary>
-        protected readonly IAccountantService accountantService;
+        private readonly IAccountantService accountantService;
+
+
 
         /// <summary>
-        /// 注入Service
+        /// 建構:注入Service
         /// </summary>
         /// <param name="accountantService">管理會計師資料</param>
         public AccountantController(IAccountantService accountantService)
@@ -30,23 +31,23 @@ namespace SealTypographicWebAPI.Controllers
         }
 
         /// <summary>
-        /// 依搜尋條件獲得會計師資料列表
+        /// 依搜尋條件獲得會計師資料列表(分頁)
         /// </summary>
-        /// <param name="accountantQueryPage">會計師分頁搜尋</param>
+        /// <param name="accountantSearch">搜尋條件</param>
         /// <returns></returns>
         [HttpGet]
-        public AccountantPaginateViewModel Get([FromQuery]AccountantSearch accountantQueryPage)
+        public AccountantPaginateViewModel Paginate([FromQuery]AccountantSearch accountantSearch)
         {
             AccountantPaginateViewModel accountantPaginatesViewModel = new();
             try
             {
-                Log.Information("Accountant get FromQuery input {@Input}", accountantQueryPage);
-                accountantPaginatesViewModel = accountantService.GetPaginate(accountantQueryPage);
-                Log.Information("Accountant get FromQuery output {@Output}", accountantPaginatesViewModel);                
+                Log.Information("Accountant get paginate input {@Input}", accountantSearch);
+                accountantPaginatesViewModel = accountantService.GetPaginate(accountantSearch);
+                Log.Information("Accountant get paginate output {@Output}", accountantPaginatesViewModel);                
             }
             catch (Exception ex) 
             {
-                Log.Error("AccountantGroups get FromQuery error {@Error}", ex);
+                Log.Error("Accountant get paginate error {@Error}", ex);
                 accountantPaginatesViewModel.DbError();                                
             }
             return accountantPaginatesViewModel;
@@ -58,51 +59,51 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="accountantId">會計師ID</param>        
         /// <returns></returns>
         [HttpGet("{accountantId}")]
-        public AccountantDetailResponse Get(int accountantId)
+        public AccountantDetailResponse Detail(int accountantId)
         {
             AccountantDetailResponse accountantResponse = new();
             try
             {
-                Log.Information("Accountant get{accountantId} input {@Input}", accountantId);
+                Log.Information("Accountant get detail input {@Input}", accountantId);
                 accountantResponse = accountantService.GetDetail(accountantId);
-                Log.Information("Accountant get{accountantId} output {@Output}", accountantResponse);                
+                Log.Information("Accountant get detail output {@Output}", accountantResponse);                
             }
             catch (Exception ex)
             {
-                Log.Error("AccountantGroups get{accountantId} error {@Error}", ex);
+                Log.Error("AccountantGroups get detail error {@Error}", ex);
                 accountantResponse.DbError();                                
             }
             return accountantResponse;
         }
 
         /// <summary>
-        /// 建立會計師基本資料
+        /// 新增會計師基本資料
         /// </summary>
-        /// <param name="accountantBaseData"></param>
+        /// <param name="accountantForm">會計師基本資料</param>
         [HttpPost]
-        public AccountantCreateResponse Post(AccountantForm accountantBaseData)
+        public AccountantCreateResponse New(AccountantForm accountantForm)
         {
             AccountantCreateResponse accountantCreateResponse = new();
             try
             {
-                Log.Information("Accountant post input {@Input}", accountantBaseData);
-                accountantCreateResponse = accountantService.Create(accountantBaseData);
-                Log.Information("Accountant post output {@Output}", accountantCreateResponse);                       
+                Log.Information("Accountant new input {@Input}", accountantForm);
+                accountantCreateResponse = accountantService.New(accountantForm);
+                Log.Information("Accountant new output {@Output}", accountantCreateResponse);                       
             }
             catch (Exception ex)
             {
-                Log.Error("AccountantGroups post accountantFormUpdate error {@Error}", ex);
+                Log.Error("Accountant new error {@Error}", ex);
                 accountantCreateResponse.DbError();                
             }
             return accountantCreateResponse;
         }
 
         /// <summary>
-        /// 更新基本資料
+        /// 更新會計師基本資料
         /// </summary>
-        /// <param name="accountantFormUpdate"></param>        
+        /// <param name="accountantFormUpdate">會計師基本資料(ID為查詢用)</param>        
         [HttpPut]
-        public ResponseViewModel Put(AccountantFormUpdate accountantFormUpdate)
+        public ResponseViewModel Update(AccountantFormUpdate accountantFormUpdate)
         {
             ResponseViewModel response = new();
             try
@@ -113,7 +114,7 @@ namespace SealTypographicWebAPI.Controllers
             }
             catch (Exception ex)
             {
-                Log.Error("AccountantGroups put accountantFormUpdate error {@Error}", ex);
+                Log.Error("Accountant put accountantFormUpdate error {@Error}", ex);
                 response.DbError();                
             }
             return response;
@@ -124,7 +125,7 @@ namespace SealTypographicWebAPI.Controllers
         /// 此刪除為更動狀態使其一般使用者看不到資料，
         /// 而不是真正的刪除。
         /// </summary>
-        /// <param name="accountantId"></param>        
+        /// <param name="accountantId">會計師ID</param>        
         [HttpDelete("{accountantId}")]
         public ResponseViewModel Delete(int accountantId)
         {
@@ -137,7 +138,7 @@ namespace SealTypographicWebAPI.Controllers
             }
             catch (Exception ex)
             { 
-                Log.Error("AccountantGroups delete(hide) error {@Error}", ex);
+                Log.Error("Accountant delete(hide) error {@Error}", ex);
                 response.DbError();                
             }
             return response;

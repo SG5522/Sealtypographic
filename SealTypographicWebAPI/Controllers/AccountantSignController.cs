@@ -8,22 +8,21 @@ using Serilog;
 namespace SealTypographicWebAPI.Controllers
 {
     /// <summary>
-    /// 會計師印鑑組
+    /// 管理會計師簽印
     /// </summary>
-    [Route("api/[controller]")]
-    [Produces("application/json")]
+    [Route("api/[controller]")]    
     [ApiController]
     public class AccountantSignController : ControllerBase
     {
         /// <summary>
-        /// 宣告會計師的interface
+        /// 會計師簽印管理Service
         /// </summary>
-        protected readonly IAccountantSignService accountantSignService;
+        private readonly IAccountantSignService accountantSignService;
 
         /// <summary>
-        /// 注入會計師interface
+        /// 建構：注入會計師簽印管理Service
         /// </summary>
-        /// <param name="accountantSignService"></param>        
+        /// <param name="accountantSignService">會計師簽印管理Service</param>        
         public AccountantSignController(IAccountantSignService accountantSignService)
         {
             this.accountantSignService = accountantSignService;            
@@ -32,69 +31,69 @@ namespace SealTypographicWebAPI.Controllers
 
 
         /// <summary>
-        /// 取得會計師簽名啟用時間列
+        /// 取得會計師簽印建立日期列表
         /// </summary>
-        /// <param name="accountantID">會計ID</param>        
+        /// <param name="accountantID">會計師ID</param>        
         /// <returns></returns>
         [HttpGet("{accountantID}")]
-        public AccountantSignGroupCreateDateViews Get(int accountantID)
+        public AccountantSignCreateDateViews CreateDates(int accountantID)
         {
-            AccountantSignGroupCreateDateViews accountantSignStartDates = new ();
+            AccountantSignCreateDateViews accountantSignStartDates = new ();
             try
             {
-                Log.Information("AccountantSign get{accountantID} input {@Input}", accountantID);
-                accountantSignStartDates = accountantSignService.GetAccountantCreateDate(accountantID);
-                Log.Information("AccountantSign get{accountantID} output {@Output}", accountantSignStartDates);                        
+                Log.Information("AccountantSign get CreateDates input {@Input}", accountantID);
+                accountantSignStartDates = accountantSignService.GetCreateDates(accountantID);
+                Log.Information("AccountantSign get CreateDates output {@Output}", accountantSignStartDates);                        
             }
             catch (Exception ex)
             {             
-                Log.Error("AccountantSign get{accountantID} error {@Error}", ex);
+                Log.Error("AccountantSign get CreateDates error {@Error}", ex);
                 accountantSignStartDates.DbError();                
             }
             return accountantSignStartDates;
         }
 
         /// <summary>
-        /// 取得會計師簽印組
+        /// 依建立日期取得會計師簽印組
         /// </summary>
-        /// <param name="accountantSignStartDate">關鑑字</param>        
+        /// <param name="accountantSignCreateDate">會計師簽印搜尋(依會計師ID與創建群組日期)</param>        
         /// <returns></returns>        
         [HttpGet]
-        public AccountantSignViewModels Get([FromQuery] AccountantSignCreateDate accountantSignStartDate)
+        public AccountantSignViewModels SignViewModels([FromQuery] AccountantSignCreateDate accountantSignCreateDate)
         {
             AccountantSignViewModels accountantSignViewModels = new();
             try
             {
-                Log.Information("AccountantSign get[FromQuery] input {@Input}", accountantSignStartDate);
-                accountantSignViewModels = accountantSignService.Get(accountantSignStartDate);
-                Log.Information("AccountantSign get[FromQuery] output {@Output}", accountantSignViewModels);
+                Log.Information("AccountantSign get signViewModels input {@Input}", accountantSignCreateDate);
+                accountantSignViewModels = accountantSignService.GetSignViewModels(accountantSignCreateDate);
+                Log.Information("AccountantSign get signViewModels output {@Output}", accountantSignViewModels);
             }
             catch (Exception ex)
             {
-                Log.Error("CustomerSeal get error {@Error}", ex);
+                Log.Error("CustomerSeal get signViewModels error {@Error}", ex);
                 accountantSignViewModels.DbError();                
             }
             return accountantSignViewModels;
         }
 
         /// <summary>
-        /// 建立會計師印鑑簽印組
+        /// 新增會計師簽印組
         /// </summary>
-        /// <param name="accountantSignForms"></param>
+        /// <param name="accountantSignForms">會計師簽印組</param>
         /// <returns></returns>
         [HttpPost]
-        public ResponseViewModel Post(AccountantSignForms accountantSignForms)
+        public ResponseViewModel New(AccountantSignForms accountantSignForms)
         {
             ResponseViewModel response = new ();
             try
             {
-                Log.Information("AccountantSign post input {@Input}", accountantSignForms);
-                response = accountantSignService.Create(accountantSignForms);
-                Log.Information("AccountantSign post output {@Output}", response);                             
+                Log.Information("AccountantSign new input {@Input}", accountantSignForms);
+                response = accountantSignService.New(accountantSignForms);
+                Log.Information("AccountantSign new output {@Output}", response);                             
             }
             catch (Exception ex)
             {                
-                Log.Error("AccountantSign post error {@Error}", ex);
+                Log.Error("AccountantSign new error {@Error}", ex);
                 response.DbError();
             }
             return response;
@@ -103,22 +102,22 @@ namespace SealTypographicWebAPI.Controllers
         /// <summary>
         /// 異動會計師簽印
         /// </summary>
-        /// <param name="accountantSignUpdate"></param>
+        /// <param name="accountantSignUpdate">需要異動會計師簽印資料</param>
         /// <returns></returns>
         [HttpPut]
-        public List<ResponseViewModel> Put(AccountantSignUpdate accountantSignUpdate)
+        public List<ResponseViewModel> Update(AccountantSignUpdate accountantSignUpdate)
         {
             List<ResponseViewModel> responses= new();
             try
             {
-                Log.Information("AccountantSign post input {@Input}", accountantSignUpdate);
+                Log.Information("AccountantSign update input {@Input}", accountantSignUpdate);
                 responses = accountantSignService.Update(accountantSignUpdate);
-                Log.Information("AccountantSign post output {@Output}", responses);
+                Log.Information("AccountantSign update output {@Output}", responses);
             }
             catch (Exception ex)
             {
                 ResponseViewModel response= new();
-                Log.Error("AccountantSign post error {@Error}", ex);
+                Log.Error("AccountantSign update error {@Error}", ex);
                 response.DbError();
                 responses.Add(response);
             }
@@ -126,46 +125,46 @@ namespace SealTypographicWebAPI.Controllers
         }
 
         /// <summary>
-        /// 將草搞的簽印組狀態變更為待審
+        /// 將草稿的簽印組狀態變更為待審
         /// </summary>
-        /// <param name="accountantSignGroupCreateDateSearch"></param>        
+        /// <param name="accountantSignCreateDate">會計師簽印搜尋(依會計師ID與創建群組日期)</param>        
         /// <returns></returns>
-        [HttpPut("Pending")]
-        public ResponseViewModel PutPendingAccountantSign(AccountantSignCreateDate accountantSignGroupCreateDateSearch)
+        [HttpPut("[Action]")]
+        public ResponseViewModel Pending(AccountantSignCreateDate accountantSignCreateDate)
         {
             ResponseViewModel response = new();
             try
             {
-                Log.Information("AccountantSign put input {@Input}", accountantSignGroupCreateDateSearch);
-                response = accountantSignService.PendingSigns(accountantSignGroupCreateDateSearch);
-                Log.Information("AccountantSign put output {@Output}", response);                
+                Log.Information("AccountantSign pending input {@Input}", accountantSignCreateDate);
+                response = accountantSignService.PendingSigns(accountantSignCreateDate);
+                Log.Information("AccountantSign pending output {@Output}", response);                
             }
             catch (Exception ex)
             {                
-                Log.Error("AccountantSign put error {@Error}", ex);                
+                Log.Error("AccountantSign pending error {@Error}", ex);                
                 response.DbError();                
             }
             return response;
         }
 
         /// <summary>
-        /// 將草搞的簽印組狀態變更為作廢
+        /// 將草稿的簽印組狀態變更為作廢
         /// </summary>
-        /// <param name="accountantSignGroupCreateDateSearch"></param>
+        /// <param name="accountantSignCreateDate">會計師簽印搜尋(依會計師ID與創建群組日期)</param>
         /// <returns></returns>
-        [HttpPut("Invalid")]
-        public ResponseViewModel PutInvalidAccountantSign(AccountantSignCreateDate accountantSignGroupCreateDateSearch)
+        [HttpPut("[Action]")]
+        public ResponseViewModel Invalid(AccountantSignCreateDate accountantSignCreateDate)
         {
             ResponseViewModel response = new();
             try
             {
-                Log.Information("CustomerSeal delete input {@Input}", accountantSignGroupCreateDateSearch);
-                response = accountantSignService.InvalidSigns(accountantSignGroupCreateDateSearch);
-                Log.Information("CustomerSeal delete output {@Ouput}", response);                
+                Log.Information("AccountantSign Invalid input {@Input}", accountantSignCreateDate);
+                response = accountantSignService.InvalidSigns(accountantSignCreateDate);
+                Log.Information("AccountantSign Invalid output {@Ouput}", response);                
             }
             catch (Exception ex)
             {
-                Log.Error("Other delete error {@Error}", ex);                
+                Log.Error("AccountantSign Invalid error {@Error}", ex);                
                 response.DbError();                  
             }
             return response;

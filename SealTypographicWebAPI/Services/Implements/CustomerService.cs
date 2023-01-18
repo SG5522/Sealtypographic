@@ -4,12 +4,11 @@ using SealTypographicWebAPI.Entities;
 using SealTypographicWebAPI.Consts;
 using AutoMapper;
 using SealTypographicWebAPI.Utils;
-using Microsoft.EntityFrameworkCore;
 
 namespace SealTypographicWebAPI.Services.Implements
 {
     /// <summary>
-    /// 顧客資料管理
+    /// 客戶資料管理
     /// </summary>
     public class CustomerService : ICustomerService
     {
@@ -28,9 +27,9 @@ namespace SealTypographicWebAPI.Services.Implements
         }
 
         /// <summary>
-        /// 取得單筆顧客資料
+        /// 取得客戶詳細基本資料
         /// </summary>
-        /// <param name="customerId">顧客ID</param>
+        /// <param name="customerId">客戶ID</param>
         /// <returns></returns>
         public CustomerDetailViewModel GetDetail(int customerId)
         {
@@ -51,14 +50,14 @@ namespace SealTypographicWebAPI.Services.Implements
         }
 
         /// <summary>
-        /// 依搜尋條件獲得顧客資料列表
+        /// 取得客戶資料列表(分頁)
         /// </summary>
-        /// <param name="customerSearch">搜尋條件</param>  
+        /// <param name="customerSearch">客戶分頁搜尋</param>  
         /// <returns></returns>
         public CustomerPaginateViewModel GetPaginate(CustomerSearch customerSearch)
         {
             CustomerPaginateViewModel customerPaginateViewModel = new();            
-            IQueryable<Customer> customerQuery = dbContext.Customers.Where(customer => customer.DeleteStatus == DeleteStatus.NO);                                                
+            IQueryable<Customer> customerQuery = dbContext.Customers.Where(customer => customer.DeleteStatus == DeleteStatus.No);                                                
             
             if (!string.IsNullOrWhiteSpace(customerSearch.CustomerNumberOrName))
             {
@@ -83,8 +82,8 @@ namespace SealTypographicWebAPI.Services.Implements
                 {
                     CustomerViewModel customerViewModel = mapper.Map<CustomerViewModel>(customerBase);
                     
-                    string? quarter = dbContext.SealReviewJournals
-                                    .Where(x => x.CustomerSealJournal.CustomerId == customerBase.Id)
+                    string? quarter = dbContext.CustomerSealQuarterJournals
+                                    .Where(x => x.Customer.Id == customerBase.Id)
                                     .Max(x => x.Quarter);
 
                     if (quarter != null)
@@ -109,10 +108,10 @@ namespace SealTypographicWebAPI.Services.Implements
         }
 
         /// <summary>
-        /// 新增顧客基本資料
+        /// 新增客戶基本資料
         /// </summary>
         /// <param name="customerForm">基本資料</param>
-        public CreateCustomerResponse Create(CustomerForm customerForm)
+        public CreateCustomerResponse New(CustomerForm customerForm)
         {
             CreateCustomerResponse createCustomerResponse = new();
             int userid = 0; //帳號驗證取得ID
@@ -148,9 +147,10 @@ namespace SealTypographicWebAPI.Services.Implements
         }
 
         /// <summary>
-        /// 更新客戶基本資料
+        /// 更新基本資料
         /// </summary>
-        /// <param name="customerFormUpdate">客戶基本資料 customerForm.CustomerNumber 為搜尋條件</param>        
+        /// <param name="customerFormUpdate">基本資料</param>
+        /// <returns></returns>
         public ResponseViewModel Update(CustomerUpdateForm customerFormUpdate)
         {
             ResponseViewModel response = new();
@@ -172,14 +172,16 @@ namespace SealTypographicWebAPI.Services.Implements
         }
 
         /// <summary>
-        /// 變更此客戶狀態為刪除。
+        /// 刪除基本資料，
+        /// 此刪除為更動狀態使其一般使用者看不到資料，
+        /// 而不是真正的刪除。。
         /// </summary>
         /// <param name="customerId">客戶ID</param>        
         public ResponseViewModel Delete(int customerId)
         {
             ResponseViewModel response = new();
             int userId = 0;//帳號驗證取得ID
-            Customer? customerQuery = dbContext.Customers.Find(customerId);
+            Customer? customerQuery = dbContext.Customers.Find(customerId);            
 
             if (customerQuery != null)
             {
@@ -207,7 +209,7 @@ namespace SealTypographicWebAPI.Services.Implements
             {
                 customer.CreateUserId = userid;
                 customer.CreateDate = DateTime.Now;
-                customer.DeleteStatus = DeleteStatus.NO;
+                customer.DeleteStatus = DeleteStatus.No;
             }
             else
             {

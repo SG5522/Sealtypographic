@@ -11,8 +11,7 @@ namespace SealTypographicWebAPI.Controllers
     /// <summary>
     /// 上傳
     /// </summary>
-    [Route("api/[controller]")]
-    [Produces("application/json")]
+    [Route("api/[controller]")]    
     [ApiController]    
     public class UploadImageController : ControllerBase
     {

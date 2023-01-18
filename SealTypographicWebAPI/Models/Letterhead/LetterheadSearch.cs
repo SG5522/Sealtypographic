@@ -3,7 +3,7 @@
 namespace SealTypographicWebAPI.Models.Customer
 {
     /// <summary>
-    /// 客戶分頁搜尋
+    /// 信頭分頁搜尋
     /// </summary>
     public class LetterheadSearch : PaginateSearch
     {

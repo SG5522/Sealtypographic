@@ -32,36 +32,28 @@ namespace SealTypographicWebAPI.Services.Implements
         /// 待審清單
         /// </summary>
         /// <returns></returns>
-        public CustomerSealReviewViewModelResponse GetCustomerSealReviewViewModel(CustomerSealReviewSearch customerSealReviewSearch)
+        public CustomerSealQuarterViewModelResponse GetCustomerSealReviewViewModel(CustomerSealReviewSearch customerSealReviewSearch)
         {
-            CustomerSealReviewViewModelResponse customerSealReviewViewModelResponse = new ();
-            List<CustomerSealReviewViewModel> customerSealReviewViewModels = new ();
+            CustomerSealQuarterViewModelResponse customerSealReviewViewModelResponse = new ();
+            List<CustomerSealQuarterViewModel> customerSealReviewViewModels = new ();
 
-            List<CustomerSealJournal> customerSealJournalQuery = dbContext.CustomerSealJournals
-                                                                .Include(customerSealJournal => customerSealJournal.Customer)
+            IQueryable<CustomerSealQuarterJournal> customerSealQuarterJournalQuery = dbContext.CustomerSealQuarterJournals
+                                                                .Include(customerSealQuarterJournal => customerSealQuarterJournal.Customer)
                                                                 .Where
                                                                 (
-                                                                    customerSealJournal => customerSealJournal.DeleteStatus == DeleteStatus.NO                                                                    
-                                                                    && customerSealJournal.Customer.DeleteStatus == DeleteStatus.NO
-                                                                    //&& customerSealJournal.ReviewStatus == ReviewStatus.Pending
-                                                                )
-                                                                .OrderBy(customerSealJournal => customerSealJournal.Customer.Code)
-                                                                .GroupBy(customerSealJournal => new { 
-                                                                                                        customerSealJournal.CustomerId,
-                                                                                                        //customerSealJournal.Quarter,                                                                                                        
-                                                                                                    })
-                                                                .Select(customerSealJournal => customerSealJournal.First())
-                                                                .ToList();
-            if (customerSealJournalQuery.Any())
+                                                                    customerSealJournal => customerSealJournal.DeleteStatus == DeleteStatus.No
+                                                                    && customerSealJournal.ReviewStatus == customerSealReviewSearch.ReviewStatus
+                                                                );
+            if (customerSealQuarterJournalQuery.Any())
             {
                 //取得該頁            
-                List<CustomerSealJournal> thisPageCustomerSealJournals = customerSealJournalQuery
+                List<CustomerSealQuarterJournal> thisPageCustomerSealQuarter = customerSealQuarterJournalQuery
                                                     .Skip((customerSealReviewSearch.PageNumber - 1) * customerSealReviewSearch.PageSize)
                                                     .Take(customerSealReviewSearch.PageSize)
                                                     .ToList();
-                foreach (CustomerSealJournal customerSealJournal in thisPageCustomerSealJournals)
+                foreach (CustomerSealQuarterJournal customerSealQuarterJournal in thisPageCustomerSealQuarter)
                 {
-                    CustomerSealReviewViewModel customerSealReviewViewModel = mapper.Map<CustomerSealReviewViewModel>(customerSealJournal);
+                    CustomerSealQuarterViewModel customerSealReviewViewModel = mapper.Map<CustomerSealQuarterViewModel>(customerSealQuarterJournal);
                     //customerSealReviewViewModel.ReviewStatus = ReviewStatusUtil.Get(customerSealJournal.ReviewStatus);
                     customerSealReviewViewModels.Add(customerSealReviewViewModel);
                 }
@@ -70,8 +62,8 @@ namespace SealTypographicWebAPI.Services.Implements
                 customerSealReviewViewModelResponse.PageNumber = customerSealReviewSearch.PageNumber;
                 customerSealReviewViewModelResponse.PageSize = customerSealReviewSearch.PageSize;
                 //計算總頁數
-                customerSealReviewViewModelResponse.TotalPage = TotalPageUtil.GetTotalPage(customerSealJournalQuery.Count(), customerSealReviewSearch.PageSize);
-                customerSealReviewViewModelResponse.TotalCount = customerSealJournalQuery.Count();
+                customerSealReviewViewModelResponse.TotalPage = TotalPageUtil.GetTotalPage(customerSealQuarterJournalQuery.Count(), customerSealReviewSearch.PageSize);
+                customerSealReviewViewModelResponse.TotalCount = customerSealQuarterJournalQuery.Count();
                 customerSealReviewViewModelResponse.Success();
             }
             else
@@ -84,47 +76,47 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <summary>
         /// 依照客戶ID與季度列出詳細資料與印鑑
         /// </summary>
-        /// <param name="customerSealQuarter">搜尋條件</param>
+        /// <param name="customerSealReviewSearch">搜尋條件</param>
         /// <returns></returns>
 
-        public CustomerSealReviewDetailResponse GetCustomerSealReviewDetail(CustomerSealQuarter customerSealQuarter)
+        public CustomerSealReviewDetailResponse GetCustomerSealReviewDetail(CustomerSealReviewSearch customerSealReviewSearch)
         {
             CustomerSealReviewDetailResponse customerSealReviewDetailResponse = new();
             List<CustomerSealViewModel> customerSealViewModels = new();
             
-            Customer? customerQuery = dbContext.Customers.Find(customerSealQuarter.CustomerId);
-            if(customerQuery != null) 
-            {
-                IQueryable<CustomerSealJournal> customerSealJournalQuery = dbContext.CustomerSealJournals                                                                            
-                                                                            .Where
-                                                                            (
-                                                                                customerSealJournal => customerSealJournal.CustomerId == customerSealQuarter.CustomerId
-                                                                                //&& customerSealJournal.Quarter == customerSealQuarter.Quarter
-                                                                            )
-                                                                            .OrderBy(customerSealJournal => customerSealJournal.ConfigType)
-                                                                            .ThenBy(customerSealJournal => customerSealJournal.SealReviewJournal.Sequence);
-                if(customerSealJournalQuery.Any())
-                {                    
-                    foreach (CustomerSealJournal customerSealJournal in customerSealJournalQuery)
-                    {
-                        CustomerSealViewModel customerSealViewModel = mapper.Map<CustomerSealViewModel>(customerSealJournal);
-                        customerSealViewModel.ImageBase64 = customerSealJournal.ImagePath;
-                        customerSealViewModels.Add(customerSealViewModel);
-                    }
-                    customerSealReviewDetailResponse.CustomerSealReviewDetail = mapper.Map<CustomerSealReviewDetail>(customerQuery);
-                    customerSealReviewDetailResponse.CustomerSealReviewDetail.CustomerSealViewModels = customerSealViewModels;                    
-                    customerSealReviewDetailResponse.CustomerSealReviewDetail.Quarter = customerSealQuarter.Quarter;
-                    customerSealReviewDetailResponse.Success();
-                }
-                else
-                {
-                    customerSealReviewDetailResponse.CustomerSealNoData();
-                }
-            }
-            else
-            {
-                customerSealReviewDetailResponse.CustomeNoData();
-            }            
+            //Customer? customerQuery = dbContext.Customers.Find(customerSealReviewSearch.CustomerId);
+            //if(customerQuery != null) 
+            //{
+            //    IQueryable<CustomerSealJournal> customerSealJournalQuery = dbContext.CustomerSealJournals                                                                            
+            //                                                                .Where
+            //                                                                (
+            //                                                                    customerSealJournal => customerSealJournal.CustomerId == customerSealReviewSearch.CustomerId
+            //                                                                    //&& customerSealJournal.Quarter == customerSealQuarter.Quarter
+            //                                                                )
+            //                                                                .OrderBy(customerSealJournal => customerSealJournal.ConfigType)
+            //                                                                .ThenBy(customerSealJournal => customerSealJournal.SealReviewJournal.Sequence);
+            //    if(customerSealJournalQuery.Any())
+            //    {                    
+            //        foreach (CustomerSealJournal customerSealJournal in customerSealJournalQuery)
+            //        {
+            //            CustomerSealViewModel customerSealViewModel = mapper.Map<CustomerSealViewModel>(customerSealJournal);
+            //            customerSealViewModel.ImageBase64 = customerSealJournal.ImagePath;
+            //            customerSealViewModels.Add(customerSealViewModel);
+            //        }
+            //        customerSealReviewDetailResponse.CustomerSealReviewDetail = mapper.Map<CustomerSealReviewDetail>(customerQuery);
+            //        customerSealReviewDetailResponse.CustomerSealReviewDetail.CustomerSealViewModels = customerSealViewModels;                    
+            //        customerSealReviewDetailResponse.CustomerSealReviewDetail.Quarter = customerSealReviewSearch.Quarter;
+            //        customerSealReviewDetailResponse.Success();
+            //    }
+            //    else
+            //    {
+            //        customerSealReviewDetailResponse.CustomerSealNoData();
+            //    }
+            //}
+            //else
+            //{
+            //    customerSealReviewDetailResponse.CustomeNoData();
+            //}            
             return customerSealReviewDetailResponse;
         }
 

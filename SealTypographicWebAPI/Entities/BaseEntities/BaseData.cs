@@ -3,12 +3,12 @@
 namespace SealTypographicWebAPI.Entities.BaseEntities
 {
     /// <summary>
-    /// 各類別基本資料
+    /// 各類別基本資料 : 客戶印鑑歷程、會計師簽印歷程、事務所信頭圖片歷程、印鑑擺放位置、排版頁、基本資料 With 名稱
     /// </summary>
     public class BaseData
     {
         /// <summary>
-        /// ID
+        /// Id
         /// </summary>        
         public int Id { get; set; }
 
@@ -23,12 +23,12 @@ namespace SealTypographicWebAPI.Entities.BaseEntities
         public DateTime UpdateDate { get; set; }
 
         /// <summary>
-        /// 創建UserId
+        /// 建立此筆資料的User
         /// </summary>
         public int CreateUserId { get; set; }
 
         /// <summary>
-        /// 更新UserId
+        /// 更新此筆資料的User
         /// </summary>
         public int UpdateUserId { get; set; }
 

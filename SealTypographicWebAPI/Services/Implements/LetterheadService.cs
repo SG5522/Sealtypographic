@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using EFCore.BulkExtensions;
 using Microsoft.EntityFrameworkCore;
 using SealTypographicWebAPI.Consts;
 using SealTypographicWebAPI.Entities;
@@ -27,11 +28,11 @@ namespace SealTypographicWebAPI.Services.Implements
             this.dbContext = dbContext;
             this.mapper = mapper;
         }
-     
+
         /// <summary>
-        /// 取得顧客印鑑組
+        /// 取得信頭資料列表(分頁)
         /// </summary>
-        /// <param name="letterheadSearch"></param>
+        /// <param name="letterheadSearch">信頭分頁搜尋</param>
         /// <returns></returns>
         public LetterheadPaginateViewModel GetPaginate(LetterheadSearch letterheadSearch)
         {
@@ -39,7 +40,7 @@ namespace SealTypographicWebAPI.Services.Implements
             List<LetterheadViewModel> letterheadViewModels = new();
             ResponseViewModel response = new();
 
-            IQueryable<Letterhead> letterheadQuery = dbContext.Letterheads.Where(letterhead => letterhead.DeleteStatus == DeleteStatus.NO)
+            IQueryable<Letterhead> letterheadQuery = dbContext.Letterheads.Where(letterhead => letterhead.DeleteStatus == DeleteStatus.No)
                                                     .Include(letterhead => letterhead.LetterheadImageJournals);
 
             if (!string.IsNullOrWhiteSpace(letterheadSearch.Name))
@@ -90,22 +91,32 @@ namespace SealTypographicWebAPI.Services.Implements
             }
             return letterheadPaginateViewModel;
         }
-                
+
 
         /// <summary>
-        /// 刪除信頭資料(變更狀態使其一般USER無法看到)
+        /// 此刪除為更動狀態使其一般使用者看不到資料，
+        /// 而不是真正的刪除。
+        /// 另外連同關聯的信頭圖片標記刪除(只是標記刪除不是真正刪除)
         /// </summary>
-        /// <param name="litterheadID"></param>
-        public ResponseViewModel Delete(int litterheadID)
+        /// <param name="id">信頭Id</param>
+        public ResponseViewModel Delete(int id)
         {
             ResponseViewModel response = new();
             int userId = 0;//帳號驗證取得Id
-            Letterhead? letterheadQuery = dbContext.Letterheads.Find(litterheadID);
+            Letterhead? letterheadQuery = dbContext.Letterheads.Include(x => x.LetterheadImageJournals)
+                                          .FirstOrDefault(x => x.Id == id);
 
             if (letterheadQuery != null)
             {
                 letterheadQuery.DeleteStatus = DeleteStatus.Yes;
                 BaseInputLetterhead(letterheadQuery, false, userId);
+
+                foreach(LetterheadImageJournal letterheadImageJournal in letterheadQuery.LetterheadImageJournals)
+                {
+                    letterheadImageJournal.DeleteStatus = DeleteStatus.Yes;
+                    letterheadImageJournal.Status = LetterheadImageStatus.Disabled;
+                }
+                
                 dbContext.SaveChanges();
                 response.Success();
             }
@@ -128,7 +139,7 @@ namespace SealTypographicWebAPI.Services.Implements
             {
                 letterhead.CreateUserId = userid;
                 letterhead.CreateDate = DateTime.Now;
-                letterhead.DeleteStatus = DeleteStatus.NO;
+                letterhead.DeleteStatus = DeleteStatus.No;
             }
             else
             {

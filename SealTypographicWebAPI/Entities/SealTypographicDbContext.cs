@@ -9,7 +9,7 @@ namespace SealTypographicWebAPI.Entities
     public class SealTypographicDbContext : DbContext
     {
         /// <summary>
-        /// 顧客資料表
+        /// 客戶資料表
         /// </summary>
         public DbSet<Customer> Customers { get; set; }
 
@@ -19,9 +19,14 @@ namespace SealTypographicWebAPI.Entities
         public DbSet<SealReviewJournal> SealReviewJournals { get; set; }
 
         /// <summary>
-        /// 顧客印鑑歷程資料表
+        /// 客戶印鑑歷程資料表
         /// </summary>
         public DbSet<CustomerSealJournal> CustomerSealJournals { get; set; }
+
+        /// <summary>
+        /// 客戶印鑑季度歷程資料表
+        /// </summary>
+        public DbSet<CustomerSealQuarterJournal> CustomerSealQuarterJournals { get; set; }
 
         /// <summary>
         /// 會計師資料表
