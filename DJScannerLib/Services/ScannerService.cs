@@ -4,7 +4,10 @@ using System.Runtime.InteropServices;
 using System.Reflection.Metadata;
 using System.Security.Principal;
 using System.Security.Permissions;
-using static System.Net.Mime.MediaTypeNames;
+using DJLib;
+using SixLabors.ImageSharp;
+using System.ComponentModel;
+using SixLabors.ImageSharp.Formats;
 
 namespace ScannerLib.Services
 {
@@ -25,17 +28,16 @@ namespace ScannerLib.Services
         private bool disableDsSent;
         private IntPtr intPtrXfer = IntPtr.Zero;
         private IntPtr intPtrImage = IntPtr.Zero;
-        private int m_iUseBitmap;
         // Setup information...
-        //private FormSetup m_formsetup;
         // 詳細名稱的驅動程式清單
         List<string> lszIdentity = new List<string>();
+
+        int cnt = 0;
 
 
         public ScannerService(IntPtr intPtrHwnd) 
         {
             this.intPtrHwnd = intPtrHwnd;
-            m_iUseBitmap = 0;
             try
             {
                 // Init stuff...
@@ -70,8 +72,6 @@ namespace ScannerLib.Services
                 TWAINWorkingGroup.Log.Error("exception - " + exception.Message);
                 twain = null;
             }
-            // Prep for TWAIN events...
-            //SetMessageFilter(true);
         }
 
         /// <summary>
@@ -82,7 +82,7 @@ namespace ScannerLib.Services
         {
             TWAIN.STS sts;
             string szDefault = "";
-            string[] aszIdentity;
+            string[] aszIdentity = null;
             // 簡寫名稱的驅動程式清單
             List<string> lszDriveList = new List<string>();
 
@@ -142,7 +142,6 @@ namespace ScannerLib.Services
         }
         public void Scan()
         {
-            m_iUseBitmap = 0;
             string szTwmemref;
 
             // Silently start scanning if we detect that customdsdata is supported,
@@ -463,15 +462,13 @@ namespace ScannerLib.Services
                     Rollback(TWAIN.STATE.S4);
                     return;
                 }
-
+                cnt++;
                 //@轉成byte值存到scanImageDatas
                 byte[] abImage = new byte[imageBytes];
                 Marshal.Copy(intPtrImage, abImage, 0, imageBytes);
-                //scanImageDatas.Add(new ScanImageData
-                //{
-                //    ImageName = saveImageName + ImageCount + saveImagetype,
-                //    Base64Data = ImageDataToBase64("bmp", abImage)
-                //}); ;
+                Image img = Image.Load(abImage, out IImageFormat format);
+                img.SaveAsJpeg($"F:\\{cnt}.jpg");
+                string base64 = ImageSharpUtil.ImageToBase64(img, format);
 
                 //@記憶圖片的參數初始化
                 Marshal.FreeHGlobal(intPtrImage);

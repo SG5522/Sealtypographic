@@ -1,0 +1,13 @@
+{
+  "profiles": {
+    "DJLocalAPI": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "launchUrl": "swagger",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "applicationUrl": "https://localhost:22431;http://localhost:22435"
+    }
+  }
+}

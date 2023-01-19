@@ -1,3 +1,6 @@
+using DJLocalAPI.Api;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Hosting;
 using ScannerLib.Services;
 using System.Windows.Forms.VisualStyles;
 using TWAINWorkingGroup;
@@ -8,14 +11,30 @@ namespace DJLocalAPI
     {
         ScannerService sc;
         private bool scanStart = false;
+
+        private string[]? args;
+        private ApiServerService? apiServerService;
         public DJLLocalAPI()
         {
             InitializeComponent();
+        }
+        public DJLLocalAPI(string[] args) : this()
+        {
+            this.args = args;
             // «Å§iScannerService
             sc = new ScannerService(this.Handle);
             SetMessageFilter(true);
         }
+        private void DJLLocalAPI_Load(object sender, EventArgs e)
+        {
+            apiServerService = new(args); 
+            apiServerService!.StartServer();
+        }
 
+        private void DJLLocalAPI_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            apiServerService!.StopServer();
+        }
         private void btnGetDrivers_Click(object sender, EventArgs e)
         {
             List<string> drivers = new List<string>();

@@ -6,15 +6,30 @@
     <Nullable>enable</Nullable>
     <UseWindowsForms>true</UseWindowsForms>
     <ImplicitUsings>enable</ImplicitUsings>
+    <GenerateDocumentationFile>True</GenerateDocumentationFile>
+    <DocumentationFile>F:\0-SC\SealTypographic\DJLocalAPI\DJLocalAPI.xml</DocumentationFile>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="DJLLocalAPI.cs.rej" />
+  </ItemGroup>
 	
 	<ItemGroup>
 		<FrameworkReference Include="Microsoft.AspNetCore.App" />
 	</ItemGroup>
 	
 	<ItemGroup>
+	  <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
+	</ItemGroup>
+	
+	<ItemGroup>
 	  <ProjectReference Include="..\DJLib\DJLib.csproj" />
 	  <ProjectReference Include="..\DJScannerLib\DJScannerLib.csproj" />
+	</ItemGroup>
+	
+	<ItemGroup>
+	  <Folder Include="Services\" />
+	  <Folder Include="Properties\" />
 	</ItemGroup>
 	
 </Project>
