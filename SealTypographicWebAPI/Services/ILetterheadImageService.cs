@@ -9,11 +9,11 @@ namespace SealTypographicWebAPI.Services
     public interface ILetterheadImageService
     {
         /// <summary>
-        /// 取得信頭圖片建立日期
+        /// 取得信頭名稱與圖片建立日期
         /// </summary>
         /// <param name="letterheadId">信頭Id</param>
         /// <returns></returns>
-        LetterheadImageCreateDateViews GetCreateDates(int letterheadId);
+        LetterheadImageCreateDateViews GetNameAndCreateDate(int letterheadId);
 
         /// <summary>
         /// 取得信頭圖片

@@ -134,6 +134,7 @@ using (IServiceScope scope = app.Services.CreateScope())
     dbContext.Database.Migrate();
 }
 
+
 app.UseAuthorization();
 //app.UseSerilogRequestLogging(); // <-SeriLog 
 

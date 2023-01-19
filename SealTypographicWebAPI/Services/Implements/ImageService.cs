@@ -35,8 +35,7 @@ namespace SealTypographicWebAPI.Services
         public string GetPathToBase64(string path,SealType sealType)
         {
             //string folderPath = GetImageFolder(sealType);
-            //return ImageSharpUtil.PathImageFileToBase64($"{path}");
-            return path;
+            return ImageSharpUtil.PathImageFileToBase64($"{path}");            
         }
         
         /// <summary>
@@ -54,7 +53,7 @@ namespace SealTypographicWebAPI.Services
                 Folder = $"{folderPath}{dateFolder}"
             };
 
-            //ImageSharpUtil.Base64ToSaveImage(imageBase64Info.ImageBase64, saveImageInfo);
+            ImageSharpUtil.Base64ToSaveImage(imageBase64Info.ImageBase64, saveImageInfo);
 
             return $"{saveImageInfo.Folder}{saveImageInfo.Filename}";                        
         }

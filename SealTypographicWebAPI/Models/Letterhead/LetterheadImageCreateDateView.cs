@@ -30,10 +30,15 @@ namespace SealTypographicWebAPI.Models.Letterhead
     }
 
     /// <summary>
-    /// 信頭圖片群組創建日期列表
+    /// 信頭名稱與圖片群組創建日期列表
     /// </summary>
     public class LetterheadImageCreateDateViews : ResponseViewModel
     {
+        /// <summary>
+        /// 信頭名稱
+        /// </summary>
+        public string? Name { get; set; }
+
         /// <summary>
         /// 信頭圖片創建日期搜尋表
         /// </summary>

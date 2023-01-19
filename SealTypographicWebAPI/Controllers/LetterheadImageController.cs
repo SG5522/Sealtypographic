@@ -30,18 +30,18 @@ namespace SealTypographicWebAPI.Controllers
         }
 
         /// <summary>
-        /// 取得信頭圖片建立日期
+        /// 取得信頭名稱與圖片建立日期
         /// </summary>
         /// <param name="letterheadId">信頭Id</param>
         /// <returns></returns>
         [HttpGet("{letterheadId}")]
-        public LetterheadImageCreateDateViews CreateDates(int letterheadId)
+        public LetterheadImageCreateDateViews NameAndCreateDate(int letterheadId)
         {
             LetterheadImageCreateDateViews letterheadGroupCreateDateViews = new();
             try
             {
                 Log.Information("LetterheadImage get createDates input {@Input}", letterheadId);
-                letterheadGroupCreateDateViews = letterheadImageService.GetCreateDates(letterheadId);
+                letterheadGroupCreateDateViews = letterheadImageService.GetNameAndCreateDate(letterheadId);
                 Log.Information("LetterheadImage get createDates output {@Output}", letterheadGroupCreateDateViews);
             }
             catch (Exception ex)

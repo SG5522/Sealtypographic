@@ -8,6 +8,7 @@ using SealTypographicWebAPI.Models.Accountant;
 using SealTypographicWebAPI.Models.Customer;
 using SealTypographicWebAPI.Models.Letterhead;
 using SealTypographicWebAPI.Utils;
+using System.Linq;
 
 namespace SealTypographicWebAPI.Services.Implements
 {
@@ -34,33 +35,30 @@ namespace SealTypographicWebAPI.Services.Implements
         }
 
         /// <summary>
-        /// 取得信頭圖片建立日期
+        /// 取得信頭名稱與圖片建立日期
         /// </summary>
         /// <param name="letterheadId">信頭Id</param>
         /// <returns></returns>
-        public LetterheadImageCreateDateViews GetCreateDates(int letterheadId)
+        public LetterheadImageCreateDateViews GetNameAndCreateDate(int letterheadId)
         {
-            LetterheadImageCreateDateViews letterheadImageCreateDateViews = new()
-            {
-                CreateDateViews = dbContext.LetterheadImageJournals
-                                    .Include(x => x.Letterhead)
-                                    .Where
-                                    (
-                                        letterheadImageCreateJournal => letterheadImageCreateJournal.Letterhead.Id == letterheadId
-                                        && letterheadImageCreateJournal.DeleteStatus == DeleteStatus.No
-                                    )
-                                    .Select(letterheadImageJournal => new LetterheadImageCreateDateView()
-                                    {
-                                        Id = letterheadImageJournal.Id,
-                                        GroupCreateDate = letterheadImageJournal.CreateDate,
-                                        Status = EnumExtenstionUtil.GetDescription(letterheadImageJournal.Status)
-                                    })
-                                    .OrderByDescending(x => x.Id)
-                                    .ToList()
-            };
+            LetterheadImageCreateDateViews letterheadImageCreateDateViews = new();
 
-            if (letterheadImageCreateDateViews.CreateDateViews.Any())
-            {                                
+            Letterhead? letterhead = dbContext.Letterheads.Include(x => x.LetterheadImageJournals)
+                                    .FirstOrDefault(letterhead => letterhead.Id == letterheadId);
+
+            if (letterhead != null)
+            {
+                letterheadImageCreateDateViews.Name = letterhead.Name;
+                letterheadImageCreateDateViews.CreateDateViews = letterhead.LetterheadImageJournals
+                                                                .Where(x => x.DeleteStatus == DeleteStatus.No)
+                                                                .Select(letterheadImageJournal => new LetterheadImageCreateDateView()
+                                                                {
+                                                                    Id = letterheadImageJournal.Id,
+                                                                    GroupCreateDate = letterheadImageJournal.CreateDate,
+                                                                    Status = EnumExtenstionUtil.GetDescription(letterheadImageJournal.Status)
+                                                                })
+                                                                .OrderByDescending(x => x.Id)
+                                                                .ToList();
                 letterheadImageCreateDateViews.Success();
             }
             else
