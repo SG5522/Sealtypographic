@@ -11,7 +11,7 @@ using SealTypographicWebAPI.Entities;
 namespace SealTypographicWebAPI.Migrations
 {
     [DbContext(typeof(SealTypographicDbContext))]
-    [Migration("20230118160534_InitialCreate")]
+    [Migration("20230130061236_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -263,6 +263,9 @@ namespace SealTypographicWebAPI.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("ContactName")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("ContactTelephone")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("ContactTitle")

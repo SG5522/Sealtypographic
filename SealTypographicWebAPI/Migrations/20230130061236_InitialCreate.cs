@@ -46,6 +46,7 @@ namespace SealTypographicWebAPI.Migrations
                     AddressLocate = table.Column<string>(type: "TEXT", nullable: true),
                     ContactName = table.Column<string>(type: "TEXT", nullable: true),
                     ContactTitle = table.Column<string>(type: "TEXT", nullable: true),
+                    ContactTelephone = table.Column<string>(type: "TEXT", nullable: true),
                     Telephone = table.Column<string>(type: "TEXT", nullable: true),
                     Fax = table.Column<string>(type: "TEXT", nullable: true),
                     CreateDate = table.Column<DateTime>(type: "TEXT", nullable: false),

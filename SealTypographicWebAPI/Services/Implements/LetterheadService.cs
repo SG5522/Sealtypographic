@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using EFCore.BulkExtensions;
 using Microsoft.EntityFrameworkCore;
 using SealTypographicWebAPI.Consts;
 using SealTypographicWebAPI.Entities;

@@ -79,6 +79,11 @@ namespace SealTypographicWebAPI.Entities
         public DbSet<LetterheadImageLocation> LetterheadImageLocaltions { get; set; }
 
         /// <summary>
+        /// 上傳檔案資料表
+        /// </summary>
+        public DbSet<UploadFile> UploadFiles { get; set; }
+
+        /// <summary>
         /// 使用者
         /// </summary>
         public DbSet<User> Users { get; set; }

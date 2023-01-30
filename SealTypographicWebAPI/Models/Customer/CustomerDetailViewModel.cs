@@ -70,6 +70,12 @@ namespace SealTypographicWebAPI.Models.Customer
         /// 聯絡人職稱
         /// </summary>
         public string? ContactTitle { get; set; }
+
+        /// <summary>
+        /// 聯絡人電話
+        /// </summary>
+        /// <example>28825252#1</example>
+        public string? ContactTelephone { get; set; }
     }
 
     /// <summary>

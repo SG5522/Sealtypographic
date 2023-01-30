@@ -13,7 +13,7 @@ namespace SealTypographicWebAPI.Controllers
     /// </summary>
     [Route("api/[controller]")]    
     [ApiController]    
-    public class UploadImageController : ControllerBase
+    public class UploadController : ControllerBase
     {
         private readonly UploadService uploadService;
         private readonly ImageService imageService;
@@ -23,10 +23,32 @@ namespace SealTypographicWebAPI.Controllers
         /// </summary>
         /// <param name="uploadService"></param>
         /// <param name="imageService"></param>        
-        public UploadImageController(UploadService uploadService, ImageService imageService)
+        public UploadController(UploadService uploadService, ImageService imageService)
         {
             this.uploadService = uploadService;            
             this.imageService = imageService;
+        }
+
+        /// <summary>
+        /// 取得上傳類別
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("[Action]")]
+        public UploadTypeResponse GetUploadType()
+        {
+            UploadTypeResponse uploadTypeResponse = new();
+            try
+            {
+                Log.Information("UploadImage getUploadType input {@Input}", uploadTypeResponse);                
+                uploadTypeResponse = uploadService.GetUploadType();
+                Log.Information("UploadImage getUploadType output {@Output}", uploadTypeResponse);
+            }
+            catch (Exception ex)
+            {
+                Log.Error("UploadImage getUploadType error {@Error}", ex);
+                uploadTypeResponse.DbError();
+            }
+            return uploadTypeResponse;
         }
 
         /// <summary>

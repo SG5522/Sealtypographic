@@ -15,7 +15,7 @@ namespace SealTypographicWebAPI.Models.Upload
         /// <summary>
         /// 名稱
         /// </summary>
-        public string Name { get; set; }
+        public string? Name { get; set; }
     }
 
     /// <summary>

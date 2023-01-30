@@ -1,9 +1,15 @@
 ﻿using DJLib.Models;
+using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Options;
 using SealTypographicWebAPI.Config;
 using SealTypographicWebAPI.Consts;
+using SealTypographicWebAPI.Entities;
 using SealTypographicWebAPI.Models;
+using SealTypographicWebAPI.Models.SealMappingConfig;
 using SealTypographicWebAPI.Models.Upload;
+using SealTypographicWebAPI.Utils;
+using System.Globalization;
+using System.Linq;
 
 namespace SealTypographicWebAPI.Services.Implements
 {
@@ -13,16 +19,22 @@ namespace SealTypographicWebAPI.Services.Implements
     public class UploadService
     {
         private readonly ImageService imageSharpService;
+        private readonly IStringLocalizer<UploadService> localizer;
         private readonly UploadPathOption uploadConfigPath;
+        private readonly SealTypographicDbContext dbContext;
 
         /// <summary>
         /// 注入ImageSharpService
         /// </summary>
         /// <param name="imageSharpService"></param>
+        /// <param name="dbContext"></param>
+        /// <param name="localizer"></param>
         /// <param name="options"></param>       
-        public UploadService(ImageService imageSharpService, IOptionsSnapshot<UploadPathOption> options)
+        public UploadService(ImageService imageSharpService, SealTypographicDbContext dbContext,IStringLocalizer<UploadService> localizer, IOptionsSnapshot<UploadPathOption> options)
         {
             this.imageSharpService = imageSharpService;
+            this.dbContext = dbContext;
+            this.localizer = localizer;
             uploadConfigPath = options.Value;
         }
 
@@ -32,9 +44,18 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <returns></returns>
         public UploadTypeResponse GetUploadType() 
         {
-            UploadTypeResponse uploadTypeResponse = new();
-
-
+            
+            UploadTypeResponse uploadTypeResponse = new();            
+            foreach (UploadType uploadType in (UploadType[])Enum.GetValues(typeof(UploadType)))
+            {                
+                UploadTypeViewModel uploadTypeViewModel = new()
+                {
+                    UploadType = uploadType,
+                    Name = localizer[EnumExtenstionUtil.GetDescription(uploadType)]                    
+                };
+                uploadTypeResponse.ViewModels.Add(uploadTypeViewModel);
+            }
+            uploadTypeResponse.Success();
             return uploadTypeResponse;
         }
 
@@ -56,9 +77,13 @@ namespace SealTypographicWebAPI.Services.Implements
         public async Task<ResponseViewModel> SaveImageIFormFile(UploadType uploadType, List<IFormFile> formFiles)
         {
             ResponseViewModel response = new();
+            
+            
+
             int count = 0;
             foreach (IFormFile formFile in formFiles)
-            {                
+            {
+                IQueryable<UploadFile> uploadFile = dbContext.UploadFiles.Where(uploadFile => uploadFile.UploadType == uploadType);
                 string savePath = GetSavePath(uploadType, formFile.FileName, count);
                 using Stream stream = new FileStream(savePath, FileMode.Create);
                 await formFile.CopyToAsync(stream);

@@ -77,14 +77,14 @@ namespace SealTypographicWebAPI.Models.Customer
         /// 電話
         /// </summary>
         /// <example>28825252</example>
-        [RegularExpression(@"^[0-9]*$")]
+        [RegularExpression(@"\d{2,4}-?\d{3,4}-?\d{3,4}#?(\d+)?")]
         public string? Telephone { get; set; }
 
         /// <summary>
         /// 傳真
         /// </summary>
         /// <example>28825252</example>
-        [RegularExpression(@"^[0-9]*$")]
+        [RegularExpression(@"\d{2,4}-?\d{3,4}-?\d{3,4}#?(\d+)?")]
         public string? Fax { get; set; }
 
         /// <summary>
@@ -98,5 +98,13 @@ namespace SealTypographicWebAPI.Models.Customer
         /// </summary>
         /// <example>業務</example>
         public string? ContactTitle { get; set; }
+
+        /// <summary>
+        /// 聯絡人電話
+        /// </summary>
+        /// <example>28825252#1</example>
+        //[RegularExpression(@"^[0-9]*$+")]
+        [RegularExpression(@"\d{2,4}-?\d{3,4}-?\d{3,4}#?(\d+)?")]
+        public string? ContactTelephone { get; set; }
     }
 }

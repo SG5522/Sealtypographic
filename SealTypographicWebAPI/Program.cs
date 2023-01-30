@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Serilog;
 using SealTypographicWebAPI.Services.Implements;
 using SealTypographicWebAPI.Config;
+using Microsoft.AspNetCore.Mvc.Razor;
 
 string allowSpecificOrigins = "allowSpecificOrigins";
 string allowAllOrigins = "allowSpecificOrigins";
@@ -73,6 +74,16 @@ builder.Services.AddScoped<SealMappingConfigService>();
 
 #endregion
 
+builder.Services.AddLocalization(option => option.ResourcesPath = "Resource");
+
+string[] supportedCultures = new[] { "en-US", "en-TW"  };
+RequestLocalizationOptions localizationOptions = new RequestLocalizationOptions().SetDefaultCulture(supportedCultures[0])
+                                                .AddSupportedCultures(supportedCultures)
+                                                .AddSupportedUICultures(supportedCultures);
+
+builder.Services.AddMvc()
+    .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix)
+    .AddDataAnnotationsLocalization();
 
 
 // Add services to the container.

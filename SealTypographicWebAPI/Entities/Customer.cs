@@ -68,6 +68,11 @@ namespace SealTypographicWebAPI.Entities
         public string? ContactTitle { get; set; }
 
         /// <summary>
+        /// 聯絡人電話
+        /// </summary>
+        public string? ContactTelephone { get; set; }
+
+        /// <summary>
         /// 電話
         /// </summary>
         public string? Telephone { get; set; }

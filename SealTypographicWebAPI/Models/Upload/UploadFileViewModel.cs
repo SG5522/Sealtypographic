@@ -5,7 +5,7 @@ namespace SealTypographicWebAPI.Models.Upload
     /// <summary>
     /// 上傳 (IFromFile)
     /// </summary>
-    public class UploadFile : ResponseViewModel
+    public class UploadFileViewModel : ResponseViewModel
     {
         /// <summary>
         /// 檔名

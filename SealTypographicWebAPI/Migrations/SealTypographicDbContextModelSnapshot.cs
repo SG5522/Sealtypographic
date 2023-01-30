@@ -263,6 +263,9 @@ namespace SealTypographicWebAPI.Migrations
                     b.Property<string>("ContactName")
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("ContactTelephone")
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("ContactTitle")
                         .HasColumnType("TEXT");
 
