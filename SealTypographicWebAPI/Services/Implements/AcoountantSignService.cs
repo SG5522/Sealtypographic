@@ -100,7 +100,7 @@ namespace SealTypographicWebAPI.Services.Implements
                 foreach (AccountantSignJournal accountantSignJournal in accountantSignCreateDateJournalQuery.AccountantSignJournals)
                 {
                     AccountantSignViewModel accountantSignViewModel = mapper.Map<AccountantSignViewModel>(accountantSignJournal);
-                    accountantSignViewModel.ImageBase64 = imageSharpService.GetPathToBase64(accountantSignJournal.ImagePath, SealType.Accountant); //資料庫取得圖檔路徑轉BASE64                   
+                    accountantSignViewModel.ImageBase64 = imageSharpService.GetPathToBase64(accountantSignJournal.ImagePath); //資料庫取得圖檔路徑轉BASE64                   
                     
                     accountantSignViewModel.SealMappingConfigId = accountantSignJournal.ConfigType;
                     signViewModels.SignViewModels.Add(accountantSignViewModel);

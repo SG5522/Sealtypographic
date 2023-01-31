@@ -11,22 +11,19 @@ namespace SealTypographicWebAPI.Controllers
     /// <summary>
     /// 上傳
     /// </summary>
-    [Route("api/[controller]")]    
-    [ApiController]    
+    [Route("api/[controller]")]
+    [ApiController]
     public class UploadController : ControllerBase
     {
-        private readonly UploadService uploadService;
-        private readonly ImageService imageService;
+        private readonly UploadService uploadService;        
 
         /// <summary>
         /// 注入UploadService
         /// </summary>
-        /// <param name="uploadService"></param>
-        /// <param name="imageService"></param>        
-        public UploadController(UploadService uploadService, ImageService imageService)
+        /// <param name="uploadService"></param>              
+        public UploadController(UploadService uploadService)
         {
             this.uploadService = uploadService;            
-            this.imageService = imageService;
         }
 
         /// <summary>
@@ -34,68 +31,157 @@ namespace SealTypographicWebAPI.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet("[Action]")]
-        public UploadTypeResponse GetUploadType()
+        public UploadTypeResponse UploadType()
         {
             UploadTypeResponse uploadTypeResponse = new();
             try
             {
-                Log.Information("UploadImage getUploadType input {@Input}", uploadTypeResponse);                
+                Log.Information("Upload uploadType input {@Input}", uploadTypeResponse);
                 uploadTypeResponse = uploadService.GetUploadType();
-                Log.Information("UploadImage getUploadType output {@Output}", uploadTypeResponse);
+                Log.Information("Upload uploadType output {@Output}", uploadTypeResponse);
             }
             catch (Exception ex)
             {
-                Log.Error("UploadImage getUploadType error {@Error}", ex);
+                Log.Error("Upload uploadType error {@Error}", ex);
                 uploadTypeResponse.DbError();
             }
             return uploadTypeResponse;
         }
 
         /// <summary>
-        /// 上傳圖檔
+        /// 取得上傳重複檔名處理模式
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("[Action]")]
+        public DuplicateFileProcessModeResponse DuplicateFileProcessMode()
+        {
+            DuplicateFileProcessModeResponse duplicateFileProcessModeResponse = new();
+            try
+            {
+                Log.Information("Upload uploadType input {@Input}", duplicateFileProcessModeResponse);
+                duplicateFileProcessModeResponse = uploadService.GetDuplicateFileProcessMode();
+                Log.Information("Upload uploadType output {@Output}", duplicateFileProcessModeResponse);
+            }
+            catch (Exception ex)
+            {
+                Log.Error("Upload uploadType error {@Error}", ex);
+                duplicateFileProcessModeResponse.DbError();
+            }
+            return duplicateFileProcessModeResponse;
+        }
+
+
+        /// <summary>
+        /// 取得檔案列表
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        public UploadFileResponse Files(UploadType uploadType)
+        {
+            UploadFileResponse uploadTypeResponse = new();
+            try
+            {
+                Log.Information("Upload files input {@Input}", uploadTypeResponse);
+                uploadTypeResponse = uploadService.GetFile(uploadType);
+                Log.Information("Upload files output {@Output}", uploadTypeResponse);
+            }
+            catch (Exception ex)
+            {
+                Log.Error("Upload files error {@Error}", ex);
+                uploadTypeResponse.DbError();
+            }
+            return uploadTypeResponse;
+        }
+
+        /// <summary>
+        /// 顯示上傳圖檔(PDF類別此階段不處理)
+        /// </summary>
+        /// <param name="UploadFileId">上傳Id</param>
+        /// <returns></returns>
+        [HttpGet("{UploadFileId}")]
+        public UploadFileImageView FileImage(int UploadFileId)
+        {
+            UploadFileImageView uploadFileImageView = new();
+            try
+            {
+                Log.Information("Upload fileImage input {@Input}", UploadFileId);
+                uploadFileImageView = uploadService.GetFileImage(UploadFileId);
+                Log.Information("Upload fileImage output {@Output}", UploadFileId);
+            }
+            catch (Exception ex)
+            {
+                Log.Error("Upload fileImage error {@Error}", ex);
+                uploadFileImageView.DbError();
+            }
+            return uploadFileImageView;
+        }
+
+        /// <summary>
+        /// 確認上傳是否有重複檔案
+        /// </summary>
+        /// <param name="uploadType">上傳類別 1.客戶印鑑授權書 2.會計印鑑簽名授權書 3.信頭 4.PDF 5.會計師證明書 6.臨時檔</param>
+        /// <param name="formFiles"></param>
+        /// <returns></returns>
+        [HttpPost("[Action]")]
+        public DuplicateFileResponse CheckDuplicateFileName(UploadType uploadType, [FromForm] List<IFormFile> formFiles)
+        {
+            DuplicateFileResponse uploadDuplicateFileNames = new();
+            try
+            {
+                Log.Information("Upload CheckDuplicateFileName input {@Input}", uploadDuplicateFileNames);
+                uploadDuplicateFileNames = uploadService.CheckDuplicateFileName(uploadType, formFiles);
+                Log.Information("Upload CheckDuplicateFileName output {@Output}", uploadDuplicateFileNames);
+            }
+            catch (Exception ex)
+            {
+                Log.Error("Upload getUploadType error {@Error}", ex);
+                uploadDuplicateFileNames.DbError();
+            }
+            return uploadDuplicateFileNames;
+        }
+
+        /// <summary>
+        /// 掃描上傳(尚未完成)
         /// </summary>
         /// <param name="uploadScanForms">圖檔資料</param>
         /// <returns></returns>
-        [HttpPost]
-        [Route("uploadScanForms")]        
-        public ResponseViewModel PostImagebase64(List<UploadScanForm> uploadScanForms)
+        [HttpPost("[Action]")]
+        public ResponseViewModel Scan(List<UploadScanForm> uploadScanForms)
         {
             ResponseViewModel response = new();
             try
             {
-                Log.Information("UploadImage post uploadScanForms input {@Input}", uploadScanForms);                
+                Log.Information("Upload Scan  input {@Input}", uploadScanForms);                
                 //ResponseViewModel response = uploadService.SaveImageBase64(uploadScanForms);
 
-                Log.Information("UploadImage post uploadScanForms output {@Output}", response);                
+                Log.Information("Upload Scan  output {@Output}", response);                
             }
             catch (Exception ex)
             {
-                Log.Error("UploadImage Post error {@Error}", ex);
+                Log.Error("Upload Scan error {@Error}", ex);
                 response.DbError();                
             }
             return response;
         }
 
         /// <summary>
-        /// 上傳圖檔
+        /// 上傳檔案
         /// </summary>
-        /// <param name="uploadType" example="1">上傳類別 1.客戶印鑑授權書 2.會計印鑑簽名授權書 3.信頭</param>      
-        /// <param name="formFiles">圖檔資料</param>
+        /// <param name="upladData">檔案資料</param>              
         /// <returns></returns>
-        [HttpPost]
-        [Route("uploadIFormFiles")]
-        public async Task<ResponseViewModel> Post(UploadType uploadType , [FromForm]List<IFormFile> formFiles)
+        [HttpPost]        
+        public async Task<ResponseViewModel> New([FromForm]UploadData upladData)
         {
             ResponseViewModel response = new();
             try
             {
-                Log.Information("UploadImage post uploadScanForms input {@Input}", formFiles);                        
-                response = await uploadService.SaveImageIFormFile(uploadType, formFiles);
-                Log.Information("UploadImage post uploadScanForms output {@Output}", response);                       
+                Log.Information("Upload new input {@Input}", upladData);
+                response = await uploadService.SaveFormFile(upladData);
+                Log.Information("Upload new output {@Output}", upladData);                       
             }
             catch (Exception ex)
             {
-                Log.Error("UploadImage Post error {@Error}", ex);
+                Log.Error("Upload new error {@Error}", ex);
                 response.DbError();
             }
             return response;

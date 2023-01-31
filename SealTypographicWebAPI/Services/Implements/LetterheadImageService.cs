@@ -88,7 +88,7 @@ namespace SealTypographicWebAPI.Services.Implements
                 
             if (letterheadImageJournalQuery != null)
             {                                
-                letterheadImageViewModels.ImageBase64 = imageSharpService.GetPathToBase64(letterheadImageJournalQuery.ImageFullPath, SealType.Letterhead); //資料庫取得圖檔路徑轉BASE64                                                                                  
+                letterheadImageViewModels.ImageBase64 = imageSharpService.GetPathToBase64(letterheadImageJournalQuery.ImageFullPath); //資料庫取得圖檔路徑轉BASE64                                                                                  
                 letterheadImageViewModels.Success();
             }
             else

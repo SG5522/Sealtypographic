@@ -209,7 +209,7 @@ namespace SealTypographicWebAPI.Models
         public void AccountantNoData()
         {
             Code = (int)ResponseCode.AccountantNoData;
-            Message = "Accountant no data";
+            Message = "AccountantSignAuthorization no data";
         }
 
         /// <summary>
@@ -218,7 +218,7 @@ namespace SealTypographicWebAPI.Models
         public void AccountantNumberRepeat()
         {
             Code = (int)ResponseCode.AccountantNumberRepeat;
-            Message = "Accountant number repeat";
+            Message = "AccountantSignAuthorization number repeat";
         }
 
         /// <summary>
@@ -290,7 +290,7 @@ namespace SealTypographicWebAPI.Models
         public void AccountantSignHaveDraftOrPendingReviewStatus()
         {
             Code = (int)ResponseCode.AccountantSignHaveDraftOrPendingReviewStatus;
-            Message = "Accountant sign 'GroupCreateDate' have draft or pending reviewStatus";
+            Message = "AccountantSignAuthorization sign 'GroupCreateDate' have draft or pending reviewStatus";
         }
 
         /// <summary>
@@ -363,7 +363,7 @@ namespace SealTypographicWebAPI.Models
         public void AccountantGroupNoData()
         {
             Code = (int)ResponseCode.AccountantGroupNoData;
-            Message = "Accountant group no data";
+            Message = "AccountantSignAuthorization group no data";
         }
 
         /// <summary>
@@ -435,7 +435,7 @@ namespace SealTypographicWebAPI.Models
         public void LetterheadNoData()
         {
             Code = (int)ResponseCode.LetterheadNoData;
-            Message = "Letterhead no data";
+            Message = "LetterheadImage no data";
         }
 
         /// <summary>
@@ -516,7 +516,7 @@ namespace SealTypographicWebAPI.Models
         public void LetterheadImageNoData()
         {
             Code = (int)ResponseCode.LetterheadImageNoData;
-            Message = "Letterhead image no Data";
+            Message = "LetterheadImage image no Data";
         }
 
         /// <summary>
@@ -525,7 +525,7 @@ namespace SealTypographicWebAPI.Models
         public void LetterheadImageHaveDraftReviewStatus()
         {
             Code = (int)ResponseCode.LetterheadImageHaveDraftReviewStatus;
-            Message = "Letterhead image have draft review status";
+            Message = "LetterheadImage image have draft review status";
         }
 
         /// <summary>
@@ -601,12 +601,21 @@ namespace SealTypographicWebAPI.Models
         }
 
         /// <summary>
-        /// File Upload failed
+        /// 上傳失敗
         /// </summary>
         public void FileUploadFailed()
         {
             Code = (int)ResponseCode.FileUploadFailed;
             Message = "File Upload failed";
+        }
+
+        /// <summary>
+        /// 找不到上傳資料
+        /// </summary>
+        public void FileUploadNoData()
+        {
+            Code = (int)ResponseCode.FileUploadNoData;
+            Message = "File upload no data";
         }
     }
 }

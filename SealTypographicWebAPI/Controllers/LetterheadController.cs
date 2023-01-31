@@ -41,13 +41,13 @@ namespace SealTypographicWebAPI.Controllers
             LetterheadPaginateViewModel letterheadPaginateViewModel = new();
             try
             {
-                Log.Information("Letterhead get paginate input {@Input}", letterheadSearch);
+                Log.Information("LetterheadImage get paginate input {@Input}", letterheadSearch);
                 letterheadPaginateViewModel = letterheadService.GetPaginate(letterheadSearch);
-                Log.Information("Letterhead get paginate output {@Output}", letterheadPaginateViewModel);                
+                Log.Information("LetterheadImage get paginate output {@Output}", letterheadPaginateViewModel);                
             }
             catch (Exception ex)
             {
-                Log.Error("Letterhead get paginate error {@Error}", ex);
+                Log.Error("LetterheadImage get paginate error {@Error}", ex);
                 letterheadPaginateViewModel.DbError();                
             }
             return letterheadPaginateViewModel;
@@ -65,13 +65,13 @@ namespace SealTypographicWebAPI.Controllers
             ResponseViewModel responseViewModel = new();
             try
             {
-                Log.Information("Letterhead delete(hide) input {@Input}", id);
+                Log.Information("LetterheadImage delete(hide) input {@Input}", id);
                 responseViewModel = letterheadService.Delete(id);
-                Log.Information("Letterhead delete(hide) output {@Output}", responseViewModel);                
+                Log.Information("LetterheadImage delete(hide) output {@Output}", responseViewModel);                
             }
             catch (Exception ex)
             {
-                Log.Error("Letterhead delete(hide) error {@Error}", ex);
+                Log.Error("LetterheadImage delete(hide) error {@Error}", ex);
                 responseViewModel.DbError();                
             }
             return responseViewModel;

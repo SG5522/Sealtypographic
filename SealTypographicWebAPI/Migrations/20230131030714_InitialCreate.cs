@@ -80,6 +80,27 @@ namespace SealTypographicWebAPI.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "UploadFiles",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    UploadType = table.Column<byte>(type: "INTEGER", nullable: false),
+                    OriginalFileName = table.Column<string>(type: "TEXT", nullable: false),
+                    FullPath = table.Column<string>(type: "TEXT", nullable: false),
+                    FileWorkStatus = table.Column<int>(type: "INTEGER", nullable: false),
+                    CreateDate = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    UpdateDate = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    CreateUserId = table.Column<int>(type: "INTEGER", nullable: false),
+                    UpdateUserId = table.Column<int>(type: "INTEGER", nullable: false),
+                    DeleteStatus = table.Column<byte>(type: "INTEGER", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UploadFiles", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Users",
                 columns: table => new
                 {
@@ -501,6 +522,9 @@ namespace SealTypographicWebAPI.Migrations
 
             migrationBuilder.DropTable(
                 name: "LetterheadImageLocaltions");
+
+            migrationBuilder.DropTable(
+                name: "UploadFiles");
 
             migrationBuilder.DropTable(
                 name: "Users");

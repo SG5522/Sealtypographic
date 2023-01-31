@@ -38,13 +38,13 @@ namespace SealTypographicWebAPI.Controllers
             CustomerPaginateViewModel customerPaginateViewModel = new ();
             try
             {
-                Log.Information("Customer get paginate input {@Input}", customerSearch);
+                Log.Information("CustomerSealAuthorization get paginate input {@Input}", customerSearch);
                 customerPaginateViewModel = customerService.GetPaginate(customerSearch);
-                Log.Information("Customer get paginate output {@Output}", customerPaginateViewModel);
+                Log.Information("CustomerSealAuthorization get paginate output {@Output}", customerPaginateViewModel);
             }
             catch (Exception ex)
             {
-                Log.Error("Customer get paginate error {@Error}", ex);                
+                Log.Error("CustomerSealAuthorization get paginate error {@Error}", ex);                
                 customerPaginateViewModel.DbError();                
             }
             return customerPaginateViewModel;
@@ -61,13 +61,13 @@ namespace SealTypographicWebAPI.Controllers
             CustomerDetailViewModel customerDetailViewModel = new();
             try
             {
-                Log.Information("Customer get detail input {@Input}", customerId);
+                Log.Information("CustomerSealAuthorization get detail input {@Input}", customerId);
                 customerDetailViewModel = customerService.GetDetail(customerId);
-                Log.Information("Customer get detail output {@Output}", customerDetailViewModel);                
+                Log.Information("CustomerSealAuthorization get detail output {@Output}", customerDetailViewModel);                
             }
             catch (Exception ex)
             {
-                Log.Error("Customer get customerId error {@Error}", ex);                
+                Log.Error("CustomerSealAuthorization get customerId error {@Error}", ex);                
                 customerDetailViewModel.DbError();                
             }
             return customerDetailViewModel;
@@ -84,13 +84,13 @@ namespace SealTypographicWebAPI.Controllers
             CreateCustomerResponse createCustomerResponse = new();
             try
             {
-                Log.Information("Customer new input {@Input}", customerForm);
+                Log.Information("CustomerSealAuthorization new input {@Input}", customerForm);
                 createCustomerResponse = customerService.New(customerForm);
-                Log.Information("Customer new output {@Input}", createCustomerResponse);                
+                Log.Information("CustomerSealAuthorization new output {@Input}", createCustomerResponse);                
             }
             catch (Exception ex)
             {
-                Log.Error("Customer new error {@Error}", ex);
+                Log.Error("CustomerSealAuthorization new error {@Error}", ex);
                 createCustomerResponse.DbError();                
             }
             return createCustomerResponse;
@@ -106,13 +106,13 @@ namespace SealTypographicWebAPI.Controllers
             ResponseViewModel response = new();
             try
             {               
-                Log.Information("Customer update input {@Input}", customerUpdateForm);
+                Log.Information("CustomerSealAuthorization update input {@Input}", customerUpdateForm);
                 response = customerService.Update(customerUpdateForm);
-                Log.Information("Customer update output {@Output}", response);                
+                Log.Information("CustomerSealAuthorization update output {@Output}", response);                
             }
             catch (Exception ex)
             {
-                Log.Error("Customer update error {@Error}", ex);
+                Log.Error("CustomerSealAuthorization update error {@Error}", ex);
                 response.DbError();                
             }
             return response;
@@ -131,13 +131,13 @@ namespace SealTypographicWebAPI.Controllers
             ResponseViewModel response = new();
             try
             {
-                Log.Information("Customer delete input {@Input}", customerId);
+                Log.Information("CustomerSealAuthorization delete input {@Input}", customerId);
                 response = customerService.Delete(customerId);
-                Log.Information("Customer delete output {@Output}", response);                
+                Log.Information("CustomerSealAuthorization delete output {@Output}", response);                
             }
             catch (Exception ex)
             {
-                Log.Error("Customer delete error {@Error}", ex);
+                Log.Error("CustomerSealAuthorization delete error {@Error}", ex);
                 response.DbError();
             }
             return response;

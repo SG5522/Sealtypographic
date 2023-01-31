@@ -117,20 +117,14 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Accountant Sign Authorization" xml:space="preserve">
-    <value>會計師授權書</value>
+  <data name="Accountant" xml:space="preserve">
+    <value>會計師</value>
   </data>
-  <data name="Accountant Sign Certificate" xml:space="preserve">
-    <value>會計師證明書</value>
-  </data>
-  <data name="AccountantDirector" xml:space="preserve">
+  <data name="Accountant Director" xml:space="preserve">
     <value>會計主管</value>
   </data>
-  <data name="AccountantSeal" xml:space="preserve">
+  <data name="Accountant Seal" xml:space="preserve">
     <value>會計師印鑑</value>
-  </data>
-  <data name="Ceo" xml:space="preserve">
-    <value>負責人</value>
   </data>
   <data name="CHSign" xml:space="preserve">
     <value>中文簽名</value>
@@ -138,11 +132,14 @@
   <data name="Company" xml:space="preserve">
     <value>公司章</value>
   </data>
-  <data name="Customer Seal Authorization" xml:space="preserve">
-    <value>客戶授權書</value>
+  <data name="Customer" xml:space="preserve">
+    <value>客戶</value>
   </data>
   <data name="ENSign" xml:space="preserve">
     <value>英文簽名</value>
+  </data>
+  <data name="Letterhead" xml:space="preserve">
+    <value>信頭</value>
   </data>
   <data name="Letterhead Image" xml:space="preserve">
     <value>信頭圖片</value>
@@ -156,10 +153,7 @@
   <data name="Other" xml:space="preserve">
     <value>其他</value>
   </data>
-  <data name="PDF" xml:space="preserve">
-    <value>PDF檔</value>
-  </data>
-  <data name="Temporary" xml:space="preserve">
-    <value>臨時檔</value>
+  <data name="President" xml:space="preserve">
+    <value>負責人</value>
   </data>
 </root>

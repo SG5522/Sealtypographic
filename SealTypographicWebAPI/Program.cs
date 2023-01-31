@@ -57,7 +57,7 @@ builder.Services.AddDbContextPool<SealTypographicDbContext>(optionsBuilder =>
 #region -- Service --
 
 builder.Services.AddScoped<ImageService>();
-builder.Services.AddScoped<UploadService>();
+builder.Services.AddScoped<SealMappingConfigService>();
 builder.Services.AddAutoMapper(typeof(MapperProfile));
 
 //DB Process
@@ -70,13 +70,13 @@ builder.Services.AddScoped<IAccountantGroupMemberService, AccountantGroupMemberS
 builder.Services.AddScoped<IAccountantSignService, AcoountantSignService>();
 builder.Services.AddScoped<ILetterheadService, LetterheadService>();
 builder.Services.AddScoped<ILetterheadImageService, LetterheadImageService>();
-builder.Services.AddScoped<SealMappingConfigService>();
+builder.Services.AddScoped<UploadService>();
 
 #endregion
 
 builder.Services.AddLocalization(option => option.ResourcesPath = "Resource");
 
-string[] supportedCultures = new[] { "en-US", "en-TW"  };
+string[] supportedCultures = new[] { "en-US", "zh-TW"  };
 RequestLocalizationOptions localizationOptions = new RequestLocalizationOptions().SetDefaultCulture(supportedCultures[0])
                                                 .AddSupportedCultures(supportedCultures)
                                                 .AddSupportedUICultures(supportedCultures);

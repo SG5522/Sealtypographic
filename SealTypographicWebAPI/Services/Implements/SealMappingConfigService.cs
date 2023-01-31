@@ -1,5 +1,10 @@
-﻿using SealTypographicWebAPI.Consts;
+﻿using Microsoft.Extensions.Localization;
+using Microsoft.Extensions.Options;
+using SealTypographicWebAPI.Config;
+using SealTypographicWebAPI.Consts;
+using SealTypographicWebAPI.Entities;
 using SealTypographicWebAPI.Models.SealMappingConfig;
+using SealTypographicWebAPI.Utils;
 
 namespace SealTypographicWebAPI.Services.Implements
 {
@@ -8,6 +13,17 @@ namespace SealTypographicWebAPI.Services.Implements
     /// </summary>
     public class SealMappingConfigService
     {
+        private readonly IStringLocalizer<SealMappingConfigService> localizer;
+
+        /// <summary>
+        /// IStringLocalizer
+        /// </summary>
+        /// <param name="localizer"></param>      
+        public SealMappingConfigService(IStringLocalizer<SealMappingConfigService> localizer)
+        {
+            this.localizer = localizer;
+        }
+
         /// <summary>
         /// 取得印鑑類型列表
         /// </summary>
@@ -25,7 +41,7 @@ namespace SealTypographicWebAPI.Services.Implements
                         SealMappingConfigViewModel sealMappingConfigViewModel = new()
                         {
                             Id = (int)customerSealType,
-                            Name = Enum.GetName(customerSealType)
+                            Name = localizer[EnumExtenstionUtil.GetDescription(customerSealType)]
                         };
                         sealMappingConfigResponseList.SealMappingConfigViewModels.Add(sealMappingConfigViewModel);
                     }
@@ -36,7 +52,7 @@ namespace SealTypographicWebAPI.Services.Implements
                         SealMappingConfigViewModel sealMappingConfigViewModel = new()
                         {
                             Id = (int)accountantSignType,
-                            Name = Enum.GetName(accountantSignType)
+                            Name = localizer[EnumExtenstionUtil.GetDescription(accountantSignType)]
                         };
                         sealMappingConfigResponseList.SealMappingConfigViewModels.Add(sealMappingConfigViewModel);
                     }

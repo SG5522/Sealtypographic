@@ -332,5 +332,10 @@
         /// 上傳失敗
         /// </summary>
         FileUploadFailed = 6001,
+
+        /// <summary>
+        /// 找不到上傳資料
+        /// </summary>
+        FileUploadNoData = 6002,
     }
 }

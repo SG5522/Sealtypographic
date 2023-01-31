@@ -4,11 +4,8 @@ using Microsoft.EntityFrameworkCore;
 using SealTypographicWebAPI.Consts;
 using SealTypographicWebAPI.Entities;
 using SealTypographicWebAPI.Models;
-using SealTypographicWebAPI.Models.Accountant;
 using SealTypographicWebAPI.Models.Customer;
 using SealTypographicWebAPI.Utils;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace SealTypographicWebAPI.Services.Implements
 {
@@ -100,7 +97,7 @@ namespace SealTypographicWebAPI.Services.Implements
                 foreach (CustomerSealJournal customerSealJournal in customerSealQuarterJournalQuery.CustomerSealJournals)
                 {
                     CustomerSealViewModel customerSealViewModel = mapper.Map<CustomerSealViewModel>(customerSealJournal);
-                    customerSealViewModel.ImageBase64 = imageSharpService.GetPathToBase64(customerSealJournal.ImagePath, SealType.Customer); //資料庫取得圖檔路徑轉BASE64                                       
+                    customerSealViewModel.ImageBase64 = imageSharpService.GetPathToBase64(customerSealJournal.ImagePath); //資料庫取得圖檔路徑轉BASE64                                       
                     customerSealViewModel.SealMappingConfigId = customerSealJournal.ConfigType;
                     customerSealViewModels.SealViewModels.Add(customerSealViewModel);
                 }

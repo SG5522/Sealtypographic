@@ -55,6 +55,12 @@ namespace SealTypographicWebAPI.Consts
         /// </summary>
         [Description("作廢")]
         Invalid = 50,
+
+        /// <summary>
+        /// 拒絕
+        /// </summary>
+        [Description("拒絕")]
+        Refuse = 60,
     }
 
     /// <summary>
@@ -129,43 +135,49 @@ namespace SealTypographicWebAPI.Consts
         /// <summary>
         /// 客戶
         /// </summary>        
-        [Description("Other")]
+        [Description("CustomerSealAuthorization")]
         Customer = 1,
 
         /// <summary>
         /// 會計師
         /// </summary>
-        [Description("Accountant")]
+        [Description("AccountantSignAuthorization")]
         Accountant = 2,
 
         /// <summary>
         /// 信頭
         /// </summary>
-        [Description("Letterhead")]
+        [Description("LetterheadImage")]
         Letterhead = 3,
     }
 
     /// <summary>
-    /// 上傳檔案類別 (資料夾分類)
+    /// 上傳檔案類別
+    /// 1.客戶印鑑授權書 
+    /// 2.會計印鑑簽名授權書 
+    /// 3.信頭 
+    /// 4.PDF 
+    /// 5.會計師證明書 
+    /// 6.臨時檔
     /// </summary>
     public enum UploadType : byte
     {
         /// <summary>
         /// 客戶授權書
         /// </summary>        
-        [Description("Customer Seal Authorization")]
+        [Description("CustomerSealAuthorization Seal Authorization")]
         CustomerSealAuthorization = 1,
 
         /// <summary>
         /// 會計師授權書
         /// </summary>
-        [Description("Accountant Sign Authorization")]
+        [Description("AccountantSignAuthorization Sign Authorization")]
         AccountantSignAuthorization = 2,
 
         /// <summary>
         /// 信頭圖片
         /// </summary>
-        [Description("Letterhead Image")]
+        [Description("LetterheadImage Image")]
         LetterheadImage = 3,
 
         /// <summary>
@@ -177,7 +189,7 @@ namespace SealTypographicWebAPI.Consts
         /// <summary>
         /// 會計師證明書
         /// </summary>
-        [Description("Accountant Sign Certificate")]
+        [Description("AccountantSignAuthorization Sign Certificate")]
         AccountantSignCertificate = 5,
 
         /// <summary>
@@ -218,7 +230,7 @@ namespace SealTypographicWebAPI.Consts
         /// <summary>
         /// 會計主管
         /// </summary>
-        [Description("Accountant Director")]        
+        [Description("AccountantSignAuthorization Director")]        
         AccountingDirector = 4,
 
         /// <summary>
@@ -241,7 +253,7 @@ namespace SealTypographicWebAPI.Consts
         /// <summary>
         /// 會計師印鑑
         /// </summary>
-        [Description("AccountantSeal")]        
+        [Description("AccountantSignAuthorization Seal")]        
         AccountantSeal = 1,
 
         /// <summary>
@@ -267,5 +279,47 @@ namespace SealTypographicWebAPI.Consts
         /// </summary>
         [Description("Other")]        
         Other = 5,        
+    }
+
+    /// <summary>
+    /// 檔案工作狀態
+    /// 在使用客戶印鑑、會計師簽印、信頭、PDF檔案
+    /// 為了不在重複使用同一份檔案所做的狀態區分
+    /// </summary>
+    public enum FileWorkStatus
+    {
+        /// <summary>
+        /// 未處理
+        /// </summary>
+        Undone = 0,
+
+        /// <summary>
+        /// 已處理
+        /// </summary>
+        Done = 1        
+    }
+
+    /// <summary>
+    /// 上傳重複檔名處理模式
+    /// </summary>
+    public enum DuplicateFileProcessMode
+    {
+        /// <summary>
+        /// 無重複
+        /// </summary>
+        [Description("No Repeat")]
+        NoRepeat = 0,
+
+        /// <summary>
+        /// 保留
+        /// </summary>
+        [Description("Reserve")]
+        Reserve = 1,
+
+        /// <summary>
+        /// 覆蓋
+        /// </summary>
+        [Description("Overlay")]
+        Overlay = 2,
     }
 }
