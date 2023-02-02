@@ -111,12 +111,7 @@ namespace SealTypographicWebAPI.Services.Implements
                             }
                         }
                     }
-                    else
-                    {
-                        customerViewModel.IsDraff = false;
-                        customerViewModel.IsPending = false;
-                        customerViewModel.IsReject = false;
-                    }
+
                     
 
                     customerViewModel.Quarter = dbContext.CustomerSealQuarterJournals
