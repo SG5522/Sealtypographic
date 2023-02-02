@@ -30,12 +30,14 @@ namespace SealTypographicWebAPI.Controllers
             this.customerSealReviewService = customerSealReviewService;
         }
 
+        
+
         /// <summary>
         /// 客戶印鑑待審清單
         /// </summary>
         /// <returns></returns>
         [HttpGet("getCustomerSealReviewViewModel")]
-        public CustomerSealQuarterViewModelResponse GetCustomerSealReviewViewModel([FromQuery]CustomerSealReviewSearch customerSealReviewSearch)
+        public CustomerSealQuarterViewModelResponse GetCustomerSealReviewViewModel([FromQuery]CustomerSealSearchReview customerSealReviewSearch)
         {
             CustomerSealQuarterViewModelResponse customerSealReviewViewModelResponse = new();
             try
@@ -59,7 +61,7 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="customerSealReviewSearch"></param>
         /// <returns></returns>
         [HttpGet("getCustomerSealReviewDetail")]
-        public CustomerSealReviewDetailResponse GetCustomerSealReviewDetail([FromQuery] CustomerSealReviewSearch customerSealReviewSearch)
+        public CustomerSealReviewDetailResponse GetCustomerSealReviewDetail([FromQuery] CustomerSealSearchReview customerSealReviewSearch)
         {                                    
             CustomerSealReviewDetailResponse customerSealReviewDetailResponse = new();
             try

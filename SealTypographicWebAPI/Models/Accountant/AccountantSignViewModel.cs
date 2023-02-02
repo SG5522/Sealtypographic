@@ -4,14 +4,13 @@ using SealTypographicWebAPI.Models.BaseModels;
 namespace SealTypographicWebAPI.Models.Accountant
 {
     /// <summary>
-    /// 會計師印鑑簽名
+    /// 會計師簽印
     /// </summary>
     public class AccountantSignViewModel : BaseSeal
     {
         /// <summary>         
         /// 會計師簽印類別
-        /// </summary>
-        /// <example>1</example>
+        /// </summary>        
         public AccountantSignType SealMappingConfigId { get; set; }
     }
     /// <summary>

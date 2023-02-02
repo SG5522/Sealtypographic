@@ -439,7 +439,7 @@ namespace SealTypographicWebAPI.Migrations
             migrationBuilder.InsertData(
                 table: "AccountantGroups",
                 columns: new[] { "Id", "AccountantGroupNumber", "CreateDate", "CreateUserId", "DeleteStatus", "Name", "UpdateDate", "UpdateUserId" },
-                values: new object[] { 1, "NO000", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 0, (byte)0, "無群組", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 0 });
+                values: new object[] { 1, "NO000", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 0, (byte)0, "預設群組", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 0 });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Accountants_AccountantGroupId",

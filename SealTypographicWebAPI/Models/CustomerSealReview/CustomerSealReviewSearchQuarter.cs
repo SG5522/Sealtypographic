@@ -1,25 +1,23 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace SealTypographicWebAPI.Models.Customer
+namespace SealTypographicWebAPI.Models.CustomerSealReview
 {
     /// <summary>
-    /// 客戶印鑑搜尋(依客戶ID與季度)
+    /// 顯示一筆審核資料用的搜尋
     /// </summary>
-    public class CustomerSealQuarterSearch
+    public class CustomerSealReviewSearchQuarter
     {
         /// <summary>
-        /// 客戶Id
+        /// ID
         /// </summary>
-        /// <example>1</example>
+        /// <example>0</example>        
         [Required]
         public int CustomerId { get; set; }
 
         /// <summary>
         /// 印鑑季度
         /// </summary>
-        /// <example>111Q1</example>
-        [Required]
-        [RegularExpression(@"^[a-zA-Z0-9]*$")]
+        /// <example>111年Q1</example>
         public string Quarter { get; set; }
     }
 }

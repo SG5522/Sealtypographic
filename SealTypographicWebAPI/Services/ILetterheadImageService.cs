@@ -1,5 +1,6 @@
 ﻿using SealTypographicWebAPI.Models.Letterhead;
 using SealTypographicWebAPI.Models;
+using SealTypographicWebAPI.Models.Customer;
 
 namespace SealTypographicWebAPI.Services
 {
@@ -8,6 +9,12 @@ namespace SealTypographicWebAPI.Services
     /// </summary>
     public interface ILetterheadImageService
     {
+        /// <summary>
+        /// 取得信頭圖案狀態列表
+        /// </summary>
+        /// <returns></returns>
+        LetterheadImageStatusResponse GetStatus();
+
         /// <summary>
         /// 取得信頭名稱與圖片建立日期
         /// </summary>

@@ -25,6 +25,6 @@ namespace SealTypographicWebAPI.Entities
         /// <summary>
         /// 會計師印鑑資料(歷程)
         /// </summary>
-        public List<AccountantSignCreateDateJournal> AccountantSignCreateDateJournals { get; set; }
+        public List<AccountantSignGroupJournal> AccountantSignCreateDateJournals { get; set; }
     }
 }

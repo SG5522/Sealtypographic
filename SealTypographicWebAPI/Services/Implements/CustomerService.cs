@@ -59,13 +59,13 @@ namespace SealTypographicWebAPI.Services.Implements
             CustomerPaginateViewModel customerPaginateViewModel = new();            
             IQueryable<Customer> customerQuery = dbContext.Customers.Where(customer => customer.DeleteStatus == DeleteStatus.No);                                                
             
-            if (!string.IsNullOrWhiteSpace(customerSearch.CustomerNumberOrName))
+            if (!string.IsNullOrWhiteSpace(customerSearch.KeyWord))
             {
                 customerQuery = customerQuery.Where
                     (
                         customer =>
-                        customer.Code.ToLower().Contains(customerSearch.CustomerNumberOrName.ToLower())
-                        || customer.Name.Contains(customerSearch.CustomerNumberOrName)                       
+                        customer.Code.ToLower().Contains(customerSearch.KeyWord.ToLower())
+                        || customer.Name.Contains(customerSearch.KeyWord)                       
                     );
             }
             customerQuery = customerQuery.OrderBy(customer => customer.Code);
@@ -82,10 +82,47 @@ namespace SealTypographicWebAPI.Services.Implements
                 {
                     CustomerViewModel customerViewModel = mapper.Map<CustomerViewModel>(customer);
 
+                    List<CustomerSealQuarterJournal> customerSealQuarterJournals = dbContext.CustomerSealQuarterJournals
+                                                                                    .Where(x => x.Customer.Id == customer.Id
+                                                                                    && x.DeleteStatus == DeleteStatus.No
+                                                                                    && x.ReviewStatus < ReviewStatus.Disabled ).ToList();
+
+                    if(customerSealQuarterJournals.Any())
+                    {
+                        if (customerSealQuarterJournals.Where(x => x.ReviewStatus != ReviewStatus.Approval) == null)
+                        {
+                            customerViewModel.IsDraff = false;
+                            customerViewModel.IsPending = false;
+                            customerViewModel.IsReject = false;
+                        }
+                        else
+                        {
+                            if (customerSealQuarterJournals.Where(x => x.ReviewStatus == ReviewStatus.Draft) != null)
+                            {
+                                customerViewModel.IsDraff = true;
+                            }
+                            if (customerSealQuarterJournals.Where(x => x.ReviewStatus == ReviewStatus.Pending) != null)
+                            {
+                                customerViewModel.IsPending = true;
+                            }
+                            if (customerSealQuarterJournals.Where(x => x.ReviewStatus == ReviewStatus.Reject) != null)
+                            {
+                                customerViewModel.IsReject = true;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        customerViewModel.IsDraff = false;
+                        customerViewModel.IsPending = false;
+                        customerViewModel.IsReject = false;
+                    }
+                    
+
                     customerViewModel.Quarter = dbContext.CustomerSealQuarterJournals
                                                 .Where(x => x.Customer.Id == customer.Id)
                                                 .Max(x => x.Quarter);
-
+                    
                     customerPaginateViewModel.ViewModels.Add(customerViewModel);                    
                 }                
                 customerPaginateViewModel.PageNumber = customerSearch.PageNumber;

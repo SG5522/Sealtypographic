@@ -3,7 +3,7 @@
 namespace SealTypographicWebAPI.Models.Accountant
 {
     /// <summary>
-    /// 會計師列表(含啟用時間)
+    /// 會計師包含啟用時間列表
     /// </summary>
     public class AccountantViewModelWithCreateDate : AccountantViewModel
     {

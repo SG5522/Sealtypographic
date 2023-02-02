@@ -9,8 +9,7 @@ namespace SealTypographicWebAPI.Models.BaseModels
     {
         /// <summary>
         /// ID
-        /// </summary>
-        /// <example>0</example>        
+        /// </summary>        
         [Required]
         public int Id { get; set; }
 

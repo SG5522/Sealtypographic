@@ -89,12 +89,12 @@ namespace SealTypographicWebAPI.Services.Implements
                                                 .Where(accountant => accountant.AccountantGroupId != notThisGroupMemberSearch.AccountantGroupId)
                                                 .Include(accountant => accountant.AccountantGroup);
                                                 
-            if(notThisGroupMemberSearch.AccountantNumberOrName != null)
+            if(notThisGroupMemberSearch.KeyWord != null)
             {
                 accountantQuery = accountantQuery.Where
                                 (
-                                    accountant => accountant.Code.Contains(notThisGroupMemberSearch.AccountantNumberOrName)
-                                    || accountant.Name.Contains(notThisGroupMemberSearch.AccountantNumberOrName)
+                                    accountant => accountant.Code.Contains(notThisGroupMemberSearch.KeyWord)
+                                    || accountant.Name.Contains(notThisGroupMemberSearch.KeyWord)
                                 );
             }
 

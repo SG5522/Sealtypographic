@@ -81,9 +81,9 @@ namespace SealTypographicWebAPI.Services.Implements
         /// </summary>
         /// <param name="accountantGroupSearch">會計師群組搜尋條件(分頁)</param>
         /// <returns></returns>
-        public AccountantGroupResponses GetPaginate(AccountantGroupSearch accountantGroupSearch)
+        public AccountantGroupPaginateViewModel GetPaginate(AccountantGroupSearch accountantGroupSearch)
         {
-            AccountantGroupResponses accountantGroupResponses = new();            
+            AccountantGroupPaginateViewModel accountantGroupResponses = new();            
             
             IQueryable<AccountantGroup> accountantGroupsQuery = dbContext.AccountantGroups;
             if (!string.IsNullOrWhiteSpace(accountantGroupSearch.GroupName))
@@ -151,7 +151,7 @@ namespace SealTypographicWebAPI.Services.Implements
     /// 更新會計師群組資料
     /// </summary>
     /// <param name="accountantGroupFormUpdate">群組資料</param>
-    public ResponseViewModel Update(AccountantGroupFormUpdate accountantGroupFormUpdate)
+    public ResponseViewModel Update(AccountantGroupUpdateForm accountantGroupFormUpdate)
         {
             ResponseViewModel response = new();
             AccountantGroup? accountantGroupQuery = dbContext.AccountantGroups.Find(accountantGroupFormUpdate.Id);

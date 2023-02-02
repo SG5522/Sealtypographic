@@ -6,7 +6,7 @@ namespace SealTypographicWebAPI.Models.AccountantGroup
     /// <summary>
     /// 建立會計師群組
     /// </summary>
-    public class AccountantGroupFormUpdate : BaseName
+    public class AccountantGroupUpdateForm : BaseName
     {
         /// <summary>
         /// 會計師群組編號

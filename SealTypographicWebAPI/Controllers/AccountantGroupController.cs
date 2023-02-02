@@ -57,9 +57,9 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="accountantGroupSearch">會計師群組搜尋條件(分頁)</param>
         /// <returns></returns>
         [HttpGet]
-        public AccountantGroupResponses Paginate([FromQuery]AccountantGroupSearch accountantGroupSearch)
+        public AccountantGroupPaginateViewModel Paginate([FromQuery]AccountantGroupSearch accountantGroupSearch)
         {
-            AccountantGroupResponses accountantGroupResponses = new();
+            AccountantGroupPaginateViewModel accountantGroupResponses = new();
             try
             {
                 Log.Information("AccountantGroups get paginate input {@Input}", accountantGroupSearch);
@@ -125,7 +125,7 @@ namespace SealTypographicWebAPI.Controllers
         /// </summary>
         /// <param name="accountantGroupFormUpdate">群組資料</param>       
         [HttpPut]
-        public ResponseViewModel Update(AccountantGroupFormUpdate accountantGroupFormUpdate)
+        public ResponseViewModel Update(AccountantGroupUpdateForm accountantGroupFormUpdate)
         {
             ResponseViewModel response = new ();
             try

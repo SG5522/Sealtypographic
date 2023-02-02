@@ -39,13 +39,13 @@ namespace SealTypographicWebAPI.Controllers
             SealMappingConfigResponseList sealMappingConfigResponseList = new ();
             try
             {
-                Log.Information("SealMappingConfig get ConfigList input {@Input}", sealType);
+                Log.Information("SealMappingConfig ConfigList input {@Input}", sealType);
                 sealMappingConfigResponseList = sealMappingConfigService.Get(sealType);
-                Log.Information("SealMappingConfig get ConfigList output {@Output}", sealMappingConfigResponseList);                
+                Log.Information("SealMappingConfig ConfigList output {@Output}", sealMappingConfigResponseList);                
             }
             catch (Exception ex)
             {
-                Log.Error("SealMappingConfig get ConfigList error {@Error}", ex);
+                Log.Error("SealMappingConfig ConfigList error {@Error}", ex);
                 sealMappingConfigResponseList.DbError();
             }
             return sealMappingConfigResponseList;

@@ -4,7 +4,7 @@ using SealTypographicWebAPI.Models.Customer;
 namespace SealTypographicWebAPI.Models.Accountant
 {
     /// <summary>
-    /// 需要異動會計師簽印資料
+    /// 異動會計師簽印資料
     /// </summary>
     public class AccountantSignUpdate
     {
@@ -26,7 +26,7 @@ namespace SealTypographicWebAPI.Models.Accountant
         /// <summary>
         /// 更新客戶印鑑列表
         /// </summary>
-        public List<AccountantSignFormUpdate> UpdateAccountantSigns { get; set; }
+        public List<AccountantSignUpdateForm> UpdateAccountantSigns { get; set; }
 
 
         /// <summary>

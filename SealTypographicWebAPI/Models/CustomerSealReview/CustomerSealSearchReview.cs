@@ -7,7 +7,7 @@ namespace SealTypographicWebAPI.Models.CustomerSealReview
     /// <summary>
     /// 客戶分頁搜尋
     /// </summary>
-    public class CustomerSealReviewSearch : PaginateSearch
+    public class CustomerSealSearchReview : PaginateSearch
     {
         /// <summary>
         /// 搜尋客戶編號或是名字

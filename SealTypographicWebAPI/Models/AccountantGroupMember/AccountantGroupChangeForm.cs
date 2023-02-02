@@ -3,7 +3,7 @@
 namespace SealTypographicWebAPI.Models.AccountantGroupMember
 {
     /// <summary>
-    /// 會計群組變更資料
+    /// 會計師群組變更資料
     /// </summary>
     public class AccountantGroupChangeForm : BaseData
     {

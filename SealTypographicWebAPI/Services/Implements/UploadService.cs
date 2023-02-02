@@ -6,7 +6,6 @@ using SealTypographicWebAPI.Consts;
 using SealTypographicWebAPI.Entities;
 using SealTypographicWebAPI.Models;
 using SealTypographicWebAPI.Models.Upload;
-using SealTypographicWebAPI.Utils;
 
 namespace SealTypographicWebAPI.Services.Implements
 {
@@ -47,7 +46,7 @@ namespace SealTypographicWebAPI.Services.Implements
                 UploadTypeViewModel uploadTypeViewModel = new()
                 {
                     UploadType = uploadType,
-                    Name = localizer[EnumExtenstionUtil.GetDescription(uploadType)]                    
+                    Name = localizer[uploadType.GetDescription()]
                 };
                 uploadTypeResponse.ViewModels.Add(uploadTypeViewModel);
             }
@@ -67,7 +66,7 @@ namespace SealTypographicWebAPI.Services.Implements
                 DuplicateFileProcessModeViewModel duplicateFileProcessModeViewModel = new()
                 {
                     DuplicateFileProcessMode = duplicateFileProcessMode,
-                    Name = localizer[EnumExtenstionUtil.GetDescription(duplicateFileProcessMode)]
+                    Name = localizer[duplicateFileProcessMode.GetDescription()]
                 };
                 duplicateFileProcessModeResponse.ViewModels.Add(duplicateFileProcessModeViewModel);
             }

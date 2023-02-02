@@ -1,12 +1,12 @@
 ﻿using System.ComponentModel;
 using System.Reflection;
 
-namespace SealTypographicWebAPI.Utils
+namespace SealTypographicWebAPI.Config
 {
     /// <summary>
     /// Enum的擴充
     /// </summary>
-    public static class EnumExtenstionUtil
+    public static class EnumExtenstion
     {
         /// <summary>
         /// 回傳 Enum 的 Description 屬性，如果沒有 Description 屬性就回傳列舉成員名稱

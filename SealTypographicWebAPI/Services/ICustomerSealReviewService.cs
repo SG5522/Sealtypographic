@@ -13,14 +13,14 @@ namespace SealTypographicWebAPI.Services
         /// 待審清單
         /// </summary>
         /// <returns></returns>
-        CustomerSealQuarterViewModelResponse GetCustomerSealReviewViewModel(CustomerSealReviewSearch customerSealReviewSearch);
+        CustomerSealQuarterViewModelResponse GetCustomerSealReviewViewModel(CustomerSealSearchReview customerSealReviewSearch);
 
         /// <summary>
         /// 基本資料與印鑑細項
         /// </summary>
         /// <param name="customerSealReviewSearch"></param>
         /// <returns></returns>
-        CustomerSealReviewDetailResponse GetCustomerSealReviewDetail(CustomerSealReviewSearch customerSealReviewSearch);
+        CustomerSealReviewDetailResponse GetCustomerSealReviewDetail(CustomerSealSearchReview customerSealReviewSearch);
 
         /// <summary>
         /// 審核通過

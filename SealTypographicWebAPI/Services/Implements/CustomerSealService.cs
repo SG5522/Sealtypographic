@@ -46,7 +46,7 @@ namespace SealTypographicWebAPI.Services.Implements
                                 && customerSealQuarterJournal.ReviewStatus <= ReviewStatus.Reject
                                 && customerSealQuarterJournal.DeleteStatus == DeleteStatus.No
                             )
-                            .Select(customerSealQuarterJournal => new CustomerSealQuarterView()
+                            .Select(customerSealQuarterJournal => new CustomerSealViewQuarter()
                             {
                                 CustomerId = customerId,
                                 Quarter = customerSealQuarterJournal.Quarter,
@@ -72,7 +72,7 @@ namespace SealTypographicWebAPI.Services.Implements
         /// </summary>
         /// <param name="customerSealQuarter">客戶印鑑搜尋(依客戶ID與季度)</param>
         /// <returns></returns>
-        public CustomerSealViewModels GetSeals(CustomerSealQuarterSearch customerSealQuarter)
+        public CustomerSealViewModels GetSeals(CustomerSealSearchQuarter customerSealQuarter)
         {
             CustomerSealViewModels customerSealViewModels = new()
             {                
@@ -328,7 +328,7 @@ namespace SealTypographicWebAPI.Services.Implements
         /// 此季度印鑑從草稿狀態變更為待審
         /// </summary>
         /// <param name="customerSealQuarter">客戶印鑑搜尋(依客戶ID與季度)</param>        
-        public ResponseViewModel PendingSeals(CustomerSealQuarterSearch customerSealQuarter)
+        public ResponseViewModel PendingSeals(CustomerSealSearchQuarter customerSealQuarter)
         {
             ResponseViewModel response = ChangeDraftReviewStatus(customerSealQuarter, ReviewStatus.Pending);
             return response;
@@ -337,7 +337,7 @@ namespace SealTypographicWebAPI.Services.Implements
         /// 此季度印鑑從草稿狀態變更為作廢
         /// </summary>
         /// <param name="customerSealQuarter">客戶印鑑搜尋(依客戶ID與季度)</param>        
-        public ResponseViewModel InvalidSeals(CustomerSealQuarterSearch customerSealQuarter)
+        public ResponseViewModel InvalidSeals(CustomerSealSearchQuarter customerSealQuarter)
         {
             ResponseViewModel response = ChangeDraftReviewStatus(customerSealQuarter, ReviewStatus.Invalid);
             return response;
@@ -415,7 +415,7 @@ namespace SealTypographicWebAPI.Services.Implements
         /// </summary>
         /// <param name="customerSealQuarter">客戶ID與季度</param>
         /// <param name="reviewStatus">審查狀態</param>        
-        private ResponseViewModel ChangeDraftReviewStatus(CustomerSealQuarterSearch customerSealQuarter, ReviewStatus reviewStatus)
+        private ResponseViewModel ChangeDraftReviewStatus(CustomerSealSearchQuarter customerSealQuarter, ReviewStatus reviewStatus)
         {
             ResponseViewModel response = new();
             int userId = 0;//從帳號驗證取得

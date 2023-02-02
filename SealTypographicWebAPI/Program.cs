@@ -58,6 +58,7 @@ builder.Services.AddDbContextPool<SealTypographicDbContext>(optionsBuilder =>
 
 builder.Services.AddScoped<ImageService>();
 builder.Services.AddScoped<SealMappingConfigService>();
+builder.Services.AddScoped<ReviewStatusService>();
 builder.Services.AddAutoMapper(typeof(MapperProfile));
 
 //DB Process

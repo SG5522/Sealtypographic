@@ -103,7 +103,7 @@ namespace SealTypographicWebAPI.Controllers
         /// </summary>
         /// <param name="accountantFormUpdate">會計師基本資料(ID為查詢用)</param>        
         [HttpPut]
-        public ResponseViewModel Update(AccountantFormUpdate accountantFormUpdate)
+        public ResponseViewModel Update(AccountantUpdateForm accountantFormUpdate)
         {
             ResponseViewModel response = new();
             try

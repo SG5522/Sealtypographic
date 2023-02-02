@@ -31,7 +31,7 @@ namespace SealTypographicWebAPI.Config
                     .ForMember(x => x.ImageBase64, y => y.Ignore()) // <---imagebase64要額外處理所以要忽略
                     .ReverseMap();
 
-            CreateMap<AccountantSignCreateDateJournal, CustomerSealViewModel>()
+            CreateMap<AccountantSignGroupJournal, CustomerSealViewModel>()
                     .ForMember(x => x.ImageBase64, y => y.Ignore()) // <---imagebase64要額外處理所以要忽略
                     .ReverseMap();
 
@@ -39,7 +39,7 @@ namespace SealTypographicWebAPI.Config
                     .ForMember(x => x.ImagePath, y => y.Ignore()) // <---ImagePath要額外處理所以要忽略
                     .ReverseMap();
 
-            CreateMap<CustomerSeal, AccountantSignCreateDateJournal>();                    
+            CreateMap<CustomerSeal, AccountantSignGroupJournal>();                    
 
             CreateMap<CustomerSealUpdateForm, CustomerSealJournal>()
                     .ForMember(x => x.ImagePath, y => y.Ignore()) // <---ImagePath要額外處理所以要忽略
@@ -79,12 +79,12 @@ namespace SealTypographicWebAPI.Config
             CreateMap<AccountantForm, Accountant>()
                      .ForMember(x => x.Code, y => y.MapFrom(o => o.AccountantNumber))
                      .ReverseMap();
-            CreateMap<AccountantFormUpdate, Accountant>();
+            CreateMap<AccountantUpdateForm, Accountant>();
 
             //會計師群組
             CreateMap<AccountantGroup, AccountantGroupViewModel>();            
             CreateMap<AccountantGroupForm, AccountantGroup>();
-            CreateMap<AccountantGroupFormUpdate,AccountantGroup>();            
+            CreateMap<AccountantGroupUpdateForm,AccountantGroup>();            
 
             //會計師印鑑
             CreateMap<AccountantSignJournal, AccountantSignViewModel>()
@@ -92,18 +92,18 @@ namespace SealTypographicWebAPI.Config
                     .ForMember(x => x.ImageBase64, y => y.Ignore()) // <---imagebase64要額外處理所以要忽略
                     .ReverseMap();
 
-            CreateMap<AccountantSignCreateDateJournal, AccountantSignViewModel>();
+            CreateMap<AccountantSignGroupJournal, AccountantSignViewModel>();
 
             CreateMap<AccountantSign, AccountantSignJournal>()
                     .ForMember(x => x.ImagePath, y => y.Ignore()) // <---imagebase64要額外處理所以要忽略
                     .ReverseMap();
             
-            CreateMap<AccountantSignFormUpdate, AccountantSignJournal>()
+            CreateMap<AccountantSignUpdateForm, AccountantSignJournal>()
                     .ForMember(x => x.ImagePath, y => y.Ignore()) // <---imagebase64要額外處理所以要忽略
                     .ReverseMap();
             //會計師簽名重複確認用
             CreateMap<AccountantSign, AccountantSignCheck>();
-            CreateMap<AccountantSignFormUpdate, AccountantSignCheck>();
+            CreateMap<AccountantSignUpdateForm, AccountantSignCheck>();
 
             //信頭基本資料
             CreateMap<Letterhead, LetterheadViewModel>();            

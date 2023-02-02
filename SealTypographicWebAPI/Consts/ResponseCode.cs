@@ -327,7 +327,6 @@
         /// </summary>
         DeleteLetterheadImageNoData = 4131,
 
-
         /// <summary>
         /// 上傳失敗
         /// </summary>

@@ -6,7 +6,7 @@ namespace SealTypographicWebAPI.Models.Customer
     /// <summary>
     /// 客戶印鑑季度
     /// </summary>
-    public class CustomerSealQuarterView
+    public class CustomerSealViewQuarter
     {
         /// <summary>
         /// 客戶Id
@@ -43,6 +43,6 @@ namespace SealTypographicWebAPI.Models.Customer
         /// <summary>
         /// 客戶季度搜尋表
         /// </summary>
-        public List<CustomerSealQuarterView> Quarters { get; set; }
+        public List<CustomerSealViewQuarter> Quarters { get; set; }
     }
 }

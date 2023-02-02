@@ -56,7 +56,7 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="customerSealQuarterSearch">客戶印鑑搜尋(依客戶ID與季度)</param>        
         /// <returns></returns>        
         [HttpGet]
-        public CustomerSealViewModels Seals([FromQuery] CustomerSealQuarterSearch customerSealQuarterSearch)
+        public CustomerSealViewModels Seals([FromQuery] CustomerSealSearchQuarter customerSealQuarterSearch)
         {
             CustomerSealViewModels customerSealViewModels = new();
             try
@@ -128,7 +128,7 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="customerSealQuarterSearch">客戶印鑑搜尋(依客戶ID與季度)</param>
         /// <returns></returns>
         [HttpPut("[Action]")]
-        public ResponseViewModel Pending(CustomerSealQuarterSearch customerSealQuarterSearch)
+        public ResponseViewModel Pending(CustomerSealSearchQuarter customerSealQuarterSearch)
         {
             ResponseViewModel response = new();
             try
@@ -151,7 +151,7 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="customerSealQuarterSearch">客戶印鑑搜尋(依客戶ID與季度)</param>
         /// <returns></returns>
         [HttpPut("[Action]")]
-        public ResponseViewModel Invalid(CustomerSealQuarterSearch customerSealQuarterSearch)
+        public ResponseViewModel Invalid(CustomerSealSearchQuarter customerSealQuarterSearch)
         {
             ResponseViewModel response = new();
             try

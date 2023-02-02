@@ -26,7 +26,7 @@ namespace SealTypographicWebAPI.Models.Letterhead
         /// 審查狀態
         /// </summary>
         [Required]
-        public string Status { get; set; }
+        public LetterheadImageStatus Status { get; set; }
     }
 
     /// <summary>

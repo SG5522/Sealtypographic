@@ -11,8 +11,8 @@ namespace SealTypographicWebAPI.Models.AccountantGroupMember
         /// <summary>
         /// 會計師編號或名稱
         /// </summary>
-        /// <example>ACC000 or 會計師名字</example>
-        public string? AccountantNumberOrName { get; set; }
+        /// <example>ACC000 or 王XX</example>
+        public string? KeyWord { get; set; }
 
         /// <summary>
         /// 群組Id

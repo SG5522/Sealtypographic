@@ -4,9 +4,9 @@ using SealTypographicWebAPI.Models.BaseModels;
 namespace SealTypographicWebAPI.Models.Accountant
 {
     /// <summary>
-    /// 會計資料
+    /// 會計師資料
     /// </summary>
-    public class AccountantFormUpdate : BaseName
+    public class AccountantUpdateForm : BaseName
     {
         /// <summary>
         /// 會計師編號

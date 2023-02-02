@@ -4,7 +4,7 @@ using SealTypographicWebAPI.Models.BaseModels;
 namespace SealTypographicWebAPI.Models.Accountant
 {
     /// <summary>
-    /// 會計資料
+    /// 會計師資料
     /// </summary>
     public class AccountantForm : BaseCreateName
     {
@@ -18,7 +18,7 @@ namespace SealTypographicWebAPI.Models.Accountant
 
         /// <summary>
         /// 會計師群組ID
-        /// 0 無群組
+        /// 0 預設群組
         /// </summary>
         /// <example>1</example>
         [Required]

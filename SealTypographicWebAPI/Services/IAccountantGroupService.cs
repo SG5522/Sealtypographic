@@ -28,7 +28,7 @@ namespace SealTypographicWebAPI.Services
         /// </summary>
         /// <param name="accountantGroupSearch">會計師群組搜尋條件(分頁)</param> 
         /// <returns></returns>
-        AccountantGroupResponses GetPaginate(AccountantGroupSearch accountantGroupSearch);
+        AccountantGroupPaginateViewModel GetPaginate(AccountantGroupSearch accountantGroupSearch);
 
         /// <summary>
         /// 新增會計師群組
@@ -40,7 +40,7 @@ namespace SealTypographicWebAPI.Services
         /// 更新會計師群組資料
         /// </summary>
         /// <param name="accountantGroupFormUpdate">群組資料</param>
-        ResponseViewModel Update(AccountantGroupFormUpdate accountantGroupFormUpdate);
+        ResponseViewModel Update(AccountantGroupUpdateForm accountantGroupFormUpdate);
 
         /// <summary>
         /// 刪除群組(將該群組的所有人員先轉移到無群組在進行群組刪除)

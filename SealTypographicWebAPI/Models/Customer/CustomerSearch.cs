@@ -8,9 +8,9 @@ namespace SealTypographicWebAPI.Models.Customer
     public class CustomerSearch : PaginateSearch
     {
         /// <summary>
-        /// 搜尋客戶ID或是名字
+        /// 關鍵字搜尋
         /// </summary>
         /// <example>AAA001 or 公司</example>
-        public string? CustomerNumberOrName { get; set; }       
+        public string? KeyWord { get; set; }       
     }
 }

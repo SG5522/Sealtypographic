@@ -32,7 +32,7 @@ namespace SealTypographicWebAPI.Services.Implements
         /// 待審清單
         /// </summary>
         /// <returns></returns>
-        public CustomerSealQuarterViewModelResponse GetCustomerSealReviewViewModel(CustomerSealReviewSearch customerSealReviewSearch)
+        public CustomerSealQuarterViewModelResponse GetCustomerSealReviewViewModel(CustomerSealSearchReview customerSealReviewSearch)
         {
             CustomerSealQuarterViewModelResponse customerSealReviewViewModelResponse = new ();
             List<CustomerSealQuarterViewModel> customerSealReviewViewModels = new ();
@@ -79,7 +79,7 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <param name="customerSealReviewSearch">搜尋條件</param>
         /// <returns></returns>
 
-        public CustomerSealReviewDetailResponse GetCustomerSealReviewDetail(CustomerSealReviewSearch customerSealReviewSearch)
+        public CustomerSealReviewDetailResponse GetCustomerSealReviewDetail(CustomerSealSearchReview customerSealReviewSearch)
         {
             CustomerSealReviewDetailResponse customerSealReviewDetailResponse = new();
             List<CustomerSealViewModel> customerSealViewModels = new();

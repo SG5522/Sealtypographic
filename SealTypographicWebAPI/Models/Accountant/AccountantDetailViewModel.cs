@@ -1,7 +1,7 @@
 ﻿namespace SealTypographicWebAPI.Models.Accountant
 {
     /// <summary>
-    /// 顯示會計師基本資料細項使用
+    /// 顯示會計師基本詳細資料
     /// </summary>
     public class AccountantDetailViewModel : AccountantViewModel
     {

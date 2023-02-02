@@ -41,7 +41,7 @@ namespace SealTypographicWebAPI.Entities
         /// <summary>
         /// 會計師簽印建立日期歷程表
         /// </summary>
-        public DbSet<AccountantSignCreateDateJournal> AccountantSignCreateDateJournals { get; set; }
+        public DbSet<AccountantSignGroupJournal> AccountantSignCreateDateJournals { get; set; }
 
         /// <summary>
         /// 事務所信頭資料表
@@ -111,7 +111,7 @@ namespace SealTypographicWebAPI.Entities
                 CreateUserId = 0,
                 UpdateUserId = 0,
                 DeleteStatus = 0,
-                Name = "無群組"
+                Name = "預設群組"
             });
         }
         #endregion

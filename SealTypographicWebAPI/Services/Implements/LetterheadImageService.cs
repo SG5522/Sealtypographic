@@ -1,13 +1,15 @@
 ﻿using AutoMapper;
 using EFCore.BulkExtensions;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Localization;
+using SealTypographicWebAPI.Config;
 using SealTypographicWebAPI.Consts;
 using SealTypographicWebAPI.Entities;
 using SealTypographicWebAPI.Models;
 using SealTypographicWebAPI.Models.Accountant;
 using SealTypographicWebAPI.Models.Customer;
 using SealTypographicWebAPI.Models.Letterhead;
-using SealTypographicWebAPI.Utils;
+using SealTypographicWebAPI.Models.ReviewStatusList;
 using System.Linq;
 
 namespace SealTypographicWebAPI.Services.Implements
@@ -18,8 +20,9 @@ namespace SealTypographicWebAPI.Services.Implements
     public class LetterheadImageService : ILetterheadImageService
     {
         private readonly SealTypographicDbContext dbContext;
-        private readonly ImageService imageSharpService;
+        private readonly ImageService imageSharpService;        
         private readonly IMapper mapper;
+        private readonly IStringLocalizer<LetterheadImageService> localizer;
 
         /// <summary>
         /// 取得DB與ResponseService
@@ -27,11 +30,33 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <param name="dbContext"></param>        
         /// <param name="mapper"></param>
         /// <param name="imageSharpService"></param>
-        public LetterheadImageService(SealTypographicDbContext dbContext, IMapper mapper, ImageService imageSharpService)
+        /// <param name="localizer"></param>
+        public LetterheadImageService(SealTypographicDbContext dbContext, IMapper mapper, ImageService imageSharpService, IStringLocalizer<LetterheadImageService> localizer)
         {
             this.dbContext = dbContext;
             this.mapper = mapper;
             this.imageSharpService = imageSharpService;
+            this.localizer = localizer;
+        }
+
+        /// <summary>
+        /// 取得信頭圖案狀態列表
+        /// </summary>
+        /// <returns></returns>
+        public LetterheadImageStatusResponse GetStatus()
+        {
+            LetterheadImageStatusResponse letterheadImageStatusResponse = new();
+            foreach(LetterheadImageStatus letterheadImageStatus in (LetterheadImageStatus[])Enum.GetValues(typeof(LetterheadImageStatus)))
+            {
+                LetterheadImageStatusViewModel letterheadImageStatusViewModel = new()
+                {
+                    Id = (int)letterheadImageStatus,
+                    Name = localizer[letterheadImageStatus.GetDescription()]
+                };
+                letterheadImageStatusResponse.ViewModels.Add(letterheadImageStatusViewModel);
+            }
+            letterheadImageStatusResponse.Success();
+            return letterheadImageStatusResponse;
         }
 
         /// <summary>
@@ -55,7 +80,7 @@ namespace SealTypographicWebAPI.Services.Implements
                                                                 {
                                                                     Id = letterheadImageJournal.Id,
                                                                     GroupCreateDate = letterheadImageJournal.CreateDate,
-                                                                    Status = EnumExtenstionUtil.GetDescription(letterheadImageJournal.Status)
+                                                                    Status = letterheadImageJournal.Status
                                                                 })
                                                                 .OrderByDescending(x => x.Id)
                                                                 .ToList();

@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using SealTypographicWebAPI.Entities;
 using SealTypographicWebAPI.Models;
+using SealTypographicWebAPI.Models.Customer;
 using SealTypographicWebAPI.Models.Letterhead;
 using SealTypographicWebAPI.Services;
 using Serilog;
@@ -27,6 +29,27 @@ namespace SealTypographicWebAPI.Controllers
         public LetterheadImageController(ILetterheadImageService letterheadImageService)
         {
             this.letterheadImageService = letterheadImageService;
+        }
+
+        /// <summary>
+        /// 取得信頭圖案狀態列表
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("[Action]")]
+        public LetterheadImageStatusResponse StatusList()
+        {
+            LetterheadImageStatusResponse letterheadImageStatusResponse = new();
+            try
+            {                
+                letterheadImageStatusResponse = letterheadImageService.GetStatus();
+                Log.Information("LetterheadImage StatusList output {@Output}", letterheadImageStatusResponse);
+            }
+            catch (Exception ex)
+            {
+                Log.Error("LetterheadImage StatusList error {@Error}", ex);
+                letterheadImageStatusResponse.DbError();
+            }
+            return letterheadImageStatusResponse;
         }
 
         /// <summary>

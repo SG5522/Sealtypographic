@@ -63,14 +63,14 @@ namespace SealTypographicWebAPI.Services.Implements
             IQueryable<Accountant> accountantQuery = dbContext.Accountants.Include(accountant => accountant.AccountantSignCreateDateJournals)
                                                     .Where(accountant => accountant.DeleteStatus == DeleteStatus.No);     
             
-            if (!string.IsNullOrWhiteSpace(accountantSearch.NumberOrNameOrGroupsName))
+            if (!string.IsNullOrWhiteSpace(accountantSearch.KeyWord))
             {
                 accountantQuery = accountantQuery.Where
                                 (
                                     accountant =>
-                                    accountant.Code.ToLower().Contains(accountantSearch.NumberOrNameOrGroupsName.ToLower())                                                         
-                                    || accountant.Name.Contains(accountantSearch.NumberOrNameOrGroupsName)
-                                    || accountant.AccountantGroup.Name.Contains(accountantSearch.NumberOrNameOrGroupsName)
+                                    accountant.Code.ToLower().Contains(accountantSearch.KeyWord.ToLower())                                                         
+                                    || accountant.Name.Contains(accountantSearch.KeyWord)
+                                    || accountant.AccountantGroup.Name.Contains(accountantSearch.KeyWord)
                                 );                                                   
             }
 
@@ -152,7 +152,7 @@ namespace SealTypographicWebAPI.Services.Implements
         /// 更新會計師基本資料
         /// </summary>
         /// <param name="accountantFormUpdate">會計師基本資料 accountantBaseData.id 為搜尋條件</param>        
-        public ResponseViewModel Update(AccountantFormUpdate accountantFormUpdate)
+        public ResponseViewModel Update(AccountantUpdateForm accountantFormUpdate)
         {
             ResponseViewModel response = new();
             int userid = 0;//帳號驗證取得ID

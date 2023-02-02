@@ -4,7 +4,6 @@ using SealTypographicWebAPI.Config;
 using SealTypographicWebAPI.Consts;
 using SealTypographicWebAPI.Entities;
 using SealTypographicWebAPI.Models.SealMappingConfig;
-using SealTypographicWebAPI.Utils;
 
 namespace SealTypographicWebAPI.Services.Implements
 {
@@ -40,8 +39,8 @@ namespace SealTypographicWebAPI.Services.Implements
                     {
                         SealMappingConfigViewModel sealMappingConfigViewModel = new()
                         {
-                            Id = (int)customerSealType,
-                            Name = localizer[EnumExtenstionUtil.GetDescription(customerSealType)]
+                            Id = (int)customerSealType,                            
+                            Name = localizer[customerSealType.GetDescription()]
                         };
                         sealMappingConfigResponseList.SealMappingConfigViewModels.Add(sealMappingConfigViewModel);
                     }
@@ -52,7 +51,7 @@ namespace SealTypographicWebAPI.Services.Implements
                         SealMappingConfigViewModel sealMappingConfigViewModel = new()
                         {
                             Id = (int)accountantSignType,
-                            Name = localizer[EnumExtenstionUtil.GetDescription(accountantSignType)]
+                            Name = localizer[accountantSignType.GetDescription()]
                         };
                         sealMappingConfigResponseList.SealMappingConfigViewModels.Add(sealMappingConfigViewModel);
                     }

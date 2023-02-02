@@ -83,7 +83,7 @@ namespace SealTypographicWebAPI.Services.Implements
                 AccountantId = accountantSignCreateDate.AccountantId,
                 GroupCreateDate = accountantSignCreateDate.GroupCreateDate
             };
-            AccountantSignCreateDateJournal? accountantSignCreateDateJournalQuery = dbContext.AccountantSignCreateDateJournals
+            AccountantSignGroupJournal? accountantSignCreateDateJournalQuery = dbContext.AccountantSignCreateDateJournals
                                                                 .Include(accountantSignCreateDateJournal => accountantSignCreateDateJournal.AccountantSignJournals)
                                                                 .FirstOrDefault
                                                                 (
@@ -134,7 +134,7 @@ namespace SealTypographicWebAPI.Services.Implements
             if (accountantQuery != null)
             {
                 int count = 1;
-                AccountantSignCreateDateJournal accountantSignCreateDateJournal = new();
+                AccountantSignGroupJournal accountantSignCreateDateJournal = new();
                 ImageBase64Info imageBase64Info = new()
                 {
                     Code = GetCode(accountantSignForms.AccountantId),                    
@@ -187,7 +187,7 @@ namespace SealTypographicWebAPI.Services.Implements
 
             List<int> updateAccountantSignIds = accountantSignUpdate.UpdateAccountantSigns.Select(x => x.Id).ToList();
 
-            AccountantSignCreateDateJournal? accountantSignCreateDateJournalQuery = dbContext.AccountantSignCreateDateJournals
+            AccountantSignGroupJournal? accountantSignCreateDateJournalQuery = dbContext.AccountantSignCreateDateJournals
                                                                                     .Include(accountantSignCreateDateJournal => accountantSignCreateDateJournal.AccountantSignJournals)
                                                                                     .FirstOrDefault
                                                                                     (
@@ -220,7 +220,7 @@ namespace SealTypographicWebAPI.Services.Implements
                 }
 
                 //修改印鑑
-                foreach (AccountantSignFormUpdate accountantSignFormUpdate in accountantSignUpdate.UpdateAccountantSigns)
+                foreach (AccountantSignUpdateForm accountantSignFormUpdate in accountantSignUpdate.UpdateAccountantSigns)
                 {
                     AccountantSignJournal? updateSignQuery = dbContext.AccountantSignJournals
                                                                 .FirstOrDefault
@@ -360,7 +360,7 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <param name="accountantSignCreateDateJournal">會計師簽印建立日期歷程</param>
         /// <param name="isCreate">對Db所做的行動</param>
         /// <param name="userId">userId</param>
-        private static void BaseInputCreateDateJournal(AccountantSignCreateDateJournal accountantSignCreateDateJournal, bool isCreate, int userId)
+        private static void BaseInputCreateDateJournal(AccountantSignGroupJournal accountantSignCreateDateJournal, bool isCreate, int userId)
         {
             if (isCreate)
             {
@@ -408,7 +408,7 @@ namespace SealTypographicWebAPI.Services.Implements
         {
             ResponseViewModel response = new();
             int userid = 0; //從帳號驗證取得Id
-            AccountantSignCreateDateJournal? accountantSignCreateDateQuery = dbContext.AccountantSignCreateDateJournals
+            AccountantSignGroupJournal? accountantSignCreateDateQuery = dbContext.AccountantSignCreateDateJournals
                                                                         .FirstOrDefault
                                                                         (
                                                                             accountantSignCreateDateJournal => 

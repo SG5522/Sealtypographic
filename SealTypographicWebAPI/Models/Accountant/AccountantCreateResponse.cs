@@ -1,7 +1,7 @@
 ﻿namespace SealTypographicWebAPI.Models.Accountant
 {
     /// <summary>
-    /// 建完會計師後回傳ID
+    /// 建立會計師後回傳資料
     /// </summary>
     public class AccountantCreateResponse : ResponseViewModel
     {
