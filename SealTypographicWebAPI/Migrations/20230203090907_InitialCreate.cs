@@ -267,7 +267,8 @@ namespace SealTypographicWebAPI.Migrations
                     CreateUserId = table.Column<int>(type: "INTEGER", nullable: false),
                     UpdateUserId = table.Column<int>(type: "INTEGER", nullable: false),
                     DeleteStatus = table.Column<byte>(type: "INTEGER", nullable: false),
-                    ImagePath = table.Column<string>(type: "TEXT", nullable: false)
+                    ImageFullPath = table.Column<string>(type: "TEXT", nullable: false),
+                    ThumbnailFullPath = table.Column<string>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -318,7 +319,8 @@ namespace SealTypographicWebAPI.Migrations
                     CreateUserId = table.Column<int>(type: "INTEGER", nullable: false),
                     UpdateUserId = table.Column<int>(type: "INTEGER", nullable: false),
                     DeleteStatus = table.Column<byte>(type: "INTEGER", nullable: false),
-                    ImagePath = table.Column<string>(type: "TEXT", nullable: false)
+                    ImageFullPath = table.Column<string>(type: "TEXT", nullable: false),
+                    ThumbnailFullPath = table.Column<string>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {

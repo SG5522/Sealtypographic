@@ -137,7 +137,7 @@ namespace SealTypographicWebAPI.Services.Implements
             LetterheadImageJournal letterheadImage = new();
             List<LetterheadImageJournal> letterheadImages = new();
             int userId = 0; //以後從帳號驗證取得Id
-            int count = 1;
+                            
             ImageBase64Info imageBase64Info = new() 
             {                                 
                 SealType = SealType.Letterhead 
@@ -148,7 +148,8 @@ namespace SealTypographicWebAPI.Services.Implements
             BaseInputLetterhead(letterhead, true, userId);
             //ImageBase64轉圖檔並存到指定資料夾
             imageBase64Info.ImageBase64 = letterheadImageForms.ImageBase64;
-            letterheadImage.ImageFullPath = imageSharpService.SaveBase64ToFile(imageBase64Info, count);
+            letterheadImage.ImageFullPath = imageSharpService.GetImageBase64FullPath(imageBase64Info, false);
+            
             //新增信頭圖片
             BaseInputImageJournal(letterheadImage, true, userId);
             letterheadImages.Add(letterheadImage);
@@ -171,7 +172,7 @@ namespace SealTypographicWebAPI.Services.Implements
         {
             ResponseViewModel response = new();            
             int userId = 0;//之後會從帳號驗證中取得userid
-            int count = 1;
+            
             ImageBase64Info imageBase64Info = new()
             {                
                 SealType = SealType.Letterhead,                
@@ -185,7 +186,7 @@ namespace SealTypographicWebAPI.Services.Implements
 
                 //ImageBase64轉圖檔並存到指定資料夾                    
                 imageBase64Info.ImageBase64 = letterheadImageUpdate.ImageBase64;
-                letterheadImageJournal.ImageFullPath = imageSharpService.SaveBase64ToFile(imageBase64Info, count);
+                letterheadImageJournal.ImageFullPath = imageSharpService.GetImageBase64FullPath(imageBase64Info, false);
 
                 BaseInputImageJournal(letterheadImageJournal, true, userId);
                 letterheadImageJournal.Letterhead = updateImageQuery.Letterhead;

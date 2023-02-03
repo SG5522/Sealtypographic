@@ -3,6 +3,8 @@ using SixLabors.ImageSharp.Formats;
 using DJLib.Models;
 using System;
 using System.IO;
+using SixLabors.ImageSharp.Processing;
+using System.Drawing.Imaging;
 
 namespace DJLib
 {
@@ -33,18 +35,45 @@ namespace DJLib
             return ImageToBase64(image, format);
         }
 
+
         /// <summary>
-        /// Base64轉圖存檔
+        /// Base64轉成Image
         /// </summary>
-        /// <param name="ImageBase64">BASE64圖檔字串</param>
-        /// <param name="saveImageInfo">存檔資訊</param>        
+        /// <param name="ImageBase64">BASE64圖檔字串</param>         
         /// <returns></returns>
-        public static void Base64ToSaveImage(string ImageBase64, SaveImageInfo saveImageInfo)
+        public static ImageInfo Base64ToImageInfo(string ImageBase64)
         {
+            ImageInfo imageInfo = new ImageInfo();
             string base64string = ImageBase64.Substring(ImageBase64.IndexOf("base64,") + 7);
             byte[] bytes = Convert.FromBase64String(base64string);
-            Image image = Image.Load(bytes, out IImageFormat format);
-            SaveFile(image, format, saveImageInfo);
+
+            imageInfo.Image = Image.Load(bytes, out IImageFormat format);
+            imageInfo.ImageFormat = format;
+
+            return imageInfo;
+        }
+
+        /// <summary>
+        /// 調整圖片大小(Image)
+        /// </summary>
+        /// <param name="image">圖片</param>
+        /// <param name="scale">縮放比例 1.00 = 100%  0.01 = 1%</param>        
+        public static void ReSize(Image image, double scale)
+        {
+            int width = (int)(image.Width * scale);
+            int height = (int)(image.Height * scale);
+            image.Mutate(x => x.Resize(width, height));
+        }
+
+        /// <summary>
+        /// 調整圖片大小(ImageBase64)
+        /// </summary>
+        /// <param name="ImageBase64"></param>
+        /// <param name="scale">縮放比例 1.00 = 100%  0.01 = 1%</param>        
+        public static void ReSize(string ImageBase64, double scale)
+        {
+            ImageInfo imageInfo = Base64ToImageInfo(ImageBase64);            
+            ReSize(imageInfo.Image, scale);
         }
 
         /// <summary>
@@ -53,7 +82,7 @@ namespace DJLib
         /// <param name="image">影像</param>
         /// <param name="format">格式</param>
         /// <param name="saveImageInfo">存檔資訊</param>
-        public static void SaveFile(Image image, IImageFormat format, SaveImageInfo saveImageInfo)
+        public static void SaveFile(Image image, IImageFormat format, SaveFullPath saveImageInfo)
         {            
             if (!Directory.Exists(saveImageInfo.Folder))
             {
@@ -62,18 +91,17 @@ namespace DJLib
             switch (format.Name)
             {
                 case "BMP":
-                    saveImageInfo.Filename += ".bmp";
-                    image.SaveAsBmp(saveImageInfo.Folder + saveImageInfo.Filename);                   
+                    saveImageInfo.FileName += ".bmp";                                        
                     break;
                 case "JPEG":
-                    saveImageInfo.Filename += ".jpg";
-                    image.SaveAsJpeg(saveImageInfo.Folder + saveImageInfo.Filename);
+                    saveImageInfo.FileName += ".jpg";                    
                     break;
                 case "PNG":
-                    saveImageInfo.Filename += ".png";
-                    image.SaveAsPng(saveImageInfo.Folder + saveImageInfo.Filename);
+                    saveImageInfo.FileName += ".png";                    
                     break;
             }
+            image.Save($"{saveImageInfo.Folder}{saveImageInfo.FileName}");
         }
+
     }
 }

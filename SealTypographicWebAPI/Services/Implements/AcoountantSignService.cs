@@ -100,7 +100,7 @@ namespace SealTypographicWebAPI.Services.Implements
                 foreach (AccountantSignJournal accountantSignJournal in accountantSignCreateDateJournalQuery.AccountantSignJournals)
                 {
                     AccountantSignViewModel accountantSignViewModel = mapper.Map<AccountantSignViewModel>(accountantSignJournal);
-                    accountantSignViewModel.ImageBase64 = imageSharpService.GetPathToBase64(accountantSignJournal.ImagePath); //資料庫取得圖檔路徑轉BASE64                   
+                    accountantSignViewModel.ImageBase64 = imageSharpService.GetPathToBase64(accountantSignJournal.ImageFullPath); //資料庫取得圖檔路徑轉BASE64                   
                     
                     accountantSignViewModel.SealMappingConfigId = accountantSignJournal.ConfigType;
                     signViewModels.SignViewModels.Add(accountantSignViewModel);
@@ -132,8 +132,7 @@ namespace SealTypographicWebAPI.Services.Implements
                                 .FirstOrDefault(accountant => accountant.Id == accountantSignForms.AccountantId);
 
             if (accountantQuery != null)
-            {
-                int count = 1;
+            {                
                 AccountantSignGroupJournal accountantSignCreateDateJournal = new();
                 ImageBase64Info imageBase64Info = new()
                 {
@@ -151,10 +150,11 @@ namespace SealTypographicWebAPI.Services.Implements
                     };
                                         
                     imageBase64Info.ImageBase64 = accountantSign.ImageBase64;
-                    accountantSignJournal.ImagePath = imageSharpService.SaveBase64ToFile(imageBase64Info, count);                    
+                    accountantSignJournal.ImageFullPath = imageSharpService.GetImageBase64FullPath(imageBase64Info, false);
+                    accountantSignJournal.ThumbnailFullPath = imageSharpService.GetImageBase64FullPath(imageBase64Info, true);
                     BaseInputAccountantSignJournal(accountantSignJournal, true, userId);
                     accountantSignJournals.Add(accountantSignJournal);
-                    count++;
+                    
                 }
 
                 accountantSignCreateDateJournal.AccountantSignJournals = accountantSignJournals;
@@ -176,8 +176,7 @@ namespace SealTypographicWebAPI.Services.Implements
         public List<ResponseViewModel> Update(AccountantSignUpdate accountantSignUpdate)
         {
             List<ResponseViewModel> responseViewModels = new();            
-            int userId = 0;//之後會從帳號驗證中取得userid
-            int count = 1;
+            int userId = 0;//之後會從帳號驗證中取得userid            
 
             ImageBase64Info imageBase64Info = new()
             {
@@ -237,16 +236,15 @@ namespace SealTypographicWebAPI.Services.Implements
 
                         //ImageBase64轉圖檔並存到指定資料夾                    
                         imageBase64Info.ImageBase64 = accountantSignFormUpdate.ImageBase64;
-                        accountantSignJournal.ImagePath = imageSharpService.SaveBase64ToFile(imageBase64Info, count);
+                        accountantSignJournal.ImageFullPath = imageSharpService.GetImageBase64FullPath(imageBase64Info, false);
+                        accountantSignJournal.ThumbnailFullPath = imageSharpService.GetImageBase64FullPath(imageBase64Info, true);
                         BaseInputAccountantSignJournal(accountantSignJournal, true, userId);
 
                         accountantSignCreateDateJournalQuery.AccountantSignJournals.Add(accountantSignJournal);
 
                         //原印鑑刪除(Hide)
                         updateSignQuery.DeleteStatus = DeleteStatus.Yes;
-                        BaseInputAccountantSignJournal(updateSignQuery, false, userId);
-
-                        count++;
+                        BaseInputAccountantSignJournal(updateSignQuery, false, userId);                        
                     }
                     else
                     {
@@ -275,12 +273,10 @@ namespace SealTypographicWebAPI.Services.Implements
 
                         //ImageBase64轉圖檔並存到指定資料夾
                         imageBase64Info.ImageBase64 = createAccountantSign.ImageBase64;
-                        accountantSignJournal.ImagePath = imageSharpService.SaveBase64ToFile(imageBase64Info, count);
-
+                        accountantSignJournal.ImageFullPath = imageSharpService.GetImageBase64FullPath(imageBase64Info, false);
+                        accountantSignJournal.ThumbnailFullPath = imageSharpService.GetImageBase64FullPath(imageBase64Info, true);
                         BaseInputAccountantSignJournal(accountantSignJournal, true, userId);
-                        accountantSignCreateDateJournalQuery.AccountantSignJournals.Add(accountantSignJournal);
-
-                        count++;
+                        accountantSignCreateDateJournalQuery.AccountantSignJournals.Add(accountantSignJournal);                        
                     }
                     else
                     {

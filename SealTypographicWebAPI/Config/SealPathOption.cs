@@ -25,5 +25,10 @@
         /// </summary>
         public string Letterhead { get; set; } = string.Empty;
 
+        /// <summary>
+        /// 縮圖比例
+        /// </summary>
+        public float ResizeScale { get; set; }
+
     }
 }

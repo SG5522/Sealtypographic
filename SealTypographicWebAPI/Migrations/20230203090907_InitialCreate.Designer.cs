@@ -11,7 +11,7 @@ using SealTypographicWebAPI.Entities;
 namespace SealTypographicWebAPI.Migrations
 {
     [DbContext(typeof(SealTypographicDbContext))]
-    [Migration("20230202021259_InitialCreate")]
+    [Migration("20230203090907_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -172,7 +172,11 @@ namespace SealTypographicWebAPI.Migrations
                     b.Property<byte>("DeleteStatus")
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("ImagePath")
+                    b.Property<string>("ImageFullPath")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("ThumbnailFullPath")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
@@ -334,12 +338,16 @@ namespace SealTypographicWebAPI.Migrations
                     b.Property<byte>("DeleteStatus")
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("ImagePath")
+                    b.Property<string>("ImageFullPath")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<int>("Sequence")
                         .HasColumnType("INTEGER");
+
+                    b.Property<string>("ThumbnailFullPath")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
 
                     b.Property<DateTime>("UpdateDate")
                         .HasColumnType("TEXT");

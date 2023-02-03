@@ -16,7 +16,7 @@ namespace SealTypographicWebAPI.Services.Implements
         private readonly IMapper mapper;
 
         /// <summary>
-        /// 取得DB與ResponseService
+        /// 建構
         /// </summary>
         /// <param name="dbContext"></param>
         /// <param name="mapper"></param>

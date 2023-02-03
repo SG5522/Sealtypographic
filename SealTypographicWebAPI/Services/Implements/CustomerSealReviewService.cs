@@ -15,16 +15,19 @@ namespace SealTypographicWebAPI.Services.Implements
     public class CustomerSealReviewService : ICustomerSealReviewService
     {
         private readonly SealTypographicDbContext dbContext;
+        private readonly ImageService imageService;
         private readonly IMapper mapper;
 
         /// <summary>
-        /// 注入DB、ResponseService
+        /// 建構
         /// </summary>
         /// <param name="dbContext"></param>
+        /// <param name="imageService"></param>
         /// <param name="mapper"></param>        
-        public CustomerSealReviewService(SealTypographicDbContext dbContext, IMapper mapper)
+        public CustomerSealReviewService(SealTypographicDbContext dbContext, ImageService imageService, IMapper mapper)
         {
             this.dbContext = dbContext;
+            this.imageService = imageService;
             this.mapper = mapper;
         }
 
@@ -32,59 +35,71 @@ namespace SealTypographicWebAPI.Services.Implements
         /// 待審清單
         /// </summary>
         /// <returns></returns>
-        public CustomerSealQuarterViewModelResponse GetCustomerSealReviewViewModel(CustomerSealSearchReview customerSealReviewSearch)
+        public CustomerSealQuarterResponse GetReviewQuarterSeals(CustomerSealSearchReview customerSealSearchReview)
         {
-            CustomerSealQuarterViewModelResponse customerSealReviewViewModelResponse = new ();
-            List<CustomerSealQuarterViewModel> customerSealReviewViewModels = new ();
+            CustomerSealQuarterResponse customerSealQuarterResponse = new ();           
 
             IQueryable<CustomerSealQuarterJournal> customerSealQuarterJournalQuery = dbContext.CustomerSealQuarterJournals
                                                                 .Include(customerSealQuarterJournal => customerSealQuarterJournal.Customer)
                                                                 .Where
                                                                 (
                                                                     customerSealJournal => customerSealJournal.DeleteStatus == DeleteStatus.No
-                                                                    && customerSealJournal.ReviewStatus == customerSealReviewSearch.ReviewStatus
+                                                                    && customerSealJournal.ReviewStatus == customerSealSearchReview.ReviewStatus
                                                                 );
             if (customerSealQuarterJournalQuery.Any())
             {
                 //取得該頁            
                 List<CustomerSealQuarterJournal> thisPageCustomerSealQuarter = customerSealQuarterJournalQuery
-                                                    .Skip((customerSealReviewSearch.PageNumber - 1) * customerSealReviewSearch.PageSize)
-                                                    .Take(customerSealReviewSearch.PageSize)
+                                                    .Skip((customerSealSearchReview.PageNumber - 1) * customerSealSearchReview.PageSize)
+                                                    .Take(customerSealSearchReview.PageSize)
                                                     .ToList();
                 foreach (CustomerSealQuarterJournal customerSealQuarterJournal in thisPageCustomerSealQuarter)
                 {
-                    CustomerSealQuarterViewModel customerSealReviewViewModel = mapper.Map<CustomerSealQuarterViewModel>(customerSealQuarterJournal);
-                    //customerSealReviewViewModel.ReviewStatus = ReviewStatusUtil.Get(customerSealJournal.ReviewStatus);
-                    customerSealReviewViewModels.Add(customerSealReviewViewModel);
+                    CustomerSealQuarterViewModel customerSealQuarterViewModel = mapper.Map<CustomerSealQuarterViewModel>(customerSealQuarterJournal);
+                    List<CustomerSealJournal> customerSeals = dbContext.CustomerSealJournals.Where
+                                                                (
+                                                                    x => x.CustomerSealQuarterJournal.Id == customerSealQuarterJournal.Id
+                                                                    && x.DeleteStatus == DeleteStatus.No                                                                    
+                                                                )
+                                                                .OrderBy(x => x.ConfigType)
+                                                                .ThenBy(x => x.Sequence)
+                                                                .ToList();
+                    foreach (CustomerSealJournal customerSeal in customerSeals)
+                    {
+                        SealImageInfo sealImageInfo = new()
+                        {
+                            CustomerSealType = customerSeal.ConfigType,
+                            Sequence = customerSeal.Sequence,
+                            ThumbnailBase64 = imageService.GetPathToBase64(customerSeal.ThumbnailFullPath)
+                        };
+                        customerSealQuarterViewModel.SealImageInfos.Add(sealImageInfo);
+                    }
+                    
+                    customerSealQuarterResponse.ViewModels.Add(customerSealQuarterViewModel);
                 }
-
-                customerSealReviewViewModelResponse.CustomerSealReviewViewModels = customerSealReviewViewModels;
-                customerSealReviewViewModelResponse.PageNumber = customerSealReviewSearch.PageNumber;
-                customerSealReviewViewModelResponse.PageSize = customerSealReviewSearch.PageSize;
+                
+                customerSealQuarterResponse.PageNumber = customerSealSearchReview.PageNumber;
+                customerSealQuarterResponse.PageSize = customerSealSearchReview.PageSize;
                 //計算總頁數
-                customerSealReviewViewModelResponse.TotalPage = TotalPageUtil.GetTotalPage(customerSealQuarterJournalQuery.Count(), customerSealReviewSearch.PageSize);
-                customerSealReviewViewModelResponse.TotalCount = customerSealQuarterJournalQuery.Count();
-                customerSealReviewViewModelResponse.Success();
+                customerSealQuarterResponse.TotalPage = TotalPageUtil.GetTotalPage(customerSealQuarterJournalQuery.Count(), customerSealSearchReview.PageSize);
+                customerSealQuarterResponse.TotalCount = customerSealQuarterJournalQuery.Count();
+                customerSealQuarterResponse.Success();
             }
             else
             {
-                customerSealReviewViewModelResponse.CustomerSealNoData();
+                customerSealQuarterResponse.CustomerSealNoData();
             }
 
-            return customerSealReviewViewModelResponse;
+            return customerSealQuarterResponse;
         }
-        /// <summary>
-        /// 依照客戶ID與季度列出詳細資料與印鑑
-        /// </summary>
-        /// <param name="customerSealReviewSearch">搜尋條件</param>
-        /// <returns></returns>
-
-        public CustomerSealReviewDetailResponse GetCustomerSealReviewDetail(CustomerSealSearchReview customerSealReviewSearch)
+        
+        ///<inheritdoc />
+        public CustomerSealReviewDetailResponse GetCustomerSealReviewDetail(int CustomerSealQuarterId)
         {
             CustomerSealReviewDetailResponse customerSealReviewDetailResponse = new();
-            List<CustomerSealViewModel> customerSealViewModels = new();
             
-            //Customer? customerQuery = dbContext.Customers.Find(customerSealReviewSearch.CustomerId);
+            
+            CustomerSealQuarterJournal? customerQuery = dbContext.CustomerSealQuarterJournals.Find(CustomerSealQuarterId);
             //if(customerQuery != null) 
             //{
             //    IQueryable<CustomerSealJournal> customerSealJournalQuery = dbContext.CustomerSealJournals                                                                            

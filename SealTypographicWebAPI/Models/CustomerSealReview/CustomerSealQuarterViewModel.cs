@@ -1,5 +1,7 @@
-﻿using SealTypographicWebAPI.Consts;
+﻿using NetTopologySuite.IO;
+using SealTypographicWebAPI.Consts;
 using SealTypographicWebAPI.Models.BaseModels;
+using SealTypographicWebAPI.Models.Customer;
 
 namespace SealTypographicWebAPI.Models.CustomerSealReview
 {
@@ -8,6 +10,14 @@ namespace SealTypographicWebAPI.Models.CustomerSealReview
     /// </summary>
     public class CustomerSealQuarterViewModel : BaseName
     {
+        /// <summary>
+        /// New SealImageInfos
+        /// </summary>
+        public CustomerSealQuarterViewModel()
+        {
+            SealImageInfos = new();
+        }
+
         /// <summary>
         /// 客戶編號
         /// </summary>
@@ -21,18 +31,51 @@ namespace SealTypographicWebAPI.Models.CustomerSealReview
         /// <summary>
         /// 審核狀態
         /// </summary>
-        public string ReviewStatus { get; set; }
+        public ReviewStatus ReviewStatus { get; set; }
+
+        /// <summary>
+        /// 印鑑資訊
+        /// </summary>
+        public List<SealImageInfo> SealImageInfos { get; set; }
+    }
+
+    /// <summary>
+    /// 印鑑資訊
+    /// </summary>
+    public class SealImageInfo 
+    {
+        /// <summary>
+        /// 印鑑類別
+        /// </summary>
+        public CustomerSealType CustomerSealType { get; set; }
+
+        /// <summary>
+        /// 印鑑編號(排序)
+        /// </summary>
+        public int Sequence { get; set; }
+
+        /// <summary>
+        /// 縮圖字串(Base64)
+        /// </summary>
+        public string ThumbnailBase64 { get; set; }
     }
 
     /// <summary>
     /// 審核列表(分頁)
     /// </summary>
-    public class CustomerSealQuarterViewModelResponse : PaginateViewModel
+    public class CustomerSealQuarterResponse : PaginateViewModel
     {
+        /// <summary>
+        /// New ViewModels
+        /// </summary>
+        public CustomerSealQuarterResponse()
+        {
+            ViewModels = new();
+        }
 
         /// <summary>
         /// 審核LIST
         /// </summary>
-        public List<CustomerSealQuarterViewModel> CustomerSealReviewViewModels { get; set; }
+        public List<CustomerSealQuarterViewModel> ViewModels { get; set; }
     }
 }

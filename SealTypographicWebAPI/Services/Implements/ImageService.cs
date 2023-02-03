@@ -35,25 +35,34 @@ namespace SealTypographicWebAPI.Services
         {            
             return ImageSharpUtil.PathImageFileToBase64($"{fullpath}");            
         }
-        
+
         /// <summary>
-        /// Base64轉圖檔並存檔
+        /// Base64轉圖檔並存檔回傳存檔路徑
         /// </summary>
         /// <param name="imageBase64Info">ImageBase64資訊</param>
-        /// <param name="count"></param>
-        public string SaveBase64ToFile(ImageBase64Info imageBase64Info, int count)
+        /// <param name="IsResize">是否縮放</param>        
+        public string GetImageBase64FullPath(ImageBase64Info imageBase64Info, bool IsResize)
         {
             string folderPath = GetImageFolder(imageBase64Info.SealType);            
             string dateFolder = $"{imageBase64Info.CreateTime.Year}/{imageBase64Info.CreateTime.Month}/{imageBase64Info.CreateTime.Day}/" ;
-            SaveImageInfo saveImageInfo = new()
+            SaveFullPath saveImageInfo = new()
             {
-                Filename = $"{imageBase64Info.Code}{imageBase64Info.CreateTime:yyyyMMHHmmss}{count}",
                 Folder = $"{folderPath}{dateFolder}"
             };
 
-            ImageSharpUtil.Base64ToSaveImage(imageBase64Info.ImageBase64, saveImageInfo);
+            ImageInfo imageInfo = ImageSharpUtil.Base64ToImageInfo(imageBase64Info.ImageBase64);
+            if (!IsResize)
+            {
+                saveImageInfo.FileName = $"{imageBase64Info.Code}{imageBase64Info.CreateTime:yyyyMMHHmmssffff}";                                                
+            }
+            else
+            {
+                saveImageInfo.FileName = $"{imageBase64Info.Code}{"Thumbnail"}{imageBase64Info.CreateTime:yyyyMMHHmmssffff}";
+                ImageSharpUtil.ReSize(imageInfo.Image, sealConfig.ResizeScale);
+            }
+            ImageSharpUtil.SaveFile(imageInfo.Image, imageInfo.ImageFormat, saveImageInfo);            
 
-            return $"{saveImageInfo.Folder}{saveImageInfo.Filename}";                        
+            return $"{saveImageInfo.Folder}{saveImageInfo.FileName}";                        
         }
 
         /// <summary>

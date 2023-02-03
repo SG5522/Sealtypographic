@@ -8,6 +8,11 @@
         /// <summary>
         /// 圖檔路徑
         /// </summary>
-        public string ImagePath { get; set; }
+        public string ImageFullPath { get; set; }
+
+        /// <summary>
+        /// 縮圖路徑
+        /// </summary>
+        public string ThumbnailFullPath { get; set; }
     }
 }

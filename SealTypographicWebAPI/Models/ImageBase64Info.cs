@@ -18,7 +18,7 @@ namespace SealTypographicWebAPI.Models
         /// <summary>
         /// 客戶、會計、信頭 編號
         /// </summary>
-        public string Code { get; set; }
+        public string? Code { get; set; }
 
         /// <summary>
         /// Base64圖片字串

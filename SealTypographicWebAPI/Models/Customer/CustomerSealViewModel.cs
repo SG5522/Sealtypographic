@@ -4,19 +4,18 @@ using SealTypographicWebAPI.Models.BaseModels;
 namespace SealTypographicWebAPI.Models.Customer
 {
     /// <summary>
-    /// 印鑑資料(含群組名稱)
+    /// 印鑑資料
     /// </summary>
     public class CustomerSealViewModel : BaseSeal
     {
         /// <summary>
-        /// 印鑑簽印ID
+        /// 印鑑類別Id
         /// </summary>
         public CustomerSealType SealMappingConfigId { get; set; }
 
         /// <summary>
         /// 印鑑編號(排序) 1為起始
-        /// </summary>
-        /// <example>1</example>
+        /// </summary>        
         public int Sequence { get; set; }
 
     }

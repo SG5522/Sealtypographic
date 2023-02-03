@@ -13,7 +13,7 @@ namespace SealTypographicWebAPI.Models.CustomerSealReview
         /// 搜尋客戶編號或是名字
         /// </summary>
         /// <example>AAA001 or 公司</example>
-        public string? CustomerNumberOrName { get; set; }
+        public string? KeyWord { get; set; }
 
         /// <summary>
         /// 審查狀態

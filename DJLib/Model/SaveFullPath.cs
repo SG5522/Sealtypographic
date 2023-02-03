@@ -1,9 +1,9 @@
 ﻿namespace DJLib.Models
 {
     /// <summary>
-    /// 存到SERVER端
+    /// 存放位置
     /// </summary>
-    public class SaveImageInfo
+    public class SaveFullPath
     {
         /// <summary>
         /// 存檔位置
@@ -13,7 +13,7 @@
         /// <summary>
         /// 檔名
         /// </summary>
-        public string Filename { get; set; }
+        public string FileName { get; set; }
 
     }
 }

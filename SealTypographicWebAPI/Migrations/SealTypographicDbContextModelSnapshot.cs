@@ -170,7 +170,11 @@ namespace SealTypographicWebAPI.Migrations
                     b.Property<byte>("DeleteStatus")
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("ImagePath")
+                    b.Property<string>("ImageFullPath")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("ThumbnailFullPath")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
@@ -332,12 +336,16 @@ namespace SealTypographicWebAPI.Migrations
                     b.Property<byte>("DeleteStatus")
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("ImagePath")
+                    b.Property<string>("ImageFullPath")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<int>("Sequence")
                         .HasColumnType("INTEGER");
+
+                    b.Property<string>("ThumbnailFullPath")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
 
                     b.Property<DateTime>("UpdateDate")
                         .HasColumnType("TEXT");
