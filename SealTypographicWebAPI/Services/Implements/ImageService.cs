@@ -32,8 +32,7 @@ namespace SealTypographicWebAPI.Services
         /// <param name="fullpath"></param>        
         /// <returns></returns>
         public string GetPathToBase64(string fullpath)
-        {
-            //string folderPath = GetImageFolder(sealType);
+        {            
             return ImageSharpUtil.PathImageFileToBase64($"{fullpath}");            
         }
         

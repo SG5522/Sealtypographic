@@ -89,7 +89,7 @@ namespace SealTypographicWebAPI.Services.Implements
 
                     if(customerSealQuarterJournals.Any())
                     {
-                        if (customerSealQuarterJournals.Where(x => x.ReviewStatus != ReviewStatus.Approval) == null)
+                        if (customerSealQuarterJournals.Where(x => x.ReviewStatus != ReviewStatus.Approval).Count() == 0)
                         {
                             customerViewModel.IsDraff = false;
                             customerViewModel.IsPending = false;
@@ -97,22 +97,20 @@ namespace SealTypographicWebAPI.Services.Implements
                         }
                         else
                         {
-                            if (customerSealQuarterJournals.Where(x => x.ReviewStatus == ReviewStatus.Draft) != null)
+                            if (customerSealQuarterJournals.Where(x => x.ReviewStatus == ReviewStatus.Draft).Count() > 0)
                             {
                                 customerViewModel.IsDraff = true;
                             }
-                            if (customerSealQuarterJournals.Where(x => x.ReviewStatus == ReviewStatus.Pending) != null)
+                            if (customerSealQuarterJournals.Where(x => x.ReviewStatus == ReviewStatus.Pending).Count() > 0)
                             {
                                 customerViewModel.IsPending = true;
                             }
-                            if (customerSealQuarterJournals.Where(x => x.ReviewStatus == ReviewStatus.Reject) != null)
+                            if (customerSealQuarterJournals.Where(x => x.ReviewStatus == ReviewStatus.Reject).Count() > 0)
                             {
                                 customerViewModel.IsReject = true;
                             }
                         }
-                    }
-
-                    
+                    }                    
 
                     customerViewModel.Quarter = dbContext.CustomerSealQuarterJournals
                                                 .Where(x => x.Customer.Id == customer.Id)

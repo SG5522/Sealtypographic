@@ -63,7 +63,7 @@ namespace DJLib
             {
                 case "BMP":
                     saveImageInfo.Filename += ".bmp";
-                    image.SaveAsBmp(saveImageInfo.Folder + saveImageInfo.Filename);                    
+                    image.SaveAsBmp(saveImageInfo.Folder + saveImageInfo.Filename);                   
                     break;
                 case "JPEG":
                     saveImageInfo.Filename += ".jpg";
@@ -72,7 +72,7 @@ namespace DJLib
                 case "PNG":
                     saveImageInfo.Filename += ".png";
                     image.SaveAsPng(saveImageInfo.Folder + saveImageInfo.Filename);
-                    break;                                   
+                    break;
             }
         }
     }
