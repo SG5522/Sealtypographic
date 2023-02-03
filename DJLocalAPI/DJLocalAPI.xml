@@ -4,7 +4,7 @@
         <name>DJLocalAPI</name>
     </assembly>
     <members>
-        <member name="M:DJLocalAPI.DJLLocalAPI.PreFilterMessage(System.Windows.Forms.Message@)">
+        <member name="M:DJLocalAPI.FrmDJLLocalAPI.PreFilterMessage(System.Windows.Forms.Message@)">
             <summary>
             Monitor for DG_CONTROL / DAT_NULL / MSG_* stuff (ex MSG_XFERREADY), this
             function is only triggered when SetMessageFilter() is called with 'true'...
@@ -12,7 +12,7 @@
             <param name="message">Message to process</param>
             <returns>Result of the processing</returns>
         </member>
-        <member name="M:DJLocalAPI.DJLLocalAPI.SetMessageFilter(System.Boolean)">
+        <member name="M:DJLocalAPI.FrmDJLLocalAPI.SetMessageFilter(System.Boolean)">
             <summary>
             Turn message filtering on or off, we use this to capture stuff
             like MSG_XFERREADY.  If it's off, then it's assumed we're getting
@@ -20,18 +20,18 @@
             </summary>
             <param name="openCheck">True to turn it on</param>
         </member>
-        <member name="F:DJLocalAPI.DJLLocalAPI.components">
+        <member name="F:DJLocalAPI.FrmDJLLocalAPI.components">
             <summary>
              Required designer variable.
             </summary>
         </member>
-        <member name="M:DJLocalAPI.DJLLocalAPI.Dispose(System.Boolean)">
+        <member name="M:DJLocalAPI.FrmDJLLocalAPI.Dispose(System.Boolean)">
             <summary>
              Clean up any resources being used.
             </summary>
             <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         </member>
-        <member name="M:DJLocalAPI.DJLLocalAPI.InitializeComponent">
+        <member name="M:DJLocalAPI.FrmDJLLocalAPI.InitializeComponent">
             <summary>
              Required method for Designer support - do not modify
              the contents of this method with the code editor.

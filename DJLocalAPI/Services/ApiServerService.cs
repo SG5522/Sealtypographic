@@ -9,7 +9,7 @@ namespace DJLocalAPI.Api
         private readonly IHostBuilder hostBuilder;
         private IHost? apiServerHost;
         private string apiServerStatus = "Shutdown";
-        private readonly string[] apiUrls = new string[] { "http://localhost:5123", ""};
+        //private readonly string[] apiUrls = new string[] { "http://localhost:5123", ""};
 
         public ApiServerService() : this(null)
         {
@@ -20,7 +20,8 @@ namespace DJLocalAPI.Api
             hostBuilder = Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
-                    webBuilder.UseStartup<ApiStartup>();
+                    webBuilder.UseStartup<ApiStartup>(); 
+                    webBuilder.UseUrls("http://localhost:22431", "http://localhost:22435");
                 });
         }
 

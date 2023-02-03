@@ -7,18 +7,18 @@ using TWAINWorkingGroup;
 
 namespace DJLocalAPI
 {
-    public partial class DJLLocalAPI : Form, IMessageFilter
+    public partial class FrmDJLLocalAPI : Form, IMessageFilter
     {
         ScannerService sc;
         private bool scanStart = false;
 
         private string[]? args;
         private ApiServerService? apiServerService;
-        public DJLLocalAPI()
+        public FrmDJLLocalAPI()
         {
             InitializeComponent();
         }
-        public DJLLocalAPI(string[] args) : this()
+        public FrmDJLLocalAPI(string[] args) : this()
         {
             this.args = args;
             // «Å§iScannerService
@@ -31,10 +31,8 @@ namespace DJLocalAPI
             apiServerService!.StartServer();
         }
 
-        private void DJLLocalAPI_FormClosed(object sender, FormClosedEventArgs e)
-        {
-            apiServerService!.StopServer();
-        }
+        private void DJLLocalAPI_FormClosed(object sender, FormClosedEventArgs e)=> apiServerService!.StopServer();
+
         private void btnGetDrivers_Click(object sender, EventArgs e)
         {
             List<string> drivers = new List<string>();

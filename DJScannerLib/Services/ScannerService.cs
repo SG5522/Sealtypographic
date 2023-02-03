@@ -8,10 +8,11 @@ using DJLib;
 using SixLabors.ImageSharp;
 using System.ComponentModel;
 using SixLabors.ImageSharp.Formats;
+using DJScannerLib.Services;
 
 namespace ScannerLib.Services
 {
-    public class ScannerService
+    public class ScannerService : IScannerService
     {
         // 從外部傳入Form的資訊供twain使用
         private IntPtr intPtrHwnd;
@@ -74,10 +75,7 @@ namespace ScannerLib.Services
             }
         }
 
-        /// <summary>
-        /// 取得掃描器清單
-        /// </summary>
-        /// <returns></returns>
+        /// <inheritdoc/>
         public List<string> GetAllDrivers()
         {
             TWAIN.STS sts;
@@ -109,11 +107,9 @@ namespace ScannerLib.Services
             }
             return lszDriveList;
         }
-        /// <summary>
-        /// 設置選擇的掃描器
-        /// </summary>
-        /// <param name="driver">掃描器名稱</param>
-        /// <returns></returns>
+
+
+        /// <inheritdoc/>
         public bool SetSelectDriver(string driver)
         {
             TWAIN.STS sts;
@@ -140,6 +136,8 @@ namespace ScannerLib.Services
             }
                 return setResult;
         }
+
+        /// <inheritdoc/>
         public void Scan()
         {
             string szTwmemref;

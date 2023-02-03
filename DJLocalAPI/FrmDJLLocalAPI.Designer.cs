@@ -1,6 +1,6 @@
 ﻿namespace DJLocalAPI
 {
-    partial class DJLLocalAPI
+    partial class FrmDJLLocalAPI
     {
         /// <summary>
         ///  Required designer variable.
@@ -124,13 +124,13 @@
             this.tpSeal.Text = "印鑑";
             this.tpSeal.UseVisualStyleBackColor = true;
             // 
-            // DJLLocalAPI
+            // FrmDJLLocalAPI
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(14F, 30F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1532, 944);
             this.Controls.Add(this.tabControl1);
-            this.Name = "DJLLocalAPI";
+            this.Name = "FrmDJLLocalAPI";
             this.Text = "Form1";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.DJLLocalAPI_FormClosed);
             this.Load += new System.EventHandler(this.DJLLocalAPI_Load);

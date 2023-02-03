@@ -35,8 +35,6 @@ namespace DJLocalAPI.Api
         }
         public void Configure(IApplicationBuilder app, IHostEnvironment env)
         {
-            //app.Build();
-            //IApplicationBuilder
             if (env.IsDevelopment())
             {
                 app.UseSwagger();
@@ -44,11 +42,9 @@ namespace DJLocalAPI.Api
             }
             app.UseAuthorization();
 
-
             app.UseDeveloperExceptionPage();
 
             app.UseHttpsRedirection();
-
 
             app.UseRouting();
 
