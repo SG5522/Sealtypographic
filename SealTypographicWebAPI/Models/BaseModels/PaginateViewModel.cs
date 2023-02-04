@@ -6,7 +6,7 @@
     public class PaginateViewModel : ResponseViewModel
     {
         /// <summary>
-        /// 現在頁數
+        /// 目前頁碼
         /// </summary>
         public int PageNumber { get; set; }
 

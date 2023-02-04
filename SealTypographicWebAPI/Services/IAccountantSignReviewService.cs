@@ -7,7 +7,7 @@ namespace SealTypographicWebAPI.Services
     /// <summary>
     /// 客戶印鑑審核管理
     /// </summary>
-    public interface ICustomerSealReviewService
+    public interface IAccountantSignReviewService
     {
         /// <summary>
         /// 待審清單

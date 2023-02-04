@@ -35,19 +35,19 @@ namespace SealTypographicWebAPI.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet("[Action]")]
-        public CustomerSealQuarterResponse ReviewQuarterSeals([FromQuery]CustomerSealSearchReview customerSealReviewSearch)
+        public CustomerSealQuarterReviewPaginate ReviewPaginate([FromQuery]CustomerSealSearchReview customerSealReviewSearch)
         {
-            CustomerSealQuarterResponse customerSealReviewViewModelResponse = new();
+            CustomerSealQuarterReviewPaginate customerSealReviewViewModelResponse = new();
             try
             {
-                Log.Information("CustomerSealReview ReviewQuarterSeals input {@Input}", customerSealReviewSearch);
+                Log.Information("CustomerSealReview ReviewPaginate input {@Input}", customerSealReviewSearch);
                 customerSealReviewViewModelResponse = customerSealReviewService.GetReviewQuarterSeals(customerSealReviewSearch);
-                Log.Information("CustomerSealReview ReviewQuarterSeals output {@Output}", customerSealReviewViewModelResponse);
+                Log.Information("CustomerSealReview ReviewPaginate output {@Output}", customerSealReviewViewModelResponse);
                 return customerSealReviewViewModelResponse;
             }
             catch (Exception ex) 
             {
-                Log.Error("CustomerSealReview ReviewQuarterSeals error {@Error}", ex);
+                Log.Error("CustomerSealReview ReviewPaginate error {@Error}", ex);
                 customerSealReviewViewModelResponse.DbError();
                 return customerSealReviewViewModelResponse;
             }
@@ -58,20 +58,20 @@ namespace SealTypographicWebAPI.Controllers
         /// </summary>
         /// <param name="CustomerSealQuarterId"></param>        
         /// <returns></returns>
-        [HttpGet("getCustomerSealReviewDetail")]
-        public CustomerSealReviewDetailResponse GetCustomerSealReviewDetail(int CustomerSealQuarterId)
+        [HttpGet("{CustomerSealQuarterId}")]
+        public CustomerSealDetailReviewResponse ReviewDetail(int CustomerSealQuarterId)
         {                                    
-            CustomerSealReviewDetailResponse customerSealReviewDetailResponse = new();
+            CustomerSealDetailReviewResponse customerSealReviewDetailResponse = new();
             try
             {
-                Log.Information("CustomerSealQuarterResponse getCustomerSealReviewDetail input {@Input}", CustomerSealQuarterId);
+                Log.Information("CustomerSealQuarterReviewPaginate getCustomerSealReviewDetail input {@Input}", CustomerSealQuarterId);
                 customerSealReviewDetailResponse = customerSealReviewService.GetCustomerSealReviewDetail(CustomerSealQuarterId);
-                Log.Information("CustomerSealQuarterResponse getCustomerSealReviewDetail output {@Output}", CustomerSealQuarterId);
+                Log.Information("CustomerSealQuarterReviewPaginate getCustomerSealReviewDetail output {@Output}", CustomerSealQuarterId);
                 return customerSealReviewDetailResponse;
             }
             catch (Exception ex)
             {
-                Log.Error("CustomerSealQuarterResponse getCustomerSealReviewDetail error {@Error}", ex);
+                Log.Error("CustomerSealQuarterReviewPaginate getCustomerSealReviewDetail error {@Error}", ex);
                 customerSealReviewDetailResponse.DbError();
                 return customerSealReviewDetailResponse;
             }
@@ -80,21 +80,21 @@ namespace SealTypographicWebAPI.Controllers
         /// <summary>
         /// 審核通過
         /// </summary>
-        /// <param name="customerSealIds"></param>
+        /// <param name="CustomerSealQuarterId"></param>
         [HttpPut("[Action]")]
-        public ResponseViewModel Approval(List<int> customerSealIds)
+        public ResponseViewModel Approval(List<int> CustomerSealQuarterId)
         {
             ResponseViewModel response = new();
             try
             {
-                Log.Information("CustomerSealQuarterResponse PutApproval input {@Input}", customerSealIds);
-                response = customerSealReviewService.ReviewApproval(customerSealIds);
-                Log.Information("CustomerSealQuarterResponse PutApproval output {@Output}", response);
+                Log.Information("CustomerSealReview Approval input {@Input}", CustomerSealQuarterId);
+                response = customerSealReviewService.ReviewApproval(CustomerSealQuarterId);
+                Log.Information("CustomerSealReview Approval output {@Output}", response);
                 return response;
             }
             catch (Exception ex)
             {
-                Log.Error("CustomerSealQuarterResponse PutApproval error {@Error}", ex);
+                Log.Error("CustomerSealReview Approval error {@Error}", ex);
                 response.DbError();
                 return response;
             }
@@ -103,21 +103,44 @@ namespace SealTypographicWebAPI.Controllers
         /// <summary>
         /// 審核退件
         /// </summary>
-        /// <param name="customerSealIds"></param>
+        /// <param name="CustomerSealQuarterId"></param>
         [HttpPut("[Action]")]
-        public ResponseViewModel Reject(List<int> customerSealIds)
+        public ResponseViewModel Reject(List<int> CustomerSealQuarterId)
         {
             ResponseViewModel response = new();
             try
             {
-                Log.Information("CustomerSealQuarterResponse PutReject input {@Input}", customerSealIds);
-                response = customerSealReviewService.ReviewReject(customerSealIds);
-                Log.Information("CustomerSealQuarterResponse PutReject output {@Output}", response);
+                Log.Information("CustomerSealReview Reject input {@Input}", CustomerSealQuarterId);
+                response = customerSealReviewService.ReviewReject(CustomerSealQuarterId);
+                Log.Information("CustomerSealReview Reject output {@Output}", response);
                 return response;
             }
             catch (Exception ex)
             {
-                Log.Error("CustomerSealQuarterResponse PutReject error {@Error}", ex);
+                Log.Error("CustomerSealReview Reject error {@Error}", ex);
+                response.DbError();
+                return response;
+            }
+        }
+
+        /// <summary>
+        /// 審核不受理
+        /// </summary>
+        /// <param name="CustomerSealQuarterId"></param>
+        [HttpPut("[Action]")]
+        public ResponseViewModel Refuse(List<int> CustomerSealQuarterId)
+        {
+            ResponseViewModel response = new();
+            try
+            {
+                Log.Information("CustomerSealReview Refuse input {@Input}", CustomerSealQuarterId);
+                response = customerSealReviewService.ReviewReject(CustomerSealQuarterId);
+                Log.Information("CustomerSealReview Refuse output {@Output}", response);
+                return response;
+            }
+            catch (Exception ex)
+            {
+                Log.Error("CustomerSealReview Refuse error {@Error}", ex);
                 response.DbError();
                 return response;
             }

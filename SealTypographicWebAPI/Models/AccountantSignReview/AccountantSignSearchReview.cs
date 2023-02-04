@@ -1,18 +1,17 @@
 ﻿using SealTypographicWebAPI.Consts;
 using SealTypographicWebAPI.Models.BaseModels;
-using System.ComponentModel.DataAnnotations;
 
-namespace SealTypographicWebAPI.Models.CustomerSealReview
+namespace SealTypographicWebAPI.Models.AccountantSignReview
 {
     /// <summary>
-    /// 客戶印鑑審核狀態分頁搜尋
+    /// 會計師簽印審核狀態分頁搜尋
     /// </summary>
-    public class CustomerSealSearchReview : PaginateSearch
+    public class AccountantSignSearchReview : PaginateSearch
     {
         /// <summary>
-        /// 搜尋客戶編號或是名字
+        /// 搜尋會計師編號或是名字
         /// </summary>
-        /// <example>AAA001 or 公司</example>
+        /// <example>AAA001 or 王XX</example>
         public string? KeyWord { get; set; }
 
         /// <summary>

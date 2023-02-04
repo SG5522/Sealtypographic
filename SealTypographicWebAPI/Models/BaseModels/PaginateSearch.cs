@@ -9,7 +9,7 @@ namespace SealTypographicWebAPI.Models.BaseModels
     public class PaginateSearch
     {
         /// <summary>
-        /// 現在頁數(不得小於0)
+        /// 目前頁碼(不得小於0)
         /// </summary>
         /// <example>1</example>
         [Required]

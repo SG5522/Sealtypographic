@@ -10,7 +10,9 @@ namespace SealTypographicWebAPI.Models.Accountant
     {
         /// <summary>         
         /// 會計師簽印類別
+        /// 請參考 /api/SealMappingConfig?sealType=2 的內容
         /// </summary>        
+        /// <example>1</example>
         public AccountantSignType SealMappingConfigId { get; set; }
     }
     /// <summary>

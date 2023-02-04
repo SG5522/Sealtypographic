@@ -35,9 +35,9 @@ namespace SealTypographicWebAPI.Services.Implements
         /// 待審清單
         /// </summary>
         /// <returns></returns>
-        public CustomerSealQuarterResponse GetReviewQuarterSeals(CustomerSealSearchReview customerSealSearchReview)
+        public CustomerSealQuarterReviewPaginate GetReviewQuarterSeals(CustomerSealSearchReview customerSealSearchReview)
         {
-            CustomerSealQuarterResponse customerSealQuarterResponse = new ();           
+            CustomerSealQuarterReviewPaginate customerSealQuarterResponse = new ();           
 
             IQueryable<CustomerSealQuarterJournal> customerSealQuarterJournalQuery = dbContext.CustomerSealQuarterJournals
                                                                 .Include(customerSealQuarterJournal => customerSealQuarterJournal.Customer)
@@ -55,7 +55,7 @@ namespace SealTypographicWebAPI.Services.Implements
                                                     .ToList();
                 foreach (CustomerSealQuarterJournal customerSealQuarterJournal in thisPageCustomerSealQuarter)
                 {
-                    CustomerSealQuarterViewModel customerSealQuarterViewModel = mapper.Map<CustomerSealQuarterViewModel>(customerSealQuarterJournal);
+                    CustomerSealQuarterReviewViewModel customerSealQuarterViewModel = mapper.Map<CustomerSealQuarterReviewViewModel>(customerSealQuarterJournal);
                     List<CustomerSealJournal> customerSeals = dbContext.CustomerSealJournals.Where
                                                                 (
                                                                     x => x.CustomerSealQuarterJournal.Id == customerSealQuarterJournal.Id
@@ -68,7 +68,7 @@ namespace SealTypographicWebAPI.Services.Implements
                     {
                         SealImageInfo sealImageInfo = new()
                         {
-                            CustomerSealType = customerSeal.ConfigType,
+                            SealMappingConfigId = customerSeal.ConfigType,
                             Sequence = customerSeal.Sequence,
                             ThumbnailBase64 = imageService.GetPathToBase64(customerSeal.ThumbnailFullPath)
                         };
@@ -94,9 +94,9 @@ namespace SealTypographicWebAPI.Services.Implements
         }
         
         ///<inheritdoc />
-        public CustomerSealReviewDetailResponse GetCustomerSealReviewDetail(int CustomerSealQuarterId)
+        public CustomerSealDetailReviewResponse GetCustomerSealReviewDetail(int CustomerSealQuarterId)
         {
-            CustomerSealReviewDetailResponse customerSealReviewDetailResponse = new();
+            CustomerSealDetailReviewResponse customerSealReviewDetailResponse = new();
             
             
             CustomerSealQuarterJournal? customerQuery = dbContext.CustomerSealQuarterJournals.Find(CustomerSealQuarterId);

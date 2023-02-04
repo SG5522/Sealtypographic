@@ -51,7 +51,7 @@ namespace SealTypographicWebAPI.Config
                              
 
             //客戶印鑑審核
-            CreateMap<CustomerSealQuarterJournal, CustomerSealQuarterViewModel>()
+            CreateMap<CustomerSealQuarterJournal, CustomerSealQuarterReviewViewModel>()
                     .ForMember(x => x.Id, y => y.MapFrom(o => o.Customer.Id))
                     .ForMember(x => x.Name, y => y.MapFrom(o => o.Customer.Name))
                     .ForMember(x => x.Code, y => y.MapFrom(o => o.Customer.Code))
@@ -59,7 +59,7 @@ namespace SealTypographicWebAPI.Config
                     .ForMember(x => x.ReviewStatus, y => y.MapFrom(o => o.ReviewStatus))
                     .ReverseMap();
 
-            CreateMap<Customer, CustomerSealReviewDetail>();
+            CreateMap<Customer, CustomerSealQuarterReviewViewModel>();
 
 
             //會計師基本資料

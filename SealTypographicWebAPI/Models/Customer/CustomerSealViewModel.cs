@@ -9,15 +9,17 @@ namespace SealTypographicWebAPI.Models.Customer
     public class CustomerSealViewModel : BaseSeal
     {
         /// <summary>
-        /// 印鑑類別Id
+        /// 印鑑類別
+        /// 請參考 /api/SealMappingConfig?sealType=1 的內容
         /// </summary>
+        /// <example>1</example>
         public CustomerSealType SealMappingConfigId { get; set; }
 
         /// <summary>
-        /// 印鑑編號(排序) 1為起始
+        /// 印鑑序號 1為起始
         /// </summary>        
+        /// <example>1</example>
         public int Sequence { get; set; }
-
     }
 
     /// <summary>
@@ -36,16 +38,20 @@ namespace SealTypographicWebAPI.Models.Customer
         /// <summary>
         /// 客戶ID
         /// </summary>
+        /// <example>1</example>
         public int CustomerId { get; set; }
 
         /// <summary>
         /// 印鑑季度
         /// </summary>
+        /// <example>111Q1</example>
         public string Quarter { get; set; }
 
         /// <summary>
         /// 審核狀態
+        /// 請參考 /api/ReviewStatus 的內容
         /// </summary>
+        /// <example>0</example>
         public ReviewStatus ReviewStatus { get; set; }
 
         /// <summary>

@@ -1,14 +1,34 @@
-﻿
-namespace SealTypographicWebAPI.Models.Customer
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace SealTypographicWebAPI.Models.CustomerSealReview
 {
     /// <summary>
-    /// 客戶資料
+    /// 客戶詳細資料
     /// </summary>
-    public class CustomerDetail : CustomerViewBase
-    {        
+    public class CustomerDetailData
+    {
+        /// <summary>
+        /// 名稱
+        /// </summary>        
+        /// <example>映像有限公司</example>
+        public string Name { get; set; }
+
+        /// <summary>
+        /// 客戶編號
+        /// </summary>                
+        /// <example>CUS123</example>
+        public string Code { get; set; }
+
+        /// <summary>
+        /// 統一編號 (Business administration number)
+        /// </summary>
+        /// <example>12345678</example>
+        public string BAN { get; set; }
+
         /// <summary>
         /// 公司負責人
         /// </summary>
+        /// <example>劉XX</example>
         public string President { get; set; }
 
         /// <summary>
@@ -62,11 +82,13 @@ namespace SealTypographicWebAPI.Models.Customer
         /// <summary>
         /// 聯絡人
         /// </summary>
+        /// <example>劉XX</example>
         public string? ContactName { get; set; }
 
         /// <summary>
         /// 聯絡人職稱
         /// </summary>
+        /// <example>經理</example>
         public string? ContactTitle { get; set; }
 
         /// <summary>
@@ -74,16 +96,5 @@ namespace SealTypographicWebAPI.Models.Customer
         /// </summary>
         /// <example>28825252#1</example>
         public string? ContactTelephone { get; set; }
-    }
-
-    /// <summary>
-    /// 客戶資料
-    /// </summary>
-    public class CustomerDetailViewModel : ResponseViewModel
-    {
-        /// <summary>
-        /// 客戶基本資料
-        /// </summary>
-        public CustomerDetail? CustomerDetail { get; set; }
     }
 }
