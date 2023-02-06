@@ -35,8 +35,13 @@ namespace ScannerLib.Services
 
         int cnt = 0;
 
+        public ScannerService()
+        {
 
-        public ScannerService(IntPtr intPtrHwnd) 
+        }
+
+        /// <inheritdoc/>
+        public void InitTwain(IntPtr intPtrHwnd)
         {
             this.intPtrHwnd = intPtrHwnd;
             try
@@ -107,7 +112,6 @@ namespace ScannerLib.Services
             }
             return lszDriveList;
         }
-
 
         /// <inheritdoc/>
         public bool SetSelectDriver(string driver)

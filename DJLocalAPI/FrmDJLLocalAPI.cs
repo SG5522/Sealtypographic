@@ -1,4 +1,5 @@
 using DJLocalAPI.Api;
+using DJScannerLib.Services;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 using ScannerLib.Services;
@@ -9,34 +10,33 @@ namespace DJLocalAPI
 {
     public partial class FrmDJLLocalAPI : Form, IMessageFilter
     {
-        ScannerService sc;
+        //ScannerService sc;
         private bool scanStart = false;
 
         private string[]? args;
         private ApiServerService? apiServerService;
+        private ScannerService scannerService;
         public FrmDJLLocalAPI()
         {
             InitializeComponent();
         }
-        public FrmDJLLocalAPI(string[] args) : this()
+        public FrmDJLLocalAPI(string[]? args) : this()
         {
-            this.args = args;
-            // 宣告ScannerService
-            sc = new ScannerService(this.Handle);
-            SetMessageFilter(true);
+
         }
         private void DJLLocalAPI_Load(object sender, EventArgs e)
         {
             apiServerService = new(args); 
             apiServerService!.StartServer();
+            scannerService.InitTwain(this.Handle);
+            SetMessageFilter(true);
         }
-
-        private void DJLLocalAPI_FormClosed(object sender, FormClosedEventArgs e)=> apiServerService!.StopServer();
-
+        private void FrmDJLLocalAPI_FormClosing(object sender, FormClosingEventArgs e) => apiServerService!.StopServer();
+ 
         private void btnGetDrivers_Click(object sender, EventArgs e)
         {
             List<string> drivers = new List<string>();
-            drivers = sc.GetAllDrivers();
+            drivers = scannerService.GetAllDrivers();
             foreach (string driver in drivers) 
             {
                 lbDriver.Items.Add(driver);
@@ -45,7 +45,7 @@ namespace DJLocalAPI
 
         private void lbDriver_MouseDoubleClick(object sender, MouseEventArgs e)
         {
-            bool result = sc.SetSelectDriver((string)lbDriver.SelectedItem);
+            bool result = scannerService.SetSelectDriver((string)lbDriver.SelectedItem);
             if (result) 
             {
                 lblSetResult.Text = "設置狀態：成功";
@@ -58,7 +58,7 @@ namespace DJLocalAPI
 
         private void btnSetDriver_Click(object sender, EventArgs e)
         {
-            bool result = sc.SetSelectDriver((string)lbDriver.SelectedItem);
+            bool result = scannerService.SetSelectDriver((string)lbDriver.SelectedItem);
             if (result)
             {
                 lblSetResult.Text = "設置狀態：成功";
@@ -71,7 +71,7 @@ namespace DJLocalAPI
 
         private void btnScan_Click(object sender, EventArgs e)
         {
-            sc.Scan();
+            scannerService.Scan();
         }
         /// <summary>
         /// Monitor for DG_CONTROL / DAT_NULL / MSG_* stuff (ex MSG_XFERREADY), this
@@ -86,7 +86,7 @@ namespace DJLocalAPI
             int a_iMsg = message.Msg;
             IntPtr a_intptrWparam = message.WParam;
             IntPtr a_intptrLparam = message.LParam;
-            bool scanEnd = sc.PreFilterMessage(a_intptrHwnd, a_iMsg, a_intptrWparam, a_intptrLparam);
+            bool scanEnd = scannerService.PreFilterMessage(a_intptrHwnd, a_iMsg, a_intptrWparam, a_intptrLparam);
 
             if (scanEnd && scanStart)
             {

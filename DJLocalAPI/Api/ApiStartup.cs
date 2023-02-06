@@ -1,8 +1,11 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using DJScannerLib.Services;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using ScannerLib.Services;
 using System.Reflection;
 
 namespace DJLocalAPI.Api
@@ -31,7 +34,7 @@ namespace DJLocalAPI.Api
                 );
                 options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, $"{Assembly.GetExecutingAssembly().GetName().Name}.xml"), true);
             });
-            
+            services.AddScoped<IScannerService, ScannerService>();
         }
         public void Configure(IApplicationBuilder app, IHostEnvironment env)
         {

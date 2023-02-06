@@ -132,7 +132,7 @@
             this.Controls.Add(this.tabControl1);
             this.Name = "FrmDJLLocalAPI";
             this.Text = "Form1";
-            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.DJLLocalAPI_FormClosed);
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FrmDJLLocalAPI_FormClosing);
             this.Load += new System.EventHandler(this.DJLLocalAPI_Load);
             this.tabControl1.ResumeLayout(false);
             this.tpScanner.ResumeLayout(false);

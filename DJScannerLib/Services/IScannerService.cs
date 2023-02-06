@@ -9,6 +9,11 @@ namespace DJScannerLib.Services
     public interface IScannerService
     {
         /// <summary>
+        /// 初始化Twain
+        /// </summary>
+        /// <param name="intPtrHwnd"></param>
+        void InitTwain(IntPtr intPtrHwnd);
+        /// <summary>
         /// 取得掃描器清單
         /// </summary>
         /// <returns></returns>
@@ -25,5 +30,16 @@ namespace DJScannerLib.Services
         /// 掃描
         /// </summary>
         void Scan();
+
+        /// <summary>
+        ///  Monitor for DG_CONTROL / DAT_NULL / MSG_* stuff (ex MSG_XFERREADY), this
+        /// function is only triggered when SetMessageFilter() is called with 'true'...
+        /// </summary>
+        /// <param name="intPtrHwnd"></param>
+        /// <param name="iMsg"></param>
+        /// <param name="intPtrWparam"></param>
+        /// <param name="intPtrLparam"></param>
+        /// <returns></returns>
+        bool PreFilterMessage(IntPtr intPtrHwnd, int iMsg, IntPtr intPtrWparam, IntPtr intPtrLparam);
     }
 }

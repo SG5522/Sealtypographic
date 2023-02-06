@@ -4,17 +4,24 @@ using DJLocalAPI.Api;
 
 namespace DJLocalAPI.Api
 {
+    /// <summary>
+    /// Api Server Service 相關設定
+    /// </summary>
     public class ApiServerService
     {
         private readonly IHostBuilder hostBuilder;
         private IHost? apiServerHost;
         private string apiServerStatus = "Shutdown";
-        //private readonly string[] apiUrls = new string[] { "http://localhost:5123", ""};
-
+        /// <summary>
+        ///  設定網頁及Port號
+        /// </summary>
         public ApiServerService() : this(null)
         {
         }
-
+        /// <summary>
+        /// 設定網頁及Port號
+        /// </summary>
+        /// <param name="args"></param>
         public ApiServerService(string[]? args)
         {
             hostBuilder = Host.CreateDefaultBuilder(args)
@@ -24,7 +31,9 @@ namespace DJLocalAPI.Api
                     webBuilder.UseUrls("http://localhost:22431", "http://localhost:22435");
                 });
         }
-
+        /// <summary>
+        /// 開啟Server
+        /// </summary>
         public async void StartServer()
         {
             try
@@ -38,7 +47,9 @@ namespace DJLocalAPI.Api
                 apiServerStatus = "Shutdown";
             }
         }
-
+        /// <summary>
+        /// 關閉server
+        /// </summary>
         public async void StopServer()
         {
             if(apiServerHost != null)
