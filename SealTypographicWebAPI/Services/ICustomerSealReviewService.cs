@@ -13,28 +13,34 @@ namespace SealTypographicWebAPI.Services
         /// 待審清單
         /// </summary>
         /// <returns></returns>
-        CustomerSealQuarterReviewPaginate GetReviewQuarterSeals(CustomerSealSearchReview customerSealReviewSearch);
+        CustomerSealQuarterReviewPaginate GetReviewList(CustomerSealSearchReview customerSealReviewSearch);
 
         /// <summary>
         /// 基本資料與印鑑細項
         /// </summary>
-        /// <param name="CustomerSealQuarterId">季度Id</param>
+        /// <param name="CustomerSealQuarterId">印鑑季度Id</param>
         /// <returns></returns>
-        CustomerSealDetailReviewResponse GetCustomerSealReviewDetail(int CustomerSealQuarterId);
+        CustomerSealQuarterDetailReviewResponse GetReviewDetail(int CustomerSealQuarterId);
 
         /// <summary>
         /// 審核通過
         /// </summary>
-        /// <param name="customerSealIds">需要更新的ID</param>
+        /// <param name="customerSealQuarterIds">印鑑季度Id</param>
         /// <returns></returns>
-        ResponseViewModel ReviewApproval(List<int> customerSealIds);
+        ResponseViewModel Approval(List<int> customerSealQuarterIds);
 
         /// <summary>
         /// 審核退件
         /// </summary>
-        /// <param name="customerSealIds"></param>
+        /// <param name="customerSealQuarterIds">印鑑季度Id</param>
         /// <returns></returns>
-        ResponseViewModel ReviewReject(List<int> customerSealIds);
+        ResponseViewModel Reject(List<int> customerSealQuarterIds);
 
+        /// <summary>
+        /// 審核不受理
+        /// </summary>
+        /// <param name="customerSealQuarterIds">印鑑季度Id</param>
+        /// <returns></returns>
+        ResponseViewModel Refuse(List<int> customerSealQuarterIds);
     }
 }

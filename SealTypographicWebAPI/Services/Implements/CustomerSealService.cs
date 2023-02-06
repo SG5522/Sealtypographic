@@ -43,7 +43,7 @@ namespace SealTypographicWebAPI.Services.Implements
                 Quarters = dbContext.CustomerSealQuarterJournals.Where
                             (
                                 customerSealQuarterJournal => customerSealQuarterJournal.Customer.Id == customerId
-                                && customerSealQuarterJournal.ReviewStatus <= ReviewStatus.Reject
+                                && customerSealQuarterJournal.ReviewStatus <= ReviewStatus.Disabled
                                 && customerSealQuarterJournal.DeleteStatus == DeleteStatus.No
                             )
                             .Select(customerSealQuarterJournal => new CustomerSealViewQuarter()
@@ -88,13 +88,19 @@ namespace SealTypographicWebAPI.Services.Implements
                                                                             && customerSealQuarterJournal.Quarter == customerSealQuarter.Quarter
                                                                             //&& customerSealQuarterJournal.Id = customerSealQuarter.Id
                                                                             && customerSealQuarterJournal.DeleteStatus == DeleteStatus.No
-                                                                            && customerSealQuarterJournal.ReviewStatus <= ReviewStatus.Reject
+                                                                            && customerSealQuarterJournal.ReviewStatus <= ReviewStatus.Reject                                                                            
                                                                         );  
                                                                                                                                                                                                         
 
             if (customerSealQuarterJournalQuery != null)
             {
-                foreach (CustomerSealJournal customerSealJournal in customerSealQuarterJournalQuery.CustomerSealJournals)
+                List<CustomerSealJournal> customerSeals = customerSealQuarterJournalQuery.CustomerSealJournals
+                                                            .Where(x => x.DeleteStatus == DeleteStatus.No)
+                                                            .OrderBy(x => x.ConfigType)
+                                                            .ThenBy(x => x.Sequence)
+                                                            .ToList();
+
+                foreach (CustomerSealJournal customerSealJournal in customerSeals)
                 {
                     CustomerSealViewModel customerSealViewModel = mapper.Map<CustomerSealViewModel>(customerSealJournal);
                     customerSealViewModel.ImageBase64 = imageSharpService.GetPathToBase64(customerSealJournal.ImageFullPath); //資料庫取得圖檔路徑轉BASE64                                       
@@ -329,20 +335,30 @@ namespace SealTypographicWebAPI.Services.Implements
         /// 此季度印鑑從草稿狀態變更為待審
         /// </summary>
         /// <param name="customerSealQuarter">客戶印鑑搜尋(依客戶ID與季度)</param>        
-        public ResponseViewModel PendingSeals(CustomerSealSearchQuarter customerSealQuarter)
+        public ResponseViewModel Pending(CustomerSealSearchQuarter customerSealQuarter)
         {
-            ResponseViewModel response = ChangeDraftReviewStatus(customerSealQuarter, ReviewStatus.Pending);
+            ResponseViewModel response = ChangeReviewStatus(customerSealQuarter, ReviewStatus.Pending);
             return response;
         }
         /// <summary>
         /// 此季度印鑑從草稿狀態變更為作廢
         /// </summary>
         /// <param name="customerSealQuarter">客戶印鑑搜尋(依客戶ID與季度)</param>        
-        public ResponseViewModel InvalidSeals(CustomerSealSearchQuarter customerSealQuarter)
+        public ResponseViewModel Invalid(CustomerSealSearchQuarter customerSealQuarter)
         {
-            ResponseViewModel response = ChangeDraftReviewStatus(customerSealQuarter, ReviewStatus.Invalid);
+            ResponseViewModel response = ChangeReviewStatus(customerSealQuarter, ReviewStatus.Invalid);
             return response;
-        }        
+        }
+
+        /// <summary>
+        /// 此季度印鑑從待審狀態變更為草稿
+        /// </summary>
+        /// <param name="customerSealQuarter">客戶印鑑搜尋(依客戶ID與季度)</param>        
+        public ResponseViewModel CancelReview(CustomerSealSearchQuarter customerSealQuarter)
+        {
+            ResponseViewModel response = ChangeReviewStatus(customerSealQuarter, ReviewStatus.Draft);
+            return response;
+        }
 
         /// <summary>
         /// 客戶印鑑新增修改時基本的資料輸入
@@ -412,11 +428,11 @@ namespace SealTypographicWebAPI.Services.Implements
         }
      
         /// <summary>
-        /// 客戶印鑑草稿狀態變更。
+        /// 客戶印鑑狀態變更。
         /// </summary>
         /// <param name="customerSealQuarter">客戶ID與季度</param>
         /// <param name="reviewStatus">審查狀態</param>        
-        private ResponseViewModel ChangeDraftReviewStatus(CustomerSealSearchQuarter customerSealQuarter, ReviewStatus reviewStatus)
+        private ResponseViewModel ChangeReviewStatus(CustomerSealSearchQuarter customerSealQuarter, ReviewStatus reviewStatus)
         {
             ResponseViewModel response = new();
             int userId = 0;//從帳號驗證取得
@@ -426,8 +442,7 @@ namespace SealTypographicWebAPI.Services.Implements
                                                                     (
                                                                         customerSealQuarterJournal => 
                                                                         customerSealQuarterJournal.Customer.Id == customerSealQuarter.CustomerId
-                                                                        && customerSealQuarterJournal.Quarter == customerSealQuarter.Quarter
-                                                                        && customerSealQuarterJournal.ReviewStatus == ReviewStatus.Draft
+                                                                        && customerSealQuarterJournal.Quarter == customerSealQuarter.Quarter                                                                        
                                                                     );
 
             if (customerSealQuarterQuery != null)
@@ -435,6 +450,10 @@ namespace SealTypographicWebAPI.Services.Implements
                 customerSealQuarterQuery.UpdateDate = DateTime.Now;
                 customerSealQuarterQuery.ReviewStatus = reviewStatus;
                 customerSealQuarterQuery.UpdateUserId = userId;
+                if(reviewStatus == ReviewStatus.Invalid)
+                {
+                    customerSealQuarterQuery.DeleteStatus = DeleteStatus.Yes;
+                }
                 dbContext.SaveChanges();
                 response.Success();
             }

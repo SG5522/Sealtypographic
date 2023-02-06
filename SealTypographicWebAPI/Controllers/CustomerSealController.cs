@@ -134,7 +134,7 @@ namespace SealTypographicWebAPI.Controllers
             try
             {
                 Log.Information("CustomerSeal pending input {@Input}", customerSealQuarterSearch);
-                response = customerSealService.PendingSeals(customerSealQuarterSearch);
+                response = customerSealService.Pending(customerSealQuarterSearch);
                 Log.Information("CustomerSeal pending output {@Output}", response);                
             }
             catch (Exception ex)
@@ -157,7 +157,7 @@ namespace SealTypographicWebAPI.Controllers
             try
             {
                 Log.Information("CustomerSeal invalid input {@Input}", customerSealQuarterSearch);
-                response = customerSealService.InvalidSeals(customerSealQuarterSearch);
+                response = customerSealService.Invalid(customerSealQuarterSearch);
                 Log.Information("CustomerSeal invalid output {@Output}", response);
             }
             catch (Exception ex)
@@ -167,6 +167,28 @@ namespace SealTypographicWebAPI.Controllers
             }
             return response;
         }
-        
+
+        /// <summary>
+        /// 此季度印鑑從待審狀態變更為草稿(收回)
+        /// </summary>        
+        /// <param name="customerSealQuarterSearch">客戶印鑑搜尋(依客戶ID與季度)</param>
+        /// <returns></returns>
+        [HttpPut("[Action]")]
+        public ResponseViewModel CancelReview(CustomerSealSearchQuarter customerSealQuarterSearch)
+        {
+            ResponseViewModel response = new();
+            try
+            {
+                Log.Information("CustomerSeal CancelReview input {@Input}", customerSealQuarterSearch);
+                response = customerSealService.CancelReview(customerSealQuarterSearch);
+                Log.Information("CustomerSeal CancelReview output {@Output}", response);
+            }
+            catch (Exception ex)
+            {
+                Log.Error("CustomerSeal CancelReview error {@Error}", ex);
+                response.DbError();
+            }
+            return response;
+        }
     }
 }

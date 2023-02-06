@@ -136,7 +136,7 @@ namespace SealTypographicWebAPI.Controllers
             try
             {
                 Log.Information("AccountantSign pending input {@Input}", accountantSignCreateDate);
-                response = accountantSignService.PendingSigns(accountantSignCreateDate);
+                response = accountantSignService.Pending(accountantSignCreateDate);
                 Log.Information("AccountantSign pending output {@Output}", response);                
             }
             catch (Exception ex)
@@ -158,14 +158,37 @@ namespace SealTypographicWebAPI.Controllers
             ResponseViewModel response = new();
             try
             {
-                Log.Information("AccountantSign Invalid input {@Input}", accountantSignCreateDate);
-                response = accountantSignService.InvalidSigns(accountantSignCreateDate);
-                Log.Information("AccountantSign Invalid output {@Ouput}", response);                
+                Log.Information("AccountantSign invalid input {@Input}", accountantSignCreateDate);
+                response = accountantSignService.Invalid(accountantSignCreateDate);
+                Log.Information("AccountantSign invalid output {@Ouput}", response);                
             }
             catch (Exception ex)
             {
                 Log.Error("AccountantSign Invalid error {@Error}", ex);                
                 response.DbError();                  
+            }
+            return response;
+        }
+
+        /// <summary>
+        /// 將待審的簽印組狀態變更為草稿
+        /// </summary>
+        /// <param name="accountantSignCreateDate">會計師簽印搜尋(依會計師ID與創建群組日期)</param>
+        /// <returns></returns>
+        [HttpPut("[Action]")]
+        public ResponseViewModel CancelReview(AccountantSignCreateDate accountantSignCreateDate)
+        {
+            ResponseViewModel response = new();
+            try
+            {
+                Log.Information("AccountantSign cancelReview input {@Input}", accountantSignCreateDate);
+                response = accountantSignService.CancelReview(accountantSignCreateDate);
+                Log.Information("AccountantSign cancelReview output {@Ouput}", response);
+            }
+            catch (Exception ex)
+            {
+                Log.Error("AccountantSign CancelReview error {@Error}", ex);
+                response.DbError();
             }
             return response;
         }

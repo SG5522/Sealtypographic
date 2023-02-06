@@ -225,7 +225,7 @@ namespace SealTypographicWebAPI.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "AccountantSignCreateDateJournals",
+                name: "AccountantSignGroupJournals",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
@@ -244,9 +244,9 @@ namespace SealTypographicWebAPI.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_AccountantSignCreateDateJournals", x => x.Id);
+                    table.PrimaryKey("PK_AccountantSignGroupJournals", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_AccountantSignCreateDateJournals_Accountants_AccountantId",
+                        name: "FK_AccountantSignGroupJournals_Accountants_AccountantId",
                         column: x => x.AccountantId,
                         principalTable: "Accountants",
                         principalColumn: "Id",
@@ -326,9 +326,9 @@ namespace SealTypographicWebAPI.Migrations
                 {
                     table.PrimaryKey("PK_AccountantSignJournals", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_AccountantSignJournals_AccountantSignCreateDateJournals_AccountantSignCreateDateJournalId",
+                        name: "FK_AccountantSignJournals_AccountantSignGroupJournals_AccountantSignCreateDateJournalId",
                         column: x => x.AccountantSignCreateDateJournalId,
-                        principalTable: "AccountantSignCreateDateJournals",
+                        principalTable: "AccountantSignGroupJournals",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -449,8 +449,8 @@ namespace SealTypographicWebAPI.Migrations
                 column: "AccountantGroupId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_AccountantSignCreateDateJournals_AccountantId",
-                table: "AccountantSignCreateDateJournals",
+                name: "IX_AccountantSignGroupJournals_AccountantId",
+                table: "AccountantSignGroupJournals",
                 column: "AccountantId");
 
             migrationBuilder.CreateIndex(
@@ -544,7 +544,7 @@ namespace SealTypographicWebAPI.Migrations
                 name: "TypographicPages");
 
             migrationBuilder.DropTable(
-                name: "AccountantSignCreateDateJournals");
+                name: "AccountantSignGroupJournals");
 
             migrationBuilder.DropTable(
                 name: "CustomerSealQuarterJournals");

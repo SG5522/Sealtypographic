@@ -117,7 +117,7 @@ namespace SealTypographicWebAPI.Models
         public void CustomerSealSequenceRepeat()
         {
             Code = (int)ResponseCode.CustomerSealSequenceRepeat;
-            Message = "Other seal Sequence Repeat";
+            Message = "Customer seal Sequence Repeat";
         }
 
         /// <summary>
@@ -126,7 +126,7 @@ namespace SealTypographicWebAPI.Models
         public void CustomerSealNoData()
         {
             Code = (int)ResponseCode.CustomerSealNoData;
-            Message = "Other seal no data";
+            Message = "Customer seal no data";
         }
 
         /// <summary>
@@ -135,7 +135,7 @@ namespace SealTypographicWebAPI.Models
         public void CreateCustomerSealFailed()
         {
             Code = (int)ResponseCode.CreateCustomerSealFailed;
-            Message = "Other seal New Failed";
+            Message = "Create Customer seal Failed";
         }
 
         /// <summary>
@@ -144,7 +144,7 @@ namespace SealTypographicWebAPI.Models
         public void CreateCustomerSealSequenceRepeat()
         {
             Code = (int)ResponseCode.CreateCustomerSealSequenceRepeat;
-            Message = "New customer seal sequence repeat";
+            Message = "Create customer seal sequence repeat";
         }
         //CreateCustomerSealQuarterRepeat
 
@@ -154,7 +154,7 @@ namespace SealTypographicWebAPI.Models
         public void CreateCustomerSealQuarterRepeat()
         {
             Code = (int)ResponseCode.CreateCustomerSealQuarterRepeat;
-            Message = "New customer seal quarter repeat";
+            Message = "Create customer seal quarter repeat";
         }
 
         /// <summary>

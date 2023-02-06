@@ -187,7 +187,7 @@ namespace SealTypographicWebAPI.Services.Implements
             if (accountantQuery != null)
             {
                 accountantQuery.DeleteStatus = DeleteStatus.Yes;
-                BaseInputAccountant(accountantQuery, true, userid);
+                BaseInputAccountant(accountantQuery, false, userid);
                 dbContext.SaveChanges();
                 response.Success();
             }

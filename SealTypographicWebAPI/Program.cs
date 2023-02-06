@@ -68,6 +68,7 @@ builder.Services.AddScoped<ICustomerSealReviewService, CustomerSealReviewService
 builder.Services.AddScoped<IAccountantService, AccountantService>();
 builder.Services.AddScoped<IAccountantGroupService, AccountantGroupService>();
 builder.Services.AddScoped<IAccountantGroupMemberService, AccountantGroupMemberService>();
+builder.Services.AddScoped<IAccountantSignReviewService, AccountantSignReviewService>();
 builder.Services.AddScoped<IAccountantSignService, AcoountantSignService>();
 builder.Services.AddScoped<ILetterheadService, LetterheadService>();
 builder.Services.AddScoped<ILetterheadImageService, LetterheadImageService>();

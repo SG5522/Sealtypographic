@@ -25,7 +25,7 @@ namespace SealTypographicWebAPI.Consts
         /// <summary>
         /// 草稿
         /// </summary>
-        [Description("Draft")]
+        [Description("CancelReview")]
         Draft = 10,
 
         /// <summary>

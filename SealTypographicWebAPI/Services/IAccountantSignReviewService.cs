@@ -1,6 +1,5 @@
 ﻿using SealTypographicWebAPI.Models;
-using SealTypographicWebAPI.Models.Customer;
-using SealTypographicWebAPI.Models.CustomerSealReview;
+using SealTypographicWebAPI.Models.AccountantSignReview;
 
 namespace SealTypographicWebAPI.Services
 {
@@ -12,29 +11,37 @@ namespace SealTypographicWebAPI.Services
         /// <summary>
         /// 待審清單
         /// </summary>
+        /// <param name="accountantSignSearchReview">會計師簽印審核狀態分頁搜尋</param>
         /// <returns></returns>
-        CustomerSealQuarterReviewPaginate GetReviewQuarterSeals(CustomerSealSearchReview customerSealReviewSearch);
+        AccountantSignGroupReviewPaginate GetReviewPaginate(AccountantSignSearchReview accountantSignSearchReview);
 
         /// <summary>
-        /// 基本資料與印鑑細項
+        /// 基本資料與簽印組
         /// </summary>
-        /// <param name="CustomerSealQuarterId">季度Id</param>
+        /// <param name="accountantSignGroupId">會計師簽印組Id</param>
         /// <returns></returns>
-        CustomerSealDetailReviewResponse GetCustomerSealReviewDetail(int CustomerSealQuarterId);
+        AccountantSignGroupDetailReviewResponse GetReviewDetail(int accountantSignGroupId);
 
         /// <summary>
         /// 審核通過
         /// </summary>
-        /// <param name="customerSealIds">需要更新的ID</param>
+        /// <param name="accountantSignGroupIds">需要更新的ID</param>
         /// <returns></returns>
-        ResponseViewModel ReviewApproval(List<int> customerSealIds);
+        ResponseViewModel Approval(List<int> accountantSignGroupIds);
 
         /// <summary>
         /// 審核退件
         /// </summary>
-        /// <param name="customerSealIds"></param>
+        /// <param name="accountantSignGroupIds"></param>
         /// <returns></returns>
-        ResponseViewModel ReviewReject(List<int> customerSealIds);
+        ResponseViewModel Reject(List<int> accountantSignGroupIds);
+
+        /// <summary>
+        /// 審核不受理
+        /// </summary>
+        /// <param name="accountantSignGroupIds"></param>
+        /// <returns></returns>
+        ResponseViewModel Refuse(List<int> accountantSignGroupIds);
 
     }
 }

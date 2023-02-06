@@ -11,7 +11,7 @@ using SealTypographicWebAPI.Entities;
 namespace SealTypographicWebAPI.Migrations
 {
     [DbContext(typeof(SealTypographicDbContext))]
-    [Migration("20230203090907_InitialCreate")]
+    [Migration("20230206052952_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -148,7 +148,7 @@ namespace SealTypographicWebAPI.Migrations
 
                     b.HasIndex("AccountantId");
 
-                    b.ToTable("AccountantSignCreateDateJournals");
+                    b.ToTable("AccountantSignGroupJournals");
                 });
 
             modelBuilder.Entity("SealTypographicWebAPI.Entities.AccountantSignJournal", b =>
@@ -410,7 +410,7 @@ namespace SealTypographicWebAPI.Migrations
                     b.ToTable("CustomerSealLocaltions");
                 });
 
-            modelBuilder.Entity("SealTypographicWebAPI.Entities.CustomerSealQuarterJournal", b =>
+            modelBuilder.Entity("SealTypographicWebAPI.Entities.AccountantSignGroupJournal", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -770,13 +770,13 @@ namespace SealTypographicWebAPI.Migrations
 
             modelBuilder.Entity("SealTypographicWebAPI.Entities.CustomerSealJournal", b =>
                 {
-                    b.HasOne("SealTypographicWebAPI.Entities.CustomerSealQuarterJournal", "CustomerSealQuarterJournal")
+                    b.HasOne("SealTypographicWebAPI.Entities.AccountantSignGroupJournal", "AccountantSignGroupJournal")
                         .WithMany("CustomerSealJournals")
                         .HasForeignKey("CustomerSealQuarterJournalId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("CustomerSealQuarterJournal");
+                    b.Navigation("AccountantSignGroupJournal");
                 });
 
             modelBuilder.Entity("SealTypographicWebAPI.Entities.CustomerSealLocation", b =>
@@ -798,7 +798,7 @@ namespace SealTypographicWebAPI.Migrations
                     b.Navigation("TypographicPage");
                 });
 
-            modelBuilder.Entity("SealTypographicWebAPI.Entities.CustomerSealQuarterJournal", b =>
+            modelBuilder.Entity("SealTypographicWebAPI.Entities.AccountantSignGroupJournal", b =>
                 {
                     b.HasOne("SealTypographicWebAPI.Entities.Customer", "Customer")
                         .WithMany("CustomerSealQuarterJournals")
@@ -881,7 +881,7 @@ namespace SealTypographicWebAPI.Migrations
                     b.Navigation("CustomerSealQuarterJournals");
                 });
 
-            modelBuilder.Entity("SealTypographicWebAPI.Entities.CustomerSealQuarterJournal", b =>
+            modelBuilder.Entity("SealTypographicWebAPI.Entities.AccountantSignGroupJournal", b =>
                 {
                     b.Navigation("CustomerSealJournals");
                 });

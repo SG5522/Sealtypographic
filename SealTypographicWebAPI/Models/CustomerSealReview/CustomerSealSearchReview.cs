@@ -19,6 +19,6 @@ namespace SealTypographicWebAPI.Models.CustomerSealReview
         /// 審查狀態
         /// 請參考 /api/ReviewStatus 的內容
         /// </summary>
-        public ReviewStatus ReviewStatus { get; set; }
+        public ReviewStatus? ReviewStatus { get; set; }
     }
 }

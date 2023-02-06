@@ -18,13 +18,13 @@ namespace SealTypographicWebAPI.Controllers
         /// <summary>
         /// 會計師簽印審核管理的service
         /// </summary>
-        private readonly IAccountantSignService accountSignReviewService;
+        private readonly IAccountantSignReviewService accountSignReviewService;
 
         /// <summary>
         /// 建構:注入Service
         /// </summary>
         /// <param name="accountSignReviewService">客戶印鑑審核管理</param>
-        public AccountantSignReviewController(IAccountantSignService accountSignReviewService)
+        public AccountantSignReviewController(IAccountantSignReviewService accountSignReviewService)
         {
             this.accountSignReviewService = accountSignReviewService;
         }
@@ -40,7 +40,7 @@ namespace SealTypographicWebAPI.Controllers
             try
             {
                 Log.Information("AccountantSignReview ReviewPaginate input {@Input}", accountantSignSearchReview);
-                
+                AccountantSignReviewPaginate = accountSignReviewService.GetReviewPaginate(accountantSignSearchReview);
                 Log.Information("AccountantSignReview ReviewPaginate output {@Output}", AccountantSignReviewPaginate);
                 return AccountantSignReviewPaginate;
             }
@@ -57,14 +57,14 @@ namespace SealTypographicWebAPI.Controllers
         /// </summary>
         /// <param name="accountantSignGroupId"></param>        
         /// <returns></returns>
-        [HttpGet("[Action]")]
-        public AccountantSignDetailReviewResponse ReviewDetail(int accountantSignGroupId)
+        [HttpGet("{accountantSignGroupId}")]
+        public AccountantSignGroupDetailReviewResponse ReviewDetail(int accountantSignGroupId)
         {
-            AccountantSignDetailReviewResponse accountantSignReviewDetailResponse = new();
+            AccountantSignGroupDetailReviewResponse accountantSignReviewDetailResponse = new();
             try
             {
                 Log.Information("AccountantSignReview ReviewDetail input {@Input}", accountantSignGroupId);
-                
+                accountantSignReviewDetailResponse = accountSignReviewService.GetReviewDetail(accountantSignGroupId);
                 Log.Information("AccountantSignReview ReviewDetail output {@Output}", accountantSignReviewDetailResponse);
                 return accountantSignReviewDetailResponse;
             }
@@ -87,7 +87,7 @@ namespace SealTypographicWebAPI.Controllers
             try
             {
                 Log.Information("AccountantSignReview Approval input {@Input}", accountantSignGroupIds);
-                
+                response = accountSignReviewService.Approval(accountantSignGroupIds);
                 Log.Information("AccountantSignReview Approval output {@Output}", response);
                 return response;
             }
@@ -110,7 +110,7 @@ namespace SealTypographicWebAPI.Controllers
             try
             {
                 Log.Information("AccountantSignReview Reject input {@Input}", accountantSignGroupIds);
-                
+                response = accountSignReviewService.Reject(accountantSignGroupIds);
                 Log.Information("AccountantSignReview Reject output {@Output}", response);
                 return response;
             }
@@ -133,7 +133,7 @@ namespace SealTypographicWebAPI.Controllers
             try
             {
                 Log.Information("AccountantSignReview Refuse input {@Input}", accountantSignGroupIds);
-
+                response = accountSignReviewService.Refuse(accountantSignGroupIds);
                 Log.Information("AccountantSignReview Refuse output {@Output}", response);
                 return response;
             }

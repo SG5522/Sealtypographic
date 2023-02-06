@@ -6,8 +6,15 @@ namespace SealTypographicWebAPI.Models.Accountant
     /// <summary>
     /// 會計師資料
     /// </summary>
-    public class AccountantUpdateForm : BaseName
+    public class AccountantUpdateForm : BaseData
     {
+        /// <summary>
+        /// 姓名
+        /// </summary>
+        /// <example>王XX</example>
+        [Required]
+        public string Name { get; set; }
+
         /// <summary>
         /// 會計師編號
         /// </summary>   

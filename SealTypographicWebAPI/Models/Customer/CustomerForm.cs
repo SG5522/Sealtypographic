@@ -6,8 +6,15 @@ namespace SealTypographicWebAPI.Models.Customer
     /// <summary>
     /// 客戶資料(新增或是更新使用)
     /// </summary>
-    public class CustomerForm : BaseCreateName
+    public class CustomerForm
     {
+        /// <summary>
+        /// 名稱
+        /// </summary>
+        /// <example>映像公司</example>
+        [Required]
+        public string Name { get; set; }
+
         /// <summary>
         /// 客戶編號(更新或搜尋使用)
         /// </summary>

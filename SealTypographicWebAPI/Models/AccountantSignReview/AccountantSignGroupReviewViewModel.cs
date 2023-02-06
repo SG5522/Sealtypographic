@@ -1,5 +1,4 @@
 ﻿using SealTypographicWebAPI.Consts;
-using SealTypographicWebAPI.Models.BaseModels;
 
 namespace SealTypographicWebAPI.Models.AccountantSignReview
 {
@@ -27,6 +26,12 @@ namespace SealTypographicWebAPI.Models.AccountantSignReview
         /// </summary>
         /// <example>王XX</example>
         public string Name { get; set; }
+
+        /// <summary>
+        /// 群組名稱
+        /// </summary>
+        /// <example>台北群組</example>
+        public string GroupName { get; set; }
 
         /// <summary>
         /// 編號

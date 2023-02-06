@@ -42,15 +42,19 @@ namespace SealTypographicWebAPI.Services
         /// </summary>
         /// <param name="customerSealQuarter">客戶印鑑搜尋(依客戶ID與季度)</param>
         /// <returns></returns>
-        ResponseViewModel PendingSeals(CustomerSealSearchQuarter customerSealQuarter);
+        ResponseViewModel Pending(CustomerSealSearchQuarter customerSealQuarter);
 
         /// <summary>
         /// 此季度印鑑從草稿狀態變更為作廢
         /// </summary>
         /// <param name="customerSealQuarter">客戶印鑑搜尋(依客戶ID與季度)</param>
         /// <returns></returns>
-        ResponseViewModel InvalidSeals(CustomerSealSearchQuarter customerSealQuarter);
+        ResponseViewModel Invalid(CustomerSealSearchQuarter customerSealQuarter);
 
-
+        /// <summary>
+        /// 此季度印鑑從待審狀態變更為草稿
+        /// </summary>
+        /// <param name="customerSealQuarter">客戶印鑑搜尋(依客戶ID與季度)</param>        
+        ResponseViewModel CancelReview(CustomerSealSearchQuarter customerSealQuarter);
     }
 }
