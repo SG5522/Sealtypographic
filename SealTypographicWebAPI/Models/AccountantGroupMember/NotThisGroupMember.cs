@@ -4,7 +4,7 @@ using SealTypographicWebAPI.Models.BaseModels;
 namespace SealTypographicWebAPI.Models.AccountantGroupMember
 {
     /// <summary>
-    /// 非群組成員
+    /// 非此群組成員
     /// </summary>
     public class NotThisGroupMember : PaginateViewModel
     {

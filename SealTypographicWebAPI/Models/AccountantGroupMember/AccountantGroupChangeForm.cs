@@ -8,8 +8,7 @@ namespace SealTypographicWebAPI.Models.AccountantGroupMember
     public class AccountantGroupChangeForm : BaseData
     {
         /// <summary>
-        /// 會計師群組ID
-        /// NO000 無群組
+        /// 會計師群組ID        
         /// </summary>
         /// <example>1</example>
         public int AccountantGroupId { get; set; }

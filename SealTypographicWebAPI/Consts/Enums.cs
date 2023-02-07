@@ -298,6 +298,9 @@ namespace SealTypographicWebAPI.Consts
 
     /// <summary>
     /// 上傳重複檔名處理模式
+    /// 0.無重複
+    /// 1.保留
+    /// 2.覆蓋
     /// </summary>
     public enum DuplicateFileProcessMode
     {

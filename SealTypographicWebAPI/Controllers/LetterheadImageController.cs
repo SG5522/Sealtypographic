@@ -11,19 +11,19 @@ using Serilog;
 namespace SealTypographicWebAPI.Controllers
 {
     /// <summary>
-    /// 信頭資料處理
+    /// 管理信頭圖片
     /// </summary>
     [Route("api/[controller]")]    
     [ApiController]
     public class LetterheadImageController : ControllerBase
     {
         /// <summary>
-        /// 信頭圖片管理service
+        /// 管理信頭圖片service
         /// </summary>
         private readonly ILetterheadImageService letterheadImageService;
 
         /// <summary>
-        /// 建構:注入信頭圖片管理service
+        /// 建構:注入管理信頭圖片service
         /// </summary>
         /// <param name="letterheadImageService">信頭圖片管理service</param>
         public LetterheadImageController(ILetterheadImageService letterheadImageService)

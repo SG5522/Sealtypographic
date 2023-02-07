@@ -26,13 +26,13 @@ namespace SealTypographicWebAPI.Models.Customer
         /// <summary>
         /// 公司負責人
         /// </summary>
-        /// <example>負責人</example>
+        /// <example>映先生</example>
         public string? President { get; set; }
 
         /// <summary>
         /// 客戶公司簡稱
         /// </summary>
-        /// <example>台電</example>
+        /// <example>映像</example>
         public string? ShortName { get; set; }
 
         /// <summary>
@@ -55,6 +55,7 @@ namespace SealTypographicWebAPI.Models.Customer
         /// <summary>
         /// 郵遞區號
         /// </summary>
+        /// <example>123</example>
         [StringLength(6)]
         [RegularExpression(@"^[0-9]*$")]
         public string? PostalCode { get; set; }

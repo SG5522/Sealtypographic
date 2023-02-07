@@ -7,7 +7,7 @@ using Serilog;
 namespace SealTypographicWebAPI.Controllers
 {
     /// <summary>
-    /// 客戶章
+    /// 管理客戶印鑑
     /// </summary>
     [Route("api/[controller]")]    
     [ApiController]
