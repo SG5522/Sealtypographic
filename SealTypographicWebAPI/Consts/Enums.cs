@@ -1,6 +1,7 @@
 ﻿using SealTypographicWebAPI.Consts;
 using SealTypographicWebAPI.Entities;
 using System.ComponentModel;
+using System.Text.Json.Serialization;
 
 namespace SealTypographicWebAPI.Consts
 {
@@ -14,6 +15,7 @@ namespace SealTypographicWebAPI.Consts
     /// 50 : 作廢
     /// 60 : 不受理
     /// </summary>
+    //[JsonConverter(typeof(JsonStringEnumConverter))]
     public enum ReviewStatus : sbyte
     {
         /// <summary>
@@ -25,7 +27,7 @@ namespace SealTypographicWebAPI.Consts
         /// <summary>
         /// 草稿
         /// </summary>
-        [Description("CancelReview")]
+        [Description("Draft")]
         Draft = 10,
 
         /// <summary>
@@ -63,6 +65,7 @@ namespace SealTypographicWebAPI.Consts
     /// <summary>
     /// 信頭圖片狀態
     /// </summary>
+    //[JsonConverter(typeof(JsonStringEnumConverter))]
     public enum LetterheadImageStatus : sbyte
     {
         /// <summary>
@@ -80,7 +83,7 @@ namespace SealTypographicWebAPI.Consts
 
     /// <summary>
     /// 刪除狀態
-    /// </summary>
+    /// </summary>    
     public enum DeleteStatus : byte
     {
         /// <summary>
@@ -112,6 +115,7 @@ namespace SealTypographicWebAPI.Consts
     /// <summary>
     /// 啟用日期
     /// </summary>
+    //[JsonConverter(typeof(JsonStringEnumConverter))]
     public enum Available : byte
     {
         /// <summary>
@@ -127,24 +131,25 @@ namespace SealTypographicWebAPI.Consts
     /// <summary>
     /// 印鑑類型
     /// </summary>
+    //[JsonConverter(typeof(JsonStringEnumConverter))]
     public enum SealType : byte
     {
         /// <summary>
         /// 客戶
         /// </summary>        
-        [Description("CustomerSealAuthorization")]
+        [Description("Customer")]
         Customer = 1,
 
         /// <summary>
         /// 會計師
         /// </summary>
-        [Description("AccountantSignAuthorization")]
+        [Description("Accountant")]
         Accountant = 2,
 
         /// <summary>
         /// 信頭
         /// </summary>
-        [Description("LetterheadImage")]
+        [Description("Letterhead")]
         Letterhead = 3,
     }
 
@@ -157,24 +162,25 @@ namespace SealTypographicWebAPI.Consts
     /// 5.會計師證明書 
     /// 6.臨時檔
     /// </summary>
+    //[JsonConverter(typeof(JsonStringEnumConverter))]
     public enum UploadType : byte
     {
         /// <summary>
         /// 客戶授權書
         /// </summary>        
-        [Description("CustomerSealAuthorization Seal Authorization")]
+        [Description("Customer Seal Authorization")]
         CustomerSealAuthorization = 1,
 
         /// <summary>
         /// 會計師授權書
         /// </summary>
-        [Description("AccountantSignAuthorization Sign Authorization")]
+        [Description("Accountant Sign Authorization")]
         AccountantSignAuthorization = 2,
 
         /// <summary>
         /// 信頭圖片
         /// </summary>
-        [Description("LetterheadImage Image")]
+        [Description("Letterhead Image")]
         LetterheadImage = 3,
 
         /// <summary>
@@ -186,7 +192,7 @@ namespace SealTypographicWebAPI.Consts
         /// <summary>
         /// 會計師證明書
         /// </summary>
-        [Description("AccountantSignAuthorization Sign Certificate")]
+        [Description("Accountant Sign Certificate")]
         AccountantSignCertificate = 5,
 
         /// <summary>
@@ -204,6 +210,7 @@ namespace SealTypographicWebAPI.Consts
     /// 4.會計主管    
     /// 5.其他(客戶)
     /// </summary>
+    //[JsonConverter(typeof(JsonStringEnumConverter))]
     public enum CustomerSealType
     {
         /// <summary>
@@ -235,7 +242,7 @@ namespace SealTypographicWebAPI.Consts
         /// </summary>
         [Description("Other")]        
         Other = 5,
-    }   
+    }
 
     /// <summary>
     /// 會計師簽印類別
@@ -245,6 +252,7 @@ namespace SealTypographicWebAPI.Consts
     /// 4.舊式簽名
     /// 5.其他(會計)  
     /// </summary>
+    //[JsonConverter(typeof(JsonStringEnumConverter))]
     public enum AccountantSignType
     {
         /// <summary>
@@ -283,6 +291,7 @@ namespace SealTypographicWebAPI.Consts
     /// 在使用客戶印鑑、會計師簽印、信頭、PDF檔案
     /// 為了不在重複使用同一份檔案所做的狀態區分
     /// </summary>
+    //[JsonConverter(typeof(JsonStringEnumConverter))]
     public enum FileWorkStatus
     {
         /// <summary>
@@ -302,6 +311,7 @@ namespace SealTypographicWebAPI.Consts
     /// 1.保留
     /// 2.覆蓋
     /// </summary>
+    //[JsonConverter(typeof(JsonStringEnumConverter))]
     public enum DuplicateFileProcessMode
     {
         /// <summary>

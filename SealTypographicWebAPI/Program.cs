@@ -117,14 +117,14 @@ builder.Services.AddSwaggerGen(c =>
         //    Name = "Use under LICX",
         //    Url = new Uri("https://example.com/license"),
         //}
-    });
-
+    });   
 
     //@解決部份宣告不為nullable 但還是nullable:true 的問題
     c.SupportNonNullableReferenceTypes();
 
     c.IncludeXmlComments(xmlPath,true);
 
+    //c.SchemaFilter<EnumSchemaFilter>();
 });
 
 
