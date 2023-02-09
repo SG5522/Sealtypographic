@@ -4,7 +4,7 @@ using SealTypographicWebAPI.Models.BaseModels;
 namespace SealTypographicWebAPI.Models.AccountantGroupMember
 {
     /// <summary>
-    /// 群組搜尋條件
+    /// 非該群組的會計師搜尋條件
     /// </summary>
     public class NotThisGroupMemberSearch : PaginateSearch
     {

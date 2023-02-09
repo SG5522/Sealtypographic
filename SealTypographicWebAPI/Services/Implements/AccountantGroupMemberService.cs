@@ -29,11 +29,7 @@ namespace SealTypographicWebAPI.Services.Implements
             this.mapper = mapper;
         }
 
-        /// <summary>
-        /// 取得會計群組的會計師列表
-        /// </summary>
-        /// <param name="accountantGroupMemberSearch">會計群組搜尋條件(分頁)</param>
-        /// <returns></returns>
+        ///<inheritdoc /> 
         public AccountantGroupMembers GetMembers(AccountantGroupMemberSearch accountantGroupMemberSearch)
         {
             AccountantGroupMembers accountantGroupMembers = new();
@@ -76,10 +72,7 @@ namespace SealTypographicWebAPI.Services.Implements
             return accountantGroupMembers;
         }
 
-        /// <summary>
-        /// 取得非此群組的成員
-        /// </summary>
-        /// <param name="notThisGroupMemberSearch">搜尋條件</param>
+        ///<inheritdoc /> 
         public NotThisGroupMember GetNotThisGroupMember(NotThisGroupMemberSearch notThisGroupMemberSearch)
         {
             NotThisGroupMember notThisGroupMember = new();
@@ -128,11 +121,7 @@ namespace SealTypographicWebAPI.Services.Implements
             return notThisGroupMember;
         }
 
-        /// <summary>
-        /// 變更會計師群組(單個)
-        /// </summary>
-        /// <param name="accountantGroupChangeForm"></param>
-        /// <returns></returns>
+        ///<inheritdoc />
         public ResponseViewModel UpdateGroup(AccountantGroupChangeForm accountantGroupChangeForm)
         {
             ResponseViewModel response = new();
@@ -150,11 +139,7 @@ namespace SealTypographicWebAPI.Services.Implements
             return response;
         }
 
-        /// <summary>
-        /// 變更多個會計師的群組
-        /// </summary>
-        /// <param name="accountantGroupMemberForm"></param>
-        /// <returns></returns>
+        ///<inheritdoc /> 
         public ResponseViewModel ChangeNotTheGroupMember(AccountantGroupMemberForm accountantGroupMemberForm)
         {
             ResponseViewModel response = new();

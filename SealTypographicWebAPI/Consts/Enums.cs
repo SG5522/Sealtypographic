@@ -234,7 +234,7 @@ namespace SealTypographicWebAPI.Consts
         /// <summary>
         /// 會計主管
         /// </summary>
-        [Description("Accountant Director")]        
+        [Description("Accounting Director")]        
         AccountingDirector = 4,
 
         /// <summary>
@@ -259,7 +259,7 @@ namespace SealTypographicWebAPI.Consts
         /// 印鑑
         /// </summary>
         [Description("Seal")]        
-        AccountantSeal = 1,
+        Seal = 1,
 
         /// <summary>
         /// 中文簽名

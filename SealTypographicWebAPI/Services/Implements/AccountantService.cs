@@ -27,11 +27,7 @@ namespace SealTypographicWebAPI.Services.Implements
             this.mapper = mapper;
         }
 
-        /// <summary>
-        /// 取得會計師基本資料
-        /// </summary>
-        /// <param name="accountantId"></param>
-        /// <returns></returns>
+        ///<inheritdoc />
         public AccountantDetailResponse GetDetail(int accountantId)
         {
             AccountantDetailResponse accountantResponse = new();            
@@ -51,11 +47,7 @@ namespace SealTypographicWebAPI.Services.Implements
             return accountantResponse;
         }
 
-        /// <summary>
-        /// 依搜尋條件獲得會計師資料列表
-        /// </summary>
-        /// <param name="accountantSearch">搜尋條件</param> 
-        /// <returns></returns>
+        ///<inheritdoc />
         public AccountantPaginateViewModel GetPaginate(AccountantSearch accountantSearch)
         {
             AccountantPaginateViewModel accountantPaginatesViewModels = new();
@@ -90,6 +82,7 @@ namespace SealTypographicWebAPI.Services.Implements
                     if(accountant.AccountantSignCreateDateJournals.Count > 0)
                     {
                         accountantPaginatesViewModel.GroupCreateDate = accountant.AccountantSignCreateDateJournals
+                                                                    .Where(x => x.DeleteStatus == DeleteStatus.Yes)
                                                                     .Max(x => x.CreateDate);
                     }
                    
@@ -109,11 +102,7 @@ namespace SealTypographicWebAPI.Services.Implements
             return accountantPaginatesViewModels;
         }
 
-        /// <summary>
-        /// 新增會計師基本資料
-        /// </summary>
-        /// <param name="accountantForm">會計師基本資料</param>
-        /// <returns></returns>
+        ///<inheritdoc />
         public AccountantCreateResponse New(AccountantForm accountantForm)
         {
             AccountantCreateResponse accountantCreateResponse = new();
@@ -148,10 +137,7 @@ namespace SealTypographicWebAPI.Services.Implements
             return accountantCreateResponse;
         }
 
-        /// <summary>
-        /// 更新會計師基本資料
-        /// </summary>
-        /// <param name="accountantFormUpdate">會計師基本資料 accountantBaseData.id 為搜尋條件</param>        
+        ///<inheritdoc />      
         public ResponseViewModel Update(AccountantUpdateForm accountantFormUpdate)
         {
             ResponseViewModel response = new();
@@ -172,12 +158,7 @@ namespace SealTypographicWebAPI.Services.Implements
             return response;
         }
 
-        /// <summary>
-        /// 刪除基本資料，
-        /// 此刪除為更動狀態使其一般使用者看不到資料，
-        /// 而不是真正的刪除。
-        /// </summary>
-        /// <param name="accountantId">會計師ID</param>        
+        ///<inheritdoc />     
         public ResponseViewModel Delete(int accountantId)
         {
             ResponseViewModel response = new();
@@ -197,6 +178,7 @@ namespace SealTypographicWebAPI.Services.Implements
             }
             return response;
         }
+
         /// <summary>
         /// 信頭資料新增修改時基本資料輸入
         /// </summary>

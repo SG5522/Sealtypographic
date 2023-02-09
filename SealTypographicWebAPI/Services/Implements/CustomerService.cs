@@ -113,7 +113,12 @@ namespace SealTypographicWebAPI.Services.Implements
                     }                    
 
                     customerViewModel.Quarter = dbContext.CustomerSealQuarterJournals
-                                                .Where(x => x.Customer.Id == customer.Id)
+                                                .Where
+                                                (
+                                                    x => x.Customer.Id == customer.Id
+                                                    && x.DeleteStatus == DeleteStatus.No
+                                                )
+
                                                 .Max(x => x.Quarter);
                     
                     customerPaginateViewModel.ViewModels.Add(customerViewModel);                    

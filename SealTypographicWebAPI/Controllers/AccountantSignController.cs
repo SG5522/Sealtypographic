@@ -28,8 +28,6 @@ namespace SealTypographicWebAPI.Controllers
             this.accountantSignService = accountantSignService;            
         }
 
-
-
         /// <summary>
         /// 取得會計師簽印建立日期列表
         /// </summary>

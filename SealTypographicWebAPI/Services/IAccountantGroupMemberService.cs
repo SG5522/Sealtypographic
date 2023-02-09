@@ -9,31 +9,31 @@ namespace SealTypographicWebAPI.Services
     /// 會計師群組成員管理
     /// </summary>
     public interface IAccountantGroupMemberService
-    {       
+    {
         /// <summary>
-        /// 取得此群組底下的會計師
+        /// 取得群組成員資料
         /// </summary>
-        /// <param name="accountantGroupMemberSearch">會計群組搜尋條件(分頁)</param>
+        /// <param name="accountantGroupMemberSearch">群組成員搜尋條件(分頁)</param>
         /// <returns></returns>
         AccountantGroupMembers GetMembers(AccountantGroupMemberSearch accountantGroupMemberSearch);
 
         /// <summary>
-        /// 取得非此群組的成員
+        /// 取得非該群組會計師列表
         /// </summary>
-        /// <param name="notThisGroupMemberSearch">搜尋條件</param>
+        /// <param name="notThisGroupMemberSearch">非該群組的會計師搜尋條件</param>
         NotThisGroupMember GetNotThisGroupMember(NotThisGroupMemberSearch notThisGroupMemberSearch);
 
         /// <summary>
-        /// 變更會計師群組(單個)
+        /// 變更單個會計師的群組
         /// </summary>
-        /// <param name="accountantGroupChangeForm">會計群組變更資料</param>
+        /// <param name="accountantGroupChangeForm">會計師群組資料</param>
         /// <returns></returns>
         ResponseViewModel UpdateGroup(AccountantGroupChangeForm accountantGroupChangeForm);
 
         /// <summary>
         /// 變更多個會計師的群組
         /// </summary>
-        /// <param name="accountantGroupMemberForm"></param>
+        /// <param name="accountantGroupMemberForm">會計師群組成員資料</param>
         /// <returns></returns>
         ResponseViewModel ChangeNotTheGroupMember(AccountantGroupMemberForm accountantGroupMemberForm);
     }

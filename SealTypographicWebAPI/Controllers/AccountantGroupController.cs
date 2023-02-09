@@ -31,7 +31,7 @@ namespace SealTypographicWebAPI.Controllers
         }
 
         /// <summary>
-        /// 取得會計師群組所有資料
+        /// 取得群組所有資料
         /// </summary>
         /// <returns></returns>
         [HttpGet("[Action]")]
@@ -52,9 +52,9 @@ namespace SealTypographicWebAPI.Controllers
         }
 
         /// <summary>
-        /// 依搜尋條件獲得會計師資料列表(分頁)
+        /// 依搜尋條件取得群組列表(分頁)
         /// </summary>
-        /// <param name="accountantGroupSearch">會計師群組搜尋條件(分頁)</param>
+        /// <param name="accountantGroupSearch">群組搜尋條件(分頁)</param>
         /// <returns></returns>
         [HttpGet]
         public AccountantGroupPaginateViewModel Paginate([FromQuery]AccountantGroupSearch accountantGroupSearch)
@@ -76,7 +76,7 @@ namespace SealTypographicWebAPI.Controllers
         }
 
         /// <summary>
-        /// 取得會計師群組資料(單筆)
+        /// 取得群組資料(單筆)
         /// </summary>
         /// <param name="accountantGroupId">群組ID</param>
         /// <returns></returns>
@@ -96,12 +96,13 @@ namespace SealTypographicWebAPI.Controllers
                 accountantGroupResponse.DbError();                
             }
             return accountantGroupResponse;
-        }                
-      
+        }
+
         /// <summary>
-        /// 新增會計師群組
+        /// 新增群組
         /// </summary>
         /// <param name="accountantGroupForm">群組資料</param>
+        /// <returns></returns>
         [HttpPost]
         public ResponseViewModel New(AccountantGroupForm accountantGroupForm)
         {
@@ -121,9 +122,10 @@ namespace SealTypographicWebAPI.Controllers
         }
 
         /// <summary>
-        /// 更新會計師群組資料
+        /// 更新群組資料
         /// </summary>
-        /// <param name="accountantGroupFormUpdate">群組資料</param>       
+        /// <param name="accountantGroupFormUpdate">群組資料(含Id)</param>       
+        /// <returns></returns>
         [HttpPut]
         public ResponseViewModel Update(AccountantGroupUpdateForm accountantGroupFormUpdate)
         {
@@ -143,9 +145,9 @@ namespace SealTypographicWebAPI.Controllers
         }
 
         /// <summary>
-        /// 刪除群組(將該群組的所有人員先轉移到無群組在進行群組刪除)
+        /// 刪除群組
         /// </summary>
-        /// <param name="accountantGroupDataId">會計師群組ID</param>
+        /// <param name="accountantGroupDataId">群組Id</param>
         /// <returns></returns>
         [HttpDelete("{accountantGroupDataId}")]
         public ResponseViewModel Delete(int accountantGroupDataId)

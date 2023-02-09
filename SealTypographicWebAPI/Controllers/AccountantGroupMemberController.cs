@@ -38,7 +38,7 @@ namespace SealTypographicWebAPI.Controllers
         }
 
         /// <summary>
-        /// 取得會計師群組成員資料
+        /// 取得群組成員資料
         /// </summary>
         /// <param name="accountantGroupMemberSearch">群組成員搜尋條件</param>
         /// <returns></returns>
@@ -61,7 +61,7 @@ namespace SealTypographicWebAPI.Controllers
         }
 
         /// <summary>
-        /// 取得非該群組所有會計師列表
+        /// 取得非該群組會計師列表
         /// </summary>
         /// <param name="notThisGroupMemberSearch">群組成員搜尋條件</param>
         /// <returns></returns>
@@ -109,7 +109,8 @@ namespace SealTypographicWebAPI.Controllers
         /// <summary>
         /// 變更單個會計師的群組
         /// </summary>
-        /// <param name="accountantGroupChangeForm">會計群組變更資料</param>       
+        /// <param name="accountantGroupChangeForm">會計師群組資料</param>  
+        /// <returns></returns>
         [HttpPut]
         public ResponseViewModel UpdateGroup(AccountantGroupChangeForm accountantGroupChangeForm)
         {
@@ -132,7 +133,7 @@ namespace SealTypographicWebAPI.Controllers
         /// <summary>
         /// 變更多個會計師的群組
         /// </summary>
-        /// <param name="accountantGroupMemberForm">會計群組變更資料</param>       
+        /// <param name="accountantGroupMemberForm">會計師群組成員資料</param>       
         [HttpPut("NotTheGroup")]
         public ResponseViewModel UpdateNotGroupMembers(AccountantGroupMemberForm accountantGroupMemberForm)
         {

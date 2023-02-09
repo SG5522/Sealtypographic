@@ -27,10 +27,7 @@ namespace SealTypographicWebAPI.Services.Implements
             this.mapper = mapper;
         }
 
-        /// <summary>
-        /// 取得會計師群組所有資料
-        /// </summary>
-        /// <returns></returns>
+        ///<inheritdoc />
         public AccountantGroupList GetAll()
         {
             AccountantGroupList accountantGroupList = new();            
@@ -51,11 +48,7 @@ namespace SealTypographicWebAPI.Services.Implements
             return accountantGroupList;
         }
 
-        /// <summary>
-        /// 取得會計師群組資料
-        /// </summary>
-        /// <param name="accountantGroupId">群組ID</param>
-        /// <returns></returns>
+        ///<inheritdoc />
         public AccountantGroupResponse GetData(int accountantGroupId)
         {
             AccountantGroupResponse accountantGroupResponse = new();            
@@ -76,11 +69,7 @@ namespace SealTypographicWebAPI.Services.Implements
             return accountantGroupResponse;
         }
 
-        /// <summary>
-        /// 依搜尋條件獲得會計師資料列表(分頁)
-        /// </summary>
-        /// <param name="accountantGroupSearch">會計師群組搜尋條件(分頁)</param>
-        /// <returns></returns>
+        ///<inheritdoc />
         public AccountantGroupPaginateViewModel GetPaginate(AccountantGroupSearch accountantGroupSearch)
         {
             AccountantGroupPaginateViewModel accountantGroupResponses = new();            
@@ -121,10 +110,7 @@ namespace SealTypographicWebAPI.Services.Implements
             return accountantGroupResponses;
         }
 
-        /// <summary>
-        /// 新增會計師群組
-        /// </summary>
-        /// <param name="accountantGroupForm">群組資料</param>        
+        ///<inheritdoc />
         public ResponseViewModel New(AccountantGroupForm accountantGroupForm)
         {
             ResponseViewModel response = new();
@@ -147,11 +133,8 @@ namespace SealTypographicWebAPI.Services.Implements
             return response;
         }
 
-    /// <summary>
-    /// 更新會計師群組資料
-    /// </summary>
-    /// <param name="accountantGroupFormUpdate">群組資料</param>
-    public ResponseViewModel Update(AccountantGroupUpdateForm accountantGroupFormUpdate)
+        ///<inheritdoc />
+        public ResponseViewModel Update(AccountantGroupUpdateForm accountantGroupFormUpdate)
         {
             ResponseViewModel response = new();
             AccountantGroup? accountantGroupQuery = dbContext.AccountantGroups.Find(accountantGroupFormUpdate.Id);
@@ -170,10 +153,7 @@ namespace SealTypographicWebAPI.Services.Implements
             return response;
         }
 
-        /// <summary>
-        /// 刪除群組(將該群組的所有人員先轉移到無群組在進行群組刪除)
-        /// </summary>
-        /// <param name="accountantGroupId">群組Id</param>
+        ///<inheritdoc />       
         public ResponseViewModel Delete(int accountantGroupId)
         {
             ResponseViewModel response = new();

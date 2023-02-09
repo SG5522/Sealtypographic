@@ -31,7 +31,7 @@ namespace SealTypographicWebAPI.Controllers
         }
 
         /// <summary>
-        /// 依搜尋條件獲得會計師資料列表(分頁)
+        /// 依搜尋條件獲得資料列表(分頁)
         /// </summary>
         /// <param name="accountantSearch">搜尋條件</param>
         /// <returns></returns>
@@ -54,7 +54,7 @@ namespace SealTypographicWebAPI.Controllers
         }
 
         /// <summary>
-        /// 取得會計師基本資料
+        /// 取得資料
         /// </summary>
         /// <param name="accountantId">會計師ID</param>        
         /// <returns></returns>
@@ -77,9 +77,9 @@ namespace SealTypographicWebAPI.Controllers
         }
 
         /// <summary>
-        /// 新增會計師基本資料
+        /// 新增資料
         /// </summary>
-        /// <param name="accountantForm">會計師基本資料</param>
+        /// <param name="accountantForm">會計師資料</param>
         [HttpPost]
         public AccountantCreateResponse New(AccountantForm accountantForm)
         {
@@ -99,9 +99,9 @@ namespace SealTypographicWebAPI.Controllers
         }
 
         /// <summary>
-        /// 更新會計師基本資料
+        /// 更新資料
         /// </summary>
-        /// <param name="accountantFormUpdate">會計師基本資料(ID為查詢用)</param>        
+        /// <param name="accountantFormUpdate">會計師資料(Id為查詢用)</param>        
         [HttpPut]
         public ResponseViewModel Update(AccountantUpdateForm accountantFormUpdate)
         {
@@ -121,9 +121,7 @@ namespace SealTypographicWebAPI.Controllers
         }
 
         /// <summary>
-        /// 刪除基本資料，
-        /// 此刪除為更動狀態使其一般使用者看不到資料，
-        /// 而不是真正的刪除。
+        /// 刪除資料
         /// </summary>
         /// <param name="accountantId">會計師ID</param>        
         [HttpDelete("{accountantId}")]
