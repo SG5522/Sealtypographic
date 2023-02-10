@@ -59,7 +59,7 @@ namespace SealTypographicWebAPI.Services.Implements
 
             if (accountantSignSearchReview.ReviewStatus != null)
             {
-                accountantSignGroupQuery.Where(x => x.ReviewStatus == accountantSignSearchReview.ReviewStatus);
+                accountantSignGroupQuery = accountantSignGroupQuery.Where(x => x.ReviewStatus == accountantSignSearchReview.ReviewStatus);
             }
 
             if (accountantSignGroupQuery.Any())

@@ -82,7 +82,7 @@ namespace SealTypographicWebAPI.Services.Implements
                     if(accountant.AccountantSignCreateDateJournals.Count > 0)
                     {
                         accountantPaginatesViewModel.GroupCreateDate = accountant.AccountantSignCreateDateJournals
-                                                                    .Where(x => x.DeleteStatus == DeleteStatus.Yes)
+                                                                    .Where(x => x.DeleteStatus == DeleteStatus.No)
                                                                     .Max(x => x.CreateDate);
                     }
                    

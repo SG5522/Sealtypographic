@@ -57,7 +57,7 @@ namespace SealTypographicWebAPI.Services.Implements
 
             if (customerSealSearchReview.ReviewStatus != null)
             {
-                customerSealQuarterQuery.Where(customerSealJournal => customerSealJournal.ReviewStatus == customerSealSearchReview.ReviewStatus);
+                customerSealQuarterQuery = customerSealQuarterQuery.Where(customerSealJournal => customerSealJournal.ReviewStatus == customerSealSearchReview.ReviewStatus);
             }
 
             if (customerSealQuarterQuery.Any())
