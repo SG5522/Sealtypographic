@@ -68,7 +68,7 @@ namespace SealTypographicWebAPI.Services.Implements
             }
             else
             {
-                response.UniqueConstraintFailed();
+                response.DbNoData();
             }
 
             return response;

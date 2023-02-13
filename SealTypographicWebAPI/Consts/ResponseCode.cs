@@ -1,4 +1,6 @@
-﻿namespace SealTypographicWebAPI.Consts
+﻿using System.ComponentModel;
+
+namespace SealTypographicWebAPI.Consts
 {
     /// <summary>
     /// API傳輸結果代碼
@@ -9,332 +11,232 @@
         /// <summary>
         /// 回傳成功
         /// </summary>
+        [Description("回傳成功")]
         Success = 0,
 
         /// <summary>
         /// DB無資料
         /// </summary>
+        [Description("資料庫無資料")]
         DbNoData = 1000,
 
         /// <summary>
         /// 資料庫處理錯誤
         /// </summary>
+        [Description("資料庫異常，請聯絡工程師")]
         DbError = 1001,
 
         /// <summary>
-        /// 資料庫欄位限制唯一約束錯誤回傳
+        /// 客戶無資料
         /// </summary>
-        UniqueConstraintFailed = 1019,
-
-        /// <summary>
-        /// 資料庫客戶無資料
-        /// </summary>
+        [Description("查無客戶資料")]
         CustomeNoData = 2001,
 
         /// <summary>
         /// 資料庫客戶資料建立失敗
         /// </summary>
+        [Description("客戶資料建立失敗")]
         CreateCustomerFailed = 2010,
 
         /// <summary>
-        /// 資料庫客戶編號重複
-        /// </summary>
+        /// 建立客戶資料時編號重複
+        /// </summary>                
+        [Description("客戶編號重複，無法建檔，請重新確認編號")] 
         CreateCustomerNumberRepeat = 2011,
-
-        /// <summary>
-        /// 更新客戶資料失敗
-        /// </summary>
-        UpdateCustomerFailed = 2020,
 
         /// <summary>
         /// 更新客戶資料找不到資料
         /// </summary>
+        [Description("查無客戶資料，無法更新客戶資料")] 
         UpdateCustomerNoData = 2021,
 
-        /// <summary>
-        /// 刪除(Hide)客戶失敗
-        /// </summary>
-        DeleteCustomerFailed = 2030,
 
         /// <summary>
-        /// 刪除(Hide)客戶時找不到資料
+        /// 刪除客戶時找不到資料
         /// </summary>
+        [Description("查無客戶資料，無法刪除客戶資料")] 
         DeleteCustomerNoData = 2031,
 
         /// <summary>
-        /// 資料庫客戶印鑑序號重複
+        /// 客戶印鑑序號重複
         /// </summary>
+        [Description("客戶印鑑序號重複，請確認印鑑")]
         CustomerSealSequenceRepeat = 2101,
 
         /// <summary>
         /// 資料庫客戶印鑑無資料
         /// </summary>
+        [Description("查無客戶印鑑資料")]
         CustomerSealNoData = 2102,
 
         /// <summary>
-        /// 資料庫客戶印鑑建立失敗
+        /// 客戶印鑑建立時序號重複
         /// </summary>
-        CreateCustomerSealFailed = 2110,
-
-        /// <summary>
-        /// 資料庫客戶印鑑建立時序號重複
-        /// </summary>
+        [Description("客戶印鑑序號重複，無法建立新的印鑑")]
         CreateCustomerSealSequenceRepeat = 2111,
 
         /// <summary>
-        /// 資料庫客戶印鑑建立時季度重複
-        /// </summary>
+        /// 客戶印鑑建立時季度重複
+        /// </summary>        
+        [Description("客戶印鑑季度重複，無法建立新的印鑑")] 
         CreateCustomerSealQuarterRepeat = 2112,
-
-        /// <summary>
-        /// 更新客戶印鑑失敗
-        /// </summary>
-        UpdateCustomerSealFailed = 2120,
 
         /// <summary>
         /// 更新客戶印鑑時序號重複
         /// </summary>
+        [Description("客戶印鑑序號重複，無法更新印鑑")] 
         UpdateCustomerSealSequenceRepeat = 2121,
 
         /// <summary>
         /// 更新客戶印鑑時找不到資料
         /// </summary>
+        [Description("查無客戶印鑑資料，無法更新印鑑")] 
         UpdateCustomerSealNoData = 2122,
 
-        /// <summary>
-        /// 刪除(Hide)客戶印鑑失敗
-        /// </summary>
-        DeleteCustomerSealFailed = 2130,
 
         /// <summary>
-        /// 刪除(Hide)客戶印鑑時找不到資料
+        /// 刪除客戶印鑑時找不到資料
         /// </summary>
+        [Description("查無客戶印鑑資料，無法刪除印鑑")] 
         DeleteCustomerSealNoData = 2131,
 
         /// <summary>
-        /// 資料庫會計師無資料
+        /// 會計師無資料
         /// </summary>
+        [Description("查無會計師資料")] 
         AccountantNoData = 3001,
-
-        /// <summary>
-        /// 資料庫會計師編號重複
-        /// </summary>
-        AccountantNumberRepeat = 3002,
-
-        /// <summary>
-        /// 會計師資料建立失敗
-        /// </summary>
-        CreateAccountantFailed = 3010,
 
         /// <summary>
         /// 會計師編號重複
         /// </summary>
+        [Description("會計師編號重複，請重新確認")] 
+        AccountantNumberRepeat = 3002,
+
+        /// <summary>
+        /// 建立會計師資料失敗
+        /// </summary>
+        [Description("建立會計師資料失敗")] 
+        CreateAccountantFailed = 3010,
+
+        /// <summary>
+        /// 建立會計師資料時編號重複
+        /// </summary>
+        [Description("會計師編號重複，無法建檔，請重新確認編號")] 
         CreateAccountantNumberRepeat = 3011,
 
         /// <summary>
-        /// 會計師資料更新失敗
+        /// 更新會計師資料時找不到
         /// </summary>
-        UpdateAccountantFailed = 3020,
-
-        /// <summary>
-        /// 會計師資料更新找不到資料
-        /// </summary>
+        [Description("查無會計師資料，無法更新會計師資料")]
         UpdateAccountantNoData = 3021,
 
         /// <summary>
-        /// 會計師資料刪除失敗
+        /// 刪除會計師時找不到資料
         /// </summary>
-        DeleteAccountantFailed = 3030,
-
-        /// <summary>
-        /// 會計師資料刪除找不到資料
-        /// </summary>
+        [Description("查無會計師資料，無法刪除會計師資料")] 
         DeleteAccountantNoData = 3031,
 
         /// <summary>
         /// 會計師簽印無資料
         /// </summary>
+        [Description("查無會計師簽印資料")] 
         AccountantSignNoData = 3101,
 
         /// <summary>
-        /// 會計師簽印中已有草稿或是待審的簽印
+        /// 建立會計計簽印時發現重複
         /// </summary>
-        AccountantSignHaveDraftOrPendingReviewStatus = 3102,
-
-        /// <summary>
-        /// 會計師簽印建立失敗
-        /// </summary>
-        CreateAccountantSignFailed = 3110,
-
-        /// <summary>
-        /// 會計簽印建立時發現重複(依類別確認)
-        /// </summary>
+        [Description("會計師簽印序號重複，無法建立新的印鑑")] 
         CreateAccountantSignRepeat = 3111,
 
         /// <summary>
-        /// 更新會計師簽印失敗
+        /// 更新會計師簽印時發現重複
         /// </summary>
-        UpdateAccountantSignFailed = 3120,
-
-        /// <summary>
-        /// 更新會計師簽印時發現重複(更改類別時)
-        /// </summary>
+        [Description("會計師簽印序號重複，無法更新印鑑")] 
         UpdateAccountantSignRepeat = 3121,
 
         /// <summary>
         /// 更新會計師簽印時找不到資料
         /// </summary>
+        [Description("查無會計師簽印資料，無法更新印鑑")] 
         UpdateAccountantSignNoData = 3122,
 
         /// <summary>
-        /// 刪除(Hide)會計師簽印失敗
+        /// 刪除會計師簽印時找不到資料
         /// </summary>
-        DeleteAccountantSignFailed = 3130,
-
-        /// <summary>
-        /// 刪除(Hide)會計師簽印時找不到資料
-        /// </summary>
+        [Description("查無會計師簽印資料，無法刪除印鑑")] 
         DeleteAccountantSignNoData = 3131,
 
 
         /// <summary>
         /// 會計師群組找不到資料
         /// </summary>
+        [Description("查無會計師群組資料")]
         AccountantGroupNoData = 3200,
-
-        /// <summary>
-        /// 會計師群組建立失敗
-        /// </summary>
-        CreateAccountantGroupFailed = 3210,
 
         /// <summary>
         /// 會計師群組建立時編號重複
         /// </summary>
+        [Description("會計師群組編號重複，無法建立群組，請重新確認編號")] 
         CreateAccountantGroupNumberRepeat = 3211,
-
-        /// <summary>
-        /// 更新會計師群組失敗
-        /// </summary>
-        UpdateAccountantGroupFailed = 3220,
 
         /// <summary>
         /// 更新會計師群組找不到資料
         /// </summary>
+        [Description("查無會計師群組資料，無法更新會計師群組資料")] 
         UpdateAccountantGroupNoData = 3221,
 
         /// <summary>
-        /// 刪除(Hide)會計師群組失敗
+        /// 刪除會計師群組時找不到資料
         /// </summary>
-        DeleteAccountantGroupFailed = 3230,
-
-        /// <summary>
-        /// 刪除(Hide)會計師群組時找不到資料
-        /// </summary>
+        [Description("查無會計師群組資料，無法刪除會計師群組資料")] 
         DeleteAccountantGroupNoData = 3231,
-
-        /// <summary>
-        /// 加入會計群組失敗
-        /// </summary>
-        JoinAccountantGroupFailed = 3300,
         
         /// <summary>
         /// 信頭無資料
         /// </summary>
-        LetterheadNoData = 4001,
-
-        /// <summary>
-        /// 信頭資料建立失敗
-        /// </summary>
-        CreateLetterheadFailed = 4010,
-
-        /// <summary>
-        /// 信頭編號重複
-        /// </summary>
-        CreateLetterheadNumberRepeat = 4011,
-
-        /// <summary>
-        /// 信頭無資料
-        /// </summary>
+        [Description("查無信頭資料")] 
         CreateLetterheadNoData = 4012,
-
-        /// <summary>
-        /// 更新信頭資料失敗
-        /// </summary>
-        UpdateLetterheadFailed = 4020,
 
         /// <summary>
         /// 更新信頭找不到資料
         /// </summary>
+        [Description("查無信頭資料，無法更新信頭資料")]
         UpdateLetterheadNoData = 4021,
 
         /// <summary>
-        /// 刪除(Hide)信頭失敗
+        /// 刪除信頭時找不到資料
         /// </summary>
-        DeleteLetterheadFailed = 4030,
-
-        /// <summary>
-        /// 刪除(Hide)信頭時找不到資料
-        /// </summary>
+        [Description("查無信頭資料，無法刪除信頭資料")] 
         DeleteLetterheadNoData = 4031,
-
-        /// <summary>
-        /// 信頭圖像序號重複
-        /// </summary>
-        LetterheadImageSequenceRepeat = 4101,
        
         /// <summary>
         /// 信頭圖像無資料
         /// </summary>
+        [Description("查無信頭圖像資料")] 
         LetterheadImageNoData = 4102,
 
         /// <summary>
-        /// 信頭圖片中已有草稿或是待審的資料
+        /// 更新信頭圖像時找不到資料
         /// </summary>
-        LetterheadImageHaveDraftReviewStatus = 4103,
-
-        /// <summary>
-        /// 信頭圖像建立失敗
-        /// </summary>
-        CreateLetterheadImageFailed = 4110,
-
-        /// <summary>
-        /// 信頭圖像序號重複
-        /// </summary>
-        CreateLetterheadImageSequenceRepeat = 4111,
-
-        /// <summary>
-        /// 信頭圖像更新失敗
-        /// </summary>
-        UpdateLetterheadImageFailed = 4120,
-
-        /// <summary>
-        /// 信頭圖像更新時序號重複
-        /// </summary>
-        UpdateLetterheadImageSequenceRepeat = 4121,
-
-        /// <summary>
-        /// 信頭圖像更新時找不到資料
-        /// </summary>
+        [Description("查無信頭圖像資料，無法更新信頭圖像資料")]
         UpdateLetterheadImageNoData = 4122,
 
         /// <summary>
-        /// 信頭圖像刪除失敗
+        /// 刪除信頭圖像找不到資料
         /// </summary>
-        DeleteLetterheadImageFailed = 4130,
-
-        /// <summary>
-        /// 信頭圖像刪除時找不到資料
-        /// </summary>
+        [Description("查無信頭圖像資料，無法刪除信頭圖像資料")] 
         DeleteLetterheadImageNoData = 4131,
 
         /// <summary>
         /// 上傳失敗
         /// </summary>
+        [Description("檔案上傳失敗，請確認網路環境")] 
         FileUploadFailed = 6001,
 
         /// <summary>
         /// 找不到上傳資料
         /// </summary>
+        [Description("查無上傳資料，請確認或重新上傳")] 
         FileUploadNoData = 6002,
     }
 }

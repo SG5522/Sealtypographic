@@ -48,7 +48,7 @@ builder.Host.UseSerilog();// <-SeriLog
 #region -- ConectionString --
 builder.Services.AddDbContextPool<SealTypographicDbContext>(optionsBuilder =>
 {    
-    optionsBuilder.UseSqlite(config.GetConnectionString("Sqlite"));
+    optionsBuilder.UseSqlite(config.GetConnectionString("Sqlite"));    
     //MySqlServerVersion serverVersion = new(new Version(5, 7, 27));
     //optionsBuilder.UseMySql(config.GetConnectionString("MySql"), serverVersion);
 },128);
@@ -58,6 +58,7 @@ builder.Services.AddDbContextPool<SealTypographicDbContext>(optionsBuilder =>
 
 builder.Services.AddScoped<ImageService>();
 builder.Services.AddScoped<SealMappingConfigService>();
+builder.Services.AddScoped<ResponseCodeService>();
 builder.Services.AddScoped<ReviewStatusService>();
 builder.Services.AddAutoMapper(typeof(MapperProfile));
 

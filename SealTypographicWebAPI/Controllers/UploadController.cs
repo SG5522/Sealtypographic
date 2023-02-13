@@ -81,7 +81,7 @@ namespace SealTypographicWebAPI.Controllers
             UploadFileResponse uploadTypeResponse = new();
             try
             {
-                Log.Information("Upload files input {@Input}", uploadTypeResponse);
+                Log.Information("Upload files input {@Input}", uploadType);
                 uploadTypeResponse = uploadService.GetFile(uploadType);
                 Log.Information("Upload files output {@Output}", uploadTypeResponse);
             }
@@ -96,17 +96,17 @@ namespace SealTypographicWebAPI.Controllers
         /// <summary>
         /// 顯示上傳圖檔(PDF類別此階段不處理)
         /// </summary>
-        /// <param name="UploadFileId">上傳Id</param>
+        /// <param name="uploadFileId">上傳Id</param>
         /// <returns></returns>
-        [HttpGet("{UploadFileId}")]
-        public UploadFileImageView FileImage(int UploadFileId)
+        [HttpGet("{uploadFileId}")]
+        public UploadFileImageView FileImage(int uploadFileId)
         {
             UploadFileImageView uploadFileImageView = new();
             try
             {
-                Log.Information("Upload fileImage input {@Input}", UploadFileId);
-                uploadFileImageView = uploadService.GetFileImage(UploadFileId);
-                Log.Information("Upload fileImage output {@Output}", UploadFileId);
+                Log.Information("Upload fileImage input {@Input}", uploadFileId);
+                uploadFileImageView = uploadService.GetFileImage(uploadFileId);
+                Log.Information("Upload fileImage output {@Output}", uploadFileImageView);
             }
             catch (Exception ex)
             {
@@ -178,6 +178,29 @@ namespace SealTypographicWebAPI.Controllers
                 Log.Information("Upload new input {@Input}", upladData);
                 response = await uploadService.SaveFormFile(upladData);
                 Log.Information("Upload new output {@Output}", upladData);                       
+            }
+            catch (Exception ex)
+            {
+                Log.Error("Upload new error {@Error}", ex);
+                response.DbError();
+            }
+            return response;
+        }
+
+        /// <summary>
+        /// 變更檔案工作狀態為已處理
+        /// </summary>
+        /// <param name="uploadFileId">上傳檔案Id</param>                    
+        /// <returns></returns>
+        [HttpPut]
+        public ResponseViewModel FileWorkStatusToDone(int uploadFileId)
+        {
+            ResponseViewModel response = new();
+            try
+            {
+                Log.Information("Upload new input {@Input}", uploadFileId);
+                response = uploadService.ChangeFileWorkStatusToDone(uploadFileId);
+                Log.Information("Upload new output {@Output}", response);
             }
             catch (Exception ex)
             {

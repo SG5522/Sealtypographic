@@ -297,7 +297,7 @@ namespace SealTypographicWebAPI.Consts
         /// <summary>
         /// 未處理
         /// </summary>
-        Undone = 0,
+        Unprocessed = 0,
 
         /// <summary>
         /// 已處理

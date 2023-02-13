@@ -86,7 +86,7 @@ namespace SealTypographicWebAPI.Services.Implements
                                             .Where
                                             (
                                                 uploadFile => uploadFile.UploadType == uploadType
-                                                && uploadFile.FileWorkStatus == FileWorkStatus.Undone
+                                                && uploadFile.FileWorkStatus == FileWorkStatus.Unprocessed
                                             ).ToList();
             if(uploadFiles.Any())
             {
@@ -112,12 +112,12 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <summary>
         /// 取得上傳檔案圖片
         /// </summary>
-        /// <param name="UploadFileId"></param>
+        /// <param name="uploadFileId"></param>
         /// <returns></returns>
-        public UploadFileImageView GetFileImage(int UploadFileId)
+        public UploadFileImageView GetFileImage(int uploadFileId)
         {
             UploadFileImageView uploadFileImageView = new();
-            UploadFile? uploadFile = dbContext.UploadFiles.Find(UploadFileId);
+            UploadFile? uploadFile = dbContext.UploadFiles.Find(uploadFileId);
             if(uploadFile != null)
             {
                 uploadFileImageView.ImageBase64 = imageSharpService.GetPathToBase64(uploadFile.FullPath);
@@ -221,6 +221,30 @@ namespace SealTypographicWebAPI.Services.Implements
         }
 
         /// <summary>
+        /// 變更檔案工作狀態為已處理
+        /// </summary>
+        /// <param name="uploadFileId">上傳檔案Id</param>
+        /// <returns></returns>
+        public ResponseViewModel ChangeFileWorkStatusToDone(int uploadFileId)
+        {
+            ResponseViewModel response = new();
+            int userid = 0;
+            UploadFile? uploadFile = dbContext.UploadFiles.Find(uploadFileId);
+            if (uploadFile != null)
+            {
+                uploadFile.FileWorkStatus = FileWorkStatus.Done;
+                BaseInput(uploadFile, false, userid);
+                response.Success();
+            }
+            else
+            {
+                response.FileUploadNoData();
+            }
+
+            return response;
+        }
+
+        /// <summary>
         /// 存檔處理
         /// </summary>
         /// <param name="formFile"></param>
@@ -305,10 +329,9 @@ namespace SealTypographicWebAPI.Services.Implements
             if (isCreate)
             {
                 uploadFile.CreateUserId = userid;
-                uploadFile.CreateDate = DateTime.Now;
-                uploadFile.UpdateDate = DateTime.Now;
+                uploadFile.CreateDate = DateTime.Now;                
                 uploadFile.DeleteStatus = DeleteStatus.No;
-                uploadFile.FileWorkStatus = FileWorkStatus.Undone;
+                uploadFile.FileWorkStatus = FileWorkStatus.Unprocessed;
             }
             else
             {
