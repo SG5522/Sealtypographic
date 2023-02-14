@@ -6,8 +6,15 @@ namespace SealTypographicWebAPI.Models.AccountantGroup
     /// <summary>
     /// 建立會計師群組
     /// </summary>
-    public class AccountantGroupForm : BaseCreateName
+    public class AccountantGroupForm
     {
+        /// <summary>
+        /// 群組名稱
+        /// </summary>
+        /// <example>台北群組</example>
+        [Required]
+        public string Name { get; set; }
+
         /// <summary>
         /// 會計師群組編號
         /// </summary>

@@ -9,7 +9,7 @@ using SealTypographicWebAPI.Config;
 using Microsoft.AspNetCore.Mvc.Razor;
 
 string allowSpecificOrigins = "allowSpecificOrigins";
-string allowAllOrigins = "allowSpecificOrigins";
+string allowAllOrigins = "allowAllOrigins";
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 ConfigurationManager config = builder.Configuration; // 取得 IConfiguration
