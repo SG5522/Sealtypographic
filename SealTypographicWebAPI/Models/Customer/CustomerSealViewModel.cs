@@ -36,10 +36,10 @@ namespace SealTypographicWebAPI.Models.Customer
         }
 
         /// <summary>
-        /// 客戶ID
+        /// 客戶印鑑季度ID
         /// </summary>
         /// <example>1</example>
-        public int CustomerId { get; set; }
+        public int CustomerSealQuarterId { get; set; }
 
         /// <summary>
         /// 印鑑季度

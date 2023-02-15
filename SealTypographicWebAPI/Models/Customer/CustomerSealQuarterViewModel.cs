@@ -6,13 +6,13 @@ namespace SealTypographicWebAPI.Models.Customer
     /// <summary>
     /// 客戶印鑑季度
     /// </summary>
-    public class CustomerSealViewQuarter
+    public class CustomerSealQuarterViewModel
     {
         /// <summary>
-        /// 客戶Id
+        /// 印鑑季度Id
         /// </summary>
         /// <example>1</example>
-        public int CustomerId { get; set; }
+        public int Id { get; set; }
 
         /// <summary>
         /// 印鑑季度
@@ -30,19 +30,19 @@ namespace SealTypographicWebAPI.Models.Customer
     /// <summary>
     /// 客戶印鑑季度列表
     /// </summary>
-    public class CustomerSealQuarterViews : ResponseViewModel
+    public class CustomerSealQuarterResponse : ResponseViewModel
     {
         /// <summary>
         /// new CustomerSealQuarterView
         /// </summary>
-        public CustomerSealQuarterViews() 
+        public CustomerSealQuarterResponse() 
         {
-            Quarters = new();
+            CustomerSealQuarters = new();
         }
 
         /// <summary>
         /// 客戶季度搜尋表
         /// </summary>
-        public List<CustomerSealViewQuarter> Quarters { get; set; }
+        public List<CustomerSealQuarterViewModel> CustomerSealQuarters { get; set; }
     }
 }

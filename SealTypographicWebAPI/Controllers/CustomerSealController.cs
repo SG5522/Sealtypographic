@@ -9,7 +9,7 @@ namespace SealTypographicWebAPI.Controllers
     /// <summary>
     /// 管理客戶印鑑
     /// </summary>
-    [Route("api/[controller]")]    
+    [Route("api/[controller]")]
     [ApiController]
     public class CustomerSealController : ControllerBase
     {
@@ -33,9 +33,9 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="customerId">客戶ID</param>
         /// <returns></returns>
         [HttpGet("{customerId}")]
-        public CustomerSealQuarterViews Quarter(int customerId)
+        public CustomerSealQuarterResponse Quarter(int customerId)
         {
-            CustomerSealQuarterViews customerSealQuarters = new();
+            CustomerSealQuarterResponse customerSealQuarters = new();
             try
             {
                 Log.Information("CustomerSeal get quarter input {@Input}", customerId);
@@ -53,16 +53,16 @@ namespace SealTypographicWebAPI.Controllers
         /// <summary>
         /// 取得客戶印鑑組
         /// </summary>
-        /// <param name="customerSealQuarterSearch">客戶印鑑搜尋(依客戶ID與季度)</param>        
+        /// <param name="customerSealQuarterId">客戶印鑑季度Id</param>             
         /// <returns></returns>        
-        [HttpGet]
-        public CustomerSealViewModels Seals([FromQuery] CustomerSealSearchQuarter customerSealQuarterSearch)
+        [HttpGet("[Action]")]
+        public CustomerSealViewModels Seals(int customerSealQuarterId)
         {
             CustomerSealViewModels customerSealViewModels = new();
             try
             {
-                Log.Information("CustomerSeal get seals input {@Input}", customerSealQuarterSearch);
-                customerSealViewModels = customerSealService.GetSeals(customerSealQuarterSearch);
+                Log.Information("CustomerSeal get seals input {@Input}", customerSealQuarterId);
+                customerSealViewModels = customerSealService.GetSeals(customerSealQuarterId);
                 Log.Information("CustomerSeal get seals output {@Output}", customerSealViewModels);
             }
             catch (Exception ex)

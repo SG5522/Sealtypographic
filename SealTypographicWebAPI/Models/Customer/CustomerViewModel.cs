@@ -13,7 +13,9 @@ namespace SealTypographicWebAPI.Models.Customer
         /// 顯示最新季度
         /// </summary>
         /// <example>111Q1</example>        
-        public string? Quarter { get; set; }
+        //public string? Quarter { get; set; }
+
+        public int? CustomerSealQuarterId { get; set; }
 
         /// <summary>
         /// 有無草稿狀態

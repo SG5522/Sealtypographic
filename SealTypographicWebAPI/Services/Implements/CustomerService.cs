@@ -77,7 +77,7 @@ namespace SealTypographicWebAPI.Services.Implements
                                           .Skip((customerSearch.PageNumber - 1) * customerSearch.PageSize)
                                           .Take(customerSearch.PageSize)                                   
                                           .ToList();
-                
+                //取得狀態
                 foreach (Customer customer in pageNumberCustomers)
                 {
                     CustomerViewModel customerViewModel = mapper.Map<CustomerViewModel>(customer);
@@ -89,7 +89,7 @@ namespace SealTypographicWebAPI.Services.Implements
 
                     if(customerSealQuarterJournals.Any())
                     {
-                        if (customerSealQuarterJournals.Where(x => x.ReviewStatus != ReviewStatus.Approval).Count() == 0)
+                        if (!customerSealQuarterJournals.Where(x => x.ReviewStatus != ReviewStatus.Approval).Any())
                         {
                             customerViewModel.IsDraff = false;
                             customerViewModel.IsPending = false;
@@ -97,30 +97,22 @@ namespace SealTypographicWebAPI.Services.Implements
                         }
                         else
                         {
-                            if (customerSealQuarterJournals.Where(x => x.ReviewStatus == ReviewStatus.Draft).Count() > 0)
+                            if (customerSealQuarterJournals.Where(x => x.ReviewStatus == ReviewStatus.Draft).Any())
                             {
                                 customerViewModel.IsDraff = true;
                             }
-                            if (customerSealQuarterJournals.Where(x => x.ReviewStatus == ReviewStatus.Pending).Count() > 0)
+                            if (customerSealQuarterJournals.Where(x => x.ReviewStatus == ReviewStatus.Pending).Any())
                             {
                                 customerViewModel.IsPending = true;
                             }
-                            if (customerSealQuarterJournals.Where(x => x.ReviewStatus == ReviewStatus.Reject).Count() > 0)
+                            if (customerSealQuarterJournals.Where(x => x.ReviewStatus == ReviewStatus.Reject).Any())
                             {
                                 customerViewModel.IsReject = true;
                             }
                         }
-                    }                    
-
-                    customerViewModel.Quarter = dbContext.CustomerSealQuarterJournals
-                                                .Where
-                                                (
-                                                    x => x.Customer.Id == customer.Id
-                                                    && x.DeleteStatus == DeleteStatus.No
-                                                )
-
-                                                .Max(x => x.Quarter);
-                    
+                        customerViewModel.CustomerSealQuarterId = customerSealQuarterJournals.OrderByDescending(x => x.Quarter).Select(x => x.Id).FirstOrDefault();                        
+                    }
+                                    
                     customerPaginateViewModel.ViewModels.Add(customerViewModel);                    
                 }                
                 customerPaginateViewModel.PageNumber = customerSearch.PageNumber;

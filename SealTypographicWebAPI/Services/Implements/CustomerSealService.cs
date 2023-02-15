@@ -36,19 +36,19 @@ namespace SealTypographicWebAPI.Services.Implements
         /// </summary>
         /// <param name="customerId">客戶ID</param>        
         /// <returns></returns>
-        public CustomerSealQuarterViews GetQuarter(int customerId)
+        public CustomerSealQuarterResponse GetQuarter(int customerId)
         {
-            CustomerSealQuarterViews customerSealQuarters = new()
+            CustomerSealQuarterResponse customerSealQuarters = new()
             {
-                Quarters = dbContext.CustomerSealQuarterJournals.Where
+                CustomerSealQuarters = dbContext.CustomerSealQuarterJournals.Where
                             (
                                 customerSealQuarterJournal => customerSealQuarterJournal.Customer.Id == customerId
                                 && customerSealQuarterJournal.ReviewStatus <= ReviewStatus.Disabled
                                 && customerSealQuarterJournal.DeleteStatus == DeleteStatus.No
                             )
-                            .Select(customerSealQuarterJournal => new CustomerSealViewQuarter()
+                            .Select(customerSealQuarterJournal => new CustomerSealQuarterViewModel()
                             {
-                                CustomerId = customerId,
+                                Id = customerSealQuarterJournal.Id,
                                 Quarter = customerSealQuarterJournal.Quarter,
                                 ReviewStatus = customerSealQuarterJournal.ReviewStatus
                             })
@@ -56,7 +56,7 @@ namespace SealTypographicWebAPI.Services.Implements
                             .ToList()
             };
 
-            if (customerSealQuarters.Quarters.Any())
+            if (customerSealQuarters.CustomerSealQuarters.Any())
             {                
                 customerSealQuarters.Success();
             }
@@ -70,28 +70,19 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <summary>
         /// 取得客戶印鑑組
         /// </summary>
-        /// <param name="customerSealQuarter">客戶印鑑搜尋(依客戶ID與季度)</param>
+        /// <param name="customerSealQuarterId">客戶印鑑季度Id</param>
         /// <returns></returns>
-        public CustomerSealViewModels GetSeals(CustomerSealSearchQuarter customerSealQuarter)
+        public CustomerSealViewModels GetSeals(int customerSealQuarterId)
         {
-            CustomerSealViewModels customerSealViewModels = new()
-            {                
-                CustomerId = customerSealQuarter.CustomerId,
-                Quarter = customerSealQuarter.Quarter
-            };
+            CustomerSealViewModels customerSealViewModels = new();
+            
             CustomerSealQuarterJournal? customerSealQuarterJournalQuery = dbContext.CustomerSealQuarterJournals
                                                                         .Include(customerSealQuarterJournal => customerSealQuarterJournal.CustomerSealJournals)
                                                                         .FirstOrDefault
                                                                         (
-                                                                            customerSealQuarterJournal =>
-                                                                            customerSealQuarterJournal.Customer.Id == customerSealQuarter.CustomerId
-                                                                            && customerSealQuarterJournal.Quarter == customerSealQuarter.Quarter
-                                                                            //&& customerSealQuarterJournal.Id = customerSealQuarter.Id
-                                                                            && customerSealQuarterJournal.DeleteStatus == DeleteStatus.No
-                                                                            && customerSealQuarterJournal.ReviewStatus <= ReviewStatus.Reject                                                                            
+                                                                            customerSealQuarterJournal => customerSealQuarterJournal.Id == customerSealQuarterId                                                                        
                                                                         );  
                                                                                                                                                                                                         
-
             if (customerSealQuarterJournalQuery != null)
             {
                 List<CustomerSealJournal> customerSeals = customerSealQuarterJournalQuery.CustomerSealJournals
@@ -107,6 +98,7 @@ namespace SealTypographicWebAPI.Services.Implements
                     customerSealViewModel.SealMappingConfigId = customerSealJournal.ConfigType;
                     customerSealViewModels.SealViewModels.Add(customerSealViewModel);
                 }
+                customerSealViewModels.CustomerSealQuarterId = customerSealQuarterId;
                 customerSealViewModels.ReviewStatus = customerSealQuarterJournalQuery.ReviewStatus;
                 customerSealViewModels.Success();
             }

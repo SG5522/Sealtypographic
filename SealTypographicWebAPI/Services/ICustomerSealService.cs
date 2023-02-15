@@ -13,15 +13,15 @@ namespace SealTypographicWebAPI.Services
         /// </summary>
         /// <param name="customerID">客戶ID</param>        
         /// <returns></returns>
-        CustomerSealQuarterViews GetQuarter(int customerID);
+        CustomerSealQuarterResponse GetQuarter(int customerID);
 
 
         /// <summary>
         /// 取得客戶印鑑組
         /// </summary>
-        /// <param name="customerSealQuarter">客戶印鑑搜尋(依客戶ID與季度)</param>
+        /// <param name="customerSealQuarterId">客戶印鑑季度Id</param>
         /// <returns></returns>
-        CustomerSealViewModels GetSeals(CustomerSealSearchQuarter customerSealQuarter);
+        CustomerSealViewModels GetSeals(int customerSealQuarterId);
 
         /// <summary>
         /// 新增客戶印鑑組資料
