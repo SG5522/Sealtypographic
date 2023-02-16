@@ -52,7 +52,7 @@ namespace SealTypographicWebAPI.Services.Implements
         {
             AccountantPaginateViewModel accountantPaginatesViewModels = new();
 
-            IQueryable<Accountant> accountantQuery = dbContext.Accountants.Include(accountant => accountant.AccountantSignCreateDateJournals)
+            IQueryable<Accountant> accountantQuery = dbContext.Accountants
                                                     .Where(accountant => accountant.DeleteStatus == DeleteStatus.No);     
             
             if (!string.IsNullOrWhiteSpace(accountantSearch.KeyWord))
@@ -71,19 +71,28 @@ namespace SealTypographicWebAPI.Services.Implements
             {
                 //取得該頁            
                 List<Accountant> thisPageAccountants = accountantQuery
-                                          .Include(accountantGroup => accountantGroup.AccountantGroup)
+                                          .Include(accountant => accountant.AccountantSignCreateDateJournals)
+                                          .Include(accountant => accountant.AccountantGroup)
                                           .Skip((accountantSearch.PageNumber - 1) * accountantSearch.PageSize)
                                           .Take(accountantSearch.PageSize)
                                           .ToList();
+
                 foreach (Accountant accountant in thisPageAccountants)
                 {
                     AccountantViewModelWithCreateDate accountantPaginatesViewModel = mapper.Map<AccountantViewModelWithCreateDate>(accountant);
 
-                    if(accountant.AccountantSignCreateDateJournals.Count > 0)
+
+                    if(accountant.AccountantSignCreateDateJournals.Any())
                     {
-                        accountantPaginatesViewModel.GroupCreateDate = accountant.AccountantSignCreateDateJournals
-                                                                    .Where(x => x.DeleteStatus == DeleteStatus.No)
-                                                                    .Max(x => x.CreateDate);
+                        accountantPaginatesViewModel.AccountantSignGroupId = accountant.AccountantSignCreateDateJournals
+                                                                             .Where
+                                                                             (
+                                                                                    x => x.DeleteStatus == DeleteStatus.No
+                                                                                    && x.ReviewStatus < ReviewStatus.Disabled
+                                                                             )
+                                                                             .OrderByDescending(x => x.CreateDate)
+                                                                             .Select(x => x.Id)
+                                                                             .FirstOrDefault();
                     }
                    
                     accountantPaginatesViewModels.ViewModels.Add(accountantPaginatesViewModel);                    

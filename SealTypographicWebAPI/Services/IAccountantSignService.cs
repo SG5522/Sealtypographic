@@ -14,7 +14,7 @@ namespace SealTypographicWebAPI.Services
         /// </summary>
         /// <param name="accountantId">會計師ID</param>        
         /// <returns></returns>
-        AccountantSignCreateDateViews GetCreateDates(int accountantId);
+        AccountantSignGroupResponse GetCreateDates(int accountantId);
 
         /// <summary>
         /// 依建立日期取得會計師簽印組

@@ -7,14 +7,14 @@ namespace SealTypographicWebAPI.Models.Accountant
     /// <summary>
     /// 會計師簽印群組創建日期
     /// </summary>
-    public class AccountantSignCreateDateView
+    public class AccountantSignGroupViewModel
     {
         /// <summary>
         /// 會計師Id
         /// </summary>
         /// <example>1</example>
         [Required]
-        public int AccountantId { get; set; }
+        public int Id { get; set; }
 
         /// <summary>
         /// 簽印群組創建日期
@@ -33,19 +33,19 @@ namespace SealTypographicWebAPI.Models.Accountant
     /// <summary>
     /// 會計師簽印群組創建日期列表
     /// </summary>
-    public class AccountantSignCreateDateViews : ResponseViewModel
+    public class AccountantSignGroupResponse : ResponseViewModel
     {
         /// <summary>
         /// new GroupCreateDates 
         /// </summary>
-        public AccountantSignCreateDateViews ()
+        public AccountantSignGroupResponse ()
         {
-            GroupCreateDates = new();
+            AccountantSignGroups = new();
         }
 
         /// <summary>
         /// 客戶季度搜尋表
         /// </summary>
-        public List<AccountantSignCreateDateView> GroupCreateDates { get; set; }
+        public List<AccountantSignGroupViewModel> AccountantSignGroups { get; set; }
     }
 }

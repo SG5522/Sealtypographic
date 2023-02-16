@@ -39,20 +39,20 @@ namespace SealTypographicWebAPI.Services.Implements
         /// </summary>
         /// <param name="accountantId">會計師Id</param>
         /// <returns></returns>
-        public AccountantSignCreateDateViews GetCreateDates(int accountantId)
+        public AccountantSignGroupResponse GetCreateDates(int accountantId)
         {
-            AccountantSignCreateDateViews accountantSignStartDates = new()
+            AccountantSignGroupResponse accountantSignStartDates = new()
             {
-                GroupCreateDates = dbContext.AccountantSignGroupJournals
+                AccountantSignGroups = dbContext.AccountantSignGroupJournals
                                                        .Where
                                                        (
                                                             accountantSignCreateDateJournal => accountantSignCreateDateJournal.Accountant.Id == accountantId
                                                             && accountantSignCreateDateJournal.ReviewStatus <= ReviewStatus.Disabled
                                                             && accountantSignCreateDateJournal.DeleteStatus == DeleteStatus.No
                                                        )
-                                                       .Select(sealReviewJournal => new AccountantSignCreateDateView()
+                                                       .Select(sealReviewJournal => new AccountantSignGroupViewModel()
                                                        {
-                                                           AccountantId = accountantId,
+                                                           Id = accountantId,
                                                            GroupCreateDate = sealReviewJournal.CreateDate,
                                                            ReviewStatus = sealReviewJournal.ReviewStatus
                                                        })                                                       
@@ -60,7 +60,7 @@ namespace SealTypographicWebAPI.Services.Implements
                                                        .ToList()
             };
 
-            if (accountantSignStartDates.GroupCreateDates.Any())
+            if (accountantSignStartDates.AccountantSignGroups.Any())
             {                                                
                 accountantSignStartDates.Success();
             }

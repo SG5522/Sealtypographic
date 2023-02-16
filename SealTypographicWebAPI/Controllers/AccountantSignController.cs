@@ -34,9 +34,9 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="accountantID">會計師ID</param>        
         /// <returns></returns>
         [HttpGet("{accountantID}")]
-        public AccountantSignCreateDateViews CreateDates(int accountantID)
+        public AccountantSignGroupResponse CreateDates(int accountantID)
         {
-            AccountantSignCreateDateViews accountantSignStartDates = new ();
+            AccountantSignGroupResponse accountantSignStartDates = new ();
             try
             {
                 Log.Information("AccountantSign get CreateDates input {@Input}", accountantID);

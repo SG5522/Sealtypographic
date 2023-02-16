@@ -125,16 +125,16 @@ namespace SealTypographicWebAPI.Controllers
         /// <summary>
         /// 此季度印鑑從草稿狀態變更為待審
         /// </summary>        
-        /// <param name="customerSealQuarterSearch">客戶印鑑搜尋(依客戶ID與季度)</param>
+        /// <param name="customerSealQuarterId">客戶印鑑季度Id</param>
         /// <returns></returns>
         [HttpPut("[Action]")]
-        public ResponseViewModel Pending(CustomerSealSearchQuarter customerSealQuarterSearch)
+        public ResponseViewModel Pending(int customerSealQuarterId)
         {
             ResponseViewModel response = new();
             try
             {
-                Log.Information("CustomerSeal pending input {@Input}", customerSealQuarterSearch);
-                response = customerSealService.Pending(customerSealQuarterSearch);
+                Log.Information("CustomerSeal pending input {@Input}", customerSealQuarterId);
+                response = customerSealService.Pending(customerSealQuarterId);
                 Log.Information("CustomerSeal pending output {@Output}", response);                
             }
             catch (Exception ex)
@@ -148,16 +148,16 @@ namespace SealTypographicWebAPI.Controllers
         /// <summary>
         /// 此季度印鑑從草稿狀態變更為作廢
         /// </summary>        
-        /// <param name="customerSealQuarterSearch">客戶印鑑搜尋(依客戶ID與季度)</param>
+        /// <param name="customerSealQuarterId">客戶印鑑季度Id</param>
         /// <returns></returns>
         [HttpPut("[Action]")]
-        public ResponseViewModel Invalid(CustomerSealSearchQuarter customerSealQuarterSearch)
+        public ResponseViewModel Invalid(int customerSealQuarterId)
         {
             ResponseViewModel response = new();
             try
             {
-                Log.Information("CustomerSeal invalid input {@Input}", customerSealQuarterSearch);
-                response = customerSealService.Invalid(customerSealQuarterSearch);
+                Log.Information("CustomerSeal invalid input {@Input}", customerSealQuarterId);
+                response = customerSealService.Invalid(customerSealQuarterId);
                 Log.Information("CustomerSeal invalid output {@Output}", response);
             }
             catch (Exception ex)
@@ -171,16 +171,16 @@ namespace SealTypographicWebAPI.Controllers
         /// <summary>
         /// 此季度印鑑從待審狀態變更為草稿(收回)
         /// </summary>        
-        /// <param name="customerSealQuarterSearch">客戶印鑑搜尋(依客戶ID與季度)</param>
+        /// <param name="customerSealQuarterId">客戶印鑑季度Id</param>
         /// <returns></returns>
         [HttpPut("[Action]")]
-        public ResponseViewModel CancelReview(CustomerSealSearchQuarter customerSealQuarterSearch)
+        public ResponseViewModel CancelReview(int customerSealQuarterId)
         {
             ResponseViewModel response = new();
             try
             {
-                Log.Information("CustomerSeal CancelReview input {@Input}", customerSealQuarterSearch);
-                response = customerSealService.CancelReview(customerSealQuarterSearch);
+                Log.Information("CustomerSeal CancelReview input {@Input}", customerSealQuarterId);
+                response = customerSealService.CancelReview(customerSealQuarterId);
                 Log.Information("CustomerSeal CancelReview output {@Output}", response);
             }
             catch (Exception ex)

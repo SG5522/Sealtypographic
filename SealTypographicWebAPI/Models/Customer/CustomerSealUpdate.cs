@@ -8,18 +8,10 @@ namespace SealTypographicWebAPI.Models.Customer
     public class CustomerSealUpdate
     {
         /// <summary>
-        /// 客戶Id
+        /// 客戶印鑑季度Id
         /// </summary>        
         [Required]
-        public int CustomerId { get; set; }
-
-        /// <summary>
-        /// 印鑑季度
-        /// </summary>
-        /// <example>111Q1</example>
-        [Required]
-        [RegularExpression(@"^[a-zA-Z0-9]*$")]
-        public string Quarter { get; set; }
+        public int CustomerSealQuarterId { get; set; }
 
         /// <summary>
         /// 刪除客戶印鑑列表(ID)
