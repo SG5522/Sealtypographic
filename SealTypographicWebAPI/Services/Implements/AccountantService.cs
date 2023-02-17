@@ -71,7 +71,7 @@ namespace SealTypographicWebAPI.Services.Implements
             {
                 //取得該頁            
                 List<Accountant> thisPageAccountants = accountantQuery
-                                          .Include(accountant => accountant.AccountantSignCreateDateJournals)
+                                          .Include(accountant => accountant.AccountantSignGroupJournals)
                                           .Include(accountant => accountant.AccountantGroup)
                                           .Skip((accountantSearch.PageNumber - 1) * accountantSearch.PageSize)
                                           .Take(accountantSearch.PageSize)
@@ -82,9 +82,9 @@ namespace SealTypographicWebAPI.Services.Implements
                     AccountantViewModelWithCreateDate accountantPaginatesViewModel = mapper.Map<AccountantViewModelWithCreateDate>(accountant);
 
 
-                    if(accountant.AccountantSignCreateDateJournals.Any())
+                    if(accountant.AccountantSignGroupJournals.Any())
                     {
-                        accountantPaginatesViewModel.AccountantSignGroupId = accountant.AccountantSignCreateDateJournals
+                        accountantPaginatesViewModel.AccountantSignGroupId = accountant.AccountantSignGroupJournals
                                                                              .Where
                                                                              (
                                                                                     x => x.DeleteStatus == DeleteStatus.No

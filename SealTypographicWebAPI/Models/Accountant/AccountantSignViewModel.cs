@@ -28,9 +28,9 @@ namespace SealTypographicWebAPI.Models.Accountant
             SignViewModels = new();
         }
         /// <summary>
-        /// 會計師ID
+        /// 會計師簽印群組ID
         /// </summary>
-        public int AccountantId { get; set; }
+        public int AccountantSignGroupId { get; set; }
 
         /// <summary>
         /// 會計簽印群組建立日期

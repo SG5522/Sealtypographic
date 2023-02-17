@@ -99,6 +99,7 @@ namespace SealTypographicWebAPI.Services.Implements
                     customerSealViewModels.SealViewModels.Add(customerSealViewModel);
                 }
                 customerSealViewModels.CustomerSealQuarterId = customerSealQuarterId;
+                customerSealViewModels.Quarter = customerSealQuarterJournalQuery.Quarter;
                 customerSealViewModels.ReviewStatus = customerSealQuarterJournalQuery.ReviewStatus;
                 customerSealViewModels.Success();
             }
@@ -182,8 +183,7 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <returns></returns>
         public List<ResponseViewModel> Update(CustomerSealUpdate customerSealUpdate)
         {            
-            List<ResponseViewModel> responseViewModels = new();
-            
+            List<ResponseViewModel> responseViewModels = new();            
             int userId = 0; //從帳號驗證取得Id          
 
             List<int> updateCustomerSealIds = customerSealUpdate.UpdateCustomerSeals.Select(x => x.Id).ToList();
@@ -207,12 +207,6 @@ namespace SealTypographicWebAPI.Services.Implements
                 //刪除印鑑
                 foreach (int deleteSealId in customerSealUpdate.DeleteCustomerSealIds)
                 {
-                    //CustomerSealJournal? deleteSealQuery = dbContext.CustomerSealJournals.FirstOrDefault
-                    //                                        (
-                    //                                            customerSealJournal => customerSealJournal.Id == deleteSealId
-                    //                                            && customerSealJournal.DeleteStatus == DeleteStatus.No
-                    //                                        );
-
                     CustomerSealJournal? deleteSealQuery = customerSealQuarterQuery.CustomerSealJournals.FirstOrDefault(x => x.Id == deleteSealId);
 
                     if (deleteSealQuery != null)
@@ -233,13 +227,6 @@ namespace SealTypographicWebAPI.Services.Implements
                 //修改印鑑
                 foreach (CustomerSealUpdateForm customerSealFormUpdate in customerSealUpdate.UpdateCustomerSeals)
                 {
-                    //CustomerSealJournal? updateSealQuery = dbContext.CustomerSealJournals                                                
-                    //                            .FirstOrDefault
-                    //                            (
-                    //                                customerSealJournal => customerSealJournal.Id == customerSealFormUpdate.Id
-                    //                                && customerSealJournal.DeleteStatus == DeleteStatus.No
-                    //                            );
-
                     CustomerSealJournal? updateSealQuery = customerSealQuarterQuery.CustomerSealJournals.FirstOrDefault(x => x.Id == customerSealFormUpdate.Id);
 
 

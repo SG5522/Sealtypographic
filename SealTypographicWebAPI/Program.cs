@@ -47,10 +47,21 @@ builder.Host.UseSerilog();// <-SeriLog
 
 #region -- ConectionString --
 builder.Services.AddDbContextPool<SealTypographicDbContext>(optionsBuilder =>
-{    
-    optionsBuilder.UseSqlite(config.GetConnectionString("Sqlite"));    
-    //MySqlServerVersion serverVersion = new(new Version(5, 7, 27));
-    //optionsBuilder.UseMySql(config.GetConnectionString("MySql"), serverVersion);
+{
+    string provider = config.GetSection("Provider").Value;
+    switch(provider)
+    {
+        case "Sqlite":
+            optionsBuilder.UseSqlite(config.GetConnectionString("Sqlite"));
+            break;
+        case "MySql":
+            MySqlServerVersion serverVersion = new(new Version(5, 7, 27));
+            optionsBuilder.UseMySql(config.GetConnectionString("MySql"), serverVersion);
+            break;
+        case "MsSql":
+            optionsBuilder.UseSqlServer(config.GetConnectionString("MsSql"));
+            break;
+    }
 },128);
 #endregion
 

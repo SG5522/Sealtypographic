@@ -17,11 +17,11 @@ namespace SealTypographicWebAPI.Services
         AccountantSignGroupResponse GetCreateDates(int accountantId);
 
         /// <summary>
-        /// 依建立日期取得會計師簽印組
+        /// 取得會計師簽印組
         /// </summary>
-        /// <param name="accountantSignStartDate"></param>
+        /// <param name="accountantSignGroupId">會計師簽印群組Id</param>
         /// <returns></returns>
-        public AccountantSignViewModels GetSignViewModels(AccountantSignCreateDate accountantSignStartDate);
+        public AccountantSignViewModels GetSignViewModels(int accountantSignGroupId);
 
         /// <summary>
         /// 新增會計師簽印組
@@ -40,21 +40,21 @@ namespace SealTypographicWebAPI.Services
         /// <summary>
         /// 將草稿的簽印組狀態變更為待審
         /// </summary>
-        /// <param name="accountantSignCreateDate">會計師簽印搜尋(依會計師ID與創建群組日期)</param>
+        /// <param name="accountantSignGroupId">會計師簽印群組Id</param>
         /// <returns></returns>
-        ResponseViewModel Pending(AccountantSignCreateDate accountantSignCreateDate);
+        ResponseViewModel Pending(int accountantSignGroupId);
 
         /// <summary>
         /// 將草稿的簽印組狀態變更為作廢
         /// </summary>
-        /// <param name="accountantSignCreateDate">會計師簽印搜尋(依會計師ID與創建群組日期)</param>
+        /// <param name="accountantSignGroupId">會計師簽印群組Id</param>
         /// <returns></returns>
-        ResponseViewModel Invalid(AccountantSignCreateDate accountantSignCreateDate);
+        ResponseViewModel Invalid(int accountantSignGroupId);
 
         /// <summary>
         /// 將待審的簽印組狀態變更為草稿
         /// </summary>
-        /// <param name="accountantSignCreateDate">會計師簽印搜尋(依會計師ID與創建群組日期)</param>        
-        ResponseViewModel CancelReview(AccountantSignCreateDate accountantSignCreateDate);
+        /// <param name="accountantSignGroupId">會計師簽印群組Id</param>        
+        ResponseViewModel CancelReview(int accountantSignGroupId);
     }
 }

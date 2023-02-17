@@ -9,14 +9,9 @@ namespace SealTypographicWebAPI.Models.Accountant
     public class AccountantSignUpdate
     {
         /// <summary>
-        /// 會計師Id
+        /// 會計師群組Id
         /// </summary>
-        public int AccountantId { get; set; }
-
-        /// <summary>
-        /// 建立日期
-        /// </summary>
-        public DateTime GroupCreateDate { get; set; }
+        public int AccountantSignGroupId { get; set; }
 
         /// <summary>
         /// 刪除簽印列表(ID)

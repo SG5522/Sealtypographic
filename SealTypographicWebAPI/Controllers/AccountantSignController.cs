@@ -52,18 +52,18 @@ namespace SealTypographicWebAPI.Controllers
         }
 
         /// <summary>
-        /// 依建立日期取得會計師簽印組
+        /// 取得會計師簽印組
         /// </summary>
-        /// <param name="accountantSignCreateDate">會計師簽印搜尋(依會計師ID與創建群組日期)</param>        
+        /// <param name="accountantSignGroupId">會計師簽印群組Id</param>        
         /// <returns></returns>        
         [HttpGet]
-        public AccountantSignViewModels SignViewModels([FromQuery] AccountantSignCreateDate accountantSignCreateDate)
+        public AccountantSignViewModels Signs(int accountantSignGroupId)
         {
             AccountantSignViewModels accountantSignViewModels = new();
             try
             {
-                Log.Information("AccountantSign get signViewModels input {@Input}", accountantSignCreateDate);
-                accountantSignViewModels = accountantSignService.GetSignViewModels(accountantSignCreateDate);
+                Log.Information("AccountantSign get signViewModels input {@Input}", accountantSignGroupId);
+                accountantSignViewModels = accountantSignService.GetSignViewModels(accountantSignGroupId);
                 Log.Information("AccountantSign get signViewModels output {@Output}", accountantSignViewModels);
             }
             catch (Exception ex)
@@ -125,16 +125,16 @@ namespace SealTypographicWebAPI.Controllers
         /// <summary>
         /// 將草稿的簽印組狀態變更為待審
         /// </summary>
-        /// <param name="accountantSignCreateDate">會計師簽印搜尋(依會計師ID與創建群組日期)</param>        
+        /// <param name="accountantSignGroupId">會計師簽印群組Id</param>        
         /// <returns></returns>
         [HttpPut("[Action]")]
-        public ResponseViewModel Pending(AccountantSignCreateDate accountantSignCreateDate)
+        public ResponseViewModel Pending(int accountantSignGroupId)
         {
             ResponseViewModel response = new();
             try
             {
-                Log.Information("AccountantSign pending input {@Input}", accountantSignCreateDate);
-                response = accountantSignService.Pending(accountantSignCreateDate);
+                Log.Information("AccountantSign pending input {@Input}", accountantSignGroupId);
+                response = accountantSignService.Pending(accountantSignGroupId);
                 Log.Information("AccountantSign pending output {@Output}", response);                
             }
             catch (Exception ex)
@@ -148,16 +148,16 @@ namespace SealTypographicWebAPI.Controllers
         /// <summary>
         /// 將草稿的簽印組狀態變更為作廢
         /// </summary>
-        /// <param name="accountantSignCreateDate">會計師簽印搜尋(依會計師ID與創建群組日期)</param>
+        /// <param name="accountantSignGroupId">會計師簽印群組Id</param>
         /// <returns></returns>
         [HttpPut("[Action]")]
-        public ResponseViewModel Invalid(AccountantSignCreateDate accountantSignCreateDate)
+        public ResponseViewModel Invalid(int accountantSignGroupId)
         {
             ResponseViewModel response = new();
             try
             {
-                Log.Information("AccountantSign invalid input {@Input}", accountantSignCreateDate);
-                response = accountantSignService.Invalid(accountantSignCreateDate);
+                Log.Information("AccountantSign invalid input {@Input}", accountantSignGroupId);
+                response = accountantSignService.Invalid(accountantSignGroupId);
                 Log.Information("AccountantSign invalid output {@Ouput}", response);                
             }
             catch (Exception ex)
@@ -171,16 +171,16 @@ namespace SealTypographicWebAPI.Controllers
         /// <summary>
         /// 將待審的簽印組狀態變更為草稿
         /// </summary>
-        /// <param name="accountantSignCreateDate">會計師簽印搜尋(依會計師ID與創建群組日期)</param>
+        /// <param name="accountantSignGroupId">會計師簽印群組Id</param>
         /// <returns></returns>
         [HttpPut("[Action]")]
-        public ResponseViewModel CancelReview(AccountantSignCreateDate accountantSignCreateDate)
+        public ResponseViewModel CancelReview(int accountantSignGroupId)
         {
             ResponseViewModel response = new();
             try
             {
-                Log.Information("AccountantSign cancelReview input {@Input}", accountantSignCreateDate);
-                response = accountantSignService.CancelReview(accountantSignCreateDate);
+                Log.Information("AccountantSign cancelReview input {@Input}", accountantSignGroupId);
+                response = accountantSignService.CancelReview(accountantSignGroupId);
                 Log.Information("AccountantSign cancelReview output {@Ouput}", response);
             }
             catch (Exception ex)
