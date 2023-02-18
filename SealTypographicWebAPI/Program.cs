@@ -55,8 +55,8 @@ builder.Services.AddDbContextPool<SealTypographicDbContext>(optionsBuilder =>
             optionsBuilder.UseSqlite(config.GetConnectionString("Sqlite"));
             break;
         case "MySql":
-            MySqlServerVersion serverVersion = new(new Version(5, 7, 27));
-            optionsBuilder.UseMySql(config.GetConnectionString("MySql"), serverVersion);
+            MySqlServerVersion serverVersion = new(new Version(8, 0, 32));
+            optionsBuilder.UseMySql(config.GetConnectionString("MySql"), serverVersion,x => x.MigrationsAssembly("MySqlMigrations"));
             break;
         case "MsSql":
             optionsBuilder.UseSqlServer(config.GetConnectionString("MsSql"));
