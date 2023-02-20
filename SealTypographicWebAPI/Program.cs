@@ -7,6 +7,8 @@ using Serilog;
 using SealTypographicWebAPI.Services.Implements;
 using SealTypographicWebAPI.Config;
 using Microsoft.AspNetCore.Mvc.Razor;
+using Microsoft.EntityFrameworkCore.Design;
+using System.Runtime.CompilerServices;
 
 string allowSpecificOrigins = "allowSpecificOrigins";
 string allowAllOrigins = "allowAllOrigins";
@@ -48,7 +50,7 @@ builder.Host.UseSerilog();// <-SeriLog
 #region -- ConectionString --
 builder.Services.AddDbContextPool<SealTypographicDbContext>(optionsBuilder =>
 {
-    string provider = config.GetSection("Provider").Value;
+    string provider = config.GetValue<string>("Provider");
     switch(provider)
     {
         case "Sqlite":
@@ -56,11 +58,13 @@ builder.Services.AddDbContextPool<SealTypographicDbContext>(optionsBuilder =>
             break;
         case "MySql":
             MySqlServerVersion serverVersion = new(new Version(8, 0, 32));
-            optionsBuilder.UseMySql(config.GetConnectionString("MySql"), serverVersion,x => x.MigrationsAssembly("MySqlMigrations"));
+            optionsBuilder.UseMySql(config.GetConnectionString("MySql"), serverVersion, x => x.MigrationsAssembly("MySqlMigrations"));            
             break;
         case "MsSql":
             optionsBuilder.UseSqlServer(config.GetConnectionString("MsSql"));
             break;
+        default:
+            throw new Exception($"Unsupported provider: {provider}");            
     }
 },128);
 #endregion
@@ -146,17 +150,27 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
-    app.UseCors(allowAllOrigins);
+    app.UseCors(allowAllOrigins);    
 }
 else
 {
     app.UseCors(allowSpecificOrigins);
 }
 
+
 using (IServiceScope scope = app.Services.CreateScope())
 {
-    SealTypographicDbContext dbContext = scope.ServiceProvider.GetRequiredService<SealTypographicDbContext>();
-    dbContext.Database.Migrate();
+    try
+    {
+        SealTypographicDbContext dbContext = scope.ServiceProvider.GetRequiredService<SealTypographicDbContext>();
+        //dbContext.Database.Migrate();
+        await dbContext.Database.MigrateAsync();
+    }
+    catch(Exception ex)
+    {
+        //從其他Class Library使用Migrate會發生找不到的問題(MigrationsAssembly名稱對不起來)。
+        Console.WriteLine(ex.ToString());
+    }
 }
 
 

@@ -2,8 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
-    <BaseOutputPath>..\SealTypographicWebAPI\bin\</BaseOutputPath>
-    <ImplicitUsings>enable</ImplicitUsings>
+    <BaseOutputPath>..\SealTypographicWebAPI\bin\</BaseOutputPath>    
   </PropertyGroup>
 
   <ItemGroup>

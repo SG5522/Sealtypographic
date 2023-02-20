@@ -11,14 +11,15 @@ using SealTypographicWebAPI.Entities;
 namespace MySqlMigrations.Migrations
 {
     [DbContext(typeof(SealTypographicDbContext))]
-    [Migration("20230218080111_InitialCreate")]
+    [Migration("20230220074224_InitialCreate")]
     partial class InitialCreate
     {
+        /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "6.0.13")
+                .HasAnnotation("ProductVersion", "7.0.3")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             modelBuilder.Entity("SealTypographicWebAPI.Entities.Accountant", b =>
@@ -578,40 +579,6 @@ namespace MySqlMigrations.Migrations
                     b.ToTable("LetterheadImageLocaltions");
                 });
 
-            modelBuilder.Entity("SealTypographicWebAPI.Entities.TypographicPage", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("CreateDate")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<int>("CreateUserId")
-                        .HasColumnType("int");
-
-                    b.Property<byte>("DeleteStatus")
-                        .HasColumnType("tinyint unsigned");
-
-                    b.Property<int>("PageNumber")
-                        .HasColumnType("int");
-
-                    b.Property<int>("TypographicPDFId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("UpdateDate")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<int>("UpdateUserId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("TypographicPDFId");
-
-                    b.ToTable("TypographicPages");
-                });
-
             modelBuilder.Entity("SealTypographicWebAPI.Entities.TypographicPDF", b =>
                 {
                     b.Property<int>("Id")
@@ -657,6 +624,40 @@ namespace MySqlMigrations.Migrations
                     b.HasIndex("CustomerId");
 
                     b.ToTable("TypographicPDFs");
+                });
+
+            modelBuilder.Entity("SealTypographicWebAPI.Entities.TypographicPage", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreateDate")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<int>("CreateUserId")
+                        .HasColumnType("int");
+
+                    b.Property<byte>("DeleteStatus")
+                        .HasColumnType("tinyint unsigned");
+
+                    b.Property<int>("PageNumber")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TypographicPDFId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("UpdateDate")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<int>("UpdateUserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TypographicPDFId");
+
+                    b.ToTable("TypographicPages");
                 });
 
             modelBuilder.Entity("SealTypographicWebAPI.Entities.UploadFile", b =>
@@ -841,17 +842,6 @@ namespace MySqlMigrations.Migrations
                     b.Navigation("TypographicPage");
                 });
 
-            modelBuilder.Entity("SealTypographicWebAPI.Entities.TypographicPage", b =>
-                {
-                    b.HasOne("SealTypographicWebAPI.Entities.TypographicPDF", "TypographicPDF")
-                        .WithMany("TypographicPages")
-                        .HasForeignKey("TypographicPDFId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("TypographicPDF");
-                });
-
             modelBuilder.Entity("SealTypographicWebAPI.Entities.TypographicPDF", b =>
                 {
                     b.HasOne("SealTypographicWebAPI.Entities.Customer", "Customer")
@@ -861,6 +851,17 @@ namespace MySqlMigrations.Migrations
                         .IsRequired();
 
                     b.Navigation("Customer");
+                });
+
+            modelBuilder.Entity("SealTypographicWebAPI.Entities.TypographicPage", b =>
+                {
+                    b.HasOne("SealTypographicWebAPI.Entities.TypographicPDF", "TypographicPDF")
+                        .WithMany("TypographicPages")
+                        .HasForeignKey("TypographicPDFId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("TypographicPDF");
                 });
 
             modelBuilder.Entity("SealTypographicWebAPI.Entities.Accountant", b =>
@@ -893,6 +894,11 @@ namespace MySqlMigrations.Migrations
                     b.Navigation("LetterheadImageJournals");
                 });
 
+            modelBuilder.Entity("SealTypographicWebAPI.Entities.TypographicPDF", b =>
+                {
+                    b.Navigation("TypographicPages");
+                });
+
             modelBuilder.Entity("SealTypographicWebAPI.Entities.TypographicPage", b =>
                 {
                     b.Navigation("AccountantSignLocaltions");
@@ -900,11 +906,6 @@ namespace MySqlMigrations.Migrations
                     b.Navigation("CustomerSealLocaltions");
 
                     b.Navigation("LetterheadImageLocaltions");
-                });
-
-            modelBuilder.Entity("SealTypographicWebAPI.Entities.TypographicPDF", b =>
-                {
-                    b.Navigation("TypographicPages");
                 });
 #pragma warning restore 612, 618
         }
