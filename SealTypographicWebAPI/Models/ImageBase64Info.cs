@@ -1,6 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using SealTypographicWebAPI.Consts;
-using SealTypographicWebAPI.Entities;
+﻿using SealTypographicWebAPI.Consts;
 
 namespace SealTypographicWebAPI.Models
 {
@@ -9,6 +7,13 @@ namespace SealTypographicWebAPI.Models
     /// </summary>
     public class ImageBase64Info
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        public ImageBase64Info ()
+        {
+            CreateTime = DateTime.Now;
+        }
 
         /// <summary>
         /// 印鑑類型
@@ -18,21 +23,16 @@ namespace SealTypographicWebAPI.Models
         /// <summary>
         /// 客戶、會計、信頭 編號
         /// </summary>
-        public string? Code { get; set; }
+        public string Code { get; set; } = string.Empty;
 
         /// <summary>
         /// Base64圖片字串
         /// </summary>
-        public string? ImageBase64 { get; set; }
+        public string ImageBase64 { get; set; } = string.Empty;
 
         /// <summary>
         /// 建檔時間
         /// </summary>
-        public DateTime CreateTime {
-            get
-            {
-                return DateTime.Now;
-            }           
-        }        
+        public DateTime CreateTime { get; set; }      
     }
 }

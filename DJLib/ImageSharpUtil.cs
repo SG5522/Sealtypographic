@@ -99,8 +99,8 @@ namespace DJLib
                 case "PNG":
                     saveImageInfo.FileName += ".png";                    
                     break;
-            }
-            image.Save($"{saveImageInfo.Folder}{saveImageInfo.FileName}");
+            }            
+            image.Save(Path.Combine(saveImageInfo.Folder, saveImageInfo.FileName));
         }
 
     }

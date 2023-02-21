@@ -13,17 +13,35 @@
         /// <summary>
         /// 客戶印鑑放置路徑
         /// </summary>
-        public string Customer { get; set; } = string.Empty;
+        public string Customer
+        {
+            get
+            {
+                return Path.Combine(SealRootPath, "Customer");
+            }
+        }
+            
 
         /// <summary>
         /// 會計師簽印放置路徑
         /// </summary>
-        public string Accountant { get; set; } = string.Empty;
+        public string Accountant
+        {
+            get
+            {
+                return Path.Combine(SealRootPath, "Accountant");
+            }
+        }
 
         /// <summary>
         /// 信頭放置路徑
         /// </summary>
-        public string Letterhead { get; set; } = string.Empty;
+        public string Letterhead {
+            get
+            {
+                return Path.Combine(SealRootPath, "Letterhead");
+            }
+        }
 
         /// <summary>
         /// 縮圖比例

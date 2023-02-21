@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using EFCore.BulkExtensions;
 using Microsoft.EntityFrameworkCore;
 using SealTypographicWebAPI.Consts;
 using SealTypographicWebAPI.Entities;
@@ -121,7 +120,6 @@ namespace SealTypographicWebAPI.Services.Implements
             List<CustomerSealJournal> customerSealJournals = new();
             int userId = 0; //以後從帳號驗證取得Id
 
-
             Customer? customerQuery = dbContext.Customers.Include(customer => customer.CustomerSealQuarterJournals)
                                        .FirstOrDefault(x => x.Id == customerSealForms.CustomerId);            
 
@@ -186,8 +184,6 @@ namespace SealTypographicWebAPI.Services.Implements
             List<ResponseViewModel> responseViewModels = new();            
             int userId = 0; //從帳號驗證取得Id          
 
-            List<int> updateCustomerSealIds = customerSealUpdate.UpdateCustomerSeals.Select(x => x.Id).ToList();
-
             CustomerSealQuarterJournal? customerSealQuarterQuery = dbContext.CustomerSealQuarterJournals
                                                                     .Include(customerSealQuarterJournal => customerSealQuarterJournal.Customer)
                                                                     .Include(customerSealQuarterJournal => customerSealQuarterJournal.CustomerSealJournals)
@@ -204,53 +200,24 @@ namespace SealTypographicWebAPI.Services.Implements
                     SealType = SealType.Customer
                 };
 
-                //刪除印鑑
-                foreach (int deleteSealId in customerSealUpdate.DeleteCustomerSealIds)
-                {
-                    CustomerSealJournal? deleteSealQuery = customerSealQuarterQuery.CustomerSealJournals.FirstOrDefault(x => x.Id == deleteSealId);
-
-                    if (deleteSealQuery != null)
-                    {
-                        //原印鑑刪除(Hide)
-                        deleteSealQuery.DeleteStatus = DeleteStatus.Yes;
-                        BaseInputCustomerSealJournal(deleteSealQuery, false, userId);
-                    }
-                    else
-                    {
-                        ResponseViewModel response = new();
-                        response.DeleteCustomerNoData();
-                        response.ErrorItem = $"Delete CustomerSealId:{deleteSealId}";
-                        responseViewModels.Add(response);
-                    }
-                }
-
-                //修改印鑑
+                //修改印鑑(更新ID移入DeleteCustomerSealIds，更新的資料移入CreateCustomerSeals，之後下一階段調整輸入時要拔掉此項)
                 foreach (CustomerSealUpdateForm customerSealFormUpdate in customerSealUpdate.UpdateCustomerSeals)
                 {
-                    CustomerSealJournal? updateSealQuery = customerSealQuarterQuery.CustomerSealJournals.FirstOrDefault(x => x.Id == customerSealFormUpdate.Id);
-
-
+                    
+                    CustomerSealJournal? updateSealQuery = customerSealQuarterQuery.CustomerSealJournals.FirstOrDefault(x => x.Id == customerSealFormUpdate.Id);                    
                     if (updateSealQuery != null)
                     {
-                        //新增印鑑
-                        CustomerSealJournal customerSealJournal = new()
+                        CustomerSeal customerSeal = new()
                         {
                             Sequence = updateSealQuery.Sequence,
-                            ConfigType = updateSealQuery.ConfigType
-                        };                        
-                        //customerSealJournal.CustomerSealQuarterJournal.Id = customerSealQuarterQuery.Id;
+                            SealMappingConfigId = updateSealQuery.ConfigType,
+                            ImageBase64 = customerSealFormUpdate.ImageBase64
+                        };
 
-                        //ImageBase64轉圖檔並存到指定資料夾                    
-                        imageBase64Info.ImageBase64 = customerSealFormUpdate.ImageBase64;
-                        customerSealJournal.ImageFullPath = imageSharpService.GetImageBase64FullPath(imageBase64Info, false);
-                        customerSealJournal.ThumbnailFullPath = imageSharpService.GetImageBase64FullPath(imageBase64Info, true);
-                        BaseInputCustomerSealJournal(customerSealJournal, true, userId);
-
-                        customerSealQuarterQuery.CustomerSealJournals.Add(customerSealJournal);                        
-
-                        //原印鑑刪除(Hide)
-                        updateSealQuery.DeleteStatus = DeleteStatus.Yes;
-                        BaseInputCustomerSealJournal(updateSealQuery, false, userId);                        
+                        //更新ID丟入DeleteCustomerSealIds
+                        customerSealUpdate.DeleteCustomerSealIds.Add(customerSealFormUpdate.Id);
+                        //更新的印鑑移入新增
+                        customerSealUpdate.CreateCustomerSeals.Add(customerSeal);                     
                     }
                     else
                     {
@@ -261,41 +228,36 @@ namespace SealTypographicWebAPI.Services.Implements
                     }
                 }
 
+                //刪除印鑑
+                IQueryable<CustomerSealJournal>? deleteSealQuery = customerSealQuarterQuery.CustomerSealJournals
+                                                                   .Where(x => customerSealUpdate.DeleteCustomerSealIds.Contains(x.Id)).AsQueryable();
+                if (deleteSealQuery.Any())
+                {
+                    foreach (CustomerSealJournal deleteSeal in deleteSealQuery)
+                    {
+                        //原印鑑刪除(Hide)
+                        deleteSeal.DeleteStatus = DeleteStatus.Yes;
+                        BaseInputCustomerSealJournal(deleteSeal, false, userId);
+                    }
+                }
+                
                 //新增印鑑                
                 foreach (CustomerSeal createCustomerSeal in customerSealUpdate.CreateCustomerSeals)
                 {
-                    CustomerSealSequenceCheck customerSealSequenceCheck = new()
-                    {                        
-                        CustomerSealQuarterJournalId = customerSealQuarterQuery.Id,
-                        SealMappingConfigId = createCustomerSeal.SealMappingConfigId,
+                    CustomerSealJournal customerSealJournal = new()
+                    {
                         Sequence = createCustomerSeal.Sequence,
+                        ConfigType = createCustomerSeal.SealMappingConfigId
                     };
-                    
 
-                    if (!CheckRepeatSequence(customerSealSequenceCheck, customerSealUpdate.DeleteCustomerSealIds, updateCustomerSealIds)) //確認印鑑序號是否重複
-                    {
-                        CustomerSealJournal customerSealJournal = new()
-                        {
-                            Sequence = createCustomerSeal.Sequence,
-                            ConfigType = createCustomerSeal.SealMappingConfigId
-                        };
-
-                        //ImageBase64轉圖檔並存到指定資料夾
-                        imageBase64Info.ImageBase64 = createCustomerSeal.ImageBase64;
-                        customerSealJournal.ImageFullPath = imageSharpService.GetImageBase64FullPath(imageBase64Info, false);
-                        customerSealJournal.ThumbnailFullPath = imageSharpService.GetImageBase64FullPath(imageBase64Info, true);
-                        BaseInputCustomerSealJournal(customerSealJournal, true, userId);
-                        customerSealQuarterQuery.CustomerSealJournals.Add(customerSealJournal);                                                
-                    }
-                    else
-                    {
-                        ResponseViewModel response = new();
-                        response.CreateCustomerSealSequenceRepeat();
-                        response.ErrorItem = $"New SealMappingConfigId:{createCustomerSeal.SealMappingConfigId}" +
-                                             $"Sequence:{ createCustomerSeal.Sequence}";
-                        responseViewModels.Add(response);
-                    }
+                    //ImageBase64轉圖檔並存到指定資料夾
+                    imageBase64Info.ImageBase64 = createCustomerSeal.ImageBase64;
+                    customerSealJournal.ImageFullPath = imageSharpService.GetImageBase64FullPath(imageBase64Info, false);
+                    customerSealJournal.ThumbnailFullPath = imageSharpService.GetImageBase64FullPath(imageBase64Info, true);
+                    BaseInputCustomerSealJournal(customerSealJournal, true, userId);
+                    customerSealQuarterQuery.CustomerSealJournals.Add(customerSealJournal);
                 }
+
                 //無任何回傳訊息(錯誤訊息)就更新資料庫
                 if (!responseViewModels.Any())
                 {
@@ -375,28 +337,6 @@ namespace SealTypographicWebAPI.Services.Implements
                 customerSealJournal.UpdateUserId = userId;
                 customerSealJournal.UpdateDate = DateTime.Now;
             }
-        }
-
-        /// <summary>
-        /// 確認印鑑序號是否重複 true 重複 false 不重複
-        /// </summary>
-        /// <param name="customerSealSequenceCheck">查詢參數</param>
-        /// <param name="deleteCustomerSealIds">異動中刪除的印鑑Id</param>
-        /// <param name="updateCustomerSealIds">異動中更新的印鑑Id</param>
-        /// <returns></returns>
-        private bool CheckRepeatSequence(CustomerSealSequenceCheck customerSealSequenceCheck, List<int> deleteCustomerSealIds, List<int> updateCustomerSealIds)
-        {
-            CustomerSealJournal? sealQuery = dbContext.CustomerSealJournals.FirstOrDefault
-                                                    (
-                                                        customerSealJournal => customerSealJournal.CustomerSealQuarterJournal.Id == customerSealSequenceCheck.CustomerSealQuarterJournalId                                                                                                  
-                                                        && customerSealJournal.ConfigType == customerSealSequenceCheck.SealMappingConfigId
-                                                        && customerSealJournal.Sequence == customerSealSequenceCheck.Sequence
-                                                        && customerSealJournal.DeleteStatus == DeleteStatus.No
-                                                        && !deleteCustomerSealIds.Contains(customerSealJournal.Id)
-                                                        && !updateCustomerSealIds.Contains(customerSealJournal.Id)                                            
-                                                    );
-
-            return sealQuery != null;
         }
 
         /// <summary>

@@ -33,7 +33,7 @@ namespace SealTypographicWebAPI.Services
         /// <returns></returns>
         public string GetPathToBase64(string fullpath)
         {            
-            return ImageSharpUtil.PathImageFileToBase64($"{fullpath}");            
+            return ImageSharpUtil.PathImageFileToBase64(fullpath);            
         }
 
         /// <summary>
@@ -44,25 +44,30 @@ namespace SealTypographicWebAPI.Services
         public string GetImageBase64FullPath(ImageBase64Info imageBase64Info, bool IsResize)
         {
             string folderPath = GetImageFolder(imageBase64Info.SealType);            
-            string dateFolder = $"{imageBase64Info.CreateTime.Year}/{imageBase64Info.CreateTime.Month}/{imageBase64Info.CreateTime.Day}/" ;
+            string dateFolder = Path.Combine
+                                (
+                                    imageBase64Info.CreateTime.Year.ToString(),
+                                    imageBase64Info.CreateTime.Month.ToString(), 
+                                    imageBase64Info.CreateTime.Day.ToString()
+                                );
             SaveFullPath saveImageInfo = new()
-            {
-                Folder = $"{folderPath}{dateFolder}"
+            {                
+                Folder = Path.Combine(folderPath,dateFolder)
             };
 
             ImageInfo imageInfo = ImageSharpUtil.Base64ToImageInfo(imageBase64Info.ImageBase64);
             if (!IsResize)
             {
-                saveImageInfo.FileName = $"{imageBase64Info.Code}{imageBase64Info.CreateTime:yyyyMMHHmmssffff}";                                                
+                saveImageInfo.FileName = $"{imageBase64Info.Code}{imageBase64Info.CreateTime:yyyyMMHHmmssffff}";                
             }
             else
             {
-                saveImageInfo.FileName = $"{imageBase64Info.Code}{"Thumbnail"}{imageBase64Info.CreateTime:yyyyMMHHmmssffff}";
+                saveImageInfo.FileName = $"{imageBase64Info.Code}{"Thumbnail"}{imageBase64Info.CreateTime:yyyyMMHHmmssffff}";                
                 ImageSharpUtil.ReSize(imageInfo.Image, sealConfig.ResizeScale);
             }
             ImageSharpUtil.SaveFile(imageInfo.Image, imageInfo.ImageFormat, saveImageInfo);            
 
-            return $"{saveImageInfo.Folder}{saveImageInfo.FileName}";                        
+            return Path.Combine(saveImageInfo.Folder, saveImageInfo.FileName);                        
         }
 
         /// <summary>
@@ -76,13 +81,13 @@ namespace SealTypographicWebAPI.Services
             switch (sealType)
             {
                 case SealType.Customer:
-                    folderPath = $"{sealConfig.SealRootPath}{sealConfig.Customer}";
+                    folderPath = sealConfig.Customer;
                     break;
                 case SealType.Accountant:
-                    folderPath = $"{sealConfig.SealRootPath}{sealConfig.Accountant}";
+                    folderPath = sealConfig.Accountant;
                     break;
                 case SealType.Letterhead:
-                    folderPath = $"{sealConfig.SealRootPath}{sealConfig.Letterhead}";
+                    folderPath = sealConfig.Letterhead;
                     break;
                 default :
                     folderPath = string.Empty;

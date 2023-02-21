@@ -66,6 +66,7 @@ namespace SealTypographicWebAPI.Config
             //會計師基本資料
             CreateMap<Accountant, AccountantViewModel>()                    
                     .ForMember(x => x.AccountantGroupName, y => y.MapFrom(o => o.AccountantGroup.Name))
+                    .ForMember(x => x.AccountantNumber, y => y.MapFrom(o => o.Code))
                     .ReverseMap();
 
             CreateMap<Accountant, AccountantViewModelWithCreateDate>()

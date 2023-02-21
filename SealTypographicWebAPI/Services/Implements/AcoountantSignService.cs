@@ -177,8 +177,6 @@ namespace SealTypographicWebAPI.Services.Implements
             List<ResponseViewModel> responseViewModels = new();            
             int userId = 0;//之後會從帳號驗證中取得userid            
 
-            List<int> updateAccountantSignIds = accountantSignUpdate.UpdateAccountantSigns.Select(x => x.Id).ToList();
-
             AccountantSignGroupJournal? accountantSignGroupJournalQuery = dbContext.AccountantSignGroupJournals
                                                                                     .Include(accountantSignGroupJournal => accountantSignGroupJournal.Accountant)
                                                                                     .Include(accountantSignGroupJournal => accountantSignGroupJournal.AccountantSignJournals)
@@ -194,48 +192,23 @@ namespace SealTypographicWebAPI.Services.Implements
                     SealType = SealType.Accountant,
                 };
 
-                //刪除印鑑
-                foreach (int deleteSignId in accountantSignUpdate.DeleteAccountantSignIds)
-                {
-                    AccountantSignJournal? deleteSignQuery = accountantSignGroupJournalQuery.AccountantSignJournals.FirstOrDefault(x => x.Id == deleteSignId);
-
-                    if (deleteSignQuery != null)
-                    {
-                        deleteSignQuery.DeleteStatus = DeleteStatus.Yes;
-                        BaseInputAccountantSignJournal(deleteSignQuery, false, userId);
-                    }
-                    else
-                    {
-                        ResponseViewModel response = new();
-                        response.DeleteAccountantSignNoData();
-                        response.ErrorItem = $"Delete AccountantSignid:{deleteSignId}";
-                        responseViewModels.Add(response);
-                    }
-                }
-
-                //修改印鑑
+                //修改(更新ID移入DeleteAccountantSignIds，更新的簽印移入新增CreateAccountantSigns，之後下一階段調整輸入時要拔掉此項)
                 foreach (AccountantSignUpdateForm accountantSignFormUpdate in accountantSignUpdate.UpdateAccountantSigns)
-                {
+                {                    
                     AccountantSignJournal? updateSignQuery = accountantSignGroupJournalQuery.AccountantSignJournals.FirstOrDefault(x => x.Id == accountantSignFormUpdate.Id);
 
                     if (updateSignQuery != null)
                     {
-                        AccountantSignJournal accountantSignJournal = new()
+                        AccountantSign accountantSign = new()
                         {
-                            ConfigType = updateSignQuery.ConfigType,
+                            ImageBase64 = accountantSignFormUpdate.ImageBase64,
+                            SealMappingConfigId = updateSignQuery.ConfigType                            
                         };
 
-                        //ImageBase64轉圖檔並存到指定資料夾                    
-                        imageBase64Info.ImageBase64 = accountantSignFormUpdate.ImageBase64;
-                        accountantSignJournal.ImageFullPath = imageService.GetImageBase64FullPath(imageBase64Info, false);
-                        accountantSignJournal.ThumbnailFullPath = imageService.GetImageBase64FullPath(imageBase64Info, true);
-                        BaseInputAccountantSignJournal(accountantSignJournal, true, userId);
-
-                        accountantSignGroupJournalQuery.AccountantSignJournals.Add(accountantSignJournal);
-
-                        //原印鑑刪除(Hide)
-                        updateSignQuery.DeleteStatus = DeleteStatus.Yes;
-                        BaseInputAccountantSignJournal(updateSignQuery, false, userId);                        
+                        //更新ID丟入DeleteAccountantSignIds
+                        accountantSignUpdate.DeleteAccountantSignIds.Add(accountantSignFormUpdate.Id);
+                        //更新的簽印移入新增
+                        accountantSignUpdate.CreateAccountantSigns.Add(accountantSign);
                     }
                     else
                     {
@@ -246,7 +219,20 @@ namespace SealTypographicWebAPI.Services.Implements
                     }
                 }
 
-                //新增印鑑
+                //刪除
+                IQueryable<AccountantSignJournal>? deleteSignQuery = accountantSignGroupJournalQuery.AccountantSignJournals
+                                                                   .Where(x => accountantSignUpdate.DeleteAccountantSignIds.Contains(x.Id)).AsQueryable();
+                if (deleteSignQuery.Any())
+                {
+                    foreach (AccountantSignJournal deleteSign in deleteSignQuery)
+                    {
+                        //原印鑑刪除(Hide)
+                        deleteSign.DeleteStatus = DeleteStatus.Yes;
+                        BaseInputAccountantSignJournal(deleteSign, false, userId);
+                    }
+                }            
+
+                //新增
                 foreach (AccountantSign createAccountantSign in accountantSignUpdate.CreateAccountantSigns)
                 {
                     AccountantSignCheck accountantSignCheck = new()
@@ -255,7 +241,7 @@ namespace SealTypographicWebAPI.Services.Implements
                         SealMappingConfigId = createAccountantSign.SealMappingConfigId,                        
                     };
                     
-                    if (!CheckAccountSignRepeat(accountantSignCheck, accountantSignUpdate.DeleteAccountantSignIds, updateAccountantSignIds))
+                    if (!CheckAccountSignRepeat(accountantSignCheck, accountantSignUpdate.DeleteAccountantSignIds))
                     {
                         AccountantSignJournal accountantSignJournal = new()
                         {                            
@@ -372,7 +358,7 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <param name="DeleteAccountantSignIds">異動中刪除的簽印Id</param>
         /// <param name="updateAccountantSignIds">異動中更新的簽印Id(也會標上刪除)</param>
         /// <returns></returns>
-        private bool CheckAccountSignRepeat(AccountantSignCheck accountantSignCheck, List<int> DeleteAccountantSignIds, List<int> updateAccountantSignIds)
+        private bool CheckAccountSignRepeat(AccountantSignCheck accountantSignCheck, List<int> DeleteAccountantSignIds)
         {
             AccountantSignJournal? signQuery = dbContext.AccountantSignJournals
                                             .FirstOrDefault
@@ -381,7 +367,7 @@ namespace SealTypographicWebAPI.Services.Implements
                                                 && accountantSignJournal.ConfigType == accountantSignCheck.SealMappingConfigId
                                                 && accountantSignJournal.DeleteStatus == DeleteStatus.No
                                                 && !DeleteAccountantSignIds.Contains(accountantSignJournal.Id)
-                                                && !updateAccountantSignIds.Contains(accountantSignJournal.Id)
+                                                //&& !updateAccountantSignIds.Contains(accountantSignJournal.Id)
                                             );
             return signQuery != null;
         }
