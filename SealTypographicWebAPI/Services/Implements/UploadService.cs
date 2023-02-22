@@ -234,6 +234,7 @@ namespace SealTypographicWebAPI.Services.Implements
             {
                 uploadFile.FileWorkStatus = FileWorkStatus.Done;
                 BaseInput(uploadFile, false, userid);
+                dbContext.SaveChanges();
                 response.Success();
             }
             else

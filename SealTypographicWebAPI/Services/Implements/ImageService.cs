@@ -55,15 +55,17 @@ namespace SealTypographicWebAPI.Services
                 Folder = Path.Combine(folderPath,dateFolder)
             };
 
-            ImageInfo imageInfo = ImageSharpUtil.Base64ToImageInfo(imageBase64Info.ImageBase64);
+            //ImageInfo imageInfo = ImageSharpUtil.Base64ToImageInfo(imageBase64Info.ImageBase64);            
+            ImageInfo imageInfo = ImageInfo.FromImageBase64(imageBase64Info.ImageBase64);
             if (!IsResize)
             {
                 saveImageInfo.FileName = $"{imageBase64Info.Code}{imageBase64Info.CreateTime:yyyyMMHHmmssffff}";                
             }
             else
             {
-                saveImageInfo.FileName = $"{imageBase64Info.Code}{"Thumbnail"}{imageBase64Info.CreateTime:yyyyMMHHmmssffff}";                
-                ImageSharpUtil.ReSize(imageInfo.Image, sealConfig.ResizeScale);
+                saveImageInfo.FileName = $"{"Thumbnail"}{imageBase64Info.Code}{imageBase64Info.CreateTime:yyyyMMHHmmssffff}";
+                ImageInfo.ReSize(imageInfo, sealConfig.ResizeScale);
+                //ImageSharpUtil.ReSize(imageInfo.Image, sealConfig.ResizeScale);
             }
             ImageSharpUtil.SaveFile(imageInfo.Image, imageInfo.ImageFormat, saveImageInfo);            
 

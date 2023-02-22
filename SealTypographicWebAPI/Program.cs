@@ -7,8 +7,6 @@ using Serilog;
 using SealTypographicWebAPI.Services.Implements;
 using SealTypographicWebAPI.Config;
 using Microsoft.AspNetCore.Mvc.Razor;
-using Microsoft.EntityFrameworkCore.Design;
-using System.Runtime.CompilerServices;
 
 string allowSpecificOrigins = "allowSpecificOrigins";
 string allowAllOrigins = "allowAllOrigins";
@@ -108,17 +106,16 @@ builder.Services.AddMvc()
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-//builder.Services.AddSwaggerGen();
 
 builder.Services.AddSwaggerGen(c =>
 {
     //Set the comments path for the Swagger JSON and UI.
     string xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-    string xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+    string xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);    
 
     c.SwaggerDoc("v1", new OpenApiInfo
-    {
-        Version = "v1",
+    {        
+        Version = Assembly.GetExecutingAssembly().GetName().Version?.ToString(),
         Title = "SealTypographicWebAPI",
         Description = "取章排版ServerAPI",
         //TermsOfService = new Uri("https://example.com/terms"),
@@ -148,8 +145,10 @@ var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
 {
+    //app.UseStaticFiles();
     app.UseSwagger();
     app.UseSwaggerUI();
+
     app.UseCors(allowAllOrigins);    
 }
 else

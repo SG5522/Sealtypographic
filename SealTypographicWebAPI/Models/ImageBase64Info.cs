@@ -8,14 +8,6 @@ namespace SealTypographicWebAPI.Models
     public class ImageBase64Info
     {
         /// <summary>
-        /// 
-        /// </summary>
-        public ImageBase64Info ()
-        {
-            CreateTime = DateTime.Now;
-        }
-
-        /// <summary>
         /// 印鑑類型
         /// </summary>
         public SealType SealType { get; set; }
@@ -33,6 +25,12 @@ namespace SealTypographicWebAPI.Models
         /// <summary>
         /// 建檔時間
         /// </summary>
-        public DateTime CreateTime { get; set; }      
+        public DateTime CreateTime
+        {
+            get
+            {
+                return DateTime.Now;
+            }
+        }
     }
 }

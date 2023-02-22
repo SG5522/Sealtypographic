@@ -34,74 +34,28 @@ namespace DJLib
             Image image = Image.Load(fullPath, out IImageFormat format);
             return ImageToBase64(image, format);
         }
-
-
+        
         /// <summary>
-        /// Base64轉成Image
-        /// </summary>
-        /// <param name="ImageBase64">BASE64圖檔字串</param>         
-        /// <returns></returns>
-        public static ImageInfo Base64ToImageInfo(string ImageBase64)
-        {
-            ImageInfo imageInfo = new ImageInfo();
-            string base64string = ImageBase64.Substring(ImageBase64.IndexOf("base64,") + 7);
-            byte[] bytes = Convert.FromBase64String(base64string);
-
-            imageInfo.Image = Image.Load(bytes, out IImageFormat format);
-            imageInfo.ImageFormat = format;
-
-            return imageInfo;
-        }
-
-        /// <summary>
-        /// 調整圖片大小(Image)
-        /// </summary>
-        /// <param name="image">圖片</param>
-        /// <param name="scale">縮放比例 1.00 = 100%  0.01 = 1%</param>        
-        public static void ReSize(Image image, double scale)
-        {
-            int width = (int)(image.Width * scale);
-            int height = (int)(image.Height * scale);
-            image.Mutate(x => x.Resize(width, height));
-        }
-
-        /// <summary>
-        /// 調整圖片大小(ImageBase64)
-        /// </summary>
-        /// <param name="ImageBase64"></param>
-        /// <param name="scale">縮放比例 1.00 = 100%  0.01 = 1%</param>        
-        public static void ReSize(string ImageBase64, double scale)
-        {
-            ImageInfo imageInfo = Base64ToImageInfo(ImageBase64);            
-            ReSize(imageInfo.Image, scale);
-        }
-
-        /// <summary>
-        /// 存檔
+        /// 存檔 支援格式(jpeg, bmp, gif, pbm, png, tga, tiff, Tga,WebP)
         /// </summary>
         /// <param name="image">影像</param>
         /// <param name="format">格式</param>
-        /// <param name="saveImageInfo">存檔資訊</param>
-        public static void SaveFile(Image image, IImageFormat format, SaveFullPath saveImageInfo)
+        /// <param name="saveFullPath">存檔資訊</param>
+        public static void SaveFile(Image image, IImageFormat format, SaveFullPath saveFullPath)
         {            
-            if (!Directory.Exists(saveImageInfo.Folder))
+            try
             {
-                Directory.CreateDirectory(saveImageInfo.Folder);
-            }            
-            switch (format.Name)
+                if (!Directory.Exists(saveFullPath.Folder))
+                {
+                    Directory.CreateDirectory(saveFullPath.Folder);
+                }
+                saveFullPath.FileName += $".{format.Name.ToLower()}";
+                image.Save(Path.Combine(saveFullPath.Folder, saveFullPath.FileName));
+            }
+            catch(Exception ex)
             {
-                case "BMP":
-                    saveImageInfo.FileName += ".bmp";                                        
-                    break;
-                case "JPEG":
-                    saveImageInfo.FileName += ".jpg";                    
-                    break;
-                case "PNG":
-                    saveImageInfo.FileName += ".png";                    
-                    break;
+                throw new Exception(ex.Message);
             }            
-            image.Save(Path.Combine(saveImageInfo.Folder, saveImageInfo.FileName));
         }
-
     }
 }
