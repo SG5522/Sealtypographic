@@ -187,12 +187,13 @@ namespace SealTypographicWebAPI.Services.Implements
                 {
                     accountantSignGroupJournal.ReviewUserId = userId;
                     accountantSignGroupJournal.ReviewStatus = reviewStatus;
+                    accountantSignGroupJournal.ReviewDate = DateTime.Now;
                     switch (reviewStatus)
                     {
                         case ReviewStatus.Approval:
                             //找出審核通過的簽印組
-                            AccountantSignGroupJournal? accountantSignGroups = dbContext.AccountantSignGroupJournals
-                                                                               .FirstOrDefault
+                            IQueryable<AccountantSignGroupJournal>? accountantSignGroups = dbContext.AccountantSignGroupJournals
+                                                                               .Where
                                                                                (
                                                                                    x => x.Accountant.Id == accountantSignGroupJournal.Accountant.Id
                                                                                    && x.Id != accountantSignGroupId
@@ -201,15 +202,17 @@ namespace SealTypographicWebAPI.Services.Implements
                             //如有審核通過的簽印組則停用
                             if(accountantSignGroups != null)
                             {                                
-                                accountantSignGroups.ReviewStatus = ReviewStatus.Disabled;
+                                foreach(AccountantSignGroupJournal accountantSignGroup in accountantSignGroups)
+                                {
+                                    accountantSignGroup.ReviewStatus = ReviewStatus.Disabled;
+                                }                                
                             }
                             
                             break;
                         case ReviewStatus.Refuse:
                             accountantSignGroupJournal.DeleteStatus = DeleteStatus.Yes;
                             break;
-                    }
-                    accountantSignGroupJournal.ReviewDate = DateTime.Now;
+                    }                    
                 }
                 else
                 {
