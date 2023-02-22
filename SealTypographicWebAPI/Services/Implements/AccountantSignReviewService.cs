@@ -187,10 +187,13 @@ namespace SealTypographicWebAPI.Services.Implements
                 {
                     accountantSignGroupJournal.ReviewUserId = userId;
                     accountantSignGroupJournal.ReviewStatus = reviewStatus;
-                    accountantSignGroupJournal.ReviewDate = DateTime.Now;
+                    accountantSignGroupJournal.ReviewDate = DateTime.Now;                    
                     switch (reviewStatus)
                     {
                         case ReviewStatus.Approval:
+                            //變更啟用與結束日期
+                            accountantSignGroupJournal.StartDate = DateTime.Now;
+                            accountantSignGroupJournal.EndDate = DateTime.Parse("9999/12/31");
                             //找出審核通過的簽印組
                             IQueryable<AccountantSignGroupJournal>? accountantSignGroups = dbContext.AccountantSignGroupJournals
                                                                                .Where

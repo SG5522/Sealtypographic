@@ -189,19 +189,19 @@ namespace SealTypographicWebAPI.Services.Implements
             if (accountantSignGroupJournalQuery != null)
             {
                 //舊的會計師簽印群組停用
-                accountantSignGroupJournalQuery.ReviewStatus = ReviewStatus.Disabled;
-                dbContext.SaveChanges();
-                //dbContext.Entry(accountantSignGroupJournalQuery).State = EntityState.Detached;
+                BaseInputSignGroupJournal(accountantSignGroupJournalQuery, false, userId);                
 
                 Accountant? accountant = dbContext.Accountants.Include(accountant => accountant.AccountantSignGroupJournals)
                                 .FirstOrDefault(accountant => accountant.Id == accountantSignGroupJournalQuery.Accountant.Id);
 
                 if(accountant != null)
                 {
-                    AccountantSignGroupJournal accountantSignGroup = new();
-                    BaseInputSignGroupJournal(accountantSignGroup, true, userId);
                     //複製簽印
-                    accountantSignGroup.AccountantSignJournals = accountantSignGroupJournalQuery.AccountantSignJournals;
+                    AccountantSignGroupJournal accountantSignGroup = new()
+                    {
+                        AccountantSignJournals = accountantSignGroupJournalQuery.AccountantSignJournals.ToList()
+                    };
+                    BaseInputSignGroupJournal(accountantSignGroup, true, userId);
 
                     ImageBase64Info imageBase64Info = new()
                     {
@@ -356,16 +356,20 @@ namespace SealTypographicWebAPI.Services.Implements
             {
                 accountantSignGroupJournal.CreateUserId = userId;
                 accountantSignGroupJournal.CreateDate = DateTime.Now;
-                accountantSignGroupJournal.DeleteStatus = DeleteStatus.No;                
+                accountantSignGroupJournal.DeleteStatus = DeleteStatus.No;           
+                accountantSignGroupJournal.ReviewStatus = ReviewStatus.Draft;
             }
             else
             {
+                //如果變更的簽印組狀態是通過將結束日期更新為現在
+                if (accountantSignGroupJournal.ReviewStatus == ReviewStatus.Approval)
+                {
+                    accountantSignGroupJournal.EndDate = DateTime.Now;
+                }
                 accountantSignGroupJournal.UpdateUserId = userId;
                 accountantSignGroupJournal.UpdateDate = DateTime.Now;
+                accountantSignGroupJournal.ReviewStatus = ReviewStatus.Disabled;
             }
-            accountantSignGroupJournal.StartDate = AvailableDateUtil.NotActivated();
-            accountantSignGroupJournal.EndDate = AvailableDateUtil.NotActivated(); //暫時加上                
-            accountantSignGroupJournal.ReviewStatus = ReviewStatus.Draft;
         }
 
         /// <summary>

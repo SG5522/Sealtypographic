@@ -133,7 +133,7 @@ namespace SealTypographicWebAPI.Services.Implements
                     CustomerSealQuarterJournal customerSealQuarterJournal = new();
                     ImageBase64Info imageBase64Info = new()
                     {
-                        Code = GetCode(customerSealForms.CustomerId),
+                        Code = customerQuery.Code,
                         SealType = SealType.Customer
                     };
 
@@ -186,7 +186,7 @@ namespace SealTypographicWebAPI.Services.Implements
 
             CustomerSealQuarterJournal? customerSealQuarterQuery = dbContext.CustomerSealQuarterJournals
                                                                     .Include(customerSealQuarterJournal => customerSealQuarterJournal.Customer)
-                                                                    .Include(customerSealQuarterJournal => customerSealQuarterJournal.CustomerSealJournals)
+                                                                    .Include(customerSealQuarterJournal => customerSealQuarterJournal.CustomerSealJournals.Where(x => x.DeleteStatus == DeleteStatus.No))
                                                                     .FirstOrDefault
                                                                     (
                                                                         customerSealQuarterJournal => customerSealQuarterJournal.Id == customerSealUpdate.CustomerSealQuarterId                                                                                                                                                
@@ -196,14 +196,13 @@ namespace SealTypographicWebAPI.Services.Implements
             {
                 ImageBase64Info imageBase64Info = new()
                 {
-                    Code = GetCode(customerSealQuarterQuery.Customer.Id),
+                    Code = customerSealQuarterQuery.Customer.Code,
                     SealType = SealType.Customer
                 };
 
                 //修改印鑑(更新ID移入DeleteCustomerSealIds，更新的資料移入CreateCustomerSeals，之後下一階段調整輸入時要拔掉此項)
                 foreach (CustomerSealUpdateForm customerSealFormUpdate in customerSealUpdate.UpdateCustomerSeals)
-                {
-                    
+                {                    
                     CustomerSealJournal? updateSealQuery = customerSealQuarterQuery.CustomerSealJournals.FirstOrDefault(x => x.Id == customerSealFormUpdate.Id);                    
                     if (updateSealQuery != null)
                     {
@@ -353,13 +352,17 @@ namespace SealTypographicWebAPI.Services.Implements
 
             if (customerSealQuarterQuery != null)
             {
-                customerSealQuarterQuery.UpdateDate = DateTime.Now;
-                customerSealQuarterQuery.ReviewStatus = reviewStatus;
-                customerSealQuarterQuery.UpdateUserId = userId;
                 if(reviewStatus == ReviewStatus.Invalid)
                 {
                     customerSealQuarterQuery.DeleteStatus = DeleteStatus.Yes;
+                    if(customerSealQuarterQuery.ReviewStatus == ReviewStatus.Approval)
+                    {
+                        customerSealQuarterQuery.EndDate = DateTime.Now;
+                    }                    
                 }
+                customerSealQuarterQuery.ReviewStatus = reviewStatus;
+                customerSealQuarterQuery.UpdateDate = DateTime.Now;                
+                customerSealQuarterQuery.UpdateUserId = userId;
                 dbContext.SaveChanges();
                 response.Success();
             }
@@ -369,21 +372,6 @@ namespace SealTypographicWebAPI.Services.Implements
             }
 
             return response;
-        }
-
-        private string GetCode(int customerId)
-        {
-            string code;
-            Customer? customer = dbContext.Customers.Find(customerId);
-            if (customer != null)
-            {
-                code = customer.Code;
-            }
-            else
-            {
-                code = string.Empty;
-            }
-            return code;
         }
     }
 }

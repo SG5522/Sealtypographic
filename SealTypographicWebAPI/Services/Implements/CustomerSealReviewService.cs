@@ -188,6 +188,11 @@ namespace SealTypographicWebAPI.Services.Implements
                     customerSealQuarterJournal.ReviewUserId = userId;
                     customerSealQuarterJournal.ReviewStatus = reviewStatus;
                     customerSealQuarterJournal.ReviewDate = DateTime.Now;
+                    if(reviewStatus == ReviewStatus.Approval)
+                    {
+                        customerSealQuarterJournal.StartDate = DateTime.Now;
+                        customerSealQuarterJournal.EndDate = DateTime.Parse("9999/12/31");
+                    }
                     if(reviewStatus == ReviewStatus.Refuse)
                     {
                         customerSealQuarterJournal.DeleteStatus = DeleteStatus.Yes;
