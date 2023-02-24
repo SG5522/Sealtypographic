@@ -7,7 +7,7 @@
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <DocumentationFile></DocumentationFile>
     <IncrementVersionOnBuild>0.0.1.1+</IncrementVersionOnBuild>
-    <Version>0.0.1.64</Version>
+    <Version>0.0.1.100</Version>
     <PackageIcon>android-chrome-192x192.png</PackageIcon>    
   </PropertyGroup>
 
@@ -18,7 +18,7 @@
     <None Remove="logs\**" />
   </ItemGroup>
 
-  <ItemGroup>
+  <ItemGroup>    
     <Compile Remove="Services\Implements\ImageFuntion.cs" />
   </ItemGroup>
 
@@ -54,6 +54,7 @@
 
   <ItemGroup>
     <Folder Include="Migrations\" />
+    <Folder Include="Migrations\MySql\" />
   </ItemGroup>
 
   <ItemGroup>

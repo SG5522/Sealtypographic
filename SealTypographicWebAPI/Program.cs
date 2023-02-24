@@ -7,6 +7,8 @@ using Serilog;
 using SealTypographicWebAPI.Services.Implements;
 using SealTypographicWebAPI.Config;
 using Microsoft.AspNetCore.Mvc.Razor;
+using Microsoft.Extensions.Options;
+using Microsoft.Extensions.DependencyInjection;
 
 string allowSpecificOrigins = "allowSpecificOrigins";
 string allowAllOrigins = "allowAllOrigins";
@@ -45,26 +47,85 @@ builder.Services.AddCors(options =>
 
 builder.Host.UseSerilog();// <-SeriLog 
 
+
+string provider = config.GetValue<string>("Provider");
+
+//switch (provider)
+//{
+//    case "Sqlite":
+//        builder.Services.AddDbContextPool<SealTypographicDbContext>(optionsBuilder =>
+//        {
+//            optionsBuilder.UseSqlite(config.GetConnectionString("Sqlite"));
+//        },128);
+//        break;
+//    case "MySql":
+//        //builder.Services.AddDbContextPool<MySqlDbContext>(optionsBuilder =>
+//        //{
+//        //    MySqlServerVersion serverVersion = new(new Version(8, 0, 32));
+//        //    optionsBuilder.UseMySql(config.GetConnectionString("MySql"), serverVersion);
+//        //}, 128);
+//        //builder.Services.AddDbContext<SealTypographicDbContext, MySqlDbContext>();
+//        break;
+//    case "SqlServer":
+//        builder.Services.AddDbContextPool<SealTypographicDbContext>(optionsBuilder =>
+//        {
+//            optionsBuilder.UseSqlServer(config.GetConnectionString("SqlServer"));
+//        }, 128);
+//        break;
+//    default:
+//        throw new Exception($"Unsupported provider: {provider}");
+//}
+
+
 #region -- ConectionString --
 builder.Services.AddDbContextPool<SealTypographicDbContext>(optionsBuilder =>
 {
     string provider = config.GetValue<string>("Provider");
-    switch(provider)
+    switch (provider)
     {
         case "Sqlite":
             optionsBuilder.UseSqlite(config.GetConnectionString("Sqlite"));
             break;
         case "MySql":
-            MySqlServerVersion serverVersion = new(new Version(8, 0, 32));
-            optionsBuilder.UseMySql(config.GetConnectionString("MySql"), serverVersion, x => x.MigrationsAssembly("MySqlMigrations"));            
+            //MySqlServerVersion serverVersion = new(new Version(8, 0, 32));
+            ////optionsBuilder.UseMySql(config.GetConnectionString("MySql"), serverVersion, x => x.MigrationsAssembly("MySqlMigrations"));            
+            //optionsBuilder.UseMySql(config.GetConnectionString("MySql"), serverVersion, x => x.MigrationsAssembly("SealTypographicWebAPI.Migrations.MySql"));
+
+            builder.Services.AddDbContextPool<MySqlDbContext>((serviceProvider, optionsBuilder) =>
+            {
+                IConfiguration configuration = serviceProvider.GetRequiredService<IConfiguration>();
+                MySqlServerVersion serverVersion = new(new Version(8, 0, 32));
+                optionsBuilder.UseMySql(configuration.GetConnectionString("MySql"), serverVersion);
+            }, 128);
             break;
         case "MsSql":
             optionsBuilder.UseSqlServer(config.GetConnectionString("MsSql"));
             break;
         default:
-            throw new Exception($"Unsupported provider: {provider}");            
+            throw new Exception($"Unsupported provider: {provider}");
     }
-},128);
+}, 128);
+
+//builder.Services.AddDbContextPool<SealTypographicDbContext>(optionsBuilder =>
+//{
+//    string provider = config.GetValue<string>("Provider");
+//    switch(provider)
+//    {
+//        case "Sqlite":
+//            optionsBuilder.UseSqlite(config.GetConnectionString("Sqlite"));
+//            break;
+//        case "MySql":
+//            MySqlServerVersion serverVersion = new(new Version(8, 0, 32));
+//            //optionsBuilder.UseMySql(config.GetConnectionString("MySql"), serverVersion, x => x.MigrationsAssembly("MySqlMigrations"));            
+//            optionsBuilder.UseMySql(config.GetConnectionString("MySql"), serverVersion);
+//            break;
+//        case "MsSql":
+//            optionsBuilder.UseSqlServer(config.GetConnectionString("MsSql"));
+//            break;
+//        default:
+//            throw new Exception($"Unsupported provider: {provider}");            
+//    }
+//},128);
 #endregion
 
 #region -- Service --
@@ -111,7 +172,7 @@ builder.Services.AddSwaggerGen(c =>
 {
     //Set the comments path for the Swagger JSON and UI.
     string xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-    string xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);    
+    string xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
 
     c.SwaggerDoc("v1", new OpenApiInfo
     {        
@@ -162,8 +223,8 @@ using (IServiceScope scope = app.Services.CreateScope())
     try
     {
         SealTypographicDbContext dbContext = scope.ServiceProvider.GetRequiredService<SealTypographicDbContext>();
-        //dbContext.Database.Migrate();
-        await dbContext.Database.MigrateAsync();
+        dbContext.Database.Migrate();
+        //await dbContext.Database.MigrateAsync();
     }
     catch(Exception ex)
     {
