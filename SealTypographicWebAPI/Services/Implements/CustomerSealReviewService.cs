@@ -91,12 +91,8 @@ namespace SealTypographicWebAPI.Services.Implements
                 //計算總頁數
                 customerSealQuarterResponse.TotalPage = TotalPageUtil.GetTotalPage(customerSealQuarterQuery.Count(), customerSealSearchReview.PageSize);
                 customerSealQuarterResponse.TotalCount = customerSealQuarterQuery.Count();
-                customerSealQuarterResponse.Success();
             }
-            else
-            {
-                customerSealQuarterResponse.CustomerSealNoData();
-            }
+            customerSealQuarterResponse.Success();
 
             return customerSealQuarterResponse;
         }
@@ -123,13 +119,10 @@ namespace SealTypographicWebAPI.Services.Implements
                     customerSealViewModel.ImageBase64 = imageService.GetPathToBase64(customerSealJournal.ImageFullPath); //資料庫取得圖檔路徑轉BASE64                                       
                     customerSealViewModel.SealMappingConfigId = customerSealJournal.ConfigType;
                     customerSealReviewDetailResponse.ViewModel.Seals.Add(customerSealViewModel);
-                }
-                customerSealReviewDetailResponse.Success();
+                }                
             }
-            else
-            {
-                customerSealReviewDetailResponse.CustomerSealNoData();
-            }              
+            customerSealReviewDetailResponse.Success();
+        
             return customerSealReviewDetailResponse;
         }
 

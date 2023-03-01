@@ -61,13 +61,9 @@ namespace SealTypographicWebAPI.Services.Implements
                 //計算總頁數                
                 accountantGroupMembers.TotalPage = TotalPageUtil.GetTotalPage(accountantQuery.Count(), accountantGroupMemberSearch.PageSize);
                 accountantGroupMembers.TotalCount = accountantQuery.Count();
-                
-                accountantGroupMembers.Success();               
+                                
             }
-            else
-            {
-                accountantGroupMembers.AccountantNoData();                
-            }
+            accountantGroupMembers.Success();
 
             return accountantGroupMembers;
         }
@@ -110,13 +106,9 @@ namespace SealTypographicWebAPI.Services.Implements
                 notThisGroupMember.PageSize = notThisGroupMemberSearch.PageSize;
                 //計算總頁數
                 notThisGroupMember.TotalPage = TotalPageUtil.GetTotalPage(accountantQuery.Count(), notThisGroupMemberSearch.PageSize);
-                notThisGroupMember.TotalCount = accountantQuery.Count();
-                notThisGroupMember.Success();                 
+                notThisGroupMember.TotalCount = accountantQuery.Count();                            
             }
-            else
-            {
-                notThisGroupMember.AccountantNoData();
-            }
+            notThisGroupMember.Success();
 
             return notThisGroupMember;
         }

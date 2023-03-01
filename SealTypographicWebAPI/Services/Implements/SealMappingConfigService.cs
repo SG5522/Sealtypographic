@@ -56,9 +56,9 @@ namespace SealTypographicWebAPI.Services.Implements
                         sealMappingConfigResponseList.SealMappingConfigViewModels.Add(sealMappingConfigViewModel);
                     }
                     break;
-            }
-
+            }            
             sealMappingConfigResponseList.SealType = Enum.GetName(sealType);
+            sealMappingConfigResponseList.Success();
 
             return sealMappingConfigResponseList;
         }        

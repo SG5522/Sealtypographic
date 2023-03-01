@@ -38,11 +38,11 @@ namespace SealTypographicWebAPI.Controllers
             try
             {                
                 responseCodeList = responseCodeService.Get();
-                Log.Information("SealMappingConfig ConfigList output {@Output}", responseCodeList);                
+                Log.Information("ResponseCode ResponseCodeList output {@Output}", responseCodeList);                
             }
             catch (Exception ex)
             {
-                Log.Error("SealMappingConfig ConfigList error {@Error}", ex);                
+                Log.Error("ResponseCode ResponseCodeList error {@Error}", ex);                
             }
             return responseCodeList;
         }          

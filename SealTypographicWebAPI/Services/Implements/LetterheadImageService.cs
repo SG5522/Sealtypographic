@@ -6,11 +6,8 @@ using SealTypographicWebAPI.Config;
 using SealTypographicWebAPI.Consts;
 using SealTypographicWebAPI.Entities;
 using SealTypographicWebAPI.Models;
-using SealTypographicWebAPI.Models.Accountant;
 using SealTypographicWebAPI.Models.Customer;
 using SealTypographicWebAPI.Models.Letterhead;
-using SealTypographicWebAPI.Models.ReviewStatusList;
-using System.Linq;
 
 namespace SealTypographicWebAPI.Services.Implements
 {
@@ -84,12 +81,9 @@ namespace SealTypographicWebAPI.Services.Implements
                                                                 })
                                                                 .OrderByDescending(x => x.Id)
                                                                 .ToList();
-                letterheadImageCreateDateViews.Success();
             }
-            else
-            {
-                letterheadImageCreateDateViews.LetterheadImageNoData();
-            }
+            letterheadImageCreateDateViews.Success();
+
             return letterheadImageCreateDateViews;
         }
 
@@ -114,12 +108,9 @@ namespace SealTypographicWebAPI.Services.Implements
             if (letterheadImageJournalQuery != null)
             {                                
                 letterheadImageViewModels.ImageBase64 = imageSharpService.GetPathToBase64(letterheadImageJournalQuery.ImageFullPath); //資料庫取得圖檔路徑轉BASE64                                                                                  
-                letterheadImageViewModels.Success();
+                
             }
-            else
-            {
-                letterheadImageViewModels.LetterheadImageNoData();
-            }
+            letterheadImageViewModels.Success();
 
             return letterheadImageViewModels;            
         }

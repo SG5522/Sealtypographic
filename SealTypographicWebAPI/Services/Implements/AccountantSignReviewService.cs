@@ -91,13 +91,10 @@ namespace SealTypographicWebAPI.Services.Implements
                 accountantSignGroupReviewPaginate.PageSize = accountantSignSearchReview.PageSize;
                 //計算總頁數
                 accountantSignGroupReviewPaginate.TotalPage = TotalPageUtil.GetTotalPage(accountantSignGroupQuery.Count(), accountantSignSearchReview.PageSize);
-                accountantSignGroupReviewPaginate.TotalCount = accountantSignGroupQuery.Count();
-                accountantSignGroupReviewPaginate.Success();
+                accountantSignGroupReviewPaginate.TotalCount = accountantSignGroupQuery.Count();                
             }
-            else
-            {
-                accountantSignGroupReviewPaginate.AccountantSignNoData();
-            }
+            accountantSignGroupReviewPaginate.Success();
+
             return accountantSignGroupReviewPaginate;
         }
 
@@ -122,13 +119,10 @@ namespace SealTypographicWebAPI.Services.Implements
                     accountantSignViewModel.ImageBase64 = imageService.GetPathToBase64(accountantSignJournal.ImageFullPath); //資料庫取得圖檔路徑轉BASE64                                       
                     accountantSignViewModel.SealMappingConfigId = accountantSignJournal.ConfigType;
                     accountantSignGroupDetailReviewResponse.ViewModel.Signs.Add(accountantSignViewModel);
-                }
-                accountantSignGroupDetailReviewResponse.Success();
+                }                
             }
-            else
-            {
-                accountantSignGroupDetailReviewResponse.AccountantSignNoData();
-            }
+            accountantSignGroupDetailReviewResponse.Success();
+
             return accountantSignGroupDetailReviewResponse;            
         }
 

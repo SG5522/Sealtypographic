@@ -37,13 +37,9 @@ namespace SealTypographicWebAPI.Services.Implements
                                                     .ToList();
             if (accountantGroups.Any())
             {
-                accountantGroupList.AccountantGroupDatas = mapper.Map<List<AccountantGroupViewModel>>(accountantGroups);                
-                accountantGroupList.Success();                
+                accountantGroupList.AccountantGroupDatas = mapper.Map<List<AccountantGroupViewModel>>(accountantGroups);
             }
-            else
-            {
-                accountantGroupList.AccountantGroupNoData();
-            }
+            accountantGroupList.Success();
 
             return accountantGroupList;
         }
@@ -58,13 +54,9 @@ namespace SealTypographicWebAPI.Services.Implements
 
             if (accountantGroupQuery != null)
             {                
-                accountantGroupResponse.AccountantGroupData = mapper.Map<AccountantGroupViewModel>(accountantGroupQuery);
-                accountantGroupResponse.Success();                
+                accountantGroupResponse.AccountantGroupData = mapper.Map<AccountantGroupViewModel>(accountantGroupQuery);                
             }
-            else
-            {
-                accountantGroupResponse.AccountantGroupNoData();
-            }
+            accountantGroupResponse.Success();
 
             return accountantGroupResponse;
         }
@@ -99,13 +91,9 @@ namespace SealTypographicWebAPI.Services.Implements
                 accountantGroupResponses.PageSize = accountantGroupSearch.PageSize;
                 //計算總頁數
                 accountantGroupResponses.TotalPage = TotalPageUtil.GetTotalPage(accountantGroupsQuery.Count(), accountantGroupSearch.PageSize);
-                accountantGroupResponses.TotalCount = accountantGroupsQuery.Count();
-                accountantGroupResponses.Success();
+                accountantGroupResponses.TotalCount = accountantGroupsQuery.Count();                
             }
-            else
-            {
-                accountantGroupResponses.AccountantGroupNoData();
-            }
+            accountantGroupResponses.Success();
 
             return accountantGroupResponses;
         }
