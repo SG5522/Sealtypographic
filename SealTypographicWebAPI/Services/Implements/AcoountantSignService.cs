@@ -54,15 +54,8 @@ namespace SealTypographicWebAPI.Services.Implements
                                                        .OrderByDescending(accountantSignGroup => accountantSignGroup.GroupCreateDate)                                                       
                                                        .ToList()
             };
+            accountantSignStartDates.Success();
 
-            if (accountantSignStartDates.AccountantSignGroups.Any())
-            {                                                
-                accountantSignStartDates.Success();
-            }
-            else
-            {
-                accountantSignStartDates.AccountantSignNoData();
-            }
             return accountantSignStartDates;
         }
 
@@ -99,13 +92,9 @@ namespace SealTypographicWebAPI.Services.Implements
                 }
                 signViewModels.AccountantSignGroupId = accountantSignGroupId;
                 signViewModels.GroupCreateDate = accountantSignGroupJournalQuery.CreateDate;
-                signViewModels.ReviewStatus = accountantSignGroupJournalQuery.ReviewStatus;                
-                signViewModels.Success();
+                signViewModels.ReviewStatus = accountantSignGroupJournalQuery.ReviewStatus;                                
             }
-            else
-            {
-                signViewModels.AccountantSignNoData();
-            }
+            signViewModels.Success();
 
             return signViewModels;
         }

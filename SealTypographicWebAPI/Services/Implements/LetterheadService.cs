@@ -81,13 +81,10 @@ namespace SealTypographicWebAPI.Services.Implements
                 letterheadPaginateViewModel.PageSize = letterheadSearch.PageSize;
                 //計算總頁數
                 letterheadPaginateViewModel.TotalPage = TotalPageUtil.GetTotalPage(letterheadQuery.Count(), letterheadSearch.PageSize);
-                letterheadPaginateViewModel.TotalCount = letterheadQuery.Count();
-                letterheadPaginateViewModel.Success();
+                letterheadPaginateViewModel.TotalCount = letterheadQuery.Count();                
             }
-            else
-            {
-                letterheadPaginateViewModel.DbNoData();                
-            }
+            letterheadPaginateViewModel.Success();
+
             return letterheadPaginateViewModel;
         }
 

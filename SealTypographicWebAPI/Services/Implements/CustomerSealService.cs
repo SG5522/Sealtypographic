@@ -54,15 +54,8 @@ namespace SealTypographicWebAPI.Services.Implements
                             .OrderByDescending(customerSealQuarterJournal => customerSealQuarterJournal.Quarter)
                             .ToList()
             };
-
-            if (customerSealQuarters.CustomerSealQuarters.Any())
-            {                
-                customerSealQuarters.Success();
-            }
-            else
-            {
-                customerSealQuarters.CustomerSealNoData();
-            }           
+            customerSealQuarters.Success();
+        
             return customerSealQuarters;
         }
 
@@ -99,13 +92,10 @@ namespace SealTypographicWebAPI.Services.Implements
                 }
                 customerSealViewModels.CustomerSealQuarterId = customerSealQuarterId;
                 customerSealViewModels.Quarter = customerSealQuarterJournalQuery.Quarter;
-                customerSealViewModels.ReviewStatus = customerSealQuarterJournalQuery.ReviewStatus;
-                customerSealViewModels.Success();
+                customerSealViewModels.ReviewStatus = customerSealQuarterJournalQuery.ReviewStatus;                
             }
-            else
-            {
-                customerSealViewModels.CustomerSealNoData();
-            }            
+            customerSealViewModels.Success();
+        
             return customerSealViewModels;
         }
 

@@ -37,13 +37,10 @@ namespace SealTypographicWebAPI.Services.Implements
 
             if (accountantQuery != null)
             {
-                accountantResponse.AccountantDetailViewModel = mapper.Map<AccountantDetailViewModel>(accountantQuery);
-                accountantResponse.Success();
+                accountantResponse.AccountantDetailViewModel = mapper.Map<AccountantDetailViewModel>(accountantQuery);                
             }
-            else
-            {
-                accountantResponse.AccountantNoData();
-            }
+            accountantResponse.Success();
+
             return accountantResponse;
         }
 
@@ -101,13 +98,10 @@ namespace SealTypographicWebAPI.Services.Implements
                 accountantPaginatesViewModels.PageSize = accountantSearch.PageSize;
                 //計算總頁數
                 accountantPaginatesViewModels.TotalPage = TotalPageUtil.GetTotalPage(accountantQuery.Count(), accountantSearch.PageSize);               
-                accountantPaginatesViewModels.TotalCount = accountantQuery.Count();
-                accountantPaginatesViewModels.Success();
+                accountantPaginatesViewModels.TotalCount = accountantQuery.Count();                
             }
-            else
-            {
-                accountantPaginatesViewModels.AccountantNoData();                
-            }
+            accountantPaginatesViewModels.Success();
+
             return accountantPaginatesViewModels;
         }
 

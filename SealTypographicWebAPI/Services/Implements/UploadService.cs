@@ -99,13 +99,10 @@ namespace SealTypographicWebAPI.Services.Implements
                             FileName = uploadFile.OriginalFileName
                         }
                     );
-                }
-                uploadFileResponse.Success();
+                }                
             }
-            else
-            {
-                uploadFileResponse.FileUploadNoData();
-            }
+            uploadFileResponse.Success();
+
             return uploadFileResponse;
         }
 
@@ -120,13 +117,10 @@ namespace SealTypographicWebAPI.Services.Implements
             UploadFile? uploadFile = dbContext.UploadFiles.Find(uploadFileId);
             if(uploadFile != null)
             {
-                uploadFileImageView.ImageBase64 = imageSharpService.GetPathToBase64(uploadFile.FullPath);
-                uploadFileImageView.Success();
+                uploadFileImageView.ImageBase64 = imageSharpService.GetPathToBase64(uploadFile.FullPath);                
             }
-            else
-            {
-                uploadFileImageView.FileUploadNoData();
-            }
+            uploadFileImageView.Success();
+
             return uploadFileImageView;
         }
 
@@ -150,6 +144,7 @@ namespace SealTypographicWebAPI.Services.Implements
                     uploadDuplicateFiles.ViewModel.Add(new DuplicateFileViewModel { Id = uploadFileQuery.Id, FileName = uploadFileQuery.OriginalFileName });
                 }
             }
+            uploadDuplicateFiles.Success();
             return uploadDuplicateFiles;
         }
 

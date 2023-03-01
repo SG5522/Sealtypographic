@@ -1,7 +1,6 @@
 ﻿using Microsoft.Extensions.Localization;
 using SealTypographicWebAPI.Config;
 using DBEntities.Consts;
-using DBEntities;
 using SealTypographicWebAPI.Models.SealMappingConfig;
 
 namespace SealTypographicWebAPI.Services.Implements
@@ -55,9 +54,9 @@ namespace SealTypographicWebAPI.Services.Implements
                         sealMappingConfigResponseList.SealMappingConfigViewModels.Add(sealMappingConfigViewModel);
                     }
                     break;
-            }
-
+            }            
             sealMappingConfigResponseList.SealType = Enum.GetName(sealType);
+            sealMappingConfigResponseList.Success();
 
             return sealMappingConfigResponseList;
         }        

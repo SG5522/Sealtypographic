@@ -38,14 +38,10 @@ namespace SealTypographicWebAPI.Services.Implements
             
             if (customerQuery != null)
             {
+                customerDetailViewModel.CustomerDetail = mapper.Map<CustomerDetail>(customerQuery);                                
+            }
+            customerDetailViewModel.Success();
 
-                customerDetailViewModel.CustomerDetail = mapper.Map<CustomerDetail>(customerQuery);
-                customerDetailViewModel.Success();                
-            }
-            else
-            {
-                customerDetailViewModel.CustomeNoData();                
-            }
             return customerDetailViewModel;
         }
 
@@ -119,13 +115,9 @@ namespace SealTypographicWebAPI.Services.Implements
                 customerPaginateViewModel.PageSize= customerSearch.PageSize;
                 //計算總頁數
                 customerPaginateViewModel.TotalPage = TotalPageUtil.GetTotalPage(customerQuery.Count(), customerSearch.PageSize);
-                customerPaginateViewModel.TotalCount = customerQuery.Count();
-                customerPaginateViewModel.Success();
+                customerPaginateViewModel.TotalCount = customerQuery.Count();                
             }
-            else
-            {
-                customerPaginateViewModel.CustomeNoData();                
-            }
+            customerPaginateViewModel.Success();
 
             return customerPaginateViewModel;
         }
