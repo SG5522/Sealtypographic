@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using SealTypographicWebAPI.Entities;
+using DBEntities;
 using SealTypographicWebAPI.Models.TypographicPDF;
 using SealTypographicWebAPI.Models;
 

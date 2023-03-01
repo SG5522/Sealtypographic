@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using SealTypographicWebAPI.Config;
-using SealTypographicWebAPI.Entities;
+using DBEntities;
 using SealTypographicWebAPI.Models.Customer;
 using SealTypographicWebAPI.Services.Implements;
 using System;

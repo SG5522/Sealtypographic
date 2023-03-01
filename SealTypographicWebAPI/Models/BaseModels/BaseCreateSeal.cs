@@ -1,4 +1,4 @@
-﻿using SealTypographicWebAPI.Consts;
+﻿using DBEntities.Consts;
 using System.ComponentModel.DataAnnotations;
 
 namespace SealTypographicWebAPI.Models.BaseModels

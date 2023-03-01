@@ -1,5 +1,5 @@
 ﻿using NetTopologySuite.IO;
-using SealTypographicWebAPI.Consts;
+using DBEntities.Consts;
 using SealTypographicWebAPI.Models.BaseModels;
 using SealTypographicWebAPI.Models.Customer;
 

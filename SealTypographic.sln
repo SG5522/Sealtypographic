@@ -30,7 +30,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Twaincs", "Twaincs\Twaincs.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SealTypographicWebAPITests", "SealTypographicWebAPITests\SealTypographicWebAPITests.csproj", "{05A92FF0-7396-4031-B879-0922FB1C8B45}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MySqlMigrations", "MySqlMigrations\MySqlMigrations.csproj", "{C344B34E-6120-46CA-8A75-2D129F024811}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MySql", "MySqlMigrations\MySql.csproj", "{C344B34E-6120-46CA-8A75-2D129F024811}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DBEntities", "DBEntities\DBEntities.csproj", "{0F0A21AA-09F4-42AE-B355-112DE3F774D5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sqlite", "SqliteMigrations\Sqlite.csproj", "{F81254E5-55C7-454F-83EC-ACA115F26D7E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Migrations", "Migrations", "{D0BA96F1-ECAC-42F5-AEAE-99065BF32392}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -186,9 +192,37 @@ Global
 		{C344B34E-6120-46CA-8A75-2D129F024811}.Release|x64.Build.0 = Release|Any CPU
 		{C344B34E-6120-46CA-8A75-2D129F024811}.Release|x86.ActiveCfg = Release|Any CPU
 		{C344B34E-6120-46CA-8A75-2D129F024811}.Release|x86.Build.0 = Release|Any CPU
+		{0F0A21AA-09F4-42AE-B355-112DE3F774D5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0F0A21AA-09F4-42AE-B355-112DE3F774D5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0F0A21AA-09F4-42AE-B355-112DE3F774D5}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{0F0A21AA-09F4-42AE-B355-112DE3F774D5}.Debug|x64.Build.0 = Debug|Any CPU
+		{0F0A21AA-09F4-42AE-B355-112DE3F774D5}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{0F0A21AA-09F4-42AE-B355-112DE3F774D5}.Debug|x86.Build.0 = Debug|Any CPU
+		{0F0A21AA-09F4-42AE-B355-112DE3F774D5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0F0A21AA-09F4-42AE-B355-112DE3F774D5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0F0A21AA-09F4-42AE-B355-112DE3F774D5}.Release|x64.ActiveCfg = Release|Any CPU
+		{0F0A21AA-09F4-42AE-B355-112DE3F774D5}.Release|x64.Build.0 = Release|Any CPU
+		{0F0A21AA-09F4-42AE-B355-112DE3F774D5}.Release|x86.ActiveCfg = Release|Any CPU
+		{0F0A21AA-09F4-42AE-B355-112DE3F774D5}.Release|x86.Build.0 = Release|Any CPU
+		{F81254E5-55C7-454F-83EC-ACA115F26D7E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F81254E5-55C7-454F-83EC-ACA115F26D7E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F81254E5-55C7-454F-83EC-ACA115F26D7E}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{F81254E5-55C7-454F-83EC-ACA115F26D7E}.Debug|x64.Build.0 = Debug|Any CPU
+		{F81254E5-55C7-454F-83EC-ACA115F26D7E}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{F81254E5-55C7-454F-83EC-ACA115F26D7E}.Debug|x86.Build.0 = Debug|Any CPU
+		{F81254E5-55C7-454F-83EC-ACA115F26D7E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F81254E5-55C7-454F-83EC-ACA115F26D7E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F81254E5-55C7-454F-83EC-ACA115F26D7E}.Release|x64.ActiveCfg = Release|Any CPU
+		{F81254E5-55C7-454F-83EC-ACA115F26D7E}.Release|x64.Build.0 = Release|Any CPU
+		{F81254E5-55C7-454F-83EC-ACA115F26D7E}.Release|x86.ActiveCfg = Release|Any CPU
+		{F81254E5-55C7-454F-83EC-ACA115F26D7E}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{C344B34E-6120-46CA-8A75-2D129F024811} = {D0BA96F1-ECAC-42F5-AEAE-99065BF32392}
+		{F81254E5-55C7-454F-83EC-ACA115F26D7E} = {D0BA96F1-ECAC-42F5-AEAE-99065BF32392}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {6708F2CE-3C2F-4B97-B6FC-EEAFB792B12F}

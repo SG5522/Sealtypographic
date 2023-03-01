@@ -2,9 +2,8 @@
 using DJLib.Models;
 using Microsoft.Extensions.Options;
 using SealTypographicWebAPI.Config;
-using SealTypographicWebAPI.Consts;
+using DBEntities.Consts;
 using SealTypographicWebAPI.Models;
-using SealTypographicWebAPI.Utils;
 
 namespace SealTypographicWebAPI.Services
 {

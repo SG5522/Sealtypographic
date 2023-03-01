@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using SealTypographicWebAPI.Models.Customer;
-using SealTypographicWebAPI.Entities;
+using DBEntities;
 using SealTypographicWebAPI.Models.Accountant;
 using SealTypographicWebAPI.Models.Letterhead;
 using SealTypographicWebAPI.Models.TypographicPDF;

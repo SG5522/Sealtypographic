@@ -1,14 +1,9 @@
 ﻿using AutoMapper;
-using EFCore.BulkExtensions;
 using Microsoft.EntityFrameworkCore;
-using SealTypographicWebAPI.Consts;
-using SealTypographicWebAPI.Entities;
+using DBEntities.Consts;
+using DBEntities;
 using SealTypographicWebAPI.Models;
 using SealTypographicWebAPI.Models.Accountant;
-using SealTypographicWebAPI.Models.Customer;
-using SealTypographicWebAPI.Models.Letterhead;
-using SealTypographicWebAPI.Utils;
-using System.Linq;
 
 namespace SealTypographicWebAPI.Services.Implements
 {

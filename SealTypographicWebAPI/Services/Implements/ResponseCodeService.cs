@@ -1,5 +1,5 @@
 ﻿using SealTypographicWebAPI.Config;
-using SealTypographicWebAPI.Consts;
+using DBEntities.Consts;
 using SealTypographicWebAPI.Models;
 
 namespace SealTypographicWebAPI.Services.Implements

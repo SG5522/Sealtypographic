@@ -2,8 +2,8 @@
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Options;
 using SealTypographicWebAPI.Config;
-using SealTypographicWebAPI.Consts;
-using SealTypographicWebAPI.Entities;
+using DBEntities.Consts;
+using DBEntities;
 using SealTypographicWebAPI.Models;
 using SealTypographicWebAPI.Models.Upload;
 

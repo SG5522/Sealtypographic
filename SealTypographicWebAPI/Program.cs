@@ -1,14 +1,12 @@
 ﻿using Microsoft.OpenApi.Models;
 using SealTypographicWebAPI.Services;
-using SealTypographicWebAPI.Entities;
+using DBEntities;
 using System.Reflection;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 using SealTypographicWebAPI.Services.Implements;
 using SealTypographicWebAPI.Config;
 using Microsoft.AspNetCore.Mvc.Razor;
-using Microsoft.Extensions.Options;
-using Microsoft.Extensions.DependencyInjection;
 
 string allowSpecificOrigins = "allowSpecificOrigins";
 string allowAllOrigins = "allowAllOrigins";
@@ -50,53 +48,18 @@ builder.Host.UseSerilog();// <-SeriLog
 
 string provider = config.GetValue<string>("Provider");
 
-//switch (provider)
-//{
-//    case "Sqlite":
-//        builder.Services.AddDbContextPool<SealTypographicDbContext>(optionsBuilder =>
-//        {
-//            optionsBuilder.UseSqlite(config.GetConnectionString("Sqlite"));
-//        },128);
-//        break;
-//    case "MySql":
-//        //builder.Services.AddDbContextPool<MySqlDbContext>(optionsBuilder =>
-//        //{
-//        //    MySqlServerVersion serverVersion = new(new Version(8, 0, 32));
-//        //    optionsBuilder.UseMySql(config.GetConnectionString("MySql"), serverVersion);
-//        //}, 128);
-//        //builder.Services.AddDbContext<SealTypographicDbContext, MySqlDbContext>();
-//        break;
-//    case "SqlServer":
-//        builder.Services.AddDbContextPool<SealTypographicDbContext>(optionsBuilder =>
-//        {
-//            optionsBuilder.UseSqlServer(config.GetConnectionString("SqlServer"));
-//        }, 128);
-//        break;
-//    default:
-//        throw new Exception($"Unsupported provider: {provider}");
-//}
-
-
 #region -- ConectionString --
 builder.Services.AddDbContextPool<SealTypographicDbContext>(optionsBuilder =>
 {
     string provider = config.GetValue<string>("Provider");
     switch (provider)
     {
-        case "Sqlite":
-            optionsBuilder.UseSqlite(config.GetConnectionString("Sqlite"));
+        case "Sqlite":            
+            optionsBuilder.UseSqlite(config.GetConnectionString("Sqlite"), x => x.MigrationsAssembly("Sqlite"));
             break;
         case "MySql":
-            //MySqlServerVersion serverVersion = new(new Version(8, 0, 32));
-            ////optionsBuilder.UseMySql(config.GetConnectionString("MySql"), serverVersion, x => x.MigrationsAssembly("MySqlMigrations"));            
-            //optionsBuilder.UseMySql(config.GetConnectionString("MySql"), serverVersion, x => x.MigrationsAssembly("SealTypographicWebAPI.Migrations.MySql"));
-
-            builder.Services.AddDbContextPool<MySqlDbContext>((serviceProvider, optionsBuilder) =>
-            {
-                IConfiguration configuration = serviceProvider.GetRequiredService<IConfiguration>();
-                MySqlServerVersion serverVersion = new(new Version(8, 0, 32));
-                optionsBuilder.UseMySql(configuration.GetConnectionString("MySql"), serverVersion);
-            }, 128);
+            MySqlServerVersion serverVersion = new(new Version(8, 0, 32));                 
+            optionsBuilder.UseMySql(config.GetConnectionString("MySql"), serverVersion, x => x.MigrationsAssembly("MySql"));
             break;
         case "MsSql":
             optionsBuilder.UseSqlServer(config.GetConnectionString("MsSql"));
@@ -105,27 +68,6 @@ builder.Services.AddDbContextPool<SealTypographicDbContext>(optionsBuilder =>
             throw new Exception($"Unsupported provider: {provider}");
     }
 }, 128);
-
-//builder.Services.AddDbContextPool<SealTypographicDbContext>(optionsBuilder =>
-//{
-//    string provider = config.GetValue<string>("Provider");
-//    switch(provider)
-//    {
-//        case "Sqlite":
-//            optionsBuilder.UseSqlite(config.GetConnectionString("Sqlite"));
-//            break;
-//        case "MySql":
-//            MySqlServerVersion serverVersion = new(new Version(8, 0, 32));
-//            //optionsBuilder.UseMySql(config.GetConnectionString("MySql"), serverVersion, x => x.MigrationsAssembly("MySqlMigrations"));            
-//            optionsBuilder.UseMySql(config.GetConnectionString("MySql"), serverVersion);
-//            break;
-//        case "MsSql":
-//            optionsBuilder.UseSqlServer(config.GetConnectionString("MsSql"));
-//            break;
-//        default:
-//            throw new Exception($"Unsupported provider: {provider}");            
-//    }
-//},128);
 #endregion
 
 #region -- Service --

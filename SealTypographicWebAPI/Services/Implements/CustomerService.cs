@@ -1,7 +1,7 @@
 ﻿using SealTypographicWebAPI.Models;
 using SealTypographicWebAPI.Models.Customer;
-using SealTypographicWebAPI.Entities;
-using SealTypographicWebAPI.Consts;
+using DBEntities;
+using DBEntities.Consts;
 using AutoMapper;
 using SealTypographicWebAPI.Utils;
 
