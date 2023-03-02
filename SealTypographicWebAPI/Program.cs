@@ -7,6 +7,9 @@ using Serilog;
 using SealTypographicWebAPI.Services.Implements;
 using SealTypographicWebAPI.Config;
 using Microsoft.AspNetCore.Mvc.Razor;
+using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 
 string allowSpecificOrigins = "allowSpecificOrigins";
 string allowAllOrigins = "allowAllOrigins";
@@ -45,9 +48,6 @@ builder.Services.AddCors(options =>
 
 builder.Host.UseSerilog();// <-SeriLog 
 
-
-string provider = config.GetValue<string>("Provider");
-
 #region -- ConectionString --
 builder.Services.AddDbContextPool<SealTypographicDbContext>(optionsBuilder =>
 {
@@ -55,14 +55,14 @@ builder.Services.AddDbContextPool<SealTypographicDbContext>(optionsBuilder =>
     switch (provider)
     {
         case "Sqlite":            
-            optionsBuilder.UseSqlite(config.GetConnectionString("Sqlite"), x => x.MigrationsAssembly("Sqlite"));
+            optionsBuilder.UseSqlite(config.GetConnectionString(provider), x => x.MigrationsAssembly(provider));
             break;
         case "MySql":
             MySqlServerVersion serverVersion = new(new Version(8, 0, 32));                 
-            optionsBuilder.UseMySql(config.GetConnectionString("MySql"), serverVersion, x => x.MigrationsAssembly("MySql"));
+            optionsBuilder.UseMySql(config.GetConnectionString(provider), serverVersion, x => x.MigrationsAssembly(provider));
             break;
         case "MsSql":
-            optionsBuilder.UseSqlServer(config.GetConnectionString("MsSql"));
+            optionsBuilder.UseSqlServer(config.GetConnectionString(provider));
             break;
         default:
             throw new Exception($"Unsupported provider: {provider}");
@@ -91,6 +91,22 @@ builder.Services.AddScoped<ILetterheadService, LetterheadService>();
 builder.Services.AddScoped<ILetterheadImageService, LetterheadImageService>();
 builder.Services.AddScoped<UploadService>();
 
+#endregion
+
+#region -- Authentication --
+//builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+//    .AddEntityFrameworkStores<ApplicationDbContext>();
+
+//builder.Services.AddAuthentication(options =>
+//{
+//    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+//})
+//.AddOpenIdConnect(options =>
+//{
+//    options.Authority = identityUrl.ToString();
+
+//})
+//;
 #endregion
 
 builder.Services.AddLocalization(option => option.ResourcesPath = "Resource");
@@ -166,11 +182,11 @@ using (IServiceScope scope = app.Services.CreateScope())
     {
         SealTypographicDbContext dbContext = scope.ServiceProvider.GetRequiredService<SealTypographicDbContext>();
         dbContext.Database.Migrate();
+        dbContext.SeedData();
         //await dbContext.Database.MigrateAsync();
     }
     catch(Exception ex)
-    {
-        //從其他Class Library使用Migrate會發生找不到的問題(MigrationsAssembly名稱對不起來)。
+    {        
         Console.WriteLine(ex.ToString());
     }
 }

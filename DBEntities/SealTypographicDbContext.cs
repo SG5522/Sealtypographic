@@ -106,17 +106,26 @@ namespace DBEntities
             //需要將下列這行加入，但如果沒有其他的OnModelCreating是也可以不加，
             //只是怕未來需要維護繼承此DbContext怕會忘記故此加入。
             base.OnModelCreating(modelBuilder);
-            //建立DB前先建置AccountantGroup無群組資料
-            modelBuilder.Entity<AccountantGroup>().HasData(new AccountantGroup
-            {
-                Id = 1,
-                AccountantGroupNumber = "NO000",
-                CreateUserId = 0,
-                UpdateUserId = 0,
-                DeleteStatus = 0,
-                Name = "預設群組"
-            });
         }
         #endregion
+
+        public void SeedData()
+        {
+            if(!AccountantGroups.Any())
+            {
+                //建立DB前先建置AccountantGroup無群組資料
+                AccountantGroup accountantGroup = new()
+                {
+                    Id = 1,
+                    AccountantGroupNumber = "",
+                    CreateUserId = 0,
+                    UpdateUserId = 0,
+                    DeleteStatus = 0,
+                    Name = "預設群組"
+                };
+                AccountantGroups.Add(accountantGroup);
+                SaveChanges();
+            }
+        }
     }
 }
