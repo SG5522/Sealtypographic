@@ -204,7 +204,7 @@ namespace SealTypographicWebAPI.Services.Implements
             if (uploadfiles.Any())
             {
                 dbContext.UploadFiles.AddRange(uploadfiles);
-                dbContext.BulkSaveChanges();
+                dbContext.SaveChanges();
                 response.Success();
             }
             else
