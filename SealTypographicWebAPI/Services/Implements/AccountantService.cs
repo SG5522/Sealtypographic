@@ -110,8 +110,10 @@ namespace SealTypographicWebAPI.Services.Implements
         {
             AccountantCreateResponse accountantCreateResponse = new();
             int userid = 0;//帳號驗證取得ID
+            //確認編號是否重複
             Accountant? accountantQuery = dbContext.Accountants
-                                    .FirstOrDefault(accountant => accountant.Code == accountantForm.AccountantNumber);                               
+                                    .FirstOrDefault(accountant => accountant.Code == accountantForm.AccountantNumber
+                                                    && accountant.DeleteStatus == DeleteStatus.No);                               
 
             if (accountantQuery == null)
             {

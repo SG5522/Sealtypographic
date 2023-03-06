@@ -87,6 +87,7 @@ namespace SealTypographicWebAPI.Services.Implements
                                             (
                                                 uploadFile => uploadFile.UploadType == uploadType
                                                 && uploadFile.FileWorkStatus == FileWorkStatus.Unprocessed
+                                                && uploadFile.DeleteStatus == DeleteStatus.No
                                             ).ToList();
             if(uploadFiles.Any())
             {
@@ -137,7 +138,8 @@ namespace SealTypographicWebAPI.Services.Implements
             {
                 UploadFile? uploadFileQuery = dbContext.UploadFiles
                                              .FirstOrDefault(uploadFile => uploadFile.UploadType == uploadType
-                                             && uploadFile.OriginalFileName == formFile.FileName);
+                                             && uploadFile.OriginalFileName == formFile.FileName
+                                             && uploadFile.DeleteStatus == DeleteStatus.No);
                 if (uploadFileQuery != null)
                 {
 
@@ -234,6 +236,43 @@ namespace SealTypographicWebAPI.Services.Implements
             }
             else
             {
+                response.FileUploadNoData();
+            }
+
+            return response;
+        }
+
+        /// <summary>
+        /// 刪除上傳檔案(隱藏)
+        /// </summary>
+        /// <param name="uploadFileIds"></param>
+        /// <returns></returns>
+        public ResponseViewModel Delete(List<int> uploadFileIds)
+        {
+            ResponseViewModel response = new();
+            int userid = 0;
+            
+            foreach(int uploadFileId in uploadFileIds)
+            {
+                UploadFile? uploadFile = dbContext.UploadFiles.Find(uploadFileId);
+                if (uploadFile != null)
+                {
+                    uploadFile.DeleteStatus = DeleteStatus.Yes;
+                    BaseInput(uploadFile, false, userid);                    
+                }
+                else
+                {
+                    response.ErrorItem += $"{uploadFileId},";
+                }
+            }
+            if(response.ErrorItem == null)
+            {
+                response.Success();
+                dbContext.SaveChanges();
+            }
+            else
+            {
+                response.ErrorItem = response.ErrorItem.Remove(response.ErrorItem.Length - 1, 1);                
                 response.FileUploadNoData();
             }
 

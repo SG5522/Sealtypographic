@@ -132,7 +132,8 @@ namespace SealTypographicWebAPI.Services.Implements
             int userid = 0; //帳號驗證取得ID
 
             Customer? customerQuery = dbContext.Customers
-                                .FirstOrDefault(customer => customer.Code == customerForm.Code);
+                                .FirstOrDefault(customer => customer.Code == customerForm.Code
+                                                && customer.DeleteStatus == DeleteStatus.No);
 
             if (customerQuery == null)
             {

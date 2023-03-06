@@ -14,7 +14,7 @@ namespace DJLocalAPI
         private bool scanStart = false;
 
         private string[]? args;
-        private ApiServerService? apiServerService;
+        private ApiServer? apiServer;
         private ScannerService scannerService;
         public FrmDJLLocalAPI()
         {
@@ -26,12 +26,12 @@ namespace DJLocalAPI
         }
         private void DJLLocalAPI_Load(object sender, EventArgs e)
         {
-            apiServerService = new(args); 
-            apiServerService!.StartServer();
+            apiServer = new(args); 
+            apiServer!.StartServer(this.Handle);
             scannerService.InitTwain(this.Handle);
             SetMessageFilter(true);
         }
-        private void FrmDJLLocalAPI_FormClosing(object sender, FormClosingEventArgs e) => apiServerService!.StopServer();
+        private void FrmDJLLocalAPI_FormClosing(object sender, FormClosingEventArgs e) => apiServer!.StopServer();
  
         private void btnGetDrivers_Click(object sender, EventArgs e)
         {

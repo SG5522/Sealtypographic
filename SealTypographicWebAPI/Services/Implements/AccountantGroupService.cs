@@ -66,7 +66,7 @@ namespace SealTypographicWebAPI.Services.Implements
         {
             AccountantGroupPaginateViewModel accountantGroupResponses = new();            
             
-            IQueryable<AccountantGroup> accountantGroupsQuery = dbContext.AccountantGroups;
+            IQueryable<AccountantGroup> accountantGroupsQuery = dbContext.AccountantGroups.Where(x => x.DeleteStatus == DeleteStatus.No);
             if (!string.IsNullOrWhiteSpace(accountantGroupSearch.GroupName))
             {
                 accountantGroupsQuery = accountantGroupsQuery.Where
@@ -104,7 +104,8 @@ namespace SealTypographicWebAPI.Services.Implements
             ResponseViewModel response = new();
             //確認編號是否重複
             AccountantGroup? accountantGroupQuery = dbContext.AccountantGroups
-                                                .FirstOrDefault(accountantGroup => accountantGroup.AccountantGroupNumber == accountantGroupForm.AccountantGroupNumber);                                                
+                                                .FirstOrDefault(accountantGroup => accountantGroup.AccountantGroupNumber == accountantGroupForm.AccountantGroupNumber
+                                                                && accountantGroup.DeleteStatus == DeleteStatus.No);                                                
 
             if (accountantGroupQuery == null)
             {
