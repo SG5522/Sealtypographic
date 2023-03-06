@@ -7,7 +7,7 @@ namespace DJLocalAPI.Api
     /// <summary>
     /// Api Server Service 相關設定
     /// </summary>
-    public class ApiServerService
+    public class ApiServer
     {
         private readonly IHostBuilder hostBuilder;
         private IHost? apiServerHost;
@@ -15,14 +15,14 @@ namespace DJLocalAPI.Api
         /// <summary>
         ///  設定網頁及Port號
         /// </summary>
-        public ApiServerService() : this(null)
+        public ApiServer() : this(null)
         {
         }
         /// <summary>
         /// 設定網頁及Port號
         /// </summary>
         /// <param name="args"></param>
-        public ApiServerService(string[]? args)
+        public ApiServer(string[]? args)
         {
             hostBuilder = Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
@@ -34,7 +34,7 @@ namespace DJLocalAPI.Api
         /// <summary>
         /// 開啟Server
         /// </summary>
-        public async void StartServer()
+        public async void StartServer(IntPtr handle)
         {
             try
             {

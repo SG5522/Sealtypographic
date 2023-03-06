@@ -31,7 +31,7 @@ namespace ScannerLib.Services
         private IntPtr intPtrImage = IntPtr.Zero;
         // Setup information...
         // 詳細名稱的驅動程式清單
-        List<string> lszIdentity = new List<string>();
+        IList<string> lszIdentity = new List<string>();
 
         int cnt = 0;
 
