@@ -98,7 +98,7 @@ namespace SealTypographicWebAPI.Controllers
         /// </summary>
         /// <param name="uploadFileId">上傳Id</param>
         /// <returns></returns>
-        [HttpGet("{uploadFileId}")]
+        [HttpGet("{uploadFileIds}")]
         public UploadFileImageView FileImage(int uploadFileId)
         {
             UploadFileImageView uploadFileImageView = new();
@@ -205,6 +205,29 @@ namespace SealTypographicWebAPI.Controllers
             catch (Exception ex)
             {
                 Log.Error("Upload new error {@Error}", ex);
+                response.DbError();
+            }
+            return response;
+        }
+
+        /// <summary>
+        /// 刪除上傳檔案
+        /// </summary>
+        /// <param name="uploadFileIds"></param>
+        /// <returns></returns>
+        [HttpDelete]
+        public ResponseViewModel Delete(List<int> uploadFileIds)
+        {
+            ResponseViewModel response = new();
+            try
+            {
+                Log.Information("Upload Delete input {@Input}", uploadFileIds);
+                response = uploadService.Delete(uploadFileIds);
+                Log.Information("Upload Delete output {@Output}", response);
+            }
+            catch (Exception ex)
+            {
+                Log.Error("Upload Delete error {@Error}", ex);
                 response.DbError();
             }
             return response;

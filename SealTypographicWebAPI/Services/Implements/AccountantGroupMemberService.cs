@@ -35,7 +35,8 @@ namespace SealTypographicWebAPI.Services.Implements
             AccountantGroupMembers accountantGroupMembers = new();
             List<AccountantGroupMember> accountantMembers = new();            
             IQueryable<Accountant> accountantQuery = dbContext.Accountants
-                                           .Where(accountant => accountant.AccountantGroupId == accountantGroupMemberSearch.AccountantGroupId)
+                                           .Where(accountant => accountant.AccountantGroupId == accountantGroupMemberSearch.AccountantGroupId
+                                                  && accountant.DeleteStatus == DeleteStatus.No)
                                            .OrderBy(accountant => accountant.Id);
 
             if (accountantQuery.Any())
@@ -75,7 +76,8 @@ namespace SealTypographicWebAPI.Services.Implements
             List<AccountantViewModel> accountantViewModels = new();
             
             IQueryable<Accountant>? accountantQuery = dbContext.Accountants
-                                                .Where(accountant => accountant.AccountantGroupId != notThisGroupMemberSearch.AccountantGroupId)
+                                                .Where(accountant => accountant.AccountantGroupId != notThisGroupMemberSearch.AccountantGroupId
+                                                       && accountant.DeleteStatus == DeleteStatus.No)
                                                 .Include(accountant => accountant.AccountantGroup);
                                                 
             if(notThisGroupMemberSearch.KeyWord != null)

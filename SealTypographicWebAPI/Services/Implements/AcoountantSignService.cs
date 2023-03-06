@@ -115,9 +115,10 @@ namespace SealTypographicWebAPI.Services.Implements
             List<AccountantSignJournal> accountantSignJournals = new();
             int userId = 0; //從帳號驗證取得Id
 
-            //確認是否有一組草稿或待審的會計師簽印
+            //確認是否有該會計師的資料
             Accountant? accountantQuery = dbContext.Accountants.Include(accountant => accountant.AccountantSignGroupJournals)
-                                .FirstOrDefault(accountant => accountant.Id == accountantSignForms.AccountantId);
+                                        .FirstOrDefault(accountant => accountant.Id == accountantSignForms.AccountantId 
+                                        && accountant.DeleteStatus == DeleteStatus.No);
 
             if (accountantQuery != null)
             {                
