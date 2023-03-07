@@ -98,7 +98,7 @@ namespace SealTypographicWebAPI.Controllers
         /// </summary>
         /// <param name="uploadFileId">上傳Id</param>
         /// <returns></returns>
-        [HttpGet("{uploadFileIds}")]
+        [HttpGet("{uploadFileId}")]
         public UploadFileImageView FileImage(int uploadFileId)
         {
             UploadFileImageView uploadFileImageView = new();
