@@ -163,41 +163,26 @@ namespace SealTypographicWebAPI.Services.Implements
             int userid = 0; //帳號驗證取得ID
             if (uploadData.DuplicateFileIds != null)
             {
-                switch(uploadData.DuplicateFileProcessMode)
+                foreach (int duplicateFileId in uploadData.DuplicateFileIds)
                 {
-                    case DuplicateFileProcessMode.Reserve:
-                        foreach (int duplicateFileId in uploadData.DuplicateFileIds)
+                    UploadFile? uploadFile = dbContext.UploadFiles.Find(duplicateFileId);
+                    if(uploadFile != null)
+                    {
+                        //找出重複的檔案
+                        IFormFile formFile = uploadData.FormFiles.Single(f => f.FileName == uploadFile.OriginalFileName);
+                        //上傳重複檔名處理模式為覆蓋模式則將原來資料標上刪除狀態。
+                        if (uploadData.DuplicateFileProcessMode == DuplicateFileProcessMode.Overlay)
                         {
-                            UploadFile? uploadFile = dbContext.UploadFiles.Find(duplicateFileId);
-                            if(uploadFile != null)
-                            {
-                                IFormFile formFile = uploadData.FormFiles.Single(f => f.FileName == uploadFile.OriginalFileName);
-                                await SaveFile(formFile, uploadData.UploadType, uploadData.DuplicateFileProcessMode, userid, uploadfiles);
-                                uploadData.FormFiles.Remove(formFile);
-                            }                            
+                            //原檔案的刪除狀態變更為Yes
+                            uploadFile.DeleteStatus = DeleteStatus.Yes;
+                            BaseInput(uploadFile, false, userid);
                         }
-                        break;
-                    case DuplicateFileProcessMode.Overlay:
-                        foreach (int duplicateFileId in uploadData.DuplicateFileIds)
-                        {
-                            UploadFile? uploadFile = dbContext.UploadFiles.Find(duplicateFileId);
-                            if (uploadFile != null)                                                                                        
-                            {
-                                IFormFile formFile = uploadData.FormFiles.Single(f => f.FileName == uploadFile.OriginalFileName);
-                                File.Delete(uploadFile.FullPath);
-
-                                string savePath = GetSavePath(uploadData.UploadType, userid, formFile.FileName);
-                                using Stream stream = new FileStream(savePath, FileMode.Create);
-                                await formFile.CopyToAsync(stream);
-
-                                uploadFile.FullPath = savePath;
-                                BaseInput(uploadFile, false, userid);
-                                uploadData.FormFiles.Remove(formFile);
-                            }
-                        }
-                        break;
-                }
-            }
+                        //新增上傳的檔案
+                        await SaveFile(formFile, uploadData.UploadType, uploadData.DuplicateFileProcessMode, userid, uploadfiles);
+                        uploadData.FormFiles.Remove(formFile);
+                    }                            
+                }                                                                                 
+            }            
             foreach (IFormFile formFile in uploadData.FormFiles)
             {
                 await SaveFile(formFile, uploadData.UploadType, DuplicateFileProcessMode.NoRepeat, userid, uploadfiles);
@@ -205,7 +190,7 @@ namespace SealTypographicWebAPI.Services.Implements
 
             if (uploadfiles.Any())
             {
-                dbContext.UploadFiles.AddRange(uploadfiles);
+                dbContext.UploadFiles.AddRange(uploadfiles);                          
                 dbContext.SaveChanges();
                 response.Success();
             }
@@ -299,7 +284,7 @@ namespace SealTypographicWebAPI.Services.Implements
                 UploadType = uploadType,
                 FullPath = savePath
             };
-            if(processMode == DuplicateFileProcessMode.NoRepeat)
+            if(processMode != DuplicateFileProcessMode.Reserve)
             {
                 uploadFile.OriginalFileName = formFile.FileName;
             }
