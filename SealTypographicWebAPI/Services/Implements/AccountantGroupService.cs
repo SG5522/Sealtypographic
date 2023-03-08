@@ -73,7 +73,7 @@ namespace SealTypographicWebAPI.Services.Implements
                                         (
                                             accountantGroup =>                                            
                                             accountantGroup.Name.Contains(accountantGroupSearch.GroupName)
-                                            && accountantGroup.AccountantGroupNumber.Contains(accountantGroupSearch.GroupName)
+                                            || accountantGroup.AccountantGroupNumber.Contains(accountantGroupSearch.GroupName)
                                         );
             }
             accountantGroupsQuery.OrderBy(accountantGroup => accountantGroup.AccountantGroupNumber);
