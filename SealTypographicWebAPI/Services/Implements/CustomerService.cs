@@ -4,6 +4,7 @@ using DBEntities;
 using DBEntities.Consts;
 using AutoMapper;
 using SealTypographicWebAPI.Utils;
+using System.Linq;
 
 namespace SealTypographicWebAPI.Services.Implements
 {
@@ -175,10 +176,22 @@ namespace SealTypographicWebAPI.Services.Implements
 
             if (customerQuery != null)
             {
-                mapper.Map(customerFormUpdate, customerQuery);
-                BaseInputCustomer(customerQuery, false, userId);
-                dbContext.SaveChanges();
-                response.Success();
+                Customer? customerNumberRepeatCheck = dbContext.Customers
+                                                    .FirstOrDefault(customer => customer.Code == customerFormUpdate.Code
+                                                    && customer.DeleteStatus == DeleteStatus.No
+                                                    && !customer.Code.Contains(customerQuery.Code));                            
+
+                if(customerNumberRepeatCheck == null)
+                {
+                    mapper.Map(customerFormUpdate, customerQuery);
+                    BaseInputCustomer(customerQuery, false, userId);
+                    dbContext.SaveChanges();
+                    response.Success();
+                }
+                else
+                {
+                    response.CreateCustomerNumberRepeat();
+                }
             }
             else
             {

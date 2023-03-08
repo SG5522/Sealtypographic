@@ -106,7 +106,7 @@ namespace DBEntities.Consts
         /// <summary>
         /// 最大值
         /// </summary>
-        Max = 20
+        Max = 50
     }
 
     /// <summary>

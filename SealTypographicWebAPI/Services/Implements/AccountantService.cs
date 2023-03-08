@@ -151,8 +151,8 @@ namespace SealTypographicWebAPI.Services.Implements
 
             if (accountantQuery != null)
             {
-                mapper.Map(accountantFormUpdate, accountantQuery);
-                BaseInputAccountant(accountantQuery, true, userid);
+                mapper.Map(accountantFormUpdate, accountantQuery);                
+                BaseInputAccountant(accountantQuery, false, userid);
                 dbContext.SaveChanges();
                 response.Success();
             }
