@@ -110,12 +110,14 @@ namespace SealTypographicWebAPI.Services.Implements
         {
             AccountantCreateResponse accountantCreateResponse = new();
             int userid = 0;//帳號驗證取得ID
-            //確認編號是否重複
-            Accountant? accountantQuery = dbContext.Accountants
-                                    .FirstOrDefault(accountant => accountant.Code == accountantForm.AccountantNumber
-                                                    && accountant.DeleteStatus == DeleteStatus.No);                               
+            //驗證編號是否重複
+            List<string> accountantCodeQuery = dbContext.Accountants.AsNoTracking().Where
+                                            (
+                                                x => x.Code == accountantForm.AccountantNumber
+                                                && x.DeleteStatus == DeleteStatus.No
+                                            ).Select(x => x.Code).ToList();
 
-            if (accountantQuery == null)
+            if (!accountantCodeQuery.Any())
             {
                 Accountant dbAccountant = mapper.Map<Accountant>(accountantForm);
                 BaseInputAccountant(dbAccountant, true, userid);
@@ -151,7 +153,7 @@ namespace SealTypographicWebAPI.Services.Implements
 
             if (accountantQuery != null)
             {
-                mapper.Map(accountantFormUpdate, accountantQuery);                
+                mapper.Map(accountantFormUpdate, accountantQuery);
                 BaseInputAccountant(accountantQuery, false, userid);
                 dbContext.SaveChanges();
                 response.Success();

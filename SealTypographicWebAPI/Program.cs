@@ -67,6 +67,12 @@ builder.Services.AddDbContextPool<SealTypographicDbContext>(optionsBuilder =>
         default:
             throw new Exception($"Unsupported provider: {provider}");
     }
+#if DEBUG
+    optionsBuilder.UseLoggerFactory(LoggerFactory.Create(builder =>
+    {
+        builder.AddConsole().AddDebug();
+    }));
+#endif
 }, 128);
 #endregion
 
