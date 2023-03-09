@@ -4,7 +4,7 @@ using SealTypographicWebAPI.Entities;
 using SealTypographicWebAPI.Consts;
 using AutoMapper;
 using SealTypographicWebAPI.Utils;
-using System.Linq;
+using Microsoft.EntityFrameworkCore;
 
 namespace SealTypographicWebAPI.Services.Implements
 {
@@ -132,23 +132,24 @@ namespace SealTypographicWebAPI.Services.Implements
             CreateCustomerResponse createCustomerResponse = new();
             int userid = 0; //帳號驗證取得ID
 
-            Customer? customerQuery = dbContext.Customers
-                                .FirstOrDefault(customer => customer.Code == customerForm.Code
-                                                && customer.DeleteStatus == DeleteStatus.No);
+            //驗證編號是否重複
+            List<string> customerQuery = dbContext.Customers.AsNoTracking().Where
+                                            (
+                                                x => x.Code == customerForm.Code
+                                                && x.DeleteStatus == DeleteStatus.No
+                                            ).Select(x => x.Code).ToList();
 
-            if (customerQuery == null)
+            if (!customerQuery.Any())
             {
                 Customer dbCustomer = mapper.Map<Customer>(customerForm);
                 BaseInputCustomer(dbCustomer, true, userid);
                 dbContext.Customers.Add(dbCustomer);
                 dbContext.SaveChanges();
-
-                //回傳剛建立的客戶基本資料 使建立客戶印鑑找到該ID
-                Customer? customer = dbContext.Customers.Find(dbCustomer.Id);
-                                     
-                if (customer != null) 
+                                                                  
+                if (dbCustomer != null)                 
                 {
-                    createCustomerResponse.CustomerId = customer.Id;
+                    //回傳剛建立的客戶基本資料 使建立客戶印鑑找到該ID   
+                    createCustomerResponse.CustomerId = dbCustomer.Id;
                     createCustomerResponse.Success();
                 }                                      
                 else
@@ -176,22 +177,10 @@ namespace SealTypographicWebAPI.Services.Implements
 
             if (customerQuery != null)
             {
-                Customer? customerNumberRepeatCheck = dbContext.Customers
-                                                    .FirstOrDefault(customer => customer.Code == customerFormUpdate.Code
-                                                    && customer.DeleteStatus == DeleteStatus.No
-                                                    && !customer.Code.Contains(customerQuery.Code));                            
-
-                if(customerNumberRepeatCheck == null)
-                {
-                    mapper.Map(customerFormUpdate, customerQuery);
-                    BaseInputCustomer(customerQuery, false, userId);
-                    dbContext.SaveChanges();
-                    response.Success();
-                }
-                else
-                {
-                    response.CreateCustomerNumberRepeat();
-                }
+                mapper.Map(customerFormUpdate, customerQuery);
+                BaseInputCustomer(customerQuery, false, userId);
+                dbContext.SaveChanges();
+                response.Success();
             }
             else
             {

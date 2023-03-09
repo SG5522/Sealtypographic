@@ -62,9 +62,15 @@ builder.Services.AddDbContextPool<SealTypographicDbContext>(optionsBuilder =>
             optionsBuilder.UseSqlServer(config.GetConnectionString("MsSql"));
             break;
         default:
-            throw new Exception($"Unsupported provider: {provider}");            
+            throw new Exception($"Unsupported provider: {provider}");
     }
-},128);
+#if DEBUG
+    optionsBuilder.UseLoggerFactory(LoggerFactory.Create(builder =>
+    {
+        builder.AddConsole().AddDebug();
+    }));
+#endif
+}, 128);
 #endregion
 
 #region -- Service --
