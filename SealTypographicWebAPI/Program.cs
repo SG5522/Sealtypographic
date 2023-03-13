@@ -7,12 +7,16 @@ using Serilog;
 using SealTypographicWebAPI.Services.Implements;
 using SealTypographicWebAPI.Config;
 using Microsoft.AspNetCore.Mvc.Razor;
+using Microsoft.Extensions.Hosting.WindowsServices;
 
 string allowSpecificOrigins = "allowSpecificOrigins";
 string allowAllOrigins = "allowAllOrigins";
 
+Directory.SetCurrentDirectory(AppDomain.CurrentDomain.BaseDirectory);
+
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 ConfigurationManager config = builder.Configuration; // 取得 IConfiguration
+
 Log.Logger = new LoggerConfiguration()
                 .ReadFrom.Configuration(config)
                 .CreateLogger();
@@ -48,11 +52,11 @@ builder.Host.UseSerilog();// <-SeriLog
 #region -- ConectionString --
 builder.Services.AddDbContextPool<SealTypographicDbContext>(optionsBuilder =>
 {
-    string provider = config.GetValue<string>("Provider");
-    switch(provider)
-    {
-        case "Sqlite":
-            optionsBuilder.UseSqlite(config.GetConnectionString("Sqlite"));
+string? provider = config.GetValue<string>("Provider");
+switch (provider)
+{
+    case "Sqlite":
+            optionsBuilder.UseSqlite(config.GetConnectionString("Sqlite"));          
             break;
         case "MySql":
             MySqlServerVersion serverVersion = new(new Version(8, 0, 32));
@@ -146,6 +150,7 @@ builder.Services.AddSwaggerGen(c =>
     //c.SchemaFilter<EnumSchemaFilter>();
 });
 
+builder.Host.UseWindowsService();
 
 var app = builder.Build();
 

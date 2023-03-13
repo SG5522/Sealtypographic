@@ -30,7 +30,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Twaincs", "Twaincs\Twaincs.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SealTypographicWebAPITests", "SealTypographicWebAPITests\SealTypographicWebAPITests.csproj", "{05A92FF0-7396-4031-B879-0922FB1C8B45}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MySqlMigrations", "MySqlMigrations\MySqlMigrations.csproj", "{C344B34E-6120-46CA-8A75-2D129F024811}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MySqlMigrations", "MySqlMigrations\MySqlMigrations.csproj", "{C344B34E-6120-46CA-8A75-2D129F024811}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

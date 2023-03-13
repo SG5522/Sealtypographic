@@ -21,7 +21,7 @@ namespace SealTypographicWebAPI.Models.BaseModels
         /// </summary>
         /// <example>5</example>
         [Required]
-        [Range(1, (int)PageSizeLimit.Max)]
+        [Range(1, int.MaxValue)]
         public int PageSize { get; set; }
     }
 
