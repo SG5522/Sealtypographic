@@ -140,6 +140,9 @@ namespace SealTypographicWebAPI.Services.Implements
                                              .FirstOrDefault(uploadFile => uploadFile.UploadType == uploadType
                                              && uploadFile.OriginalFileName == formFile.FileName
                                              && uploadFile.DeleteStatus == DeleteStatus.No);
+
+                List<UploadFile> test = dbContext.UploadFiles.ToList();
+
                 if (uploadFileQuery != null)
                 {
 
@@ -284,14 +287,8 @@ namespace SealTypographicWebAPI.Services.Implements
                 UploadType = uploadType,
                 FullPath = savePath
             };
-            if(processMode != DuplicateFileProcessMode.Reserve)
-            {
-                uploadFile.OriginalFileName = formFile.FileName;
-            }
-            else
-            {
-                uploadFile.OriginalFileName = $"{Path.GetFileNameWithoutExtension(formFile.FileName)}(1){Path.GetExtension(formFile.FileName)}";
-            }            
+            //後續在DuplicateFileProcessMode.Reserve模式時客戶要求檔名要區分時在另做調整。
+            uploadFile.OriginalFileName = formFile.FileName;
             BaseInput(uploadFile, true, userid);
             uploadfiles.Add(uploadFile);
         }
