@@ -28,33 +28,48 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.buttonOpenimage = new System.Windows.Forms.Button();
-            this.SuspendLayout();
+            buttonOpenimage = new Button();
+            button1 = new Button();
+            SuspendLayout();
             // 
             // buttonOpenimage
             // 
-            this.buttonOpenimage.Location = new System.Drawing.Point(527, 263);
-            this.buttonOpenimage.Name = "buttonOpenimage";
-            this.buttonOpenimage.Size = new System.Drawing.Size(97, 36);
-            this.buttonOpenimage.TabIndex = 0;
-            this.buttonOpenimage.Text = "Open Image";
-            this.buttonOpenimage.UseVisualStyleBackColor = true;
-            this.buttonOpenimage.Click += new System.EventHandler(this.buttonOpenimage_Click);
+            buttonOpenimage.Location = new Point(1054, 526);
+            buttonOpenimage.Margin = new Padding(6, 6, 6, 6);
+            buttonOpenimage.Name = "buttonOpenimage";
+            buttonOpenimage.Size = new Size(194, 72);
+            buttonOpenimage.TabIndex = 0;
+            buttonOpenimage.Text = "Open Image";
+            buttonOpenimage.UseVisualStyleBackColor = true;
+            buttonOpenimage.Click += buttonOpenimage_Click;
+            // 
+            // button1
+            // 
+            button1.Location = new Point(332, 526);
+            button1.Margin = new Padding(6);
+            button1.Name = "button1";
+            button1.Size = new Size(194, 72);
+            button1.TabIndex = 1;
+            button1.Text = "Open Image";
+            button1.UseVisualStyleBackColor = true;
+            button1.Click += button1_Click;
             // 
             // Tchantest
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(703, 363);
-            this.Controls.Add(this.buttonOpenimage);
-            this.Name = "Tchantest";
-            this.Text = "Form1";
-            this.ResumeLayout(false);
-
+            AutoScaleDimensions = new SizeF(14F, 30F);
+            AutoScaleMode = AutoScaleMode.Font;
+            ClientSize = new Size(1406, 726);
+            Controls.Add(button1);
+            Controls.Add(buttonOpenimage);
+            Margin = new Padding(6, 6, 6, 6);
+            Name = "Tchantest";
+            Text = "Form1";
+            ResumeLayout(false);
         }
 
         #endregion
 
         private Button buttonOpenimage;
+        private Button button1;
     }
 }

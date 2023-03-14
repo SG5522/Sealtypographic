@@ -10,6 +10,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\DJ7Zip\DJ7Zip.csproj" />
+    <ProjectReference Include="..\DJLib\DJLib.csproj" />
     <ProjectReference Include="..\TchznSeal\TchznSeal.csproj" />
   </ItemGroup>
 
