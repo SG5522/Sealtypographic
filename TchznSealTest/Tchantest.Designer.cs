@@ -30,12 +30,13 @@
         {
             buttonOpenimage = new Button();
             button1 = new Button();
+            richTextBox1 = new RichTextBox();
             SuspendLayout();
             // 
             // buttonOpenimage
             // 
             buttonOpenimage.Location = new Point(1054, 526);
-            buttonOpenimage.Margin = new Padding(6, 6, 6, 6);
+            buttonOpenimage.Margin = new Padding(6);
             buttonOpenimage.Name = "buttonOpenimage";
             buttonOpenimage.Size = new Size(194, 72);
             buttonOpenimage.TabIndex = 0;
@@ -54,14 +55,23 @@
             button1.UseVisualStyleBackColor = true;
             button1.Click += button1_Click;
             // 
+            // richTextBox1
+            // 
+            richTextBox1.Location = new Point(343, 47);
+            richTextBox1.Name = "richTextBox1";
+            richTextBox1.Size = new Size(884, 461);
+            richTextBox1.TabIndex = 2;
+            richTextBox1.Text = "";
+            // 
             // Tchantest
             // 
             AutoScaleDimensions = new SizeF(14F, 30F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1406, 726);
+            Controls.Add(richTextBox1);
             Controls.Add(button1);
             Controls.Add(buttonOpenimage);
-            Margin = new Padding(6, 6, 6, 6);
+            Margin = new Padding(6);
             Name = "Tchantest";
             Text = "Form1";
             ResumeLayout(false);
@@ -71,5 +81,6 @@
 
         private Button buttonOpenimage;
         private Button button1;
+        private RichTextBox richTextBox1;
     }
 }

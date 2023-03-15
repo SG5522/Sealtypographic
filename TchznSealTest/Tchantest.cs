@@ -1,7 +1,6 @@
 ﻿using TchznSeal;
-using DJ7Zip;
 using DJLib;
-using DJLib.Models;
+using DJSharpZipLib;
 
 namespace TchznSealTest
 {
@@ -14,7 +13,7 @@ namespace TchznSealTest
         }
 
         private void OpenDialog(OpenFileDialog dialog)
-        {            
+        {
             dialog.Multiselect = false;//該值確定是否可以選擇多個檔案
             dialog.Title = "請選擇資料夾";
             dialog.Filter = "所有檔案(*.*)|*.*";
@@ -43,7 +42,8 @@ namespace TchznSealTest
                 string ImageBase64 = ImageSharpUtil.PathImageFileToBase64(filepath);
                 string base64String = ImageBase64.Substring(ImageBase64.IndexOf("base64,") + 7);
                 byte[] bytes = Convert.FromBase64String(base64String);
-                DjSevenZip.CompressBytes(bytes);
+                DJZip.CompressBytes(bytes, "123", Path.Combine($"D:/", "test.bmp"));
+
             }
         }
     }
