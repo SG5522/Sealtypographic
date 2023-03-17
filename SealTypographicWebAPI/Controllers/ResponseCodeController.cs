@@ -2,6 +2,7 @@
 using Serilog;
 using SealTypographicWebAPI.Services.Implements;
 using SealTypographicWebAPI.Models;
+using SealTypographicWebAPI.Consts;
 
 namespace SealTypographicWebAPI.Controllers
 {
@@ -45,6 +46,17 @@ namespace SealTypographicWebAPI.Controllers
                 Log.Error("ResponseCode ResponseCodeList error {@Error}", ex);                
             }
             return responseCodeList;
-        }          
+        }
+
+        /// <summary>
+        /// 依多國語系取得訊息
+        /// </summary>
+        /// <param name="responseCode"></param>
+        /// <returns></returns>
+        [HttpGet("[Action]")]
+        public string Message(ResponseCode responseCode)
+        {            
+            return responseCodeService.GetLocalizerMessage(responseCode);
+        }
     }
 }
