@@ -8,6 +8,7 @@ using SealTypographicWebAPI.Services.Implements;
 using SealTypographicWebAPI.Config;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.Extensions.Hosting.WindowsServices;
+using SealTypographicWebAPI.Utils;
 
 string allowSpecificOrigins = "allowSpecificOrigins";
 string allowAllOrigins = "allowAllOrigins";
@@ -78,7 +79,6 @@ switch (provider)
 #endregion
 
 #region -- Service --
-
 builder.Services.AddScoped<ImageService>();
 builder.Services.AddScoped<SealMappingConfigService>();
 builder.Services.AddScoped<ResponseCodeService>();
@@ -97,6 +97,7 @@ builder.Services.AddScoped<IAccountantSignService, AcoountantSignService>();
 builder.Services.AddScoped<ILetterheadService, LetterheadService>();
 builder.Services.AddScoped<ILetterheadImageService, LetterheadImageService>();
 builder.Services.AddScoped<UploadService>();
+
 
 #endregion
 

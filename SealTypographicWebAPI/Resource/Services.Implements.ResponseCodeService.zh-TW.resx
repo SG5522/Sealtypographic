@@ -1,0 +1,272 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="AccountantGroupNoData" xml:space="preserve">
+    <value>查無會計師群組資料</value>
+    <comment>3200</comment>
+  </data>
+  <data name="AccountantNoData" xml:space="preserve">
+    <value>查無會計師資料</value>
+    <comment>3001</comment>
+  </data>
+  <data name="AccountantNumberRepeat" xml:space="preserve">
+    <value>會計師編號重複，請重新確認</value>
+    <comment>3002</comment>
+  </data>
+  <data name="AccountantSignNoData" xml:space="preserve">
+    <value>查無會計師簽印資料</value>
+    <comment>3101</comment>
+  </data>
+  <data name="CreateAccountantFailed" xml:space="preserve">
+    <value>建立會計師資料失敗</value>
+    <comment>3010</comment>
+  </data>
+  <data name="CreateAccountantGroupNumberRepeat" xml:space="preserve">
+    <value>會計師群組編號重複，無法建立群組，請重新確認編號</value>
+    <comment>3211</comment>
+  </data>
+  <data name="CreateAccountantNumberRepeat" xml:space="preserve">
+    <value>會計師編號重複，無法建檔，請重新確認編號</value>
+    <comment>3011</comment>
+  </data>
+  <data name="CreateAccountantSignRepeat" xml:space="preserve">
+    <value>會計師簽印序號重複，無法建立新的印鑑</value>
+    <comment>3111</comment>
+  </data>
+  <data name="CreateCustomerFailed" xml:space="preserve">
+    <value>客戶資料建立失敗</value>
+    <comment>2010</comment>
+  </data>
+  <data name="CreateCustomerNumberRepeat" xml:space="preserve">
+    <value>客戶編號重複，無法建檔，請重新確認編號</value>
+    <comment>2011</comment>
+  </data>
+  <data name="CreateCustomerSealQuarterRepeat" xml:space="preserve">
+    <value>客戶印鑑季度重複，無法建立新的印鑑</value>
+    <comment>2112</comment>
+  </data>
+  <data name="CreateCustomerSealSequenceRepeat" xml:space="preserve">
+    <value>客戶印鑑序號重複，無法建立新的印鑑</value>
+    <comment>2111</comment>
+  </data>
+  <data name="CreateLetterheadNoData" xml:space="preserve">
+    <value>查無信頭資料</value>
+    <comment>4012</comment>
+  </data>
+  <data name="CustomeNoData" xml:space="preserve">
+    <value>查無客戶資料</value>
+    <comment>2001</comment>
+  </data>
+  <data name="CustomerSealNoData" xml:space="preserve">
+    <value>查無客戶印鑑資料</value>
+    <comment>2102</comment>
+  </data>
+  <data name="CustomerSealSequenceRepeat" xml:space="preserve">
+    <value>客戶印鑑序號重複，請確認印鑑</value>
+    <comment>2101</comment>
+  </data>
+  <data name="DbError" xml:space="preserve">
+    <value>資料庫異常，請聯絡工程師</value>
+    <comment>1001</comment>
+  </data>
+  <data name="DbNoData" xml:space="preserve">
+    <value>資料庫無資料</value>
+    <comment>1000</comment>
+  </data>
+  <data name="DeleteAccountantGroupNoData" xml:space="preserve">
+    <value>查無會計師群組資料，無法刪除會計師群組資料</value>
+    <comment>3231</comment>
+  </data>
+  <data name="DeleteAccountantNoData" xml:space="preserve">
+    <value>查無會計師資料，無法刪除會計師資料</value>
+    <comment>3031</comment>
+  </data>
+  <data name="DeleteAccountantSignNoData" xml:space="preserve">
+    <value>查無會計師簽印資料，無法刪除印鑑</value>
+    <comment>3131</comment>
+  </data>
+  <data name="DeleteCustomerNoData" xml:space="preserve">
+    <value>查無客戶資料，無法刪除客戶資料</value>
+    <comment>2031</comment>
+  </data>
+  <data name="DeleteCustomerSealNoData" xml:space="preserve">
+    <value>查無客戶印鑑資料，無法刪除印鑑</value>
+    <comment>2131</comment>
+  </data>
+  <data name="DeleteLetterheadImageNoData" xml:space="preserve">
+    <value>查無信頭圖像資料，無法刪除信頭圖像資料</value>
+    <comment>4131</comment>
+  </data>
+  <data name="DeleteLetterheadNoData" xml:space="preserve">
+    <value>查無信頭資料，無法刪除信頭資料</value>
+    <comment>4031</comment>
+  </data>
+  <data name="FileUploadFailed" xml:space="preserve">
+    <value>檔案上傳失敗，請確認網路環境</value>
+    <comment>6001</comment>
+  </data>
+  <data name="FileUploadNoData" xml:space="preserve">
+    <value>查無上傳資料，請確認或重新上傳</value>
+    <comment>6002</comment>
+  </data>
+  <data name="LetterheadImageNoData" xml:space="preserve">
+    <value>查無信頭圖像資料</value>
+    <comment>4102</comment>
+  </data>
+  <data name="Success" xml:space="preserve">
+    <value>成功</value>
+    <comment>0</comment>
+  </data>
+  <data name="UpdateAccountantGroupNoData" xml:space="preserve">
+    <value>查無會計師群組資料，無法更新會計師群組資料</value>
+    <comment>3221</comment>
+  </data>
+  <data name="UpdateAccountantNoData" xml:space="preserve">
+    <value>查無會計師資料，無法更新會計師資料</value>
+    <comment>3021</comment>
+  </data>
+  <data name="UpdateAccountantSignNoData" xml:space="preserve">
+    <value>查無會計師簽印資料，無法更新印鑑</value>
+    <comment>3122</comment>
+  </data>
+  <data name="UpdateAccountantSignRepeat" xml:space="preserve">
+    <value>會計師簽印序號重複，無法更新印鑑</value>
+    <comment>3121</comment>
+  </data>
+  <data name="UpdateCustomerNoData" xml:space="preserve">
+    <value>查無客戶資料，無法更新客戶資料</value>
+    <comment>2021</comment>
+  </data>
+  <data name="UpdateCustomerSealNoData" xml:space="preserve">
+    <value>查無客戶印鑑資料，無法更新印鑑</value>
+    <comment>2122</comment>
+  </data>
+  <data name="UpdateCustomerSealSequenceRepeat" xml:space="preserve">
+    <value>客戶印鑑序號重複，無法更新印鑑</value>
+    <comment>2121</comment>
+  </data>
+  <data name="UpdateLetterheadImageNoData" xml:space="preserve">
+    <value>查無信頭圖像資料，無法更新信頭圖像資料</value>
+    <comment>4122</comment>
+  </data>
+  <data name="UpdateLetterheadNoData" xml:space="preserve">
+    <value>查無信頭資料，無法更新信頭資料</value>
+    <comment>4021</comment>
+  </data>
+</root>

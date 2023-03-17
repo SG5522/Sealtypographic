@@ -7,7 +7,6 @@ namespace SealTypographicWebAPI.Consts
     /// </summary>
     public enum ResponseCode
     {
-
         /// <summary>
         /// 回傳成功
         /// </summary>
