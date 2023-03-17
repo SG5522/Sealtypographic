@@ -1,7 +1,5 @@
 ﻿using Microsoft.Extensions.Localization;
-using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Extensions;
-using SealTypographicWebAPI.Config;
 using SealTypographicWebAPI.Consts;
 using SealTypographicWebAPI.Models;
 

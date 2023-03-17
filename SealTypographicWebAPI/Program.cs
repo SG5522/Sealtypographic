@@ -8,7 +8,6 @@ using SealTypographicWebAPI.Services.Implements;
 using SealTypographicWebAPI.Config;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.Extensions.Hosting.WindowsServices;
-using SealTypographicWebAPI.Utils;
 
 string allowSpecificOrigins = "allowSpecificOrigins";
 string allowAllOrigins = "allowAllOrigins";
