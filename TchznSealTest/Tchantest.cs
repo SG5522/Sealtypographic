@@ -42,7 +42,7 @@ namespace TchznSealTest
                 string ImageBase64 = ImageSharpUtil.PathImageFileToBase64(filepath);
                 string base64String = ImageBase64.Substring(ImageBase64.IndexOf("base64,") + 7);
                 byte[] bytes = Convert.FromBase64String(base64String);
-                DJZip.CompressBytes(bytes, "", Path.Combine($"D:/", "test.bmp.gz"));
+                DJGZip.CompressBytes(bytes, Path.Combine($"D:/", "test.bmp"));
 
             }
         }

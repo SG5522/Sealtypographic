@@ -38,7 +38,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sqlite", "SqliteMigrations\
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Migrations", "Migrations", "{D0BA96F1-ECAC-42F5-AEAE-99065BF32392}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DJSharpZipLib", "DJSharpZipLib\DJSharpZipLib.csproj", "{F9985A72-436F-45EF-BC42-AF8A0C41EF10}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DJSharpZipLib", "DJSharpZipLib\DJSharpZipLib.csproj", "{F9985A72-436F-45EF-BC42-AF8A0C41EF10}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DJEncryption", "DJEncryption\DJEncryption.csproj", "{6EB514B1-FC00-4332-AEAE-1D1F8C8B882F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -230,6 +232,18 @@ Global
 		{F9985A72-436F-45EF-BC42-AF8A0C41EF10}.Release|x64.Build.0 = Release|Any CPU
 		{F9985A72-436F-45EF-BC42-AF8A0C41EF10}.Release|x86.ActiveCfg = Release|Any CPU
 		{F9985A72-436F-45EF-BC42-AF8A0C41EF10}.Release|x86.Build.0 = Release|Any CPU
+		{6EB514B1-FC00-4332-AEAE-1D1F8C8B882F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6EB514B1-FC00-4332-AEAE-1D1F8C8B882F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6EB514B1-FC00-4332-AEAE-1D1F8C8B882F}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{6EB514B1-FC00-4332-AEAE-1D1F8C8B882F}.Debug|x64.Build.0 = Debug|Any CPU
+		{6EB514B1-FC00-4332-AEAE-1D1F8C8B882F}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{6EB514B1-FC00-4332-AEAE-1D1F8C8B882F}.Debug|x86.Build.0 = Debug|Any CPU
+		{6EB514B1-FC00-4332-AEAE-1D1F8C8B882F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6EB514B1-FC00-4332-AEAE-1D1F8C8B882F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6EB514B1-FC00-4332-AEAE-1D1F8C8B882F}.Release|x64.ActiveCfg = Release|Any CPU
+		{6EB514B1-FC00-4332-AEAE-1D1F8C8B882F}.Release|x64.Build.0 = Release|Any CPU
+		{6EB514B1-FC00-4332-AEAE-1D1F8C8B882F}.Release|x86.ActiveCfg = Release|Any CPU
+		{6EB514B1-FC00-4332-AEAE-1D1F8C8B882F}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
