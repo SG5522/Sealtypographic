@@ -17,20 +17,17 @@ namespace DJSharpZipLib
         /// </summary>
         /// <param name="inputBytes"></param>
         /// <param name="outfile"></param>
-        public static byte[] CompressBytes(byte[] inputBytes, string outfile)
-        {
-            byte[] compressedData = new byte[4096];            
-            using (MemoryStream compressedDataStream = new MemoryStream())
-            using (FileStream fileStream = File.Create(outfile))
-            using (GZipOutputStream gzipOutputStream = new GZipOutputStream(compressedDataStream))
+        public static byte[] CompressBytes(byte[] inputBytes)
+        {            
+            using (MemoryStream outputMemoryStream = new MemoryStream())
             {
-                gzipOutputStream.SetLevel(9);
-                gzipOutputStream.Write(inputBytes, 0, inputBytes.Length);
-                gzipOutputStream.Flush();
-                compressedData = compressedDataStream.ToArray();
-            }            
-            File.WriteAllBytes(outfile, compressedData);
-            return compressedData;
+                using (GZipOutputStream gzipOutputStream = new GZipOutputStream(outputMemoryStream ))
+                {
+                    gzipOutputStream.SetLevel(9);
+                    gzipOutputStream.Write(inputBytes, 0, inputBytes.Length);                    
+                }
+                return outputMemoryStream .ToArray();
+            }
         }
         
         /// <summary>
@@ -39,18 +36,72 @@ namespace DJSharpZipLib
         /// <param name="filePath"></param>
         /// <param name="password"></param>
         /// <returns></returns>
-        public string UnCompressToBase64(string filePath, string password)
+        public static byte[] DecompressBytes(byte[] inputBytes)
         {
-            string base64 = string.Empty;
-            using (FileStream fileStream = File.OpenRead(filePath))
-            using (ZipFile zipFile = new ZipFile(fileStream))
+            using (var inputMemoryStream = new MemoryStream(inputBytes))
             {
-                if(!string.IsNullOrEmpty(password))
+                using (var gzipStream = new GZipInputStream(inputMemoryStream))
                 {
-                    zipFile.Password = password;
-                }                               
+                    using (var outputMemoryStream = new MemoryStream())
+                    {
+                        var buffer = new byte[4096];
+                        int read;
+                        while ((read = gzipStream.Read(buffer, 0, buffer.Length)) > 0)
+                        {
+                            outputMemoryStream.Write(buffer, 0, read);
+                        }
+                        return outputMemoryStream.ToArray();
+                    }
+                }
             }
-            return base64;
+        }
+
+        /// <summary>
+        /// 透過路徑壓縮檔案並輸出
+        /// </summary>
+        /// <param name="sourceFile"></param>
+        /// <param name="destinationFile"></param>
+        public static void CompressToFile(string sourceFile, string destinationFile)
+        {
+            using (var inputStream = new FileStream(sourceFile, FileMode.Open))
+            {
+                using (var outputStream = new FileStream(destinationFile, FileMode.Create))
+                {
+                    using (var gzipStream = new GZipOutputStream(outputStream))
+                    {
+                        var buffer = new byte[4096];
+                        int read;
+                        while ((read = inputStream.Read(buffer, 0, buffer.Length)) > 0)
+                        {
+                            gzipStream.Write(buffer, 0, read);
+                        }
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// 透過路徑解縮檔案
+        /// </summary>
+        /// <param name="sourceFile"></param>
+        /// <param name="destinationFile"></param>
+        public static void DecompressToFile(string sourceFile, string destinationFile)
+        {
+            using (var inputStream = new FileStream(sourceFile, FileMode.Open))
+            {
+                using (var gzipStream = new GZipInputStream(inputStream))
+                {
+                    using (var outputStream = new FileStream(destinationFile, FileMode.Create))
+                    {
+                        var buffer = new byte[4096];
+                        int read;
+                        while ((read = gzipStream.Read(buffer, 0, buffer.Length)) > 0)
+                        {
+                            outputStream.Write(buffer, 0, read);
+                        }
+                    }
+                }
+            }
         }
     }
 }
