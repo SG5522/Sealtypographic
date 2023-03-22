@@ -3,14 +3,16 @@ using DJLib;
 using DJSharpZipLib;
 using DJEncryption;
 using System.Data.SqlTypes;
+using System.Text;
+using System.Collections.Generic;
 
 namespace TchznSealTest
 {
     public partial class Tchantest : Form
     {
         private readonly AutoSealSplit autoSealSplit = new();
-        private string SaltString = string.Empty;
-        private string Password = string.Empty;
+        private const string NewLine = @"\r\n";
+        private const string LF = @"\n";
         public Tchantest()
         {
             InitializeComponent();
@@ -50,16 +52,19 @@ namespace TchznSealTest
                 string ImageBase64 = ImageSharpUtil.PathImageFileToBase64(filepath);
                 string base64String = ImageBase64.Substring(ImageBase64.IndexOf("base64,") + 7);
                 byte[] bytes = Convert.FromBase64String(base64String);
-                //DJGZip.CompressBytes(bytes, Path.Combine($"D:/", "test.bmp"));
+                EncryptionWithAES encryptionWithAES = EncryptionWithAES.Encrypte(bytes, 12);
+                Dictionary<string, byte[]> src = new()
+                {
+                    [$"{dialog.SafeFileName}"] = encryptionWithAES.EncryptionData,
+                    [$"{dialog.SafeFileName}.txt"] = Encoding.UTF8.GetBytes($"{encryptionWithAES.SaltString}{LF}{encryptionWithAES.Password}")
+                };
+                //byte[] outbytes = DJGZip.CompressBytes(encryptionWithAES.EncryptionData);
+                //byte[] outbytes = DJZip.Compress(src);
+                byte[] outbytes = DJ7Zip.Compress(src);
 
-                //DJGZip.CompressToFile(filepath, Path.Combine($"D:/", "gztest.gz"));
-                byte[] outbytes = DJGZip.CompressBytes(bytes);
-                EncryptionWithAES encryptionWithAES = EncryptionWithAES.Encrypte(outbytes, 12);
 
-                label1.Text = encryptionWithAES.SaltString;
-                label2.Text = encryptionWithAES.Password;
                 //File.WriteAllBytes(Path.Combine($"D:/", "gztest.gz"), outbytes);
-                File.WriteAllBytes(Path.Combine($"D:/", "gztest.gz"), encryptionWithAES.EncryptionData);
+                File.WriteAllBytes(Path.Combine($"C:/DJimage/TestSealcard", "ziptest.7z"), outbytes);
             }
         }
 
@@ -76,11 +81,16 @@ namespace TchznSealTest
             if (dialog.ShowDialog() == DialogResult.OK)
             {
                 string filepath = dialog.FileName;
-                encryptionWithAES.EncryptionData = File.ReadAllBytes(filepath);
-                encryptionWithAES.SaltString = label1.Text;
-                encryptionWithAES.Password = label2.Text;
+                //encryptionWithAES.EncryptionData = File.ReadAllBytes(filepath);                
+                //byte[] outBytes = EncryptionWithAES.Decrypt(encryptionWithAES);
+                //outBytes = DJGZip.DecompressBytes(outBytes);
+                Dictionary<string, byte[]> src = DJZip.Decompress(File.ReadAllBytes(filepath));
+                string txt = Encoding.UTF8.GetString(src.Last().Value);
+                string[] lines = txt.Split(new[] { NewLine, LF }, StringSplitOptions.None);
+                encryptionWithAES.EncryptionData = src.First().Value;
+                encryptionWithAES.SaltString = lines[0];
+                encryptionWithAES.Password = lines[1];
                 byte[] outBytes = EncryptionWithAES.Decrypt(encryptionWithAES);
-                outBytes = DJGZip.DecompressBytes(outBytes);
                 File.WriteAllBytes(Path.Combine($"D:/", "gztest.bmp"), outBytes);
             }
         }

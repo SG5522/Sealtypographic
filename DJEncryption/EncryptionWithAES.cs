@@ -28,7 +28,6 @@ namespace DJEncryption
 
             Setting(rijndaelManaged, salt, password);
             
-
             // Encrypt the input data using AES
             using (MemoryStream inputStream = new MemoryStream(inputBytes))
             using (MemoryStream outputStream = new MemoryStream())
@@ -75,7 +74,6 @@ namespace DJEncryption
                     bytesRead = cryptoStream.Read(buffer, 0, buffer.Length);
                     outputStream.Write(buffer, 0, bytesRead);
                 } while (bytesRead > 0);
-
                 return outputStream.ToArray();
             }            
         }

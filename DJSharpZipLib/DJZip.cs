@@ -1,107 +1,57 @@
-﻿using System;
+﻿using ICSharpCode.SharpZipLib.Zip;
+using System.Collections;
+using System.Collections.Generic;
 using System.IO;
-using ICSharpCode.SharpZipLib;
-using ICSharpCode.SharpZipLib.Zip;
-using ICSharpCode.SharpZipLib.GZip;
-using ICSharpCode.SharpZipLib.Encryption;
-using ICSharpCode.SharpZipLib.Core;
-using System.Security.Cryptography;
-using ICSharpCode.SharpZipLib.BZip2;
 
 namespace DJSharpZipLib
 {
-    public class DJGZip
+    public class DJZip
     {
-        /// <summary>
-        /// 壓縮
-        /// </summary>
-        /// <param name="inputBytes"></param>
-        /// <param name="outfile"></param>
-        public static byte[] CompressBytes(byte[] inputBytes)
-        {            
-            using (MemoryStream outputMemoryStream = new MemoryStream())
+        public static byte[] Compress(Dictionary<string, byte[]> sourceDatas)
+        {
+            using (var memoryStream = new MemoryStream())
             {
-                using (GZipOutputStream gzipOutputStream = new GZipOutputStream(outputMemoryStream ))
+                using (ZipOutputStream zipOutputStream = new ZipOutputStream(memoryStream))
                 {
-                    gzipOutputStream.SetLevel(9);
-                    gzipOutputStream.Write(inputBytes, 0, inputBytes.Length);                    
+                    zipOutputStream.SetLevel(9); // 設定壓縮等級，1~9，9為最高等級
+                    foreach (var sourceData in sourceDatas)
+                    {
+                        ZipEntry entry = new ZipEntry(sourceData.Key);
+                        zipOutputStream.PutNextEntry(entry);
+                        zipOutputStream.Write(sourceData.Value, 0, sourceData.Value.Length);
+                        zipOutputStream.CloseEntry();
+                    }
                 }
-                return outputMemoryStream .ToArray();
+                return memoryStream.ToArray();
             }
         }
-        
-        /// <summary>
-        /// 解壓縮
-        /// </summary>
-        /// <param name="filePath"></param>
-        /// <param name="password"></param>
-        /// <returns></returns>
-        public static byte[] DecompressBytes(byte[] inputBytes)
+        public static Dictionary<string, byte[]> Decompress(byte[] compressedData)
         {
-            using (var inputMemoryStream = new MemoryStream(inputBytes))
+            Dictionary<string, byte[]> result = new Dictionary<string, byte[]>();
+            using (MemoryStream compressedStream = new MemoryStream(compressedData))
             {
-                using (var gzipStream = new GZipInputStream(inputMemoryStream))
+                using (ZipInputStream zipInputStream = new ZipInputStream(compressedStream))
                 {
-                    using (var outputMemoryStream = new MemoryStream())
+                    ZipEntry entry;
+                    while ((entry = zipInputStream.GetNextEntry()) != null)
                     {
-                        var buffer = new byte[4096];
-                        int read;
-                        while ((read = gzipStream.Read(buffer, 0, buffer.Length)) > 0)
+                        byte[] buffer = new byte[entry.Size];
+                        int offset = 0;
+                        while (offset < buffer.Length)
                         {
-                            outputMemoryStream.Write(buffer, 0, read);
+                            var bytesRead = zipInputStream.Read(buffer, offset, buffer.Length - offset);
+                            if (bytesRead == 0)
+                            {
+                                break;
+                            }
+                            offset += bytesRead;
                         }
-                        return outputMemoryStream.ToArray();
+                        // 將解壓縮後的資料存儲到字典中，使用 entry 的名稱作為 key
+                        result[entry.Name] = buffer;
                     }
                 }
             }
-        }
-
-        /// <summary>
-        /// 透過路徑壓縮檔案並輸出
-        /// </summary>
-        /// <param name="sourceFile"></param>
-        /// <param name="destinationFile"></param>
-        public static void CompressToFile(string sourceFile, string destinationFile)
-        {
-            using (var inputStream = new FileStream(sourceFile, FileMode.Open))
-            {
-                using (var outputStream = new FileStream(destinationFile, FileMode.Create))
-                {
-                    using (var gzipStream = new GZipOutputStream(outputStream))
-                    {
-                        var buffer = new byte[4096];
-                        int read;
-                        while ((read = inputStream.Read(buffer, 0, buffer.Length)) > 0)
-                        {
-                            gzipStream.Write(buffer, 0, read);
-                        }
-                    }
-                }
-            }
-        }
-
-        /// <summary>
-        /// 透過路徑解縮檔案
-        /// </summary>
-        /// <param name="sourceFile"></param>
-        /// <param name="destinationFile"></param>
-        public static void DecompressToFile(string sourceFile, string destinationFile)
-        {
-            using (var inputStream = new FileStream(sourceFile, FileMode.Open))
-            {
-                using (var gzipStream = new GZipInputStream(inputStream))
-                {
-                    using (var outputStream = new FileStream(destinationFile, FileMode.Create))
-                    {
-                        var buffer = new byte[4096];
-                        int read;
-                        while ((read = gzipStream.Read(buffer, 0, buffer.Length)) > 0)
-                        {
-                            outputStream.Write(buffer, 0, read);
-                        }
-                    }
-                }
-            }
+            return result;
         }
     }
 }
