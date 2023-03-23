@@ -1,6 +1,5 @@
 using DBEntities.Consts;
 ﻿using Microsoft.Extensions.Localization;
-using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Extensions;
 using SealTypographicWebAPI.Models;
 
