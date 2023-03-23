@@ -139,7 +139,8 @@ namespace SealTypographicWebAPI.Services.Implements
                 UploadFile? uploadFileQuery = dbContext.UploadFiles
                                              .FirstOrDefault(uploadFile => uploadFile.UploadType == uploadType
                                              && uploadFile.OriginalFileName == formFile.FileName
-                                             && uploadFile.DeleteStatus == DeleteStatus.No);
+                                             && uploadFile.DeleteStatus == DeleteStatus.No
+                                            && uploadFile.FileWorkStatus == FileWorkStatus.Unprocessed);//檢查重複時連同工作狀態一起檢查(未來製作檔案管理時可能要拔掉這塊)
 
                 List<UploadFile> test = dbContext.UploadFiles.ToList();
 
