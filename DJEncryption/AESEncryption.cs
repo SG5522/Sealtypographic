@@ -6,7 +6,7 @@ using static System.Net.Mime.MediaTypeNames;
 
 namespace DJEncryption
 {
-    public class EncryptionWithAES
+    public class AESEncryption
     {
         public byte[] EncryptionData { get; set; }
         public string SaltString { get; set; }
@@ -17,9 +17,9 @@ namespace DJEncryption
         /// </summary>
         /// <param name="inputBytes">輸入的Byte[]</param>
         /// <param name="password">密碼</param>
-        public static EncryptionWithAES Encrypte(byte[] inputBytes, int passwordLength)
+        public static AESEncryption Encrypte(byte[] inputBytes, int passwordLength)
         {
-            EncryptionWithAES encryptionWithAES = new EncryptionWithAES();
+            AESEncryption encryptionWithAES = new AESEncryption();
             RijndaelManaged rijndaelManaged = new RijndaelManaged();
 
             byte[] salt = GenerateRandomSalt();
@@ -55,7 +55,7 @@ namespace DJEncryption
         /// </summary>
         /// <param name="inputFile"></param>       
         /// <param name="password"></param>
-        public static byte[] Decrypt(EncryptionWithAES encryptionWithAES)
+        public static byte[] Decrypt(AESEncryption encryptionWithAES)
         {            
             RijndaelManaged rijndaelManaged = new RijndaelManaged();
             byte[] salt = Convert.FromBase64String(encryptionWithAES.SaltString);
