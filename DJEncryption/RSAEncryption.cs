@@ -14,7 +14,7 @@ namespace DJEncryption
         }
 
         public string GetPublicKey()
-        {
+        {            
             return rSA.ToXmlString(false);
         }
 
