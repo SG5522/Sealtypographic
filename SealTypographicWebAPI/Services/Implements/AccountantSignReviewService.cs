@@ -200,6 +200,7 @@ namespace SealTypographicWebAPI.Services.Implements
                                 foreach(AccountantSignGroupJournal accountantSignGroup in accountantSignGroups)
                                 {
                                     accountantSignGroup.ReviewStatus = ReviewStatus.Disabled;
+                                    accountantSignGroup.EndDate = DateTime.Now;
                                 }                                
                             }
                             

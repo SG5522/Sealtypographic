@@ -116,7 +116,12 @@ namespace SealTypographicWebAPI.Services.Implements
             if (customerQuery != null)
             {
                 CustomerSealQuarterJournal? sealQuarterJournalQuery = customerQuery.CustomerSealQuarterJournals
-                                                                    .FirstOrDefault(customerSealQuarterJournal => customerSealQuarterJournal.Quarter == customerSealForms.Quarter);
+                                                                    .FirstOrDefault
+                                                                    (
+                                                                        customerSealQuarterJournal => 
+                                                                        customerSealQuarterJournal.Quarter == customerSealForms.Quarter
+                                                                        && customerSealQuarterJournal.DeleteStatus == DeleteStatus.No                                                                        
+                                                                    );
 
                 if (sealQuarterJournalQuery == null)
                 {                    
