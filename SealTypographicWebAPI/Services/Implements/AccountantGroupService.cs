@@ -3,6 +3,7 @@ using EFCore.BulkExtensions;
 using SealTypographicWebAPI.Consts;
 using SealTypographicWebAPI.Entities;
 using SealTypographicWebAPI.Models;
+using SealTypographicWebAPI.Models.Accountant;
 using SealTypographicWebAPI.Models.AccountantGroup;
 using SealTypographicWebAPI.Utils;
 
@@ -73,7 +74,7 @@ namespace SealTypographicWebAPI.Services.Implements
                                         (
                                             accountantGroup =>                                            
                                             accountantGroup.Name.Contains(accountantGroupSearch.GroupName)
-                                            || accountantGroup.AccountantGroupNumber.Contains(accountantGroupSearch.GroupName)
+                                            || accountantGroup.AccountantGroupNumber.ToLower().Contains(accountantGroupSearch.GroupName.ToLower())
                                         );
             }
             accountantGroupsQuery.OrderBy(accountantGroup => accountantGroup.AccountantGroupNumber);
