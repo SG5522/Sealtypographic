@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 
 namespace DBEntities
 {
-    public class Template : BaseNameData
+    public class Template : Location
     {
-
+        public string Image
     }
 }
