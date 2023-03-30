@@ -7,7 +7,7 @@
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <DocumentationFile></DocumentationFile>
     <IncrementVersionOnBuild>0.0.1.1+</IncrementVersionOnBuild>
-    <Version>0.0.1.152</Version>
+    <Version>0.0.1.182</Version>
     <PackageIcon>android-chrome-192x192.png</PackageIcon>    
   </PropertyGroup>
 
@@ -20,12 +20,6 @@
 
   <ItemGroup>    
     <Compile Remove="Services\Implements\ImageFuntion.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Remove="SealTypographic.db" />
-    <None Remove="SealTypographic.db-shm" />
-    <None Remove="SealTypographic.db-wal" />
   </ItemGroup>
 
   <ItemGroup>

@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 
 #nullable disable
 
-namespace MySqlMigrations.Migrations
+namespace MySql.Migrations
 {
     [DbContext(typeof(SealTypographicDbContext))]
     partial class SealTypographicDbContextModelSnapshot : ModelSnapshot

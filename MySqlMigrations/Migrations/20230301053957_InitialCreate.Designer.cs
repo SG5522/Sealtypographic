@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace MySqlMigrations.Migrations
+namespace MySql.Migrations
 {
     [DbContext(typeof(SealTypographicDbContext))]
     [Migration("20230301053957_InitialCreate")]

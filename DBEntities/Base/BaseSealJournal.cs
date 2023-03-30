@@ -3,7 +3,7 @@
     /// <summary>
     /// 各項印鑑(簽名)歷程基本資料
     /// </summary>
-    public class BaseSealJournal : BaseData
+    public abstract class BaseSealJournal : BaseData
     {
         /// <summary>
         /// 圖檔路徑

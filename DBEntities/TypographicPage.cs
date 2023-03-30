@@ -14,11 +14,6 @@ namespace DBEntities
         public int PageNumber { get; set; }
 
         /// <summary>
-        /// PDFID
-        /// </summary>
-        public int TypographicPDFId { get; set; }
-
-        /// <summary>
         /// 排版PDF資料表
         /// </summary>
         public TypographicPDF TypographicPDF { get; set; }

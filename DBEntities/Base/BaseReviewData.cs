@@ -5,7 +5,7 @@ namespace DBEntities.Base
     /// <summary>
     /// 客戶印鑑季度、會計師簽印審核基本資料
     /// </summary>
-    public class BaseReviewData : BaseData
+    public abstract class BaseReviewData : BaseData
     {
         /// <summary>
         /// 檢核人員Id

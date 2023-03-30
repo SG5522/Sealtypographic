@@ -83,6 +83,11 @@ namespace DBEntities
         public string? Fax { get; set; }
 
         /// <summary>
+        /// 會計師事務所
+        /// </summary>
+        public Company Company { get; set; }
+
+        /// <summary>
         /// 客戶印鑑季度歷程表
         /// </summary>
         public List<CustomerSealQuarterJournal> CustomerSealQuarterJournals { get; set; }

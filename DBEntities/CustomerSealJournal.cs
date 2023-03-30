@@ -19,6 +19,8 @@ namespace DBEntities
         /// </summary>
         public int Sequence { get; set; }
 
+        public List<CustomerSealLocation> CustomerSealLocations { get; set; }
+
         /// <summary>
         /// 客戶印鑑季度歷程資料表
         /// </summary>

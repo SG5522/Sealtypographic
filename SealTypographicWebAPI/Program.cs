@@ -59,7 +59,7 @@ builder.Services.AddDbContextPool<SealTypographicDbContext>(optionsBuilder =>
     switch (provider)
     {
     case "Sqlite":
-            optionsBuilder.UseSqlite(config.GetConnectionString("Sqlite"));          
+            optionsBuilder.UseSqlite(config.GetConnectionString(provider), x => x.MigrationsAssembly(provider));          
             break;
         case "MySql":
             MySqlServerVersion serverVersion = new(new Version(8, 0, 32));                 
@@ -193,8 +193,7 @@ using (IServiceScope scope = app.Services.CreateScope())
     {
         SealTypographicDbContext dbContext = scope.ServiceProvider.GetRequiredService<SealTypographicDbContext>();
         dbContext.Database.Migrate();
-        dbContext.SeedData();
-        //await dbContext.Database.MigrateAsync();
+        InitialDbData.Initialize(dbContext);
     }
     catch(Exception ex)
     {        

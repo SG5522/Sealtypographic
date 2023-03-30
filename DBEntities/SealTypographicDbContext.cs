@@ -108,24 +108,5 @@ namespace DBEntities
             base.OnModelCreating(modelBuilder);
         }
         #endregion
-
-        public void SeedData()
-        {
-            if(!AccountantGroups.Any())
-            {
-                //建立DB前先建置AccountantGroup無群組資料
-                AccountantGroup accountantGroup = new()
-                {
-                    Id = 1,
-                    AccountantGroupNumber = "",
-                    CreateUserId = 0,
-                    UpdateUserId = 0,
-                    DeleteStatus = 0,
-                    Name = "預設群組"
-                };
-                AccountantGroups.Add(accountantGroup);
-                SaveChanges();
-            }
-        }
     }
 }

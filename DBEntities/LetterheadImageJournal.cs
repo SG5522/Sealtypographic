@@ -20,6 +20,8 @@ namespace DBEntities
         /// </summary>
         public LetterheadImageStatus Status { get; set; }
 
+        public List<LetterheadImageLocation> LetterheadImageLocations { get; set; }
+
         /// <summary>
         /// 信頭圖片建立日期歷程
         /// </summary>

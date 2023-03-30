@@ -7,7 +7,7 @@ using DBEntities;
 
 #nullable disable
 
-namespace SqliteMigrations.Migrations
+namespace Sqlite.Migrations
 {
     [DbContext(typeof(SealTypographicDbContext))]
     [Migration("20230206052952_InitialCreate")]

@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace SqliteMigrations.Migrations
+namespace Sqlite.Migrations
 {
     public partial class RenameColumnWithAccountantSignJournal : Migration
     {
