@@ -8,6 +8,11 @@ namespace DBEntities
     public class SealTypographicDbContext : DbContext
     {
         /// <summary>
+        /// 會計師事務所(公司)
+        /// </summary>
+        public DbSet<Company> Companys { get; set; }
+
+        /// <summary>
         /// 客戶資料表
         /// </summary>
         public DbSet<Customer> Customers { get; set; }
@@ -53,6 +58,16 @@ namespace DBEntities
         public DbSet<LetterheadImageJournal> LetterheadImageJournals { get; set; }
 
         /// <summary>
+        /// 臨時章群組表
+        /// </summary>
+        public DbSet<TemporarySealGroup> TemporarySealGroups { get; set; }
+
+        /// <summary>
+        /// 臨時章歷程表
+        /// </summary>
+        public DbSet<TemporarySealJournal> TemporarySealJournals {get; set; }
+
+        /// <summary>
         /// PDF排版資訊
         /// </summary>
         public DbSet<TypographicPDF> TypographicPDFs { get; set; }
@@ -76,6 +91,35 @@ namespace DBEntities
         /// 信頭圖片排版位置
         /// </summary>
         public DbSet<LetterheadImageLocation> LetterheadImageLocaltions { get; set; }
+
+        /// <summary>
+        /// 客戶印鑑樣板
+        /// </summary>
+        public DbSet<CustomerSealTemplate> CustomerSealTemplates { get; set; }
+
+        /// <summary>
+        /// 客戶印鑑樣板位置
+        /// </summary>
+        public DbSet<CustomerSealTemplateLocation> CustomerSealTemplateLocations { get; set; }
+
+        /// <summary>
+        /// 會計師簽印樣板
+        /// </summary>
+        public DbSet<AccountSignSealTemplate> AccountSignSealTemplates { get; set; }
+
+        /// <summary>
+        /// 會計師簽印樣板位置
+        /// </summary>
+        public DbSet<AccountSignSealTemplateLocation> AccountSignSealTemplateLocations { get; set; }
+        /// <summary>
+        /// 信頭樣板
+        /// </summary>
+        public DbSet<LetterheadImageTemplate> LetterheadImageTemplates { get; set; }
+
+        /// <summary>
+        /// 信頭樣板位置
+        /// </summary>
+        public DbSet<LetterheadImageTemplateLocation> LetterheadImageTemplateLocations { get; set; }
 
         /// <summary>
         /// 上傳檔案資料表

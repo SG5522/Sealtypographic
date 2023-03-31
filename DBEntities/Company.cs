@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace DBEntities
 {
     /// <summary>
-    /// 會計師事務所
+    /// 會計師事務所(公司)
     /// </summary>
     public class Company : BaseNameData
     {
@@ -36,5 +36,21 @@ namespace DBEntities
         /// 事務所信頭資料表
         /// </summary>
         public List<Letterhead> Letterheads { get; set; }
+
+        /// <summary>
+        /// 客戶印鑑樣板
+        /// </summary>
+        public List<CustomerSealTemplate> CustomerSealTemplates { get; set; }
+
+        /// <summary>
+        /// 會計師印鑑樣板
+        /// </summary>
+        public List<AccountSignSealTemplate> AccountSignSealTemplates { get; set; }
+
+        /// <summary>
+        /// 信頭圖片樣板
+        /// </summary>
+        public List<LetterheadImageTemplate> LetterheadImageTemplates { get; set; }
+
     }
 }

@@ -3,7 +3,7 @@
     /// <summary>
     /// 印鑑擺放位置
     /// </summary>
-    public abstract class PageLocation : Location
+    public abstract class BasePageLocation : BaseLocation
     {
         /// <summary>
         /// 排版頁

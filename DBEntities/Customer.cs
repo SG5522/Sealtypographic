@@ -91,5 +91,8 @@ namespace DBEntities
         /// 客戶印鑑季度歷程表
         /// </summary>
         public List<CustomerSealQuarterJournal> CustomerSealQuarterJournals { get; set; }
+
+
+        public List<TemporarySealGroup> TemporarySealGroups { get; set; }
     }
 }

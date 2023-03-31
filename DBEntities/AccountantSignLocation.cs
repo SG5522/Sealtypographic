@@ -5,7 +5,7 @@ namespace DBEntities
     /// <summary>
     /// 會計師簽名與印鑑位置
     /// </summary>
-    public class AccountantSignLocation : PageLocation
+    public class AccountantSignLocation : BasePageLocation
     {
         /// <summary>
         /// 會計師印鑑簽名歷程

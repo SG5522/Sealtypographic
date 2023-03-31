@@ -329,4 +329,55 @@ namespace DBEntities.Consts
         [Description("Overlay")]
         Overlay = 2,
     }
+
+    /// <summary>
+    /// 樣板(客戶、會計師)疊放方式
+    /// </summary>
+    public enum StackMode
+    {
+        /// <summary>
+        /// 直式
+        /// </summary>
+        [Description("直式")]
+        Vertical = 0,
+
+        /// <summary>
+        /// 橫式
+        /// </summary>
+        [Description("橫式")]
+        Horizontal = 1,
+    }
+    /// <summary>
+    /// 頁面尺吋
+    /// </summary>
+    public enum PageSize
+    {
+        /// <summary>
+        /// 
+        /// </summary>
+        A3 = 1, 
+
+        /// <summary>
+        /// 
+        /// </summary>
+        A4 = 2,
+    }
+    
+    /// <summary>
+    /// 頁面方向
+    /// </summary>
+    public enum PapeOrientation
+    {
+        /// <summary>
+        /// 直式
+        /// </summary>
+        [Description("直式")]
+        Portrait = 0,
+
+        /// <summary>
+        /// 橫式
+        /// </summary>
+        [Description("橫式")]
+        Landscape = 1,
+    }
 }

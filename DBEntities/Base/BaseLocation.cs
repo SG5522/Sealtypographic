@@ -3,7 +3,7 @@
     /// <summary>
     /// 印鑑擺放位置
     /// </summary>
-    public abstract class Location : BaseData
+    public abstract class BaseLocation : BaseData
     {
         /// <summary>
         /// 頂部位置

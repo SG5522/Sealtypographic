@@ -5,11 +5,11 @@ namespace DBEntities
     /// <summary>
     /// 信頭圖片排版位置
     /// </summary>
-    public class LetterheadImageLocation : PageLocation
+    public class LetterheadImageLocation : BasePageLocation
     {        
         /// <summary>
         /// 信頭圖片歷程
         /// </summary>
-        public List<LetterheadImageJournal> LetterheadImageJournal { get; set; }
+        public LetterheadImageJournal LetterheadImageJournal { get; set; }
     }
 }
