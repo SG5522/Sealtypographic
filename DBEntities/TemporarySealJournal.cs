@@ -10,6 +10,6 @@ namespace DBEntities
         /// <summary>
         /// 臨時章群組
         /// </summary>
-        public TemporarySealGroup TemporarySealGroup { get; set; }
+        public Temporary TemporarySealGroup { get; set; }
     }
 }

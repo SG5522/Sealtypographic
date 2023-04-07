@@ -901,7 +901,7 @@ namespace Sqlite.Migrations
                     b.ToTable("LetterheadImageTemplateLocations");
                 });
 
-            modelBuilder.Entity("DBEntities.TemporarySealGroup", b =>
+            modelBuilder.Entity("DBEntities.Temporary", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -1334,7 +1334,7 @@ namespace Sqlite.Migrations
                     b.Navigation("CustomerTemplate");
                 });
 
-            modelBuilder.Entity("DBEntities.TemporarySealGroup", b =>
+            modelBuilder.Entity("DBEntities.Temporary", b =>
                 {
                     b.HasOne("DBEntities.Customer", "Customer")
                         .WithMany("TemporarySealGroups")
@@ -1347,7 +1347,7 @@ namespace Sqlite.Migrations
 
             modelBuilder.Entity("DBEntities.TemporarySealJournal", b =>
                 {
-                    b.HasOne("DBEntities.TemporarySealGroup", "TemporarySealGroup")
+                    b.HasOne("DBEntities.Temporary", "TemporarySealGroup")
                         .WithMany("TemporarySealJournals")
                         .HasForeignKey("TemporarySealGroupId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1455,7 +1455,7 @@ namespace Sqlite.Migrations
                     b.Navigation("LetterheadImageTemplateLocations");
                 });
 
-            modelBuilder.Entity("DBEntities.TemporarySealGroup", b =>
+            modelBuilder.Entity("DBEntities.Temporary", b =>
                 {
                     b.Navigation("TemporarySealJournals");
                 });
