@@ -4,7 +4,7 @@ namespace DBEntities
     /// <summary>
     /// 臨時章群組
     /// </summary>
-    public class Temporary : BaseNameData
+    public class TemporarySealGroup : BaseNameData
     {
         /// <summary>
         /// 客戶資料表

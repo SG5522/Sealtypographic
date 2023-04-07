@@ -90,6 +90,9 @@ namespace SealTypographicWebAPI.Services
                 case SealType.Letterhead:
                     folderPath = sealConfig.Letterhead;
                     break;
+                case SealType.TemporarySeal:
+                    folderPath = sealConfig.TemporarySeal;
+                    break;
                 default :
                     folderPath = string.Empty;
                     break;

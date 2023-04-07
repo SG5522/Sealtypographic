@@ -44,6 +44,17 @@
         }
 
         /// <summary>
+        /// 臨時章放置路徑
+        /// </summary>
+        public string TemporarySeal
+        {
+            get
+            {
+                return Path.Combine(SealRootPath, "TemporarySeal");
+            }            
+        }
+
+        /// <summary>
         /// 縮圖比例
         /// </summary>
         public float ResizeScale { get; set; }

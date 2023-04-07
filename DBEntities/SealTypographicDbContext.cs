@@ -60,7 +60,7 @@ namespace DBEntities
         /// <summary>
         /// 臨時章群組表
         /// </summary>
-        public DbSet<Temporary> TemporarySealGroups { get; set; }
+        public DbSet<TemporarySealGroup> TemporarySealGroups { get; set; }
 
         /// <summary>
         /// 臨時章歷程表

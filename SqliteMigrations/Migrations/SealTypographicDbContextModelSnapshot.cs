@@ -901,7 +901,7 @@ namespace Sqlite.Migrations
                     b.ToTable("LetterheadImageTemplateLocations");
                 });
 
-            modelBuilder.Entity("DBEntities.Temporary", b =>
+            modelBuilder.Entity("DBEntities.TemporarySealGroup", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -954,6 +954,9 @@ namespace Sqlite.Migrations
                     b.Property<string>("ImageFullPath")
                         .IsRequired()
                         .HasColumnType("TEXT");
+
+                    b.Property<int>("Sequence")
+                        .HasColumnType("INTEGER");
 
                     b.Property<int>("TemporarySealGroupId")
                         .HasColumnType("INTEGER");
@@ -1334,7 +1337,7 @@ namespace Sqlite.Migrations
                     b.Navigation("CustomerTemplate");
                 });
 
-            modelBuilder.Entity("DBEntities.Temporary", b =>
+            modelBuilder.Entity("DBEntities.TemporarySealGroup", b =>
                 {
                     b.HasOne("DBEntities.Customer", "Customer")
                         .WithMany("TemporarySealGroups")
@@ -1347,7 +1350,7 @@ namespace Sqlite.Migrations
 
             modelBuilder.Entity("DBEntities.TemporarySealJournal", b =>
                 {
-                    b.HasOne("DBEntities.Temporary", "TemporarySealGroup")
+                    b.HasOne("DBEntities.TemporarySealGroup", "TemporarySealGroup")
                         .WithMany("TemporarySealJournals")
                         .HasForeignKey("TemporarySealGroupId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1455,7 +1458,7 @@ namespace Sqlite.Migrations
                     b.Navigation("LetterheadImageTemplateLocations");
                 });
 
-            modelBuilder.Entity("DBEntities.Temporary", b =>
+            modelBuilder.Entity("DBEntities.TemporarySealGroup", b =>
                 {
                     b.Navigation("TemporarySealJournals");
                 });

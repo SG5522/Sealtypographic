@@ -8,8 +8,13 @@ namespace DBEntities
     public class TemporarySealJournal : BaseSealJournal
     {
         /// <summary>
+        /// 臨時章印鑑編號(排序)
+        /// </summary>
+        public int Sequence { get; set; }
+
+        /// <summary>
         /// 臨時章群組
         /// </summary>
-        public Temporary TemporarySealGroup { get; set; }
+        public TemporarySealGroup TemporarySealGroup { get; set; }
     }
 }

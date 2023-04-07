@@ -5,6 +5,7 @@ using DBEntities.Consts;
 using AutoMapper;
 using SealTypographicWebAPI.Utils;
 using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.Design;
 
 namespace SealTypographicWebAPI.Services.Implements
 {
@@ -53,8 +54,14 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <returns></returns>
         public CustomerPaginateViewModel GetPaginate(CustomerSearch customerSearch)
         {
-            CustomerPaginateViewModel customerPaginateViewModel = new();            
-            IQueryable<Customer> customerQuery = dbContext.Customers.Where(customer => customer.DeleteStatus == DeleteStatus.No);                                                
+            CustomerPaginateViewModel customerPaginateViewModel = new();
+            int companyId = 1;
+
+            IQueryable<Customer> customerQuery = dbContext.Customers.Where
+                                                (
+                                                    x => x.Company.Id == companyId
+                                                    && x.DeleteStatus == DeleteStatus.No
+                                                );                                            
             
             if (!string.IsNullOrWhiteSpace(customerSearch.KeyWord))
             {
@@ -131,36 +138,43 @@ namespace SealTypographicWebAPI.Services.Implements
         {
             CreateCustomerResponse createCustomerResponse = new();
             int userid = 0; //帳號驗證取得ID
+            int companyId = 1;
+            
+            //尋找公司並與客戶關聯
+            Company? companyQuery = dbContext.Companys.Include(x => x.Customers).FirstOrDefault(x => x.Id == companyId);
 
-            //驗證編號是否重複
-            List<string> customerQuery = dbContext.Customers.AsNoTracking().Where
-                                            (
+            if(companyQuery != null)
+            {
+                //驗證編號是否重複
+                List<string> customerQuery = companyQuery.Customers.Where
+                                            (                                                
                                                 x => x.Code == customerForm.Code
                                                 && x.DeleteStatus == DeleteStatus.No
                                             ).Select(x => x.Code).ToList();
-
-            if (!customerQuery.Any())
-            {
-                Customer dbCustomer = mapper.Map<Customer>(customerForm);
-                BaseInputCustomer(dbCustomer, true, userid);
-                dbContext.Customers.Add(dbCustomer);
-                dbContext.SaveChanges();
-                                                                  
-                if (dbCustomer != null)                 
+                if (!customerQuery.Any())
                 {
-                    //回傳剛建立的客戶基本資料 使建立客戶印鑑找到該ID   
-                    createCustomerResponse.CustomerId = dbCustomer.Id;
-                    createCustomerResponse.Success();
-                }                                      
+                    Customer dbCustomer = mapper.Map<Customer>(customerForm);
+                    BaseInputCustomer(dbCustomer, true, userid);
+                    companyQuery.Customers.Add(dbCustomer);
+                    dbContext.SaveChanges();
+
+                    if (dbCustomer != null)
+                    {
+                        //回傳剛建立的客戶基本資料 使建立客戶印鑑找到該ID   
+                        createCustomerResponse.CustomerId = dbCustomer.Id;
+                        createCustomerResponse.Success();
+                    }
+                    else
+                    {
+                        createCustomerResponse.CreateCustomerFailed();
+                    }
+                }
                 else
                 {
-                    createCustomerResponse.CreateCustomerFailed();
+                    createCustomerResponse.CreateCustomerNumberRepeat();
                 }
-            }
-            else
-            {
-                createCustomerResponse.CreateCustomerNumberRepeat();
-            }
+            }                                  
+            
             return createCustomerResponse;
         }
 

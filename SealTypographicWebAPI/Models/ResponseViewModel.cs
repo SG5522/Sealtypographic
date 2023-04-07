@@ -163,7 +163,7 @@ namespace SealTypographicWebAPI.Models
         public void AccountantNoData()
         {
             Code = (int)ResponseCode.AccountantNoData;
-            Message = "AccountantSignAuthorization no data";
+            Message = "Accountant no data";
         }
 
         /// <summary>
@@ -172,7 +172,7 @@ namespace SealTypographicWebAPI.Models
         public void AccountantNumberRepeat()
         {
             Code = (int)ResponseCode.AccountantNumberRepeat;
-            Message = "AccountantSignAuthorization number repeat";
+            Message = "Accountant number repeat";
         }
 
         /// <summary>

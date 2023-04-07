@@ -99,6 +99,7 @@ builder.Services.AddScoped<IAccountantSignReviewService, AccountantSignReviewSer
 builder.Services.AddScoped<IAccountantSignService, AcoountantSignService>();
 builder.Services.AddScoped<ILetterheadService, LetterheadService>();
 builder.Services.AddScoped<ILetterheadImageService, LetterheadImageService>();
+builder.Services.AddScoped<ITemporarySealService, TemporarySealService>();
 builder.Services.AddScoped<UploadService>();
 
 #endregion

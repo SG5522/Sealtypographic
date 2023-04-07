@@ -26,6 +26,19 @@ namespace DBEntities
                 dbContext.AccountantGroups.Add(accountantGroup);
                 dbContext.SaveChanges();
             }
+
+            if(!dbContext.Companys.Any())
+            {
+                Company company = new()
+                {
+                    Id = 1,
+                    Code = "AAA001",
+                    BAN = "12345678",                    
+                    Name = "映像有限公司"
+                };
+                dbContext.Companys.Add(company);
+                dbContext.SaveChanges();
+            }
         }
     }
 }

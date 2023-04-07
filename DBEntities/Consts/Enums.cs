@@ -148,6 +148,12 @@ namespace DBEntities.Consts
         /// </summary>
         [Description("Letterhead")]
         Letterhead = 3,
+
+        /// <summary>
+        /// 臨時章
+        /// </summary>
+        [Description("TemporarySeal")]
+        TemporarySeal = 4,
     }
 
     /// <summary>
