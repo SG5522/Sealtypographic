@@ -7,6 +7,7 @@ using DBEntities;
 using SealTypographicWebAPI.Models;
 using SealTypographicWebAPI.Models.Customer;
 using SealTypographicWebAPI.Models.Letterhead;
+using System.ComponentModel.Design;
 
 namespace SealTypographicWebAPI.Services.Implements
 {
@@ -121,35 +122,42 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <returns></returns>
         public ResponseViewModel New(LetterheadImageForm letterheadImageForms)
         {
-            ResponseViewModel response = new();
-            //DateTime createNowTime = DateTime.Now;//建立日期            
+            ResponseViewModel response = new();                  
             Letterhead letterhead = new();
             LetterheadImageJournal letterheadImage = new();
             List<LetterheadImageJournal> letterheadImages = new();
             int userId = 0; //以後從帳號驗證取得Id
-                            
-            ImageBase64Info imageBase64Info = new() 
-            {                                 
-                SealType = SealType.Letterhead 
-            };
+            int companyId = 1;//之後規劃從帳號取得公司ID
 
-            //信頭基本資料
-            letterhead.Name = letterheadImageForms.Name;            
-            BaseInputLetterhead(letterhead, true, userId);
-            //ImageBase64轉圖檔並存到指定資料夾
-            imageBase64Info.ImageBase64 = letterheadImageForms.ImageBase64;
-            letterheadImage.ImageFullPath = imageSharpService.GetImageBase64FullPath(imageBase64Info, false);
-            
-            //新增信頭圖片
-            BaseInputImageJournal(letterheadImage, true, userId);
-            letterheadImages.Add(letterheadImage);
-            //關連信頭基本資料
-            letterhead.LetterheadImageJournals = letterheadImages;
-            
-            dbContext.Letterheads.Add(letterhead);
-            dbContext.SaveChanges();
-            response.Success();
-            
+            //尋找公司並與客戶關聯
+            Company? companyQuery = dbContext.Companys.Include(x => x.Letterheads).FirstOrDefault(x => x.Id == companyId);
+
+            if(companyQuery != null)
+            {
+                ImageBase64Info imageBase64Info = new()
+                {
+                    SealType = SealType.Letterhead
+                };
+
+                //信頭基本資料
+                letterhead.Name = letterheadImageForms.Name;
+                BaseInputLetterhead(letterhead, true, userId);
+
+                //ImageBase64轉圖檔並存到指定資料夾
+                imageBase64Info.ImageBase64 = letterheadImageForms.ImageBase64;
+                letterheadImage.ImageFullPath = imageSharpService.GetImageBase64FullPath(imageBase64Info, false);
+
+                //新增信頭圖片
+                BaseInputImageJournal(letterheadImage, true, userId);
+                letterheadImages.Add(letterheadImage);
+                //關連信頭基本資料
+                letterhead.LetterheadImageJournals = letterheadImages;
+
+                companyQuery.Letterheads.Add(letterhead);
+                dbContext.SaveChanges();
+                response.Success();
+            }
+                        
             return response;
         }
 

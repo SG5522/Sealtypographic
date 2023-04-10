@@ -363,5 +363,32 @@ namespace SealTypographicWebAPI.Models
             Code = (int)ResponseCode.FileUploadNoData;
             Message = "File upload no data";
         }
+
+        /// <summary>
+        /// 查無臨時章
+        /// </summary>
+        public void TemporarySealNoData()
+        {
+            Code = (int)ResponseCode.TemporarySealNoData;
+            Message = "Temporary seal no data";
+        }
+
+        /// <summary>
+        /// 更新臨時章時找不到資料
+        /// </summary>
+        public void UpdateTemporarySealNoData()
+        {
+            Code = (int)ResponseCode.UpdateTemporarySealNoData;
+            Message = "Update temporary seal no data";
+        }
+
+        /// <summary>
+        /// 刪除信頭時找不到資料
+        /// </summary>
+        public void DeleteTemporarySealNoData()
+        {
+            Code = (int)ResponseCode.DeleteTemporarySealNoData;
+            Message = "Delete temporary seal no data";
+        }
     }
 }

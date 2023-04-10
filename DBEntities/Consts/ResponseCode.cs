@@ -237,5 +237,23 @@ namespace DBEntities.Consts
         /// </summary>
         [Description("查無上傳資料，請確認或重新上傳")] 
         FileUploadNoData = 6002,
+
+        /// <summary>
+        /// 找不到臨時章
+        /// </summary>
+        [Description("查無臨時章")]
+        TemporarySealNoData = 7001,
+
+        /// <summary>
+        /// 更新臨時章找不到資料
+        /// </summary>
+        [Description("查無臨時章資料，無法更新臨時章資料")]
+        UpdateTemporarySealNoData = 7003,
+
+        /// <summary>
+        /// 刪除信頭時找不到資料
+        /// </summary>
+        [Description("查無臨時章資料，無法刪除臨時章資料")]
+        DeleteTemporarySealNoData = 7004,
     }
 }

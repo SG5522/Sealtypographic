@@ -1,12 +1,12 @@
-﻿using System.ComponentModel.DataAnnotations;
-using SealTypographicWebAPI.Models.BaseModels;
+﻿using SealTypographicWebAPI.Models.BaseModels;
+using System.ComponentModel.DataAnnotations;
 
 namespace SealTypographicWebAPI.Models.TemporarySeal
 {
     /// <summary>
-    /// 臨時章
+    /// 更新臨時章
     /// </summary>
-    public class TemporarySeal : BaseCreateSeal
+    public class TemporarySealUpdate : BaseUpdateSeal
     {
         /// <summary>
         /// 印鑑編號(排序) 1為起始
@@ -18,14 +18,14 @@ namespace SealTypographicWebAPI.Models.TemporarySeal
     }
 
     /// <summary>
-    /// 臨時章資料
+    /// 
     /// </summary>
-    public class TemporarySealForm : TemporarySealBaseForm
+    public class TemporarySealUpdateForm : TemporarySealBaseForm
     {
         /// <summary>
         /// 臨時印鑑組
         /// </summary>
         [Required]
-        public List<TemporarySeal> Seals { get; set; }
+        public List<TemporarySealUpdate> Seals { get; set; }
     }
 }

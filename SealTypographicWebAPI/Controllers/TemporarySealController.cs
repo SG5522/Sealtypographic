@@ -1,7 +1,6 @@
-﻿using DBEntities;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using SealTypographicWebAPI.Models;
-using SealTypographicWebAPI.Models.Temporary;
+using SealTypographicWebAPI.Models.TemporarySeal;
 using SealTypographicWebAPI.Services;
 using SealTypographicWebAPI.Services.Implements;
 using Serilog;
@@ -102,16 +101,16 @@ namespace SealTypographicWebAPI.Controllers
         /// 更新臨時章
         /// </summary>
         /// <param name="id">臨時章id</param>
-        /// <param name="temporarySealForm"></param>
+        /// <param name="temporarySealUpdateForm"></param>
         /// <returns></returns>
         [HttpPut("{id}")]
-        public ResponseViewModel Update(int id, TemporarySealForm temporarySealForm)
+        public ResponseViewModel Update(int id, TemporarySealUpdateForm temporarySealUpdateForm)
         {
             ResponseViewModel response = new();
             try
             {
-                Log.Information("TemporarySeal update input {@Input}", temporarySealForm);
-                response = temporarySealService.Update(id, temporarySealForm);
+                Log.Information("TemporarySeal update input {@Input}", temporarySealUpdateForm);
+                response = temporarySealService.Update(id, temporarySealUpdateForm);
                 Log.Information("TemporarySeal update output {@Output}", response);
             }
             catch (Exception ex)

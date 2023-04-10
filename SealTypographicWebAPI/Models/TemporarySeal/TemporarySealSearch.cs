@@ -1,6 +1,6 @@
 ﻿using SealTypographicWebAPI.Models.BaseModels;
 
-namespace SealTypographicWebAPI.Models.Temporary
+namespace SealTypographicWebAPI.Models.TemporarySeal
 {
     /// <summary>
     /// 臨時章分頁搜尋
@@ -8,9 +8,9 @@ namespace SealTypographicWebAPI.Models.Temporary
     public class TemporarySealSearch : PaginateSearch
     {
         /// <summary>
-        /// 關鍵字搜尋
+        /// 關鍵字搜尋 (客戶名稱 or 臨時章名稱)
         /// </summary>
-        /// <example>公司</example>
+        /// <example>映像公司 or 臨時章01</example>
         public string? KeyWord { get; set; }       
     }
 }

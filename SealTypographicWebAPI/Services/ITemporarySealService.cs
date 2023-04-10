@@ -1,5 +1,5 @@
 ﻿using SealTypographicWebAPI.Models;
-using SealTypographicWebAPI.Models.Temporary;
+using SealTypographicWebAPI.Models.TemporarySeal;
 
 namespace SealTypographicWebAPI.Services
 {
@@ -25,15 +25,15 @@ namespace SealTypographicWebAPI.Services
         /// <summary>
         /// 新增客戶基本資料
         /// </summary>
-        /// <param name="temporarySealForm">基本資料</param>
+        /// <param name="temporarySealForm">臨時章資料</param>
         ResponseViewModel New(TemporarySealForm temporarySealForm);
 
         /// <summary>
         /// 更新臨時章
         /// </summary>
         /// <param name="Id">臨時章Id</param>
-        /// <param name="temporarySealForm">基本資料</param>
-        ResponseViewModel Update(int Id, TemporarySealForm temporarySealForm);
+        /// <param name="temporarySealUpdateForm">臨時章資料</param>
+        ResponseViewModel Update(int Id, TemporarySealUpdateForm temporarySealUpdateForm);
 
         /// <summary>
         /// 刪除臨時章。

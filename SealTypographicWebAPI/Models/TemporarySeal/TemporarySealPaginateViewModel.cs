@@ -1,6 +1,6 @@
 ﻿using SealTypographicWebAPI.Models.BaseModels;
 
-namespace SealTypographicWebAPI.Models.Temporary
+namespace SealTypographicWebAPI.Models.TemporarySeal
 {
     /// <summary>
     /// 
