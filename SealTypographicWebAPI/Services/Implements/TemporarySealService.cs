@@ -234,7 +234,7 @@ namespace SealTypographicWebAPI.Services.Implements
                     response.Success();
                 }                
                 else
-                {
+                {                    
                     response.UpdateTemporarySealNoData();
                 }
             }
