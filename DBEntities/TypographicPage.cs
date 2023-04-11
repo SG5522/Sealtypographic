@@ -32,5 +32,10 @@ namespace DBEntities
         /// 信頭圖片排版位置
         /// </summary>
         public List<LetterheadImageLocation> LetterheadImageLocaltions { get; set; }
+
+        /// <summary>
+        /// 臨時章排版位置
+        /// </summary>
+        public List<TemporarySealLocation> TemporarySealJournals { get; set; }
     }
 }

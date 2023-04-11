@@ -5,8 +5,12 @@ namespace SealTypographicWebAPI.Models.TemporarySeal
     /// <summary>
     /// 
     /// </summary>
-    public class TemporaryViewModel : BaseName
+    public class TemporaryViewModel : BaseData
     {
+        /// <summary>
+        /// 季度
+        /// </summary>
+        public string Quarter { get; set; }
         /// <summary>
         /// 公司名稱(客戶名稱)
         /// </summary>

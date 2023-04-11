@@ -19,5 +19,10 @@
         /// 密碼
         /// </summary>
         public string Pwaosrsd { get; set; }
+
+        /// <summary>
+        /// 會計師事務所(公司)
+        /// </summary>
+        public Company Company { get; set; }
     }
 }

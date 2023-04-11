@@ -15,6 +15,11 @@ namespace DBEntities
         /// <summary>
         /// 臨時章群組
         /// </summary>
-        public TemporarySealGroup TemporarySealGroup { get; set; }
+        public TemporarySealQuarterJournal TemporarySealQuarterJournal { get; set; }
+
+        /// <summary>
+        /// 臨時章排版位置
+        /// </summary>
+        public List<TemporarySealLocation> TemporarySealLocations { get; set; }
     }
 }

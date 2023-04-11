@@ -52,5 +52,15 @@ namespace DBEntities
         /// </summary>
         public List<LetterheadImageTemplate> LetterheadImageTemplates { get; set; }
 
+        /// <summary>
+        /// 上傳檔案資料表
+        /// </summary>
+        public List<UploadFile> UploadFiles { get; set; }
+
+        /// <summary>
+        /// 使用者資料表
+        /// </summary>
+        public List<User> Users { get; set; }
+
     }
 }

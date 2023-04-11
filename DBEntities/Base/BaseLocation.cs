@@ -3,8 +3,13 @@
     /// <summary>
     /// 印鑑擺放位置
     /// </summary>
-    public abstract class BaseLocation : BaseData
+    public abstract class BaseLocation
     {
+        /// <summary>
+        /// Id
+        /// </summary>
+        public int Id { get; set; }
+
         /// <summary>
         /// 頂部位置
         /// </summary>

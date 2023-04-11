@@ -19,6 +19,6 @@ namespace SealTypographicWebAPI.Models.TemporarySeal
         /// </summary>
         /// <example>臨時章01</example>
         [Required]
-        public string Name { get; set; }
+        public string Quarter { get; set; }
     }
 }

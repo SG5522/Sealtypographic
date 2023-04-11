@@ -17,11 +17,25 @@ namespace SealTypographicWebAPI.Services
         CustomerDetailViewModel GetDetail(int customerId);
 
         /// <summary>
+        /// 取得簡化的客戶資料
+        /// </summary>
+        /// <param name="customerId">客戶Id</param>
+        /// <returns></returns>
+        CustomerSummaryResponse GetSummary(int customerId);
+
+        /// <summary>
         /// 取得客戶資料列表(分頁)
         /// </summary>
         /// <param name="customerSearch">客戶分頁搜尋</param>        
         /// <returns></returns>
         CustomerPaginateViewModel GetPaginate(CustomerSearch customerSearch);
+
+        /// <summary>
+        /// 取得客戶資料列表(簡化資料的分頁)
+        /// </summary>
+        /// <param name="customerSearch">客戶分頁搜尋</param>
+        /// <returns></returns>
+        CustomerPaginateShort GetPaginateShort(CustomerSearch customerSearch);
 
         /// <summary>
         /// 新增客戶基本資料

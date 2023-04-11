@@ -39,7 +39,7 @@ namespace SealTypographicWebAPI.Services.Implements
         public TemporarySealDetailViewModel GetDetail(int temporaryId)
         {
             TemporarySealDetailViewModel temporarySealDetailViewModel = new();
-            TemporarySealGroup? temporarySealGroup = dbContext.TemporarySealGroups.Include
+            TemporarySealQuarterJournal? temporarySealGroup = dbContext.TemporarySealQuarterJournals.Include
                                                                                     (
                                                                                         temporarySealGroup => temporarySealGroup.TemporarySealJournals.Where
                                                                                         (x => x.DeleteStatus == DeleteStatus.No)
@@ -79,7 +79,7 @@ namespace SealTypographicWebAPI.Services.Implements
             
             int companyId = 1;
 
-            IQueryable<TemporarySealGroup> temporarySealGroupQuery = dbContext.TemporarySealGroups
+            IQueryable<TemporarySealQuarterJournal> temporarySealGroupQuery = dbContext.TemporarySealQuarterJournals
                                                                     .Where
                                                                     (
                                                                         temporarySealGroup => temporarySealGroup.Customer.Company.Id == companyId
@@ -92,7 +92,7 @@ namespace SealTypographicWebAPI.Services.Implements
                 temporarySealGroupQuery = temporarySealGroupQuery
                                             .Where
                                             (
-                                                temporarySealGroup => temporarySealGroup.Name.Contains(temporarySealSearch.KeyWord)
+                                                temporarySealGroup => temporarySealGroup.Quarter.Contains(temporarySealSearch.KeyWord)
                                                 || temporarySealGroup.Customer.Name.Contains(temporarySealSearch.KeyWord)
                                             );
             }
@@ -101,19 +101,19 @@ namespace SealTypographicWebAPI.Services.Implements
             if(temporarySealGroupQuery.Any())
             {
                 //取得該頁            
-                List<TemporarySealGroup> thisPageTemporarySealGroups = temporarySealGroupQuery
+                List<TemporarySealQuarterJournal> thisPageTemporarySealGroups = temporarySealGroupQuery
                                                                       .Include(temporarySealGroup => temporarySealGroup.Customer)                                          
                                                                       .Skip((temporarySealSearch.PageNumber - 1) * temporarySealSearch.PageSize)
                                                                       .Take(temporarySealSearch.PageSize)
                                                                       .ToList();
 
-                foreach(TemporarySealGroup temporarySealGroup in thisPageTemporarySealGroups)
+                foreach(TemporarySealQuarterJournal temporarySealGroup in thisPageTemporarySealGroups)
                 {
                     TemporaryViewModel temporaryViewModel = new()
                     {
                         Id = temporarySealGroup.Id,
                         CustomerName = temporarySealGroup.Customer.Name,                        
-                        Name = temporarySealGroup.Name,
+                        Quarter = temporarySealGroup.Quarter,
                     };
                     temporarySealPaginateViewModel.ViewModels.Add(temporaryViewModel);
                 }
@@ -142,7 +142,7 @@ namespace SealTypographicWebAPI.Services.Implements
                                           .FirstOrDefault(customer => customer.Id == temporarySealForm.CustomerId);
             if (customerQuery != null) 
             {
-                TemporarySealGroup temporarySealGroup = new();
+                TemporarySealQuarterJournal temporarySealGroup = new();
                 List<TemporarySealJournal> temporarySealJournals = new();
                 int userId = 0;
                 ImageBase64Info imageBase64Info = new()
@@ -151,7 +151,7 @@ namespace SealTypographicWebAPI.Services.Implements
                     SealType = SealType.TemporarySeal
                 };
 
-                temporarySealGroup.Name = temporarySealForm.Name;                
+                temporarySealGroup.Quarter = temporarySealForm.Quarter;                
                 BaseInputTemporarySealGroup(temporarySealGroup, true, userId);
                 
 
@@ -188,7 +188,7 @@ namespace SealTypographicWebAPI.Services.Implements
         {
             ResponseViewModel response = new();
             int userId = 0;
-            TemporarySealGroup? temporarySealGroupQuery = dbContext.TemporarySealGroups.Include(temporarySealGroup => temporarySealGroup.TemporarySealJournals)
+            TemporarySealQuarterJournal? temporarySealGroupQuery = dbContext.TemporarySealQuarterJournals.Include(temporarySealGroup => temporarySealGroup.TemporarySealJournals)
                                                                                        .Include(temporarySealGroup => temporarySealGroup.Customer)
                                                                                        .FirstOrDefault(temporarySealGroup => temporarySealGroup.Id == Id);
             if(temporarySealGroupQuery != null)
@@ -200,7 +200,7 @@ namespace SealTypographicWebAPI.Services.Implements
                 };
 
                 temporarySealGroupQuery.Customer.Id = temporarySealUpdateForm.CustomerId;
-                temporarySealGroupQuery.Name = temporarySealUpdateForm.Name;
+                temporarySealGroupQuery.Quarter = temporarySealUpdateForm.Quarter;
                 BaseInputTemporarySealGroup(temporarySealGroupQuery, false, userId);
 
                 foreach (TemporarySealUpdate temporarySealUpdate in temporarySealUpdateForm.Seals)
@@ -228,7 +228,7 @@ namespace SealTypographicWebAPI.Services.Implements
                         response.ErrorItem += $"Update temporarySeal NoData:{temporarySealUpdate.Id}";
                     }
                 }
-                if(response.ErrorItem != null)
+                if(response.ErrorItem == null)
                 {
                     dbContext.SaveChanges();
                     response.Success();
@@ -254,7 +254,7 @@ namespace SealTypographicWebAPI.Services.Implements
         {
             ResponseViewModel response = new();
             int userId = 0;
-            TemporarySealGroup? temporarySealGroup = dbContext.TemporarySealGroups.Find(Id);
+            TemporarySealQuarterJournal? temporarySealGroup = dbContext.TemporarySealQuarterJournals.Find(Id);
             if(temporarySealGroup != null)
             {
                 temporarySealGroup.DeleteStatus = DeleteStatus.Yes;
@@ -274,7 +274,7 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <param name="temporarySealGroup">Db上的印鑑資料</param>
         /// <param name="isCreate">對Db所做的行動</param>
         /// <param name="userId">userId</param>
-        private static void BaseInputTemporarySealGroup(TemporarySealGroup temporarySealGroup, bool isCreate, int userId)
+        private static void BaseInputTemporarySealGroup(TemporarySealQuarterJournal temporarySealGroup, bool isCreate, int userId)
         {
             if (isCreate)
             {

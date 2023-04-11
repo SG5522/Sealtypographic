@@ -78,15 +78,6 @@ namespace Sqlite.Migrations
                     b.Property<int>("ConfigType")
                         .HasColumnType("INTEGER");
 
-                    b.Property<DateTime>("CreateDate")
-                        .HasColumnType("TEXT");
-
-                    b.Property<int>("CreateUserId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<byte>("DeleteStatus")
-                        .HasColumnType("INTEGER");
-
                     b.Property<int>("Height")
                         .HasColumnType("INTEGER");
 
@@ -95,12 +86,6 @@ namespace Sqlite.Migrations
 
                     b.Property<float>("Top")
                         .HasColumnType("REAL");
-
-                    b.Property<DateTime>("UpdateDate")
-                        .HasColumnType("TEXT");
-
-                    b.Property<int>("UpdateUserId")
-                        .HasColumnType("INTEGER");
 
                     b.Property<int>("Width")
                         .HasColumnType("INTEGER");
@@ -287,15 +272,6 @@ namespace Sqlite.Migrations
                     b.Property<int>("AccountantSignJournalId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<DateTime>("CreateDate")
-                        .HasColumnType("TEXT");
-
-                    b.Property<int>("CreateUserId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<byte>("DeleteStatus")
-                        .HasColumnType("INTEGER");
-
                     b.Property<int>("Height")
                         .HasColumnType("INTEGER");
 
@@ -306,12 +282,6 @@ namespace Sqlite.Migrations
                         .HasColumnType("REAL");
 
                     b.Property<int>("TypographicPageId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<DateTime>("UpdateDate")
-                        .HasColumnType("TEXT");
-
-                    b.Property<int>("UpdateUserId")
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("Width")
@@ -495,16 +465,7 @@ namespace Sqlite.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<DateTime>("CreateDate")
-                        .HasColumnType("TEXT");
-
-                    b.Property<int>("CreateUserId")
-                        .HasColumnType("INTEGER");
-
                     b.Property<int>("CustomerSealJournalId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<byte>("DeleteStatus")
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("Height")
@@ -517,12 +478,6 @@ namespace Sqlite.Migrations
                         .HasColumnType("REAL");
 
                     b.Property<int>("TypographicPageId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<DateTime>("UpdateDate")
-                        .HasColumnType("TEXT");
-
-                    b.Property<int>("UpdateUserId")
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("Width")
@@ -651,16 +606,7 @@ namespace Sqlite.Migrations
                     b.Property<int>("ConfigType")
                         .HasColumnType("INTEGER");
 
-                    b.Property<DateTime>("CreateDate")
-                        .HasColumnType("TEXT");
-
-                    b.Property<int>("CreateUserId")
-                        .HasColumnType("INTEGER");
-
                     b.Property<int>("CustomerTemplateId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<byte>("DeleteStatus")
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("Height")
@@ -671,12 +617,6 @@ namespace Sqlite.Migrations
 
                     b.Property<float>("Top")
                         .HasColumnType("REAL");
-
-                    b.Property<DateTime>("UpdateDate")
-                        .HasColumnType("TEXT");
-
-                    b.Property<int>("UpdateUserId")
-                        .HasColumnType("INTEGER");
 
                     b.Property<int>("Width")
                         .HasColumnType("INTEGER");
@@ -767,15 +707,6 @@ namespace Sqlite.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<DateTime>("CreateDate")
-                        .HasColumnType("TEXT");
-
-                    b.Property<int>("CreateUserId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<byte>("DeleteStatus")
-                        .HasColumnType("INTEGER");
-
                     b.Property<int>("Height")
                         .HasColumnType("INTEGER");
 
@@ -789,12 +720,6 @@ namespace Sqlite.Migrations
                         .HasColumnType("REAL");
 
                     b.Property<int>("TypographicPageId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<DateTime>("UpdateDate")
-                        .HasColumnType("TEXT");
-
-                    b.Property<int>("UpdateUserId")
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("Width")
@@ -864,16 +789,7 @@ namespace Sqlite.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<DateTime>("CreateDate")
-                        .HasColumnType("TEXT");
-
-                    b.Property<int>("CreateUserId")
-                        .HasColumnType("INTEGER");
-
                     b.Property<int>("CustomerTemplateId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<byte>("DeleteStatus")
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("Height")
@@ -885,12 +801,6 @@ namespace Sqlite.Migrations
                     b.Property<float>("Top")
                         .HasColumnType("REAL");
 
-                    b.Property<DateTime>("UpdateDate")
-                        .HasColumnType("TEXT");
-
-                    b.Property<int>("UpdateUserId")
-                        .HasColumnType("INTEGER");
-
                     b.Property<int>("Width")
                         .HasColumnType("INTEGER");
 
@@ -899,41 +809,6 @@ namespace Sqlite.Migrations
                     b.HasIndex("CustomerTemplateId");
 
                     b.ToTable("LetterheadImageTemplateLocations");
-                });
-
-            modelBuilder.Entity("DBEntities.TemporarySealGroup", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<DateTime>("CreateDate")
-                        .HasColumnType("TEXT");
-
-                    b.Property<int>("CreateUserId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("CustomerId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<byte>("DeleteStatus")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime>("UpdateDate")
-                        .HasColumnType("TEXT");
-
-                    b.Property<int>("UpdateUserId")
-                        .HasColumnType("INTEGER");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CustomerId");
-
-                    b.ToTable("TemporarySealGroups");
                 });
 
             modelBuilder.Entity("DBEntities.TemporarySealJournal", b =>
@@ -958,10 +833,83 @@ namespace Sqlite.Migrations
                     b.Property<int>("Sequence")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("TemporarySealGroupId")
+                    b.Property<int>("TemporarySealQuarterJournalId")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("ThumbnailFullPath")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<int?>("TypographicPageId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("UpdateDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("UpdateUserId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TemporarySealQuarterJournalId");
+
+                    b.HasIndex("TypographicPageId");
+
+                    b.ToTable("TemporarySealJournals");
+                });
+
+            modelBuilder.Entity("DBEntities.TemporarySealLocation", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("Height")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<float>("Left")
+                        .HasColumnType("REAL");
+
+                    b.Property<int>("TemporarySealJournalId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<float>("Top")
+                        .HasColumnType("REAL");
+
+                    b.Property<int>("TypographicPageId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("Width")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TemporarySealJournalId");
+
+                    b.HasIndex("TypographicPageId");
+
+                    b.ToTable("TemporarySealLocation");
+                });
+
+            modelBuilder.Entity("DBEntities.TemporarySealQuarterJournal", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("CreateDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("CreateUserId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("CustomerId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<byte>("DeleteStatus")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Quarter")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
@@ -973,9 +921,9 @@ namespace Sqlite.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("TemporarySealGroupId");
+                    b.HasIndex("CustomerId");
 
-                    b.ToTable("TemporarySealJournals");
+                    b.ToTable("TemporarySealQuarterJournals");
                 });
 
             modelBuilder.Entity("DBEntities.TypographicPDF", b =>
@@ -1065,6 +1013,9 @@ namespace Sqlite.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<int>("CompanyId")
+                        .HasColumnType("INTEGER");
+
                     b.Property<DateTime>("CreateDate")
                         .HasColumnType("TEXT");
 
@@ -1096,6 +1047,8 @@ namespace Sqlite.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("CompanyId");
+
                     b.ToTable("UploadFiles");
                 });
 
@@ -1109,11 +1062,16 @@ namespace Sqlite.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
+                    b.Property<int>("CompanyId")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("Pwaosrsd")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CompanyId");
 
                     b.ToTable("Users");
                 });
@@ -1337,26 +1295,49 @@ namespace Sqlite.Migrations
                     b.Navigation("CustomerTemplate");
                 });
 
-            modelBuilder.Entity("DBEntities.TemporarySealGroup", b =>
+            modelBuilder.Entity("DBEntities.TemporarySealJournal", b =>
+                {
+                    b.HasOne("DBEntities.TemporarySealQuarterJournal", "TemporarySealQuarterJournal")
+                        .WithMany("TemporarySealJournals")
+                        .HasForeignKey("TemporarySealQuarterJournalId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("DBEntities.TypographicPage", null)
+                        .WithMany("TemporarySealJournals")
+                        .HasForeignKey("TypographicPageId");
+
+                    b.Navigation("TemporarySealQuarterJournal");
+                });
+
+            modelBuilder.Entity("DBEntities.TemporarySealLocation", b =>
+                {
+                    b.HasOne("DBEntities.TemporarySealJournal", "TemporarySealJournal")
+                        .WithMany("TemporarySealLocations")
+                        .HasForeignKey("TemporarySealJournalId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("DBEntities.TypographicPage", "TypographicPage")
+                        .WithMany()
+                        .HasForeignKey("TypographicPageId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("TemporarySealJournal");
+
+                    b.Navigation("TypographicPage");
+                });
+
+            modelBuilder.Entity("DBEntities.TemporarySealQuarterJournal", b =>
                 {
                     b.HasOne("DBEntities.Customer", "Customer")
-                        .WithMany("TemporarySealGroups")
+                        .WithMany("TemporarySealQuarterJournals")
                         .HasForeignKey("CustomerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Customer");
-                });
-
-            modelBuilder.Entity("DBEntities.TemporarySealJournal", b =>
-                {
-                    b.HasOne("DBEntities.TemporarySealGroup", "TemporarySealGroup")
-                        .WithMany("TemporarySealJournals")
-                        .HasForeignKey("TemporarySealGroupId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("TemporarySealGroup");
                 });
 
             modelBuilder.Entity("DBEntities.TypographicPDF", b =>
@@ -1379,6 +1360,28 @@ namespace Sqlite.Migrations
                         .IsRequired();
 
                     b.Navigation("TypographicPDF");
+                });
+
+            modelBuilder.Entity("DBEntities.UploadFile", b =>
+                {
+                    b.HasOne("DBEntities.Company", "Company")
+                        .WithMany("UploadFiles")
+                        .HasForeignKey("CompanyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Company");
+                });
+
+            modelBuilder.Entity("DBEntities.User", b =>
+                {
+                    b.HasOne("DBEntities.Company", "Company")
+                        .WithMany("Users")
+                        .HasForeignKey("CompanyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Company");
                 });
 
             modelBuilder.Entity("DBEntities.AccountSignSealTemplate", b =>
@@ -1419,13 +1422,17 @@ namespace Sqlite.Migrations
                     b.Navigation("LetterheadImageTemplates");
 
                     b.Navigation("Letterheads");
+
+                    b.Navigation("UploadFiles");
+
+                    b.Navigation("Users");
                 });
 
             modelBuilder.Entity("DBEntities.Customer", b =>
                 {
                     b.Navigation("CustomerSealQuarterJournals");
 
-                    b.Navigation("TemporarySealGroups");
+                    b.Navigation("TemporarySealQuarterJournals");
                 });
 
             modelBuilder.Entity("DBEntities.CustomerSealJournal", b =>
@@ -1458,7 +1465,12 @@ namespace Sqlite.Migrations
                     b.Navigation("LetterheadImageTemplateLocations");
                 });
 
-            modelBuilder.Entity("DBEntities.TemporarySealGroup", b =>
+            modelBuilder.Entity("DBEntities.TemporarySealJournal", b =>
+                {
+                    b.Navigation("TemporarySealLocations");
+                });
+
+            modelBuilder.Entity("DBEntities.TemporarySealQuarterJournal", b =>
                 {
                     b.Navigation("TemporarySealJournals");
                 });
@@ -1475,6 +1487,8 @@ namespace Sqlite.Migrations
                     b.Navigation("CustomerSealLocaltions");
 
                     b.Navigation("LetterheadImageLocaltions");
+
+                    b.Navigation("TemporarySealJournals");
                 });
 #pragma warning restore 612, 618
         }

@@ -29,5 +29,10 @@ namespace DBEntities
         /// 為了不在重複使用同一份檔案所做的狀態區分
         /// </summary>
         public FileWorkStatus FileWorkStatus { get; set; }
+
+        /// <summary>
+        /// 會計師事務所(公司)資料表
+        /// </summary>
+        public Company Company { get; set; }
     }
 }

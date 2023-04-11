@@ -4,8 +4,13 @@ namespace DBEntities
     /// <summary>
     /// 臨時章群組
     /// </summary>
-    public class TemporarySealGroup : BaseNameData
+    public class TemporarySealQuarterJournal : BaseData
     {
+        /// <summary>
+        /// 臨時章季度
+        /// </summary>
+        public string Quarter { get; set; }
+
         /// <summary>
         /// 客戶資料表
         /// </summary>

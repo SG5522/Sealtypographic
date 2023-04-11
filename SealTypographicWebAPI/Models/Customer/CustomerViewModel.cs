@@ -7,14 +7,16 @@ namespace SealTypographicWebAPI.Models.Customer
     /// <summary>
     /// 客戶
     /// </summary>
-    public class CustomerViewModel : CustomerViewBase
+    public class CustomerViewModel : CustomerSummary
     {
         /// <summary>
-        /// 顯示最新季度
+        /// 統一編號 (Business administration number)
         /// </summary>
-        /// <example>111Q1</example>        
-        //public string? Quarter { get; set; }
+        public string BAN { get; set; }
 
+        /// <summary>
+        /// 顯示最新季度Id
+        /// </summary>        
         public int? CustomerSealQuarterId { get; set; }
 
         /// <summary>

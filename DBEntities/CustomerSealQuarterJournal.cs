@@ -21,6 +21,5 @@ namespace DBEntities
         /// 客戶印鑑歷程表
         /// </summary>
         public List<CustomerSealJournal> CustomerSealJournals { get; set; }
-
     }
 }
