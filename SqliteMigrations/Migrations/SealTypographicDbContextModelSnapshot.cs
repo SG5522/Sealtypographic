@@ -840,9 +840,6 @@ namespace Sqlite.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<int?>("TypographicPageId")
-                        .HasColumnType("INTEGER");
-
                     b.Property<DateTime>("UpdateDate")
                         .HasColumnType("TEXT");
 
@@ -852,8 +849,6 @@ namespace Sqlite.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("TemporarySealQuarterJournalId");
-
-                    b.HasIndex("TypographicPageId");
 
                     b.ToTable("TemporarySealJournals");
                 });
@@ -944,11 +939,10 @@ namespace Sqlite.Migrations
                     b.Property<byte>("DeleteStatus")
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("FullPath")
-                        .IsRequired()
+                    b.Property<DateTime>("EndDate")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("Name")
+                    b.Property<string>("FullPath")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
@@ -958,6 +952,18 @@ namespace Sqlite.Migrations
 
                     b.Property<string>("Quarter")
                         .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime?>("ReviewDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<sbyte>("ReviewStatus")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int?>("ReviewUserId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("StartDate")
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime>("UpdateDate")
@@ -979,25 +985,16 @@ namespace Sqlite.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<DateTime>("CreateDate")
-                        .HasColumnType("TEXT");
-
-                    b.Property<int>("CreateUserId")
+                    b.Property<bool>("BlankCheck")
                         .HasColumnType("INTEGER");
 
-                    b.Property<byte>("DeleteStatus")
+                    b.Property<bool>("DeleteCheck")
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("PageNumber")
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("TypographicPDFId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<DateTime>("UpdateDate")
-                        .HasColumnType("TEXT");
-
-                    b.Property<int>("UpdateUserId")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
@@ -1058,16 +1055,31 @@ namespace Sqlite.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("AccountName")
+                    b.Property<string>("Account")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<int>("CompanyId")
                         .HasColumnType("INTEGER");
 
+                    b.Property<DateTime>("CreateDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("CreateUserId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<byte>("DeleteStatus")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("Pwaosrsd")
                         .IsRequired()
                         .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("UpdateDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("UpdateUserId")
+                        .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
 
@@ -1303,10 +1315,6 @@ namespace Sqlite.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("DBEntities.TypographicPage", null)
-                        .WithMany("TemporarySealJournals")
-                        .HasForeignKey("TypographicPageId");
-
                     b.Navigation("TemporarySealQuarterJournal");
                 });
 
@@ -1319,7 +1327,7 @@ namespace Sqlite.Migrations
                         .IsRequired();
 
                     b.HasOne("DBEntities.TypographicPage", "TypographicPage")
-                        .WithMany()
+                        .WithMany("TemporarySealJournals")
                         .HasForeignKey("TypographicPageId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1332,7 +1340,7 @@ namespace Sqlite.Migrations
             modelBuilder.Entity("DBEntities.TemporarySealQuarterJournal", b =>
                 {
                     b.HasOne("DBEntities.Customer", "Customer")
-                        .WithMany("TemporarySealQuarterJournals")
+                        .WithMany("TemporarySealGroups")
                         .HasForeignKey("CustomerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1432,7 +1440,7 @@ namespace Sqlite.Migrations
                 {
                     b.Navigation("CustomerSealQuarterJournals");
 
-                    b.Navigation("TemporarySealQuarterJournals");
+                    b.Navigation("TemporarySealGroups");
                 });
 
             modelBuilder.Entity("DBEntities.CustomerSealJournal", b =>

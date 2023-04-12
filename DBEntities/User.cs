@@ -1,19 +1,16 @@
-﻿namespace DBEntities
+﻿using DBEntities.Base;
+
+namespace DBEntities
 {
     /// <summary>
     /// 使用者
     /// </summary>
-    public class User
+    public class User : BaseData
     {
-        /// <summary>
-        /// ID
-        /// </summary>
-        public int Id { get; set; }
-
         /// <summary>
         /// 登入帳號
         /// </summary>
-        public string AccountName { get; set; }
+        public string Account { get; set; }
 
         /// <summary>
         /// 密碼

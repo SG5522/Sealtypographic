@@ -15,6 +15,7 @@ namespace DBEntities
         /// 客戶資料表
         /// </summary>
         public Customer Customer { get; set; }
+
         /// <summary>
         /// 臨時章歷程
         /// </summary>

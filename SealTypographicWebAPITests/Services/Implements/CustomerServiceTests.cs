@@ -31,8 +31,8 @@ namespace SealTypographicWebAPI.Services.Implements.Tests
             
             string dbName = $"AuthorPostsDb_{DateTime.Now.ToFileTimeUtc()}";
             dbContext = new DbContextOptionsBuilder<SealTypographicDbContext>()
-                        .UseInMemoryDatabase(dbName)
-                        .Options;
+                            .UseInMemoryDatabase(dbName)
+                            .Options;
             //IMapper mapper = new Mock<Mapper>();
             //customerService = new CustomerService(new SealTypographicDbContext(dbContext), mapper);
         }

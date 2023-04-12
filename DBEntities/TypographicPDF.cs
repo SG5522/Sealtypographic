@@ -5,7 +5,7 @@ namespace DBEntities
     /// <summary>
     /// PDF排版資訊
     /// </summary>
-    public class TypographicPDF : BaseNameData
+    public class TypographicPDF : BaseReviewData
     {
         /// <summary>
         /// 原始檔名
@@ -23,11 +23,6 @@ namespace DBEntities
         public string Quarter { get; set; }
 
         /// <summary>
-        /// 客戶Id
-        /// </summary>
-        public int CustomerId { get; set; }
-
-        /// <summary>
         /// 客戶
         /// </summary>
         public Customer Customer { get; set; }
@@ -36,6 +31,5 @@ namespace DBEntities
         /// 排版頁
         /// </summary>
         public List<TypographicPage> TypographicPages { get; set; }
-
     }
 }

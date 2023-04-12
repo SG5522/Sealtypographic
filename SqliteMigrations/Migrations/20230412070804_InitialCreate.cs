@@ -271,9 +271,14 @@ namespace Sqlite.Migrations
                 {
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    AccountName = table.Column<string>(type: "TEXT", nullable: false),
+                    Account = table.Column<string>(type: "TEXT", nullable: false),
                     Pwaosrsd = table.Column<string>(type: "TEXT", nullable: false),
-                    CompanyId = table.Column<int>(type: "INTEGER", nullable: false)
+                    CompanyId = table.Column<int>(type: "INTEGER", nullable: false),
+                    CreateDate = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    UpdateDate = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    CreateUserId = table.Column<int>(type: "INTEGER", nullable: false),
+                    UpdateUserId = table.Column<int>(type: "INTEGER", nullable: false),
+                    DeleteStatus = table.Column<byte>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -385,9 +390,9 @@ namespace Sqlite.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_TemporarySealGroups", x => x.Id);
+                    table.PrimaryKey("PK_TemporarySealQuarterJournals", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_TemporarySealGroups_Customers_CustomerId",
+                        name: "FK_TemporarySealQuarterJournals_Customers_CustomerId",
                         column: x => x.CustomerId,
                         principalTable: "Customers",
                         principalColumn: "Id",
@@ -409,7 +414,11 @@ namespace Sqlite.Migrations
                     CreateUserId = table.Column<int>(type: "INTEGER", nullable: false),
                     UpdateUserId = table.Column<int>(type: "INTEGER", nullable: false),
                     DeleteStatus = table.Column<byte>(type: "INTEGER", nullable: false),
-                    Name = table.Column<string>(type: "TEXT", nullable: false)
+                    ReviewUserId = table.Column<int>(type: "INTEGER", nullable: true),
+                    ReviewDate = table.Column<DateTime>(type: "TEXT", nullable: true),
+                    StartDate = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    EndDate = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    ReviewStatus = table.Column<sbyte>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -551,18 +560,42 @@ namespace Sqlite.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "TemporarySealJournals",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Sequence = table.Column<int>(type: "INTEGER", nullable: false),
+                    TemporarySealQuarterJournalId = table.Column<int>(type: "INTEGER", nullable: false),
+                    CreateDate = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    UpdateDate = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    CreateUserId = table.Column<int>(type: "INTEGER", nullable: false),
+                    UpdateUserId = table.Column<int>(type: "INTEGER", nullable: false),
+                    DeleteStatus = table.Column<byte>(type: "INTEGER", nullable: false),
+                    ImageFullPath = table.Column<string>(type: "TEXT", nullable: false),
+                    ThumbnailFullPath = table.Column<string>(type: "TEXT", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_TemporarySealJournals", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_TemporarySealJournals_TemporarySealQuarterJournals_TemporarySealQuarterJournalId",
+                        column: x => x.TemporarySealQuarterJournalId,
+                        principalTable: "TemporarySealQuarterJournals",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "TypographicPages",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     PageNumber = table.Column<int>(type: "INTEGER", nullable: false),
-                    TypographicPDFId = table.Column<int>(type: "INTEGER", nullable: false),
-                    CreateDate = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    UpdateDate = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    CreateUserId = table.Column<int>(type: "INTEGER", nullable: false),
-                    UpdateUserId = table.Column<int>(type: "INTEGER", nullable: false),
-                    DeleteStatus = table.Column<byte>(type: "INTEGER", nullable: false)
+                    BlankCheck = table.Column<bool>(type: "INTEGER", nullable: false),
+                    DeleteCheck = table.Column<bool>(type: "INTEGER", nullable: false),
+                    TypographicPDFId = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -663,39 +696,6 @@ namespace Sqlite.Migrations
                         principalTable: "TypographicPages",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "TemporarySealJournals",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    Sequence = table.Column<int>(type: "INTEGER", nullable: false),
-                    TemporarySealQuarterJournalId = table.Column<int>(type: "INTEGER", nullable: false),
-                    TypographicPageId = table.Column<int>(type: "INTEGER", nullable: true),
-                    CreateDate = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    UpdateDate = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    CreateUserId = table.Column<int>(type: "INTEGER", nullable: false),
-                    UpdateUserId = table.Column<int>(type: "INTEGER", nullable: false),
-                    DeleteStatus = table.Column<byte>(type: "INTEGER", nullable: false),
-                    ImageFullPath = table.Column<string>(type: "TEXT", nullable: false),
-                    ThumbnailFullPath = table.Column<string>(type: "TEXT", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_TemporarySealJournals", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_TemporarySealJournals_TemporarySealGroups_TemporarySealQuarterJournalId",
-                        column: x => x.TemporarySealQuarterJournalId,
-                        principalTable: "TemporarySealQuarterJournals",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_TemporarySealJournals_TypographicPages_TypographicPageId",
-                        column: x => x.TypographicPageId,
-                        principalTable: "TypographicPages",
-                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -834,19 +834,9 @@ namespace Sqlite.Migrations
                 column: "CompanyId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_TemporarySealGroups_CustomerId",
-                table: "TemporarySealQuarterJournals",
-                column: "CustomerId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_TemporarySealJournals_TemporarySealQuarterJournalId",
                 table: "TemporarySealJournals",
                 column: "TemporarySealQuarterJournalId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_TemporarySealJournals_TypographicPageId",
-                table: "TemporarySealJournals",
-                column: "TypographicPageId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_TemporarySealLocation_TemporarySealJournalId",
@@ -857,6 +847,11 @@ namespace Sqlite.Migrations
                 name: "IX_TemporarySealLocation_TypographicPageId",
                 table: "TemporarySealLocation",
                 column: "TypographicPageId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_TemporarySealQuarterJournals_CustomerId",
+                table: "TemporarySealQuarterJournals",
+                column: "CustomerId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_TypographicPages_TypographicPDFId",
@@ -931,6 +926,9 @@ namespace Sqlite.Migrations
                 name: "TemporarySealJournals");
 
             migrationBuilder.DropTable(
+                name: "TypographicPages");
+
+            migrationBuilder.DropTable(
                 name: "AccountantSignGroupJournals");
 
             migrationBuilder.DropTable(
@@ -943,19 +941,16 @@ namespace Sqlite.Migrations
                 name: "TemporarySealQuarterJournals");
 
             migrationBuilder.DropTable(
-                name: "TypographicPages");
+                name: "TypographicPDFs");
 
             migrationBuilder.DropTable(
                 name: "Accountants");
 
             migrationBuilder.DropTable(
-                name: "TypographicPDFs");
+                name: "Customers");
 
             migrationBuilder.DropTable(
                 name: "AccountantGroups");
-
-            migrationBuilder.DropTable(
-                name: "Customers");
 
             migrationBuilder.DropTable(
                 name: "Companys");
