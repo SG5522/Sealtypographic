@@ -63,8 +63,7 @@ namespace SealTypographicWebAPI.Controllers
             try
             {
                 Log.Information("TemporarySeal detail input {@Input}", id);
-                temporarySealDetailViewModel = temporarySealService.GetDetail(id);
-                //Log.Information("TemporarySeal detail output {@Output}", temporarySealDetailViewModel);
+                temporarySealDetailViewModel = temporarySealService.GetDetail(id);               
             }
             catch (Exception ex)
             {

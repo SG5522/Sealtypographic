@@ -1340,7 +1340,7 @@ namespace Sqlite.Migrations
             modelBuilder.Entity("DBEntities.TemporarySealQuarterJournal", b =>
                 {
                     b.HasOne("DBEntities.Customer", "Customer")
-                        .WithMany("TemporarySealGroups")
+                        .WithMany("TemporarySealQuarterJournals")
                         .HasForeignKey("CustomerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1440,7 +1440,7 @@ namespace Sqlite.Migrations
                 {
                     b.Navigation("CustomerSealQuarterJournals");
 
-                    b.Navigation("TemporarySealGroups");
+                    b.Navigation("TemporarySealQuarterJournals");
                 });
 
             modelBuilder.Entity("DBEntities.CustomerSealJournal", b =>

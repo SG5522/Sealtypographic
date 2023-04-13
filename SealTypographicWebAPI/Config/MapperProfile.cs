@@ -7,6 +7,7 @@ using SealTypographicWebAPI.Models.TypographicPDF;
 using SealTypographicWebAPI.Models.AccountantGroup;
 using SealTypographicWebAPI.Models.CustomerSealReview;
 using SealTypographicWebAPI.Models.AccountantSignReview;
+using SealTypographicWebAPI.Models.TemporarySeal;
 
 namespace SealTypographicWebAPI.Config
 {
@@ -125,6 +126,12 @@ namespace SealTypographicWebAPI.Config
 
             //信頭基本資料
             CreateMap<Letterhead, LetterheadViewModel>();
+
+            //臨時章Log使用
+            CreateMap<TemporarySealViewModel, TemporarySealLogModel>();
+            CreateMap<TemporarySealDetailViewModel, TemporarySealDetailLogModel>()
+                .ForMember(x => x.ViewModels, y => y.Ignore())
+                .ReverseMap();
 
             //PDF排版資訊
             CreateMap<TypographicPDFForm, TypographicPDF>()

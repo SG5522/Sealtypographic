@@ -93,6 +93,6 @@ namespace DBEntities
         public List<CustomerSealQuarterJournal> CustomerSealQuarterJournals { get; set; }
 
 
-        public List<TemporarySealQuarterJournal> TemporarySealGroups { get; set; }
+        public List<TemporarySealQuarterJournal> TemporarySealQuarterJournals { get; set; }
     }
 }

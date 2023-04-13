@@ -41,35 +41,43 @@ namespace SealTypographicWebAPI.Services.Implements
         public TemporarySealDetailViewModel GetDetail(int temporaryId)
         {
             TemporarySealDetailViewModel temporarySealDetailViewModel = new();
-            List<TemporarySealViewModel> logViewModel = new();
-            TemporarySealQuarterJournal? temporarySealGroup = dbContext.TemporarySealQuarterJournals.Include
-                                                                                    (
-                                                                                        temporarySealGroup => temporarySealGroup.TemporarySealJournals.Where
-                                                                                        (x => x.DeleteStatus == DeleteStatus.No)
-                                                                                    )
-                                                                                  .Include(temporarySealGroup => temporarySealGroup.Customer)
-                                                                                  .FirstOrDefault(temporarySealGroup => temporarySealGroup.Id == temporaryId);                                                                                  
+            TemporarySealDetailLogModel logModel = new();
+
+            TemporarySealDetailViewModel? temporarySealGroup = dbContext.TemporarySealQuarterJournals.AsNoTracking()
+                                                                .Include(temporarySealGroup => temporarySealGroup.TemporarySealJournals)
+                                                                .Include(temporarySealGroup => temporarySealGroup.Customer)
+                                                                .Where(temporarySealGroup => temporarySealGroup.Id == temporaryId)                                                                                    
+                                                                .Select(
+                                                                    x => new TemporarySealDetailViewModel()
+                                                                    {
+                                                                        CustomerId = x.Customer.Id,
+                                                                        CustomerName = x.Customer.Name,
+                                                                        ViewModels = x.TemporarySealJournals
+                                                                        .Where(x => x.DeleteStatus == DeleteStatus.No)
+                                                                        .Select(x => new TemporarySealViewModel() 
+                                                                        { 
+                                                                            Id = x.Id,
+                                                                            Sequence = x.Sequence,
+                                                                            ImageFullPath = x.ImageFullPath
+                                                                        }).ToList()
+                                                                    }
+                                                                ).FirstOrDefault();
 
             if(temporarySealGroup != null)
-            {
-                temporarySealDetailViewModel.CustomerId = temporarySealGroup.Customer.Id;
-                temporarySealDetailViewModel.CustomerName = temporarySealGroup.Customer.Name;
-                
-
-                foreach (TemporarySealJournal temporarySealJournal in temporarySealGroup.TemporarySealJournals)
+            {           
+                logModel = mapper.Map<TemporarySealDetailLogModel>(temporarySealDetailViewModel);
+                foreach (TemporarySealViewModel temporarySealViewModel in temporarySealGroup.ViewModels)
                 {
-                    TemporarySealViewModel temporarySealViewModel = new()
-                    {
-                        Id = temporarySealJournal.Id,
-                        Sequence = temporarySealJournal.Sequence,
-                        ImageBase64 = imageSharpService.GetPathToBase64(temporarySealJournal.ImageFullPath)                        
-                    };                    
-                    temporarySealDetailViewModel.ViewModels.Add(temporarySealViewModel);                    
-                }                
-                temporarySealDetailViewModel.Success();
-
-                logViewModel = temporarySealDetailViewModel.ViewModels.Select(x => { x.ImageBase64 = string.Empty; return x;}).ToList();
-                Log.Information("TemporarySeal detail output {@Output}", logViewModel);
+                    //取得路徑轉換ImageBase64
+                    temporarySealViewModel.ImageBase64 = imageSharpService.GetPathToBase64(temporarySealViewModel.ImageFullPath);
+                    //LOG紀錄用
+                    TemporarySealLogModel temporarySealLogModel = mapper.Map<TemporarySealLogModel>(temporarySealViewModel);                    
+                    temporarySealLogModel.ImageFileName = Path.GetFileName(temporarySealViewModel.ImageFullPath);
+                    logModel.ViewModels.Add(temporarySealLogModel);
+                }
+                temporarySealDetailViewModel = temporarySealGroup;
+                temporarySealDetailViewModel.Success();                
+                Log.Information("TemporarySeal detail output {@Output}", logModel);
             }
             return temporarySealDetailViewModel;
         }
@@ -137,26 +145,33 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <param name="temporarySealForm">基本資料</param>
         public ResponseViewModel New(TemporarySealForm temporarySealForm)
         {
-            ResponseViewModel response = new ();                                    
-            
-            Customer? customerQuery = dbContext.Customers
-                                    .Include(customer => customer.TemporarySealGroups)                                          
+            ResponseViewModel response = new ();
+
+            Customer? customerQuery = dbContext.Customers.AsNoTracking()
+                                    .Include(customer => customer.TemporarySealQuarterJournals)
+                                    .ThenInclude(temporarySealQuarterJournal => temporarySealQuarterJournal.TemporarySealJournals)
+                                    //.Select(customer => new Customer
+                                    //{
+                                    //    Id = customer.Id,
+                                    //    Code = customer.Code,
+                                    //    TemporarySealQuarterJournals = new List<TemporarySealQuarterJournal>()
+                                    //})
                                     .FirstOrDefault(customer => customer.Id == temporarySealForm.CustomerId);
+            
             if (customerQuery != null) 
             {
-                TemporarySealQuarterJournal temporarySealGroup = new();
+                TemporarySealQuarterJournal temporarySealQuarterJournal = new();
                 List<TemporarySealJournal> temporarySealJournals = new();
                 int userId = 0;
                 ImageBase64Info imageBase64Info = new()
                 {
-                    Code = customerQuery.Code,
+                    Code = customerQuery.Code,                    
                     SealType = SealType.TemporarySeal
                 };
 
-                temporarySealGroup.Quarter = temporarySealForm.Quarter;                
-                BaseInputTemporarySealGroup(temporarySealGroup, true, userId);
+                temporarySealQuarterJournal.Quarter = temporarySealForm.Quarter;                
+                BaseInputTemporarySealGroup(temporarySealQuarterJournal, true, userId);
                 
-
                 foreach (TemporarySeal temporarySeal in temporarySealForm.Seals)
                 {
                     TemporarySealJournal temporarySealJournal = new()
@@ -169,8 +184,9 @@ namespace SealTypographicWebAPI.Services.Implements
                     BaseInputTemporarySealJournal(temporarySealJournal, true, userId);
                     temporarySealJournals.Add(temporarySealJournal);
                 }
-                temporarySealGroup.TemporarySealJournals = temporarySealJournals;
-                customerQuery.TemporarySealGroups.Add(temporarySealGroup);
+                
+                temporarySealQuarterJournal.TemporarySealJournals = temporarySealJournals;
+                customerQuery.TemporarySealQuarterJournals.Add(temporarySealQuarterJournal);
                 dbContext.SaveChanges();
                 response.Success();
             }
