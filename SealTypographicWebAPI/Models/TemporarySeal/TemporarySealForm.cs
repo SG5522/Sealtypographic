@@ -4,7 +4,7 @@ using SealTypographicWebAPI.Models.BaseModels;
 namespace SealTypographicWebAPI.Models.TemporarySeal
 {
     /// <summary>
-    /// 臨時章
+    /// 臨時章(新增使用)
     /// </summary>
     public class TemporarySeal : BaseCreateSeal
     {

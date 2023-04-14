@@ -170,6 +170,12 @@ builder.Services.AddSwaggerGen(c =>
     //c.SchemaFilter<EnumSchemaFilter>();
 });
 
+
+builder.Services.Configure<Microsoft.AspNetCore.Mvc.JsonOptions>(options =>
+{
+    options.JsonSerializerOptions.Converters.Add(new System.Text.Json.Serialization.JsonStringEnumConverter());
+});
+
 builder.Host.UseWindowsService();
 
 var app = builder.Build();

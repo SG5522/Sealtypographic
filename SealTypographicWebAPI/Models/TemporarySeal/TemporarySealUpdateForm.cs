@@ -1,11 +1,13 @@
 ﻿
 
+using System.ComponentModel.DataAnnotations;
+
 namespace SealTypographicWebAPI.Models.TemporarySeal
 {
     /// <summary>
     /// 異動臨時章
     /// </summary>
-    public class TemporarySealUpdateForm : TemporarySealBaseForm
+    public class TemporarySealUpdateForm
     {
         /// <summary>
         /// 刪除簽印列表(ID)
