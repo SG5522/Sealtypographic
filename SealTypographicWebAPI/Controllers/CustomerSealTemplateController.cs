@@ -1,15 +1,33 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SealTypographicWebAPI.Models;
 using SealTypographicWebAPI.Models.CustomerSealTemplate;
+using SealTypographicWebAPI.Models.TemporarySeal;
+using SealTypographicWebAPI.Services;
+using SealTypographicWebAPI.Services.Implements;
+using Serilog;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace SealTypographicWebAPI.Controllers
 {
+    /// <summary>
+    /// 客戶印鑑樣板管理
+    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
     public class CustomerSealTemplateController : ControllerBase
     {
+        private readonly ICustomerSealTemplateService customerSealTemplateService;
+
+        /// <summary>
+        /// 建構 注入Service
+        /// </summary>
+        /// <param name="customerSealTemplateService"></param>
+        public CustomerSealTemplateController(ICustomerSealTemplateService customerSealTemplateService)
+        {
+            this.customerSealTemplateService = customerSealTemplateService;
+        }
+
         // GET: api/<CustomerSealTemplateController>
         [HttpGet]
         public IEnumerable<string> Get()
@@ -30,9 +48,22 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="customerSealTemplateForm"></param>
         /// <returns></returns>
         [HttpPost]
-        public ResponseViewModel New([FromForm]CustomerSealTemplateForm customerSealTemplateForm)
+        public ResponseViewModel New([FromForm]CustomerSealTemplateForm customerSealTemplateForm, List<CustomerSealTemplateLocationForm> CustomerSealTemplateLocationForms)
         {
-            return new ResponseViewModel();
+            ResponseViewModel response = new ();
+            try
+            {                
+                Log.Information("CustomerSealTemplate new input {@Input}", customerSealTemplateForm);
+                response = customerSealTemplateService.New(customerSealTemplateForm);
+                Log.Information("CustomerSealTemplate new output {@Output}", response);
+            }
+            catch (Exception ex)
+            {
+                Log.Error("CustomerSealTemplate new error {@Error}", ex);
+                response.DbError();
+            }
+
+            return response;
         }
 
         // PUT api/<CustomerSealTemplateController>/5

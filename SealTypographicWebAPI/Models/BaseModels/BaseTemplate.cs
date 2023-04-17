@@ -5,8 +5,13 @@ namespace SealTypographicWebAPI.Models.BaseModels
     /// <summary>
     /// 各項樣版基本資料
     /// </summary>
-    public abstract class BaseTemplate : BaseName
+    public abstract class BaseTemplate
     {
+        /// <summary>
+        /// 樣板名稱
+        /// </summary>
+        public string Name { get; set; }
+
         /// <summary>
         /// 文件格式
         /// </summary>
@@ -22,9 +27,5 @@ namespace SealTypographicWebAPI.Models.BaseModels
         /// </summary>
         public IFormFile ImageView { get; set; }
 
-        /// <summary>
-        /// 背景縮圖
-        /// </summary>
-        public IFormFile Thumbnail { get; set; }
     }
 }

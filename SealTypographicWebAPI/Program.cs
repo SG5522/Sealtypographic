@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Hosting.WindowsServices;
+using SealTypographicWebAPI.Models.CustomerSealTemplate;
 
 string allowSpecificOrigins = "allowSpecificOrigins";
 string allowAllOrigins = "allowAllOrigins";
@@ -100,6 +101,7 @@ builder.Services.AddScoped<IAccountantSignService, AcoountantSignService>();
 builder.Services.AddScoped<ILetterheadService, LetterheadService>();
 builder.Services.AddScoped<ILetterheadImageService, LetterheadImageService>();
 builder.Services.AddScoped<ITemporarySealService, TemporarySealService>();
+builder.Services.AddScoped<ICustomerSealTemplateService, CustomerSealTemplateService>();
 builder.Services.AddScoped<UploadService>();
 
 #endregion
@@ -166,7 +168,7 @@ builder.Services.AddSwaggerGen(c =>
     c.SupportNonNullableReferenceTypes();
 
     c.IncludeXmlComments(xmlPath,true);
-
+    
     //c.SchemaFilter<EnumSchemaFilter>();
 });
 

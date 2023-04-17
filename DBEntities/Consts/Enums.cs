@@ -386,4 +386,31 @@ namespace DBEntities.Consts
         [Description("橫式")]
         Landscape = 1,
     }
+
+    /// <summary>
+    /// 上傳檔案類別
+    /// 1.客戶印鑑樣板
+    /// 2.會計師簽印樣板
+    /// 3.信頭圖片樣板
+    /// </summary>    
+    public enum TemplateType : byte
+    {
+        /// <summary>
+        /// 客戶印鑑樣板
+        /// </summary>        
+        [Description("客戶印鑑樣板")]
+        CustomerSealTemplate = 1,
+
+        /// <summary>
+        /// 會計師簽印樣板
+        /// </summary>
+        [Description("會計師簽印樣板")]
+        AccountantSignTemplate = 2,
+
+        /// <summary>
+        /// 信頭圖片樣板
+        /// </summary>
+        [Description("信頭圖片樣板")]
+        LetterheadImageTemplate = 3,        
+    }
 }

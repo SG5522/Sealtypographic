@@ -283,7 +283,7 @@ namespace SealTypographicWebAPI.Services.Implements
         }
 
         /// <summary>
-        /// 信頭資料新增修改時基本資料輸入
+        /// 資料新增修改時基本資料輸入
         /// </summary>
         /// <param name="customer">DB上的客戶資料</param>
         /// <param name="isCreate">確認是否新增的動作</param>

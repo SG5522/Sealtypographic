@@ -1,14 +1,10 @@
-﻿namespace DBEntities.Base
+﻿namespace SealTypographicWebAPI.Models.BaseModels
 {
     /// <summary>
-    /// 印鑑擺放位置
+    /// 位置
     /// </summary>
-    public abstract class BaseLocation
+    public abstract class BaseLocationViewModel
     {
-        /// <summary>
-        /// Id
-        /// </summary>
-        public int Id { get; set; }
 
         /// <summary>
         /// 最左邊位置
@@ -29,6 +25,5 @@
         /// 高
         /// </summary>
         public int Height { get; set; }
-
     }
 }
