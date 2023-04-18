@@ -27,5 +27,10 @@ namespace SealTypographicWebAPI.Models.BaseModels
         /// </summary>
         public IFormFile ImageView { get; set; }
 
+        /// <summary>
+        /// 背景圖片
+        /// </summary>
+        public IFormFile Thumbnail { get; set; }
+
     }
 }

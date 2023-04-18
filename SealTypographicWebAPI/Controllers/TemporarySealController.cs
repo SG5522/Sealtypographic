@@ -100,7 +100,7 @@ namespace SealTypographicWebAPI.Controllers
         /// 更新臨時章
         /// </summary>
         /// <param name="id">臨時章id</param>
-        /// <param name="temporarySealUpdateForm"></param>
+        /// <param name="temporarySealUpdateForm">異動臨時章</param>
         /// <returns></returns>
         [HttpPut("{id}")]
         public ResponseViewModel Update(int id, TemporarySealUpdateForm temporarySealUpdateForm)
@@ -108,7 +108,8 @@ namespace SealTypographicWebAPI.Controllers
             ResponseViewModel response = new();
             try
             {
-                Log.Information("TemporarySeal update input {@Input}", temporarySealUpdateForm);
+                Log.Information("TemporarySeal update input id {@id}", id);
+                Log.Information("TemporarySeal update input temporarySealUpdateForm {@temporarySealUpdateForm}", temporarySealUpdateForm);
                 response = temporarySealService.Update(id, temporarySealUpdateForm);
                 Log.Information("TemporarySeal update output {@Output}", response);
             }

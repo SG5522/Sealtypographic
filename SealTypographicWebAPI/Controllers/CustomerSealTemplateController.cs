@@ -45,16 +45,16 @@ namespace SealTypographicWebAPI.Controllers
         /// <summary>
         /// 新增客戶印鑑樣板
         /// </summary>
-        /// <param name="customerSealTemplateForm"></param>
+        /// <param name="customerSealTemplateForm"></param>        
         /// <returns></returns>
         [HttpPost]
-        public ResponseViewModel New([FromForm]CustomerSealTemplateForm customerSealTemplateForm, List<CustomerSealTemplateLocationForm> CustomerSealTemplateLocationForms)
+        public async Task<ResponseViewModel> New([FromForm]CustomerSealTemplateForm customerSealTemplateForm)
         {
             ResponseViewModel response = new ();
             try
             {                
                 Log.Information("CustomerSealTemplate new input {@Input}", customerSealTemplateForm);
-                response = customerSealTemplateService.New(customerSealTemplateForm);
+                response = await customerSealTemplateService.New(customerSealTemplateForm);
                 Log.Information("CustomerSealTemplate new output {@Output}", response);
             }
             catch (Exception ex)
@@ -66,10 +66,29 @@ namespace SealTypographicWebAPI.Controllers
             return response;
         }
 
-        // PUT api/<CustomerSealTemplateController>/5
+        /// <summary>
+        /// 更新客戶印鑑樣板
+        /// </summary>
+        /// <param name="id">樣板ID</param>
+        /// <param name="customerSealTemplateForm">客戶樣板</param>
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        public async Task<ResponseViewModel> Update(int id, [FromForm]CustomerSealTemplateForm customerSealTemplateForm)
         {
+            ResponseViewModel response = new();
+            try
+            {
+                Log.Information("CustomerSealTemplate update input id {@id}", id);
+                Log.Information("CustomerSealTemplate update input customerSealTemplateForm {@customerSealTemplateForm}", customerSealTemplateForm);
+                response = await customerSealTemplateService.Update(id, customerSealTemplateForm);
+                Log.Information("CustomerSealTemplate new output {@Output}", response);
+            }
+            catch (Exception ex)
+            {
+                Log.Error("CustomerSealTemplate new error {@Error}", ex);
+                response.DbError();
+            }
+
+            return response;
         }
 
         // DELETE api/<CustomerSealTemplateController>/5

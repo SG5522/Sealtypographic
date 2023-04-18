@@ -8,6 +8,7 @@ using SealTypographicWebAPI.Models.AccountantGroup;
 using SealTypographicWebAPI.Models.CustomerSealReview;
 using SealTypographicWebAPI.Models.AccountantSignReview;
 using SealTypographicWebAPI.Models.TemporarySeal;
+using SealTypographicWebAPI.Models.CustomerSealTemplate;
 
 namespace SealTypographicWebAPI.Config
 {
@@ -132,6 +133,13 @@ namespace SealTypographicWebAPI.Config
             CreateMap<TemporarySealDetailViewModel, TemporarySealDetailLogModel>()
                 .ForMember(x => x.ViewModels, y => y.Ignore())
                 .ReverseMap();
+
+            //客戶印鑑樣板使用
+            CreateMap<CustomerSealTemplateForm, CustomerSealTemplate>();
+            CreateMap<CustomerSealTemplateLocationForm, CustomerSealTemplateLocation>()
+                .ForMember(x=> x.ConfigType , y => y.MapFrom(o => o.CustomerSealType))
+                .ReverseMap();
+                
 
             //PDF排版資訊
             CreateMap<TypographicPDFForm, TypographicPDF>()

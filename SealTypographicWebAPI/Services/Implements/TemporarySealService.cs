@@ -188,9 +188,7 @@ namespace SealTypographicWebAPI.Services.Implements
                 temporarySealQuarterJournal.TemporarySealJournals = temporarySealJournals;
                 customerQuery.TemporarySealQuarterJournals.Add(temporarySealQuarterJournal);
                 dbContext.Entry(customerQuery).State = EntityState.Unchanged;
-                dbContext.TemporarySealQuarterJournals.Add(temporarySealQuarterJournal);
-                dbContext.ChangeTracker.DetectChanges();
-                Log.Information("db ChangeTracker {ounput}", dbContext.ChangeTracker.DebugView.LongView);
+                dbContext.TemporarySealQuarterJournals.Add(temporarySealQuarterJournal);                              
                 dbContext.SaveChanges();
                 response.Success();
             }

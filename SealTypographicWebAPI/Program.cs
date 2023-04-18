@@ -31,6 +31,9 @@ builder.Services.Configure<UploadPathOption>(
 builder.Services.Configure<SealPathOption>(
     builder.Configuration.GetSection("SealPath"));
 
+builder.Services.Configure<TemplateImagePathOption>(
+    builder.Configuration.GetSection("TemplateImagePath"));
+
 //addCors
 builder.Services.AddCors(options =>
 {

@@ -14,6 +14,14 @@ namespace SealTypographicWebAPI.Services
         /// </summary>
         /// <param name="customerSealTemplateForm">客戶印鑑組資料</param>
         /// <returns></returns>
-        ResponseViewModel New(CustomerSealTemplateForm customerSealTemplateForm);
+        Task<ResponseViewModel> New(CustomerSealTemplateForm customerSealTemplateForm);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="Id"></param>
+        /// <param name="customerSealTemplateForm"></param>
+        /// <returns></returns>
+        Task<ResponseViewModel> Update(int Id, CustomerSealTemplateForm customerSealTemplateForm);
     }
 }
