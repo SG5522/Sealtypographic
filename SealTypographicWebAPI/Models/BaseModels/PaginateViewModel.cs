@@ -3,7 +3,7 @@
     /// <summary>
     /// 各種分頁回傳結果
     /// </summary>
-    public class PaginateViewModel : ResponseViewModel
+    public abstract class PaginateViewModel : ResponseViewModel
     {
         /// <summary>
         /// 目前頁碼

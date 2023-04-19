@@ -4,8 +4,13 @@ namespace SealTypographicWebAPI.Models.Customer
     /// <summary>
     /// 客戶資料
     /// </summary>
-    public class CustomerDetail : CustomerViewBase
-    {        
+    public class CustomerDetail : CustomerSummary
+    {
+        /// <summary>
+        /// 統一編號 (Business administration number)
+        /// </summary>
+        public string BAN { get; set; }
+
         /// <summary>
         /// 公司負責人
         /// </summary>

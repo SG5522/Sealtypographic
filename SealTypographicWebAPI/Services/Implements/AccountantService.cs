@@ -1,10 +1,11 @@
 ﻿using SealTypographicWebAPI.Models;
 using SealTypographicWebAPI.Models.Accountant;
-using SealTypographicWebAPI.Entities;
-using SealTypographicWebAPI.Consts;
+using DBEntities;
+using DBEntities.Consts;
 using SealTypographicWebAPI.Utils;
 using Microsoft.EntityFrameworkCore;
 using AutoMapper;
+using System.ComponentModel.Design;
 
 namespace SealTypographicWebAPI.Services.Implements
 {
@@ -48,9 +49,13 @@ namespace SealTypographicWebAPI.Services.Implements
         public AccountantPaginateViewModel GetPaginate(AccountantSearch accountantSearch)
         {
             AccountantPaginateViewModel accountantPaginatesViewModels = new();
+            int companyId = 1;
 
-            IQueryable<Accountant> accountantQuery = dbContext.Accountants
-                                                    .Where(accountant => accountant.DeleteStatus == DeleteStatus.No);     
+            IQueryable<Accountant> accountantQuery = dbContext.Accountants.Where
+                                                        (
+                                                            accountant => accountant.Company.Id == companyId
+                                                            && accountant.DeleteStatus == DeleteStatus.No
+                                                        );     
             
             if (!string.IsNullOrWhiteSpace(accountantSearch.KeyWord))
             {
@@ -110,37 +115,45 @@ namespace SealTypographicWebAPI.Services.Implements
         {
             AccountantCreateResponse accountantCreateResponse = new();
             int userid = 0;//帳號驗證取得ID
-            //驗證編號是否重複
-            List<string> accountantCodeQuery = dbContext.Accountants.AsNoTracking().Where
-                                            (
-                                                x => x.Code == accountantForm.AccountantNumber
-                                                && x.DeleteStatus == DeleteStatus.No
-                                            ).Select(x => x.Code).ToList();
+            int companyId = 1;
 
-            if (!accountantCodeQuery.Any())
+            //尋找公司並與會計師關聯
+            Company? companyQuery = dbContext.Companys.Include(x => x.Accountants).FirstOrDefault(x => x.Id == companyId);
+
+            if(companyQuery != null)
             {
-                Accountant dbAccountant = mapper.Map<Accountant>(accountantForm);
-                BaseInputAccountant(dbAccountant, true, userid);
-                dbContext.Accountants.Add(dbAccountant);
-                dbContext.SaveChanges();
+                //驗證編號是否重複
+                List<string> accountantCodeQuery = companyQuery.Accountants.Where
+                                                (
+                                                    x => x.Code == accountantForm.AccountantNumber
+                                                    && x.DeleteStatus == DeleteStatus.No
+                                                ).Select(x => x.Code).ToList();
 
-                //回傳剛建立的客戶基本資料 使建立客戶印鑑找到該ID
-                Accountant? accountant = dbContext.Accountants.Find(dbAccountant.Id);
-                                    
-                if (accountant != null)
+                if (!accountantCodeQuery.Any())
                 {
-                    accountantCreateResponse.AccountantId = accountant.Id;
-                    accountantCreateResponse.Success();
+                    Accountant dbAccountant = mapper.Map<Accountant>(accountantForm);
+                    BaseInputAccountant(dbAccountant, true, userid);
+                    companyQuery.Accountants.Add(dbAccountant);
+                    dbContext.SaveChanges();
+
+                    if (dbAccountant != null)
+                    {
+                        //回傳剛建立的會計師基本資料 使建立會計師簽印找到該ID
+                        accountantCreateResponse.AccountantId = dbAccountant.Id;
+                        accountantCreateResponse.Success();
+                    }
+                    else
+                    {
+                        accountantCreateResponse.CreateAccountantFailed();
+                    }
                 }
                 else
                 {
-                    accountantCreateResponse.CreateAccountantFailed();
-                }                                
+                    accountantCreateResponse.AccountantNumberRepeat();
+                }
             }
-            else
-            {
-                accountantCreateResponse.AccountantNumberRepeat();                
-            }
+
+                        
             return accountantCreateResponse;
         }
 

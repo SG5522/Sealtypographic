@@ -1,13 +1,17 @@
 ﻿using Microsoft.OpenApi.Models;
 using SealTypographicWebAPI.Services;
-using SealTypographicWebAPI.Entities;
+using DBEntities;
 using System.Reflection;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 using SealTypographicWebAPI.Services.Implements;
 using SealTypographicWebAPI.Config;
 using Microsoft.AspNetCore.Mvc.Razor;
+using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Hosting.WindowsServices;
+using SealTypographicWebAPI.Models.CustomerSealTemplate;
 
 string allowSpecificOrigins = "allowSpecificOrigins";
 string allowAllOrigins = "allowAllOrigins";
@@ -26,6 +30,9 @@ builder.Services.Configure<UploadPathOption>(
 
 builder.Services.Configure<SealPathOption>(
     builder.Configuration.GetSection("SealPath"));
+
+builder.Services.Configure<TemplateImagePathOption>(
+    builder.Configuration.GetSection("TemplateImagePath"));
 
 //addCors
 builder.Services.AddCors(options =>
@@ -52,18 +59,18 @@ builder.Host.UseSerilog();// <-SeriLog
 #region -- ConectionString --
 builder.Services.AddDbContextPool<SealTypographicDbContext>(optionsBuilder =>
 {
-string? provider = config.GetValue<string>("Provider");
-switch (provider)
-{
+    string? provider = config.GetValue<string>("Provider");
+    switch (provider)
+    {
     case "Sqlite":
-            optionsBuilder.UseSqlite(config.GetConnectionString("Sqlite"));          
+            optionsBuilder.UseSqlite(config.GetConnectionString(provider), x => x.MigrationsAssembly(provider));          
             break;
         case "MySql":
-            MySqlServerVersion serverVersion = new(new Version(8, 0, 32));
-            optionsBuilder.UseMySql(config.GetConnectionString("MySql"), serverVersion, x => x.MigrationsAssembly("MySqlMigrations"));            
+            MySqlServerVersion serverVersion = new(new Version(8, 0, 32));                 
+            optionsBuilder.UseMySql(config.GetConnectionString(provider), serverVersion, x => x.MigrationsAssembly(provider));
             break;
         case "MsSql":
-            optionsBuilder.UseSqlServer(config.GetConnectionString("MsSql"));
+            optionsBuilder.UseSqlServer(config.GetConnectionString(provider));
             break;
         default:
             throw new Exception($"Unsupported provider: {provider}");
@@ -78,6 +85,7 @@ switch (provider)
 #endregion
 
 #region -- Service --
+
 builder.Services.AddScoped<ImageService>();
 builder.Services.AddScoped<SealMappingConfigService>();
 builder.Services.AddScoped<ResponseCodeService>();
@@ -95,9 +103,26 @@ builder.Services.AddScoped<IAccountantSignReviewService, AccountantSignReviewSer
 builder.Services.AddScoped<IAccountantSignService, AcoountantSignService>();
 builder.Services.AddScoped<ILetterheadService, LetterheadService>();
 builder.Services.AddScoped<ILetterheadImageService, LetterheadImageService>();
+builder.Services.AddScoped<ITemporarySealService, TemporarySealService>();
+builder.Services.AddScoped<ICustomerSealTemplateService, CustomerSealTemplateService>();
 builder.Services.AddScoped<UploadService>();
 
+#endregion
 
+#region -- Authentication --
+//builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+//    .AddEntityFrameworkStores<ApplicationDbContext>();
+
+//builder.Services.AddAuthentication(options =>
+//{
+//    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+//})
+//.AddOpenIdConnect(options =>
+//{
+//    options.Authority = identityUrl.ToString();
+
+//})
+//;
 #endregion
 
 builder.Services.AddLocalization(option => option.ResourcesPath = "Resource");
@@ -121,7 +146,7 @@ builder.Services.AddSwaggerGen(c =>
 {
     //Set the comments path for the Swagger JSON and UI.
     string xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-    string xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);    
+    string xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
 
     c.SwaggerDoc("v1", new OpenApiInfo
     {        
@@ -146,8 +171,14 @@ builder.Services.AddSwaggerGen(c =>
     c.SupportNonNullableReferenceTypes();
 
     c.IncludeXmlComments(xmlPath,true);
-
+    
     //c.SchemaFilter<EnumSchemaFilter>();
+});
+
+
+builder.Services.Configure<Microsoft.AspNetCore.Mvc.JsonOptions>(options =>
+{
+    options.JsonSerializerOptions.Converters.Add(new System.Text.Json.Serialization.JsonStringEnumConverter());
 });
 
 builder.Host.UseWindowsService();
@@ -173,12 +204,11 @@ using (IServiceScope scope = app.Services.CreateScope())
     try
     {
         SealTypographicDbContext dbContext = scope.ServiceProvider.GetRequiredService<SealTypographicDbContext>();
-        //dbContext.Database.Migrate();
-        await dbContext.Database.MigrateAsync();
+        dbContext.Database.Migrate();
+        InitialDbData.Initialize(dbContext);
     }
     catch(Exception ex)
-    {
-        //從其他Class Library使用Migrate會發生找不到的問題(MigrationsAssembly名稱對不起來)。
+    {        
         Console.WriteLine(ex.ToString());
     }
 }

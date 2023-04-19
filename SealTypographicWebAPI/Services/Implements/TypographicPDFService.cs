@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using SealTypographicWebAPI.Entities;
+using DBEntities;
 using SealTypographicWebAPI.Models.TypographicPDF;
 using SealTypographicWebAPI.Models;
 
@@ -44,9 +44,8 @@ namespace SealTypographicWebAPI.Services.Implements
         {
             ResponseViewModel response = new();
             IQueryable<TypographicPDF> typographicPDFQuery = dbContext.TypographicPDFs
-                                    .Where(typographicPDF => 
-                                           typographicPDF.CustomerId == typographicPDFForm.CustomerId
-                                           && typographicPDF.Quarter == typographicPDFForm.Quarter);
+                                                            .Where(typographicPDF =>                                                             
+                                                            typographicPDF.Quarter == typographicPDFForm.Quarter);
 
             if (!typographicPDFQuery.Any())
             {

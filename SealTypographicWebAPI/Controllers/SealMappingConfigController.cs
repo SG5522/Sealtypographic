@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using SealTypographicWebAPI.Consts;
+using DBEntities.Consts;
 using SealTypographicWebAPI.Models.SealMappingConfig;
 using Serilog;
 using SealTypographicWebAPI.Services.Implements;

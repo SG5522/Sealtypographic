@@ -1,13 +1,9 @@
 ﻿using AutoMapper;
-using EFCore.BulkExtensions;
 using Microsoft.EntityFrameworkCore;
-using SealTypographicWebAPI.Consts;
-using SealTypographicWebAPI.Entities;
+using DBEntities.Consts;
+using DBEntities;
 using SealTypographicWebAPI.Models;
 using SealTypographicWebAPI.Models.Accountant;
-using SealTypographicWebAPI.Models.Customer;
-using SealTypographicWebAPI.Models.Letterhead;
-using SealTypographicWebAPI.Utils;
 using System.Linq;
 
 namespace SealTypographicWebAPI.Services.Implements
@@ -227,12 +223,13 @@ namespace SealTypographicWebAPI.Services.Implements
                     }
 
                     //更新及異動的印鑑去除
-                    accountantSignGroup.AccountantSignJournals = accountantSignGroup.AccountantSignJournals
-                                                            .Where(x => !accountantSignUpdate.DeleteAccountantSignIds.Contains(x.Id)).ToList();
+                    IQueryable<AccountantSignJournal>? deleteSealQuery = accountantSignGroup.AccountantSignJournals
+                                                                        .Where(x => !accountantSignUpdate.DeleteAccountantSignIds.Contains(x.Id)).AsQueryable();
 
                     foreach (AccountantSignJournal accountantSign in accountantSignGroup.AccountantSignJournals)
                     {
-                        accountantSign.Id = 0;
+                        accountantSign.DeleteStatus = DeleteStatus.Yes;
+                        BaseInputAccountantSignJournal(accountantSign, false, userId);
                     }
 
                     //新增
