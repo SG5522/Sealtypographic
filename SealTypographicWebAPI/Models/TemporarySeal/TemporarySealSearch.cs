@@ -8,9 +8,10 @@ namespace SealTypographicWebAPI.Models.TemporarySeal
     public class TemporarySealSearch : PaginateSearch
     {
         /// <summary>
-        /// 關鍵字搜尋 (客戶名稱 or 臨時章名稱)
+        /// 關鍵字搜尋 (客戶名稱)
         /// </summary>
-        /// <example>映像公司 or 臨時章01</example>
-        public string? KeyWord { get; set; }       
+        /// <example>映像公司</example>
+        public string? KeyWord { get; set; }
+        
     }
 }

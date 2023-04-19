@@ -27,6 +27,10 @@ namespace SealTypographicWebAPI.Models.CustomerSealTemplate
     public class CustomerSealTemplateUpdateForm : BaseTemplate
     {
         /// <summary>
+        /// 
+        /// </summary>
+        public int Id { get; set; }
+        /// <summary>
         /// 樣板疊放方式
         /// </summary>
         public StackMode StackMode { get; set; }

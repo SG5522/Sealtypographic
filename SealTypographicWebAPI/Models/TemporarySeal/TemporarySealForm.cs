@@ -23,7 +23,7 @@ namespace SealTypographicWebAPI.Models.TemporarySeal
     public class TemporarySealForm : TemporarySealBaseForm
     {
         /// <summary>
-        /// 臨時印鑑組
+        /// 臨時章印鑑組
         /// </summary>
         [Required]
         public List<TemporarySeal> Seals { get; set; }

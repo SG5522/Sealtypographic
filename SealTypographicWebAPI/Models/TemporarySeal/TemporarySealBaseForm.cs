@@ -15,9 +15,9 @@ namespace SealTypographicWebAPI.Models.TemporarySeal
         public int CustomerId { get; set; }
 
         /// <summary>
-        /// 臨時章名稱
+        /// 臨時章季度
         /// </summary>
-        /// <example>臨時章01</example>
+        /// <example>110Q1</example>
         [Required]
         public string Quarter { get; set; }
     }

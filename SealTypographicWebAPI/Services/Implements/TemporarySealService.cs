@@ -106,8 +106,8 @@ namespace SealTypographicWebAPI.Services.Implements
                 temporarySealGroupQuery = temporarySealGroupQuery
                                             .Where
                                             (
-                                                temporarySealGroup => temporarySealGroup.Quarter.Contains(temporarySealSearch.KeyWord)
-                                                || temporarySealGroup.Customer.Name.Contains(temporarySealSearch.KeyWord)
+                                                temporarySealGroup => temporarySealGroup.Customer.Name.Contains(temporarySealSearch.KeyWord)
+                                                //|| temporarySealGroup.Quarter.Contains(temporarySealSearch.KeyWord)
                                             );
             }
             temporarySealGroupQuery = temporarySealGroupQuery.OrderBy(temporarySealGroup => temporarySealGroup.Id);
@@ -201,10 +201,9 @@ namespace SealTypographicWebAPI.Services.Implements
 
         /// <summary>
         /// 更新臨時章
-        /// </summary>
-        /// <param name="Id">臨時章Id</param>
+        /// </summary>        
         /// <param name="temporarySealUpdateForm">基本資料</param>
-        public ResponseViewModel Update(int Id, TemporarySealUpdateForm temporarySealUpdateForm)
+        public ResponseViewModel Update(TemporarySealUpdateForm temporarySealUpdateForm)
         {
             ResponseViewModel response = new();
             int userId = 0;
@@ -215,7 +214,7 @@ namespace SealTypographicWebAPI.Services.Implements
                                                                     (
                                                                         temporarySealQuarterJournal => new TemporarySealQuarterJournal
                                                                         {
-                                                                            Id = Id,
+                                                                            Id = temporarySealUpdateForm.Id,
                                                                             Customer = new Customer{ 
                                                                                 Id = temporarySealQuarterJournal.Customer.Id,
                                                                                 Code = temporarySealQuarterJournal.Customer.Code,
@@ -224,7 +223,7 @@ namespace SealTypographicWebAPI.Services.Implements
                                                                                                     .Where(x => x.DeleteStatus == DeleteStatus.No).ToList()
                                                                         }
                                                                     )
-                                                                    .FirstOrDefault(temporarySealGroup => temporarySealGroup.Id == Id);
+                                                                    .FirstOrDefault(temporarySealGroup => temporarySealGroup.Id == temporarySealUpdateForm.Id);
             if(temporarySealQuarterJournalQuery != null)
             {
                 ImageBase64Info imageBase64Info = new()

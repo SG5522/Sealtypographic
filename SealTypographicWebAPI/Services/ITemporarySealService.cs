@@ -30,10 +30,9 @@ namespace SealTypographicWebAPI.Services
 
         /// <summary>
         /// 更新臨時章
-        /// </summary>
-        /// <param name="Id">臨時章Id</param>
+        /// </summary>        
         /// <param name="temporarySealUpdateForm">臨時章資料</param>
-        ResponseViewModel Update(int Id, TemporarySealUpdateForm temporarySealUpdateForm);
+        ResponseViewModel Update(TemporarySealUpdateForm temporarySealUpdateForm);
 
         /// <summary>
         /// 刪除臨時章。

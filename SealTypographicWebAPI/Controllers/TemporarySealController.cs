@@ -32,9 +32,10 @@ namespace SealTypographicWebAPI.Controllers
         /// <summary>
         /// 取得臨時章列表
         /// </summary>
+        /// <param name="temporarySealSearch">臨時章分頁搜尋</param>
         /// <returns></returns>
         [HttpGet]
-        public TemporarySealPaginateViewModel Paginate([FromQuery]TemporarySealSearch temporarySealSearch)
+        public TemporarySealPaginateViewModel Paginate([FromQuery] TemporarySealSearch temporarySealSearch)
         {
             TemporarySealPaginateViewModel temporaryPaginateViewModel = new();            
             try
@@ -98,19 +99,17 @@ namespace SealTypographicWebAPI.Controllers
 
         /// <summary>
         /// 更新臨時章
-        /// </summary>
-        /// <param name="id">臨時章id</param>
+        /// </summary>        
         /// <param name="temporarySealUpdateForm">異動臨時章</param>
         /// <returns></returns>
-        [HttpPut("{id}")]
-        public ResponseViewModel Update(int id, TemporarySealUpdateForm temporarySealUpdateForm)
+        [HttpPut]
+        public ResponseViewModel Update(TemporarySealUpdateForm temporarySealUpdateForm)
         {
             ResponseViewModel response = new();
             try
-            {
-                Log.Information("TemporarySeal update input id {@id}", id);
+            {                
                 Log.Information("TemporarySeal update input temporarySealUpdateForm {@temporarySealUpdateForm}", temporarySealUpdateForm);
-                response = temporarySealService.Update(id, temporarySealUpdateForm);
+                response = temporarySealService.Update(temporarySealUpdateForm);
                 Log.Information("TemporarySeal update output {@Output}", response);
             }
             catch (Exception ex)
