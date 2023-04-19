@@ -131,7 +131,7 @@ namespace SealTypographicWebAPI.Config
             //臨時章Log使用
             CreateMap<TemporarySealViewModel, TemporarySealLogModel>();
             CreateMap<TemporarySealDetailViewModel, TemporarySealDetailLogModel>()
-                .ForMember(x => x.ViewModels, y => y.Ignore())
+                .ForMember(x => x.ViewModels, y => y.Ignore())                
                 .ReverseMap();
 
             //客戶印鑑樣板使用
@@ -139,7 +139,11 @@ namespace SealTypographicWebAPI.Config
             CreateMap<CustomerSealTemplateLocationForm, CustomerSealTemplateLocation>()
                 .ForMember(x=> x.ConfigType , y => y.MapFrom(o => o.CustomerSealType))
                 .ReverseMap();
-                
+
+            //客戶印鑑樣板Log使用
+            CreateMap<CustomerSealTemplateViewModel, CustomerSealTemplateLogModel>();
+            CreateMap<CustomerSealTemplatePaginate, CustomerSealTemplatePaginateLog>();
+
 
             //PDF排版資訊
             CreateMap<TypographicPDFForm, TypographicPDF>()

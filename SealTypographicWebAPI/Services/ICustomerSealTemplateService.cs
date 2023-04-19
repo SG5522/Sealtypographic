@@ -10,18 +10,24 @@ namespace SealTypographicWebAPI.Services
     public interface ICustomerSealTemplateService
     {
         /// <summary>
-        /// 新增客戶印鑑組資料
+        /// 客戶印鑑樣板分頁顯示
         /// </summary>
-        /// <param name="customerSealTemplateForm">客戶印鑑組資料</param>
+        /// <param name="customerSealTemplateSearch">客戶印鑑樣板分頁搜尋</param>
+        /// <returns></returns>
+        CustomerSealTemplatePaginate Paginate(CustomerSealTemplateSearch customerSealTemplateSearch);
+
+        /// <summary>
+        /// 新增客戶印鑑樣板
+        /// </summary>
+        /// <param name="customerSealTemplateForm">客戶印鑑樣板</param>
         /// <returns></returns>
         Task<ResponseViewModel> New(CustomerSealTemplateForm customerSealTemplateForm);
 
         /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="Id"></param>
-        /// <param name="customerSealTemplateForm"></param>
+        /// 更新客戶印鑑樣板
+        /// </summary>        
+        /// <param name="customerSealTemplateUpdateForm"></param>
         /// <returns></returns>
-        Task<ResponseViewModel> Update(int Id, CustomerSealTemplateForm customerSealTemplateForm);
+        Task<ResponseViewModel> Update(CustomerSealTemplateUpdateForm customerSealTemplateUpdateForm);
     }
 }

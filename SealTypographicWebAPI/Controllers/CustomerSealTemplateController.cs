@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Azure;
+using Microsoft.AspNetCore.Mvc;
 using SealTypographicWebAPI.Models;
 using SealTypographicWebAPI.Models.CustomerSealTemplate;
 using SealTypographicWebAPI.Models.TemporarySeal;
@@ -28,11 +29,27 @@ namespace SealTypographicWebAPI.Controllers
             this.customerSealTemplateService = customerSealTemplateService;
         }
 
-        // GET: api/<CustomerSealTemplateController>
+        /// <summary>
+        /// 依搜尋結果與分頁顯示樣板列表
+        /// </summary>
+        /// <param name="customerSealTemplateSearch">客戶印鑑樣板分頁搜尋</param>
+        /// <returns></returns>
         [HttpGet]
-        public IEnumerable<string> Get()
+        public CustomerSealTemplatePaginate Paginate([FromQuery]CustomerSealTemplateSearch customerSealTemplateSearch)
         {
-            return new string[] { "value1", "value2" };
+            CustomerSealTemplatePaginate customerSealTemplatePaginate = new ();
+            try
+            {
+                Log.Information("CustomerSealTemplate paginate input {@Input}", customerSealTemplateSearch);
+                customerSealTemplatePaginate = customerSealTemplateService.Paginate(customerSealTemplateSearch);
+                //Log.Information("CustomerSealTemplate paginate output {@Output}", customerSealTemplatePaginate);
+            }
+            catch (Exception ex)
+            {
+                Log.Error("CustomerSealTemplate paginate error {@Error}", ex);
+                customerSealTemplatePaginate.DbError();
+            }
+            return customerSealTemplatePaginate;
         }
 
         // GET api/<CustomerSealTemplateController>/5
@@ -62,7 +79,6 @@ namespace SealTypographicWebAPI.Controllers
                 Log.Error("CustomerSealTemplate new error {@Error}", ex);
                 response.DbError();
             }
-
             return response;
         }
 
@@ -70,16 +86,15 @@ namespace SealTypographicWebAPI.Controllers
         /// 更新客戶印鑑樣板
         /// </summary>
         /// <param name="id">樣板ID</param>
-        /// <param name="customerSealTemplateForm">客戶樣板</param>
+        /// <param name="customerSealTemplateUpdateForm">客戶樣板</param>
         [HttpPut("{id}")]
-        public async Task<ResponseViewModel> Update(int id, [FromForm]CustomerSealTemplateForm customerSealTemplateForm)
+        public async Task<ResponseViewModel> Update([FromForm] CustomerSealTemplateUpdateForm customerSealTemplateUpdateForm)
         {
             ResponseViewModel response = new();
             try
-            {
-                Log.Information("CustomerSealTemplate update input id {@id}", id);
-                Log.Information("CustomerSealTemplate update input customerSealTemplateForm {@customerSealTemplateForm}", customerSealTemplateForm);
-                response = await customerSealTemplateService.Update(id, customerSealTemplateForm);
+            {                
+                Log.Information("CustomerSealTemplate update input customerSealTemplateUpdateForm {@customerSealTemplateUpdateForm}", customerSealTemplateUpdateForm);
+                response = await customerSealTemplateService.Update(customerSealTemplateUpdateForm);
                 Log.Information("CustomerSealTemplate new output {@Output}", response);
             }
             catch (Exception ex)

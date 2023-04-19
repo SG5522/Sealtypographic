@@ -2,12 +2,10 @@
 using DBEntities;
 using DBEntities.Consts;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
 using SealTypographicWebAPI.Models;
 using SealTypographicWebAPI.Models.TemporarySeal;
 using SealTypographicWebAPI.Utils;
 using Serilog;
-using System.Linq;
 
 namespace SealTypographicWebAPI.Services.Implements
 {

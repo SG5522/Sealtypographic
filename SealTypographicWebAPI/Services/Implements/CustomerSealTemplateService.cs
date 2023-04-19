@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using Azure;
 using DBEntities;
 using DBEntities.Consts;
 using Microsoft.EntityFrameworkCore;
@@ -8,6 +7,8 @@ using SealTypographicWebAPI.Config;
 using SealTypographicWebAPI.Models;
 using SealTypographicWebAPI.Models.CustomerSealTemplate;
 using SealTypographicWebAPI.Utils;
+using Serilog;
+using Serilog.Parsing;
 
 namespace SealTypographicWebAPI.Services.Implements
 {
@@ -34,6 +35,61 @@ namespace SealTypographicWebAPI.Services.Implements
             this.mapper = mapper;
             this.imageSharpService = imageSharpService;
             this.templateImagePathOption = option.Value;
+        }
+
+        /// <summary>
+        /// 客戶印鑑樣板分頁顯示
+        /// </summary>
+        /// <param name="customerSealTemplateSearch"></param>
+        /// <returns></returns>
+        public CustomerSealTemplatePaginate Paginate(CustomerSealTemplateSearch customerSealTemplateSearch)
+        {
+            CustomerSealTemplatePaginate customerSealTemplatePaginate = new ();            
+            int companyId = 1;
+
+            IQueryable<CustomerSealTemplate> customerSealTemplateQuery = dbContext.CustomerSealTemplates
+                                                                    .Where
+                                                                    (
+                                                                        customerSealTemplate => customerSealTemplate.Company.Id == companyId                                                                        
+                                                                        && customerSealTemplate.DeleteStatus == DeleteStatus.No
+                                                                    );
+
+            if (!string.IsNullOrEmpty(customerSealTemplateSearch.KeyWord))
+            {
+                customerSealTemplateQuery = customerSealTemplateQuery
+                                            .Where
+                                            (
+                                                customerSealTemplate => customerSealTemplate.Name.Contains(customerSealTemplateSearch.KeyWord)                
+                                            );
+            }
+            customerSealTemplateQuery = customerSealTemplateQuery.OrderBy(temporarySealGroup => temporarySealGroup.Id);
+
+            if (customerSealTemplateQuery.Any())
+            {
+                List<CustomerSealTemplateViewModel> thisPageCustomerSealTemplate = customerSealTemplateQuery                                                                      
+                                                                    .Skip((customerSealTemplateSearch.PageNumber - 1) * customerSealTemplateSearch.PageSize)
+                                                                    .Take(customerSealTemplateSearch.PageSize)
+                                                                    .Select(customerSealTemplate => new CustomerSealTemplateViewModel()
+                                                                    {
+                                                                        Id = customerSealTemplate.Id,
+                                                                        Name = customerSealTemplate.Name,
+                                                                        ImageFullPath = customerSealTemplate.ThumbnailFullPath,
+                                                                        ThumbnailBase64 = imageSharpService.GetPathToBase64(customerSealTemplate.ThumbnailFullPath)
+                                                                    })
+                                                                    .ToList();
+
+                customerSealTemplatePaginate.ViewModels = thisPageCustomerSealTemplate;
+                customerSealTemplatePaginate.PageNumber = customerSealTemplateSearch.PageNumber;
+                customerSealTemplatePaginate.PageSize = customerSealTemplateSearch.PageSize;
+                //計算總頁數
+                customerSealTemplatePaginate.TotalPage = TotalPageUtil.GetTotalPage(customerSealTemplateQuery.Count(), customerSealTemplateSearch.PageSize);
+                customerSealTemplatePaginate.TotalCount = customerSealTemplateQuery.Count();
+                customerSealTemplatePaginate.Success();
+            }
+            CustomerSealTemplatePaginateLog customerSealTemplatePaginateLog = mapper.Map<CustomerSealTemplatePaginateLog>(customerSealTemplatePaginate);
+            customerSealTemplatePaginateLog.LogModels = mapper.Map<List<CustomerSealTemplateLogModel>>(customerSealTemplatePaginate.ViewModels);            
+            Log.Information("CustomerSealTemplate paginate output {@Output}", customerSealTemplatePaginate);
+            return customerSealTemplatePaginate;
         }
 
         /// <summary>
@@ -81,11 +137,10 @@ namespace SealTypographicWebAPI.Services.Implements
 
         /// <summary>
         /// 更新客戶印鑑樣板
-        /// </summary>
-        /// <param name="id">樣板ID</param>
-        /// <param name="customerSealTemplateForm">客戶樣板</param>
+        /// </summary>        
+        /// <param name="customerSealTemplateUpdateForm">客戶樣板</param>
         /// <returns></returns>
-        public async Task<ResponseViewModel> Update(int id, CustomerSealTemplateForm customerSealTemplateForm)
+        public async Task<ResponseViewModel> Update(CustomerSealTemplateUpdateForm customerSealTemplateUpdateForm)
         {
             ResponseViewModel response = new ();
             CustomerSealTemplate? customerSealTemplateQuery = dbContext.CustomerSealTemplates.Include(x => x.CustomerTempTemplateLocations)
@@ -97,7 +152,7 @@ namespace SealTypographicWebAPI.Services.Implements
                                                                     CustomerTempTemplateLocations = x.CustomerTempTemplateLocations,
                                                                 }
                                                              )
-                                                             .FirstOrDefault(x => x.Id == id);
+                                                             .FirstOrDefault(x => x.Id == customerSealTemplateUpdateForm.Id);
 
 
             if (customerSealTemplateQuery != null)
