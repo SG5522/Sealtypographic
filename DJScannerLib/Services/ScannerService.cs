@@ -1,19 +1,20 @@
-﻿using static TWAINWorkingGroup.TWAIN;
-using TWAINWorkingGroup;
-using System.Runtime.InteropServices;
-using System.Reflection.Metadata;
-using System.Security.Principal;
-using System.Security.Permissions;
-using DJLib;
-using SixLabors.ImageSharp;
-using System.ComponentModel;
-using SixLabors.ImageSharp.Formats;
+﻿using DJLib;
+using DJScannerLib.Models;
 using DJScannerLib.Services;
+using Microsoft.Extensions.Logging;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Formats;
+using System.Runtime.InteropServices;
+using System.Security.Permissions;
+using TWAINWorkingGroup;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace ScannerLib.Services
 {
     public class ScannerService : IScannerService
     {
+        private readonly ILogger<ScannerService> logger;
+
         // 從外部傳入Form的資訊供twain使用
         private IntPtr intPtrHwnd;
 
@@ -23,30 +24,30 @@ namespace ScannerLib.Services
 
         // interface to TWAIN
         private TWAIN twain;
-        private TWAIN.TW_IDENTITY twidentity = default(TWAIN.TW_IDENTITY);
+        private TWAIN.TW_IDENTITY twIdentity = default;
         private TWAIN.TW_SETUPMEMXFER twSetupMemxfer;
         private bool xferReadySent;
         private bool disableDsSent;
         private IntPtr intPtrXfer = IntPtr.Zero;
         private IntPtr intPtrImage = IntPtr.Zero;
         // Setup information...
+
         // 詳細名稱的驅動程式清單
-        IList<string> lszIdentity = new List<string>();
+        private IList<string> lszIdentity;
 
         int cnt = 0;
 
-        public ScannerService()
-        {
-
-        }
-
-        /// <inheritdoc/>
-        public void InitTwain(IntPtr intPtrHwnd)
+        public ScannerService(IntPtr intPtrHwnd) //, ILogger<ScannerService> logger)
         {
             this.intPtrHwnd = intPtrHwnd;
+
+            //Log.Open("TWAINCSScan", ".", 1);
+            //Log.Info("TWAINCSScan v" + System.Reflection.Assembly.GetEntryAssembly().GetName().Version.ToString());
+            //logger.LogInformation("TWAINCSScan v" + System.Reflection.Assembly.GetEntryAssembly().GetName().Version.ToString());
+
             try
             {
-                // Init stuff...
+                //// Init stuff...
                 TWAIN.DeviceEventCallback deviceeventcallback = DeviceEventCallback;
                 TWAIN.ScanCallback scancallback = ScanCallbackTrigger;
                 TWAIN.RunInUiThreadDelegate runinuithreaddelegate = RunInUiThread;
@@ -75,46 +76,106 @@ namespace ScannerLib.Services
             }
             catch (Exception exception)
             {
-                TWAINWorkingGroup.Log.Error("exception - " + exception.Message);
+                //Log.Error("exception - " + exception.Message);
                 twain = null;
             }
         }
 
         /// <inheritdoc/>
-        public List<string> GetAllDrivers()
+        public TWAIN GetTWAIN()
         {
-            TWAIN.STS sts;
-            string szDefault = "";
-            string[] aszIdentity = null;
-            // 簡寫名稱的驅動程式清單
-            List<string> lszDriveList = new List<string>();
-
-            // Get the default driver
-            sts = twain.DatParent(TWAIN.DG.CONTROL, TWAIN.MSG.OPENDSM, ref intPtrHwnd);
-            sts = twain.DatIdentity(TWAIN.DG.CONTROL, TWAIN.MSG.GETDEFAULT, ref twidentity);
-            if (sts == TWAIN.STS.SUCCESS)
-            {
-                szDefault = TWAIN.IdentityToCsv(twidentity);
-            }
-            // Enumerate the drivers...列舉驅動程式
-            for (sts = twain.DatIdentity(TWAIN.DG.CONTROL, TWAIN.MSG.GETFIRST, ref twidentity);
-            sts != TWAIN.STS.ENDOFLIST;
-                sts = twain.DatIdentity(TWAIN.DG.CONTROL, TWAIN.MSG.GETNEXT, ref twidentity))
-            {
-                lszIdentity.Add(TWAIN.IdentityToCsv(twidentity));
-            }
-
-            // Populate our driver list...
-            foreach (string sz in lszIdentity)
-            {
-                aszIdentity = CSV.Parse(sz);
-                lszDriveList.Add(aszIdentity[11].ToString());
-            }
-            return lszDriveList;
+            return twain;
         }
 
         /// <inheritdoc/>
-        public bool SetSelectDriver(string driver)
+        public DefaultDriverResult GetDefaultDriver()
+        {
+            DefaultDriverResult result = new();
+
+            if(twain != null)
+            {
+                // Get the default driver
+                TWAIN.STS sts = twain.DatParent(TWAIN.DG.CONTROL, TWAIN.MSG.OPENDSM, ref intPtrHwnd);
+                if (sts == TWAIN.STS.SUCCESS)
+                {
+                    sts = twain.DatIdentity(TWAIN.DG.CONTROL, TWAIN.MSG.GETDEFAULT, ref twIdentity);
+                    if (sts == TWAIN.STS.SUCCESS)
+                    {
+                        result.Success = true;
+                        result.Default = TWAIN.IdentityToCsv(twIdentity);
+                    }
+                    else
+                    {
+                        result.ErrorMessage = "Get Default Driver failed.";
+                    }
+                    twain.DatParent(TWAIN.DG.CONTROL, TWAIN.MSG.CLOSEDSM, ref intPtrHwnd);
+                }
+                else
+                {
+                    result.ErrorMessage = "OPENDSM failed.";
+                }
+            }
+            else
+            {
+                result.ErrorMessage = "TWAIN Initial Error.";
+            }
+
+            return result;
+        }
+
+        /// <inheritdoc/>
+        public GetDriversResult GetAllDrivers()
+        {
+            GetDriversResult result = new();
+
+            if(twain != null)
+            {
+                TWAIN.STS sts = twain.DatParent(TWAIN.DG.CONTROL, TWAIN.MSG.OPENDSM, ref intPtrHwnd);
+                if (sts == TWAIN.STS.SUCCESS)
+                {
+                    lszIdentity = new List<string>();
+
+                    // Enumerate the drivers...列舉驅動程式
+                    for (sts = twain.DatIdentity(TWAIN.DG.CONTROL, TWAIN.MSG.GETFIRST, ref twIdentity);
+                        sts != TWAIN.STS.ENDOFLIST;
+                        sts = twain.DatIdentity(TWAIN.DG.CONTROL, TWAIN.MSG.GETNEXT, ref twIdentity))
+                    {
+                        lszIdentity.Add(TWAIN.IdentityToCsv(twIdentity));
+                    }
+
+                    if (lszIdentity.Count == 0)
+                    {
+                        result.ErrorMessage = "There are no TWAIN drivers installed on this system...";
+                    }
+                    else
+                    {
+                        result.Success = true;
+                        result.Drivers = new List<string>();
+
+                        // Populate our driver list...
+                        foreach (string sz in lszIdentity)
+                        {
+                            string[] aszIdentity = CSV.Parse(sz);
+                            result.Drivers.Add(aszIdentity[11].ToString());
+                        }
+                    }
+                    twain.DatParent(TWAIN.DG.CONTROL, TWAIN.MSG.CLOSEDSM, ref intPtrHwnd);
+                }
+                else
+                {
+                    result.ErrorMessage = "OPENDSM failed.";
+                }
+            }
+            else
+            {
+                result.ErrorMessage = "TWAIN Initial Error.";
+            }
+
+            return result;
+        }
+
+        /// <inheritdoc/>
+        public bool SelectedDriver(string driver)
         {
             TWAIN.STS sts;
             bool setResult = false;
@@ -127,18 +188,18 @@ namespace ScannerLib.Services
                     break;
                 }
             }
-            twidentity = default(TWAIN.TW_IDENTITY);
-            TWAIN.CsvToIdentity(ref twidentity, driver);
-            twain.DatIdentity(TWAIN.DG.CONTROL, TWAIN.MSG.SET, ref twidentity);
+            twIdentity = default;
+            TWAIN.CsvToIdentity(ref twIdentity, driver);
+            twain.DatIdentity(TWAIN.DG.CONTROL, TWAIN.MSG.SET, ref twIdentity);
 
             // Open it...
-            sts = twain.DatIdentity(TWAIN.DG.CONTROL, TWAIN.MSG.OPENDS, ref twidentity);
+            sts = twain.DatIdentity(TWAIN.DG.CONTROL, TWAIN.MSG.OPENDS, ref twIdentity);
 
             if (sts == TWAIN.STS.SUCCESS)
             {
                 setResult = true;
             }
-                return setResult;
+            return setResult;
         }
 
         /// <inheritdoc/>
@@ -155,6 +216,7 @@ namespace ScannerLib.Services
             twain.CsvToUserinterface(ref twuserinterface, szTwmemref);
             twain.DatUserinterface(TWAIN.DG.CONTROL, TWAIN.MSG.ENABLEDS, ref twuserinterface);
         }
+
         /// <summary>
         /// Clear our event list, and reset our event...
         /// </summary>
@@ -163,6 +225,7 @@ namespace ScannerLib.Services
             xferReadySent = false;
             disableDsSent = false;
         }
+
         /// <summary>
         /// 對設備事件的callback.  This is where we catch and
         /// report that a device event has been detected.  Obviously,
@@ -203,26 +266,30 @@ namespace ScannerLib.Services
         /// </summary>
         /// <param name="a_blClosing">We're shutting down</param>
         /// <returns>TWAIN status</returns>
-        private TWAIN.STS ScanCallbackTrigger(bool a_blClosing)
+        public TWAIN.STS ScanCallbackTrigger(bool a_blClosing)
         {
+            //BeginInvoke(new MethodInvoker(delegate { scannerService.ScanCallbackEventHandler(this, new EventArgs()); }));
             ScanCallbackEventHandler(this, new EventArgs());
             return (TWAIN.STS.SUCCESS);
-        }/// <summary>
-         /// Our event handler for the scan callback event.  This will be
-         /// called once by ScanCallbackTrigger on receipt of an event
-         /// like MSG_XFERREADY, and then will be reissued on every call
-         /// into ScanCallback until we're done and get back to state 4.
-         /// This helps to make sure we're always running in the context
-         /// of FormMain on Windows, which is critical if we want drivers
-         /// to work properly.  It also gives a way to break up the calls
-         /// so the message pump is still reponsive.
-         /// </summary>
-         /// <param name="sender"></param>
-         /// <param name="e"></param>
-        private void ScanCallbackEventHandler(object sender, EventArgs e)
+        }
+        
+        /// <summary>
+        /// Our event handler for the scan callback event.  This will be
+        /// called once by ScanCallbackTrigger on receipt of an event
+        /// like MSG_XFERREADY, and then will be reissued on every call
+        /// into ScanCallback until we're done and get back to state 4.
+        /// This helps to make sure we're always running in the context
+        /// of FormMain on Windows, which is critical if we want drivers
+        /// to work properly.  It also gives a way to break up the calls
+        /// so the message pump is still reponsive.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        public void ScanCallbackEventHandler(object sender, EventArgs e)
         {
             ScanCallback((twain == null) || (twain.GetState() <= TWAIN.STATE.S3));
         }
+
         private TWAIN.STS ScanCallback(bool a_blClosing)
         {
             TWAIN.STS sts;
@@ -468,7 +535,7 @@ namespace ScannerLib.Services
                 //@轉成byte值存到scanImageDatas
                 byte[] abImage = new byte[imageBytes];
                 Marshal.Copy(intPtrImage, abImage, 0, imageBytes);
-                Image img = Image.Load(abImage, out IImageFormat format);
+                SixLabors.ImageSharp.Image img = SixLabors.ImageSharp.Image.Load(abImage, out IImageFormat format);
                 img.SaveAsJpeg($"F:\\{cnt}.jpg");
                 string base64 = ImageSharpUtil.ImageToBase64(img, format);
 
@@ -492,67 +559,6 @@ namespace ScannerLib.Services
             }
         }
 
-        public void Rollback(TWAIN.STATE a_state)
-        {
-            TWAIN.TW_PENDINGXFERS twpendingxfers = default;
-            TWAIN.TW_USERINTERFACE twuserinterface = default;
-            TWAIN.TW_IDENTITY twidentity = default;
-
-            // Make sure we have something to work with...
-            if (twain == null)
-            {
-                return;
-            }
-
-            // Walk the states, we don't care about the status returns.  Basically,
-            // these need to work, or we're guaranteed to hang...
-
-            // 7 --> 6
-            if ((twain.GetState() == TWAIN.STATE.S7) && (a_state < TWAIN.STATE.S7))
-            {
-                twain.DatPendingxfers(TWAIN.DG.CONTROL, TWAIN.MSG.ENDXFER, ref twpendingxfers);
-            }
-
-            // 6 --> 5
-            if ((twain.GetState() == TWAIN.STATE.S6) && (a_state < TWAIN.STATE.S6))
-            {
-                twain.DatPendingxfers(TWAIN.DG.CONTROL, TWAIN.MSG.RESET, ref twpendingxfers);
-            }
-
-            // 5 --> 4
-            if ((twain.GetState() == TWAIN.STATE.S5) && (a_state < TWAIN.STATE.S5))
-            {
-                twain.DatUserinterface(TWAIN.DG.CONTROL, TWAIN.MSG.DISABLEDS, ref twuserinterface);
-            }
-
-            // 4 --> 3
-            if ((twain.GetState() == TWAIN.STATE.S4) && (a_state < TWAIN.STATE.S4))
-            {
-                TWAIN.CsvToIdentity(ref twidentity, twain.GetDsIdentity());
-                twain.DatIdentity(TWAIN.DG.CONTROL, TWAIN.MSG.CLOSEDS, ref twidentity);
-            }
-
-            // 3 --> 2
-            if ((twain.GetState() == TWAIN.STATE.S3) && (a_state < TWAIN.STATE.S3))
-            {
-                twain.DatParent(TWAIN.DG.CONTROL, TWAIN.MSG.CLOSEDSM, ref intPtrHwnd);
-            }
-        }
-        /// <summary>
-        /// Monitor for DG_CONTROL / DAT_NULL / MSG_* stuff (ex MSG_XFERREADY), this
-        /// function is only triggered when SetMessageFilter() is called with 'true'...
-        /// </summary>
-        /// <param name="a_message">Message to process</param>
-        /// <returns>Result of the processing</returns>
-        [SecurityPermissionAttribute(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.UnmanagedCode)]
-        public bool PreFilterMessage(IntPtr intPtrHwnd, int iMsg, IntPtr intPtrWparam, IntPtr intPtrLparam)
-        {
-            if (twain != null)
-            {
-                return (twain.PreFilterMessage(intPtrHwnd, iMsg, intPtrWparam, intPtrLparam));
-            }
-            return (true);
-        }
         /// <summary>
         /// TWAIN needs help, if we want it to run stuff in our main
         /// UI thread...
@@ -563,5 +569,50 @@ namespace ScannerLib.Services
             a_action();
         }
 
+        /// <inheritdoc/>
+        public void Rollback(TWAIN.STATE twainState)
+        {
+            TWAIN.TW_PENDINGXFERS twpendingxfers = default;
+            TWAIN.TW_USERINTERFACE twuserinterface = default;
+            TWAIN.TW_IDENTITY twidentity = default;
+
+            // Make sure we have something to work with...
+            if (twain != null)
+            {
+                // Walk the states, we don't care about the status returns.  Basically,
+                // these need to work, or we're guaranteed to hang...
+
+                // 7 --> 6
+                if ((twain.GetState() == TWAIN.STATE.S7) && (twainState < TWAIN.STATE.S7))
+                {
+                    twain.DatPendingxfers(TWAIN.DG.CONTROL, TWAIN.MSG.ENDXFER, ref twpendingxfers);
+                }
+
+                // 6 --> 5
+                if ((twain.GetState() == TWAIN.STATE.S6) && (twainState < TWAIN.STATE.S6))
+                {
+                    twain.DatPendingxfers(TWAIN.DG.CONTROL, TWAIN.MSG.RESET, ref twpendingxfers);
+                }
+
+                // 5 --> 4
+                if ((twain.GetState() == TWAIN.STATE.S5) && (twainState < TWAIN.STATE.S5))
+                {
+                    twain.DatUserinterface(TWAIN.DG.CONTROL, TWAIN.MSG.DISABLEDS, ref twuserinterface);
+                }
+
+                // 4 --> 3
+                if ((twain.GetState() == TWAIN.STATE.S4) && (twainState < TWAIN.STATE.S4))
+                {
+                    TWAIN.CsvToIdentity(ref twidentity, twain.GetDsIdentity());
+                    twain.DatIdentity(TWAIN.DG.CONTROL, TWAIN.MSG.CLOSEDS, ref twidentity);
+                }
+
+                // 3 --> 2
+                if ((twain.GetState() == TWAIN.STATE.S3) && (twainState < TWAIN.STATE.S3))
+                {
+                    twain.DatParent(TWAIN.DG.CONTROL, TWAIN.MSG.CLOSEDSM, ref intPtrHwnd);
+                }
+            }
+        }
     }
 }

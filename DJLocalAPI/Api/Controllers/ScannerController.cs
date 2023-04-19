@@ -1,6 +1,6 @@
-﻿using DJScannerLib.Services;
+﻿using DJScannerLib.Models;
+using DJScannerLib.Services;
 using Microsoft.AspNetCore.Mvc;
-using ScannerLib.Services;
 
 namespace DJLocalAPI.Api.Controllers
 {
@@ -26,11 +26,21 @@ namespace DJLocalAPI.Api.Controllers
         }
 
         /// <summary>
-        /// 取得所有驅動清單
+        /// 取得預設掃描器
         /// </summary>
         /// <returns>回傳清單List</returns>
         [HttpGet("[Action]")]
-        public List<string> GetAllDrivers()
+        public DefaultDriverResult GetDefaultDriver()
+        {
+            return scannerService.GetDefaultDriver();
+        }
+
+        /// <summary>
+        /// 取得所有掃描器清單
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("[Action]")]
+        public GetDriversResult GetAllDrivers()
         {
             return scannerService.GetAllDrivers();
         }
@@ -43,7 +53,7 @@ namespace DJLocalAPI.Api.Controllers
         [HttpGet]
         public bool SetSelectDriver(string driver)
         {
-            return scannerService.SetSelectDriver(driver);
+            return scannerService.SelectedDriver(driver);
         }
         //public void Scan()
         //{

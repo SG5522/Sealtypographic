@@ -1,8 +1,12 @@
 using DJLocalAPI.Api;
+using DJScannerLib.Models;
 using DJScannerLib.Services;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 using ScannerLib.Services;
+using System.Runtime.InteropServices;
+using System.Security.Permissions;
+using System.Windows.Forms;
 using System.Windows.Forms.VisualStyles;
 using TWAINWorkingGroup;
 
@@ -15,37 +19,49 @@ namespace DJLocalAPI
 
         private string[]? args;
         private ApiServer? apiServer;
-        private ScannerService scannerService;
+        private IScannerService scannerService;
+
         public FrmDJLLocalAPI()
         {
             InitializeComponent();
         }
+
         public FrmDJLLocalAPI(string[]? args) : this()
         {
 
         }
+
         private void DJLLocalAPI_Load(object sender, EventArgs e)
         {
-            apiServer = new(args); 
-            apiServer!.StartServer(this.Handle);
-            scannerService.InitTwain(this.Handle);
+            apiServer = new(args, Handle); 
+            apiServer!.StartServer();
+            scannerService = apiServer.ScannerService;
             SetMessageFilter(true);
         }
+
         private void FrmDJLLocalAPI_FormClosing(object sender, FormClosingEventArgs e) => apiServer!.StopServer();
  
         private void btnGetDrivers_Click(object sender, EventArgs e)
         {
-            List<string> drivers = new List<string>();
-            drivers = scannerService.GetAllDrivers();
-            foreach (string driver in drivers) 
+            GetDriversResult getDriversResult = scannerService.GetAllDrivers();
+
+            if(getDriversResult.Success)
             {
-                lbDriver.Items.Add(driver);
+                lbDriver.Items.Clear();
+                foreach (string driver in getDriversResult.Drivers)
+                {
+                    lbDriver.Items.Add(driver);
+                }
+            }
+            else
+            {
+                MessageBox.Show(getDriversResult.ErrorMessage);
             }
         }
 
         private void lbDriver_MouseDoubleClick(object sender, MouseEventArgs e)
         {
-            bool result = scannerService.SetSelectDriver((string)lbDriver.SelectedItem);
+            bool result = scannerService.SelectedDriver((string)lbDriver.SelectedItem);
             if (result) 
             {
                 lblSetResult.Text = "設置狀態：成功";
@@ -58,7 +74,7 @@ namespace DJLocalAPI
 
         private void btnSetDriver_Click(object sender, EventArgs e)
         {
-            bool result = scannerService.SetSelectDriver((string)lbDriver.SelectedItem);
+            bool result = scannerService.SelectedDriver((string)lbDriver.SelectedItem);
             if (result)
             {
                 lblSetResult.Text = "設置狀態：成功";
@@ -73,42 +89,49 @@ namespace DJLocalAPI
         {
             scannerService.Scan();
         }
+
         /// <summary>
         /// Monitor for DG_CONTROL / DAT_NULL / MSG_* stuff (ex MSG_XFERREADY), this
         /// function is only triggered when SetMessageFilter() is called with 'true'...
         /// </summary>
         /// <param name="message">Message to process</param>
         /// <returns>Result of the processing</returns>
-        //[SecurityPermissionAttribute(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.UnmanagedCode)]
+        [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.UnmanagedCode)]
         public bool PreFilterMessage(ref Message message)
         {
-            IntPtr a_intptrHwnd = message.HWnd;
-            int a_iMsg = message.Msg;
-            IntPtr a_intptrWparam = message.WParam;
-            IntPtr a_intptrLparam = message.LParam;
-            bool scanEnd = scannerService.PreFilterMessage(a_intptrHwnd, a_iMsg, a_intptrWparam, a_intptrLparam);
-
-            if (scanEnd && scanStart)
+            if (scannerService.GetTWAIN() != null)
             {
-                scanStart = false;
-                //scanImageDatas = dJTWAIN.LoadImageDatas();
-
-                //foreach (ScanImageData scanImageData in scanImageDatas)
-                //{
-                //    foreach (var socket in allSockets.ToList())
-                //    {
-                //        socket.Send(JsonConvert.SerializeObject(scanImageData));
-                //        //socket.Send(scanImageData.Data);
-                //    }
-                //}
-                //this.WindowState = FormWindowState.Minimized;
-                //@清空ImageDatas
-                //dJTWAIN.ClearImageDatas();
-                //OpenScanImageListView(scanImagePath,"bmp");
-                return true;
+                return (scannerService.GetTWAIN().PreFilterMessage(message.HWnd, message.Msg, message.WParam, message.LParam));
             }
-            return false;
+            return (true);
+            //IntPtr a_intptrHwnd = message.HWnd;
+            //int a_iMsg = message.Msg;
+            //IntPtr a_intptrWparam = message.WParam;
+            //IntPtr a_intptrLparam = message.LParam;
+            //bool scanEnd = scannerService.PreFilterMessage(a_intptrHwnd, a_iMsg, a_intptrWparam, a_intptrLparam);
+
+            //if (scanEnd && scanStart)
+            //{
+            //    scanStart = false;
+            //    //scanImageDatas = dJTWAIN.LoadImageDatas();
+
+            //    //foreach (ScanImageData scanImageData in scanImageDatas)
+            //    //{
+            //    //    foreach (var socket in allSockets.ToList())
+            //    //    {
+            //    //        socket.Send(JsonConvert.SerializeObject(scanImageData));
+            //    //        //socket.Send(scanImageData.Data);
+            //    //    }
+            //    //}
+            //    //this.WindowState = FormWindowState.Minimized;
+            //    //@清空ImageDatas
+            //    //dJTWAIN.ClearImageDatas();
+            //    //OpenScanImageListView(scanImagePath,"bmp");
+            //    return true;
+            //}
+            //return false;
         }
+
         /// <summary>
         /// Turn message filtering on or off, we use this to capture stuff
         /// like MSG_XFERREADY.  If it's off, then it's assumed we're getting

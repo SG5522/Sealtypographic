@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Hosting;
+﻿using DJScannerLib.Services;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using DJLocalAPI.Api;
+using ScannerLib.Services;
 
 namespace DJLocalAPI.Api
 {
@@ -9,54 +11,72 @@ namespace DJLocalAPI.Api
     /// </summary>
     public class ApiServer
     {
-        private readonly IHostBuilder hostBuilder;
-        private IHost? apiServerHost;
-        private string apiServerStatus = "Shutdown";
         /// <summary>
-        ///  設定網頁及Port號
+        /// 
         /// </summary>
-        public ApiServer() : this(null)
-        {
-        }
+        public IScannerService ScannerService;
+        
         /// <summary>
-        /// 設定網頁及Port號
+        /// 
+        /// </summary>
+        public ServerStatus apiServerStatus = ServerStatus.Shutdown;
+
+        private readonly IHost? apiServerHost;
+
+        /// <summary>
+        /// 建構 - 設定網頁及Port
         /// </summary>
         /// <param name="args"></param>
-        public ApiServer(string[]? args)
+        public ApiServer(string[] args, IntPtr handle)
         {
-            hostBuilder = Host.CreateDefaultBuilder(args)
+            ScannerService = new ScannerService(handle);
+            apiServerHost = Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
-                    webBuilder.UseStartup<ApiStartup>(); 
-                    webBuilder.UseUrls("http://localhost:22431", "http://localhost:22435");
-                });
+                    webBuilder.ConfigureServices(services => 
+                    {
+                        services.AddScoped(sp => ScannerService);
+                    })
+                    .UseStartup<ApiStartup>()
+                    .UseUrls("http://localhost:22431", "http://localhost:22435");
+                }).Build();
         }
+
         /// <summary>
         /// 開啟Server
         /// </summary>
-        public async void StartServer(IntPtr handle)
+        public void StartServer()
         {
-            try
+            _ = apiServerHost.RunAsync().ContinueWith(antecedent =>
             {
-                apiServerHost = hostBuilder.Build();
-                await apiServerHost.RunAsync();
-                apiServerStatus = "Running";
-            }
-            catch
-            {
-                apiServerStatus = "Shutdown";
-            }
+                apiServerStatus = apiServerHost != null ? ServerStatus.Running : ServerStatus.Shutdown;
+            });
         }
+
         /// <summary>
         /// 關閉server
         /// </summary>
-        public async void StopServer()
+        public void StopServer()
         {
             if(apiServerHost != null)
             {
-                await apiServerHost.StopAsync();
-                apiServerStatus = "Shutdown";
+                _ = apiServerHost.StopAsync().ContinueWith(antecedent => apiServerStatus = ServerStatus.Shutdown);
             }
         }
+    }
+
+    /// <summary>
+    /// API Server狀態
+    /// </summary>
+    public enum ServerStatus
+    {
+        /// <summary>
+        /// 執行中
+        /// </summary>
+        Running,
+        /// <summary>
+        /// 關機
+        /// </summary>
+        Shutdown
     }
 }

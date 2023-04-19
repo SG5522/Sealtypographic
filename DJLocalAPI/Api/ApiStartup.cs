@@ -1,24 +1,35 @@
-﻿using DJScannerLib.Services;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
-using ScannerLib.Services;
 using System.Reflection;
 
 namespace DJLocalAPI.Api
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class ApiStartup
     {
+        /// <summary>
+        /// 
+        /// </summary>
         public IConfiguration Configuration { get; }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="configuration"></param>
         public ApiStartup(IConfiguration configuration)
         {
             Configuration = configuration;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="services"></param>
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
@@ -34,8 +45,14 @@ namespace DJLocalAPI.Api
                 );
                 options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, $"{Assembly.GetExecutingAssembly().GetName().Name}.xml"), true);
             });
-            services.AddScoped<IScannerService, ScannerService>();
+            //services.AddScoped<IScannerService, ScannerService>();
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="app"></param>
+        /// <param name="env"></param>
         public void Configure(IApplicationBuilder app, IHostEnvironment env)
         {
             if (env.IsDevelopment())
@@ -43,6 +60,7 @@ namespace DJLocalAPI.Api
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
+
             app.UseAuthorization();
 
             app.UseDeveloperExceptionPage();
@@ -55,8 +73,6 @@ namespace DJLocalAPI.Api
             {
                 endpoints.MapControllers();
             });
-
-
         }
     }
 }
