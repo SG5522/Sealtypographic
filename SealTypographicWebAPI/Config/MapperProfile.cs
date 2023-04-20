@@ -137,12 +137,18 @@ namespace SealTypographicWebAPI.Config
             //客戶印鑑樣板使用
             CreateMap<CustomerSealTemplateForm, CustomerSealTemplate>();
             CreateMap<CustomerSealTemplateLocationForm, CustomerSealTemplateLocation>()
-                .ForMember(x=> x.ConfigType , y => y.MapFrom(o => o.CustomerSealType))
+                .ForMember(x => x.ConfigType , y => y.MapFrom(o => o.CustomerSealType))
                 .ReverseMap();
+            //異動使用
+            CreateMap<CustomerSealTemplateUpdateForm, CustomerSealTemplate>();
+            CreateMap<CustomerSealTemplateLocationUpdateForm, CustomerSealTemplateLocation>()
+                .ForMember(x => x.ConfigType , y => y.MapFrom(o => o.CustomerSealType))
+                .ReverseMap();
+            //單筆查詢使用
             CreateMap<CustomerSealTemplate, CustomerSealTemplateDetailViewModel>();
             CreateMap<CustomerSealTemplateLocation, CustomerSealTemplateLocationViewModel>();
 
-            //客戶印鑑樣板Log使用
+            //Log使用
             CreateMap<CustomerSealTemplateViewModel, CustomerSealTemplateLogModel>();
             CreateMap<CustomerSealTemplatePaginate, CustomerSealTemplatePaginateLog>();
 

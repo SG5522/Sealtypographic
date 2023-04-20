@@ -31,6 +31,6 @@ namespace DBEntities
         /// <summary>
         /// 
         /// </summary>
-        public List<CustomerSealTemplateLocation> CustomerTempTemplateLocations { get; set; }
+        public List<CustomerSealTemplateLocation> CustomerSealTemplateLocations { get; set; }
     }
 }

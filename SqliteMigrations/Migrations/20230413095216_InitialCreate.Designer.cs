@@ -600,7 +600,7 @@ namespace Sqlite.Migrations
                     b.ToTable("CustomerSealTemplates");
                 });
 
-            modelBuilder.Entity("DBEntities.CustomerSealTemplateLocation", b =>
+            modelBuilder.Entity("DBEntities.CustomerSealTemplateLocations", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -1236,10 +1236,10 @@ namespace Sqlite.Migrations
                     b.Navigation("Company");
                 });
 
-            modelBuilder.Entity("DBEntities.CustomerSealTemplateLocation", b =>
+            modelBuilder.Entity("DBEntities.CustomerSealTemplateLocations", b =>
                 {
                     b.HasOne("DBEntities.CustomerSealTemplate", "CustomerTemplate")
-                        .WithMany("CustomerTempTemplateLocations")
+                        .WithMany("CustomerSealTemplateLocations")
                         .HasForeignKey("CustomerTemplateId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1458,7 +1458,7 @@ namespace Sqlite.Migrations
 
             modelBuilder.Entity("DBEntities.CustomerSealTemplate", b =>
                 {
-                    b.Navigation("CustomerTempTemplateLocations");
+                    b.Navigation("CustomerSealTemplateLocations");
                 });
 
             modelBuilder.Entity("DBEntities.Letterhead", b =>

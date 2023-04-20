@@ -46,14 +46,14 @@ namespace SealTypographicWebAPI.Services.Implements
             CustomerSealTemplateDetailViewModel customerSealTemplateDetailViewModel = new ();
 
             CustomerSealTemplate? customerSealTemplateQuery = dbContext.CustomerSealTemplates
-                                                                      .Include(x => x.CustomerTempTemplateLocations)
+                                                                      .Include(x => x.CustomerSealTemplateLocations)
                                                                       .FirstOrDefault(x => x.Id == Id);
 
             if(customerSealTemplateQuery != null) 
             {
                 customerSealTemplateDetailViewModel = mapper.Map<CustomerSealTemplateDetailViewModel>(customerSealTemplateQuery);
                 customerSealTemplateDetailViewModel.LocaltionViewModels = mapper.Map<List<CustomerSealTemplateLocationViewModel>>
-                                                                                (customerSealTemplateQuery.CustomerTempTemplateLocations);
+                                                                                (customerSealTemplateQuery.CustomerSealTemplateLocations);
                 customerSealTemplateDetailViewModel.Success();
 
             }
@@ -149,7 +149,7 @@ namespace SealTypographicWebAPI.Services.Implements
                     customerSealTemplateLocations.Add(mapper.Map<CustomerSealTemplateLocation>(customerSealTemplateLocationForm));                    
                 }
                 BaseInputCustomerSealTemplate(customerSealTemplate, true, userid);
-                customerSealTemplate.CustomerTempTemplateLocations = customerSealTemplateLocations;                
+                customerSealTemplate.CustomerSealTemplateLocations = customerSealTemplateLocations;                
                 companyQuery.CustomerSealTemplates.Add(customerSealTemplate);
                 dbContext.Entry(companyQuery).State = EntityState.Unchanged;
                 dbContext.CustomerSealTemplates.Add(customerSealTemplate);                
@@ -167,20 +167,39 @@ namespace SealTypographicWebAPI.Services.Implements
         public async Task<ResponseViewModel> Update(CustomerSealTemplateUpdateForm customerSealTemplateUpdateForm)
         {
             ResponseViewModel response = new ();
-            CustomerSealTemplate? customerSealTemplateQuery = dbContext.CustomerSealTemplates.Include(x => x.CustomerTempTemplateLocations)
+            int userid = 1;
+            CustomerSealTemplate? customerSealTemplateQuery = dbContext.CustomerSealTemplates.Include(x => x.CustomerSealTemplateLocations)
+                                                             .Include(x => x.Company)
                                                              .Select
                                                              (
                                                                 x => new CustomerSealTemplate()
                                                                 {
                                                                     Id = x.Id,
-                                                                    CustomerTempTemplateLocations = x.CustomerTempTemplateLocations,
+                                                                    Company = new Company { Code = x.Company.Code},
+                                                                    CustomerSealTemplateLocations = x.CustomerSealTemplateLocations,
                                                                 }
                                                              )
                                                              .FirstOrDefault(x => x.Id == customerSealTemplateUpdateForm.Id);
 
-
             if (customerSealTemplateQuery != null)
-            {
+            {                
+                customerSealTemplateQuery.ImageViewFullPath = await FormFileUtil.UploadFileReturnPath(customerSealTemplateUpdateForm.ImageView, customerSealTemplateQuery.Company.Code, templateImagePathOption.Customer);
+                customerSealTemplateQuery.ThumbnailFullPath = await FormFileUtil.UploadFileReturnPath(customerSealTemplateUpdateForm.Thumbnail, customerSealTemplateQuery.Company.Code, templateImagePathOption.Customer);                
+                mapper.Map(customerSealTemplateUpdateForm, customerSealTemplateQuery);
+                BaseInputCustomerSealTemplate(customerSealTemplateQuery, false, userid);
+                //customerSealTemplateQuery.CustomerTempTemplateLocations = mapper.Map<List<CustomerSealTemplateLocation>>(customerSealTemplateUpdateForm.CustomerSealTemplateLocationUpdateForms);
+                //mapper.Map(customerSealTemplateUpdateForm.LocationUpdateForms, customerSealTemplateQuery.CustomerTempTemplateLocations);
+                foreach(CustomerSealTemplateLocationUpdateForm sealTemplateLocationUpdateForm in customerSealTemplateUpdateForm.LocationUpdateForms)
+                {
+                    CustomerSealTemplateLocation? customerSealTemplateLocation = customerSealTemplateQuery.CustomerSealTemplateLocations
+                                                                                .FirstOrDefault(x => x.Id == sealTemplateLocationUpdateForm.Id);
+                    if(customerSealTemplateLocation != null) 
+                    {
+                        mapper.Map(sealTemplateLocationUpdateForm, customerSealTemplateLocation);
+                    }
+                }
+                dbContext.Entry(customerSealTemplateQuery).State = EntityState.Modified;                
+                await dbContext.SaveChangesAsync();
                 response.Success();
             }
 

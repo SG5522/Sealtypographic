@@ -100,9 +100,9 @@ namespace SealTypographicWebAPI.Controllers
         /// <summary>
         /// 更新客戶印鑑樣板
         /// </summary>
-        /// <param name="id">樣板ID</param>
         /// <param name="customerSealTemplateUpdateForm">客戶樣板</param>
-        [HttpPut("{id}")]
+        /// <returns></returns>
+        [HttpPut]
         public async Task<ResponseViewModel> Update([FromForm] CustomerSealTemplateUpdateForm customerSealTemplateUpdateForm)
         {
             ResponseViewModel response = new();

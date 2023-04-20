@@ -44,6 +44,6 @@ namespace SealTypographicWebAPI.Models.CustomerSealTemplate
         /// <summary>
         /// 客戶印鑑樣板位置
         /// </summary>                       
-        public List<CustomerSealTemplateLocationUpdateForm> CustomerSealTemplateLocationUpdateForms{ get; set; }
+        public List<CustomerSealTemplateLocationUpdateForm> LocationUpdateForms{ get; set; }
     }
 }
