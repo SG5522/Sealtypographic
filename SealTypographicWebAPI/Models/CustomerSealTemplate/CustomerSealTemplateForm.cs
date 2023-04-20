@@ -20,7 +20,7 @@ namespace SealTypographicWebAPI.Models.CustomerSealTemplate
     /// <summary>
     /// 客戶樣板 (新增更新使用)
     /// </summary>
-    public class CustomerSealTemplateForm : BaseTemplate
+    public class CustomerSealTemplateForm : BaseTemplateWithFile
     {
         /// <summary>
         /// 樣板疊放方式

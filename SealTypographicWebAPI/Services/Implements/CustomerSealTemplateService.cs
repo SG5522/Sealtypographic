@@ -38,11 +38,35 @@ namespace SealTypographicWebAPI.Services.Implements
         }
 
         /// <summary>
+        /// 客戶印鑑樣本詳細
+        /// </summary>
+        /// <returns></returns>
+        public CustomerSealTemplateDetailViewModel GetDetail(int Id)
+        {
+            CustomerSealTemplateDetailViewModel customerSealTemplateDetailViewModel = new ();
+
+            CustomerSealTemplate? customerSealTemplateQuery = dbContext.CustomerSealTemplates
+                                                                      .Include(x => x.CustomerTempTemplateLocations)
+                                                                      .FirstOrDefault(x => x.Id == Id);
+
+            if(customerSealTemplateQuery != null) 
+            {
+                customerSealTemplateDetailViewModel = mapper.Map<CustomerSealTemplateDetailViewModel>(customerSealTemplateQuery);
+                customerSealTemplateDetailViewModel.LocaltionViewModels = mapper.Map<List<CustomerSealTemplateLocationViewModel>>
+                                                                                (customerSealTemplateQuery.CustomerTempTemplateLocations);
+                customerSealTemplateDetailViewModel.Success();
+
+            }
+
+            return customerSealTemplateDetailViewModel;
+        }
+
+        /// <summary>
         /// 客戶印鑑樣板分頁顯示
         /// </summary>
         /// <param name="customerSealTemplateSearch"></param>
         /// <returns></returns>
-        public CustomerSealTemplatePaginate Paginate(CustomerSealTemplateSearch customerSealTemplateSearch)
+        public CustomerSealTemplatePaginate GetPaginate(CustomerSealTemplateSearch customerSealTemplateSearch)
         {
             CustomerSealTemplatePaginate customerSealTemplatePaginate = new ();            
             int companyId = 1;

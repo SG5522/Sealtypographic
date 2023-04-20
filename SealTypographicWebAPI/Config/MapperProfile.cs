@@ -139,6 +139,8 @@ namespace SealTypographicWebAPI.Config
             CreateMap<CustomerSealTemplateLocationForm, CustomerSealTemplateLocation>()
                 .ForMember(x=> x.ConfigType , y => y.MapFrom(o => o.CustomerSealType))
                 .ReverseMap();
+            CreateMap<CustomerSealTemplate, CustomerSealTemplateDetailViewModel>();
+            CreateMap<CustomerSealTemplateLocation, CustomerSealTemplateLocationViewModel>();
 
             //客戶印鑑樣板Log使用
             CreateMap<CustomerSealTemplateViewModel, CustomerSealTemplateLogModel>();

@@ -30,6 +30,29 @@ namespace SealTypographicWebAPI.Controllers
         }
 
         /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpGet("{id}")]
+        public CustomerSealTemplateDetailViewModel Detail(int id)
+        {
+            CustomerSealTemplateDetailViewModel customerSealTemplateDetailViewModel = new();
+            try
+            {
+                Log.Information("CustomerSealTemplate detail input {@Input}", id);
+                customerSealTemplateDetailViewModel = customerSealTemplateService.GetDetail(id);
+                Log.Information("CustomerSealTemplate detail output {@Output}", id);
+            }
+            catch (Exception ex)
+            {
+                Log.Error("CustomerSealTemplate paginate error {@Error}", ex);
+                customerSealTemplateDetailViewModel.DbError();
+            }
+            return customerSealTemplateDetailViewModel;
+        }
+
+        /// <summary>
         /// 依搜尋結果與分頁顯示樣板列表
         /// </summary>
         /// <param name="customerSealTemplateSearch">客戶印鑑樣板分頁搜尋</param>
@@ -41,8 +64,7 @@ namespace SealTypographicWebAPI.Controllers
             try
             {
                 Log.Information("CustomerSealTemplate paginate input {@Input}", customerSealTemplateSearch);
-                customerSealTemplatePaginate = customerSealTemplateService.Paginate(customerSealTemplateSearch);
-                //Log.Information("CustomerSealTemplate paginate output {@Output}", customerSealTemplatePaginate);
+                customerSealTemplatePaginate = customerSealTemplateService.GetPaginate(customerSealTemplateSearch);               
             }
             catch (Exception ex)
             {
@@ -50,13 +72,6 @@ namespace SealTypographicWebAPI.Controllers
                 customerSealTemplatePaginate.DbError();
             }
             return customerSealTemplatePaginate;
-        }
-
-        // GET api/<CustomerSealTemplateController>/5
-        [HttpGet("{id}")]
-        public string Get(int id)
-        {
-            return "value";
         }
 
         /// <summary>
@@ -93,9 +108,33 @@ namespace SealTypographicWebAPI.Controllers
             ResponseViewModel response = new();
             try
             {                
-                Log.Information("CustomerSealTemplate update input customerSealTemplateUpdateForm {@customerSealTemplateUpdateForm}", customerSealTemplateUpdateForm);
+                Log.Information("CustomerSealTemplate update input {@input}", customerSealTemplateUpdateForm);
                 response = await customerSealTemplateService.Update(customerSealTemplateUpdateForm);
-                Log.Information("CustomerSealTemplate new output {@Output}", response);
+                Log.Information("CustomerSealTemplate update output {@Output}", response);
+            }
+            catch (Exception ex)
+            {
+                Log.Error("CustomerSealTemplate update error {@Error}", ex);
+                response.DbError();
+            }
+
+            return response;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpDelete("{id}")]
+        public ResponseViewModel Delete(int id)
+        {
+            ResponseViewModel response = new();
+            try
+            {
+                Log.Information("CustomerSealTemplate delete input  {@id}", id);
+                //response = await customerSealTemplateService.Update(customerSealTemplateUpdateForm);
+                Log.Information("CustomerSealTemplate delete output {@Output}", response);
             }
             catch (Exception ex)
             {
@@ -104,12 +143,6 @@ namespace SealTypographicWebAPI.Controllers
             }
 
             return response;
-        }
-
-        // DELETE api/<CustomerSealTemplateController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
         }
     }
 }

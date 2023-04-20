@@ -1,20 +1,18 @@
 ﻿using DBEntities.Consts;
-using Microsoft.AspNetCore.Mvc;
-using SealTypographicWebAPI.Config;
 using SealTypographicWebAPI.Models.BaseModels;
 
 namespace SealTypographicWebAPI.Models.CustomerSealTemplate
 {
     /// <summary>
-    /// 客户印鑑樣板位置
-    /// </summary> 
-    [ModelBinder(BinderType = typeof(JsonModelBinder))]
-    public class CustomerSealTemplateLocationUpdateForm : BaseLocationViewModel
+    /// 客戶印鑑樣板之各印鑑座標
+    /// </summary>
+    public class CustomerSealTemplateLocationViewModel : BaseLocationViewModel
     {
         /// <summary>
-        /// 客戶印鑑樣板位置Id
+        /// Id
         /// </summary>
         public int Id { get; set; }
+
         /// <summary>
         /// 客戶印鑑類別
         /// </summary>
@@ -22,10 +20,18 @@ namespace SealTypographicWebAPI.Models.CustomerSealTemplate
     }
 
     /// <summary>
-    /// 客戶樣板 (新增更新使用)
+    /// 客戶印鑑樣本詳細
     /// </summary>
-    public class CustomerSealTemplateUpdateForm : BaseTemplateWithFile
+    public class CustomerSealTemplateDetailViewModel : BaseTemplateWithResponse
     {
+        /// <summary>
+        /// New ViewModels
+        /// </summary>
+        public CustomerSealTemplateDetailViewModel() 
+        {
+            LocaltionViewModels = new ();
+        }
+
         /// <summary>
         /// 客戶樣板Id
         /// </summary>
@@ -42,8 +48,8 @@ namespace SealTypographicWebAPI.Models.CustomerSealTemplate
         public int StackShift { get; set; }
 
         /// <summary>
-        /// 客戶印鑑樣板位置
-        /// </summary>                       
-        public List<CustomerSealTemplateLocationUpdateForm> CustomerSealTemplateLocationUpdateForms{ get; set; }
+        /// 臨時章
+        /// </summary>
+        public List<CustomerSealTemplateLocationViewModel> LocaltionViewModels{ get; set; }
     }
 }

@@ -10,11 +10,18 @@ namespace SealTypographicWebAPI.Services
     public interface ICustomerSealTemplateService
     {
         /// <summary>
+        /// 客戶印鑑樣本詳細
+        /// </summary>
+        /// <param name="id">客戶印鑑樣本Id</param>
+        /// <returns></returns>
+        CustomerSealTemplateDetailViewModel GetDetail(int id);
+
+        /// <summary>
         /// 客戶印鑑樣板分頁顯示
         /// </summary>
         /// <param name="customerSealTemplateSearch">客戶印鑑樣板分頁搜尋</param>
         /// <returns></returns>
-        CustomerSealTemplatePaginate Paginate(CustomerSealTemplateSearch customerSealTemplateSearch);
+        CustomerSealTemplatePaginate GetPaginate(CustomerSealTemplateSearch customerSealTemplateSearch);
 
         /// <summary>
         /// 新增客戶印鑑樣板
@@ -29,5 +36,6 @@ namespace SealTypographicWebAPI.Services
         /// <param name="customerSealTemplateUpdateForm"></param>
         /// <returns></returns>
         Task<ResponseViewModel> Update(CustomerSealTemplateUpdateForm customerSealTemplateUpdateForm);
+        
     }
 }

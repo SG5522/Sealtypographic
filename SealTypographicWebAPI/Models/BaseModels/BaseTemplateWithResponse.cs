@@ -3,9 +3,9 @@
 namespace SealTypographicWebAPI.Models.BaseModels
 {
     /// <summary>
-    /// 各項樣版基本資料
+    /// 各項樣板基本資料與回應內容
     /// </summary>
-    public abstract class BaseTemplate
+    public abstract class BaseTemplateWithResponse : ResponseViewModel
     {
         /// <summary>
         /// 樣板名稱
