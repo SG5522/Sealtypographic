@@ -1,12 +1,12 @@
 ﻿using SealTypographicWebAPI.Models.BaseModels;
 using System.Text.Json.Serialization;
 
-namespace SealTypographicWebAPI.Models.CustomerSealTemplate
+namespace SealTypographicWebAPI.Models.LetterheadTemplate
 {
     /// <summary>
-    /// 客戶印鑑樣板分頁單列
+    /// 信頭樣板分頁單列
     /// </summary>
-    public class CustomerSealTemplateLogModel : BaseData
+    public class LetterheadTemplateViewModel : BaseData
     {
         /// <summary>
         /// 名稱
@@ -17,25 +17,31 @@ namespace SealTypographicWebAPI.Models.CustomerSealTemplate
         /// 縮圖字串(Base64)
         /// </summary>
         /// <example>image/...</example>
+        public string ThumbnailBase64 { get; set; }
+
+        /// <summary>
+        /// 檔案路徑
+        /// </summary>
+        [JsonIgnore]
         public string ImageFullPath { get; set; }
     }
 
     /// <summary>
-    /// 客戶印鑑樣板分頁列表
+    /// 信頭樣板分頁列表
     /// </summary>
-    public class CustomerSealTemplatePaginateLog : PaginateViewModel
+    public class LetterheadTemplatePaginate : PaginateViewModel
     {
         /// <summary>
         /// New ViewModels
         /// </summary>
-        public CustomerSealTemplatePaginateLog() 
+        public LetterheadTemplatePaginate() 
         {
-            LogModels = new ();
+            ViewModels = new ();
         }
 
         /// <summary>
         /// 樣板列表
         /// </summary>           
-        public List<CustomerSealTemplateLogModel> LogModels { get; set; }
+        public List<LetterheadTemplateViewModel> ViewModels { get; set; }
     }
 }

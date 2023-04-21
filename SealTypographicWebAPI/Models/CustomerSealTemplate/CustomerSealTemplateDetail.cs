@@ -4,12 +4,12 @@ using SealTypographicWebAPI.Models.BaseModels;
 namespace SealTypographicWebAPI.Models.CustomerSealTemplate
 {
     /// <summary>
-    /// 客戶印鑑樣板之各印鑑座標
+    /// 客戶樣板座標
     /// </summary>
     public class CustomerSealTemplateLocationViewModel : BaseLocationViewModel
     {
         /// <summary>
-        /// Id
+        /// 樣板座標Id
         /// </summary>
         public int Id { get; set; }
 
@@ -33,7 +33,7 @@ namespace SealTypographicWebAPI.Models.CustomerSealTemplate
         }
 
         /// <summary>
-        /// 客戶樣板Id
+        /// 樣板Id
         /// </summary>
         public int Id { get; set; }
 
@@ -47,8 +47,8 @@ namespace SealTypographicWebAPI.Models.CustomerSealTemplate
         /// </summary>
         public int StackShift { get; set; }
 
-        /// <summary>
-        /// 臨時章
+        /// <summary>        
+        /// 客戶印鑑樣板座標
         /// </summary>
         public List<CustomerSealTemplateLocationViewModel> LocaltionViewModels{ get; set; }
     }

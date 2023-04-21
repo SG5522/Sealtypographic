@@ -4,7 +4,7 @@ using System.Text.Json.Serialization;
 namespace SealTypographicWebAPI.Models.CustomerSealTemplate
 {
     /// <summary>
-    /// 客樣樣板單列
+    /// 客戶印鑑樣板分頁單列
     /// </summary>
     public class CustomerSealTemplateViewModel : BaseData
     {
@@ -26,8 +26,8 @@ namespace SealTypographicWebAPI.Models.CustomerSealTemplate
         public string ImageFullPath { get; set; }
     }
 
-    /// <summary>
-    /// 依搜尋結果與分頁顯示樣板列表
+    /// <summary>    
+    /// 客戶印鑑樣板分頁列表
     /// </summary>
     public class CustomerSealTemplatePaginate : PaginateViewModel
     {
@@ -40,7 +40,7 @@ namespace SealTypographicWebAPI.Models.CustomerSealTemplate
         }
 
         /// <summary>
-        /// 臨時章資料列表
+        /// 樣板列表
         /// </summary>           
         public List<CustomerSealTemplateViewModel> ViewModels { get; set; }
     }

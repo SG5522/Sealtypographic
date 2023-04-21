@@ -342,15 +342,15 @@ namespace DBEntities.Consts
     public enum StackMode
     {
         /// <summary>
-        /// 直式
+        /// 直式疊放
         /// </summary>
-        [Description("直式")]
+        [Description("直式疊放")]
         Vertical = 0,
 
         /// <summary>
-        /// 橫式
+        /// 橫式疊放
         /// </summary>
-        [Description("橫式")]
+        [Description("橫式疊放")]
         Horizontal = 1,
     }
     /// <summary>

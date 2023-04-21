@@ -30,6 +30,8 @@ namespace SealTypographicWebAPI.Models
             Message = "Success";
         }
 
+
+
         /// <summary>
         /// DbError
         /// </summary>
@@ -389,6 +391,15 @@ namespace SealTypographicWebAPI.Models
         {
             Code = (int)ResponseCode.DeleteTemporarySealNoData;
             Message = "Delete temporary seal no data";
+        }
+
+        /// <summary>
+        /// 回傳失敗
+        /// </summary>
+        public void Error()
+        {
+            Code = (int)ResponseCode.DbError;
+            Message = "Error";
         }
     }
 }

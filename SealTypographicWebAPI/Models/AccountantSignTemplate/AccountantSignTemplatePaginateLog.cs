@@ -1,12 +1,12 @@
 ﻿using SealTypographicWebAPI.Models.BaseModels;
 using System.Text.Json.Serialization;
 
-namespace SealTypographicWebAPI.Models.CustomerSealTemplate
+namespace SealTypographicWebAPI.Models.AccountantSignTemplate
 {
     /// <summary>
-    /// 客戶印鑑樣板分頁單列
+    /// 會計師簽印樣板分頁單列
     /// </summary>
-    public class CustomerSealTemplateLogModel : BaseData
+    public class AccountantSignTemplateLogModel : BaseData
     {
         /// <summary>
         /// 名稱
@@ -21,21 +21,21 @@ namespace SealTypographicWebAPI.Models.CustomerSealTemplate
     }
 
     /// <summary>
-    /// 客戶印鑑樣板分頁列表
+    /// 會計師簽印樣板分頁列表(log)
     /// </summary>
-    public class CustomerSealTemplatePaginateLog : PaginateViewModel
+    public class AccountantSignTemplatePaginateLog : PaginateViewModel
     {
         /// <summary>
         /// New ViewModels
         /// </summary>
-        public CustomerSealTemplatePaginateLog() 
+        public AccountantSignTemplatePaginateLog() 
         {
             LogModels = new ();
         }
 
         /// <summary>
-        /// 樣板列表
+        /// 分頁資料
         /// </summary>           
-        public List<CustomerSealTemplateLogModel> LogModels { get; set; }
+        public List<AccountantSignTemplateLogModel> LogModels { get; set; }
     }
 }

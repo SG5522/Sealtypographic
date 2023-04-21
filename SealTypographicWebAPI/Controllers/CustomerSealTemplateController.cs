@@ -1,10 +1,7 @@
-﻿using Azure;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using SealTypographicWebAPI.Models;
 using SealTypographicWebAPI.Models.CustomerSealTemplate;
-using SealTypographicWebAPI.Models.TemporarySeal;
 using SealTypographicWebAPI.Services;
-using SealTypographicWebAPI.Services.Implements;
 using Serilog;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -30,7 +27,7 @@ namespace SealTypographicWebAPI.Controllers
         }
 
         /// <summary>
-        /// 
+        /// 客戶印鑑樣板詳細資料
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
@@ -53,7 +50,7 @@ namespace SealTypographicWebAPI.Controllers
         }
 
         /// <summary>
-        /// 依搜尋結果與分頁顯示樣板列表
+        /// 客戶印鑑樣板分頁列表
         /// </summary>
         /// <param name="customerSealTemplateSearch">客戶印鑑樣板分頁搜尋</param>
         /// <returns></returns>
@@ -122,7 +119,7 @@ namespace SealTypographicWebAPI.Controllers
         }
 
         /// <summary>
-        /// 
+        /// 刪除客戶印鑑樣板
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>

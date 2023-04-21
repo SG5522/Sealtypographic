@@ -8,7 +8,6 @@ using SealTypographicWebAPI.Models;
 using SealTypographicWebAPI.Models.CustomerSealTemplate;
 using SealTypographicWebAPI.Utils;
 using Serilog;
-using Serilog.Parsing;
 
 namespace SealTypographicWebAPI.Services.Implements
 {
@@ -187,8 +186,7 @@ namespace SealTypographicWebAPI.Services.Implements
                 customerSealTemplateQuery.ThumbnailFullPath = await FormFileUtil.UploadFileReturnPath(customerSealTemplateUpdateForm.Thumbnail, customerSealTemplateQuery.Company.Code, templateImagePathOption.Customer);                
                 mapper.Map(customerSealTemplateUpdateForm, customerSealTemplateQuery);
                 BaseInputCustomerSealTemplate(customerSealTemplateQuery, false, userid);
-                //customerSealTemplateQuery.CustomerTempTemplateLocations = mapper.Map<List<CustomerSealTemplateLocation>>(customerSealTemplateUpdateForm.CustomerSealTemplateLocationUpdateForms);
-                //mapper.Map(customerSealTemplateUpdateForm.LocationUpdateForms, customerSealTemplateQuery.CustomerTempTemplateLocations);
+                
                 foreach(CustomerSealTemplateLocationUpdateForm sealTemplateLocationUpdateForm in customerSealTemplateUpdateForm.LocationUpdateForms)
                 {
                     CustomerSealTemplateLocation? customerSealTemplateLocation = customerSealTemplateQuery.CustomerSealTemplateLocations

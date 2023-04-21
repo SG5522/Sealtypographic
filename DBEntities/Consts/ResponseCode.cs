@@ -255,5 +255,11 @@ namespace DBEntities.Consts
         /// </summary>
         [Description("查無臨時章資料，無法刪除臨時章資料")]
         DeleteTemporarySealNoData = 7004,
+
+        /// <summary>
+        /// 回傳失敗
+        /// </summary>
+        [Description("回傳失敗")]
+        Error = 9999,
     }
 }

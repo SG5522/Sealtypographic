@@ -10,7 +10,7 @@ namespace SealTypographicWebAPI.Services
     public interface ICustomerSealTemplateService
     {
         /// <summary>
-        /// 客戶印鑑樣本詳細
+        /// 客戶印鑑樣板詳細資料
         /// </summary>
         /// <param name="id">客戶印鑑樣本Id</param>
         /// <returns></returns>

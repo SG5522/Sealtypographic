@@ -3,28 +3,28 @@ using Microsoft.AspNetCore.Mvc;
 using SealTypographicWebAPI.Config;
 using SealTypographicWebAPI.Models.BaseModels;
 
-namespace SealTypographicWebAPI.Models.CustomerSealTemplate
+namespace SealTypographicWebAPI.Models.AccountantSignTemplate
 {
     /// <summary>
-    /// 客戶印鑑樣板座標
+    /// 會計師簽印樣板座標
     /// </summary> 
     [ModelBinder(BinderType = typeof(JsonModelBinder))]
-    public class CustomerSealTemplateLocationUpdateForm : BaseLocationViewModel
+    public class AccountantSignTemplateLocationUpdateForm : BaseLocationViewModel
     {
         /// <summary>
         /// 樣板座標Id
         /// </summary>
         public int Id { get; set; }
         /// <summary>
-        /// 客戶印鑑類別
+        /// 會計師簽印類別
         /// </summary>
-        public CustomerSealType CustomerSealType { get; set; }
+        public AccountantSignType AccountantSignType { get; set; }
     }
 
     /// <summary>
-    /// 客戶印鑑樣板 (更新使用)
+    /// 會計師簽印樣板(分頁)
     /// </summary>
-    public class CustomerSealTemplateUpdateForm : BaseTemplateWithFile
+    public class AccountantSignTemplateUpdateForm : BaseTemplateWithFile
     {
         /// <summary>
         /// 樣板Id
@@ -42,8 +42,8 @@ namespace SealTypographicWebAPI.Models.CustomerSealTemplate
         public int StackShift { get; set; }
 
         /// <summary>
-        /// 樣板位置座標
+        /// 樣板座標
         /// </summary>                       
-        public List<CustomerSealTemplateLocationUpdateForm> LocationUpdateForms{ get; set; }
+        public List<AccountantSignTemplateLocationUpdateForm> LocationUpdateForms{ get; set; }
     }
 }

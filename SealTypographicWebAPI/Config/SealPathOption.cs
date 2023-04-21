@@ -1,4 +1,6 @@
-﻿namespace SealTypographicWebAPI.Config
+﻿using DBEntities.Consts;
+
+namespace SealTypographicWebAPI.Config
 {
     /// <summary>
     /// 匯入AppConfig資料
@@ -17,7 +19,7 @@
         {
             get
             {
-                return Path.Combine(SealRootPath, "Customer");
+                return Path.Combine(SealRootPath, SealType.Customer.ToString());
             }
         }
             
@@ -29,7 +31,7 @@
         {
             get
             {
-                return Path.Combine(SealRootPath, "Accountant");
+                return Path.Combine(SealRootPath, SealType.Accountant.ToString());
             }
         }
 
@@ -39,7 +41,7 @@
         public string Letterhead {
             get
             {
-                return Path.Combine(SealRootPath, "Letterhead");
+                return Path.Combine(SealRootPath, SealType.Letterhead.ToString());
             }
         }
 
@@ -50,7 +52,7 @@
         {
             get
             {
-                return Path.Combine(SealRootPath, "TemporarySeal");
+                return Path.Combine(SealRootPath, SealType.TemporarySeal.ToString());
             }            
         }
 

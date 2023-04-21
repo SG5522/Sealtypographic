@@ -1,11 +1,11 @@
 ﻿using SealTypographicWebAPI.Models.BaseModels;
 
-namespace SealTypographicWebAPI.Models.CustomerSealTemplate
+namespace SealTypographicWebAPI.Models.LetterheadTemplate
 {
     /// <summary>
     /// 樣板存檔時紀錄當下的圖片
     /// </summary>
-    public class CustomerSealTemplateImageView : BaseData
+    public class LetterheadTemplateImageView : BaseData
     {
         /// <summary>
         /// 縮圖字串(ImageBase64)
