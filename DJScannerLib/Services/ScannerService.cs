@@ -1,13 +1,14 @@
 ﻿using DJLib;
+using DJScannerLib.Configs;
 using DJScannerLib.Models;
-using DJScannerLib.Services;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Formats;
 using System.Runtime.InteropServices;
 using TWAINWorkingGroup;
 
-namespace ScannerLib.Services
+namespace DJScannerLib.Services
 {
     public class ScannerService : IScannerService
     {
@@ -35,13 +36,13 @@ namespace ScannerLib.Services
 
         int cnt = 0;
 
-        public ScannerService(IntPtr intPtrHwnd) //, ILogger<ScannerService> logger)
+        public ScannerService(ILogger<ScannerService> logger, IOptions<FormOptions> formOptions)
         {
-            this.intPtrHwnd = intPtrHwnd;
+            intPtrHwnd = formOptions.Value.Handle;
+            this.logger = logger;
 
             //Log.Open("TWAINCSScan", ".", 1);
             //Log.Info("TWAINCSScan v" + System.Reflection.Assembly.GetEntryAssembly().GetName().Version.ToString());
-            //logger.LogInformation("TWAINCSScan v" + System.Reflection.Assembly.GetEntryAssembly().GetName().Version.ToString());
 
             try
             {
@@ -53,14 +54,14 @@ namespace ScannerLib.Services
                 // Instantiate TWAIN, and register ourselves...
                 twain = new TWAIN
                 (
-                    "TWAIN Working Group",
-                    "TWAIN Open Source",
-                    "TWAIN CS Scan App",
+                    "DJ TWAIN RD Group",
+                    "DJ TWAIN Open Source",
+                    "DJ TWAIN Scan App",
                     (ushort)TWAIN.TWON_PROTOCOL.MAJOR,
                     (ushort)TWAIN.TWON_PROTOCOL.MINOR,
                     ((uint)TWAIN.DG.APP2 | (uint)TWAIN.DG.CONTROL | (uint)TWAIN.DG.IMAGE),
                     TWAIN.TWCY.TAIWAN,
-                    "TWAIN CS Scan App",
+                    "DJ TWAIN Scan App",
                     TWAIN.TWLG.CHINESE_TAIWAN,
                     2,
                     4,
@@ -69,12 +70,12 @@ namespace ScannerLib.Services
                     deviceeventcallback,
                     scancallback,
                     runinuithreaddelegate,
-                    this.intPtrHwnd
+                    intPtrHwnd
                 );
             }
             catch (Exception exception)
             {
-                //Log.Error("exception - " + exception.Message);
+                this.logger.LogError("exception - " + exception.Message, exception);
                 twain = null;
             }
         }
@@ -118,6 +119,7 @@ namespace ScannerLib.Services
                 result.ErrorMessage = "TWAIN Initial Error.";
             }
 
+            logger.LogInformation("GetDefaultDriver {@Result}", result);
             return result;
         }
 
@@ -169,6 +171,7 @@ namespace ScannerLib.Services
                 result.ErrorMessage = "TWAIN Initial Error.";
             }
 
+            logger.LogInformation("GetAllDrivers {@Result}", result);
             return result;
         }
 

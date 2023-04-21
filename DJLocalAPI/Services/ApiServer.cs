@@ -1,8 +1,9 @@
-﻿using DJScannerLib.Services;
+﻿using DJScannerLib.Configs;
+using DJScannerLib.Services;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using ScannerLib.Services;
+using Serilog;
 
 namespace DJLocalAPI.Api
 {
@@ -19,7 +20,13 @@ namespace DJLocalAPI.Api
         /// <summary>
         /// 
         /// </summary>
-        public ServerStatus apiServerStatus = ServerStatus.Shutdown;
+        public ServerStatus Status
+        {
+            get
+            {
+                return apiServerHost != null ? ServerStatus.Running : ServerStatus.Shutdown;
+            }
+        }
 
         private readonly IHost? apiServerHost;
 
@@ -29,38 +36,40 @@ namespace DJLocalAPI.Api
         /// <param name="args"></param>
         public ApiServer(string[] args, IntPtr handle)
         {
-            ScannerService = new ScannerService(handle);
+            //ScannerService = new ScannerService(handle);
             apiServerHost = Host.CreateDefaultBuilder(args)
+                .UseSerilog()
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.ConfigureServices(services => 
                     {
-                        services.AddScoped(sp => ScannerService);
+                        services.Configure<FormOptions>(o => new FormOptions
+                        {
+                            Handle = handle
+                        });
+                        //services.AddScoped(sp => ScannerService);
                     })
                     .UseStartup<ApiStartup>()
-                    .UseUrls("http://localhost:22431", "http://localhost:22435");
+                    .UseUrls("http://localhost:22431", "http://localhost:22432", "http://localhost:22433", "http://localhost:22434", "http://localhost:22435");
                 }).Build();
         }
 
         /// <summary>
         /// 開啟Server
         /// </summary>
-        public void StartServer()
+        public async Task StartAsync()
         {
-            _ = apiServerHost.RunAsync().ContinueWith(antecedent =>
-            {
-                apiServerStatus = apiServerHost != null ? ServerStatus.Running : ServerStatus.Shutdown;
-            });
+            await apiServerHost.RunAsync();
         }
 
         /// <summary>
         /// 關閉server
         /// </summary>
-        public void StopServer()
+        public async void StopAsync()
         {
             if(apiServerHost != null)
             {
-                _ = apiServerHost.StopAsync().ContinueWith(antecedent => apiServerStatus = ServerStatus.Shutdown);
+                await apiServerHost.StopAsync();
             }
         }
     }

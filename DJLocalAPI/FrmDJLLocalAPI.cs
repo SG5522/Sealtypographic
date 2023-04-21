@@ -1,14 +1,7 @@
 using DJLocalAPI.Api;
 using DJScannerLib.Models;
 using DJScannerLib.Services;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Hosting;
-using ScannerLib.Services;
-using System.Runtime.InteropServices;
 using System.Security.Permissions;
-using System.Windows.Forms;
-using System.Windows.Forms.VisualStyles;
-using TWAINWorkingGroup;
 
 namespace DJLocalAPI
 {
@@ -17,29 +10,36 @@ namespace DJLocalAPI
         //ScannerService sc;
         private bool scanStart = false;
 
-        private string[]? args;
+        private string[] args;
         private ApiServer? apiServer;
         private IScannerService scannerService;
 
+        /// <summary>
+        /// «Øºc
+        /// </summary>
         public FrmDJLLocalAPI()
         {
             InitializeComponent();
         }
 
-        public FrmDJLLocalAPI(string[]? args) : this()
+        /// <summary>
+        /// «Øºc
+        /// </summary>
+        /// <param name="args"></param>
+        public FrmDJLLocalAPI(string[] args) : this()
         {
-
+            this.args = args;
         }
 
-        private void DJLLocalAPI_Load(object sender, EventArgs e)
+        private async void DJLLocalAPI_Load(object sender, EventArgs e)
         {
             apiServer = new(args, Handle); 
-            apiServer!.StartServer();
+            await apiServer!.StartAsync();
             scannerService = apiServer.ScannerService;
             SetMessageFilter(true);
         }
 
-        private void FrmDJLLocalAPI_FormClosing(object sender, FormClosingEventArgs e) => apiServer!.StopServer();
+        private void FrmDJLLocalAPI_FormClosing(object sender, FormClosingEventArgs e) => apiServer!.StopAsync();
  
         private void btnGetDrivers_Click(object sender, EventArgs e)
         {

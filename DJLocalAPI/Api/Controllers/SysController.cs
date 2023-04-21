@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 namespace DJLocalAPI.Api.Controllers
 {
@@ -9,6 +10,17 @@ namespace DJLocalAPI.Api.Controllers
     [ApiController]
     public class SysController : ControllerBase
     {
+        private readonly ILogger<SysController> logger;
+
+        /// <summary>
+        /// 建構
+        /// </summary>
+        /// <param name="logger"></param>
+        public SysController(ILogger<SysController> logger)
+        {
+            this.logger = logger;
+        }
+
         /// <summary>
         /// 簡易測試系統運行狀態
         /// </summary>
@@ -17,7 +29,9 @@ namespace DJLocalAPI.Api.Controllers
         [HttpGet]
         public string Hello()
         {
-            return string.Format("Server Run OK. V{0}", typeof(SysController).Assembly.GetName().Version);
+            string result = string.Format("Server Run OK. V{0}", typeof(SysController).Assembly.GetName().Version);
+            logger.LogInformation(result);
+            return result;
         }
     }
 }
