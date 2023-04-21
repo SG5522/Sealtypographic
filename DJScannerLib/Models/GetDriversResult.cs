@@ -8,12 +8,18 @@
         public GetDriversResult() 
         {
             Success = false;
-            Drivers = null;
+            Drivers = new List<TWAINDriver>();
+            DriverNames = new List<string>();
         }
 
         /// <summary>
-        /// 預設驅動程式CSV字串
+        /// 驅動程式
         /// </summary>
-        public IList<string>? Drivers { get; set; }
+        public IList<TWAINDriver> Drivers { get; set; }
+
+        /// <summary>
+        /// 驅動程式字串
+        /// </summary>
+        public IList<string> DriverNames { get; set; }
     }
 }

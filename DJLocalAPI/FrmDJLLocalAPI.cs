@@ -48,9 +48,9 @@ namespace DJLocalAPI
             if(getDriversResult.Success)
             {
                 lbDriver.Items.Clear();
-                foreach (string driver in getDriversResult.Drivers)
+                foreach (string driverName in getDriversResult.DriverNames)
                 {
-                    lbDriver.Items.Add(driver);
+                    lbDriver.Items.Add(driverName);
                 }
             }
             else

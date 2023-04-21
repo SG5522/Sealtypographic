@@ -5,9 +5,7 @@ using Microsoft.Extensions.Logging;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Formats;
 using System.Runtime.InteropServices;
-using System.Security.Permissions;
 using TWAINWorkingGroup;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace ScannerLib.Services
 {
@@ -102,7 +100,7 @@ namespace ScannerLib.Services
                     if (sts == TWAIN.STS.SUCCESS)
                     {
                         result.Success = true;
-                        result.Default = TWAIN.IdentityToCsv(twIdentity);
+                        result.Default.Identity = TWAIN.IdentityToCsv(twIdentity);
                     }
                     else
                     {
@@ -133,30 +131,30 @@ namespace ScannerLib.Services
                 TWAIN.STS sts = twain.DatParent(TWAIN.DG.CONTROL, TWAIN.MSG.OPENDSM, ref intPtrHwnd);
                 if (sts == TWAIN.STS.SUCCESS)
                 {
-                    lszIdentity = new List<string>();
-
                     // Enumerate the drivers...列舉驅動程式
                     for (sts = twain.DatIdentity(TWAIN.DG.CONTROL, TWAIN.MSG.GETFIRST, ref twIdentity);
                         sts != TWAIN.STS.ENDOFLIST;
                         sts = twain.DatIdentity(TWAIN.DG.CONTROL, TWAIN.MSG.GETNEXT, ref twIdentity))
                     {
-                        lszIdentity.Add(TWAIN.IdentityToCsv(twIdentity));
+                        result.Drivers.Add(new TWAINDriver
+                        {
+                            Identity = TWAIN.IdentityToCsv(twIdentity)
+                        });
                     }
 
-                    if (lszIdentity.Count == 0)
+                    if (result.Drivers.Count == 0)
                     {
                         result.ErrorMessage = "There are no TWAIN drivers installed on this system...";
                     }
                     else
                     {
                         result.Success = true;
-                        result.Drivers = new List<string>();
+                        result.DriverNames = new List<string>();
 
                         // Populate our driver list...
-                        foreach (string sz in lszIdentity)
+                        foreach (TWAINDriver driver in result.Drivers)
                         {
-                            string[] aszIdentity = CSV.Parse(sz);
-                            result.Drivers.Add(aszIdentity[11].ToString());
+                            result.DriverNames.Add(driver.DriverName);
                         }
                     }
                     twain.DatParent(TWAIN.DG.CONTROL, TWAIN.MSG.CLOSEDSM, ref intPtrHwnd);
