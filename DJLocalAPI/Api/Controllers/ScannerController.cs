@@ -56,9 +56,12 @@ namespace DJLocalAPI.Api.Controllers
             return scannerService.SetDriver(driver);
         }
 
-        //public void Scan()
-        //{
-        //    return scannerService.Scan();
-        //}
+        [HttpGet("[Action]")]
+        public bool Scan()
+        {
+            scannerService.Scan();
+
+            return true;
+        }
     }
 }

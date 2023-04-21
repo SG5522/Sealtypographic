@@ -12,6 +12,9 @@ namespace DJLocalAPI
 
         private string[] args;
         private ApiServer? apiServer;
+        private string apiLocal = "http://localhost:";
+        private int apiPort = 22431;
+        private string apiUrl;
         private IScannerService scannerService;
 
         /// <summary>
@@ -20,6 +23,7 @@ namespace DJLocalAPI
         public FrmDJLLocalAPI()
         {
             InitializeComponent();
+            apiUrl = apiLocal + apiPort.ToString();
         }
 
         /// <summary>
@@ -35,6 +39,7 @@ namespace DJLocalAPI
         {
             apiServer = new(args, Handle); 
             await apiServer!.StartAsync();
+            
             scannerService = apiServer.ScannerService;
             SetMessageFilter(true);
         }
