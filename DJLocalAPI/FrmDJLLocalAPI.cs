@@ -61,7 +61,7 @@ namespace DJLocalAPI
 
         private void lbDriver_MouseDoubleClick(object sender, MouseEventArgs e)
         {
-            bool result = scannerService.SelectedDriver((string)lbDriver.SelectedItem);
+            bool result = scannerService.SetDriver((string)lbDriver.SelectedItem);
             if (result) 
             {
                 lblSetResult.Text = "設置狀態：成功";
@@ -74,7 +74,7 @@ namespace DJLocalAPI
 
         private void btnSetDriver_Click(object sender, EventArgs e)
         {
-            bool result = scannerService.SelectedDriver((string)lbDriver.SelectedItem);
+            bool result = scannerService.SetDriver((string)lbDriver.SelectedItem);
             if (result)
             {
                 lblSetResult.Text = "設置狀態：成功";

@@ -46,7 +46,7 @@ namespace DJLocalAPI.Api
                 );
                 options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, $"{Assembly.GetExecutingAssembly().GetName().Name}.xml"), true);
             });
-            services.AddScoped<IScannerService, ScannerService>();
+            services.AddSingleton<IScannerService, ScannerService>();
         }
 
         /// <summary>

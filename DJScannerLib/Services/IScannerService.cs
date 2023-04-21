@@ -27,11 +27,11 @@ namespace DJScannerLib.Services
         GetDriversResult GetAllDrivers();
 
         /// <summary>
-        /// 設置選擇的掃描器
+        /// 設置掃描器
         /// </summary>
         /// <param name="driver">掃描器名稱</param>
         /// <returns></returns>
-        bool SelectedDriver(string driver);
+        bool SetDriver(string driver);
 
         /// <summary>
         /// 掃描

@@ -30,9 +30,7 @@ namespace DJScannerLib.Services
         private IntPtr intPtrXfer = IntPtr.Zero;
         private IntPtr intPtrImage = IntPtr.Zero;
         // Setup information...
-
-        // 詳細名稱的驅動程式清單
-        private IList<string> lszIdentity;
+        private TWAINDriver defaultDriver;
 
         int cnt = 0;
 
@@ -91,32 +89,44 @@ namespace DJScannerLib.Services
         {
             DefaultDriverResult result = new();
 
-            if(twain != null)
+            if(defaultDriver == null)
             {
-                // Get the default driver
-                TWAIN.STS sts = twain.DatParent(TWAIN.DG.CONTROL, TWAIN.MSG.OPENDSM, ref intPtrHwnd);
-                if (sts == TWAIN.STS.SUCCESS)
+                if (twain != null)
                 {
-                    sts = twain.DatIdentity(TWAIN.DG.CONTROL, TWAIN.MSG.GETDEFAULT, ref twIdentity);
+                    // Get the default driver
+                    TWAIN.STS sts = twain.DatParent(TWAIN.DG.CONTROL, TWAIN.MSG.OPENDSM, ref intPtrHwnd);
                     if (sts == TWAIN.STS.SUCCESS)
                     {
-                        result.Success = true;
-                        result.Default.Identity = TWAIN.IdentityToCsv(twIdentity);
+                        sts = twain.DatIdentity(TWAIN.DG.CONTROL, TWAIN.MSG.GETDEFAULT, ref twIdentity);
+                        if (sts == TWAIN.STS.SUCCESS)
+                        {
+                            result.Success = true;
+                            defaultDriver = new()
+                            {
+                                Identity = TWAIN.IdentityToCsv(twIdentity)
+                            };
+                            result.Default = defaultDriver;
+                        }
+                        else
+                        {
+                            result.ErrorMessage = "Get Default Driver failed.";
+                        }
+                        twain.DatParent(TWAIN.DG.CONTROL, TWAIN.MSG.CLOSEDSM, ref intPtrHwnd);
                     }
                     else
                     {
-                        result.ErrorMessage = "Get Default Driver failed.";
+                        result.ErrorMessage = "OPENDSM failed.";
                     }
-                    twain.DatParent(TWAIN.DG.CONTROL, TWAIN.MSG.CLOSEDSM, ref intPtrHwnd);
                 }
                 else
                 {
-                    result.ErrorMessage = "OPENDSM failed.";
+                    result.ErrorMessage = "TWAIN Initial Error.";
                 }
             }
             else
             {
-                result.ErrorMessage = "TWAIN Initial Error.";
+                result.Success = true;
+                result.Default = defaultDriver;
             }
 
             logger.LogInformation("GetDefaultDriver {@Result}", result);
@@ -176,31 +186,43 @@ namespace DJScannerLib.Services
         }
 
         /// <inheritdoc/>
-        public bool SelectedDriver(string driver)
+        public bool SetDriver(string driver)
         {
-            TWAIN.STS sts;
-            bool setResult = false;
+            bool result = false;
 
-            foreach (string sz in lszIdentity)
+            GetDriversResult getDriversResult = GetAllDrivers();
+
+            if (twain != null)
             {
-                if (sz.Contains(driver))
+                TWAIN.STS sts = twain.DatParent(TWAIN.DG.CONTROL, TWAIN.MSG.OPENDSM, ref intPtrHwnd);
+                TWAINDriver setDriver = new();
+                if (sts == TWAIN.STS.SUCCESS)
                 {
-                    driver = sz;
-                    break;
+                    foreach (TWAINDriver twainDriver in getDriversResult.Drivers)
+                    {
+                        if (twainDriver.Identity.Contains(driver))
+                        {
+                            setDriver = twainDriver;
+                            //driver = driverName;
+                            break;
+                        }
+                    }
+                    twIdentity = default;
+                    TWAIN.CsvToIdentity(ref twIdentity, setDriver.DriverName);
+                    twain.DatIdentity(TWAIN.DG.CONTROL, TWAIN.MSG.SET, ref twIdentity);
+
+                    // Open it...
+                    sts = twain.DatIdentity(TWAIN.DG.CONTROL, TWAIN.MSG.OPENDS, ref twIdentity);
+
+                    if (sts == TWAIN.STS.SUCCESS)
+                    {
+                        defaultDriver = setDriver;
+                        result = true;
+                    }
+                    twain.DatParent(TWAIN.DG.CONTROL, TWAIN.MSG.CLOSEDSM, ref intPtrHwnd);
                 }
             }
-            twIdentity = default;
-            TWAIN.CsvToIdentity(ref twIdentity, driver);
-            twain.DatIdentity(TWAIN.DG.CONTROL, TWAIN.MSG.SET, ref twIdentity);
-
-            // Open it...
-            sts = twain.DatIdentity(TWAIN.DG.CONTROL, TWAIN.MSG.OPENDS, ref twIdentity);
-
-            if (sts == TWAIN.STS.SUCCESS)
-            {
-                setResult = true;
-            }
-            return setResult;
+            return result;
         }
 
         /// <inheritdoc/>

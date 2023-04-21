@@ -46,15 +46,16 @@ namespace DJLocalAPI.Api.Controllers
         }
 
         /// <summary>
-        /// 設置選擇的掃描器
+        /// 設置掃描器
         /// </summary>
         /// <param name="driver">掃描器名稱</param>
         /// <returns></returns>
-        [HttpGet]
-        public bool SetSelectDriver(string driver)
+        [HttpGet("[Action]")]
+        public bool SetDriver(string driver)
         {
-            return scannerService.SelectedDriver(driver);
+            return scannerService.SetDriver(driver);
         }
+
         //public void Scan()
         //{
         //    return scannerService.Scan();
