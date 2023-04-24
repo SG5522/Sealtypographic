@@ -385,12 +385,21 @@ namespace SealTypographicWebAPI.Models
         }
 
         /// <summary>
-        /// 刪除信頭時找不到資料
+        /// 刪除臨時章找不到資料
         /// </summary>
         public void DeleteTemporarySealNoData()
         {
             Code = (int)ResponseCode.DeleteTemporarySealNoData;
             Message = "Delete temporary seal no data";
+        }
+
+        /// <summary>
+        /// 刪除客戶印鑑樣板時找不到資料
+        /// </summary>
+        public void DeleteCustomerSealTemplateNoData()
+        {
+            Code = (int)ResponseCode.DeleteCustomerSealTemplateNoData;
+            Message = "Delete customerSeal template no data";
         }
 
         /// <summary>

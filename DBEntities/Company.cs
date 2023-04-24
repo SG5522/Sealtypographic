@@ -45,7 +45,7 @@ namespace DBEntities
         /// <summary>
         /// 會計師印鑑樣板
         /// </summary>
-        public List<AccountSignSealTemplate> AccountSignSealTemplates { get; set; }
+        public List<AccountantSignTemplate> AccountantSignTemplates { get; set; }
 
         /// <summary>
         /// 信頭圖片樣板

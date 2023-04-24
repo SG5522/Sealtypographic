@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System.Xml;
 
 namespace DBEntities
 {
@@ -105,12 +106,12 @@ namespace DBEntities
         /// <summary>
         /// 會計師簽印樣板
         /// </summary>
-        public DbSet<AccountSignSealTemplate> AccountSignSealTemplates { get; set; }
+        public DbSet<AccountantSignTemplate> AccountantSignTemplates { get; set; }
 
         /// <summary>
         /// 會計師簽印樣板位置
         /// </summary>
-        public DbSet<AccountSignSealTemplateLocation> AccountSignSealTemplateLocations { get; set; }
+        public DbSet<AccountantSignTemplateLocation> AccountantSignTemplateLocations { get; set; }
         /// <summary>
         /// 信頭樣板
         /// </summary>

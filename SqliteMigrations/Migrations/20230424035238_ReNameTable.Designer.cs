@@ -11,94 +11,14 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Sqlite.Migrations
 {
     [DbContext(typeof(SealTypographicDbContext))]
-    [Migration("20230413095216_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20230424035238_ReNameTable")]
+    partial class ReNameTable
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder.HasAnnotation("ProductVersion", "7.0.3");
-
-            modelBuilder.Entity("DBEntities.AccountSignSealTemplate", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("CompanyId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<DateTime>("CreateDate")
-                        .HasColumnType("TEXT");
-
-                    b.Property<int>("CreateUserId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<byte>("DeleteStatus")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("ImageViewFullPath")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<int>("PageSize")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("PaperOrientation")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("ThumbnailFullPath")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime>("UpdateDate")
-                        .HasColumnType("TEXT");
-
-                    b.Property<int>("UpdateUserId")
-                        .HasColumnType("INTEGER");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CompanyId");
-
-                    b.ToTable("AccountantSignTemplates");
-                });
-
-            modelBuilder.Entity("DBEntities.AccountSignSealTemplateLocation", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("AccountSignSealTemplateId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("ConfigType")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("Height")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<float>("Left")
-                        .HasColumnType("REAL");
-
-                    b.Property<float>("Top")
-                        .HasColumnType("REAL");
-
-                    b.Property<int>("Width")
-                        .HasColumnType("INTEGER");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("AccountSignSealTemplateId");
-
-                    b.ToTable("AccountSignSealTemplateLocations");
-                });
+            modelBuilder.HasAnnotation("ProductVersion", "7.0.5");
 
             modelBuilder.Entity("DBEntities.Accountant", b =>
                 {
@@ -297,6 +217,86 @@ namespace Sqlite.Migrations
                     b.HasIndex("TypographicPageId");
 
                     b.ToTable("AccountantSignLocaltions");
+                });
+
+            modelBuilder.Entity("DBEntities.AccountantSignTemplate", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("CompanyId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("CreateDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("CreateUserId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<byte>("DeleteStatus")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("ImageViewFullPath")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("PageSize")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("PaperOrientation")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("ThumbnailFullPath")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("UpdateDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("UpdateUserId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CompanyId");
+
+                    b.ToTable("AccountantSignTemplates");
+                });
+
+            modelBuilder.Entity("DBEntities.AccountantSignTemplateLocation", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("AccountantSignTemplateId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("ConfigType")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("Height")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<float>("Left")
+                        .HasColumnType("REAL");
+
+                    b.Property<float>("Top")
+                        .HasColumnType("REAL");
+
+                    b.Property<int>("Width")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AccountantSignTemplateId");
+
+                    b.ToTable("AccountantSignTemplateLocations");
                 });
 
             modelBuilder.Entity("DBEntities.Company", b =>
@@ -600,7 +600,7 @@ namespace Sqlite.Migrations
                     b.ToTable("CustomerSealTemplates");
                 });
 
-            modelBuilder.Entity("DBEntities.CustomerSealTemplateLocations", b =>
+            modelBuilder.Entity("DBEntities.CustomerSealTemplateLocation", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -1091,28 +1091,6 @@ namespace Sqlite.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("DBEntities.AccountSignSealTemplate", b =>
-                {
-                    b.HasOne("DBEntities.Company", "Company")
-                        .WithMany("AccountantSignTemplates")
-                        .HasForeignKey("CompanyId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Company");
-                });
-
-            modelBuilder.Entity("DBEntities.AccountSignSealTemplateLocation", b =>
-                {
-                    b.HasOne("DBEntities.AccountSignSealTemplate", "AccountSignSealTemplate")
-                        .WithMany("AccountSignSealTemplateLocations")
-                        .HasForeignKey("AccountSignSealTemplateId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("AccountSignSealTemplate");
-                });
-
             modelBuilder.Entity("DBEntities.Accountant", b =>
                 {
                     b.HasOne("DBEntities.AccountantGroup", "AccountantGroup")
@@ -1171,6 +1149,28 @@ namespace Sqlite.Migrations
                     b.Navigation("AccountantSignJournal");
 
                     b.Navigation("TypographicPage");
+                });
+
+            modelBuilder.Entity("DBEntities.AccountantSignTemplate", b =>
+                {
+                    b.HasOne("DBEntities.Company", "Company")
+                        .WithMany("AccountantSignTemplates")
+                        .HasForeignKey("CompanyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Company");
+                });
+
+            modelBuilder.Entity("DBEntities.AccountantSignTemplateLocation", b =>
+                {
+                    b.HasOne("DBEntities.AccountantSignTemplate", "AccountantSignTemplate")
+                        .WithMany("AccountantSignTemplateLocations")
+                        .HasForeignKey("AccountantSignTemplateId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("AccountantSignTemplate");
                 });
 
             modelBuilder.Entity("DBEntities.Customer", b =>
@@ -1236,7 +1236,7 @@ namespace Sqlite.Migrations
                     b.Navigation("Company");
                 });
 
-            modelBuilder.Entity("DBEntities.CustomerSealTemplateLocations", b =>
+            modelBuilder.Entity("DBEntities.CustomerSealTemplateLocation", b =>
                 {
                     b.HasOne("DBEntities.CustomerSealTemplate", "CustomerTemplate")
                         .WithMany("CustomerSealTemplateLocations")
@@ -1395,11 +1395,6 @@ namespace Sqlite.Migrations
                     b.Navigation("Company");
                 });
 
-            modelBuilder.Entity("DBEntities.AccountSignSealTemplate", b =>
-                {
-                    b.Navigation("AccountSignSealTemplateLocations");
-                });
-
             modelBuilder.Entity("DBEntities.Accountant", b =>
                 {
                     b.Navigation("AccountantSignGroupJournals");
@@ -1418,6 +1413,11 @@ namespace Sqlite.Migrations
             modelBuilder.Entity("DBEntities.AccountantSignJournal", b =>
                 {
                     b.Navigation("AccountantSignLocations");
+                });
+
+            modelBuilder.Entity("DBEntities.AccountantSignTemplate", b =>
+                {
+                    b.Navigation("AccountantSignTemplateLocations");
                 });
 
             modelBuilder.Entity("DBEntities.Company", b =>

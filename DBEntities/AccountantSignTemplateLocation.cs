@@ -9,18 +9,18 @@ using System.Threading.Tasks;
 namespace DBEntities
 {
     /// <summary>
-    /// 會計師簽印樣板
+    /// 會計師簽印樣板位置
     /// </summary>
-    public class AccountSignSealTemplate : BaseTemplate
+    public class AccountantSignTemplateLocation : BaseLocation
     {
         /// <summary>
-        /// 會計師事務所(公司)
+        /// 簽印類別
         /// </summary>
-        public Company Company { get; set; }
+        public AccountantSignType ConfigType { get; set; }
 
         /// <summary>
-        /// 會計師簽印樣板位置
+        /// 會計師簽印樣板表
         /// </summary>
-        public List<AccountSignSealTemplateLocation> AccountSignSealTemplateLocations { get; set; }
+        public AccountantSignTemplate AccountantSignTemplate { get; set; }
     }
 }

@@ -130,7 +130,7 @@ namespace SealTypographicWebAPI.Controllers
             try
             {
                 Log.Information("CustomerSealTemplate delete input  {@id}", id);
-                //response = await customerSealTemplateService.Update(customerSealTemplateUpdateForm);
+                response = customerSealTemplateService.Delete(id);
                 Log.Information("CustomerSealTemplate delete output {@Output}", response);
             }
             catch (Exception ex)

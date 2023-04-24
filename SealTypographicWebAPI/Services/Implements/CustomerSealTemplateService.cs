@@ -161,7 +161,7 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <summary>
         /// 更新客戶印鑑樣板
         /// </summary>        
-        /// <param name="customerSealTemplateUpdateForm">客戶樣板</param>
+        /// <param name="customerSealTemplateUpdateForm">客戶印鑑樣板</param>
         /// <returns></returns>
         public async Task<ResponseViewModel> Update(CustomerSealTemplateUpdateForm customerSealTemplateUpdateForm)
         {
@@ -199,6 +199,31 @@ namespace SealTypographicWebAPI.Services.Implements
                 dbContext.Entry(customerSealTemplateQuery).State = EntityState.Modified;                
                 await dbContext.SaveChangesAsync();
                 response.Success();
+            }
+
+            return response;
+        }
+        /// <summary>
+        /// 刪除客戶印鑑樣板
+        /// </summary>
+        /// <param name="Id">客戶印鑑樣板Id</param>
+        /// <returns></returns>
+        public ResponseViewModel Delete (int Id)
+        {
+            ResponseViewModel response = new();
+            int userId = 0;
+
+            CustomerSealTemplate? customerSealTemplate = dbContext.CustomerSealTemplates.Find(Id);
+
+            if(customerSealTemplate != null) 
+            {
+                customerSealTemplate.DeleteStatus = DeleteStatus.Yes;
+                BaseInputCustomerSealTemplate(customerSealTemplate, false, userId);
+                response.Success();
+            }
+            else
+            {
+                response.DeleteCustomerSealTemplateNoData();
             }
 
             return response;

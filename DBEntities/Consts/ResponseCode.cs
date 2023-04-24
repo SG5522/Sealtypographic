@@ -251,10 +251,17 @@ namespace DBEntities.Consts
         UpdateTemporarySealNoData = 7003,
 
         /// <summary>
-        /// 刪除信頭時找不到資料
+        /// 刪除臨時章時找不到資料
         /// </summary>
         [Description("查無臨時章資料，無法刪除臨時章資料")]
         DeleteTemporarySealNoData = 7004,
+
+        /// <summary>
+        /// 刪除客戶印鑑樣板時找不到資料
+        /// </summary>
+        [Description("查無客戶印鑑樣板，無法刪除客戶印鑑樣板資料")]
+        DeleteCustomerSealTemplateNoData = 8004,
+
 
         /// <summary>
         /// 回傳失敗
