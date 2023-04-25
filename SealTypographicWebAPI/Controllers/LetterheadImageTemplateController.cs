@@ -2,6 +2,8 @@
 using SealTypographicWebAPI.Models;
 using SealTypographicWebAPI.Models.AccountantSignTemplate;
 using SealTypographicWebAPI.Models.LetterheadTemplate;
+using SealTypographicWebAPI.Services;
+using SealTypographicWebAPI.Services.Implements;
 using Serilog;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -13,17 +15,16 @@ namespace SealTypographicWebAPI.Controllers
     /// </summary>
     [Route("api/[controller]")]
     [ApiController]
-    public class LetterheadTemplateController : ControllerBase
+    public class LetterheadImageTemplateController : ControllerBase
     {
-        
+        private readonly ILetterheadImageTemplateService letterheadImageTemplateService;
 
         /// <summary>
         /// 建構 注入Service
-        /// </summary>
-        
-        public LetterheadTemplateController()
+        /// </summary>        
+        public LetterheadImageTemplateController(ILetterheadImageTemplateService letterheadImageTemplateService)
         {
-            
+            this.letterheadImageTemplateService = letterheadImageTemplateService;
         }
 
         /// <summary>
@@ -32,14 +33,14 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpGet("{id}")]
-        public LetterheadTemplateDetailViewModel Detail(int id)
+        public LetterheadImageTemplateDetailViewModel Detail(int id)
         {
-            LetterheadTemplateDetailViewModel letterheadTemplateDetailViewModel = new();
+            LetterheadImageTemplateDetailViewModel letterheadTemplateDetailViewModel = new();
             try
             {
                 Log.Information("LetterheadTemplate detail input {@Input}", id);
-                
-                Log.Information("LetterheadTemplate detail output {@Output}", id);
+                letterheadTemplateDetailViewModel = letterheadImageTemplateService.GetDetail(id);
+                Log.Information("LetterheadTemplate detail output {@Output}", letterheadTemplateDetailViewModel);
             }
             catch (Exception ex)
             {
@@ -55,13 +56,13 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="letterheadTemplateSearch">信頭樣板分頁搜尋</param>
         /// <returns></returns>
         [HttpGet]
-        public LetterheadTemplatePaginate Paginate([FromQuery] LetterheadTemplateSearch letterheadTemplateSearch)
+        public LetterheadImageTemplatePaginate Paginate([FromQuery] LetterheadImageTemplateSearch letterheadTemplateSearch)
         {
-            LetterheadTemplatePaginate letterheadTemplatePaginate = new ();
+            LetterheadImageTemplatePaginate letterheadTemplatePaginate = new ();
             try
             {
                 Log.Information("LetterheadTemplate paginate input {@Input}", letterheadTemplateSearch);
-                         
+                letterheadTemplatePaginate = letterheadImageTemplateService.GetPaginate(letterheadTemplateSearch);
             }
             catch (Exception ex)
             {
@@ -77,12 +78,13 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="letterheadTemplateForm"></param>        
         /// <returns></returns>
         [HttpPost]
-        public async Task<ResponseViewModel> New([FromForm]LetterheadTemplateForm letterheadTemplateForm)
+        public async Task<ResponseViewModel> New([FromForm]LetterheadImageTemplateForm letterheadTemplateForm)
         {
             ResponseViewModel response = new ();
             try
             {                
-                Log.Information("LetterheadTemplate new input {@Input}", letterheadTemplateForm);                
+                Log.Information("LetterheadTemplate new input {@Input}", letterheadTemplateForm);        
+                response = await letterheadImageTemplateService.New(letterheadTemplateForm);
                 Log.Information("LetterheadTemplate new output {@Output}", response);
             }
             catch (Exception ex)
@@ -99,12 +101,13 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="letterheadTemplateUpdateForm">信頭樣板</param>
         /// <returns></returns>
         [HttpPut]
-        public async Task<ResponseViewModel> Update([FromForm] LetterheadTemplateUpdateForm letterheadTemplateUpdateForm)
+        public async Task<ResponseViewModel> Update([FromForm] LetterheadImageTemplateUpdateForm letterheadTemplateUpdateForm)
         {
             ResponseViewModel response = new();
             try
             {                
                 Log.Information("LetterheadTemplate update input {@input}", letterheadTemplateUpdateForm);
+                response = await letterheadImageTemplateService.Update(letterheadTemplateUpdateForm);
                 Log.Information("LetterheadTemplate update output {@Output}", response);
             }
             catch (Exception ex)
@@ -128,6 +131,7 @@ namespace SealTypographicWebAPI.Controllers
             try
             {
                 Log.Information("LetterheadTemplate delete input  {@id}", id);
+                response = letterheadImageTemplateService.Delete(id);
                 Log.Information("LetterheadTemplate delete output {@Output}", response);
             }
             catch (Exception ex)

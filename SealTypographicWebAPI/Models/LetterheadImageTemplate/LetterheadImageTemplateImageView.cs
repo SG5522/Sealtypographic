@@ -5,7 +5,7 @@ namespace SealTypographicWebAPI.Models.LetterheadTemplate
     /// <summary>
     /// 樣板存檔時紀錄當下的圖片
     /// </summary>
-    public class LetterheadTemplateImageView : BaseData
+    public class LetterheadImageTemplateImageView : BaseData
     {
         /// <summary>
         /// 縮圖字串(ImageBase64)

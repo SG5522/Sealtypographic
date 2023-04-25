@@ -3,7 +3,7 @@
 namespace SealTypographicWebAPI.Config
 {
     /// <summary>
-    /// 匯入AppConfig資料
+    /// 匯入AppSetting資料
     /// </summary>
     public class SealPathOption
     {

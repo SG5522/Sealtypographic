@@ -403,6 +403,24 @@ namespace SealTypographicWebAPI.Models
         }
 
         /// <summary>
+        /// 刪除客戶印鑑樣板時找不到資料
+        /// </summary>
+        public void DeleteAccountantSignTemplateNoData()
+        {
+            Code = (int)ResponseCode.DeleteAccountantSignTemplateNoData;
+            Message = "Delete accountantSign template no Data";
+        }
+
+        /// <summary>
+        /// 刪除客戶印鑑樣板時找不到資料
+        /// </summary>
+        public void DeleteLetterImageTemplateNoData()
+        {
+            Code = (int)ResponseCode.DeleteLetterImageTemplateNoData;
+            Message = "Delete letterImage template no data";
+        }
+
+        /// <summary>
         /// 回傳失敗
         /// </summary>
         public void Error()

@@ -1,12 +1,10 @@
-﻿using SealTypographicWebAPI.Models.Customer;
-using SealTypographicWebAPI.Models;
-using SealTypographicWebAPI.Models.CustomerSealTemplate;
+﻿using SealTypographicWebAPI.Models;
 using SealTypographicWebAPI.Models.AccountantSignTemplate;
 
 namespace SealTypographicWebAPI.Services
 {
     /// <summary>
-    /// 會計師簽印樣板
+    /// 會計師簽印樣板管理
     /// </summary>
     public interface IAccountantSignTemplateService
     {
@@ -20,23 +18,30 @@ namespace SealTypographicWebAPI.Services
         /// <summary>
         /// 會計師簽印樣板分頁顯示
         /// </summary>
-        /// <param name="customerSealTemplateSearch">會計師簽印樣板分頁搜尋</param>
+        /// <param name="accountantSignTemplateSearch">會計師簽印樣板分頁搜尋</param>
         /// <returns></returns>
-        CustomerSealTemplatePaginate GetPaginate(CustomerSealTemplateSearch customerSealTemplateSearch);
+        AccountantSignTemplatePaginate GetPaginate(AccountantSignTemplateSearch accountantSignTemplateSearch);
 
         /// <summary>
         /// 新增會計師簽印樣板
         /// </summary>
-        /// <param name="customerSealTemplateForm">會計師簽印樣板</param>
+        /// <param name="accountantSignTemplateForm">會計師簽印樣板</param>
         /// <returns></returns>
-        Task<ResponseViewModel> New(CustomerSealTemplateForm customerSealTemplateForm);
+        Task<ResponseViewModel> New(AccountantSignTemplateForm accountantSignTemplateForm);
 
         /// <summary>
         /// 更新會計師簽印樣板
         /// </summary>        
-        /// <param name="customerSealTemplateUpdateForm"></param>
+        /// <param name="accountantSignTemplateUpdateForm"></param>
         /// <returns></returns>
-        Task<ResponseViewModel> Update(CustomerSealTemplateUpdateForm customerSealTemplateUpdateForm);
-        
+        Task<ResponseViewModel> Update(AccountantSignTemplateUpdateForm accountantSignTemplateUpdateForm);
+
+        /// <summary>
+        /// 刪除會計師簽印樣板
+        /// </summary>
+        /// <param name="Id">會計師簽印樣板Id</param>
+        /// <returns></returns>
+        ResponseViewModel Delete(int Id);
+
     }
 }

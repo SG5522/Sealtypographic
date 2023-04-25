@@ -52,9 +52,8 @@ namespace SealTypographicWebAPI.Services.Implements
             {
                 customerSealTemplateDetailViewModel = mapper.Map<CustomerSealTemplateDetailViewModel>(customerSealTemplateQuery);
                 customerSealTemplateDetailViewModel.LocaltionViewModels = mapper.Map<List<CustomerSealTemplateLocationViewModel>>
-                                                                                (customerSealTemplateQuery.CustomerSealTemplateLocations);
+                                                                            (customerSealTemplateQuery.CustomerSealTemplateLocations);
                 customerSealTemplateDetailViewModel.Success();
-
             }
 
             return customerSealTemplateDetailViewModel;
@@ -213,12 +212,12 @@ namespace SealTypographicWebAPI.Services.Implements
             ResponseViewModel response = new();
             int userId = 0;
 
-            CustomerSealTemplate? customerSealTemplate = dbContext.CustomerSealTemplates.Find(Id);
+            CustomerSealTemplate? customerSealTemplateQuery = dbContext.CustomerSealTemplates.Find(Id);
 
-            if(customerSealTemplate != null) 
+            if(customerSealTemplateQuery != null) 
             {
-                customerSealTemplate.DeleteStatus = DeleteStatus.Yes;
-                BaseInputCustomerSealTemplate(customerSealTemplate, false, userId);
+                customerSealTemplateQuery.DeleteStatus = DeleteStatus.Yes;
+                BaseInputCustomerSealTemplate(customerSealTemplateQuery, false, userId);
                 response.Success();
             }
             else
@@ -232,8 +231,8 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <summary>
         /// 資料新增修改時基本資料輸入
         /// </summary>
-        /// <param name="customerSealTemplate">DB上的客戶資料</param>
-        /// <param name="isCreate">確認是否新增的動作</param>
+        /// <param name="customerSealTemplate">DB上的樣板資料</param>
+        /// <param name="isCreate">確認是否新增還是更新的動作</param>
         /// <param name="userid">使用者ID</param>
         private static void BaseInputCustomerSealTemplate(CustomerSealTemplate customerSealTemplate, bool isCreate, int userid)
         {

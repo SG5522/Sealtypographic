@@ -106,6 +106,8 @@ builder.Services.AddScoped<ILetterheadService, LetterheadService>();
 builder.Services.AddScoped<ILetterheadImageService, LetterheadImageService>();
 builder.Services.AddScoped<ITemporarySealService, TemporarySealService>();
 builder.Services.AddScoped<ICustomerSealTemplateService, CustomerSealTemplateService>();
+builder.Services.AddScoped<IAccountantSignTemplateService, AccountantSignTemplateService>();
+builder.Services.AddScoped<ILetterheadImageTemplateService, LetterheadImageTemplateService>();
 builder.Services.AddScoped<UploadService>();
 
 #endregion
@@ -177,10 +179,10 @@ builder.Services.AddSwaggerGen(c =>
 });
 
 
-builder.Services.Configure<Microsoft.AspNetCore.Mvc.JsonOptions>(options =>
-{
-    options.JsonSerializerOptions.Converters.Add(new System.Text.Json.Serialization.JsonStringEnumConverter());
-});
+//builder.Services.Configure<Microsoft.AspNetCore.Mvc.JsonOptions>(options =>
+//{
+//    options.JsonSerializerOptions.Converters.Add(new System.Text.Json.Serialization.JsonStringEnumConverter());
+//});
 
 builder.Host.UseWindowsService();
 

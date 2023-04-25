@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SealTypographicWebAPI.Models;
 using SealTypographicWebAPI.Models.AccountantSignTemplate;
+using SealTypographicWebAPI.Services;
+using SealTypographicWebAPI.Services.Implements;
 using Serilog;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -14,15 +16,15 @@ namespace SealTypographicWebAPI.Controllers
     [ApiController]
     public class AccountantSignTemplateController : ControllerBase
     {
-        
+        private readonly IAccountantSignTemplateService accountantSignTemplateService;
 
         /// <summary>
         /// 建構 注入Service
         /// </summary>
-        
-        public AccountantSignTemplateController()
+        /// <param name="accountantSignTemplateService"></param>
+        public AccountantSignTemplateController(IAccountantSignTemplateService accountantSignTemplateService)
         {
-            
+            this.accountantSignTemplateService = accountantSignTemplateService;
         }
 
         /// <summary>        
@@ -37,7 +39,7 @@ namespace SealTypographicWebAPI.Controllers
             try
             {
                 Log.Information("AccountantSignTemplate detail input {@Input}", id);
-                
+                accountantSignTemplateDetailViewModel = accountantSignTemplateService.GetDetail(id);
                 Log.Information("AccountantSignTemplate detail output {@Output}", id);
             }
             catch (Exception ex)
@@ -60,7 +62,7 @@ namespace SealTypographicWebAPI.Controllers
             try
             {
                 Log.Information("AccountantSignTemplate paginate input {@Input}", accountantSignTemplateSearch);
-                         
+                accountantSignTemplatePaginate = accountantSignTemplateService.GetPaginate(accountantSignTemplateSearch);
             }
             catch (Exception ex)
             {
@@ -73,7 +75,7 @@ namespace SealTypographicWebAPI.Controllers
         /// <summary>
         /// 新增會計師簽印樣板
         /// </summary>
-        /// <param name="accountantSignTemplateForm"></param>        
+        /// <param name="accountantSignTemplateForm">會計師簽印樣板</param>        
         /// <returns></returns>
         [HttpPost]
         public async Task<ResponseViewModel> New([FromForm]AccountantSignTemplateForm accountantSignTemplateForm)
@@ -81,7 +83,8 @@ namespace SealTypographicWebAPI.Controllers
             ResponseViewModel response = new ();
             try
             {                
-                Log.Information("AccountantSignTemplate new input {@Input}", accountantSignTemplateForm);                
+                Log.Information("AccountantSignTemplate new input {@Input}", accountantSignTemplateForm);
+                response = await accountantSignTemplateService.New(accountantSignTemplateForm);
                 Log.Information("AccountantSignTemplate new output {@Output}", response);
             }
             catch (Exception ex)
@@ -104,6 +107,7 @@ namespace SealTypographicWebAPI.Controllers
             try
             {                
                 Log.Information("AccountantSignTemplate update input {@input}", accountantSignTemplateUpdateForm);
+                response = await accountantSignTemplateService.Update(accountantSignTemplateUpdateForm);
                 Log.Information("AccountantSignTemplate update output {@Output}", response);
             }
             catch (Exception ex)
@@ -118,7 +122,7 @@ namespace SealTypographicWebAPI.Controllers
         /// <summary>
         /// 刪除會計師簽印樣板
         /// </summary>
-        /// <param name="id"></param>
+        /// <param name="id">會計師簽印樣板Id</param>
         /// <returns></returns>
         [HttpDelete("{id}")]
         public ResponseViewModel Delete(int id)
@@ -127,7 +131,7 @@ namespace SealTypographicWebAPI.Controllers
             try
             {
                 Log.Information("AccountantSignTemplate delete input  {@id}", id);
-                //response = await AccountantSignTemplateService.Update(AccountantSignTemplateUpdateForm);
+                response = accountantSignTemplateService.Delete(id);
                 Log.Information("AccountantSignTemplate delete output {@Output}", response);
             }
             catch (Exception ex)

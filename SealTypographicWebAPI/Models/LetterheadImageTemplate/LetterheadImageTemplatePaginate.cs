@@ -29,12 +29,12 @@ namespace SealTypographicWebAPI.Models.LetterheadTemplate
     /// <summary>
     /// 信頭樣板分頁列表
     /// </summary>
-    public class LetterheadTemplatePaginate : PaginateViewModel
+    public class LetterheadImageTemplatePaginate : PaginateViewModel
     {
         /// <summary>
         /// New ViewModels
         /// </summary>
-        public LetterheadTemplatePaginate() 
+        public LetterheadImageTemplatePaginate() 
         {
             ViewModels = new ();
         }

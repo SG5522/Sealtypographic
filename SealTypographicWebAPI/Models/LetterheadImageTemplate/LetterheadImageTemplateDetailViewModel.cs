@@ -6,7 +6,7 @@ namespace SealTypographicWebAPI.Models.LetterheadTemplate
     /// <summary>
     /// 信頭樣板座標
     /// </summary>
-    public class LetterheadTemplateLocationViewModel : BaseLocationViewModel
+    public class LetterheadImageTemplateLocationViewModel : BaseLocationViewModel
     {
         /// <summary>
         /// 樣板座標Id
@@ -18,12 +18,12 @@ namespace SealTypographicWebAPI.Models.LetterheadTemplate
     /// <summary>
     /// 信頭樣本詳細
     /// </summary>
-    public class LetterheadTemplateDetailViewModel : BaseTemplateWithResponse
+    public class LetterheadImageTemplateDetailViewModel : BaseTemplateWithResponse
     {
         /// <summary>
         /// New ViewModels
         /// </summary>
-        public LetterheadTemplateDetailViewModel() 
+        public LetterheadImageTemplateDetailViewModel() 
         {
             LocaltionViewModels = new ();
         }
@@ -36,6 +36,6 @@ namespace SealTypographicWebAPI.Models.LetterheadTemplate
         /// <summary>
         /// 信頭樣板座標
         /// </summary>
-        public List<LetterheadTemplateLocationViewModel> LocaltionViewModels{ get; set; }
+        public List<LetterheadImageTemplateLocationViewModel> LocaltionViewModels{ get; set; }
     }
 }

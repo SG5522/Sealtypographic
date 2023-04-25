@@ -9,6 +9,7 @@ using SealTypographicWebAPI.Models.CustomerSealReview;
 using SealTypographicWebAPI.Models.AccountantSignReview;
 using SealTypographicWebAPI.Models.TemporarySeal;
 using SealTypographicWebAPI.Models.CustomerSealTemplate;
+using SealTypographicWebAPI.Models.AccountantSignTemplate;
 
 namespace SealTypographicWebAPI.Config
 {
@@ -139,18 +140,39 @@ namespace SealTypographicWebAPI.Config
             CreateMap<CustomerSealTemplateLocationForm, CustomerSealTemplateLocation>()
                 .ForMember(x => x.ConfigType , y => y.MapFrom(o => o.CustomerSealType))
                 .ReverseMap();
-            //異動使用
+            //客戶印鑑樣板異動使用
             CreateMap<CustomerSealTemplateUpdateForm, CustomerSealTemplate>();
             CreateMap<CustomerSealTemplateLocationUpdateForm, CustomerSealTemplateLocation>()
                 .ForMember(x => x.ConfigType , y => y.MapFrom(o => o.CustomerSealType))
                 .ReverseMap();
-            //單筆查詢使用
+            //客戶印鑑樣板單筆查詢使用
             CreateMap<CustomerSealTemplate, CustomerSealTemplateDetailViewModel>();
-            CreateMap<CustomerSealTemplateLocation, CustomerSealTemplateLocationViewModel>();
-
+            CreateMap<CustomerSealTemplateLocation, CustomerSealTemplateLocationViewModel>()
+                .ForMember(x => x.CustomerSealType, y => y.MapFrom(o => o.ConfigType))
+                .ReverseMap();
             //Log使用
             CreateMap<CustomerSealTemplateViewModel, CustomerSealTemplateLogModel>();
             CreateMap<CustomerSealTemplatePaginate, CustomerSealTemplatePaginateLog>();
+
+
+            //會計師簽印樣板使用
+            CreateMap<AccountantSignTemplateForm, AccountantSignTemplate>();
+            CreateMap<AccountantSignTemplateLocationForm, AccountantSignTemplateLocation>()
+                .ForMember(x => x.ConfigType, y => y.MapFrom(o => o.AccountantSignType))
+                .ReverseMap();
+            //會計師簽印樣板異動使用
+            CreateMap<AccountantSignTemplateUpdateForm, AccountantSignTemplate>();
+            CreateMap<AccountantSignTemplateLocationUpdateForm, AccountantSignTemplateLocation>()
+                .ForMember(x => x.ConfigType, y => y.MapFrom(o => o.AccountantSignType))
+                .ReverseMap();
+            //會計師簽印樣板單筆查詢使用
+            CreateMap<AccountantSignTemplate, AccountantSignTemplateDetailViewModel>();
+            CreateMap<AccountantSignTemplateLocation, AccountantSignTemplateLocationViewModel>()
+                .ForMember(x => x.AccountantSignType, y => y.MapFrom(o => o.ConfigType))
+                .ReverseMap();
+            //Log使用
+            CreateMap<AccountantSignTemplateViewModel, AccountantSignTemplateLogModel>();
+            CreateMap<AccountantSignTemplatePaginate, AccountantSignTemplatePaginateLog>();
 
 
             //PDF排版資訊

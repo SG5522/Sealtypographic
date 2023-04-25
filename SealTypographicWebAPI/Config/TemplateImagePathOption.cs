@@ -1,7 +1,9 @@
-﻿namespace SealTypographicWebAPI.Config
+﻿using DBEntities.Consts;
+
+namespace SealTypographicWebAPI.Config
 {
     /// <summary>
-    /// 匯入AppConfig資料
+    /// 匯入AppSetting資料
     /// </summary>
     public class TemplateImagePathOption
     {
@@ -17,7 +19,7 @@
         {
             get
             {
-                return Path.Combine(RootPath, "Customer");
+                return Path.Combine(RootPath, SealType.Customer.ToString());
             }
         }
             
@@ -29,7 +31,7 @@
         {
             get
             {
-                return Path.Combine(RootPath, "Accountant");
+                return Path.Combine(RootPath, SealType.Accountant.ToString());
             }
         }
 
@@ -39,7 +41,7 @@
         public string Letterhead {
             get
             {
-                return Path.Combine(RootPath, "Letterhead");
+                return Path.Combine(RootPath, SealType.Letterhead.ToString());
             }
         }
 

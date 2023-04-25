@@ -259,9 +259,20 @@ namespace DBEntities.Consts
         /// <summary>
         /// 刪除客戶印鑑樣板時找不到資料
         /// </summary>
-        [Description("查無客戶印鑑樣板，無法刪除客戶印鑑樣板資料")]
+        [Description("查無客戶印鑑樣板，無法刪除資料")]
         DeleteCustomerSealTemplateNoData = 8004,
 
+        /// <summary>
+        /// 刪除會計師簽印樣板時找不到資料
+        /// </summary>
+        [Description("查無會計師簽印樣板，無法刪除資料")]
+        DeleteAccountantSignTemplateNoData = 8104,
+
+        /// <summary>
+        /// 刪除信頭樣板時找不到資料
+        /// </summary>
+        [Description("查無信頭樣板，無法刪除資料")]
+        DeleteLetterImageTemplateNoData = 8204,
 
         /// <summary>
         /// 回傳失敗

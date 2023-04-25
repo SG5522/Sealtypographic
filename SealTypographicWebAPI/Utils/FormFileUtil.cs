@@ -37,10 +37,42 @@ namespace SealTypographicWebAPI.Utils
 
             string savePath = Path.Combine(rootFolder, dateFolder, fileName);
 
-            using Stream stream = new FileStream(savePath, FileMode.Create);
-            await formFile.CopyToAsync(stream);
+            await SaveUpdata(formFile, savePath);
+
+            //using Stream stream = new FileStream(savePath, FileMode.Create);
+            //await formFile.CopyToAsync(stream);
 
             return savePath;
+        }
+
+        /// <summary>
+        /// 透過IFromFile存檔覆蓋檔案
+        /// </summary>
+        /// <param name="formFile"></param>
+        /// <param name="savePath"></param>
+        /// <returns></returns>
+        public static async Task UploadFileReturnPath(IFormFile formFile, string savePath)
+        {
+            await SaveUpdata(formFile, savePath);            
+        }
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="formFile"></param>
+        /// <param name="savePath"></param>
+        private static async Task SaveUpdata(IFormFile formFile, string savePath)
+        {
+            string? savePathRoot = Path.GetPathRoot(savePath);
+
+            if (!Directory.Exists(Path.GetPathRoot(savePath)))
+            {
+                Directory.CreateDirectory(Path.GetPathRoot(savePath));
+            }
+
+            using Stream stream = new FileStream(savePath, FileMode.Create);
+            await formFile.CopyToAsync(stream);
         }
     }
 }

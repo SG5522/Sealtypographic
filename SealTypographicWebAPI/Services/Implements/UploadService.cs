@@ -6,6 +6,7 @@ using DBEntities.Consts;
 using DBEntities;
 using SealTypographicWebAPI.Models;
 using SealTypographicWebAPI.Models.Upload;
+using Microsoft.EntityFrameworkCore;
 
 namespace SealTypographicWebAPI.Services.Implements
 {
@@ -164,43 +165,61 @@ namespace SealTypographicWebAPI.Services.Implements
         {
             ResponseViewModel response = new();
             List<UploadFile> uploadfiles = new();
-            int userid = 0; //帳號驗證取得ID
-            if (uploadData.DuplicateFileIds != null)
-            {
-                foreach (int duplicateFileId in uploadData.DuplicateFileIds)
-                {
-                    UploadFile? uploadFile = dbContext.UploadFiles.Find(duplicateFileId);
-                    if(uploadFile != null)
-                    {
-                        //找出重複的檔案
-                        IFormFile formFile = uploadData.FormFiles.Single(f => f.FileName == uploadFile.OriginalFileName);
-                        //上傳重複檔名處理模式為覆蓋模式則將原來資料標上刪除狀態。
-                        if (uploadData.DuplicateFileProcessMode == DuplicateFileProcessMode.Overlay)
-                        {
-                            //原檔案的刪除狀態變更為Yes
-                            uploadFile.DeleteStatus = DeleteStatus.Yes;
-                            BaseInput(uploadFile, false, userid);
-                        }
-                        //新增上傳的檔案
-                        await SaveFile(formFile, uploadData.UploadType, uploadData.DuplicateFileProcessMode, userid, uploadfiles);
-                        uploadData.FormFiles.Remove(formFile);
-                    }                            
-                }                                                                                 
-            }            
-            foreach (IFormFile formFile in uploadData.FormFiles)
-            {
-                await SaveFile(formFile, uploadData.UploadType, DuplicateFileProcessMode.NoRepeat, userid, uploadfiles);
-            }
+            int userId = 0; //帳號驗證取得ID
+            int companyId = 1; //公司Id
 
-            if (uploadfiles.Any())
+            //尋找公司並與上傳檔案關聯
+            Company? companyQuery = dbContext.Companys.Include(x => x.UploadFiles)
+                                    .Select(x => new Company
+                                    {
+                                        Id = x.Id,
+                                        Code = x.Code,
+                                        UploadFiles = new List<UploadFile>()
+                                    })
+                                    .FirstOrDefault(x => x.Id == companyId);
+            if(companyQuery != null) 
             {
-                dbContext.UploadFiles.AddRange(uploadfiles);                          
-                dbContext.SaveChanges();
-                response.Success();
-            }
-            else
-            {
-                response.FileUploadFailed();
+                if (uploadData.DuplicateFileIds != null)
+                {
+                    foreach (int duplicateFileId in uploadData.DuplicateFileIds)
+                    {                        
+                        UploadFile? uploadFile = companyQuery.UploadFiles.FirstOrDefault(x => x.Id == duplicateFileId);
+
+                        if (uploadFile != null)
+                        {
+                            //找出重複的檔案
+                            IFormFile formFile = uploadData.FormFiles.Single(f => f.FileName == uploadFile.OriginalFileName);
+                            //上傳重複檔名處理模式為覆蓋模式則將原來資料標上刪除狀態。
+                            if (uploadData.DuplicateFileProcessMode == DuplicateFileProcessMode.Overlay)
+                            {
+                                //原檔案的刪除狀態變更為Yes
+                                uploadFile.DeleteStatus = DeleteStatus.Yes;
+                                BaseInput(uploadFile, false, userId);
+                            }
+                            //新增上傳的檔案
+                            await SaveFile(formFile, uploadData.UploadType, uploadData.DuplicateFileProcessMode, userId, uploadfiles);
+                            uploadData.FormFiles.Remove(formFile);
+                        }
+                    }
+                }
+
+                foreach (IFormFile formFile in uploadData.FormFiles)
+                {
+                    await SaveFile(formFile, uploadData.UploadType, DuplicateFileProcessMode.NoRepeat, userId, uploadfiles);
+                }
+
+                if (uploadfiles.Any())
+                {                    
+                    companyQuery.UploadFiles.AddRange(uploadfiles);
+                    dbContext.Entry(companyQuery).State = EntityState.Unchanged;
+                    dbContext.UploadFiles.AddRange(uploadfiles);
+                    dbContext.SaveChanges();
+                    response.Success();
+                }
+                else
+                {
+                    response.FileUploadFailed();
+                }
             }
 
             return response;
@@ -299,9 +318,9 @@ namespace SealTypographicWebAPI.Services.Implements
         /// </summary>
         /// <param name="uploadType">印鑑類別</param>
         /// <param name="userid"></param>
-        /// <param name="OriginalfileName">原始檔名</param>        
+        /// <param name="originalfileName">原始檔名</param>        
         /// <returns></returns>
-        private string GetSavePath(UploadType uploadType,int userid, string OriginalfileName)
+        private string GetSavePath(UploadType uploadType,int userid, string originalfileName)
         {            
             string folder = string.Empty;            
             DateTime dateTime = DateTime.Now;            
@@ -309,22 +328,22 @@ namespace SealTypographicWebAPI.Services.Implements
             switch (uploadType)
             {
                 case UploadType.CustomerSealAuthorization:
-                    folder = $"{uploadConfigPath.UploadRootPath}{uploadConfigPath.CustomerSealAuthorization}";
+                    folder = uploadConfigPath.CustomerSealAuthorization;
                     break;
                 case UploadType.AccountantSignAuthorization:
-                    folder = $"{uploadConfigPath.UploadRootPath}{uploadConfigPath.AccountantSignAuthorization}";
+                    folder = uploadConfigPath.AccountantSignAuthorization;
                     break;
                 case UploadType.LetterheadImage:
-                    folder = $"{uploadConfigPath.UploadRootPath}{uploadConfigPath.LetterheadImage}";
+                    folder = uploadConfigPath.LetterheadImage;
                     break;
                 case UploadType.PDF:
-                    folder = $"{uploadConfigPath.UploadRootPath}{uploadConfigPath.PDF}";
+                    folder = uploadConfigPath.PDF;
                     break;
                 case UploadType.AccountantSignCertificate:
-                    folder = $"{uploadConfigPath.UploadRootPath}{uploadConfigPath.AccountantSignCertificate}";
+                    folder = uploadConfigPath.AccountantSignCertificate;
                     break;
                 case UploadType.Temporary:
-                    folder = $"{uploadConfigPath.UploadRootPath}{uploadConfigPath.Temporary}";
+                    folder = uploadConfigPath.Temporary;
                     break;
             }
 
@@ -333,7 +352,7 @@ namespace SealTypographicWebAPI.Services.Implements
                 Directory.CreateDirectory(folder);
             }
             
-            return $"{folder}{userid}{dateTime:yyyyMMddHHmmssffff}{Path.GetExtension(OriginalfileName)}";
+            return Path.Combine(folder, $"{userid}{dateTime:yyyyMMddHHmmssffff}{Path.GetExtension(originalfileName)}");
         }
 
         /// <summary>

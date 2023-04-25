@@ -20,7 +20,7 @@ namespace SealTypographicWebAPI.Models.LetterheadTemplate
     /// <summary>
     /// 信頭樣板 (更新使用)
     /// </summary>
-    public class LetterheadTemplateUpdateForm : BaseTemplateWithFile
+    public class LetterheadImageTemplateUpdateForm : BaseTemplateWithFile
     {
         /// <summary>
         /// 樣板Id
