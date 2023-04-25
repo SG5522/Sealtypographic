@@ -1,12 +1,14 @@
 ﻿using AutoMapper;
 using SealTypographicWebAPI.Models.Customer;
-using SealTypographicWebAPI.Entities;
+using DBEntities;
 using SealTypographicWebAPI.Models.Accountant;
 using SealTypographicWebAPI.Models.Letterhead;
 using SealTypographicWebAPI.Models.TypographicPDF;
 using SealTypographicWebAPI.Models.AccountantGroup;
 using SealTypographicWebAPI.Models.CustomerSealReview;
 using SealTypographicWebAPI.Models.AccountantSignReview;
+using SealTypographicWebAPI.Models.TemporarySeal;
+using SealTypographicWebAPI.Models.CustomerSealTemplate;
 
 namespace SealTypographicWebAPI.Config
 {
@@ -125,6 +127,31 @@ namespace SealTypographicWebAPI.Config
 
             //信頭基本資料
             CreateMap<Letterhead, LetterheadViewModel>();
+
+            //臨時章Log使用
+            CreateMap<TemporarySealViewModel, TemporarySealLogModel>();
+            CreateMap<TemporarySealDetailViewModel, TemporarySealDetailLogModel>()
+                .ForMember(x => x.ViewModels, y => y.Ignore())                
+                .ReverseMap();
+
+            //客戶印鑑樣板使用
+            CreateMap<CustomerSealTemplateForm, CustomerSealTemplate>();
+            CreateMap<CustomerSealTemplateLocationForm, CustomerSealTemplateLocation>()
+                .ForMember(x => x.ConfigType , y => y.MapFrom(o => o.CustomerSealType))
+                .ReverseMap();
+            //異動使用
+            CreateMap<CustomerSealTemplateUpdateForm, CustomerSealTemplate>();
+            CreateMap<CustomerSealTemplateLocationUpdateForm, CustomerSealTemplateLocation>()
+                .ForMember(x => x.ConfigType , y => y.MapFrom(o => o.CustomerSealType))
+                .ReverseMap();
+            //單筆查詢使用
+            CreateMap<CustomerSealTemplate, CustomerSealTemplateDetailViewModel>();
+            CreateMap<CustomerSealTemplateLocation, CustomerSealTemplateLocationViewModel>();
+
+            //Log使用
+            CreateMap<CustomerSealTemplateViewModel, CustomerSealTemplateLogModel>();
+            CreateMap<CustomerSealTemplatePaginate, CustomerSealTemplatePaginateLog>();
+
 
             //PDF排版資訊
             CreateMap<TypographicPDFForm, TypographicPDF>()

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using DBEntities;
+using Microsoft.AspNetCore.Mvc;
 using SealTypographicWebAPI.Models;
 using SealTypographicWebAPI.Models.Customer;
 using SealTypographicWebAPI.Services;
@@ -38,9 +39,9 @@ namespace SealTypographicWebAPI.Controllers
             CustomerPaginateViewModel customerPaginateViewModel = new ();
             try
             {
-                Log.Information("CustomerSealAuthorization get paginate input {@Input}", customerSearch);
+                Log.Information("Customer paginate input {@Input}", customerSearch);
                 customerPaginateViewModel = customerService.GetPaginate(customerSearch);
-                Log.Information("CustomerSealAuthorization get paginate output {@Output}", customerPaginateViewModel);
+                Log.Information("Customer paginate output {@Output}", customerPaginateViewModel);
             }
             catch (Exception ex)
             {
@@ -48,6 +49,52 @@ namespace SealTypographicWebAPI.Controllers
                 customerPaginateViewModel.DbError();                
             }
             return customerPaginateViewModel;
+        }
+
+        /// <summary>
+        /// 取得客戶資料列表(簡化資料的分頁)
+        /// </summary>
+        /// <param name="customerSearch">客戶分頁搜尋</param>
+        /// <returns></returns>
+        [HttpGet("[Action]")]
+        public CustomerPaginateShort PaginateShort([FromQuery] CustomerSearch customerSearch)
+        {
+            CustomerPaginateShort customerPaginateShort = new();
+            try
+            {
+                Log.Information("Customer paginateShort input {@Input}", customerSearch);
+                customerPaginateShort = customerService.GetPaginateShort(customerSearch);
+                Log.Information("Customer paginateShort output {@Output}", customerPaginateShort);
+            }
+            catch (Exception ex)
+            {
+                Log.Error("Customer paginateShort error {@Error}", ex);
+                customerPaginateShort.DbError();
+            }
+            return customerPaginateShort;
+        }
+
+        /// <summary>
+        /// 取得簡化的客戶資料
+        /// </summary>
+        /// <param name="customerId">客戶ID</param>
+        /// <returns></returns>
+        [HttpGet("[Action]/{customerId}")]
+        public CustomerSummaryResponse Summary(int customerId)
+        {
+            CustomerSummaryResponse customerSummaryResponse = new();
+            try
+            {
+                Log.Information("Customer short input {@Input}", customerId);
+                customerSummaryResponse = customerService.GetSummary(customerId);
+                Log.Information("Customer short output {@Output}", customerSummaryResponse);
+            }
+            catch (Exception ex)
+            {
+                Log.Error("Customer short error {@Error}", ex);
+                customerSummaryResponse.DbError();
+            }
+            return customerSummaryResponse;
         }
 
         /// <summary>
@@ -61,9 +108,9 @@ namespace SealTypographicWebAPI.Controllers
             CustomerDetailViewModel customerDetailViewModel = new();
             try
             {
-                Log.Information("CustomerSealAuthorization get detail input {@Input}", customerId);
+                Log.Information("Customer detail input {@Input}", customerId);
                 customerDetailViewModel = customerService.GetDetail(customerId);
-                Log.Information("CustomerSealAuthorization get detail output {@Output}", customerDetailViewModel);                
+                Log.Information("Customer detail output {@Output}", customerDetailViewModel);                
             }
             catch (Exception ex)
             {
@@ -84,13 +131,13 @@ namespace SealTypographicWebAPI.Controllers
             CreateCustomerResponse createCustomerResponse = new();
             try
             {
-                Log.Information("CustomerSealAuthorization new input {@Input}", customerForm);
+                Log.Information("Customer new input {@Input}", customerForm);
                 createCustomerResponse = customerService.New(customerForm);
-                Log.Information("CustomerSealAuthorization new output {@Input}", createCustomerResponse);                
+                Log.Information("Customer new output {@Input}", createCustomerResponse);                
             }
             catch (Exception ex)
             {
-                Log.Error("CustomerSealAuthorization new error {@Error}", ex);
+                Log.Error("Customer new error {@Error}", ex);
                 createCustomerResponse.DbError();                
             }
             return createCustomerResponse;
@@ -106,13 +153,13 @@ namespace SealTypographicWebAPI.Controllers
             ResponseViewModel response = new();
             try
             {               
-                Log.Information("CustomerSealAuthorization update input {@Input}", customerUpdateForm);
+                Log.Information("Customer update input {@Input}", customerUpdateForm);
                 response = customerService.Update(customerUpdateForm);
-                Log.Information("CustomerSealAuthorization update output {@Output}", response);                
+                Log.Information("Customer update output {@Output}", response);                
             }
             catch (Exception ex)
             {
-                Log.Error("CustomerSealAuthorization update error {@Error}", ex);
+                Log.Error("Customer update error {@Error}", ex);
                 response.DbError();                
             }
             return response;
@@ -131,13 +178,13 @@ namespace SealTypographicWebAPI.Controllers
             ResponseViewModel response = new();
             try
             {
-                Log.Information("CustomerSealAuthorization delete input {@Input}", customerId);
+                Log.Information("Customer delete input {@Input}", customerId);
                 response = customerService.Delete(customerId);
-                Log.Information("CustomerSealAuthorization delete output {@Output}", response);                
+                Log.Information("Customer delete output {@Output}", response);                
             }
             catch (Exception ex)
             {
-                Log.Error("CustomerSealAuthorization delete error {@Error}", ex);
+                Log.Error("Customer delete error {@Error}", ex);
                 response.DbError();
             }
             return response;

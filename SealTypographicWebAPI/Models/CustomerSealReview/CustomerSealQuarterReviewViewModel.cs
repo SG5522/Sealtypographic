@@ -1,6 +1,4 @@
-﻿using SealTypographicWebAPI.Consts;
-using SealTypographicWebAPI.Models.BaseModels;
-using System.ComponentModel.DataAnnotations;
+﻿using DBEntities.Consts;
 
 namespace SealTypographicWebAPI.Models.CustomerSealReview
 {

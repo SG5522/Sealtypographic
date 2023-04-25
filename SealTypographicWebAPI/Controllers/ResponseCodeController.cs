@@ -2,7 +2,7 @@
 using Serilog;
 using SealTypographicWebAPI.Services.Implements;
 using SealTypographicWebAPI.Models;
-using SealTypographicWebAPI.Consts;
+using DBEntities.Consts;
 
 namespace SealTypographicWebAPI.Controllers
 {

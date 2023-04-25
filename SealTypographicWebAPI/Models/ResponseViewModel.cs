@@ -1,4 +1,4 @@
-﻿using SealTypographicWebAPI.Consts;
+﻿using DBEntities.Consts;
 
 namespace SealTypographicWebAPI.Models
 {
@@ -29,6 +29,8 @@ namespace SealTypographicWebAPI.Models
             Code = (int)ResponseCode.Success;
             Message = "Success";
         }
+
+
 
         /// <summary>
         /// DbError
@@ -163,7 +165,7 @@ namespace SealTypographicWebAPI.Models
         public void AccountantNoData()
         {
             Code = (int)ResponseCode.AccountantNoData;
-            Message = "AccountantSignAuthorization no data";
+            Message = "Accountant no data";
         }
 
         /// <summary>
@@ -172,7 +174,7 @@ namespace SealTypographicWebAPI.Models
         public void AccountantNumberRepeat()
         {
             Code = (int)ResponseCode.AccountantNumberRepeat;
-            Message = "AccountantSignAuthorization number repeat";
+            Message = "Accountant number repeat";
         }
 
         /// <summary>
@@ -362,6 +364,51 @@ namespace SealTypographicWebAPI.Models
         {
             Code = (int)ResponseCode.FileUploadNoData;
             Message = "File upload no data";
+        }
+
+        /// <summary>
+        /// 查無臨時章
+        /// </summary>
+        public void TemporarySealNoData()
+        {
+            Code = (int)ResponseCode.TemporarySealNoData;
+            Message = "Temporary seal no data";
+        }
+
+        /// <summary>
+        /// 更新臨時章時找不到資料
+        /// </summary>
+        public void UpdateTemporarySealNoData()
+        {
+            Code = (int)ResponseCode.UpdateTemporarySealNoData;
+            Message = "Update temporary seal no data";
+        }
+
+        /// <summary>
+        /// 刪除臨時章找不到資料
+        /// </summary>
+        public void DeleteTemporarySealNoData()
+        {
+            Code = (int)ResponseCode.DeleteTemporarySealNoData;
+            Message = "Delete temporary seal no data";
+        }
+
+        /// <summary>
+        /// 刪除客戶印鑑樣板時找不到資料
+        /// </summary>
+        public void DeleteCustomerSealTemplateNoData()
+        {
+            Code = (int)ResponseCode.DeleteCustomerSealTemplateNoData;
+            Message = "Delete customerSeal template no data";
+        }
+
+        /// <summary>
+        /// 回傳失敗
+        /// </summary>
+        public void Error()
+        {
+            Code = (int)ResponseCode.DbError;
+            Message = "Error";
         }
     }
 }

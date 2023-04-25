@@ -1,8 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using SealTypographicWebAPI.Consts;
+using DBEntities.Consts;
 using SealTypographicWebAPI.Models;
 using SealTypographicWebAPI.Models.Upload;
-using SealTypographicWebAPI.Services;
 using SealTypographicWebAPI.Services.Implements;
 using Serilog;
 

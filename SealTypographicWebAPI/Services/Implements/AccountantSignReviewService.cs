@@ -1,12 +1,10 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
-using SealTypographicWebAPI.Consts;
-using SealTypographicWebAPI.Entities;
+using DBEntities.Consts;
+using DBEntities;
 using SealTypographicWebAPI.Models;
 using SealTypographicWebAPI.Models.Accountant;
 using SealTypographicWebAPI.Models.AccountantSignReview;
-using SealTypographicWebAPI.Models.Customer;
-using SealTypographicWebAPI.Models.CustomerSealReview;
 using SealTypographicWebAPI.Utils;
 
 namespace SealTypographicWebAPI.Services.Implements

@@ -1,5 +1,5 @@
 ﻿
-using SealTypographicWebAPI.Consts;
+using DBEntities.Consts;
 
 namespace SealTypographicWebAPI.Models.Accountant
 {

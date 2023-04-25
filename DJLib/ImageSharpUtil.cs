@@ -4,7 +4,6 @@ using DJLib.Models;
 using System;
 using System.IO;
 using SixLabors.ImageSharp.Processing;
-using System.Drawing.Imaging;
 
 namespace DJLib
 {

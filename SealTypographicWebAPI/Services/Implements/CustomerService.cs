@@ -1,10 +1,11 @@
 ﻿using SealTypographicWebAPI.Models;
 using SealTypographicWebAPI.Models.Customer;
-using SealTypographicWebAPI.Entities;
-using SealTypographicWebAPI.Consts;
+using DBEntities;
+using DBEntities.Consts;
 using AutoMapper;
 using SealTypographicWebAPI.Utils;
 using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.Design;
 
 namespace SealTypographicWebAPI.Services.Implements
 {
@@ -39,11 +40,42 @@ namespace SealTypographicWebAPI.Services.Implements
             
             if (customerQuery != null)
             {
-                customerDetailViewModel.CustomerDetail = mapper.Map<CustomerDetail>(customerQuery);                                
+                customerDetailViewModel.CustomerDetail = mapper.Map<CustomerDetail>(customerQuery);
+                customerDetailViewModel.Success();
             }
-            customerDetailViewModel.Success();
-
+            else
+            {
+                customerDetailViewModel.CustomeNoData();
+            }
             return customerDetailViewModel;
+        }
+
+        /// <summary>
+        /// 取得簡化的客戶資料
+        /// </summary>
+        /// <param name="customerId"></param>
+        /// <returns></returns>
+        public CustomerSummaryResponse GetSummary(int customerId) 
+        {
+            CustomerSummaryResponse customerSummaryResponse = new();
+            Customer? customerQuery = dbContext.Customers.Find(customerId);
+            if(customerQuery != null)
+            {
+                CustomerSummary customerSummary = new()
+                {
+                    Id = customerId,
+                    Code = customerQuery.Code,
+                    Name = customerQuery.Name,
+                };
+                customerSummaryResponse.CustomerSummary = customerSummary;
+                customerSummaryResponse.Success();
+            }
+            else
+            {
+                customerSummaryResponse.CustomeNoData();
+            }
+
+            return customerSummaryResponse;
         }
 
         /// <summary>
@@ -53,19 +85,10 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <returns></returns>
         public CustomerPaginateViewModel GetPaginate(CustomerSearch customerSearch)
         {
-            CustomerPaginateViewModel customerPaginateViewModel = new();            
-            IQueryable<Customer> customerQuery = dbContext.Customers.Where(customer => customer.DeleteStatus == DeleteStatus.No);                                                
-            
-            if (!string.IsNullOrWhiteSpace(customerSearch.KeyWord))
-            {
-                customerQuery = customerQuery.Where
-                    (
-                        customer =>
-                        customer.Code.ToLower().Contains(customerSearch.KeyWord.ToLower())
-                        || customer.Name.Contains(customerSearch.KeyWord)                       
-                    );
-            }
-            customerQuery = customerQuery.OrderBy(customer => customer.Code);
+            CustomerPaginateViewModel customerPaginateViewModel = new();
+            int companyId = 1;           
+
+            IQueryable<Customer> customerQuery = GetCustomers(companyId, customerSearch.KeyWord);
 
             if (customerQuery.Any())
             {
@@ -74,7 +97,7 @@ namespace SealTypographicWebAPI.Services.Implements
                                           .Skip((customerSearch.PageNumber - 1) * customerSearch.PageSize)
                                           .Take(customerSearch.PageSize)                                   
                                           .ToList();
-                //取得狀態
+                
                 foreach (Customer customer in pageNumberCustomers)
                 {
                     CustomerViewModel customerViewModel = mapper.Map<CustomerViewModel>(customer);
@@ -86,6 +109,7 @@ namespace SealTypographicWebAPI.Services.Implements
 
                     if(customerSealQuarterJournals.Any())
                     {
+                        //取得狀態
                         if (!customerSealQuarterJournals.Where(x => x.ReviewStatus != ReviewStatus.Approval).Any())
                         {
                             customerViewModel.IsDraff = false;
@@ -124,6 +148,42 @@ namespace SealTypographicWebAPI.Services.Implements
         }
 
         /// <summary>
+        /// 取得客戶資料列表(簡化資料的分頁)
+        /// </summary>
+        /// <param name="customerSearch">客戶分頁搜尋</param>
+        /// <returns></returns>
+        public CustomerPaginateShort GetPaginateShort (CustomerSearch customerSearch)
+        {
+            CustomerPaginateShort customerPaginateShort = new ();
+            int companyId = 1;
+            IQueryable<Customer> customerQuery = GetCustomers(companyId, customerSearch.KeyWord);
+            if(customerQuery.Any())
+            {
+                //取得該頁            
+                List<Customer> pageNumberCustomers = customerQuery
+                                          .Skip((customerSearch.PageNumber - 1) * customerSearch.PageSize)
+                                          .Take(customerSearch.PageSize)
+                                          .ToList();
+                foreach (Customer customer in pageNumberCustomers) 
+                {
+                    CustomerSummary customerSummary = new()
+                    {
+                        Id = customer.Id,
+                        Code = customer.Code,
+                        Name = customer.Name
+                    };
+                    customerPaginateShort.Summarys.Add(customerSummary);
+                }
+                customerPaginateShort.PageNumber = customerSearch.PageNumber;
+                customerPaginateShort.PageSize = customerSearch.PageSize;
+                //計算總頁數
+                customerPaginateShort.TotalPage = TotalPageUtil.GetTotalPage(customerQuery.Count(), customerSearch.PageSize);
+                customerPaginateShort.TotalCount = customerQuery.Count();
+            }
+            return customerPaginateShort;
+        }
+
+        /// <summary>
         /// 新增客戶基本資料
         /// </summary>
         /// <param name="customerForm">基本資料</param>
@@ -131,36 +191,43 @@ namespace SealTypographicWebAPI.Services.Implements
         {
             CreateCustomerResponse createCustomerResponse = new();
             int userid = 0; //帳號驗證取得ID
+            int companyId = 1;
+            
+            //尋找公司並與客戶關聯
+            Company? companyQuery = dbContext.Companys.Include(x => x.Customers).FirstOrDefault(x => x.Id == companyId);
 
-            //驗證編號是否重複
-            List<string> customerQuery = dbContext.Customers.AsNoTracking().Where
-                                            (
+            if(companyQuery != null)
+            {
+                //驗證編號是否重複
+                List<string> customerQuery = companyQuery.Customers.Where
+                                            (                                                
                                                 x => x.Code == customerForm.Code
                                                 && x.DeleteStatus == DeleteStatus.No
                                             ).Select(x => x.Code).ToList();
-
-            if (!customerQuery.Any())
-            {
-                Customer dbCustomer = mapper.Map<Customer>(customerForm);
-                BaseInputCustomer(dbCustomer, true, userid);
-                dbContext.Customers.Add(dbCustomer);
-                dbContext.SaveChanges();
-                                                                  
-                if (dbCustomer != null)                 
+                if (!customerQuery.Any())
                 {
-                    //回傳剛建立的客戶基本資料 使建立客戶印鑑找到該ID   
-                    createCustomerResponse.CustomerId = dbCustomer.Id;
-                    createCustomerResponse.Success();
-                }                                      
+                    Customer dbCustomer = mapper.Map<Customer>(customerForm);
+                    BaseInputCustomer(dbCustomer, true, userid);
+                    companyQuery.Customers.Add(dbCustomer);
+                    dbContext.SaveChanges();
+
+                    if (dbCustomer != null)
+                    {
+                        //回傳剛建立的客戶基本資料 使建立客戶印鑑找到該ID   
+                        createCustomerResponse.CustomerId = dbCustomer.Id;
+                        createCustomerResponse.Success();
+                    }
+                    else
+                    {
+                        createCustomerResponse.CreateCustomerFailed();
+                    }
+                }
                 else
                 {
-                    createCustomerResponse.CreateCustomerFailed();
+                    createCustomerResponse.CreateCustomerNumberRepeat();
                 }
-            }
-            else
-            {
-                createCustomerResponse.CreateCustomerNumberRepeat();
-            }
+            }                                  
+            
             return createCustomerResponse;
         }
 
@@ -216,7 +283,7 @@ namespace SealTypographicWebAPI.Services.Implements
         }
 
         /// <summary>
-        /// 信頭資料新增修改時基本資料輸入
+        /// 資料新增修改時基本資料輸入
         /// </summary>
         /// <param name="customer">DB上的客戶資料</param>
         /// <param name="isCreate">確認是否新增的動作</param>
@@ -234,6 +301,34 @@ namespace SealTypographicWebAPI.Services.Implements
                 customer.UpdateUserId = userid;
                 customer.UpdateDate = DateTime.Now;
             }
+        }
+
+        /// <summary>
+        /// 取得關鍵字模糊搜尋時獲得的內容
+        /// </summary>
+        /// <param name="companyId"></param>
+        /// <param name="keyWord"></param>
+        /// <returns></returns>
+        private IQueryable<Customer> GetCustomers (int companyId, string? keyWord)
+        {
+            IQueryable<Customer> customerQuery = dbContext.Customers.Where
+                                                (
+                                                    x => x.Company.Id == companyId
+                                                    && x.DeleteStatus == DeleteStatus.No
+                                                );
+
+            if (!string.IsNullOrWhiteSpace(keyWord))
+            {
+                customerQuery = customerQuery.Where
+                    (
+                        customer =>
+                        customer.Code.ToLower().Contains(keyWord.ToLower())
+                        || customer.Name.Contains(keyWord)
+                    );
+            }
+            customerQuery = customerQuery.OrderBy(customer => customer.Code);
+
+            return customerQuery;
         }
     }
 }

@@ -2,9 +2,8 @@
 using DJLib.Models;
 using Microsoft.Extensions.Options;
 using SealTypographicWebAPI.Config;
-using SealTypographicWebAPI.Consts;
+using DBEntities.Consts;
 using SealTypographicWebAPI.Models;
-using SealTypographicWebAPI.Utils;
 
 namespace SealTypographicWebAPI.Services
 {
@@ -90,6 +89,9 @@ namespace SealTypographicWebAPI.Services
                     break;
                 case SealType.Letterhead:
                     folderPath = sealConfig.Letterhead;
+                    break;
+                case SealType.TemporarySeal:
+                    folderPath = sealConfig.TemporarySeal;
                     break;
                 default :
                     folderPath = string.Empty;
