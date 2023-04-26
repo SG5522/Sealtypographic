@@ -1,17 +1,12 @@
-﻿using Microsoft.OpenApi.Models;
-using SealTypographicWebAPI.Services;
-using DBEntities;
-using System.Reflection;
-using Microsoft.EntityFrameworkCore;
-using Serilog;
-using SealTypographicWebAPI.Services.Implements;
-using SealTypographicWebAPI.Config;
+﻿using DBEntities;
 using Microsoft.AspNetCore.Mvc.Razor;
-using Microsoft.AspNetCore.Authentication.OpenIdConnect;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Hosting.WindowsServices;
-using SealTypographicWebAPI.Models.CustomerSealTemplate;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
+using SealTypographicWebAPI.Config;
+using SealTypographicWebAPI.Services;
+using SealTypographicWebAPI.Services.Implements;
+using Serilog;
+using System.Reflection;
 
 string allowSpecificOrigins = "allowSpecificOrigins";
 string allowAllOrigins = "allowAllOrigins";

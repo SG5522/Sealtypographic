@@ -29,15 +29,15 @@
         private void InitializeComponent()
         {
             // 
-            // FrmDJLLocalAPI
+            // FrmDJLocalAPI
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(14F, 30F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1532, 944);
-            this.Name = "FrmDJLLocalAPI";
-            this.Text = "Form1";
-            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FrmDJLLocalAPI_FormClosing);
-            this.Load += new System.EventHandler(this.DJLLocalAPI_Load);
+            this.Name = "FrmDJLocalAPI";
+            this.Text = "D & J Image Corp. Local API";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FrmDJLocalAPI_FormClosing);
+            this.Load += new System.EventHandler(this.DJLocalAPI_Load);
             this.ResumeLayout(false);
         }
 
