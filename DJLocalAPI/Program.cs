@@ -16,4 +16,4 @@ Log.Logger = new LoggerConfiguration()
     .CreateLogger();
 
 ApplicationConfiguration.Initialize();
-Application.Run(new FrmDJLLocalAPI(args));
+Application.Run(new FrmDJLocalAPI(args));

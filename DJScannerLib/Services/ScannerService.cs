@@ -68,7 +68,7 @@ namespace DJScannerLib.Services
                     deviceeventcallback,
                     scancallback,
                     runinuithreaddelegate,
-                    intPtrHwnd
+                    (IntPtr)null
                 );
             }
             catch (Exception exception)
@@ -232,10 +232,10 @@ namespace DJScannerLib.Services
 
             // Silently start scanning if we detect that customdsdata is supported,
             // otherwise bring up the driver GUI so the user can change settings...
-            szTwmemref = "FALSE,FALSE," + this.intPtrHwnd;
+            szTwmemref = "FALSE,FALSE," + intPtrHwnd;
             // Send the command...
             ClearEvents();
-            TWAIN.TW_USERINTERFACE twuserinterface = default(TWAIN.TW_USERINTERFACE);
+            TWAIN.TW_USERINTERFACE twuserinterface = default;
             twain.CsvToUserinterface(ref twuserinterface, szTwmemref);
             twain.DatUserinterface(TWAIN.DG.CONTROL, TWAIN.MSG.ENABLEDS, ref twuserinterface);
         }

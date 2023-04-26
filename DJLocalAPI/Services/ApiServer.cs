@@ -57,20 +57,17 @@ namespace DJLocalAPI.Api
         /// <summary>
         /// 開啟Server
         /// </summary>
-        public async Task StartAsync()
+        public void StartAsync()
         {
-            await apiServerHost.RunAsync();
+            apiServerHost.RunAsync();
         }
 
         /// <summary>
         /// 關閉server
         /// </summary>
-        public async void StopAsync()
+        public void StopAsync()
         {
-            if(apiServerHost != null)
-            {
-                await apiServerHost.StopAsync();
-            }
+            apiServerHost.StopAsync();
         }
     }
 
