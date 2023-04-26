@@ -6,7 +6,7 @@ namespace SealTypographicWebAPI.Models.LetterheadTemplate
     /// <summary>
     /// 信頭樣板分頁單列
     /// </summary>
-    public class LetterheadTemplateLogModel : BaseData
+    public class LetterheadImageTemplateLogModel : BaseData
     {
         /// <summary>
         /// 名稱
@@ -36,6 +36,6 @@ namespace SealTypographicWebAPI.Models.LetterheadTemplate
         /// <summary>
         /// 樣板列表
         /// </summary>           
-        public List<LetterheadTemplateLogModel> LogModels { get; set; }
+        public List<LetterheadImageTemplateLogModel> LogModels { get; set; }
     }
 }

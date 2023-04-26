@@ -89,10 +89,10 @@ namespace SealTypographicWebAPI.Services.Implements
 
             if (letterheadImageTemplateQuery.Any())
             {
-                List<LetterheadTemplateViewModel> thisPageLetterheadImageTemplate = letterheadImageTemplateQuery                                                                      
+                List<LetterheadImageTemplateViewModel> thisPageLetterheadImageTemplate = letterheadImageTemplateQuery                                                                      
                                                                     .Skip((letterheadImageTemplateSearch.PageNumber - 1) * letterheadImageTemplateSearch.PageSize)
                                                                     .Take(letterheadImageTemplateSearch.PageSize)
-                                                                    .Select(letterheadImageTemplate => new LetterheadTemplateViewModel()
+                                                                    .Select(letterheadImageTemplate => new LetterheadImageTemplateViewModel()
                                                                     {
                                                                         Id = letterheadImageTemplate.Id,
                                                                         Name = letterheadImageTemplate.Name,
@@ -110,7 +110,7 @@ namespace SealTypographicWebAPI.Services.Implements
                 letterheadImageTemplatePaginate.Success();
             }
             LetterheadImageTemplatePaginateLog letterheadImageTemplatePaginateLog = mapper.Map<LetterheadImageTemplatePaginateLog>(letterheadImageTemplatePaginate);
-            letterheadImageTemplatePaginateLog.LogModels = mapper.Map<List<LetterheadTemplateLogModel>>(letterheadImageTemplatePaginate.ViewModels);            
+            letterheadImageTemplatePaginateLog.LogModels = mapper.Map<List<LetterheadImageTemplateLogModel>>(letterheadImageTemplatePaginate.ViewModels);            
             Log.Information("LetterheadImageTemplate paginate output {@Output}", letterheadImageTemplatePaginate);
             return letterheadImageTemplatePaginate;
         }
@@ -174,6 +174,8 @@ namespace SealTypographicWebAPI.Services.Implements
                                                                 {
                                                                     Id = x.Id,
                                                                     Company = new Company { Code = x.Company.Code},
+                                                                    ImageViewFullPath = x.ImageViewFullPath,
+                                                                    ThumbnailFullPath = x.ThumbnailFullPath,
                                                                     LetterheadImageTemplateLocations = x.LetterheadImageTemplateLocations,
                                                                 }
                                                              )
@@ -181,8 +183,10 @@ namespace SealTypographicWebAPI.Services.Implements
 
             if (letterheadImageTemplateQuery != null)
             {                
-                letterheadImageTemplateQuery.ImageViewFullPath = await FormFileUtil.UploadFileReturnPath(letterheadImageTemplateUpdateForm.ImageView, letterheadImageTemplateQuery.Company.Code, templateImagePathOption.Letterhead);
-                letterheadImageTemplateQuery.ThumbnailFullPath = await FormFileUtil.UploadFileReturnPath(letterheadImageTemplateUpdateForm.Thumbnail, letterheadImageTemplateQuery.Company.Code, templateImagePathOption.Letterhead);                
+                //更新圖片與縮圖
+                await FormFileUtil.SaveUpdata(letterheadImageTemplateUpdateForm.ImageView, letterheadImageTemplateQuery.ImageViewFullPath);
+                await FormFileUtil.SaveUpdata(letterheadImageTemplateUpdateForm.Thumbnail, letterheadImageTemplateQuery.ThumbnailFullPath);     
+                
                 mapper.Map(letterheadImageTemplateUpdateForm, letterheadImageTemplateQuery);
                 BaseInputLetterheadImageTemplate(letterheadImageTemplateQuery, false, userid);
 

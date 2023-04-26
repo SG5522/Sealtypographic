@@ -10,6 +10,7 @@ using SealTypographicWebAPI.Models.AccountantSignReview;
 using SealTypographicWebAPI.Models.TemporarySeal;
 using SealTypographicWebAPI.Models.CustomerSealTemplate;
 using SealTypographicWebAPI.Models.AccountantSignTemplate;
+using SealTypographicWebAPI.Models.LetterheadTemplate;
 
 namespace SealTypographicWebAPI.Config
 {
@@ -173,6 +174,20 @@ namespace SealTypographicWebAPI.Config
             //Log使用
             CreateMap<AccountantSignTemplateViewModel, AccountantSignTemplateLogModel>();
             CreateMap<AccountantSignTemplatePaginate, AccountantSignTemplatePaginateLog>();
+
+
+            //信頭樣板使用
+            CreateMap<LetterheadImageTemplateForm, LetterheadImageTemplate>();
+            CreateMap<LetterheadImageTemplateLocationForm, LetterheadImageTemplateLocation>();
+            //信頭樣板異動使用
+            CreateMap<LetterheadImageTemplateUpdateForm, LetterheadImageTemplate>();
+            CreateMap<LetterheadImageTemplateLocationUpdateForm, LetterheadImageTemplateLocation>();
+            //信頭樣板單筆查詢使用
+            CreateMap<LetterheadImageTemplate, LetterheadImageTemplateDetailViewModel>();
+            CreateMap<LetterheadImageTemplateLocation, LetterheadImageTemplateLocationViewModel>();
+            //Log使用
+            CreateMap<LetterheadImageTemplateViewModel, LetterheadImageTemplateLogModel>();
+            CreateMap<LetterheadImageTemplatePaginate, LetterheadImageTemplatePaginateLog>();
 
 
             //PDF排版資訊

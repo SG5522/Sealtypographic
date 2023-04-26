@@ -19,10 +19,9 @@ string allowAllOrigins = "allowAllOrigins";
 Directory.SetCurrentDirectory(AppDomain.CurrentDomain.BaseDirectory);
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
-ConfigurationManager config = builder.Configuration; // 取得 IConfiguration
 
 Log.Logger = new LoggerConfiguration()
-                .ReadFrom.Configuration(config)
+                .ReadFrom.Configuration(builder.Configuration)
                 .CreateLogger();
 
 builder.Services.Configure<UploadPathOption>(
@@ -47,7 +46,7 @@ builder.Services.AddCors(options =>
     options.AddPolicy(name: allowSpecificOrigins,
                       policy =>
                       {
-                          policy.WithOrigins(config.GetSection("AllowOrigins").Get<string[]>())
+                          policy.WithOrigins(builder.Configuration.GetSection("AllowOrigins").Get<string[]>())
                           .AllowAnyHeader()
                           .AllowAnyMethod();                          
                       });
@@ -59,18 +58,18 @@ builder.Host.UseSerilog();// <-SeriLog
 #region -- ConectionString --
 builder.Services.AddDbContextPool<SealTypographicDbContext>(optionsBuilder =>
 {
-    string? provider = config.GetValue<string>("Provider");
+    string? provider = builder.Configuration.GetValue<string>("Provider");
     switch (provider)
     {
     case "Sqlite":
-            optionsBuilder.UseSqlite(config.GetConnectionString(provider), x => x.MigrationsAssembly(provider));          
+            optionsBuilder.UseSqlite(builder.Configuration.GetConnectionString(provider), x => x.MigrationsAssembly(provider));          
             break;
         case "MySql":
             MySqlServerVersion serverVersion = new(new Version(8, 0, 32));                 
-            optionsBuilder.UseMySql(config.GetConnectionString(provider), serverVersion, x => x.MigrationsAssembly(provider));
+            optionsBuilder.UseMySql(builder.Configuration.GetConnectionString(provider), serverVersion, x => x.MigrationsAssembly(provider));
             break;
         case "MsSql":
-            optionsBuilder.UseSqlServer(config.GetConnectionString(provider));
+            optionsBuilder.UseSqlServer(builder.Configuration.GetConnectionString(provider));
             break;
         default:
             throw new Exception($"Unsupported provider: {provider}");

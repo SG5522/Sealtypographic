@@ -20,7 +20,7 @@ namespace SealTypographicWebAPI.Utils
         /// <param name="code">公司編號</param>
         /// <param name="rootFolder">存檔路徑</param>
         /// <returns></returns>
-        public static async Task<string> UploadFileReturnPath(IFormFile formFile, string code,  string rootFolder)
+        public static async Task<string> UploadFileReturnPath(IFormFile formFile, string code, string rootFolder)
         {
             DateTime dateTime = DateTime.Now;
             string fileName = $"{code}{dateTime:yyyyMMHHmmssffff}{Path.GetExtension(formFile.FileName)}";            
@@ -29,50 +29,37 @@ namespace SealTypographicWebAPI.Utils
                                     dateTime.Year.ToString(),
                                     dateTime.Month.ToString(),
                                     dateTime.Day.ToString()
-                                );            
-            if (!Directory.Exists(Path.Combine(rootFolder, dateFolder)))
-            {
-                Directory.CreateDirectory(Path.Combine(rootFolder, dateFolder));
-            }
-
+                                );
             string savePath = Path.Combine(rootFolder, dateFolder, fileName);
-
+            CheckDirectory(Path.Combine(rootFolder, dateFolder));            
             await SaveUpdata(formFile, savePath);
-
-            //using Stream stream = new FileStream(savePath, FileMode.Create);
-            //await formFile.CopyToAsync(stream);
 
             return savePath;
         }
 
         /// <summary>
-        /// 透過IFromFile存檔覆蓋檔案
+        /// 確認是否有資料夾沒有則先建立
         /// </summary>
-        /// <param name="formFile"></param>
-        /// <param name="savePath"></param>
-        /// <returns></returns>
-        public static async Task UploadFileReturnPath(IFormFile formFile, string savePath)
+        /// <param name="savePathRoot"></param>
+        public static void CheckDirectory(string savePathRoot)
         {
-            await SaveUpdata(formFile, savePath);            
+            if (!Directory.Exists(savePathRoot))
+            {
+                Directory.CreateDirectory(savePathRoot);
+            }
         }
-
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="formFile"></param>
         /// <param name="savePath"></param>
-        private static async Task SaveUpdata(IFormFile formFile, string savePath)
+        public static async Task SaveUpdata(IFormFile formFile, string savePath)
         {
-            string? savePathRoot = Path.GetPathRoot(savePath);
-
-            if (!Directory.Exists(Path.GetPathRoot(savePath)))
-            {
-                Directory.CreateDirectory(Path.GetPathRoot(savePath));
-            }
-
             using Stream stream = new FileStream(savePath, FileMode.Create);
             await formFile.CopyToAsync(stream);
         }
+
+
     }
 }

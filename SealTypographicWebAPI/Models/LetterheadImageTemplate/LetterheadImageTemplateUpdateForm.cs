@@ -9,7 +9,7 @@ namespace SealTypographicWebAPI.Models.LetterheadTemplate
     /// 信頭樣板位置
     /// </summary> 
     [ModelBinder(BinderType = typeof(JsonModelBinder))]
-    public class LetterheadTemplateLocationUpdateForm : BaseLocationViewModel
+    public class LetterheadImageTemplateLocationUpdateForm : BaseLocationViewModel
     {
         /// <summary>
         /// 樣板位置Id
@@ -30,6 +30,6 @@ namespace SealTypographicWebAPI.Models.LetterheadTemplate
         /// <summary>
         /// 樣板位置座標
         /// </summary>                       
-        public LetterheadTemplateLocationUpdateForm LocationUpdateForm { get; set; }
+        public LetterheadImageTemplateLocationUpdateForm LocationUpdateForm { get; set; }
     }
 }

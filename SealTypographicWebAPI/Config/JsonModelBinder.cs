@@ -17,7 +17,7 @@ namespace SealTypographicWebAPI.Config
         public Task BindModelAsync(ModelBindingContext bindingContext)
         {
             // Check the value provider for the JSON string
-            var valueProviderResult = bindingContext.ValueProvider.GetValue(bindingContext.ModelName);
+            ValueProviderResult valueProviderResult = bindingContext.ValueProvider.GetValue(bindingContext.ModelName);
 
             if (valueProviderResult == ValueProviderResult.None)
             {
@@ -28,13 +28,14 @@ namespace SealTypographicWebAPI.Config
             {                
                 JsonSerializerOptions options = new() { PropertyNameCaseInsensitive = true };
                 options.Converters.Add(new JsonStringEnumConverter());
+                if(valueProviderResult.FirstValue != null)
+                {
+                    // Deserialize the JSON string to the desired object type
+                    object? deserializedValue = JsonSerializer.Deserialize(valueProviderResult.FirstValue, bindingContext.ModelType, options);
 
-                // Deserialize the JSON string to the desired object type
-                var deserializedValue = JsonSerializer.Deserialize(valueProviderResult.FirstValue, bindingContext.ModelType, options);
-                
-                // Set the result of the model binding operation
-                bindingContext.Result = ModelBindingResult.Success(deserializedValue);
-
+                    // Set the result of the model binding operation
+                    bindingContext.Result = ModelBindingResult.Success(deserializedValue);                    
+                }
                 return Task.CompletedTask;
             }
             catch (Exception ex)
