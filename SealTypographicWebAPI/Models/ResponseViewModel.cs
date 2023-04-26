@@ -30,8 +30,6 @@ namespace SealTypographicWebAPI.Models
             Message = "Success";
         }
 
-
-
         /// <summary>
         /// DbError
         /// </summary>

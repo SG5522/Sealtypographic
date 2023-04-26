@@ -77,7 +77,7 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="customerSealTemplateForm"></param>        
         /// <returns></returns>
         [HttpPost]
-        public async Task<ResponseViewModel> New([FromForm]CustomerSealTemplateForm customerSealTemplateForm)
+        public async Task<ResponseViewModel> New(CustomerSealTemplateForm customerSealTemplateForm)
         {
             ResponseViewModel response = new ();
             try

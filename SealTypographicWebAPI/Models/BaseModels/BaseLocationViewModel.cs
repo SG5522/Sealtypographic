@@ -5,7 +5,6 @@
     /// </summary>
     public abstract class BaseLocationViewModel
     {
-
         /// <summary>
         /// 最左邊位置
         /// </summary>

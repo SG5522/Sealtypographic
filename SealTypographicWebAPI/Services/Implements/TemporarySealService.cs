@@ -176,8 +176,8 @@ namespace SealTypographicWebAPI.Services.Implements
                         Sequence = temporarySeal.Sequence
                     };
                     imageBase64Info.ImageBase64 = temporarySeal.ImageBase64;
-                    temporarySealJournal.ImageFullPath = imageSharpService.GetImageBase64FullPath(imageBase64Info, false);
-                    temporarySealJournal.ThumbnailFullPath = imageSharpService.GetImageBase64FullPath(imageBase64Info, true);
+                    temporarySealJournal.ImageFullPath = imageSharpService.GetSavedImageFilePath(imageBase64Info, false);
+                    temporarySealJournal.ThumbnailFullPath = imageSharpService.GetSavedImageFilePath(imageBase64Info, true);
 
                     BaseInputTemporarySealJournal(temporarySealJournal, true, userId);
                     temporarySealJournals.Add(temporarySealJournal);
@@ -241,8 +241,8 @@ namespace SealTypographicWebAPI.Services.Implements
                         TemporarySealJournal temporarySealJournal = new()
                         {
                             Sequence = temporarySealUpdate.Sequence,
-                            ImageFullPath = imageSharpService.GetImageBase64FullPath(imageBase64Info, false),
-                            ThumbnailFullPath = imageSharpService.GetImageBase64FullPath(imageBase64Info, true)
+                            ImageFullPath = imageSharpService.GetSavedImageFilePath(imageBase64Info, false),
+                            ThumbnailFullPath = imageSharpService.GetSavedImageFilePath(imageBase64Info, true)
                         };                        
                         BaseInputTemporarySealJournal(temporarySealJournal, true, userId);
                         temporarySealQuarterJournalQuery.TemporarySealJournals.Add(temporarySealJournal);
@@ -275,8 +275,8 @@ namespace SealTypographicWebAPI.Services.Implements
                     TemporarySealJournal temporarySealJournal = new()
                     {
                         Sequence = temporarySeal.Sequence,
-                        ImageFullPath = imageSharpService.GetImageBase64FullPath(imageBase64Info, false),
-                        ThumbnailFullPath = imageSharpService.GetImageBase64FullPath(imageBase64Info, true)
+                        ImageFullPath = imageSharpService.GetSavedImageFilePath(imageBase64Info, false),
+                        ThumbnailFullPath = imageSharpService.GetSavedImageFilePath(imageBase64Info, true)
                     };
                     BaseInputTemporarySealJournal(temporarySealJournal, true, userId);
                     temporarySealQuarterJournalQuery.TemporarySealJournals.Add(temporarySealJournal);

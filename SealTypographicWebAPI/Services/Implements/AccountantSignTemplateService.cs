@@ -139,8 +139,8 @@ namespace SealTypographicWebAPI.Services.Implements
             if (companyQuery != null) 
             {
                 AccountantSignTemplate accountantSignTemplate = mapper.Map<AccountantSignTemplate>(accountantSignTemplateForm);                
-                accountantSignTemplate.ImageViewFullPath = await FormFileUtil.UploadFileReturnPath(accountantSignTemplateForm.ImageView, companyQuery.Code, templateImagePathOption.Accountant);
-                accountantSignTemplate.ThumbnailFullPath = await FormFileUtil.UploadFileReturnPath(accountantSignTemplateForm.Thumbnail, companyQuery.Code, templateImagePathOption.Accountant);
+                //accountantSignTemplate.ImageViewFullPath = await FormFileUtil.UploadFileReturnPath(accountantSignTemplateForm.ImageBase64, companyQuery.Code, templateImagePathOption.Accountant);
+                //accountantSignTemplate.ThumbnailFullPath = await FormFileUtil.UploadFileReturnPath(accountantSignTemplateForm.ImageBase64Thumbnail, companyQuery.Code, templateImagePathOption.Accountant);
                 List<AccountantSignTemplateLocation> accountantSignTemplateLocations = new();
                 foreach (AccountantSignTemplateLocationForm accountantSignTemplateLocationForm in accountantSignTemplateForm.AccountantSignTemplateLocationForms)
                 {                   
@@ -181,8 +181,8 @@ namespace SealTypographicWebAPI.Services.Implements
 
             if (accountantSignTemplateQuery != null)
             {                
-                accountantSignTemplateQuery.ImageViewFullPath = await FormFileUtil.UploadFileReturnPath(accountantSignTemplateUpdateForm.ImageView, accountantSignTemplateQuery.Company.Code, templateImagePathOption.Accountant);
-                accountantSignTemplateQuery.ThumbnailFullPath = await FormFileUtil.UploadFileReturnPath(accountantSignTemplateUpdateForm.Thumbnail, accountantSignTemplateQuery.Company.Code, templateImagePathOption.Accountant);                
+                //accountantSignTemplateQuery.ImageViewFullPath = await FormFileUtil.UploadFileReturnPath(accountantSignTemplateUpdateForm.ImageBase64, accountantSignTemplateQuery.Company.Code, templateImagePathOption.Accountant);
+                //accountantSignTemplateQuery.ThumbnailFullPath = await FormFileUtil.UploadFileReturnPath(accountantSignTemplateUpdateForm.ImageBase64Thumbnail, accountantSignTemplateQuery.Company.Code, templateImagePathOption.Accountant);                
                 mapper.Map(accountantSignTemplateUpdateForm, accountantSignTemplateQuery);
                 BaseInputAccountantSignTemplate(accountantSignTemplateQuery, false, userid);
                 

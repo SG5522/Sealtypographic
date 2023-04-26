@@ -17,7 +17,7 @@ namespace SealTypographicWebAPI.Services.Implements
     public class CustomerSealTemplateService : ICustomerSealTemplateService
     {
         private readonly SealTypographicDbContext dbContext;
-        private readonly ImageService imageSharpService;
+        private readonly ImageService imageService;
         private readonly TemplateImagePathOption templateImagePathOption;
         private readonly IMapper mapper;
 
@@ -26,13 +26,13 @@ namespace SealTypographicWebAPI.Services.Implements
         /// </summary>
         /// <param name="dbContext"></param>        
         /// <param name="mapper"></param>
-        /// <param name="imageSharpService"></param>
+        /// <param name="imageService"></param>
         /// <param name="option"></param>
-        public CustomerSealTemplateService(SealTypographicDbContext dbContext, IMapper mapper, ImageService imageSharpService, IOptionsSnapshot<TemplateImagePathOption> option)
+        public CustomerSealTemplateService(SealTypographicDbContext dbContext, IMapper mapper, ImageService imageService, IOptionsSnapshot<TemplateImagePathOption> option)
         {
             this.dbContext = dbContext;
             this.mapper = mapper;
-            this.imageSharpService = imageSharpService;
+            this.imageService = imageService;
             this.templateImagePathOption = option.Value;
         }
 
@@ -96,7 +96,7 @@ namespace SealTypographicWebAPI.Services.Implements
                                                                         Id = customerSealTemplate.Id,
                                                                         Name = customerSealTemplate.Name,
                                                                         ImageFullPath = customerSealTemplate.ThumbnailFullPath,
-                                                                        ThumbnailBase64 = imageSharpService.GetPathToBase64(customerSealTemplate.ThumbnailFullPath)
+                                                                        ThumbnailBase64 = imageService.GetPathToBase64(customerSealTemplate.ThumbnailFullPath)
                                                                     })
                                                                     .ToList();
 
@@ -138,9 +138,17 @@ namespace SealTypographicWebAPI.Services.Implements
 
             if (companyQuery != null) 
             {
-                CustomerSealTemplate customerSealTemplate = mapper.Map<CustomerSealTemplate>(customerSealTemplateForm);                
-                customerSealTemplate.ImageViewFullPath = await FormFileUtil.UploadFileReturnPath(customerSealTemplateForm.ImageView, companyQuery.Code, templateImagePathOption.Customer);
-                customerSealTemplate.ThumbnailFullPath = await FormFileUtil.UploadFileReturnPath(customerSealTemplateForm.Thumbnail, companyQuery.Code, templateImagePathOption.Customer);
+                ImageBase64Info imageBase64Info = new ()
+                {
+                    Code = companyQuery.Code,
+                    SealType = SealType.Customer,
+                    ImageBase64 = customerSealTemplateForm.ImageBase64,
+                    SaveRootPath = templateImagePathOption.Customer
+                };
+                CustomerSealTemplate customerSealTemplate = mapper.Map<CustomerSealTemplate>(customerSealTemplateForm);
+                customerSealTemplate.ImageViewFullPath = imageService.GetSavedImageFilePath(imageBase64Info);
+                //customerSealTemplate.ImageViewFullPath = await FormFileUtil.UploadFileReturnPath(customerSealTemplateForm.ImageBase64, companyQuery.Code, templateImagePathOption.Customer);
+                //customerSealTemplate.ThumbnailFullPath = await FormFileUtil.UploadFileReturnPath(customerSealTemplateForm.ImageBase64Thumbnail, companyQuery.Code, templateImagePathOption.Customer);
                 List<CustomerSealTemplateLocation> customerSealTemplateLocations = new();
                 foreach (CustomerSealTemplateLocationForm customerSealTemplateLocationForm in customerSealTemplateForm.CustomerSealTemplateLocationForms)
                 {                   
@@ -181,8 +189,8 @@ namespace SealTypographicWebAPI.Services.Implements
 
             if (customerSealTemplateQuery != null)
             {                
-                customerSealTemplateQuery.ImageViewFullPath = await FormFileUtil.UploadFileReturnPath(customerSealTemplateUpdateForm.ImageView, customerSealTemplateQuery.Company.Code, templateImagePathOption.Customer);
-                customerSealTemplateQuery.ThumbnailFullPath = await FormFileUtil.UploadFileReturnPath(customerSealTemplateUpdateForm.Thumbnail, customerSealTemplateQuery.Company.Code, templateImagePathOption.Customer);                
+                //customerSealTemplateQuery.ImageViewFullPath = await FormFileUtil.UploadFileReturnPath(customerSealTemplateUpdateForm.ImageBase64, customerSealTemplateQuery.Company.Code, templateImagePathOption.Customer);
+                //customerSealTemplateQuery.ThumbnailFullPath = await FormFileUtil.UploadFileReturnPath(customerSealTemplateUpdateForm.ImageBase64Thumbnail, customerSealTemplateQuery.Company.Code, templateImagePathOption.Customer);                
                 mapper.Map(customerSealTemplateUpdateForm, customerSealTemplateQuery);
                 BaseInputCustomerSealTemplate(customerSealTemplateQuery, false, userid);
                 

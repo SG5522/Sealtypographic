@@ -135,8 +135,8 @@ namespace SealTypographicWebAPI.Services.Implements
                     };
                                         
                     imageBase64Info.ImageBase64 = accountantSign.ImageBase64;
-                    accountantSignJournal.ImageFullPath = imageService.GetImageBase64FullPath(imageBase64Info, false);
-                    accountantSignJournal.ThumbnailFullPath = imageService.GetImageBase64FullPath(imageBase64Info, true);
+                    accountantSignJournal.ImageFullPath = imageService.GetSavedImageFilePath(imageBase64Info, false);
+                    accountantSignJournal.ThumbnailFullPath = imageService.GetSavedImageFilePath(imageBase64Info, true);
                     BaseInputAccountantSignJournal(accountantSignJournal, true, userId);
                     accountantSignJournals.Add(accountantSignJournal);
                     
@@ -250,8 +250,8 @@ namespace SealTypographicWebAPI.Services.Implements
 
                             //ImageBase64轉圖檔並存到指定資料夾
                             imageBase64Info.ImageBase64 = createAccountantSign.ImageBase64;
-                            accountantSignJournal.ImageFullPath = imageService.GetImageBase64FullPath(imageBase64Info, false);
-                            accountantSignJournal.ThumbnailFullPath = imageService.GetImageBase64FullPath(imageBase64Info, true);
+                            accountantSignJournal.ImageFullPath = imageService.GetSavedImageFilePath(imageBase64Info, false);
+                            accountantSignJournal.ThumbnailFullPath = imageService.GetSavedImageFilePath(imageBase64Info, true);
                             BaseInputAccountantSignJournal(accountantSignJournal, true, userId);
                             accountantSignGroup.AccountantSignJournals.Add(accountantSignJournal);
                         }

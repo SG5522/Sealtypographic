@@ -142,8 +142,8 @@ namespace SealTypographicWebAPI.Services.Implements
                 LetterheadImageTemplate letterheadImageTemplate = mapper.Map<LetterheadImageTemplate>(letterheadImageTemplateForm);
                 List<LetterheadImageTemplateLocation> letterheadImageTemplateLocations = new();
 
-                letterheadImageTemplate.ImageViewFullPath = await FormFileUtil.UploadFileReturnPath(letterheadImageTemplateForm.ImageView, companyQuery.Code, templateImagePathOption.Letterhead);
-                letterheadImageTemplate.ThumbnailFullPath = await FormFileUtil.UploadFileReturnPath(letterheadImageTemplateForm.Thumbnail, companyQuery.Code, templateImagePathOption.Letterhead);                
+                //letterheadImageTemplate.ImageViewFullPath = await FormFileUtil.UploadFileReturnPath(letterheadImageTemplateForm.ImageBase64, companyQuery.Code, templateImagePathOption.Letterhead);
+                //letterheadImageTemplate.ThumbnailFullPath = await FormFileUtil.UploadFileReturnPath(letterheadImageTemplateForm.ImageBase64Thumbnail, companyQuery.Code, templateImagePathOption.Letterhead);                
                 letterheadImageTemplateLocations.Add(mapper.Map<LetterheadImageTemplateLocation>(letterheadImageTemplateForm.LetterheadTemplateLocationForm));       
                 
                 BaseInputLetterheadImageTemplate(letterheadImageTemplate, true, userid);
@@ -184,8 +184,8 @@ namespace SealTypographicWebAPI.Services.Implements
             if (letterheadImageTemplateQuery != null)
             {                
                 //更新圖片與縮圖
-                await FormFileUtil.SaveUpdata(letterheadImageTemplateUpdateForm.ImageView, letterheadImageTemplateQuery.ImageViewFullPath);
-                await FormFileUtil.SaveUpdata(letterheadImageTemplateUpdateForm.Thumbnail, letterheadImageTemplateQuery.ThumbnailFullPath);     
+                //await FormFileUtil.SaveUpdata(letterheadImageTemplateUpdateForm.ImageBase64, letterheadImageTemplateQuery.ImageViewFullPath);
+                //await FormFileUtil.SaveUpdata(letterheadImageTemplateUpdateForm.ImageBase64Thumbnail, letterheadImageTemplateQuery.ThumbnailFullPath);     
                 
                 mapper.Map(letterheadImageTemplateUpdateForm, letterheadImageTemplateQuery);
                 BaseInputLetterheadImageTemplate(letterheadImageTemplateQuery, false, userid);

@@ -145,7 +145,7 @@ namespace SealTypographicWebAPI.Services.Implements
 
                 //ImageBase64轉圖檔並存到指定資料夾
                 imageBase64Info.ImageBase64 = letterheadImageForms.ImageBase64;
-                letterheadImage.ImageFullPath = imageSharpService.GetImageBase64FullPath(imageBase64Info, false);
+                letterheadImage.ImageFullPath = imageSharpService.GetSavedImageFilePath(imageBase64Info, false);
 
                 //新增信頭圖片
                 BaseInputImageJournal(letterheadImage, true, userId);
@@ -184,7 +184,7 @@ namespace SealTypographicWebAPI.Services.Implements
 
                 //ImageBase64轉圖檔並存到指定資料夾                    
                 imageBase64Info.ImageBase64 = letterheadImageUpdate.ImageBase64;
-                letterheadImageJournal.ImageFullPath = imageSharpService.GetImageBase64FullPath(imageBase64Info, false);
+                letterheadImageJournal.ImageFullPath = imageSharpService.GetSavedImageFilePath(imageBase64Info, false);
 
                 BaseInputImageJournal(letterheadImageJournal, true, userId);
                 letterheadImageJournal.Letterhead = updateImageQuery.Letterhead;

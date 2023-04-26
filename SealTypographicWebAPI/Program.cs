@@ -1,12 +1,17 @@
-﻿using DBEntities;
-using Microsoft.AspNetCore.Mvc.Razor;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.OpenApi.Models;
-using SealTypographicWebAPI.Config;
+﻿using Microsoft.OpenApi.Models;
 using SealTypographicWebAPI.Services;
-using SealTypographicWebAPI.Services.Implements;
-using Serilog;
+using DBEntities;
 using System.Reflection;
+using Microsoft.EntityFrameworkCore;
+using Serilog;
+using SealTypographicWebAPI.Services.Implements;
+using SealTypographicWebAPI.Config;
+using Microsoft.AspNetCore.Mvc.Razor;
+using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Hosting.WindowsServices;
+using SealTypographicWebAPI.Models.CustomerSealTemplate;
 
 string allowSpecificOrigins = "allowSpecificOrigins";
 string allowAllOrigins = "allowAllOrigins";
@@ -171,12 +176,6 @@ builder.Services.AddSwaggerGen(c =>
     
     //c.SchemaFilter<EnumSchemaFilter>();
 });
-
-
-//builder.Services.Configure<Microsoft.AspNetCore.Mvc.JsonOptions>(options =>
-//{
-//    options.JsonSerializerOptions.Converters.Add(new System.Text.Json.Serialization.JsonStringEnumConverter());
-//});
 
 builder.Host.UseWindowsService();
 

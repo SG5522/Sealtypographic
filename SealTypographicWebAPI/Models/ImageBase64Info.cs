@@ -23,6 +23,11 @@ namespace SealTypographicWebAPI.Models
         public string ImageBase64 { get; set; } = string.Empty;
 
         /// <summary>
+        /// 存檔根目錄位置
+        /// </summary>
+        public string SaveRootPath { get; set; } = string.Empty;
+
+        /// <summary>
         /// 建檔時間
         /// </summary>
         public DateTime CreateTime
@@ -31,6 +36,34 @@ namespace SealTypographicWebAPI.Models
             {
                 return DateTime.Now;
             }
+        }
+
+        /// <summary>
+        /// 取得存檔路徑
+        /// </summary>
+        public string RootFolder()
+        {
+            return Path.Combine
+                    (
+                        SaveRootPath,
+                        CreateTime.Year.ToString(),
+                        CreateTime.Month.ToString(),
+                        CreateTime.Day.ToString()
+                    );
+        }
+
+        /// <summary>
+        /// 取得依參數取得存檔路徑
+        /// </summary>
+        public string RootFolder(string rootPath)
+        {
+            return Path.Combine
+                    (
+                        rootPath,
+                        CreateTime.Year.ToString(),
+                        CreateTime.Month.ToString(),
+                        CreateTime.Day.ToString()
+                    );
         }
     }
 }

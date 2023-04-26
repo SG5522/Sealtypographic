@@ -4,6 +4,7 @@ using Microsoft.Extensions.Options;
 using SealTypographicWebAPI.Config;
 using DBEntities.Consts;
 using SealTypographicWebAPI.Models;
+using SixLabors.ImageSharp;
 
 namespace SealTypographicWebAPI.Services
 {
@@ -13,7 +14,7 @@ namespace SealTypographicWebAPI.Services
     /// </summary>
     public class ImageService
     {
-        private readonly SealPathOption sealConfig;
+        private readonly SealPathOption sealConfig;        
 
         /// <summary>
         /// 注入appsetting的ScanConfigPath資料
@@ -39,37 +40,51 @@ namespace SealTypographicWebAPI.Services
         /// Base64轉圖檔並存檔回傳存檔路徑
         /// </summary>
         /// <param name="imageBase64Info">ImageBase64資訊</param>
-        /// <param name="IsResize">是否縮放</param>        
-        public string GetImageBase64FullPath(ImageBase64Info imageBase64Info, bool IsResize)
+        /// <param name="isResize">是否縮放</param>        
+        public string GetSavedImageFilePath(ImageBase64Info imageBase64Info, bool isResize)
         {
             string folderPath = GetImageFolder(imageBase64Info.SealType);            
-            string dateFolder = Path.Combine
-                                (
-                                    imageBase64Info.CreateTime.Year.ToString(),
-                                    imageBase64Info.CreateTime.Month.ToString(), 
-                                    imageBase64Info.CreateTime.Day.ToString()
-                                );
+
             SaveFullPath saveImageInfo = new()
             {                
-                Folder = Path.Combine(folderPath,dateFolder)
+                Folder = imageBase64Info.RootFolder(folderPath)
             };
-
-            //ImageInfo imageInfo = ImageSharpUtil.Base64ToImageInfo(imageBase64Info.ImageBase64);            
+                 
             ImageInfo imageInfo = ImageInfo.FromImageBase64(imageBase64Info.ImageBase64);
-            if (!IsResize)
+            if (!isResize)
             {
                 saveImageInfo.FileName = $"{imageBase64Info.Code}{imageBase64Info.CreateTime:yyyyMMHHmmssffff}";                
             }
             else
             {
-                saveImageInfo.FileName = $"{"Thumbnail"}{imageBase64Info.Code}{imageBase64Info.CreateTime:yyyyMMHHmmssffff}";
-                ImageInfo.ReSize(imageInfo, sealConfig.ResizeScale);
-                //ImageSharpUtil.ReSize(imageInfo.Image, sealConfig.ResizeScale);
+                saveImageInfo.FileName = $"{"ImageBase64Thumbnail"}{imageBase64Info.Code}{imageBase64Info.CreateTime:yyyyMMHHmmssffff}";
+                ImageInfo.ReSize(imageInfo, sealConfig.ResizeScale);                
             }
             ImageSharpUtil.SaveFile(imageInfo.Image, imageInfo.ImageFormat, saveImageInfo);            
 
             return Path.Combine(saveImageInfo.Folder, saveImageInfo.FileName);                        
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="imageBase64Info"></param>
+        /// <returns></returns>
+        public string GetSavedImageFilePath(ImageBase64Info imageBase64Info)
+        {            
+            SaveFullPath saveImageInfo = new()
+            {
+                Folder = imageBase64Info.RootFolder()
+            };
+
+            ImageInfo imageInfo = ImageInfo.FromImageBase64(imageBase64Info.ImageBase64);
+            saveImageInfo.FileName = $"{imageBase64Info.Code}{imageBase64Info.CreateTime:yyyyMMHHmmssffff}";
+            ImageSharpUtil.SaveFile(imageInfo.Image, imageInfo.ImageFormat, saveImageInfo);
+
+            return Path.Combine(saveImageInfo.Folder, saveImageInfo.FileName);
+        }
+
+
 
         /// <summary>
         /// 取得圖檔資料夾路徑(依類別)
