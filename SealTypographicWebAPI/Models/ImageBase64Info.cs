@@ -13,7 +13,7 @@ namespace SealTypographicWebAPI.Models
         public SealType SealType { get; set; }
 
         /// <summary>
-        /// 客戶、會計、信頭 編號
+        /// 編號
         /// </summary>
         public string Code { get; set; } = string.Empty;
 
@@ -53,17 +53,21 @@ namespace SealTypographicWebAPI.Models
         }
 
         /// <summary>
-        /// 取得依參數取得存檔路徑
+        /// 取得重新命名檔名
         /// </summary>
-        public string RootFolder(string rootPath)
+        /// <returns></returns>
+        public string ReName()
         {
-            return Path.Combine
-                    (
-                        rootPath,
-                        CreateTime.Year.ToString(),
-                        CreateTime.Month.ToString(),
-                        CreateTime.Day.ToString()
-                    );
+            return $"{Code}{CreateTime:yyyyMMHHmmssffff}";
+        }
+
+        /// <summary>
+        /// 取得重新命名檔名
+        /// </summary>
+        /// <returns></returns>
+        public string ReNameForThumbnail()
+        {
+            return $"{"thumbnail"}{Code}{CreateTime:yyyyMMHHmmssffff}";
         }
     }
 }

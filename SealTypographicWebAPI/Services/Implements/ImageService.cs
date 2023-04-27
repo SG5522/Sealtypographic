@@ -43,26 +43,29 @@ namespace SealTypographicWebAPI.Services
         /// <param name="isResize">是否縮放</param>        
         public string GetSavedImageFilePath(ImageBase64Info imageBase64Info, bool isResize)
         {
-            string folderPath = GetImageFolder(imageBase64Info.SealType);            
-
             SaveFullPath saveImageInfo = new()
             {                
-                Folder = imageBase64Info.RootFolder(folderPath)
+                Folder = imageBase64Info.RootFolder()                
             };
                  
             ImageInfo imageInfo = ImageInfo.FromImageBase64(imageBase64Info.ImageBase64);
             if (!isResize)
             {
-                saveImageInfo.FileName = $"{imageBase64Info.Code}{imageBase64Info.CreateTime:yyyyMMHHmmssffff}";                
+                saveImageInfo.FileName = imageBase64Info.ReName();
             }
             else
             {
-                saveImageInfo.FileName = $"{"ImageBase64Thumbnail"}{imageBase64Info.Code}{imageBase64Info.CreateTime:yyyyMMHHmmssffff}";
+                saveImageInfo.FileName = imageBase64Info.ReNameForThumbnail();
                 ImageInfo.ReSize(imageInfo, sealConfig.ResizeScale);                
             }
             ImageSharpUtil.SaveFile(imageInfo.Image, imageInfo.ImageFormat, saveImageInfo);            
 
             return Path.Combine(saveImageInfo.Folder, saveImageInfo.FileName);                        
+        }
+
+        private void SavedImage()
+        {
+
         }
 
         /// <summary>
@@ -78,41 +81,11 @@ namespace SealTypographicWebAPI.Services
             };
 
             ImageInfo imageInfo = ImageInfo.FromImageBase64(imageBase64Info.ImageBase64);
-            saveImageInfo.FileName = $"{imageBase64Info.Code}{imageBase64Info.CreateTime:yyyyMMHHmmssffff}";
+            saveImageInfo.FileName = imageBase64Info.ReNameForThumbnail();
+
             ImageSharpUtil.SaveFile(imageInfo.Image, imageInfo.ImageFormat, saveImageInfo);
 
             return Path.Combine(saveImageInfo.Folder, saveImageInfo.FileName);
-        }
-
-
-
-        /// <summary>
-        /// 取得圖檔資料夾路徑(依類別)
-        /// </summary>
-        /// <param name="sealType"></param>
-        /// <returns></returns>
-        private string GetImageFolder(SealType sealType)
-        {
-            string folderPath;
-            switch (sealType)
-            {
-                case SealType.Customer:
-                    folderPath = sealConfig.Customer;
-                    break;
-                case SealType.Accountant:
-                    folderPath = sealConfig.Accountant;
-                    break;
-                case SealType.Letterhead:
-                    folderPath = sealConfig.Letterhead;
-                    break;
-                case SealType.TemporarySeal:
-                    folderPath = sealConfig.TemporarySeal;
-                    break;
-                default :
-                    folderPath = string.Empty;
-                    break;
-            }
-            return folderPath;
         }        
     }
 }

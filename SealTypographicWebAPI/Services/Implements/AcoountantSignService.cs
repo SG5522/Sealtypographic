@@ -5,6 +5,8 @@ using DBEntities;
 using SealTypographicWebAPI.Models;
 using SealTypographicWebAPI.Models.Accountant;
 using System.Linq;
+using SealTypographicWebAPI.Config;
+using Microsoft.Extensions.Options;
 
 namespace SealTypographicWebAPI.Services.Implements
 {
@@ -16,18 +18,20 @@ namespace SealTypographicWebAPI.Services.Implements
         private readonly SealTypographicDbContext dbContext;
         private readonly ImageService imageService;
         private readonly IMapper mapper;
+        private readonly SealPathOption sealPathOption;
         /// <summary>
         /// 取得DB與ResponseService
         /// </summary>
         /// <param name="dbContext"></param>        
         /// <param name="mapper"></param>
         /// <param name="imageService"></param>
-        public AcoountantSignService(SealTypographicDbContext dbContext, IMapper mapper, ImageService imageService)
+        /// <param name="options"></param>
+        public AcoountantSignService(SealTypographicDbContext dbContext, IMapper mapper, ImageService imageService, IOptionsSnapshot<SealPathOption> options)
         {
             this.dbContext = dbContext;            
             this.mapper = mapper;
             this.imageService = imageService;
-
+            this.sealPathOption = options.Value;
         }
 
         /// <summary>
@@ -119,12 +123,8 @@ namespace SealTypographicWebAPI.Services.Implements
             if (accountantQuery != null)
             {                
                 AccountantSignGroupJournal accountantSignCreateDateJournal = new();
-                ImageBase64Info imageBase64Info = new()
-                {
-                    Code = accountantQuery.Code,                    
-                    SealType = SealType.Accountant
-                };
-
+                ImageBase64Info imageBase64Info = SetImageBase64Info(accountantQuery.Code);
+                
                 BaseInputSignGroupJournal(accountantSignCreateDateJournal, true, userId);                
                 
                 foreach (AccountantSign accountantSign in accountantSignForms.SignForms)
@@ -189,11 +189,7 @@ namespace SealTypographicWebAPI.Services.Implements
                     };
                     BaseInputSignGroupJournal(accountantSignGroup, true, userId);
 
-                    ImageBase64Info imageBase64Info = new()
-                    {
-                        Code = accountant.Code,
-                        SealType = SealType.Accountant,
-                    };
+                    ImageBase64Info imageBase64Info = SetImageBase64Info(accountant.Code);
 
                     //修改(更新ID移入DeleteAccountantSignIds，更新的簽印移入新增CreateAccountantSigns，之後下一階段調整輸入時要拔掉此項)
                     foreach (AccountantSignUpdateForm accountantSignFormUpdate in accountantSignUpdate.UpdateAccountantSigns)
@@ -406,6 +402,22 @@ namespace SealTypographicWebAPI.Services.Implements
                 response.UpdateAccountantSignNoData();                                
             }
             return response;
+        }
+
+        /// <summary>
+        /// 設定ImageBase64Info
+        /// </summary>
+        /// <param name="code">編碼(檔名結構之一)</param>
+        /// <returns></returns>
+        private ImageBase64Info SetImageBase64Info(string code)
+        {
+            ImageBase64Info imageBase64Info = new()
+            {
+                Code = code,
+                SealType = SealType.Accountant,
+                SaveRootPath = sealPathOption.Accountant
+            };
+            return imageBase64Info;
         }
     }
 }

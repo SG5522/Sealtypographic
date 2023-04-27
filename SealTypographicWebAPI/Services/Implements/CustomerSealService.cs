@@ -5,6 +5,9 @@ using DBEntities;
 using SealTypographicWebAPI.Models;
 using SealTypographicWebAPI.Models.Customer;
 using SealTypographicWebAPI.Utils;
+using SealTypographicWebAPI.Config;
+using Microsoft.Extensions.Options;
+using System.Runtime.CompilerServices;
 
 namespace SealTypographicWebAPI.Services.Implements
 {
@@ -16,6 +19,7 @@ namespace SealTypographicWebAPI.Services.Implements
         private readonly SealTypographicDbContext dbContext;
         private readonly ImageService imageSharpService;
         private readonly IMapper mapper;
+        private readonly SealPathOption sealPathOption;
 
         /// <summary>
         /// 建構
@@ -23,11 +27,13 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <param name="dbContext"></param>        
         /// <param name="mapper"></param>
         /// <param name="imageSharpService"></param>
-        public CustomerSealService(SealTypographicDbContext dbContext, IMapper mapper, ImageService imageSharpService)
+        /// <param name="options"></param>
+        public CustomerSealService(SealTypographicDbContext dbContext, IMapper mapper, ImageService imageSharpService, IOptionsSnapshot<SealPathOption> options)
         {
             this.dbContext = dbContext;
             this.mapper = mapper;
             this.imageSharpService = imageSharpService;
+            this.sealPathOption = options.Value;
         }
 
         /// <summary>
@@ -126,11 +132,8 @@ namespace SealTypographicWebAPI.Services.Implements
                 if (sealQuarterJournalQuery == null)
                 {                    
                     CustomerSealQuarterJournal customerSealQuarterJournal = new();
-                    ImageBase64Info imageBase64Info = new()
-                    {
-                        Code = customerQuery.Code,
-                        SealType = SealType.Customer
-                    };
+
+                    ImageBase64Info imageBase64Info = SetImageBase64Info(customerQuery.Code);
 
                     customerSealQuarterJournal.Quarter = customerSealForms.Quarter;                    
                     BaseInputQuarterJournal(customerSealQuarterJournal, true, userId);
@@ -189,11 +192,7 @@ namespace SealTypographicWebAPI.Services.Implements
 
             if (customerSealQuarterQuery != null)
             {
-                ImageBase64Info imageBase64Info = new()
-                {
-                    Code = customerSealQuarterQuery.Customer.Code,
-                    SealType = SealType.Customer
-                };
+                ImageBase64Info imageBase64Info = SetImageBase64Info(customerSealQuarterQuery.Customer.Code);
 
                 //修改印鑑(更新ID移入DeleteCustomerSealIds，更新的資料移入CreateCustomerSeals，之後下一階段調整輸入時要拔掉此項)
                 foreach (CustomerSealUpdateForm customerSealFormUpdate in customerSealUpdate.UpdateCustomerSeals)
@@ -367,6 +366,22 @@ namespace SealTypographicWebAPI.Services.Implements
             }
 
             return response;
+        }
+
+        /// <summary>
+        /// 設定ImageBase64Info
+        /// </summary>
+        /// <param name="code">編碼(檔名結構之一)</param>
+        /// <returns></returns>
+        private ImageBase64Info SetImageBase64Info(string code)
+        {
+            ImageBase64Info imageBase64Info = new()
+            {
+                Code = code,
+                SealType = SealType.Customer,
+                SaveRootPath = sealPathOption.Customer
+            };
+            return imageBase64Info;
         }
     }
 }

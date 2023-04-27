@@ -138,17 +138,14 @@ namespace SealTypographicWebAPI.Services.Implements
 
             if (companyQuery != null) 
             {
-                ImageBase64Info imageBase64Info = new ()
-                {
-                    Code = companyQuery.Code,
-                    SealType = SealType.Customer,
-                    ImageBase64 = customerSealTemplateForm.ImageBase64,
-                    SaveRootPath = templateImagePathOption.Customer
-                };
+                ImageBase64Info imageBase64Info = SetImageBase64Info(companyQuery.Code);
                 CustomerSealTemplate customerSealTemplate = mapper.Map<CustomerSealTemplate>(customerSealTemplateForm);
+                //儲存圖片(原圖)
+                imageBase64Info.ImageBase64 = customerSealTemplate.ImageViewFullPath;
                 customerSealTemplate.ImageViewFullPath = imageService.GetSavedImageFilePath(imageBase64Info);
-                //customerSealTemplate.ImageViewFullPath = await FormFileUtil.UploadFileReturnPath(customerSealTemplateForm.ImageBase64, companyQuery.Code, templateImagePathOption.Customer);
-                //customerSealTemplate.ThumbnailFullPath = await FormFileUtil.UploadFileReturnPath(customerSealTemplateForm.ImageBase64Thumbnail, companyQuery.Code, templateImagePathOption.Customer);
+                //儲存縮圖
+                imageBase64Info.ImageBase64 = customerSealTemplate.ThumbnailFullPath;
+                customerSealTemplate.ThumbnailFullPath = imageService.GetSavedImageFilePath(imageBase64Info);
                 List<CustomerSealTemplateLocation> customerSealTemplateLocations = new();
                 foreach (CustomerSealTemplateLocationForm customerSealTemplateLocationForm in customerSealTemplateForm.CustomerSealTemplateLocationForms)
                 {                   
@@ -255,6 +252,22 @@ namespace SealTypographicWebAPI.Services.Implements
                 customerSealTemplate.UpdateUserId = userid;
                 customerSealTemplate.UpdateDate = DateTime.Now;
             }
+        }
+
+        /// <summary>
+        /// 設定ImageBase64Info
+        /// </summary>
+        /// <param name="code">編碼(檔名結構之一)</param>
+        /// <returns></returns>
+        private ImageBase64Info SetImageBase64Info(string code)
+        {
+            ImageBase64Info imageBase64Info = new()
+            {
+                Code = code,
+                SealType = SealType.Customer,
+                SaveRootPath = templateImagePathOption.Customer
+            };
+            return imageBase64Info;
         }
     }
 }

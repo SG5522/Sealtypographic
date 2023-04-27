@@ -2,6 +2,8 @@
 using DBEntities;
 using DBEntities.Consts;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
+using SealTypographicWebAPI.Config;
 using SealTypographicWebAPI.Models;
 using SealTypographicWebAPI.Models.TemporarySeal;
 using SealTypographicWebAPI.Utils;
@@ -17,6 +19,7 @@ namespace SealTypographicWebAPI.Services.Implements
         private readonly SealTypographicDbContext dbContext;
         private readonly ImageService imageSharpService;
         private readonly IMapper mapper;
+        private readonly SealPathOption sealPathOption;
 
         /// <summary>
         /// 建構
@@ -24,11 +27,13 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <param name="dbContext"></param>
         /// <param name="imageService"></param>
         /// <param name="mapper"></param>
-        public TemporarySealService(SealTypographicDbContext dbContext, ImageService imageService, IMapper mapper)
+        /// <param name="options"></param>
+        public TemporarySealService(SealTypographicDbContext dbContext, ImageService imageService, IMapper mapper, IOptionsSnapshot<SealPathOption> options)
         {
             this.dbContext = dbContext;
             this.imageSharpService = imageService;
             this.mapper = mapper;
+            this.sealPathOption = options.Value;
         }
 
         /// <summary>
@@ -159,13 +164,9 @@ namespace SealTypographicWebAPI.Services.Implements
             {
                 TemporarySealQuarterJournal temporarySealQuarterJournal = new();
                 List<TemporarySealJournal> temporarySealJournals = new();
+                ImageBase64Info imageBase64Info = SetImageBase64Info(customerQuery.Code);
                 int userId = 0;
-                ImageBase64Info imageBase64Info = new()
-                {
-                    Code = customerQuery.Code,                    
-                    SealType = SealType.TemporarySeal
-                };
-
+                
                 temporarySealQuarterJournal.Quarter = temporarySealForm.Quarter;                
                 BaseInputTemporarySealGroup(temporarySealQuarterJournal, true, userId);
                 
@@ -224,11 +225,7 @@ namespace SealTypographicWebAPI.Services.Implements
                                                                     .FirstOrDefault(temporarySealGroup => temporarySealGroup.Id == temporarySealUpdateForm.Id);
             if(temporarySealQuarterJournalQuery != null)
             {
-                ImageBase64Info imageBase64Info = new()
-                {
-                    Code = temporarySealQuarterJournalQuery.Customer.Code,
-                    SealType = SealType.TemporarySeal
-                };
+                ImageBase64Info imageBase64Info = SetImageBase64Info(temporarySealQuarterJournalQuery.Customer.Code);
 
                 //更新臨時章印鑑組
                 foreach (TemporarySealUpdate temporarySealUpdate in temporarySealUpdateForm.SealsToUpdate)
@@ -362,6 +359,23 @@ namespace SealTypographicWebAPI.Services.Implements
                 temporarySealJournal.UpdateUserId = userId;
                 temporarySealJournal.UpdateDate = DateTime.Now;
             }
+        }
+
+
+        /// <summary>
+        /// 設定ImageBase64Info
+        /// </summary>
+        /// <param name="code">編碼(檔名結構之一)</param>
+        /// <returns></returns>
+        private ImageBase64Info SetImageBase64Info(string code)
+        {
+            ImageBase64Info imageBase64Info = new()
+            {
+                Code = code,
+                SealType = SealType.TemporarySeal,
+                SaveRootPath = sealPathOption.TemporarySeal
+            };
+            return imageBase64Info;
         }
     }
 }
