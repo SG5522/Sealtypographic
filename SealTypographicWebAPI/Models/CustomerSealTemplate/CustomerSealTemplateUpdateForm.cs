@@ -7,17 +7,18 @@ namespace SealTypographicWebAPI.Models.CustomerSealTemplate
 {
     /// <summary>
     /// 客戶印鑑樣板座標
-    /// </summary> 
-    [ModelBinder(BinderType = typeof(JsonModelBinder))]
+    /// </summary>     
     public class CustomerSealTemplateLocationUpdateForm : BaseLocationViewModel
     {
         /// <summary>
         /// 樣板座標Id
         /// </summary>
+        /// <example>1</example>
         public int Id { get; set; }
         /// <summary>
         /// 客戶印鑑類別
         /// </summary>
+        /// <example>1</example>
         public CustomerSealType CustomerSealType { get; set; }
     }
 
@@ -34,11 +35,13 @@ namespace SealTypographicWebAPI.Models.CustomerSealTemplate
         /// <summary>
         /// 樣板疊放方式
         /// </summary>
+        /// <example>1</example>
         public StackMode StackMode { get; set; }
 
         /// <summary>
         /// 樣板疊放位移
         /// </summary>
+        /// <example>1</example>
         public int StackShift { get; set; }
 
         /// <summary>

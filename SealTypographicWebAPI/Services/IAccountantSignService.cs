@@ -28,14 +28,14 @@ namespace SealTypographicWebAPI.Services
         /// </summary>
         /// <param name="accountantSignForms">會計師簽印組</param>
         /// <returns></returns>
-        ResponseViewModel New(AccountantSignForms accountantSignForms);
+        Task<ResponseViewModel> New(AccountantSignForms accountantSignForms);
 
         /// <summary>
         /// 異動會計師簽印
         /// </summary>
         /// <param name="accountantSignUpdate">需要異動會計師簽印資料</param>
         /// <returns></returns>
-        List<ResponseViewModel> Update(AccountantSignUpdate accountantSignUpdate);
+        Task<List<ResponseViewModel>> Update(AccountantSignUpdate accountantSignUpdate);
 
         /// <summary>
         /// 將草稿的簽印組狀態變更為待審

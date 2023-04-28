@@ -79,13 +79,13 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="temporarySealForm">臨時章資料</param>
         /// <returns></returns>
         [HttpPost]
-        public ResponseViewModel New(TemporarySealForm temporarySealForm)
+        public async Task<ResponseViewModel> New(TemporarySealForm temporarySealForm)
         {
             ResponseViewModel response = new();
             try
             {
                 Log.Information("TemporarySeal new input {@Input}", temporarySealForm);
-                response = temporarySealService.New(temporarySealForm);
+                response = await temporarySealService.New(temporarySealForm);
                 Log.Information("TemporarySeal new output {@Output}", response);
             }
             catch (Exception ex)
@@ -102,13 +102,13 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="temporarySealUpdateForm">異動臨時章</param>
         /// <returns></returns>
         [HttpPut]
-        public ResponseViewModel Update(TemporarySealUpdateForm temporarySealUpdateForm)
+        public async Task<ResponseViewModel> Update(TemporarySealUpdateForm temporarySealUpdateForm)
         {
             ResponseViewModel response = new();
             try
             {                
                 Log.Information("TemporarySeal update input temporarySealUpdateForm {@temporarySealUpdateForm}", temporarySealUpdateForm);
-                response = temporarySealService.Update(temporarySealUpdateForm);
+                response = await temporarySealService.Update(temporarySealUpdateForm);
                 Log.Information("TemporarySeal update output {@Output}", response);
             }
             catch (Exception ex)

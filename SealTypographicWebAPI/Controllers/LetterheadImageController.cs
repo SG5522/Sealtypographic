@@ -104,13 +104,13 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="letterheadImageForm">信頭圖片</param>
         /// <returns></returns>
         [HttpPost]
-        public ResponseViewModel New(LetterheadImageForm letterheadImageForm)
+        public async Task<ResponseViewModel> New(LetterheadImageForm letterheadImageForm)
         {
             ResponseViewModel responseViewModel = new();
             try
             {
                 Log.Information("LetterheadImage new input {@Input}", letterheadImageForm);
-                responseViewModel = letterheadImageService.New(letterheadImageForm);
+                responseViewModel = await letterheadImageService.New(letterheadImageForm);
                 Log.Information("LetterheadImage new output {@Output}", responseViewModel);
             }
             catch (Exception ex)
@@ -127,13 +127,13 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="letterheadImageUpdate">異動信頭圖片資料</param>
         /// <returns></returns>
         [HttpPut]
-        public ResponseViewModel Update(LetterheadImageUpdate letterheadImageUpdate)
+        public async Task<ResponseViewModel> Update(LetterheadImageUpdate letterheadImageUpdate)
         {
             ResponseViewModel response = new();
             try
             {
                 Log.Information("LetterheadImage put input {@Input}", letterheadImageUpdate);
-                response = letterheadImageService.Update(letterheadImageUpdate);
+                response = await letterheadImageService.Update(letterheadImageUpdate);
                 Log.Information("LetterheadImage put output {@Output}", response);
             }            
             catch (Exception ex)

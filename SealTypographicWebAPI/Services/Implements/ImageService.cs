@@ -14,16 +14,19 @@ namespace SealTypographicWebAPI.Services
     /// </summary>
     public class ImageService
     {
-        private readonly SealPathOption sealConfig;        
+        private readonly SealPathOption sealPathOption;
+        private readonly TemplateImagePathOption templateImagePathOption;
 
         /// <summary>
         /// 注入appsetting的ScanConfigPath資料
         /// </summary>
-        /// <param name="options"></param>
+        /// <param name="sealPathOption"></param>
+        /// <param name="templateImagePathOption"></param>
 
-        public ImageService(IOptionsSnapshot<SealPathOption> options)
+        public ImageService(IOptionsSnapshot<SealPathOption> sealPathOption, IOptionsSnapshot<TemplateImagePathOption> templateImagePathOption)
         {
-            sealConfig = options.Value;
+            this.sealPathOption = sealPathOption.Value;
+            this.templateImagePathOption = templateImagePathOption.Value;
         }
 
         /// <summary>
@@ -39,53 +42,167 @@ namespace SealTypographicWebAPI.Services
         /// <summary>
         /// Base64轉圖檔並存檔回傳存檔路徑
         /// </summary>
-        /// <param name="imageBase64Info">ImageBase64資訊</param>
-        /// <param name="isResize">是否縮放</param>        
-        public string GetSavedImageFilePath(ImageBase64Info imageBase64Info, bool isResize)
+        /// <param name="imageBase64Info">ImageBase64資訊</param>        
+        public async Task<string> GetSavedImageFilePath(ImageBase64Info imageBase64Info)
         {
-            SaveFullPath saveImageInfo = new()
+            SaveFullPath saveFullPath = new()
             {                
-                Folder = imageBase64Info.RootFolder()                
+                Folder = imageBase64Info.RootFolder(),
+                FileName = imageBase64Info.ReName()
             };
-                 
-            ImageInfo imageInfo = ImageInfo.FromImageBase64(imageBase64Info.ImageBase64);
-            if (!isResize)
-            {
-                saveImageInfo.FileName = imageBase64Info.ReName();
-            }
-            else
-            {
-                saveImageInfo.FileName = imageBase64Info.ReNameForThumbnail();
-                ImageInfo.ReSize(imageInfo, sealConfig.ResizeScale);                
-            }
-            ImageSharpUtil.SaveFile(imageInfo.Image, imageInfo.ImageFormat, saveImageInfo);            
-
-            return Path.Combine(saveImageInfo.Folder, saveImageInfo.FileName);                        
-        }
-
-        private void SavedImage()
-        {
-
+            //SaveImage(imageBase64Info.ImageBase64, saveFullPath, false);
+            await SaveImageAsync(imageBase64Info.ImageBase64, saveFullPath, false);
+            return Path.Combine(saveFullPath.Folder, saveFullPath.FileName);
         }
 
         /// <summary>
-        /// 
+        /// Base64儲存縮圖並存檔回傳存檔路徑
         /// </summary>
         /// <param name="imageBase64Info"></param>
+        /// <param name="isResize"></param>
         /// <returns></returns>
-        public string GetSavedImageFilePath(ImageBase64Info imageBase64Info)
-        {            
-            SaveFullPath saveImageInfo = new()
+        public async Task<string> GetSavedImageThumbnailFilePath(ImageBase64Info imageBase64Info, bool isResize)
+        {
+            SaveFullPath saveFullPath = new()
             {
-                Folder = imageBase64Info.RootFolder()
+                Folder = imageBase64Info.RootFolder(),
+                FileName = imageBase64Info.ReNameForThumbnail()
             };
+            //SaveImage(imageBase64Info.ImageBase64, saveFullPath, isResize);
+            await SaveImageAsync(imageBase64Info.ImageBase64, saveFullPath, isResize);
+            return Path.Combine(saveFullPath.Folder, saveFullPath.FileName);
+        }
 
-            ImageInfo imageInfo = ImageInfo.FromImageBase64(imageBase64Info.ImageBase64);
-            saveImageInfo.FileName = imageBase64Info.ReNameForThumbnail();
+        /// <summary>
+        /// Base64轉圖檔並存檔
+        /// saveFullPath為完整路徑
+        /// </summary>
+        /// <param name="imageBase64">base64圖檔</param>
+        /// <param name="savePath">存檔路徑</param>
+        /// <param name="isResize">是否縮放</param>
+        /// <returns></returns>
+        public void SaveImage(string imageBase64, string savePath, bool isResize)
+        {            
+            SaveFullPath saveFullPath = new()
+            {
+                Folder = Path.GetDirectoryName(savePath),
+                FileName = Path.GetFileNameWithoutExtension(savePath)
+            };
+            SaveImage(imageBase64, saveFullPath, isResize);
+        }
 
-            ImageSharpUtil.SaveFile(imageInfo.Image, imageInfo.ImageFormat, saveImageInfo);
+        /// <summary>
+        /// Base64轉圖檔並存檔
+        /// saveFullPath為SaveFullPath Class
+        /// </summary>
+        /// <param name="imageBase64">base64圖檔</param>
+        /// <param name="saveFullPath">存檔路徑(存檔位置與檔名)</param>
+        /// <param name="isResize">是否縮放</param>
+        /// <returns></returns>
+        private void SaveImage(string imageBase64, SaveFullPath saveFullPath, bool isResize)
+        {
+            ImageInfo imageInfo = ImageInfo.FromImageBase64(imageBase64);
+            if (isResize)
+            {
+                ImageInfo.ReSize(imageInfo, sealPathOption.ResizeScale);
+            }
+            ImageSharpUtil.SaveFile(imageInfo.Image, imageInfo.ImageFormat, saveFullPath);
+        }
 
-            return Path.Combine(saveImageInfo.Folder, saveImageInfo.FileName);
-        }        
+        /// <summary>
+        /// 非同步方式
+        /// Base64轉圖檔並存檔
+        /// saveFullPath為完整路徑
+        /// </summary>
+        /// <param name="imageBase64">base64圖檔</param>
+        /// <param name="savePath">存檔路徑</param>
+        /// <param name="isResize">是否縮放</param>
+        /// <returns></returns>
+        public async Task SaveImageAsync(string imageBase64, string savePath, bool isResize)
+        {
+            SaveFullPath saveFullPath = new()
+            {
+                Folder = Path.GetDirectoryName(savePath),
+                FileName = Path.GetFileNameWithoutExtension(savePath)
+            };
+            await SaveImageAsync(imageBase64, saveFullPath, isResize);
+        }
+
+        /// <summary>
+        /// 非同步方式
+        /// Base64轉圖檔並存檔 
+        /// saveFullPath為SaveFullPath Class
+        /// </summary>
+        /// <param name="imageBase64">base64圖檔</param>
+        /// <param name="saveFullPath">存檔路徑(存檔位置與檔名)</param>
+        /// <param name="isResize">是否縮放</param>
+        /// <returns></returns>
+        private async Task SaveImageAsync(string imageBase64, SaveFullPath saveFullPath, bool isResize)
+        {
+            ImageInfo imageInfo = ImageInfo.FromImageBase64(imageBase64);
+            if (isResize)
+            {
+                ImageInfo.ReSize(imageInfo, sealPathOption.ResizeScale);
+            }
+            await ImageSharpUtil.SaveFileAsync(imageInfo.Image, imageInfo.ImageFormat, saveFullPath);
+        }
+
+
+        /// <summary>
+        /// 設定ImageBase64Info(依SealType設定路徑)
+        /// </summary>
+        /// <param name="code">編碼(檔名結構之一)</param>
+        /// <param name="sealType">依Type決定SaveRootPath</param>
+        /// <returns></returns>
+        public ImageBase64Info SetImageBase64InfoWithSeal(string code, SealType sealType)
+        {
+            ImageBase64Info imageBase64Info = new()
+            {
+                Code = code,                
+            };
+            switch (sealType)
+            {
+                case SealType.Customer:
+                    imageBase64Info.SaveRootPath = sealPathOption.Customer;
+                    break;
+                case SealType.Accountant:
+                    imageBase64Info.SaveRootPath = sealPathOption.Accountant;
+                    break;
+                case SealType.Letterhead:
+                    imageBase64Info.SaveRootPath = sealPathOption.Letterhead;
+                    break;
+                case SealType.TemporarySeal:
+                    imageBase64Info.SaveRootPath = sealPathOption.TemporarySeal;
+                    break;
+            }
+            return imageBase64Info;
+        }
+
+        /// <summary>
+        /// 設定ImageBase64Info(依SealType設定路徑)
+        /// </summary>
+        /// <param name="code">編碼(檔名結構之一)</param>
+        /// <param name="sealType">依Type決定SaveRootPath</param>
+        /// <returns></returns>
+        public ImageBase64Info SetImageBase64InfoWithTemplate(string code, SealType sealType)
+        {
+            ImageBase64Info imageBase64Info = new()
+            {
+                Code = code,
+            };
+            switch (sealType)
+            {
+                case SealType.Customer:
+                    imageBase64Info.SaveRootPath = templateImagePathOption.Customer;
+                    break;
+                case SealType.Accountant:
+                    imageBase64Info.SaveRootPath = templateImagePathOption.Accountant;
+                    break;
+                case SealType.Letterhead:
+                    imageBase64Info.SaveRootPath = templateImagePathOption.Letterhead;
+                    break;
+            }
+            return imageBase64Info;
+        }
     }
 }

@@ -34,13 +34,13 @@ namespace SealTypographicWebAPI.Services
         /// </summary>
         /// <param name="letterheadImageForms">信頭圖片</param>
         /// <returns></returns>
-        ResponseViewModel New(LetterheadImageForm letterheadImageForms);
+        Task<ResponseViewModel> New(LetterheadImageForm letterheadImageForms);
 
         /// <summary>
         /// 異動信頭圖片的處理(審查狀態是草稿才進行修改)
         /// </summary>
         /// <param name="letterheadImageUpdate">異動信頭圖片資料</param>
         /// <returns></returns>
-        ResponseViewModel Update(LetterheadImageUpdate letterheadImageUpdate);
+        Task<ResponseViewModel> Update(LetterheadImageUpdate letterheadImageUpdate);
     }
 }

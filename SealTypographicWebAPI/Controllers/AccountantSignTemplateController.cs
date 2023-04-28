@@ -78,7 +78,7 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="accountantSignTemplateForm">會計師簽印樣板</param>        
         /// <returns></returns>
         [HttpPost]
-        public async Task<ResponseViewModel> New([FromForm]AccountantSignTemplateForm accountantSignTemplateForm)
+        public async Task<ResponseViewModel> New(AccountantSignTemplateForm accountantSignTemplateForm)
         {
             ResponseViewModel response = new ();
             try
@@ -101,7 +101,7 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="accountantSignTemplateUpdateForm">會計師簽印樣板</param>
         /// <returns></returns>
         [HttpPut]
-        public async Task<ResponseViewModel> Update([FromForm]AccountantSignTemplateUpdateForm accountantSignTemplateUpdateForm)
+        public async Task<ResponseViewModel> Update(AccountantSignTemplateUpdateForm accountantSignTemplateUpdateForm)
         {
             ResponseViewModel response = new();
             try

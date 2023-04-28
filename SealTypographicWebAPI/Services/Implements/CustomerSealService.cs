@@ -17,9 +17,8 @@ namespace SealTypographicWebAPI.Services.Implements
     public class CustomerSealService : ICustomerSealService
     {
         private readonly SealTypographicDbContext dbContext;
-        private readonly ImageService imageSharpService;
+        private readonly ImageService imageService;
         private readonly IMapper mapper;
-        private readonly SealPathOption sealPathOption;
 
         /// <summary>
         /// 建構
@@ -27,13 +26,11 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <param name="dbContext"></param>        
         /// <param name="mapper"></param>
         /// <param name="imageSharpService"></param>
-        /// <param name="options"></param>
-        public CustomerSealService(SealTypographicDbContext dbContext, IMapper mapper, ImageService imageSharpService, IOptionsSnapshot<SealPathOption> options)
+        public CustomerSealService(SealTypographicDbContext dbContext, IMapper mapper, ImageService imageSharpService)
         {
             this.dbContext = dbContext;
             this.mapper = mapper;
-            this.imageSharpService = imageSharpService;
-            this.sealPathOption = options.Value;
+            this.imageService = imageSharpService;            
         }
 
         /// <summary>
@@ -92,7 +89,7 @@ namespace SealTypographicWebAPI.Services.Implements
                 foreach (CustomerSealJournal customerSealJournal in customerSeals)
                 {
                     CustomerSealViewModel customerSealViewModel = mapper.Map<CustomerSealViewModel>(customerSealJournal);
-                    customerSealViewModel.ImageBase64 = imageSharpService.GetPathToBase64(customerSealJournal.ImageFullPath); //資料庫取得圖檔路徑轉BASE64                                       
+                    customerSealViewModel.ImageBase64 = imageService.GetPathToBase64(customerSealJournal.ImageFullPath); //資料庫取得圖檔路徑轉BASE64                                       
                     customerSealViewModel.SealMappingConfigId = customerSealJournal.ConfigType;
                     customerSealViewModels.SealViewModels.Add(customerSealViewModel);
                 }
@@ -110,7 +107,7 @@ namespace SealTypographicWebAPI.Services.Implements
         /// </summary>
         /// <param name="customerSealForms">客戶印鑑組資料</param>
         /// <returns></returns>
-        public ResponseViewModel New(CustomerSealForm customerSealForms)
+        public async Task<ResponseViewModel> New(CustomerSealForm customerSealForms)
         {
             ResponseViewModel response = new();            
             List<CustomerSealJournal> customerSealJournals = new();
@@ -133,7 +130,7 @@ namespace SealTypographicWebAPI.Services.Implements
                 {                    
                     CustomerSealQuarterJournal customerSealQuarterJournal = new();
 
-                    ImageBase64Info imageBase64Info = SetImageBase64Info(customerQuery.Code);
+                    ImageBase64Info imageBase64Info = imageService.SetImageBase64InfoWithSeal(customerQuery.Code, SealType.Customer);
 
                     customerSealQuarterJournal.Quarter = customerSealForms.Quarter;                    
                     BaseInputQuarterJournal(customerSealQuarterJournal, true, userId);
@@ -147,16 +144,16 @@ namespace SealTypographicWebAPI.Services.Implements
                         };
                         //ImageBase64轉圖檔並存到指定資料夾
                         imageBase64Info.ImageBase64 = customerSeal.ImageBase64;
-                        customerSealJournal.ImageFullPath = imageSharpService.GetSavedImageFilePath(imageBase64Info, false);
-                        customerSealJournal.ThumbnailFullPath = imageSharpService.GetSavedImageFilePath(imageBase64Info, true);
+                        customerSealJournal.ImageFullPath = await imageService.GetSavedImageFilePath(imageBase64Info);
+                        customerSealJournal.ThumbnailFullPath = await imageService.GetSavedImageThumbnailFilePath(imageBase64Info, true);
 
                         BaseInputCustomerSealJournal(customerSealJournal, true, userId);
                         customerSealJournals.Add(customerSealJournal);                        
                     }
                     
                     customerSealQuarterJournal.CustomerSealJournals = customerSealJournals;
-                    customerQuery.CustomerSealQuarterJournals.Add(customerSealQuarterJournal);
-                    dbContext.SaveChanges();
+                    customerQuery.CustomerSealQuarterJournals.Add(customerSealQuarterJournal);                    
+                    await dbContext.SaveChangesAsync();
                     response.Success();
                 }                
                 else
@@ -177,7 +174,7 @@ namespace SealTypographicWebAPI.Services.Implements
         /// </summary>
         /// <param name="customerSealUpdate">需要異動客戶印鑑資料</param>
         /// <returns></returns>
-        public List<ResponseViewModel> Update(CustomerSealUpdate customerSealUpdate)
+        public async Task<List<ResponseViewModel>> Update(CustomerSealUpdate customerSealUpdate)
         {            
             List<ResponseViewModel> responseViewModels = new();            
             int userId = 0; //從帳號驗證取得Id          
@@ -192,7 +189,7 @@ namespace SealTypographicWebAPI.Services.Implements
 
             if (customerSealQuarterQuery != null)
             {
-                ImageBase64Info imageBase64Info = SetImageBase64Info(customerSealQuarterQuery.Customer.Code);
+                ImageBase64Info imageBase64Info = imageService.SetImageBase64InfoWithSeal(customerSealQuarterQuery.Customer.Code, SealType.Customer);
 
                 //修改印鑑(更新ID移入DeleteCustomerSealIds，更新的資料移入CreateCustomerSeals，之後下一階段調整輸入時要拔掉此項)
                 foreach (CustomerSealUpdateForm customerSealFormUpdate in customerSealUpdate.UpdateCustomerSeals)
@@ -245,8 +242,8 @@ namespace SealTypographicWebAPI.Services.Implements
 
                     //ImageBase64轉圖檔並存到指定資料夾
                     imageBase64Info.ImageBase64 = createCustomerSeal.ImageBase64;
-                    customerSealJournal.ImageFullPath = imageSharpService.GetSavedImageFilePath(imageBase64Info, false);
-                    customerSealJournal.ThumbnailFullPath = imageSharpService.GetSavedImageFilePath(imageBase64Info, true);
+                    customerSealJournal.ImageFullPath = await imageService.GetSavedImageFilePath(imageBase64Info);
+                    customerSealJournal.ThumbnailFullPath = await imageService.GetSavedImageThumbnailFilePath(imageBase64Info, true);
                     BaseInputCustomerSealJournal(customerSealJournal, true, userId);
                     customerSealQuarterQuery.CustomerSealJournals.Add(customerSealJournal);
                 }
@@ -256,8 +253,8 @@ namespace SealTypographicWebAPI.Services.Implements
                 {
                     ResponseViewModel response = new();                    
                     customerSealQuarterQuery.ReviewStatus = ReviewStatus.Draft;
-
-                    dbContext.SaveChanges();
+                    
+                    await dbContext.SaveChangesAsync();
                     response.Success();
                     responseViewModels.Add(response);
                 }
@@ -364,24 +361,7 @@ namespace SealTypographicWebAPI.Services.Implements
             {
                 response.UpdateCustomerSealNoData();                                
             }
-
             return response;
-        }
-
-        /// <summary>
-        /// 設定ImageBase64Info
-        /// </summary>
-        /// <param name="code">編碼(檔名結構之一)</param>
-        /// <returns></returns>
-        private ImageBase64Info SetImageBase64Info(string code)
-        {
-            ImageBase64Info imageBase64Info = new()
-            {
-                Code = code,
-                SealType = SealType.Customer,
-                SaveRootPath = sealPathOption.Customer
-            };
-            return imageBase64Info;
         }
     }
 }

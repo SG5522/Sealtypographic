@@ -17,21 +17,18 @@ namespace SealTypographicWebAPI.Services.Implements
     {
         private readonly SealTypographicDbContext dbContext;
         private readonly ImageService imageService;
-        private readonly IMapper mapper;
-        private readonly SealPathOption sealPathOption;
+        private readonly IMapper mapper;        
         /// <summary>
         /// 取得DB與ResponseService
         /// </summary>
         /// <param name="dbContext"></param>        
         /// <param name="mapper"></param>
-        /// <param name="imageService"></param>
-        /// <param name="options"></param>
-        public AcoountantSignService(SealTypographicDbContext dbContext, IMapper mapper, ImageService imageService, IOptionsSnapshot<SealPathOption> options)
+        /// <param name="imageService"></param>        
+        public AcoountantSignService(SealTypographicDbContext dbContext, IMapper mapper, ImageService imageService)
         {
             this.dbContext = dbContext;            
             this.mapper = mapper;
-            this.imageService = imageService;
-            this.sealPathOption = options.Value;
+            this.imageService = imageService;            
         }
 
         /// <summary>
@@ -109,7 +106,7 @@ namespace SealTypographicWebAPI.Services.Implements
         /// </summary>
         /// <param name="accountantSignForms">會計師簽印組</param>
         /// <returns></returns>
-        public ResponseViewModel New(AccountantSignForms accountantSignForms)
+        public async Task<ResponseViewModel> New(AccountantSignForms accountantSignForms)
         {
             ResponseViewModel response = new();
             List<AccountantSignJournal> accountantSignJournals = new();
@@ -123,7 +120,7 @@ namespace SealTypographicWebAPI.Services.Implements
             if (accountantQuery != null)
             {                
                 AccountantSignGroupJournal accountantSignCreateDateJournal = new();
-                ImageBase64Info imageBase64Info = SetImageBase64Info(accountantQuery.Code);
+                ImageBase64Info imageBase64Info = imageService.SetImageBase64InfoWithSeal(accountantQuery.Code, SealType.Accountant);
                 
                 BaseInputSignGroupJournal(accountantSignCreateDateJournal, true, userId);                
                 
@@ -135,8 +132,8 @@ namespace SealTypographicWebAPI.Services.Implements
                     };
                                         
                     imageBase64Info.ImageBase64 = accountantSign.ImageBase64;
-                    accountantSignJournal.ImageFullPath = imageService.GetSavedImageFilePath(imageBase64Info, false);
-                    accountantSignJournal.ThumbnailFullPath = imageService.GetSavedImageFilePath(imageBase64Info, true);
+                    accountantSignJournal.ImageFullPath = await imageService.GetSavedImageFilePath(imageBase64Info);
+                    accountantSignJournal.ThumbnailFullPath = await imageService.GetSavedImageThumbnailFilePath(imageBase64Info, true);
                     BaseInputAccountantSignJournal(accountantSignJournal, true, userId);
                     accountantSignJournals.Add(accountantSignJournal);
                     
@@ -158,7 +155,7 @@ namespace SealTypographicWebAPI.Services.Implements
         /// </summary>
         /// <param name="accountantSignUpdate">需要異動會計師簽印資料</param>
         /// <returns></returns>
-        public List<ResponseViewModel> Update(AccountantSignUpdate accountantSignUpdate)
+        public async Task<List<ResponseViewModel>> Update(AccountantSignUpdate accountantSignUpdate)
         {
             List<ResponseViewModel> responseViewModels = new();            
             int userId = 0;//之後會從帳號驗證中取得userid            
@@ -189,7 +186,7 @@ namespace SealTypographicWebAPI.Services.Implements
                     };
                     BaseInputSignGroupJournal(accountantSignGroup, true, userId);
 
-                    ImageBase64Info imageBase64Info = SetImageBase64Info(accountant.Code);
+                    ImageBase64Info imageBase64Info = imageService.SetImageBase64InfoWithSeal(accountant.Code, SealType.Accountant);
 
                     //修改(更新ID移入DeleteAccountantSignIds，更新的簽印移入新增CreateAccountantSigns，之後下一階段調整輸入時要拔掉此項)
                     foreach (AccountantSignUpdateForm accountantSignFormUpdate in accountantSignUpdate.UpdateAccountantSigns)
@@ -246,8 +243,8 @@ namespace SealTypographicWebAPI.Services.Implements
 
                             //ImageBase64轉圖檔並存到指定資料夾
                             imageBase64Info.ImageBase64 = createAccountantSign.ImageBase64;
-                            accountantSignJournal.ImageFullPath = imageService.GetSavedImageFilePath(imageBase64Info, false);
-                            accountantSignJournal.ThumbnailFullPath = imageService.GetSavedImageFilePath(imageBase64Info, true);
+                            accountantSignJournal.ImageFullPath = await imageService.GetSavedImageFilePath(imageBase64Info);
+                            accountantSignJournal.ThumbnailFullPath = await imageService.GetSavedImageThumbnailFilePath(imageBase64Info, true);
                             BaseInputAccountantSignJournal(accountantSignJournal, true, userId);
                             accountantSignGroup.AccountantSignJournals.Add(accountantSignJournal);
                         }
@@ -402,22 +399,6 @@ namespace SealTypographicWebAPI.Services.Implements
                 response.UpdateAccountantSignNoData();                                
             }
             return response;
-        }
-
-        /// <summary>
-        /// 設定ImageBase64Info
-        /// </summary>
-        /// <param name="code">編碼(檔名結構之一)</param>
-        /// <returns></returns>
-        private ImageBase64Info SetImageBase64Info(string code)
-        {
-            ImageBase64Info imageBase64Info = new()
-            {
-                Code = code,
-                SealType = SealType.Accountant,
-                SaveRootPath = sealPathOption.Accountant
-            };
-            return imageBase64Info;
         }
     }
 }

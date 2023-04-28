@@ -78,7 +78,7 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="letterheadTemplateForm"></param>        
         /// <returns></returns>
         [HttpPost]
-        public async Task<ResponseViewModel> New([FromForm]LetterheadImageTemplateForm letterheadTemplateForm)
+        public async Task<ResponseViewModel> New(LetterheadImageTemplateForm letterheadTemplateForm)
         {
             ResponseViewModel response = new ();
             try
@@ -101,7 +101,7 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="letterheadTemplateUpdateForm">信頭樣板</param>
         /// <returns></returns>
         [HttpPut]
-        public async Task<ResponseViewModel> Update([FromForm] LetterheadImageTemplateUpdateForm letterheadTemplateUpdateForm)
+        public async Task<ResponseViewModel> Update(LetterheadImageTemplateUpdateForm letterheadTemplateUpdateForm)
         {
             ResponseViewModel response = new();
             try

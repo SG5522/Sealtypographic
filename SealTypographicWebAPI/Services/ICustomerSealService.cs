@@ -28,14 +28,14 @@ namespace SealTypographicWebAPI.Services
         /// </summary>
         /// <param name="customerSealForms">客戶印鑑組資料</param>
         /// <returns></returns>
-        ResponseViewModel New(CustomerSealForm customerSealForms);
+        Task<ResponseViewModel> New(CustomerSealForm customerSealForms);
 
         /// <summary>
         /// 異動客戶印鑑
         /// </summary>
         /// <param name="customerSealUpdate">需要異動客戶印鑑資料</param>
         /// <returns></returns>        
-        List<ResponseViewModel> Update(CustomerSealUpdate customerSealUpdate);
+        Task<List<ResponseViewModel>> Update(CustomerSealUpdate customerSealUpdate);
 
         /// <summary>
         /// 此季度印鑑從草稿狀態變更為待審

@@ -9,6 +9,7 @@ using SealTypographicWebAPI.Models.Customer;
 using SealTypographicWebAPI.Models.Letterhead;
 using System.ComponentModel.Design;
 using Microsoft.Extensions.Options;
+using System.Linq;
 
 namespace SealTypographicWebAPI.Services.Implements
 {
@@ -18,30 +19,20 @@ namespace SealTypographicWebAPI.Services.Implements
     public class LetterheadImageService : ILetterheadImageService
     {
         private readonly SealTypographicDbContext dbContext;
-        private readonly ImageService imageSharpService;        
-        private readonly IMapper mapper;
+        private readonly ImageService imageService;                
         private readonly IStringLocalizer<LetterheadImageService> localizer;
-        private readonly SealPathOption sealPathOption;
 
         /// <summary>
         /// 取得DB與ResponseService
         /// </summary>
-        /// <param name="dbContext"></param>        
-        /// <param name="mapper"></param>
+        /// <param name="dbContext"></param>                
         /// <param name="imageSharpService"></param>
-        /// <param name="localizer"></param>
-        /// <param name="options"></param>
-        public LetterheadImageService(SealTypographicDbContext dbContext,
-                                      ImageService imageSharpService,
-                                      IMapper mapper,                                       
-                                      IStringLocalizer<LetterheadImageService> localizer,
-                                      IOptionsSnapshot<SealPathOption> options)
+        /// <param name="localizer"></param>        
+        public LetterheadImageService(SealTypographicDbContext dbContext, ImageService imageSharpService, IStringLocalizer<LetterheadImageService> localizer)
         {
-            this.dbContext = dbContext;
-            this.mapper = mapper;
-            this.imageSharpService = imageSharpService;
+            this.dbContext = dbContext;            
+            this.imageService = imageSharpService;
             this.localizer = localizer;
-            this.sealPathOption = options.Value;
         }
 
         /// <summary>
@@ -115,7 +106,7 @@ namespace SealTypographicWebAPI.Services.Implements
                 
             if (letterheadImageJournalQuery != null)
             {                                
-                letterheadImageViewModels.ImageBase64 = imageSharpService.GetPathToBase64(letterheadImageJournalQuery.ImageFullPath); //資料庫取得圖檔路徑轉BASE64                                                                                  
+                letterheadImageViewModels.ImageBase64 = imageService.GetPathToBase64(letterheadImageJournalQuery.ImageFullPath); //資料庫取得圖檔路徑轉BASE64                                                                                  
                 
             }
             letterheadImageViewModels.Success();
@@ -128,7 +119,7 @@ namespace SealTypographicWebAPI.Services.Implements
         /// </summary>
         /// <param name="letterheadImageForms">信頭圖片</param>
         /// <returns></returns>
-        public ResponseViewModel New(LetterheadImageForm letterheadImageForms)
+        public async Task<ResponseViewModel> New(LetterheadImageForm letterheadImageForms)
         {
             ResponseViewModel response = new();                  
             Letterhead letterhead = new();
@@ -142,7 +133,7 @@ namespace SealTypographicWebAPI.Services.Implements
 
             if(companyQuery != null)
             {
-                ImageBase64Info imageBase64Info = SetImageBase64Info(companyQuery.Code);                
+                ImageBase64Info imageBase64Info = imageService.SetImageBase64InfoWithSeal(companyQuery.Code, SealType.Letterhead);                
 
                 //信頭基本資料
                 letterhead.Name = letterheadImageForms.Name;
@@ -150,7 +141,7 @@ namespace SealTypographicWebAPI.Services.Implements
 
                 //ImageBase64轉圖檔並存到指定資料夾
                 imageBase64Info.ImageBase64 = letterheadImageForms.ImageBase64;
-                letterheadImage.ImageFullPath = imageSharpService.GetSavedImageFilePath(imageBase64Info, false);
+                letterheadImage.ImageFullPath = await imageService.GetSavedImageFilePath(imageBase64Info);
 
                 //新增信頭圖片
                 BaseInputImageJournal(letterheadImage, true, userId);
@@ -171,36 +162,36 @@ namespace SealTypographicWebAPI.Services.Implements
         /// </summary>
         /// <param name="letterheadImageUpdate">異動信頭圖片資料</param>
         /// <returns></returns>
-        public ResponseViewModel Update(LetterheadImageUpdate letterheadImageUpdate)
+        public async Task<ResponseViewModel> Update(LetterheadImageUpdate letterheadImageUpdate)
         {
             ResponseViewModel response = new();            
             int userId = 0;//之後會從帳號驗證中取得userid
 
             LetterheadImageJournal? updateImageQuery = dbContext.LetterheadImageJournals
                                                         .Include(letterheadImageJournal => letterheadImageJournal.Letterhead)
-                                                        .ThenInclude(letterhead => letterhead.Company)
-                                                        .FirstOrDefault(letterheadImageJournal => letterheadImageJournal.Id == letterheadImageUpdate.Id);
+                                                        .ThenInclude(letterheadImageJournal => letterheadImageJournal.Company)
+                                                        .FirstOrDefault(letterheadImageJournal => letterheadImageJournal.Id == letterheadImageUpdate.Id);                                                        
+
 
             if (updateImageQuery != null)
             {
                 LetterheadImageJournal letterheadImageJournal = new();                
+                ImageBase64Info imageBase64Info = imageService.SetImageBase64InfoWithSeal(updateImageQuery.Letterhead.Company.Code, SealType.Letterhead);                
 
-                ImageBase64Info imageBase64Info = SetImageBase64Info(updateImageQuery.Letterhead.Company.Code);
+                //原圖片狀態變更停用                
+                BaseInputImageJournal(updateImageQuery, false, userId);               
 
                 //ImageBase64轉圖檔並存到指定資料夾                    
                 imageBase64Info.ImageBase64 = letterheadImageUpdate.ImageBase64;
-                letterheadImageJournal.ImageFullPath = imageSharpService.GetSavedImageFilePath(imageBase64Info, false);
-                letterheadImageJournal.Letterhead = updateImageQuery.Letterhead;
-                BaseInputImageJournal(letterheadImageJournal, true, userId);
-                               
+                letterheadImageJournal.ImageFullPath = await imageService.GetSavedImageFilePath(imageBase64Info);
+                letterheadImageJournal.Letterhead = updateImageQuery.Letterhead;                
+                BaseInputImageJournal(letterheadImageJournal, true, userId);                
+
                 //變更信頭名稱
-                updateImageQuery.Letterhead.Name = letterheadImageUpdate.LetterheadName;                
-                BaseInputLetterhead(updateImageQuery.Letterhead, false, userId);                
+                updateImageQuery.Letterhead.Name = letterheadImageUpdate.LetterheadName;                                
+                BaseInputLetterhead(updateImageQuery.Letterhead, false, userId);                                
 
-                //原圖片狀態變更停用                
-                BaseInputImageJournal(updateImageQuery, false, userId);
-
-                dbContext.LetterheadImageJournals.Add(letterheadImageJournal);
+                dbContext.LetterheadImageJournals.Add(letterheadImageJournal);                
                 dbContext.SaveChanges();
                 response.Success();                
             }
@@ -248,22 +239,6 @@ namespace SealTypographicWebAPI.Services.Implements
                 letterhead.UpdateUserId = userid;
                 letterhead.UpdateDate = DateTime.Now;
             }
-        }
-
-        /// <summary>
-        /// 設定ImageBase64Info
-        /// </summary>
-        /// <param name="code">編碼(檔名結構之一)</param>
-        /// <returns></returns>
-        private ImageBase64Info SetImageBase64Info(string code)
-        {
-            ImageBase64Info imageBase64Info = new()
-            {
-                Code = code,
-                SealType = SealType.Letterhead,
-                SaveRootPath = sealPathOption.Letterhead
-            };
-            return imageBase64Info;
         }
     }
 }

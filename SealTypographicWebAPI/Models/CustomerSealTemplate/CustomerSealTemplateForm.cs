@@ -7,8 +7,7 @@ namespace SealTypographicWebAPI.Models.CustomerSealTemplate
 {
     /// <summary>
     /// 客户印鑑樣板位置
-    /// </summary> 
-    //[ModelBinder(BinderType = typeof(JsonModelBinder))]
+    /// </summary>     
     public class CustomerSealTemplateLocationForm : BaseLocationViewModel
     {
         /// <summary>

@@ -7,24 +7,16 @@ namespace SealTypographicWebAPI.Models.BaseModels
     /// </summary>
     public abstract class BaseTemplateWithFile : BaseTemplate
     {
-        ///// <summary>
-        ///// 背景圖片
-        ///// </summary>
-        //public IFormFile ImageView { get; set; }
-
         /// <summary>
         /// 背景圖片
         /// </summary>
+        /// <example>image/...</example>
         public string ImageBase64 { get; set; }
 
-        ///// <summary>
-        ///// 背景圖片
-        ///// </summary>
-        //public IFormFile Thumbnail { get; set; }
-
         /// <summary>
         /// 背景圖片
         /// </summary>
+        /// <example>image/...</example>
         public string ImageBase64Thumbnail { get; set; }
     }
 }

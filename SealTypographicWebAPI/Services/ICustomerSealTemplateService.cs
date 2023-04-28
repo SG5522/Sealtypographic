@@ -17,6 +17,13 @@ namespace SealTypographicWebAPI.Services
         CustomerSealTemplateDetailViewModel GetDetail(int id);
 
         /// <summary>
+        /// 客戶印鑑樣板圖片顯示
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        CustomerSealTemplateViewImage GetImage(int id);
+
+        /// <summary>
         /// 客戶印鑑樣板分頁顯示
         /// </summary>
         /// <param name="customerSealTemplateSearch">客戶印鑑樣板分頁搜尋</param>

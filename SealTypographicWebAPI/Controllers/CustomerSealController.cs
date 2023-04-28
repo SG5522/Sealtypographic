@@ -79,13 +79,13 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="customerSealForms">客戶印鑑組資料</param>
         /// <returns></returns>
         [HttpPost]
-        public ResponseViewModel New(CustomerSealForm customerSealForms)
+        public async Task<ResponseViewModel> New(CustomerSealForm customerSealForms)
         {
             ResponseViewModel response = new();
             try
             {
                 Log.Information("CustomerSeal new input {@Input}", customerSealForms);
-                response = customerSealService.New(customerSealForms);
+                response = await customerSealService.New(customerSealForms);
                 Log.Information("CustomerSeal new output {@Output}", response);
 
             }
@@ -103,13 +103,13 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="customerSealUpdate">需要異動客戶印鑑資料</param>
         /// <returns></returns>
         [HttpPut]
-        public List<ResponseViewModel> Update(CustomerSealUpdate customerSealUpdate)
+        public async Task<List<ResponseViewModel>> Update(CustomerSealUpdate customerSealUpdate)
         {
             List<ResponseViewModel> responses = new();
             try
             {
                 Log.Information("CustomerSeal update input {@Input}", customerSealUpdate);
-                responses = customerSealService.Update(customerSealUpdate);
+                responses = await customerSealService.Update(customerSealUpdate);
                 Log.Information("CustomerSeal update output {@Output}", responses);
             }
             catch (Exception ex)

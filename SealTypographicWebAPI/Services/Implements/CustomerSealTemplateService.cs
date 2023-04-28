@@ -2,8 +2,6 @@
 using DBEntities;
 using DBEntities.Consts;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
-using SealTypographicWebAPI.Config;
 using SealTypographicWebAPI.Models;
 using SealTypographicWebAPI.Models.CustomerSealTemplate;
 using SealTypographicWebAPI.Utils;
@@ -17,8 +15,7 @@ namespace SealTypographicWebAPI.Services.Implements
     public class CustomerSealTemplateService : ICustomerSealTemplateService
     {
         private readonly SealTypographicDbContext dbContext;
-        private readonly ImageService imageService;
-        private readonly TemplateImagePathOption templateImagePathOption;
+        private readonly ImageService imageService;       
         private readonly IMapper mapper;
 
         /// <summary>
@@ -26,14 +23,12 @@ namespace SealTypographicWebAPI.Services.Implements
         /// </summary>
         /// <param name="dbContext"></param>        
         /// <param name="mapper"></param>
-        /// <param name="imageService"></param>
-        /// <param name="option"></param>
-        public CustomerSealTemplateService(SealTypographicDbContext dbContext, IMapper mapper, ImageService imageService, IOptionsSnapshot<TemplateImagePathOption> option)
+        /// <param name="imageService"></param>        
+        public CustomerSealTemplateService(SealTypographicDbContext dbContext, IMapper mapper, ImageService imageService)
         {
             this.dbContext = dbContext;
             this.mapper = mapper;
-            this.imageService = imageService;
-            this.templateImagePathOption = option.Value;
+            this.imageService = imageService;            
         }
 
         /// <summary>
@@ -57,6 +52,27 @@ namespace SealTypographicWebAPI.Services.Implements
             }
 
             return customerSealTemplateDetailViewModel;
+        }
+
+        /// <summary>
+        /// 客戶印鑑樣板圖片顯示
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public CustomerSealTemplateViewImage GetImage(int id)
+        {
+            CustomerSealTemplateViewImage viewImage = new();
+
+            string? imagePath = dbContext.CustomerSealTemplates.Where(x => x.Id == id)
+                                                               .Select(x => x.ImageViewFullPath).FirstOrDefault();       
+
+            if(imagePath != null)
+            {
+                viewImage.ImageBase64 = imageService.GetPathToBase64(imagePath);
+                viewImage.Success();
+            }
+
+            return viewImage;
         }
 
         /// <summary>
@@ -137,15 +153,17 @@ namespace SealTypographicWebAPI.Services.Implements
                                     .FirstOrDefault(x => x.Id == companyId);
 
             if (companyQuery != null) 
-            {
-                ImageBase64Info imageBase64Info = SetImageBase64Info(companyQuery.Code);
+            {                
                 CustomerSealTemplate customerSealTemplate = mapper.Map<CustomerSealTemplate>(customerSealTemplateForm);
                 //儲存圖片(原圖)
-                imageBase64Info.ImageBase64 = customerSealTemplate.ImageViewFullPath;
-                customerSealTemplate.ImageViewFullPath = imageService.GetSavedImageFilePath(imageBase64Info);
+                ImageBase64Info imageBase64Info = imageService.SetImageBase64InfoWithTemplate(companyQuery.Code, SealType.Customer);
+
+                imageBase64Info.ImageBase64 = customerSealTemplateForm.ImageBase64;
+                customerSealTemplate.ImageViewFullPath = await imageService.GetSavedImageFilePath(imageBase64Info);
                 //儲存縮圖
-                imageBase64Info.ImageBase64 = customerSealTemplate.ThumbnailFullPath;
-                customerSealTemplate.ThumbnailFullPath = imageService.GetSavedImageFilePath(imageBase64Info);
+                imageBase64Info.ImageBase64 = customerSealTemplateForm.ImageBase64Thumbnail;
+                customerSealTemplate.ThumbnailFullPath = await imageService.GetSavedImageThumbnailFilePath(imageBase64Info, false);
+
                 List<CustomerSealTemplateLocation> customerSealTemplateLocations = new();
                 foreach (CustomerSealTemplateLocationForm customerSealTemplateLocationForm in customerSealTemplateForm.CustomerSealTemplateLocationForms)
                 {                   
@@ -154,6 +172,7 @@ namespace SealTypographicWebAPI.Services.Implements
                 BaseInputCustomerSealTemplate(customerSealTemplate, true, userid);
                 customerSealTemplate.CustomerSealTemplateLocations = customerSealTemplateLocations;                
                 companyQuery.CustomerSealTemplates.Add(customerSealTemplate);
+
                 dbContext.Entry(companyQuery).State = EntityState.Unchanged;
                 dbContext.CustomerSealTemplates.Add(customerSealTemplate);                
                 await dbContext.SaveChangesAsync();
@@ -171,36 +190,28 @@ namespace SealTypographicWebAPI.Services.Implements
         {
             ResponseViewModel response = new ();
             int userid = 1;
-            CustomerSealTemplate? customerSealTemplateQuery = dbContext.CustomerSealTemplates.Include(x => x.CustomerSealTemplateLocations)
-                                                             .Include(x => x.Company)
-                                                             .Select
-                                                             (
-                                                                x => new CustomerSealTemplate()
-                                                                {
-                                                                    Id = x.Id,
-                                                                    Company = new Company { Code = x.Company.Code},
-                                                                    CustomerSealTemplateLocations = x.CustomerSealTemplateLocations,
-                                                                }
-                                                             )
-                                                             .FirstOrDefault(x => x.Id == customerSealTemplateUpdateForm.Id);
+            CustomerSealTemplate? customerSealTemplateQuery = dbContext.CustomerSealTemplates.Include(x => x.CustomerSealTemplateLocations)                                                             
+                                                                                             .FirstOrDefault(x => x.Id == customerSealTemplateUpdateForm.Id);
 
             if (customerSealTemplateQuery != null)
-            {                
-                //customerSealTemplateQuery.ImageViewFullPath = await FormFileUtil.UploadFileReturnPath(customerSealTemplateUpdateForm.ImageBase64, customerSealTemplateQuery.Company.Code, templateImagePathOption.Customer);
-                //customerSealTemplateQuery.ThumbnailFullPath = await FormFileUtil.UploadFileReturnPath(customerSealTemplateUpdateForm.ImageBase64Thumbnail, customerSealTemplateQuery.Company.Code, templateImagePathOption.Customer);                
+            {
+                //儲存圖片(原圖)                
+                await imageService.SaveImageAsync(customerSealTemplateUpdateForm.ImageBase64, customerSealTemplateQuery.ImageViewFullPath, false);
+                //儲存縮圖                
+                await imageService.SaveImageAsync(customerSealTemplateUpdateForm.ImageBase64Thumbnail, customerSealTemplateQuery.ThumbnailFullPath, false);
+
                 mapper.Map(customerSealTemplateUpdateForm, customerSealTemplateQuery);
                 BaseInputCustomerSealTemplate(customerSealTemplateQuery, false, userid);
                 
                 foreach(CustomerSealTemplateLocationUpdateForm sealTemplateLocationUpdateForm in customerSealTemplateUpdateForm.LocationUpdateForms)
                 {
                     CustomerSealTemplateLocation? customerSealTemplateLocation = customerSealTemplateQuery.CustomerSealTemplateLocations
-                                                                                .FirstOrDefault(x => x.Id == sealTemplateLocationUpdateForm.Id);
+                                                                                                          .FirstOrDefault(x => x.Id == sealTemplateLocationUpdateForm.Id);
                     if(customerSealTemplateLocation != null) 
                     {
                         mapper.Map(sealTemplateLocationUpdateForm, customerSealTemplateLocation);
                     }
-                }
-                dbContext.Entry(customerSealTemplateQuery).State = EntityState.Modified;                
+                }                 
                 await dbContext.SaveChangesAsync();
                 response.Success();
             }
@@ -254,20 +265,6 @@ namespace SealTypographicWebAPI.Services.Implements
             }
         }
 
-        /// <summary>
-        /// 設定ImageBase64Info
-        /// </summary>
-        /// <param name="code">編碼(檔名結構之一)</param>
-        /// <returns></returns>
-        private ImageBase64Info SetImageBase64Info(string code)
-        {
-            ImageBase64Info imageBase64Info = new()
-            {
-                Code = code,
-                SealType = SealType.Customer,
-                SaveRootPath = templateImagePathOption.Customer
-            };
-            return imageBase64Info;
-        }
+
     }
 }

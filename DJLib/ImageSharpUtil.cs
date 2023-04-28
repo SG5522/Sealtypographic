@@ -4,6 +4,7 @@ using DJLib.Models;
 using System;
 using System.IO;
 using SixLabors.ImageSharp.Processing;
+using System.Threading.Tasks;
 
 namespace DJLib
 {
@@ -55,6 +56,29 @@ namespace DJLib
             {
                 throw new Exception(ex.Message);
             }            
+        }
+
+        /// <summary>
+        /// 存檔 支援格式(jpeg, bmp, gif, pbm, png, tga, tiff, Tga,WebP)
+        /// </summary>
+        /// <param name="image">影像</param>
+        /// <param name="format">格式</param>
+        /// <param name="saveFullPath">存檔資訊</param>
+        public static async Task SaveFileAsync(Image image, IImageFormat format, SaveFullPath saveFullPath)
+        {
+            try
+            {
+                if (!Directory.Exists(saveFullPath.Folder))
+                {
+                    Directory.CreateDirectory(saveFullPath.Folder);
+                }
+                saveFullPath.FileName += $".{format.Name.ToLower()}";
+                await image.SaveAsync(Path.Combine(saveFullPath.Folder, saveFullPath.FileName));
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
     }
 }

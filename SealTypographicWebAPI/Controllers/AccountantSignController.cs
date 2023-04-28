@@ -80,13 +80,13 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="accountantSignForms">會計師簽印組</param>
         /// <returns></returns>
         [HttpPost]
-        public ResponseViewModel New(AccountantSignForms accountantSignForms)
+        public async Task<ResponseViewModel> New(AccountantSignForms accountantSignForms)
         {
             ResponseViewModel response = new ();
             try
             {
                 Log.Information("AccountantSign new input {@Input}", accountantSignForms);
-                response = accountantSignService.New(accountantSignForms);
+                response = await accountantSignService.New(accountantSignForms);
                 Log.Information("AccountantSign new output {@Output}", response);                             
             }
             catch (Exception ex)
@@ -103,13 +103,13 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="accountantSignUpdate">需要異動會計師簽印資料</param>
         /// <returns></returns>
         [HttpPut]
-        public List<ResponseViewModel> Update(AccountantSignUpdate accountantSignUpdate)
+        public async Task<List<ResponseViewModel>> Update(AccountantSignUpdate accountantSignUpdate)
         {
             List<ResponseViewModel> responses= new();
             try
             {
                 Log.Information("AccountantSign update input {@Input}", accountantSignUpdate);
-                responses = accountantSignService.Update(accountantSignUpdate);
+                responses = await accountantSignService.Update(accountantSignUpdate);
                 Log.Information("AccountantSign update output {@Output}", responses);
             }
             catch (Exception ex)

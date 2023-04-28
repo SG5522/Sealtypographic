@@ -2,8 +2,6 @@
 using DBEntities;
 using DBEntities.Consts;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
-using SealTypographicWebAPI.Config;
 using SealTypographicWebAPI.Models;
 using SealTypographicWebAPI.Models.AccountantSignTemplate;
 using SealTypographicWebAPI.Utils;
@@ -17,8 +15,7 @@ namespace SealTypographicWebAPI.Services.Implements
     public class AccountantSignTemplateService : IAccountantSignTemplateService
     {
         private readonly SealTypographicDbContext dbContext;
-        private readonly ImageService imageSharpService;
-        private readonly TemplateImagePathOption templateImagePathOption;
+        private readonly ImageService imageService;        
         private readonly IMapper mapper;
 
         /// <summary>
@@ -26,14 +23,12 @@ namespace SealTypographicWebAPI.Services.Implements
         /// </summary>
         /// <param name="dbContext">EF Core SealTypographic DbContext</param>        
         /// <param name="mapper">AutoMapper</param>
-        /// <param name="imageSharpService">取得圖像資料</param>
-        /// <param name="option">匯入AppSetting資料</param>
-        public AccountantSignTemplateService(SealTypographicDbContext dbContext, IMapper mapper, ImageService imageSharpService, IOptionsSnapshot<TemplateImagePathOption> option)
+        /// <param name="ImageService">取得圖像資料</param>        
+        public AccountantSignTemplateService(SealTypographicDbContext dbContext, IMapper mapper, ImageService ImageService)
         {
             this.dbContext = dbContext;
             this.mapper = mapper;
-            this.imageSharpService = imageSharpService;
-            this.templateImagePathOption = option.Value;
+            this.imageService = ImageService;
         }
 
         /// <summary>
@@ -96,7 +91,7 @@ namespace SealTypographicWebAPI.Services.Implements
                                                                         Id = accountantSignTemplate.Id,
                                                                         Name = accountantSignTemplate.Name,
                                                                         ImageFullPath = accountantSignTemplate.ThumbnailFullPath,
-                                                                        ThumbnailBase64 = imageSharpService.GetPathToBase64(accountantSignTemplate.ThumbnailFullPath)
+                                                                        ThumbnailBase64 = imageService.GetPathToBase64(accountantSignTemplate.ThumbnailFullPath)
                                                                     })
                                                                     .ToList();
 
@@ -138,9 +133,15 @@ namespace SealTypographicWebAPI.Services.Implements
 
             if (companyQuery != null) 
             {
-                AccountantSignTemplate accountantSignTemplate = mapper.Map<AccountantSignTemplate>(accountantSignTemplateForm);                
-                //accountantSignTemplate.ImageViewFullPath = await FormFileUtil.UploadFileReturnPath(accountantSignTemplateForm.ImageBase64, companyQuery.Code, templateImagePathOption.Accountant);
-                //accountantSignTemplate.ThumbnailFullPath = await FormFileUtil.UploadFileReturnPath(accountantSignTemplateForm.ImageBase64Thumbnail, companyQuery.Code, templateImagePathOption.Accountant);
+                AccountantSignTemplate accountantSignTemplate = mapper.Map<AccountantSignTemplate>(accountantSignTemplateForm);
+                //儲存圖片(原圖)
+                ImageBase64Info imageBase64Info = imageService.SetImageBase64InfoWithTemplate(companyQuery.Code, SealType.Accountant);
+                imageBase64Info.ImageBase64 = accountantSignTemplateForm.ImageBase64;
+                accountantSignTemplate.ImageViewFullPath = await imageService.GetSavedImageFilePath(imageBase64Info);
+                //儲存縮圖
+                imageBase64Info.ImageBase64 = accountantSignTemplateForm.ImageBase64Thumbnail;
+                accountantSignTemplate.ThumbnailFullPath = await imageService.GetSavedImageThumbnailFilePath(imageBase64Info, false);
+
                 List<AccountantSignTemplateLocation> accountantSignTemplateLocations = new();
                 foreach (AccountantSignTemplateLocationForm accountantSignTemplateLocationForm in accountantSignTemplateForm.AccountantSignTemplateLocationForms)
                 {                   
@@ -167,22 +168,16 @@ namespace SealTypographicWebAPI.Services.Implements
             ResponseViewModel response = new ();
             int userid = 1;
             AccountantSignTemplate? accountantSignTemplateQuery = dbContext.AccountantSignTemplates.Include(x => x.AccountantSignTemplateLocations)
-                                                             .Include(x => x.Company)
-                                                             .Select
-                                                             (
-                                                                x => new AccountantSignTemplate()
-                                                                {
-                                                                    Id = x.Id,
-                                                                    Company = new Company { Code = x.Company.Code},
-                                                                    AccountantSignTemplateLocations = x.AccountantSignTemplateLocations,
-                                                                }
-                                                             )
-                                                             .FirstOrDefault(x => x.Id == accountantSignTemplateUpdateForm.Id);
+                                                                                                   .Include(x => x.Company)
+                                                                                                   .FirstOrDefault(x => x.Id == accountantSignTemplateUpdateForm.Id);
 
             if (accountantSignTemplateQuery != null)
-            {                
-                //accountantSignTemplateQuery.ImageViewFullPath = await FormFileUtil.UploadFileReturnPath(accountantSignTemplateUpdateForm.ImageBase64, accountantSignTemplateQuery.Company.Code, templateImagePathOption.Accountant);
-                //accountantSignTemplateQuery.ThumbnailFullPath = await FormFileUtil.UploadFileReturnPath(accountantSignTemplateUpdateForm.ImageBase64Thumbnail, accountantSignTemplateQuery.Company.Code, templateImagePathOption.Accountant);                
+            {
+                //儲存圖片(原圖)                
+                imageService.SaveImage(accountantSignTemplateUpdateForm.ImageBase64, accountantSignTemplateQuery.ImageViewFullPath, false);
+                //儲存縮圖                
+                imageService.SaveImage(accountantSignTemplateUpdateForm.ImageBase64Thumbnail, accountantSignTemplateQuery.ThumbnailFullPath, false);
+
                 mapper.Map(accountantSignTemplateUpdateForm, accountantSignTemplateQuery);
                 BaseInputAccountantSignTemplate(accountantSignTemplateQuery, false, userid);
                 
@@ -194,8 +189,7 @@ namespace SealTypographicWebAPI.Services.Implements
                     {
                         mapper.Map(signTemplateLocationUpdateForm, accountantSignTemplateLocation);
                     }
-                }
-                dbContext.Entry(accountantSignTemplateQuery).State = EntityState.Modified;                
+                }                       
                 await dbContext.SaveChangesAsync();
                 response.Success();
             }

@@ -50,6 +50,28 @@ namespace SealTypographicWebAPI.Controllers
         }
 
         /// <summary>
+        /// 客戶印鑑樣板圖片顯示
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("[Action]/{id}")]
+        public CustomerSealTemplateViewImage ViewImage(int id)
+        {
+            CustomerSealTemplateViewImage viewImage = new();
+            try
+            {
+                Log.Information("CustomerSealTemplate detail input {@Input}", id);
+                viewImage = customerSealTemplateService.GetImage(id);
+                Log.Information("CustomerSealTemplate detail output {@Output}", id);
+            }
+            catch (Exception ex)
+            {
+                Log.Error("CustomerSealTemplate paginate error {@Error}", ex);
+                viewImage.DbError();
+            }
+            return viewImage;
+        }
+
+        /// <summary>
         /// 客戶印鑑樣板分頁列表
         /// </summary>
         /// <param name="customerSealTemplateSearch">客戶印鑑樣板分頁搜尋</param>
@@ -100,7 +122,7 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="customerSealTemplateUpdateForm">客戶樣板</param>
         /// <returns></returns>
         [HttpPut]
-        public async Task<ResponseViewModel> Update([FromForm] CustomerSealTemplateUpdateForm customerSealTemplateUpdateForm)
+        public async Task<ResponseViewModel> Update(CustomerSealTemplateUpdateForm customerSealTemplateUpdateForm)
         {
             ResponseViewModel response = new();
             try

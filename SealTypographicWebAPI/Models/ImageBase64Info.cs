@@ -1,4 +1,5 @@
 ﻿using DBEntities.Consts;
+using DJLib.Models;
 
 namespace SealTypographicWebAPI.Models
 {
@@ -7,11 +8,6 @@ namespace SealTypographicWebAPI.Models
     /// </summary>
     public class ImageBase64Info
     {
-        /// <summary>
-        /// 印鑑類型
-        /// </summary>
-        public SealType SealType { get; set; }
-
         /// <summary>
         /// 編號
         /// </summary>

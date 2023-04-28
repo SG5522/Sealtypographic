@@ -146,7 +146,7 @@ namespace SealTypographicWebAPI.Services.Implements
         /// 新增客戶基本資料
         /// </summary>
         /// <param name="temporarySealForm">基本資料</param>
-        public ResponseViewModel New(TemporarySealForm temporarySealForm)
+        public async Task<ResponseViewModel> New(TemporarySealForm temporarySealForm)
         {
             ResponseViewModel response = new ();
 
@@ -177,8 +177,8 @@ namespace SealTypographicWebAPI.Services.Implements
                         Sequence = temporarySeal.Sequence
                     };
                     imageBase64Info.ImageBase64 = temporarySeal.ImageBase64;
-                    temporarySealJournal.ImageFullPath = imageSharpService.GetSavedImageFilePath(imageBase64Info, false);
-                    temporarySealJournal.ThumbnailFullPath = imageSharpService.GetSavedImageFilePath(imageBase64Info, true);
+                    temporarySealJournal.ImageFullPath = await imageSharpService.GetSavedImageFilePath(imageBase64Info);
+                    temporarySealJournal.ThumbnailFullPath = await imageSharpService.GetSavedImageThumbnailFilePath(imageBase64Info, true);
 
                     BaseInputTemporarySealJournal(temporarySealJournal, true, userId);
                     temporarySealJournals.Add(temporarySealJournal);
@@ -202,26 +202,13 @@ namespace SealTypographicWebAPI.Services.Implements
         /// 更新臨時章
         /// </summary>        
         /// <param name="temporarySealUpdateForm">基本資料</param>
-        public ResponseViewModel Update(TemporarySealUpdateForm temporarySealUpdateForm)
+        public async Task<ResponseViewModel> Update(TemporarySealUpdateForm temporarySealUpdateForm)
         {
             ResponseViewModel response = new();
             int userId = 0;
             TemporarySealQuarterJournal? temporarySealQuarterJournalQuery = dbContext.TemporarySealQuarterJournals
                                                                     .Include(temporarySealQuarterJournal => temporarySealQuarterJournal.Customer)
                                                                     .Include(temporarySealQuarterJournal => temporarySealQuarterJournal.TemporarySealJournals)
-                                                                    .Select 
-                                                                    (
-                                                                        temporarySealQuarterJournal => new TemporarySealQuarterJournal
-                                                                        {
-                                                                            Id = temporarySealUpdateForm.Id,
-                                                                            Customer = new Customer{ 
-                                                                                Id = temporarySealQuarterJournal.Customer.Id,
-                                                                                Code = temporarySealQuarterJournal.Customer.Code,
-                                                                            },
-                                                                            TemporarySealJournals = temporarySealQuarterJournal.TemporarySealJournals
-                                                                                                    .Where(x => x.DeleteStatus == DeleteStatus.No).ToList()
-                                                                        }
-                                                                    )
                                                                     .FirstOrDefault(temporarySealGroup => temporarySealGroup.Id == temporarySealUpdateForm.Id);
             if(temporarySealQuarterJournalQuery != null)
             {
@@ -238,8 +225,8 @@ namespace SealTypographicWebAPI.Services.Implements
                         TemporarySealJournal temporarySealJournal = new()
                         {
                             Sequence = temporarySealUpdate.Sequence,
-                            ImageFullPath = imageSharpService.GetSavedImageFilePath(imageBase64Info, false),
-                            ThumbnailFullPath = imageSharpService.GetSavedImageFilePath(imageBase64Info, true)
+                            ImageFullPath = await imageSharpService.GetSavedImageFilePath(imageBase64Info),
+                            ThumbnailFullPath = await imageSharpService.GetSavedImageThumbnailFilePath(imageBase64Info, true)
                         };                        
                         BaseInputTemporarySealJournal(temporarySealJournal, true, userId);
                         temporarySealQuarterJournalQuery.TemporarySealJournals.Add(temporarySealJournal);
@@ -272,16 +259,15 @@ namespace SealTypographicWebAPI.Services.Implements
                     TemporarySealJournal temporarySealJournal = new()
                     {
                         Sequence = temporarySeal.Sequence,
-                        ImageFullPath = imageSharpService.GetSavedImageFilePath(imageBase64Info, false),
-                        ThumbnailFullPath = imageSharpService.GetSavedImageFilePath(imageBase64Info, true)
+                        ImageFullPath = await imageSharpService.GetSavedImageFilePath(imageBase64Info),
+                        ThumbnailFullPath = await imageSharpService.GetSavedImageThumbnailFilePath(imageBase64Info, true)
                     };
                     BaseInputTemporarySealJournal(temporarySealJournal, true, userId);
                     temporarySealQuarterJournalQuery.TemporarySealJournals.Add(temporarySealJournal);
                 }
 
                 if (response.ErrorItem == null)
-                {                    
-                    dbContext.Attach(temporarySealQuarterJournalQuery);
+                {                                        
                     dbContext.SaveChanges();
                     response.Success();
                 }                
@@ -371,8 +357,7 @@ namespace SealTypographicWebAPI.Services.Implements
         {
             ImageBase64Info imageBase64Info = new()
             {
-                Code = code,
-                SealType = SealType.TemporarySeal,
+                Code = code,                
                 SaveRootPath = sealPathOption.TemporarySeal
             };
             return imageBase64Info;

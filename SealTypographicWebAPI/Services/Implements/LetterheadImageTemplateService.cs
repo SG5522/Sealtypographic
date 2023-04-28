@@ -2,8 +2,6 @@
 using DBEntities;
 using DBEntities.Consts;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
-using SealTypographicWebAPI.Config;
 using SealTypographicWebAPI.Models;
 using SealTypographicWebAPI.Models.LetterheadTemplate;
 using SealTypographicWebAPI.Utils;
@@ -17,8 +15,7 @@ namespace SealTypographicWebAPI.Services.Implements
     public class LetterheadImageTemplateService : ILetterheadImageTemplateService
     {
         private readonly SealTypographicDbContext dbContext;
-        private readonly ImageService imageSharpService;
-        private readonly TemplateImagePathOption templateImagePathOption;
+        private readonly ImageService imageService;        
         private readonly IMapper mapper;
 
         /// <summary>
@@ -26,14 +23,12 @@ namespace SealTypographicWebAPI.Services.Implements
         /// </summary>
         /// <param name="dbContext">EF Core SealTypographic DbContext</param>        
         /// <param name="mapper">AutoMapper</param>
-        /// <param name="imageSharpService">取得圖像資料</param>
-        /// <param name="option">匯入AppSetting資料</param>
-        public LetterheadImageTemplateService(SealTypographicDbContext dbContext, IMapper mapper, ImageService imageSharpService, IOptionsSnapshot<TemplateImagePathOption> option)
+        /// <param name="imageSharpService">取得圖像資料</param>        
+        public LetterheadImageTemplateService(SealTypographicDbContext dbContext, IMapper mapper, ImageService imageSharpService)
         {
             this.dbContext = dbContext;
             this.mapper = mapper;
-            this.imageSharpService = imageSharpService;
-            this.templateImagePathOption = option.Value;
+            this.imageService = imageSharpService;            
         }
 
         /// <summary>
@@ -97,7 +92,7 @@ namespace SealTypographicWebAPI.Services.Implements
                                                                         Id = letterheadImageTemplate.Id,
                                                                         Name = letterheadImageTemplate.Name,
                                                                         ImageFullPath = letterheadImageTemplate.ThumbnailFullPath,
-                                                                        ThumbnailBase64 = imageSharpService.GetPathToBase64(letterheadImageTemplate.ThumbnailFullPath)
+                                                                        ThumbnailBase64 = imageService.GetPathToBase64(letterheadImageTemplate.ThumbnailFullPath)
                                                                     })
                                                                     .ToList();
 
@@ -142,10 +137,15 @@ namespace SealTypographicWebAPI.Services.Implements
                 LetterheadImageTemplate letterheadImageTemplate = mapper.Map<LetterheadImageTemplate>(letterheadImageTemplateForm);
                 List<LetterheadImageTemplateLocation> letterheadImageTemplateLocations = new();
 
-                //letterheadImageTemplate.ImageViewFullPath = await FormFileUtil.UploadFileReturnPath(letterheadImageTemplateForm.ImageBase64, companyQuery.Code, templateImagePathOption.Letterhead);
-                //letterheadImageTemplate.ThumbnailFullPath = await FormFileUtil.UploadFileReturnPath(letterheadImageTemplateForm.ImageBase64Thumbnail, companyQuery.Code, templateImagePathOption.Letterhead);                
-                letterheadImageTemplateLocations.Add(mapper.Map<LetterheadImageTemplateLocation>(letterheadImageTemplateForm.LetterheadTemplateLocationForm));       
-                
+                //儲存圖片(原圖)
+                ImageBase64Info imageBase64Info = imageService.SetImageBase64InfoWithTemplate(companyQuery.Code, SealType.Letterhead);
+                imageBase64Info.ImageBase64 = letterheadImageTemplateForm.ImageBase64;
+                letterheadImageTemplate.ImageViewFullPath = await imageService.GetSavedImageFilePath(imageBase64Info);
+                //儲存縮圖
+                imageBase64Info.ImageBase64 = letterheadImageTemplateForm.ImageBase64Thumbnail;
+                letterheadImageTemplate.ThumbnailFullPath = await imageService.GetSavedImageThumbnailFilePath(imageBase64Info, false);
+
+                letterheadImageTemplateLocations.Add(mapper.Map<LetterheadImageTemplateLocation>(letterheadImageTemplateForm.LetterheadTemplateLocationForm));                       
                 BaseInputLetterheadImageTemplate(letterheadImageTemplate, true, userid);
                 letterheadImageTemplate.LetterheadImageTemplateLocations = letterheadImageTemplateLocations;                
                 companyQuery.LetterheadImageTemplates.Add(letterheadImageTemplate);
@@ -166,27 +166,16 @@ namespace SealTypographicWebAPI.Services.Implements
         {
             ResponseViewModel response = new ();
             int userid = 1;
-            LetterheadImageTemplate? letterheadImageTemplateQuery = dbContext.LetterheadImageTemplates.Include(x => x.LetterheadImageTemplateLocations)
-                                                             .Include(x => x.Company)
-                                                             .Select
-                                                             (
-                                                                x => new LetterheadImageTemplate()
-                                                                {
-                                                                    Id = x.Id,
-                                                                    Company = new Company { Code = x.Company.Code},
-                                                                    ImageViewFullPath = x.ImageViewFullPath,
-                                                                    ThumbnailFullPath = x.ThumbnailFullPath,
-                                                                    LetterheadImageTemplateLocations = x.LetterheadImageTemplateLocations,
-                                                                }
-                                                             )
-                                                             .FirstOrDefault(x => x.Id == letterheadImageTemplateUpdateForm.Id);
+            LetterheadImageTemplate? letterheadImageTemplateQuery = dbContext.LetterheadImageTemplates.Include(x => x.LetterheadImageTemplateLocations)                                                             
+                                                                                                      .FirstOrDefault(x => x.Id == letterheadImageTemplateUpdateForm.Id);
 
             if (letterheadImageTemplateQuery != null)
-            {                
-                //更新圖片與縮圖
-                //await FormFileUtil.SaveUpdata(letterheadImageTemplateUpdateForm.ImageBase64, letterheadImageTemplateQuery.ImageViewFullPath);
-                //await FormFileUtil.SaveUpdata(letterheadImageTemplateUpdateForm.ImageBase64Thumbnail, letterheadImageTemplateQuery.ThumbnailFullPath);     
-                
+            {
+                //儲存圖片(原圖)                
+                await imageService.SaveImageAsync(letterheadImageTemplateUpdateForm.ImageBase64, letterheadImageTemplateQuery.ImageViewFullPath, false);
+                //儲存縮圖                
+                await imageService.SaveImageAsync(letterheadImageTemplateUpdateForm.ImageBase64Thumbnail, letterheadImageTemplateQuery.ThumbnailFullPath, false);
+
                 mapper.Map(letterheadImageTemplateUpdateForm, letterheadImageTemplateQuery);
                 BaseInputLetterheadImageTemplate(letterheadImageTemplateQuery, false, userid);
 
@@ -197,7 +186,6 @@ namespace SealTypographicWebAPI.Services.Implements
                     mapper.Map(letterheadImageTemplateUpdateForm.LocationUpdateForm, letterheadImageTemplateLocation);
                 }
 
-                dbContext.Entry(letterheadImageTemplateQuery).State = EntityState.Modified;                
                 await dbContext.SaveChangesAsync();
                 response.Success();
             }
