@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>    
@@ -7,8 +7,8 @@
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <DocumentationFile></DocumentationFile>
     <IncrementVersionOnBuild>0.0.2.1+</IncrementVersionOnBuild>
-    <Version>0.0.2.423</Version>
-    <PackageIcon>android-chrome-192x192.png</PackageIcon>    
+    <Version>0.0.2.447</Version>
+    <PackageIcon>android-chrome-128x128.png</PackageIcon>    
   </PropertyGroup>
 
   <ItemGroup>
@@ -20,6 +20,13 @@
 
   <ItemGroup>    
     <Compile Remove="Services\Implements\ImageFuntion.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\..\SealTypographicWebAPI\wwwroot\swagger\android-chrome-128x128.png">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
   </ItemGroup>
 
   <ItemGroup>
@@ -42,12 +49,6 @@
     <ProjectReference Include="..\SqliteMigrations\Sqlite.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <None Update="Icon\android-chrome-192x192.png">
-      <Pack>True</Pack>
-      <PackagePath>\</PackagePath>
-    </None>
-  </ItemGroup>
 
   <ProjectExtensions><VisualStudio><UserProperties appsettings_1json__JsonSchema="" /></VisualStudio></ProjectExtensions>
 

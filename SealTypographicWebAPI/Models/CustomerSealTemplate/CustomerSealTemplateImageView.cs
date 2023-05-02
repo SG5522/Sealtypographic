@@ -5,10 +5,10 @@ namespace SealTypographicWebAPI.Models.CustomerSealTemplate
     /// <summary>
     /// 樣板存檔時紀錄當下的圖片
     /// </summary>
-    public class CustomerSealTemplateImageView : BaseData
+    public class CustomerSealTemplateImageView : ResponseViewModel
     {
         /// <summary>
-        /// 縮圖字串(ImageBase64)
+        /// 圖片字串(ImageBase64)
         /// </summary>
         /// <example>image/...</example>
         public string ImageBase64 { get; set; }

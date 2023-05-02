@@ -4,6 +4,7 @@ using DBEntities.Consts;
 using Microsoft.EntityFrameworkCore;
 using SealTypographicWebAPI.Models;
 using SealTypographicWebAPI.Models.AccountantSignTemplate;
+using SealTypographicWebAPI.Models.CustomerSealTemplate;
 using SealTypographicWebAPI.Utils;
 using Serilog;
 
@@ -52,6 +53,26 @@ namespace SealTypographicWebAPI.Services.Implements
             }
 
             return accountantSignTemplateDetailViewModel;
+        }
+
+        /// <summary>
+        /// 會計師簽印樣板圖片顯示
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public AccountantSignTemplateImageView GetImage(int id)
+        {
+            AccountantSignTemplateImageView viewImage = new();
+
+            string? imagePath = dbContext.AccountantSignTemplates.Where(x => x.Id == id)
+                                                                 .Select(x => x.ImageViewFullPath).FirstOrDefault();
+
+            if (imagePath != null)
+            {
+                viewImage.ImageBase64 = imageService.GetPathToBase64(imagePath);
+                viewImage.Success();
+            }
+            return viewImage;
         }
 
         /// <summary>
@@ -180,8 +201,19 @@ namespace SealTypographicWebAPI.Services.Implements
 
                 mapper.Map(accountantSignTemplateUpdateForm, accountantSignTemplateQuery);
                 BaseInputAccountantSignTemplate(accountantSignTemplateQuery, false, userid);
-                
-                foreach(AccountantSignTemplateLocationUpdateForm signTemplateLocationUpdateForm in accountantSignTemplateUpdateForm.LocationUpdateForms)
+
+                //刪除樣本座標
+                foreach (int deleteLocationId in accountantSignTemplateUpdateForm.DeleteLocationIds)
+                {
+                    AccountantSignTemplateLocation? accountantSignTemplateLocation = accountantSignTemplateQuery.AccountantSignTemplateLocations
+                                                                                                          .FirstOrDefault(x => x.Id == deleteLocationId);
+                    if (accountantSignTemplateLocation != null)
+                    {
+                        dbContext.Remove(accountantSignTemplateLocation);
+                    }
+                }
+                //修改樣本座標
+                foreach (AccountantSignTemplateLocationUpdateForm signTemplateLocationUpdateForm in accountantSignTemplateUpdateForm.LocationUpdateForms)
                 {
                     AccountantSignTemplateLocation? accountantSignTemplateLocation = accountantSignTemplateQuery.AccountantSignTemplateLocations
                                                                                 .FirstOrDefault(x => x.Id == signTemplateLocationUpdateForm.Id);
@@ -189,11 +221,15 @@ namespace SealTypographicWebAPI.Services.Implements
                     {
                         mapper.Map(signTemplateLocationUpdateForm, accountantSignTemplateLocation);
                     }
-                }                       
+                }
+                //新增樣本座標
+                foreach (AccountantSignTemplateLocationForm locationForm in accountantSignTemplateUpdateForm.LocationForms)
+                {
+                    accountantSignTemplateQuery.AccountantSignTemplateLocations.Add(mapper.Map<AccountantSignTemplateLocation>(locationForm));
+                }
                 await dbContext.SaveChangesAsync();
                 response.Success();
-            }
-
+            }           
             return response;
         }
         /// <summary>

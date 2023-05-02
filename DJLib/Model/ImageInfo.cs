@@ -63,14 +63,9 @@ namespace DJLib.Models
         public static void Transparent(ImageInfo imageInfo)
         {
             float threshold = 0.5F;
-            Color sourceColor = Color.White;
-            //Color sourceColor = Color.FromRgb(106, 107, 99);
+            Color sourceColor = Color.White;            
             Color targetColor = Color.Transparent;
             RecolorBrush brush = new RecolorBrush(sourceColor, targetColor, threshold);
-            //GraphicsOptions graphicsOptions = new GraphicsOptions()
-            //{
-            //    AlphaCompositionMode = PixelAlphaCompositionMode.Clear
-            //};
             imageInfo.Image.Mutate
                         (
                             //x => x.Fill(graphicsOptions,brush,)

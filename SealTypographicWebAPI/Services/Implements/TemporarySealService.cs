@@ -293,6 +293,7 @@ namespace SealTypographicWebAPI.Services.Implements
             {
                 temporarySealGroup.DeleteStatus = DeleteStatus.Yes;
                 BaseInputTemporarySealGroup(temporarySealGroup, false, userId);
+                dbContext.SaveChanges();
                 response.Success();
             }
             else

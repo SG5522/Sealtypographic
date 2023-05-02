@@ -1,26 +1,8 @@
 ﻿using DBEntities.Consts;
-using Microsoft.AspNetCore.Mvc;
-using SealTypographicWebAPI.Config;
 using SealTypographicWebAPI.Models.BaseModels;
 
 namespace SealTypographicWebAPI.Models.AccountantSignTemplate
 {
-    /// <summary>
-    /// 會計師簽印樣板座標
-    /// </summary> 
-    [ModelBinder(BinderType = typeof(JsonModelBinder))]
-    public class AccountantSignTemplateLocationUpdateForm : BaseLocationViewModel
-    {
-        /// <summary>
-        /// 樣板座標Id
-        /// </summary>
-        public int Id { get; set; }
-        /// <summary>
-        /// 會計師簽印類別
-        /// </summary>
-        public AccountantSignType AccountantSignType { get; set; }
-    }
-
     /// <summary>
     /// 會計師簽印樣板(分頁)
     /// </summary>
@@ -42,8 +24,18 @@ namespace SealTypographicWebAPI.Models.AccountantSignTemplate
         public int StackShift { get; set; }
 
         /// <summary>
-        /// 樣板座標
+        /// 刪除樣板位置座標
         /// </summary>                       
-        public List<AccountantSignTemplateLocationUpdateForm> LocationUpdateForms{ get; set; }
+        public List<int> DeleteLocationIds { get; set; }
+
+        /// <summary>
+        /// 修改樣板位置座標
+        /// </summary>                       
+        public List<AccountantSignTemplateLocationUpdateForm> LocationUpdateForms { get; set; }
+
+        /// <summary>
+        /// 新增樣板位置座標
+        /// </summary>                       
+        public List<AccountantSignTemplateLocationForm> LocationForms { get; set; }
     }
 }

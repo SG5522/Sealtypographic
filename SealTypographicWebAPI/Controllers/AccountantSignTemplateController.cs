@@ -2,10 +2,8 @@
 using SealTypographicWebAPI.Models;
 using SealTypographicWebAPI.Models.AccountantSignTemplate;
 using SealTypographicWebAPI.Services;
-using SealTypographicWebAPI.Services.Implements;
 using Serilog;
 
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace SealTypographicWebAPI.Controllers
 {
@@ -48,6 +46,28 @@ namespace SealTypographicWebAPI.Controllers
                 accountantSignTemplateDetailViewModel.DbError();
             }
             return accountantSignTemplateDetailViewModel;
+        }
+
+        /// <summary>
+        /// 會計師簽印樣板圖片顯示
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("[Action]/{id}")]
+        public AccountantSignTemplateImageView ViewImage(int id)
+        {
+            AccountantSignTemplateImageView viewImage = new();
+            try
+            {
+                Log.Information("AccountantSignTemplate viewImage input {@Input}", id);
+                viewImage = accountantSignTemplateService.GetImage(id);
+                Log.Information("AccountantSignTemplate viewImage output {@Output}", id);
+            }
+            catch (Exception ex)
+            {
+                Log.Error("AccountantSignTemplate viewImage error {@Error}", ex);
+                viewImage.DbError();
+            }
+            return viewImage;
         }
 
         /// <summary>

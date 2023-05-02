@@ -1,12 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SealTypographicWebAPI.Models;
-using SealTypographicWebAPI.Models.AccountantSignTemplate;
 using SealTypographicWebAPI.Models.LetterheadTemplate;
 using SealTypographicWebAPI.Services;
-using SealTypographicWebAPI.Services.Implements;
 using Serilog;
-
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace SealTypographicWebAPI.Controllers
 {
@@ -48,6 +44,28 @@ namespace SealTypographicWebAPI.Controllers
                 letterheadTemplateDetailViewModel.DbError();
             }
             return letterheadTemplateDetailViewModel;
+        }
+
+        /// <summary>
+        /// 信頭簽印樣板圖片顯示
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("[Action]/{id}")]
+        public LetterheadImageTemplateImageView ViewImage(int id)
+        {
+            LetterheadImageTemplateImageView viewImage = new();
+            try
+            {
+                Log.Information("LetterheadImageTemplate viewImage input {@Input}", id);
+                viewImage = letterheadImageTemplateService.GetImage(id);
+                Log.Information("LetterheadImageTemplate viewImage output {@Output}", id);
+            }
+            catch (Exception ex)
+            {
+                Log.Error("LetterheadImageTemplate viewImage error {@Error}", ex);
+                viewImage.DbError();
+            }
+            return viewImage;
         }
 
         /// <summary>

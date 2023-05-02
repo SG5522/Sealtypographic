@@ -4,8 +4,6 @@ using SealTypographicWebAPI.Models.CustomerSealTemplate;
 using SealTypographicWebAPI.Services;
 using Serilog;
 
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-
 namespace SealTypographicWebAPI.Controllers
 {
     /// <summary>
@@ -54,9 +52,9 @@ namespace SealTypographicWebAPI.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet("[Action]/{id}")]
-        public CustomerSealTemplateViewImage ViewImage(int id)
+        public CustomerSealTemplateImageView ViewImage(int id)
         {
-            CustomerSealTemplateViewImage viewImage = new();
+            CustomerSealTemplateImageView viewImage = new();
             try
             {
                 Log.Information("CustomerSealTemplate detail input {@Input}", id);

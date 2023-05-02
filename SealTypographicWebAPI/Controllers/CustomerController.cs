@@ -5,6 +5,7 @@ using SealTypographicWebAPI.Models.Customer;
 using SealTypographicWebAPI.Services;
 using Serilog;
 
+
 namespace SealTypographicWebAPI.Controllers
 {
     /// <summary>

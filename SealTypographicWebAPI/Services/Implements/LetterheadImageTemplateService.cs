@@ -56,6 +56,26 @@ namespace SealTypographicWebAPI.Services.Implements
         }
 
         /// <summary>
+        /// 會計師簽印樣板圖片顯示
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public LetterheadImageTemplateImageView GetImage(int id)
+        {
+            LetterheadImageTemplateImageView viewImage = new();
+
+            string? imagePath = dbContext.LetterheadImageTemplates.Where(x => x.Id == id)
+                                                                  .Select(x => x.ImageViewFullPath).FirstOrDefault();
+
+            if (imagePath != null)
+            {
+                viewImage.ImageBase64 = imageService.GetPathToBase64(imagePath);
+                viewImage.Success();
+            }
+            return viewImage;
+        }
+
+        /// <summary>
         /// 信頭樣板分頁顯示
         /// </summary>
         /// <param name="letterheadImageTemplateSearch">信頭樣板分頁搜尋</param>

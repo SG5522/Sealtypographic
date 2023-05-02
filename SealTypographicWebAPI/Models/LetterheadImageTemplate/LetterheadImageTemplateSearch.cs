@@ -12,6 +12,5 @@ namespace SealTypographicWebAPI.Models.LetterheadTemplate
         /// </summary>
         /// <example>預設樣板</example>
         public string? KeyWord { get; set; }
-
     }
 }

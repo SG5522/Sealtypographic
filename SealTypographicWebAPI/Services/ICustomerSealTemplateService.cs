@@ -21,7 +21,7 @@ namespace SealTypographicWebAPI.Services
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        CustomerSealTemplateViewImage GetImage(int id);
+        CustomerSealTemplateImageView GetImage(int id);
 
         /// <summary>
         /// 客戶印鑑樣板分頁顯示

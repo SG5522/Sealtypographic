@@ -59,9 +59,9 @@ namespace SealTypographicWebAPI.Services.Implements
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public CustomerSealTemplateViewImage GetImage(int id)
+        public CustomerSealTemplateImageView GetImage(int id)
         {
-            CustomerSealTemplateViewImage viewImage = new();
+            CustomerSealTemplateImageView viewImage = new();
 
             string? imagePath = dbContext.CustomerSealTemplates.Where(x => x.Id == id)
                                                                .Select(x => x.ImageViewFullPath).FirstOrDefault();       
@@ -71,7 +71,6 @@ namespace SealTypographicWebAPI.Services.Implements
                 viewImage.ImageBase64 = imageService.GetPathToBase64(imagePath);
                 viewImage.Success();
             }
-
             return viewImage;
         }
 
@@ -203,15 +202,31 @@ namespace SealTypographicWebAPI.Services.Implements
                 mapper.Map(customerSealTemplateUpdateForm, customerSealTemplateQuery);
                 BaseInputCustomerSealTemplate(customerSealTemplateQuery, false, userid);
                 
-                foreach(CustomerSealTemplateLocationUpdateForm sealTemplateLocationUpdateForm in customerSealTemplateUpdateForm.LocationUpdateForms)
+                //刪除樣本座標
+                foreach(int deleteLocationId in customerSealTemplateUpdateForm.DeleteLocationIds)
                 {
                     CustomerSealTemplateLocation? customerSealTemplateLocation = customerSealTemplateQuery.CustomerSealTemplateLocations
-                                                                                                          .FirstOrDefault(x => x.Id == sealTemplateLocationUpdateForm.Id);
+                                                                                                          .FirstOrDefault(x => x.Id == deleteLocationId);
+                    if(customerSealTemplateLocation != null)
+                    {
+                        dbContext.Remove(customerSealTemplateLocation);
+                    }
+                }
+                //修改樣本座標
+                foreach(CustomerSealTemplateLocationUpdateForm locationUpdateForm in customerSealTemplateUpdateForm.LocationUpdateForms)
+                {
+                    CustomerSealTemplateLocation? customerSealTemplateLocation = customerSealTemplateQuery.CustomerSealTemplateLocations
+                                                                                                          .FirstOrDefault(x => x.Id == locationUpdateForm.Id);
                     if(customerSealTemplateLocation != null) 
                     {
-                        mapper.Map(sealTemplateLocationUpdateForm, customerSealTemplateLocation);
+                        mapper.Map(locationUpdateForm, customerSealTemplateLocation);
                     }
-                }                 
+                }
+                //新增樣本座標
+                foreach (CustomerSealTemplateLocationForm locationForm in customerSealTemplateUpdateForm.LocationForms)
+                {
+                    customerSealTemplateQuery.CustomerSealTemplateLocations.Add(mapper.Map<CustomerSealTemplateLocation>(locationForm));
+                }
                 await dbContext.SaveChangesAsync();
                 response.Success();
             }

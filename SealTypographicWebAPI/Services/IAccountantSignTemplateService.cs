@@ -16,6 +16,13 @@ namespace SealTypographicWebAPI.Services
         AccountantSignTemplateDetailViewModel GetDetail(int id);
 
         /// <summary>
+        /// 會計師簽印樣板圖片顯示
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        AccountantSignTemplateImageView GetImage(int id);
+
+        /// <summary>
         /// 會計師簽印樣板分頁顯示
         /// </summary>
         /// <param name="accountantSignTemplateSearch">會計師簽印樣板分頁搜尋</param>

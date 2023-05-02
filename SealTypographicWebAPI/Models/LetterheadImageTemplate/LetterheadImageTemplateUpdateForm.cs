@@ -1,21 +1,11 @@
 ﻿using DBEntities.Consts;
 using Microsoft.AspNetCore.Mvc;
 using SealTypographicWebAPI.Config;
+using SealTypographicWebAPI.Models.AccountantSignTemplate;
 using SealTypographicWebAPI.Models.BaseModels;
 
 namespace SealTypographicWebAPI.Models.LetterheadTemplate
 {
-    /// <summary>
-    /// 信頭樣板位置
-    /// </summary>     
-    public class LetterheadImageTemplateLocationUpdateForm : BaseLocationViewModel
-    {
-        /// <summary>
-        /// 樣板位置Id
-        /// </summary>
-        public int Id { get; set; }
-    }
-
     /// <summary>
     /// 信頭樣板 (更新使用)
     /// </summary>
@@ -27,7 +17,7 @@ namespace SealTypographicWebAPI.Models.LetterheadTemplate
         public int Id { get; set; }
 
         /// <summary>
-        /// 樣板位置座標
+        /// 修改樣板位置座標
         /// </summary>                       
         public LetterheadImageTemplateLocationUpdateForm LocationUpdateForm { get; set; }
     }

@@ -17,6 +17,13 @@ namespace SealTypographicWebAPI.Services
         LetterheadImageTemplateDetailViewModel GetDetail(int id);
 
         /// <summary>
+        /// 信頭簽印樣板圖片顯示
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        LetterheadImageTemplateImageView GetImage(int id);
+
+        /// <summary>
         /// 信頭樣板分頁顯示
         /// </summary>
         /// <param name="letterheadTemplateSearch">信頭樣板分頁搜尋</param>
