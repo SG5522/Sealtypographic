@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
@@ -10,7 +10,7 @@
 
   <ItemGroup>
     <Reference Include="Spire.Pdf">
-      <HintPath>Spire.Pdf.dll</HintPath>
+      <HintPath>..\..\SpireOffice\Bin\netstandard2.0\Spire.Pdf.dll</HintPath>
     </Reference>
   </ItemGroup>
 

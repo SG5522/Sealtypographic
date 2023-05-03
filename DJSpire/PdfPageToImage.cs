@@ -1,9 +1,7 @@
 ﻿using Spire.Pdf;
 using Spire.Pdf.Graphics;
-using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Text;
+using System;
 
 namespace DJSpire
 {
@@ -18,24 +16,23 @@ namespace DJSpire
         /// PDF頁次
         /// </summary>
         public int PageIndex { get; set; }
-        public PdfImageType ImageFormat { get; private set; }
+        
 
         public PdfPageToImage()
         {
 
         }
 
-        public string GetImageBase64(PdfPageToImage pdfPageToImage)
+        public static string GetImageBase64(PdfPageToImage pdfPageToImage)
         {
-            string imageBase64 = string.Empty;
-
             //Open pdf document
             PdfDocument pdf = new PdfDocument();
             pdf.LoadFromFile(pdfPageToImage.Path);
+            MemoryStream stream = (MemoryStream)pdf.SaveAsImage(pdfPageToImage.PageIndex);
+            
+            byte[] imagebytes = stream.ToArray();
 
-
-            return imageBase64;
-
+            return Convert.ToBase64String(imagebytes); ;
         }
     }
 }

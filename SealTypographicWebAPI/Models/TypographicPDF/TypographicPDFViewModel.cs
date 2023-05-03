@@ -1,29 +1,22 @@
-﻿namespace SealTypographicWebAPI.Models.TypographicPDF
+﻿using DBEntities.Consts;
+using SealTypographicWebAPI.Models.BaseModels;
+
+namespace SealTypographicWebAPI.Models.TypographicPDF
 {
     /// <summary>
-    /// 排版資訊
+    /// 排版PDF資訊
     /// </summary>
-    public class TypographicPDFViewModel : ResponseViewModel
+    public class TypographicPDFViewModel : BaseData
     {
-        /// <summary>
-        /// 名稱
-        /// </summary>
-        public string Name { get; set; }
-
         /// <summary>
         /// 原始檔名
         /// </summary>
         public string OriginFileName { get; set; }
 
         /// <summary>
-        /// PDF檔
+        /// 客戶編號
         /// </summary>
-        public string PDFBase64 { get; set; }
-
-        /// <summary>
-        /// 季度
-        /// </summary>
-        public string Quarter { get; set; }
+        public string CustomerCode { get; set; }
 
         /// <summary>
         /// 客戶名稱
@@ -31,8 +24,14 @@
         public string CustomerName { get; set; }
 
         /// <summary>
-        /// 排版頁數
+        /// 季度        
         /// </summary>
-        public List<TypographicPageForm> TypographicPageForms { get; set;}
+        public string Quarter { get; set; }       
+
+        /// <summary>
+        /// 建檔狀態
+        /// (此欄位未來有審核時功能時會改為審核狀態)
+        /// </summary>
+        public ReviewStatus ReviewStatus { get; set; }
     }
 }

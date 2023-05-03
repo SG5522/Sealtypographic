@@ -30,7 +30,7 @@ namespace DJLib.Models
         public static ImageInfo FromImageBase64(string ImageBase64)
         {
             string base64String = ImageBase64.Substring(ImageBase64.IndexOf("base64,") + 7);
-            return FromBase64(base64String);
+             return FromBase64(base64String);
         }
 
         /// <summary>
@@ -70,8 +70,7 @@ namespace DJLib.Models
                         (
                             //x => x.Fill(graphicsOptions,brush,)
                             x => x.Clear(brush)
-                        );
-            
+                        );            
         }
     }
 }

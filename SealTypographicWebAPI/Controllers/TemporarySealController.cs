@@ -8,7 +8,7 @@ using Serilog;
 namespace SealTypographicWebAPI.Controllers
 {
     /// <summary>
-    /// 取得臨時章
+    /// 臨時章管理
     /// </summary>
     [Route("api/[controller]")]
     [ApiController]

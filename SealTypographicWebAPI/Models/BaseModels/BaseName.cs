@@ -8,7 +8,7 @@
         /// <summary>
         /// 名稱
         /// </summary>
-        /// <example>姓名</example>
+        /// <example>名稱</example>
         public string Name { get; set; }
     }
 }
