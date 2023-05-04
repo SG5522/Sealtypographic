@@ -1,4 +1,4 @@
-using DJLib;
+ï»¿using DJLib;
 using DJLib.Models;
 using DJSpireNet6;
 
@@ -24,11 +24,12 @@ namespace SpireTest
             OpenDialog(Dialog);
             Dialog.ShowDialog();
         }
+
         private static void OpenDialog(OpenFileDialog dialog)
         {
-            dialog.Multiselect = false;//¸Ó­È½T©w¬O§_¥i¥H¿ï¾Ü¦h­ÓÀÉ®×
-            dialog.Title = "½Ğ¿ï¾Ü¸ê®Æ§¨";
-            dialog.Filter = "©Ò¦³ÀÉ®×(*.*)|*.*";
+            dialog.Multiselect = false; //è©²å€¼ç¢ºå®šæ˜¯å¦å¯ä»¥é¸æ“‡å¤šå€‹æª”æ¡ˆ
+            dialog.Title = "è«‹é¸æ“‡è³‡æ–™å¤¾";
+            dialog.Filter = "æ‰€æœ‰æª”æ¡ˆ(*.*)|*.*";
         }
 
         private void BtnStart_Click(object sender, EventArgs e)

@@ -19,6 +19,6 @@ namespace SealTypographicWebAPI.Models.TypographicPDF
         /// <summary>
         /// 排版PDF資訊
         /// </summary>
-        List<TypographicPDFViewModel> ViewModels { get; set; }
+        public List<TypographicPDFViewModel> ViewModels { get; set; }
     }
 }
