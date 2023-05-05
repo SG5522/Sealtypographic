@@ -1,24 +1,19 @@
-﻿namespace SealTypographicWebAPI.Models.TypographicPDF
+﻿namespace SealTypographicWebAPI.Models.BaseModels
 {
     /// <summary>
-    /// 印鑑圖像ID 與 位置
+    /// 位置
     /// </summary>
-    public class SealLocationViewModel
-    {
+    public abstract class BaseLocationModel
+    {        
         /// <summary>
-        /// 圖片
+        /// 最左邊位置
         /// </summary>
-        public string ImageBase64 { get; set; }
+        public float Left { get; set; }
 
         /// <summary>
         /// 頂部位置
         /// </summary>
         public float Top { get; set; }
-
-        /// <summary>
-        /// 最左邊位置
-        /// </summary>
-        public float Left { get; set; }
 
         /// <summary>
         /// 寬

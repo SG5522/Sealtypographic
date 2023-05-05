@@ -249,6 +249,7 @@ namespace SealTypographicWebAPI.Services.Implements
             {
                 customerSealTemplateQuery.DeleteStatus = DeleteStatus.Yes;
                 BaseInputCustomerSealTemplate(customerSealTemplateQuery, false, userId);
+                dbContext.SaveChanges();
                 response.Success();
             }
             else

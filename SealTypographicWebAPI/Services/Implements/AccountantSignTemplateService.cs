@@ -248,6 +248,7 @@ namespace SealTypographicWebAPI.Services.Implements
             {
                 accountantSignTemplateQuery.DeleteStatus = DeleteStatus.Yes;
                 BaseInputAccountantSignTemplate(accountantSignTemplateQuery, false, userId);
+                dbContext.SaveChanges();
                 response.Success();
             }
             else

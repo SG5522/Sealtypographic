@@ -228,6 +228,7 @@ namespace SealTypographicWebAPI.Services.Implements
             {
                 letterheadImageTemplateQuery.DeleteStatus = DeleteStatus.Yes;
                 BaseInputLetterheadImageTemplate(letterheadImageTemplateQuery, false, userId);
+                dbContext.SaveChanges();
                 response.Success();
             }
             else

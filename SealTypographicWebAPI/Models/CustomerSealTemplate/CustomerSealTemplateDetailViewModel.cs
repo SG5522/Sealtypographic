@@ -6,7 +6,7 @@ namespace SealTypographicWebAPI.Models.CustomerSealTemplate
     /// <summary>
     /// 客戶樣板座標
     /// </summary>
-    public class CustomerSealTemplateLocationViewModel : BaseLocationViewModel
+    public class CustomerSealTemplateLocationViewModel : BaseLocationModel
     {
         /// <summary>
         /// 樣板座標Id

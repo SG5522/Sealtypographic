@@ -83,10 +83,12 @@ namespace SealTypographicWebAPI.Services.Implements
         public UploadFileResponse GetFile(UploadType uploadType)
         {
             UploadFileResponse uploadFileResponse = new();
+            int companyId = 1;
             List<UploadFile> uploadFiles = dbContext.UploadFiles
                                             .Where
                                             (
                                                 uploadFile => uploadFile.UploadType == uploadType
+                                                && uploadFile.Company.Id == companyId
                                                 && uploadFile.FileWorkStatus == FileWorkStatus.Unprocessed
                                                 && uploadFile.DeleteStatus == DeleteStatus.No
                                             ).ToList();

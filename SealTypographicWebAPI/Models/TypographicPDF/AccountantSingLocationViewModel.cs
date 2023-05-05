@@ -1,10 +1,26 @@
-﻿namespace SealTypographicWebAPI.Models.TypographicPDF
+﻿using DBEntities.Consts;
+using SealTypographicWebAPI.Models.BaseModels;
+
+namespace SealTypographicWebAPI.Models.TypographicPDF
 {
     /// <summary>
-    /// 會計師簽名與印鑑位置
+    /// 會計師簽印位置與TIPS顯示
     /// </summary>
-    public class AccountantSingLocationViewModel : SealLocationViewModel
+    public class AccountantSingLocationViewModel : BaseSealLocationViewModel
     {
+        /// <summary>
+        /// 會計師簽印ID
+        /// </summary>
+        public int AccountantSignId { get; set; }
 
+        /// <summary>
+        /// 會計師名稱
+        /// </summary>
+        public string AccountantName { get; set; }
+
+        /// <summary>
+        /// 會計師簽印類別
+        /// </summary>
+        public AccountantSignType AccountantSignType { get; set; }
     }
 }

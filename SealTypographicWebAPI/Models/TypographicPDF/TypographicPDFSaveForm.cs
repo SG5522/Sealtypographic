@@ -3,17 +3,13 @@
     /// <summary>
     /// 排版資訊
     /// </summary>
-    public class TypographicPDFForm
+    public class TypographicPDFSaveForm
     {
         /// <summary>
-        /// 上傳PDF的ID
-        /// </summary>
-        public string PDFId { get; set; }
+        /// PDFID
+        /// </summary>        
+        public int TypographicPDFId { get; set; }
 
-        /// <summary>
-        /// 客戶Id
-        /// </summary>
-        public int CustomerId { get; set; }
 
         /// <summary>
         /// 排版頁數

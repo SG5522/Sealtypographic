@@ -2,6 +2,8 @@
 using DBEntities;
 using SealTypographicWebAPI.Models.TypographicPDF;
 using SealTypographicWebAPI.Models;
+using DBEntities.Consts;
+using Microsoft.EntityFrameworkCore;
 
 namespace SealTypographicWebAPI.Services.Implements
 {
@@ -38,30 +40,31 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <summary>
         /// 建立PDF排版資訊
         /// </summary>
-        /// <param name="typographicPDFForm"></param>
+        /// <param name="pDFId">上傳檔案的Id</param>
+        /// <param name="customerId"></param>        
         /// <returns></returns>
-        public ResponseViewModel CreateTypographicForm(TypographicPDFForm typographicPDFForm)
+        public ResponseViewModel New(int pDFId, int customerId)
         {
-            ResponseViewModel response = new();
-            IQueryable<TypographicPDF> typographicPDFQuery = dbContext.TypographicPDFs
-                                                            .Where(typographicPDF =>                                                             
-                                                            typographicPDF.Quarter == typographicPDFForm.Quarter);
-
-            if (!typographicPDFQuery.Any())
+            ResponseViewModel response = new();            
+            int userId = 0;
+            
+            UploadFile? pDFInfo = dbContext.UploadFiles.Find(pDFId);            
+            
+            if (pDFInfo != null)
             {
-                TypographicPDF dbtypographicPDF = new();
-                List<TypographicPage> typographicPage = new();
-                List<CustomerSealLocation> customerSealLocation = new();
-                List<AccountantSignLocation> accountantSingLocation = new();
-                List<LetterheadImageLocation> letterheadImageLocation = new();
-                foreach (TypographicPageForm typographicPageForm in typographicPDFForm.TypographicPagesForm)
+                Customer? customer = dbContext.Customers.Include(x => x.TypographicPDFs).FirstOrDefault(x => x.Id == customerId);
+                if(customer != null)
                 {
-                    
-                }
+
+                    TypographicPDF typographicPDF = new()
+                    {
+                        OriginFileName = pDFInfo.OriginalFileName,
+                        FullPath = pDFInfo.FullPath
+                    };
+                    BaseInputTypographicPDF(typographicPDF, true, userId);
+                    customer.TypographicPDFs.Add(typographicPDF);
+                }                
                 
-
-
-                dbContext.TypographicPDFs.Add(dbtypographicPDF);
                 dbContext.SaveChanges();
                 response.Success();
             }
@@ -78,7 +81,7 @@ namespace SealTypographicWebAPI.Services.Implements
         /// </summary>
         /// <param name="typographicPDFForm"></param>
         /// <returns></returns>
-        public ResponseViewModel UpTypographicForm(TypographicPDFForm typographicPDFForm)
+        public ResponseViewModel Save(TypographicPDFForm typographicPDFForm)
         {
             return new();
         }
@@ -103,5 +106,27 @@ namespace SealTypographicWebAPI.Services.Implements
             return customerSealLocations;
         }
 
+        /// <summary>
+        /// 資料新增修改時基本資料輸入
+        /// </summary>
+        /// <param name="typographicPDF">DB上的排板PDF資料</param>        
+        /// <param name="isCreate">確認是否新增還是更新的動作</param>
+        /// <param name="userid">使用者ID</param>
+        private void BaseInputTypographicPDF(TypographicPDF typographicPDF, bool isCreate, int userid)
+        {
+            if (isCreate)
+            {
+                typographicPDF.Quarter = "unassigned";
+                typographicPDF.CreateUserId = userid;
+                typographicPDF.CreateDate = DateTime.Now;
+                typographicPDF.DeleteStatus = DeleteStatus.No;
+                typographicPDF.ReviewStatus = ReviewStatus.Draft;
+            }
+            else
+            {
+                typographicPDF.UpdateUserId = userid;
+                typographicPDF.UpdateDate = DateTime.Now;
+            }
+        }            
     }
 }

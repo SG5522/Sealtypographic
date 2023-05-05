@@ -3,6 +3,7 @@ using System;
 using DBEntities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Sqlite.Migrations
 {
     [DbContext(typeof(SealTypographicDbContext))]
-    partial class SealTypographicDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230505055239_AddIsAccountantCertificate")]
+    partial class AddIsAccountantCertificate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "7.0.5");
@@ -1354,7 +1357,7 @@ namespace Sqlite.Migrations
             modelBuilder.Entity("DBEntities.TypographicPDF", b =>
                 {
                     b.HasOne("DBEntities.Customer", "Customer")
-                        .WithMany("TypographicPDFs")
+                        .WithMany()
                         .HasForeignKey("CustomerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1444,8 +1447,6 @@ namespace Sqlite.Migrations
                     b.Navigation("CustomerSealQuarterJournals");
 
                     b.Navigation("TemporarySealQuarterJournals");
-
-                    b.Navigation("TypographicPDFs");
                 });
 
             modelBuilder.Entity("DBEntities.CustomerSealJournal", b =>

@@ -88,6 +88,11 @@ namespace DBEntities
         public Company Company { get; set; }
 
         /// <summary>
+        /// PDF排版資訊
+        /// </summary>
+        public List<TypographicPDF> TypographicPDFs { get; set; }
+
+        /// <summary>
         /// 客戶印鑑季度歷程表
         /// </summary>
         public List<CustomerSealQuarterJournal> CustomerSealQuarterJournals { get; set; }

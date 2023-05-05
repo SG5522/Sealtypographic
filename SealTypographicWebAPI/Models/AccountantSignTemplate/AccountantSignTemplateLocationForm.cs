@@ -6,7 +6,7 @@ namespace SealTypographicWebAPI.Models.AccountantSignTemplate
     /// <summary>
     /// 會計師簽印樣板座標
     /// </summary> 
-    public class AccountantSignTemplateLocationForm : BaseLocationViewModel
+    public class AccountantSignTemplateLocationForm : BaseLocationModel
     {
         /// <summary>
         /// 會計師簽印類別

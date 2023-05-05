@@ -1,14 +1,15 @@
-﻿namespace SealTypographicWebAPI.Models.TypographicPDF
+﻿using SealTypographicWebAPI.Models.BaseModels;
+
+namespace SealTypographicWebAPI.Models.TypographicPDF
 {
     /// <summary>
     /// 會計師簽名與印鑑位置
     /// </summary>
-    public class AccountantSingLocationForm : SealLocationForm
+    public class AccountantSingLocationForm : BaseLocationModel
     {
         /// <summary>
-        /// 會計師印鑑簽名ID
+        /// 會計師簽印ID
         /// </summary>
-        public int AccountantSignJournalId { get; set; }
-
+        public int AccountantSignId { get; set; }
     }
 }

@@ -5,16 +5,16 @@ namespace SealTypographicWebAPI.Models.TypographicPDF
     /// <summary>
     /// 信頭圖片排版位置
     /// </summary>
-    public class LetterheadImageLocationViewModel : BaseSealLocationViewModel
+    public class TemporarySealLocationViewModel : BaseSealLocationViewModel
     {
         /// <summary>
-        /// 信頭圖片ID
+        /// 臨時章印鑑ID
         /// </summary>
-        public int LetterheadImageId { get; set; }
+        public int TemporarySealId { get; set; }
 
         /// <summary>
-        /// 信頭名稱
+        /// 印鑑序號
         /// </summary>
-        public string LetterheadName { get; set; }
+        public int Sequence { get; set; }
     }
 }

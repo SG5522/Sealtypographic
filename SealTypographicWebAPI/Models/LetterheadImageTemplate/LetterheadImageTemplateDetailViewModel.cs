@@ -6,7 +6,7 @@ namespace SealTypographicWebAPI.Models.LetterheadTemplate
     /// <summary>
     /// 信頭樣板座標
     /// </summary>
-    public class LetterheadImageTemplateLocationViewModel : BaseLocationViewModel
+    public class LetterheadImageTemplateLocationViewModel : BaseLocationModel
     {
         /// <summary>
         /// 樣板座標Id

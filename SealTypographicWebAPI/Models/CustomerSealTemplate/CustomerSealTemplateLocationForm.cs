@@ -8,7 +8,7 @@ namespace SealTypographicWebAPI.Models.CustomerSealTemplate
     /// <summary>
     /// 客戶印鑑樣板位置
     /// </summary>     
-    public class CustomerSealTemplateLocationForm : BaseLocationViewModel
+    public class CustomerSealTemplateLocationForm : BaseLocationModel
     {
         /// <summary>
         /// 客戶印鑑類別

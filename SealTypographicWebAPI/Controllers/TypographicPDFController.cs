@@ -1,5 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using DBEntities.Consts;
+using Microsoft.AspNetCore.Mvc;
+using SealTypographicWebAPI.Models;
+using SealTypographicWebAPI.Models.TemplateConfig;
 using SealTypographicWebAPI.Models.TypographicPDF;
+using SealTypographicWebAPI.Services;
+using SealTypographicWebAPI.Services.Implements;
+using Serilog;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -12,36 +18,61 @@ namespace SealTypographicWebAPI.Controllers
     [ApiController]
     public class TypographicPDFController : ControllerBase
     {
-        // GET: api/<TypographicPDFController>
-        [HttpGet]
-        public IEnumerable<string> Get()
+        private readonly ITypographicPDFService typographicPDFService;
+
+        /// <summary>
+        /// 注入Service
+        /// </summary>
+        public TypographicPDFController(ITypographicPDFService typographicPDFService)
         {
-            return new string[] { "value1", "value2" };
+            this.typographicPDFService = typographicPDFService;
         }
 
-        // GET api/<TypographicPDFController>/5
-        [HttpGet("{id}")]
-        public string Get(int id)
+        /// <summary>
+        /// 取得排板PDF Page
+        /// </summary>
+        /// <param name="typographicPDFPageSearch">// 排板PDF Page搜尋</param>
+        /// <returns></returns>
+        //[HttpGet("[Action]/{id}")]
+        [HttpGet("[Action]")]
+        public TypographicPageViewModel GetEditPDFPageView([FromQuery] TypographicPDFPageSearch typographicPDFPageSearch)
         {
-            return "value";
+            TypographicPageViewModel typographicPageViewModel = new();            
+            return typographicPageViewModel;
         }
 
         /// <summary>
         /// 排板分頁搜尋
         /// </summary>
-        /// <param name="typographicPDFSearch">排版PDF搜尋</param>
+        /// <param name="typographicPDFSearch">排版PDF關鍵字搜尋</param>
         /// <returns></returns>
         [HttpGet]
-        public TypographicPDFPaginateViewModel Paginate(TypographicPDFSearch typographicPDFSearch)
+        public TypographicPDFPaginateViewModel Paginate([FromQuery] TypographicPDFSearch typographicPDFSearch)
         {
             TypographicPDFPaginateViewModel typographicPDFPaginateViewModel = new ();
             return typographicPDFPaginateViewModel;
         }
 
-        // POST api/<TypographicPDFController>
+        /// <summary>
+        /// 新增排板PDF
+        /// </summary>
+        /// <param name="pDFId"></param>
+        /// <param name="customerId"></param>
+        /// <returns></returns>
         [HttpPost]
-        public void Post([FromBody] string value)
+        public ResponseViewModel New(int pDFId, int customerId)
         {
+            ResponseViewModel response = new();                            
+            try
+            {
+                response = typographicPDFService.New(pDFId, customerId);
+            }
+            catch (Exception ex)
+            {
+                Log.Error("TypographicPDF New error {@Error}", ex.InnerException);
+                response.Error();
+            }                
+            return response;
         }
 
         // PUT api/<TypographicPDFController>/5
