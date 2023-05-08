@@ -4,6 +4,7 @@ using SealTypographicWebAPI.Models.TypographicPDF;
 using SealTypographicWebAPI.Models;
 using DBEntities.Consts;
 using Microsoft.EntityFrameworkCore;
+using DJLib.Models;
 
 namespace SealTypographicWebAPI.Services.Implements
 {
@@ -31,7 +32,7 @@ namespace SealTypographicWebAPI.Services.Implements
         /// </summary>
         /// <param name="typographicPDFSearch">搜尋條件</param>
         /// <returns></returns>
-        public TypographicPDFViewModel GetTypographicPDFViewModel(TypographicPDFSearch typographicPDFSearch)
+        public TypographicPDFPaginateViewModel GetPaginate(TypographicPDFSearch typographicPDFSearch)
         {
 
             return new();
@@ -40,31 +41,37 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <summary>
         /// 建立PDF排版資訊
         /// </summary>
-        /// <param name="pDFId">上傳檔案的Id</param>
-        /// <param name="customerId"></param>        
+        /// <param name="typographicPDFForm">排版資訊(新增使用)</param>     
         /// <returns></returns>
-        public ResponseViewModel New(int pDFId, int customerId)
+        public ResponseViewModel New(TypographicPDFForm typographicPDFForm)
         {
             ResponseViewModel response = new();            
             int userId = 0;
             
-            UploadFile? pDFInfo = dbContext.UploadFiles.Find(pDFId);            
-            
-            if (pDFInfo != null)
-            {
-                Customer? customer = dbContext.Customers.Include(x => x.TypographicPDFs).FirstOrDefault(x => x.Id == customerId);
-                if(customer != null)
-                {
+            UploadFile? pDFInfo = dbContext.UploadFiles.Find(typographicPDFForm.UploadId);
+            Customer? customer = dbContext.Customers.Include(x => x.TypographicPDFs)                                                        
+                                                    .FirstOrDefault(x => x.Id == typographicPDFForm.CustomerId);
 
-                    TypographicPDF typographicPDF = new()
-                    {
-                        OriginFileName = pDFInfo.OriginalFileName,
-                        FullPath = pDFInfo.FullPath
-                    };
-                    BaseInputTypographicPDF(typographicPDF, true, userId);
-                    customer.TypographicPDFs.Add(typographicPDF);
-                }                
-                
+            if (pDFInfo != null && customer != null)
+            {
+                List<TypographicPage> typographicPages = new();
+
+                //新增PDF排版
+                TypographicPDF typographicPDF = new()
+                {
+                    OriginFileName = pDFInfo.OriginalFileName,
+                    FullPath = pDFInfo.FullPath,
+                    Quarter = typographicPDFForm.Quarter
+                };
+                BaseInputTypographicPDF(typographicPDF, true, userId);
+                foreach (TypographicPageForm pageInfo in typographicPDFForm.Pages)
+                {
+                    TypographicPage typographicPage = new();
+                    PageSave(typographicPage, pageInfo);
+                    typographicPages.Add(typographicPage);                    
+                }
+                typographicPDF.TypographicPages = typographicPages;
+                customer.TypographicPDFs.Add(typographicPDF);                   
                 dbContext.SaveChanges();
                 response.Success();
             }
@@ -72,16 +79,15 @@ namespace SealTypographicWebAPI.Services.Implements
             {
                 response.DbNoData();
             }
-
             return response;
         }
 
         /// <summary>
         /// 建立PDF排版資訊
         /// </summary>
-        /// <param name="typographicPDFForm"></param>
+        /// <param name="typographicPDFSaveForm"></param>
         /// <returns></returns>
-        public ResponseViewModel Save(TypographicPDFForm typographicPDFForm)
+        public ResponseViewModel Save(TypographicPDFSaveForm typographicPDFSaveForm)
         {
             return new();
         }
@@ -115,8 +121,7 @@ namespace SealTypographicWebAPI.Services.Implements
         private void BaseInputTypographicPDF(TypographicPDF typographicPDF, bool isCreate, int userid)
         {
             if (isCreate)
-            {
-                typographicPDF.Quarter = "unassigned";
+            {                
                 typographicPDF.CreateUserId = userid;
                 typographicPDF.CreateDate = DateTime.Now;
                 typographicPDF.DeleteStatus = DeleteStatus.No;
@@ -127,6 +132,86 @@ namespace SealTypographicWebAPI.Services.Implements
                 typographicPDF.UpdateUserId = userid;
                 typographicPDF.UpdateDate = DateTime.Now;
             }
-        }            
+        }
+
+        /// <summary>
+        /// PDF頁次存檔
+        /// </summary>
+        /// <param name="typographicPage"></param>        
+        /// <param name="pageFrom">來源頁次</param>        
+        private void PageSave(TypographicPage typographicPage, TypographicPageForm pageFrom)
+        {            
+            List<CustomerSealLocation> customerSealLocations = new();
+            List<AccountantSignLocation> accountantSignLocations = new();
+            List<LetterheadImageLocation> letterheadImageLocations = new();
+            List<TemporarySealLocation> temporarySealLocations = new();
+
+            typographicPage.PageNumber = pageFrom.PageNumber;
+            typographicPage.BlankCheck = pageFrom.BlankCheck;
+            typographicPage.DeleteCheck = pageFrom.DeleteCheck;
+            typographicPage.IsAccountantCertificate = pageFrom.IsAccountantCertificate;
+            
+            //客戶印鑑座標
+            foreach (CustomerSealLocationForm customerSealLocationForm in pageFrom.CustomerSealLocations)
+            {
+                CustomerSealLocation customerSealLocation = new()
+                {
+                    CustomerSealJournal = dbContext.CustomerSealJournals.Single(x => x.Id == customerSealLocationForm.CustomerSealId),
+                    Left = customerSealLocationForm.Left,
+                    Top = customerSealLocationForm.Top,
+                    Height = customerSealLocationForm.Height,
+                    Width = customerSealLocationForm.Width
+                };
+                customerSealLocations.Add(customerSealLocation);
+            }
+            typographicPage.CustomerSealLocations = customerSealLocations;
+
+            //會計師簽印座標
+            foreach (AccountantSingLocationForm accountantSingLocationForm in pageFrom.AccountantSingLocations)
+            {
+                AccountantSignLocation accountantSignLocation = new()
+                {
+                    AccountantSignJournal = dbContext.AccountantSignJournals.Single(x => x.Id == accountantSingLocationForm.AccountantSignId),
+                    Left = accountantSingLocationForm.Left,
+                    Top = accountantSingLocationForm.Top,
+                    Height = accountantSingLocationForm.Height,
+                    Width = accountantSingLocationForm.Width
+                };
+                accountantSignLocations.Add(accountantSignLocation);
+            }
+            typographicPage.AccountantSignLocations = accountantSignLocations;
+
+            //信頭座標
+            foreach (LetterheadImageLocationForm letterheadImageLocationForm in pageFrom.LetterheadImageLocations)
+            {
+                LetterheadImageLocation letterheadImageLocation = new()
+                {
+                    LetterheadImageJournal = dbContext.LetterheadImageJournals.Single(x => x.Id == letterheadImageLocationForm.LetterheadImageId),
+                    Left = letterheadImageLocationForm.Left,
+                    Top = letterheadImageLocationForm.Top,
+                    Height = letterheadImageLocationForm.Height,
+                    Width = letterheadImageLocationForm.Width
+                };
+                letterheadImageLocations.Add(letterheadImageLocation);
+            }
+            typographicPage.LetterheadImageLocations = letterheadImageLocations;
+
+            //信頭座標
+            foreach (TemporarySealLocationForm temporarySealLocationForm in pageFrom.TemporarySealLocations)
+            {
+                TemporarySealLocation temporarySealLocation = new()
+                {
+                    TemporarySealJournal = dbContext.TemporarySealJournals.Single(x => x.Id == temporarySealLocationForm.TemporarySealId),
+                    Left = temporarySealLocationForm.Left,
+                    Top = temporarySealLocationForm.Top,
+                    Height = temporarySealLocationForm.Height,
+                    Width = temporarySealLocationForm.Width
+                };
+                temporarySealLocations.Add(temporarySealLocation);
+            }
+            typographicPage.TemporarySealLocations = temporarySealLocations;
+            //return typographicPages;
+        }
+
     }
 }

@@ -35,16 +35,10 @@ namespace SealTypographicWebAPI.Config
                     .ForMember(x => x.ImageBase64, y => y.Ignore()) // <---imagebase64要額外處理所以要忽略                    
                     .ReverseMap();
 
-            CreateMap<AccountantSignGroupJournal, CustomerSealViewModel>()
-                    .ForMember(x => x.ImageBase64, y => y.Ignore()) // <---imagebase64要額外處理所以要忽略
-                    .ReverseMap();
-
             CreateMap<CustomerSeal, CustomerSealJournal>()
                     .ForMember(x => x.ImageFullPath, y => y.Ignore()) // <---ImagePath要額外處理所以要忽略                    
                     .ReverseMap();
-
-            CreateMap<CustomerSeal, AccountantSignGroupJournal>();                    
-
+               
             CreateMap<CustomerSealUpdateForm, CustomerSealJournal>()
                     .ForMember(x => x.ImageFullPath, y => y.Ignore()) // <---ImagePath要額外處理所以要忽略
                     .ReverseMap();
@@ -195,7 +189,7 @@ namespace SealTypographicWebAPI.Config
                 .ForMember(x => x.FullPath, y => y.Ignore());
 
             CreateMap<TypographicPageForm, TypographicPage>();
-            CreateMap<CustomerSealLocationForm, CustomerSealLocation>();
+            CreateMap<CustomerSealLocation, CustomerSealLocation>();
             CreateMap<AccountantSingLocationForm, AccountantSignLocation>();
             CreateMap<LetterheadImageLocationForm, LetterheadImageLocation>();
 

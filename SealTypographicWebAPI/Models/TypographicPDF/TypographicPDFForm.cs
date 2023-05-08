@@ -1,14 +1,14 @@
 ﻿namespace SealTypographicWebAPI.Models.TypographicPDF
 {
     /// <summary>
-    /// 排版資訊
+    /// 排版資訊(新增使用)
     /// </summary>
     public class TypographicPDFForm
     {
         /// <summary>
-        /// 上傳PDF的ID
+        /// 上傳檔案(PDF)的ID
         /// </summary>
-        public string PDFId { get; set; }
+        public int UploadId { get; set; }
 
         /// <summary>
         /// 客戶Id
@@ -16,8 +16,13 @@
         public int CustomerId { get; set; }
 
         /// <summary>
+        /// 季度
+        /// </summary>
+        public string Quarter { get; set; }
+
+        /// <summary>
         /// 排版頁數
         /// </summary>
-        public List<TypographicPageForm> TypographicPageModels { get; set;}
+        public List<TypographicPageForm> Pages { get; set;}
     }
 }

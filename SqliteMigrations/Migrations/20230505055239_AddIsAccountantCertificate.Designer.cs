@@ -216,7 +216,7 @@ namespace Sqlite.Migrations
 
                     b.HasIndex("TypographicPageId");
 
-                    b.ToTable("AccountantSignLocaltions");
+                    b.ToTable("AccountantSignLocations");
                 });
 
             modelBuilder.Entity("DBEntities.AccountantSignTemplate", b =>
@@ -492,7 +492,7 @@ namespace Sqlite.Migrations
 
                     b.HasIndex("TypographicPageId");
 
-                    b.ToTable("CustomerSealLocaltions");
+                    b.ToTable("CustomerSealLocations");
                 });
 
             modelBuilder.Entity("DBEntities.CustomerSealQuarterJournal", b =>
@@ -734,7 +734,7 @@ namespace Sqlite.Migrations
 
                     b.HasIndex("TypographicPageId");
 
-                    b.ToTable("LetterheadImageLocaltions");
+                    b.ToTable("LetterheadImageLocations");
                 });
 
             modelBuilder.Entity("DBEntities.LetterheadImageTemplate", b =>
@@ -1144,7 +1144,7 @@ namespace Sqlite.Migrations
                         .IsRequired();
 
                     b.HasOne("DBEntities.TypographicPage", "TypographicPage")
-                        .WithMany("AccountantSignLocaltions")
+                        .WithMany("AccountantSignLocations")
                         .HasForeignKey("TypographicPageId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1207,7 +1207,7 @@ namespace Sqlite.Migrations
                         .IsRequired();
 
                     b.HasOne("DBEntities.TypographicPage", "TypographicPage")
-                        .WithMany("CustomerSealLocaltions")
+                        .WithMany("CustomerSealLocations")
                         .HasForeignKey("TypographicPageId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1281,7 +1281,7 @@ namespace Sqlite.Migrations
                         .IsRequired();
 
                     b.HasOne("DBEntities.TypographicPage", "TypographicPage")
-                        .WithMany("LetterheadImageLocaltions")
+                        .WithMany("LetterheadImageLocations")
                         .HasForeignKey("TypographicPageId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1496,11 +1496,11 @@ namespace Sqlite.Migrations
 
             modelBuilder.Entity("DBEntities.TypographicPage", b =>
                 {
-                    b.Navigation("AccountantSignLocaltions");
+                    b.Navigation("AccountantSignLocations");
 
-                    b.Navigation("CustomerSealLocaltions");
+                    b.Navigation("CustomerSealLocations");
 
-                    b.Navigation("LetterheadImageLocaltions");
+                    b.Navigation("LetterheadImageLocations");
 
                     b.Navigation("TemporarySealJournals");
                 });

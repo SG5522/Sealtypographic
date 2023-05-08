@@ -8,11 +8,11 @@ namespace SealTypographicWebAPI.Models.TypographicPDF
     public class TypographicPDFPageSearch
     {
         /// <summary>
-        ///排版ID
+        /// TypographicPDFId
         /// </summary>
         /// <example>1</example>
         [Required]
-        public int PdfId { get; set; }
+        public int Id { get; set; }
 
         /// <summary>
         /// PDF頁次

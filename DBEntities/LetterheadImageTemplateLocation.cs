@@ -16,6 +16,6 @@ namespace DBEntities
         /// <summary>
         /// 信頭樣板
         /// </summary>
-        public LetterheadImageTemplate CustomerTemplate { get; set; }
+        public LetterheadImageTemplate LetterheadImageTemplate { get; set; }
     }
 }

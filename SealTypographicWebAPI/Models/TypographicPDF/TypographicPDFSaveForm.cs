@@ -14,6 +14,6 @@
         /// <summary>
         /// 排版頁數
         /// </summary>
-        public List<TypographicPageForm> TypographicPageModels { get; set;}
+        public List<TypographicPageForm> Pages { get; set;}
     }
 }

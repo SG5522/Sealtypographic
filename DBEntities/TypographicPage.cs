@@ -41,21 +41,21 @@ namespace DBEntities
         /// <summary>
         /// 客戶印鑑排版位置
         /// </summary>
-        public List<CustomerSealLocation> CustomerSealLocaltions { get; set; }
+        public List<CustomerSealLocation> CustomerSealLocations { get; set; }
 
         /// <summary>
         /// 會計師印鑑簽名排版位置
         /// </summary>
-        public List<AccountantSignLocation> AccountantSignLocaltions { get; set; }
+        public List<AccountantSignLocation> AccountantSignLocations { get; set; }
 
         /// <summary>
         /// 信頭圖片排版位置
         /// </summary>
-        public List<LetterheadImageLocation> LetterheadImageLocaltions { get; set; }
+        public List<LetterheadImageLocation> LetterheadImageLocations { get; set; }
 
         /// <summary>
         /// 臨時章排版位置
         /// </summary>
-        public List<TemporarySealLocation> TemporarySealJournals { get; set; }
+        public List<TemporarySealLocation> TemporarySealLocations { get; set; }
     }
 }

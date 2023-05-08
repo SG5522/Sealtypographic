@@ -45,7 +45,7 @@ namespace SealTypographicWebAPI.Models
         public void DbNoData()
         {
             Code = (int)ResponseCode.DbNoData;
-            Message = "Database DbNoData";
+            Message = "Database NoData";
         }
 
         /// <summary>

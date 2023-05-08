@@ -16,6 +16,7 @@ namespace SealTypographicWebAPI.Models.TypographicPDF
         /// <summary>
         /// 會計師名稱
         /// </summary>
+        /// <example>劉先生</example>
         public string AccountantName { get; set; }
 
         /// <summary>

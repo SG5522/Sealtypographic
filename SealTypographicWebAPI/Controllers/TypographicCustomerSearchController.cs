@@ -47,36 +47,69 @@ namespace SealTypographicWebAPI.Controllers
         /// 取得客戶資料列表(簡化資料的分頁)
         /// </summary>
         /// <param name="customerSearch">// 客戶搜尋</param>
-        /// <returns></returns>
-        //[HttpGet("[Action]/{id}")]
+        /// <returns></returns>        
         [HttpGet("[Action]")]
-        public CustomerPaginateShort GetCustomerPaginate([FromQuery] CustomerSearch customerSearch)
+        public CustomerPaginateShort Paginate([FromQuery] CustomerSearch customerSearch)
         {
             CustomerPaginateShort customerPaginateShort = new();
             try
             {
                 Log.Information("TypographicSealSearch GetCustomerPaginate input {@Input}", customerSearch);
                 customerPaginateShort = customerService.GetPaginateShort(customerSearch);
-                Log.Information("TypographicSealSearch GetCustomerPaginate output {@Output}", customerPaginateShort);
+                Log.Information("TypographicCustomerSearch GetCustomerPaginate output {@Output}", customerPaginateShort);
             }
             catch (Exception ex)
             {
-                Log.Error("TypographicSealSearch GetCustomerPaginate error {@Error}", ex);
+                Log.Error("TypographicCustomerSearch GetCustomerPaginate error {@Error}", ex);
                 customerPaginateShort.DbError();
             }
             return customerPaginateShort;
         }
 
         /// <summary>
-        /// 排板分頁搜尋
+        /// 取得客戶印鑑季度
         /// </summary>
-        /// <param name="typographicPDFSearch">排版PDF關鍵字搜尋</param>
+        /// <param name="customerId">客戶Id</param>        
         /// <returns></returns>
-        [HttpGet]
-        public TypographicPDFPaginateViewModel Paginate([FromQuery] TypographicPDFSearch typographicPDFSearch)
+        [HttpGet("[Action]")]
+        public CustomerSealQuarterResponse Quarter(int customerId)
         {
-            TypographicPDFPaginateViewModel typographicPDFPaginateViewModel = new ();
-            return typographicPDFPaginateViewModel;
+            CustomerSealQuarterResponse customerSealQuarterResponse = new ();
+            try
+            {
+                Log.Information("TypographicCustomerSearch GetQuarter input {@Input}", customerId);
+                customerSealQuarterResponse = customerSealService.GetQuarter(customerId);
+                Log.Information("TypographicCustomerSearch GetQuarter output {@Output}", customerSealQuarterResponse);
+            }
+            catch (Exception ex)
+            {
+                Log.Error("TypographicCustomerSearch GetQuarter error {@Error}", ex);
+                customerSealQuarterResponse.DbError();
+            }
+            return customerSealQuarterResponse;
+        }
+
+        /// <summary>
+        /// 取得客戶印鑑組
+        /// </summary>
+        /// <param name="customerSealQuarterId"></param>
+        /// <returns></returns>
+        [HttpGet("[Action]")]
+        public CustomerSealViewModels Seals(int customerSealQuarterId) 
+        {
+            CustomerSealViewModels customerSealViewModels = new();
+            try
+            {
+                Log.Information("TypographicCustomerSearch seals input {@Input}", customerSealQuarterId);
+                customerSealViewModels = customerSealService.GetSeals(customerSealQuarterId);
+                Log.Information("TypographicCustomerSearch seals output {@Output}", customerSealViewModels);
+            }
+            catch (Exception ex)
+            {
+                Log.Error("TypographicCustomerSearch seals error {@Error}", ex);
+                customerSealViewModels.DbError();
+            }
+            return customerSealViewModels;
         }
     }
 }

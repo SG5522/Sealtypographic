@@ -81,17 +81,22 @@ namespace DBEntities
         /// <summary>
         /// 客戶印鑑排版位置
         /// </summary>
-        public DbSet<CustomerSealLocation> CustomerSealLocaltions { get; set; }
+        public DbSet<CustomerSealLocation> CustomerSealLocations { get; set; }
 
         /// <summary>
         /// 會計師印鑑簽名ID
         /// </summary>
-        public DbSet<AccountantSignLocation> AccountantSignLocaltions { get; set; }
+        public DbSet<AccountantSignLocation> AccountantSignLocations { get; set; }
 
         /// <summary>
         /// 信頭圖片排版位置
         /// </summary>
-        public DbSet<LetterheadImageLocation> LetterheadImageLocaltions { get; set; }
+        public DbSet<LetterheadImageLocation> LetterheadImageLocations { get; set; }
+
+        /// <summary>
+        /// 信頭圖片排版位置
+        /// </summary>
+        public DbSet<TemporarySealLocation> TemporarySealLocations { get; set; }
 
         /// <summary>
         /// 客戶印鑑樣板

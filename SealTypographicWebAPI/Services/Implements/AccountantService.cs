@@ -218,6 +218,6 @@ namespace SealTypographicWebAPI.Services.Implements
                 accountant.UpdateUserId = userid;
                 accountant.UpdateDate = DateTime.Now;
             }
-        }
+        }        
     }
 }

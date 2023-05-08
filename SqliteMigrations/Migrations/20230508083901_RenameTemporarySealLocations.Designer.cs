@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Sqlite.Migrations
 {
     [DbContext(typeof(SealTypographicDbContext))]
-    [Migration("20230505070410_AddCustomerOneToManyTypographicPDF")]
-    partial class AddCustomerOneToManyTypographicPDF
+    [Migration("20230508083901_RenameTemporarySealLocations")]
+    partial class RenameTemporarySealLocations
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -609,7 +609,7 @@ namespace Sqlite.Migrations
                     b.Property<int>("ConfigType")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("CustomerTemplateId")
+                    b.Property<int>("CustomerSealTemplateId")
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("Height")
@@ -626,7 +626,7 @@ namespace Sqlite.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CustomerTemplateId");
+                    b.HasIndex("CustomerSealTemplateId");
 
                     b.ToTable("CustomerSealTemplateLocations");
                 });
@@ -792,14 +792,14 @@ namespace Sqlite.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("CustomerTemplateId")
-                        .HasColumnType("INTEGER");
-
                     b.Property<int>("Height")
                         .HasColumnType("INTEGER");
 
                     b.Property<float>("Left")
                         .HasColumnType("REAL");
+
+                    b.Property<int>("LetterheadImageTemplateId")
+                        .HasColumnType("INTEGER");
 
                     b.Property<float>("Top")
                         .HasColumnType("REAL");
@@ -809,7 +809,7 @@ namespace Sqlite.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CustomerTemplateId");
+                    b.HasIndex("LetterheadImageTemplateId");
 
                     b.ToTable("LetterheadImageTemplateLocations");
                 });
@@ -886,7 +886,7 @@ namespace Sqlite.Migrations
 
                     b.HasIndex("TypographicPageId");
 
-                    b.ToTable("TemporarySealLocation");
+                    b.ToTable("TemporarySealLocations");
                 });
 
             modelBuilder.Entity("DBEntities.TemporarySealQuarterJournal", b =>
@@ -1241,13 +1241,13 @@ namespace Sqlite.Migrations
 
             modelBuilder.Entity("DBEntities.CustomerSealTemplateLocation", b =>
                 {
-                    b.HasOne("DBEntities.CustomerSealTemplate", "CustomerTemplate")
+                    b.HasOne("DBEntities.CustomerSealTemplate", "CustomerSealTemplate")
                         .WithMany("CustomerSealTemplateLocations")
-                        .HasForeignKey("CustomerTemplateId")
+                        .HasForeignKey("CustomerSealTemplateId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("CustomerTemplate");
+                    b.Navigation("CustomerSealTemplate");
                 });
 
             modelBuilder.Entity("DBEntities.Letterhead", b =>
@@ -1304,13 +1304,13 @@ namespace Sqlite.Migrations
 
             modelBuilder.Entity("DBEntities.LetterheadImageTemplateLocation", b =>
                 {
-                    b.HasOne("DBEntities.LetterheadImageTemplate", "CustomerTemplate")
+                    b.HasOne("DBEntities.LetterheadImageTemplate", "LetterheadImageTemplate")
                         .WithMany("LetterheadImageTemplateLocations")
-                        .HasForeignKey("CustomerTemplateId")
+                        .HasForeignKey("LetterheadImageTemplateId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("CustomerTemplate");
+                    b.Navigation("LetterheadImageTemplate");
                 });
 
             modelBuilder.Entity("DBEntities.TemporarySealJournal", b =>
@@ -1333,7 +1333,7 @@ namespace Sqlite.Migrations
                         .IsRequired();
 
                     b.HasOne("DBEntities.TypographicPage", "TypographicPage")
-                        .WithMany("TemporarySealJournals")
+                        .WithMany("TemporarySealLocations")
                         .HasForeignKey("TypographicPageId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1504,7 +1504,7 @@ namespace Sqlite.Migrations
 
                     b.Navigation("LetterheadImageLocations");
 
-                    b.Navigation("TemporarySealJournals");
+                    b.Navigation("TemporarySealLocations");
                 });
 #pragma warning restore 612, 618
         }

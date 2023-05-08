@@ -13,21 +13,20 @@ namespace SealTypographicWebAPI.Services
         /// </summary>
         /// <param name="typographicPDFSearch">搜尋條件</param>
         /// <returns></returns>
-        TypographicPDFViewModel GetTypographicPDFViewModel(TypographicPDFSearch typographicPDFSearch);
+        TypographicPDFPaginateViewModel GetPaginate(TypographicPDFSearch typographicPDFSearch);
 
         /// <summary>
         /// 建立PDF排版資訊
         /// </summary>
-        /// <param name="pDFId">上傳檔案的pDFId</param>
-        /// <param name="customerId"></param>
+        /// <param name="typographicPDFForm">排版資訊(新增使用)</param>
         /// <returns></returns>
-        ResponseViewModel New(int pDFId, int customerId);
+        ResponseViewModel New(TypographicPDFForm typographicPDFForm);
 
         /// <summary>
         /// 建立PDF排版資訊
         /// </summary>
-        /// <param name="typographicPDFForm"></param>
+        /// <param name="typographicPDFSaveForm"></param>
         /// <returns></returns>
-        ResponseViewModel Save(TypographicPDFForm typographicPDFForm);
+        ResponseViewModel Save(TypographicPDFSaveForm typographicPDFSaveForm);
     }
 }

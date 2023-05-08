@@ -241,7 +241,7 @@ namespace MySql.Migrations
 
                     b.HasIndex("TypographicPageId");
 
-                    b.ToTable("AccountantSignLocaltions");
+                    b.ToTable("AccountantSignLocations");
                 });
 
             modelBuilder.Entity("DBEntities.Customer", b =>
@@ -410,7 +410,7 @@ namespace MySql.Migrations
 
                     b.HasIndex("TypographicPageId");
 
-                    b.ToTable("CustomerSealLocaltions");
+                    b.ToTable("CustomerSealLocations");
                 });
 
             modelBuilder.Entity("DBEntities.CustomerSealQuarterJournal", b =>
@@ -576,7 +576,7 @@ namespace MySql.Migrations
 
                     b.HasIndex("TypographicPageId");
 
-                    b.ToTable("LetterheadImageLocaltions");
+                    b.ToTable("LetterheadImageLocations");
                 });
 
             modelBuilder.Entity("DBEntities.TypographicPDF", b =>
@@ -761,7 +761,7 @@ namespace MySql.Migrations
                         .IsRequired();
 
                     b.HasOne("DBEntities.TypographicPage", "TypographicPage")
-                        .WithMany("AccountantSignLocaltions")
+                        .WithMany("AccountantSignLocations")
                         .HasForeignKey("TypographicPageId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -791,7 +791,7 @@ namespace MySql.Migrations
                         .IsRequired();
 
                     b.HasOne("DBEntities.TypographicPage", "TypographicPage")
-                        .WithMany("CustomerSealLocaltions")
+                        .WithMany("CustomerSealLocations")
                         .HasForeignKey("TypographicPageId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -832,7 +832,7 @@ namespace MySql.Migrations
                         .IsRequired();
 
                     b.HasOne("DBEntities.TypographicPage", "TypographicPage")
-                        .WithMany("LetterheadImageLocaltions")
+                        .WithMany("LetterheadImageLocations")
                         .HasForeignKey("TypographicPageId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -901,11 +901,11 @@ namespace MySql.Migrations
 
             modelBuilder.Entity("DBEntities.TypographicPage", b =>
                 {
-                    b.Navigation("AccountantSignLocaltions");
+                    b.Navigation("AccountantSignLocations");
 
-                    b.Navigation("CustomerSealLocaltions");
+                    b.Navigation("CustomerSealLocations");
 
-                    b.Navigation("LetterheadImageLocaltions");
+                    b.Navigation("LetterheadImageLocations");
                 });
 #pragma warning restore 612, 618
         }

@@ -88,9 +88,13 @@ namespace SealTypographicWebAPI.Services.Implements
 
                 foreach (CustomerSealJournal customerSealJournal in customerSeals)
                 {
-                    CustomerSealViewModel customerSealViewModel = mapper.Map<CustomerSealViewModel>(customerSealJournal);
-                    customerSealViewModel.ImageBase64 = imageService.GetPathToBase64(customerSealJournal.ImageFullPath); //資料庫取得圖檔路徑轉BASE64                                       
-                    customerSealViewModel.SealMappingConfigId = customerSealJournal.ConfigType;
+                    CustomerSealViewModel customerSealViewModel = new()
+                    {
+                        Id = customerSealJournal.Id,
+                        ImageBase64 = imageService.GetPathToBase64(customerSealJournal.ImageFullPath), //從資料庫取得圖檔路徑轉BASE64   
+                        SealMappingConfigId = customerSealJournal.ConfigType,
+                        Sequence = customerSealJournal.Sequence,
+                    };
                     customerSealViewModels.SealViewModels.Add(customerSealViewModel);
                 }
                 customerSealViewModels.CustomerSealQuarterId = customerSealQuarterId;

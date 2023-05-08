@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using SealTypographicWebAPI.Models;
 using SealTypographicWebAPI.Models.Accountant;
+using SealTypographicWebAPI.Models.AccountantGroup;
 using SealTypographicWebAPI.Models.Customer;
 using SealTypographicWebAPI.Models.TemplateConfig;
 using SealTypographicWebAPI.Models.TypographicPDF;
@@ -23,24 +24,47 @@ namespace SealTypographicWebAPI.Controllers
 
         private readonly IAccountantService accountantService;
         private readonly IAccountantSignService accountantSignService;
+        private readonly IAccountantGroupService accountantGroupService;
 
         /// <summary>
         /// 注入Service
         /// </summary>
-        public TypographicAccountantSearchController(IAccountantService accountantService,IAccountantSignService accountantSignService)
+        public TypographicAccountantSearchController(IAccountantService accountantService,IAccountantSignService accountantSignService, IAccountantGroupService accountantGroupService)
         {
             this.accountantService = accountantService;
             this.accountantSignService = accountantSignService;
+            this.accountantGroupService = accountantGroupService;
         }
 
         /// <summary>
-        /// 取得客戶資料列表(簡化資料的分頁)
+        /// 取得群組所有資料
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("[Action]")]
+        public AccountantGroupList GroupList()
+        {
+            AccountantGroupList accountantGroupList = new();
+            try
+            {
+                accountantGroupList = accountantGroupService.GetAll();
+                Log.Information("TypographicAccountantSearch GroupList output {@Output}", accountantGroupList);
+            }
+            catch (Exception ex)
+            {
+                Log.Error("AccountantGroups GroupList error {@Error}", ex.InnerException);
+                accountantGroupList.DbError();
+            }
+            return accountantGroupList;
+        }
+
+        /// <summary>
+        /// 取得會計師資料列表(簡化資料的分頁)
         /// </summary>
         /// <param name="accountantSearch">// 會計師搜尋</param>
         /// <returns></returns>
         //[HttpGet("[Action]/{id}")]
         [HttpGet("[Action]")]
-        public AccountantPaginateViewModel GetCustomerPaginate([FromQuery] AccountantSearch accountantSearch)
+        public AccountantPaginateViewModel Paginate([FromQuery] AccountantSearch accountantSearch)
         {
             AccountantPaginateViewModel accountantPaginateViewModel = new();
             try
@@ -51,22 +75,10 @@ namespace SealTypographicWebAPI.Controllers
             }
             catch (Exception ex)
             {
-                Log.Error("TypographicSealSearch GetCustomerPaginate error {@Error}", ex);
+                Log.Error("TypographicSealSearch GetCustomerPaginate error {@Error}", ex.InnerException);
                 accountantPaginateViewModel.DbError();
             }
             return accountantPaginateViewModel;
-        }
-
-        /// <summary>
-        /// 排板分頁搜尋
-        /// </summary>
-        /// <param name="typographicPDFSearch">排版PDF關鍵字搜尋</param>
-        /// <returns></returns>
-        [HttpGet]
-        public TypographicPDFPaginateViewModel Paginate([FromQuery] TypographicPDFSearch typographicPDFSearch)
-        {
-            TypographicPDFPaginateViewModel typographicPDFPaginateViewModel = new ();
-            return typographicPDFPaginateViewModel;
         }
     }
 }

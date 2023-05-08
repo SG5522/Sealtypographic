@@ -388,7 +388,7 @@ namespace MySql.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "CustomerSealLocaltions",
+                name: "CustomerSealLocations",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -424,7 +424,7 @@ namespace MySql.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "LetterheadImageLocaltions",
+                name: "LetterheadImageLocations",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -460,7 +460,7 @@ namespace MySql.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "AccountantSignLocaltions",
+                name: "AccountantSignLocations",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -517,12 +517,12 @@ namespace MySql.Migrations
 
             migrationBuilder.CreateIndex(
                 name: "IX_AccountantSignLocaltions_AccountantSignJournalId",
-                table: "AccountantSignLocaltions",
+                table: "AccountantSignLocations",
                 column: "AccountantSignJournalId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_AccountantSignLocaltions_TypographicPageId",
-                table: "AccountantSignLocaltions",
+                table: "AccountantSignLocations",
                 column: "TypographicPageId");
 
             migrationBuilder.CreateIndex(
@@ -532,12 +532,12 @@ namespace MySql.Migrations
 
             migrationBuilder.CreateIndex(
                 name: "IX_CustomerSealLocaltions_CustomerSealJournalId",
-                table: "CustomerSealLocaltions",
+                table: "CustomerSealLocations",
                 column: "CustomerSealJournalId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_CustomerSealLocaltions_TypographicPageId",
-                table: "CustomerSealLocaltions",
+                table: "CustomerSealLocations",
                 column: "TypographicPageId");
 
             migrationBuilder.CreateIndex(
@@ -552,12 +552,12 @@ namespace MySql.Migrations
 
             migrationBuilder.CreateIndex(
                 name: "IX_LetterheadImageLocaltions_LetterheadImageJournalId",
-                table: "LetterheadImageLocaltions",
+                table: "LetterheadImageLocations",
                 column: "LetterheadImageJournalId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_LetterheadImageLocaltions_TypographicPageId",
-                table: "LetterheadImageLocaltions",
+                table: "LetterheadImageLocations",
                 column: "TypographicPageId");
 
             migrationBuilder.CreateIndex(
@@ -575,13 +575,13 @@ namespace MySql.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "AccountantSignLocaltions");
+                name: "AccountantSignLocations");
 
             migrationBuilder.DropTable(
-                name: "CustomerSealLocaltions");
+                name: "CustomerSealLocations");
 
             migrationBuilder.DropTable(
-                name: "LetterheadImageLocaltions");
+                name: "LetterheadImageLocations");
 
             migrationBuilder.DropTable(
                 name: "UploadFiles");

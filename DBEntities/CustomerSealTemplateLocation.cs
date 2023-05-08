@@ -19,8 +19,8 @@ namespace DBEntities
         public CustomerSealType ConfigType { get; set; }
 
         /// <summary>
-        /// 
+        /// 客戶印鑑樣板
         /// </summary>
-        public CustomerSealTemplate CustomerTemplate { get; set; }
+        public CustomerSealTemplate CustomerSealTemplate { get; set; }
     }
 }

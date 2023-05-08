@@ -23,6 +23,25 @@ namespace SealTypographicWebAPI.Models.Customer
     }
 
     /// <summary>
+    /// 單顆印鑑資料
+    /// </summary>
+    public class CustomerSealResponse : ResponseViewModel
+    {
+        /// <summary>
+        /// new CustomerSealViewModel
+        /// </summary>
+        public CustomerSealResponse()
+        {
+            CustomerSealViewModel = new();
+        }
+
+        /// <summary>
+        /// 印鑑資料
+        /// </summary>
+        public CustomerSealViewModel CustomerSealViewModel { get; set; }
+    }
+
+    /// <summary>
     /// 印鑑組
     /// </summary>
     public class CustomerSealViewModels : ResponseViewModel

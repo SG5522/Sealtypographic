@@ -8,6 +8,7 @@
         /// <summary>
         /// 圖片
         /// </summary>
+        /// <example>Image/...</example>
         public string ImageBase64 { get; set; }
     }
 }

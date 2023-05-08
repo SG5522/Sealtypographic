@@ -1,10 +1,7 @@
-﻿using DBEntities.Consts;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using SealTypographicWebAPI.Models;
-using SealTypographicWebAPI.Models.TemplateConfig;
 using SealTypographicWebAPI.Models.TypographicPDF;
 using SealTypographicWebAPI.Services;
-using SealTypographicWebAPI.Services.Implements;
 using Serilog;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -29,17 +26,29 @@ namespace SealTypographicWebAPI.Controllers
         }
 
         /// <summary>
-        /// 取得排板PDF Page
+        /// 取得已編輯PDF頁次資訊
         /// </summary>
-        /// <param name="typographicPDFPageSearch">// 排板PDF Page搜尋</param>
-        /// <returns></returns>
-        //[HttpGet("[Action]/{id}")]
-        [HttpGet("[Action]")]
-        public TypographicPageViewModel GetEditPDFPageView([FromQuery] TypographicPDFPageSearch typographicPDFPageSearch)
+        /// <param name="id">TypographicPDFId</param>        
+        /// <returns></returns>        
+        [HttpGet("{id}")]
+        public TypographicPagesResponse EditPages(int id)
         {
-            TypographicPageViewModel typographicPageViewModel = new();            
+            TypographicPagesResponse typographicPageResponse = new();            
+            return typographicPageResponse;
+        }
+
+        /// <summary>
+        /// 取得單頁PDF圖像與排版編輯資訊
+        /// </summary>
+        /// <param name="typographicPDFPageSearch">排板PDFPage搜尋</param> 
+        /// <returns></returns>
+        [HttpGet("[Action]")]
+        public TypographicPageViewModel PageViewModel(TypographicPDFPageSearch typographicPDFPageSearch) 
+        {
+            TypographicPageViewModel typographicPageViewModel = new();
             return typographicPageViewModel;
         }
+
 
         /// <summary>
         /// 排板分頁搜尋
@@ -54,34 +63,40 @@ namespace SealTypographicWebAPI.Controllers
         }
 
         /// <summary>
-        /// 新增排板PDF
+        /// 排版資訊(新增使用)
         /// </summary>
-        /// <param name="pDFId"></param>
-        /// <param name="customerId"></param>
+        /// <param name="typographicPDFForm"></param>
         /// <returns></returns>
         [HttpPost]
-        public ResponseViewModel New(int pDFId, int customerId)
+        public ResponseViewModel New(TypographicPDFForm typographicPDFForm)
         {
             ResponseViewModel response = new();                            
             try
             {
-                response = typographicPDFService.New(pDFId, customerId);
+                response = typographicPDFService.New(typographicPDFForm);
             }
             catch (Exception ex)
             {
-                Log.Error("TypographicPDF New error {@Error}", ex.InnerException);
+                Log.Error("TypographicPDF New error {@Error}", ex.Message);
                 response.Error();
             }                
             return response;
         }
 
-        // PUT api/<TypographicPDFController>/5
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="value"></param>
         [HttpPut("{id}")]
         public void Put(int id, [FromBody] string value)
         {
         }
 
-        // DELETE api/<TypographicPDFController>/5
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="id"></param>
         [HttpDelete("{id}")]
         public void Delete(int id)
         {
