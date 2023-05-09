@@ -45,7 +45,7 @@ namespace SealTypographicWebAPI.Controllers
             }
             catch (Exception ex)
             {
-                Log.Error("SealMappingConfig ConfigList error {@Error}", ex);
+                Log.Error("SealMappingConfig ConfigList error {@Error}", ex.Message); 
                 sealMappingConfigResponseList.DbError();
             }
             return sealMappingConfigResponseList;

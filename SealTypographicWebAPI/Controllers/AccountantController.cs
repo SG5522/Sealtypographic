@@ -47,7 +47,7 @@ namespace SealTypographicWebAPI.Controllers
             }
             catch (Exception ex) 
             {
-                Log.Error("AccountantSignAuthorization get paginate error {@Error}", ex);
+                Log.Error("AccountantSignAuthorization get paginate error {@Error}", ex.Message); 
                 accountantPaginatesViewModel.DbError();                                
             }
             return accountantPaginatesViewModel;
@@ -70,7 +70,7 @@ namespace SealTypographicWebAPI.Controllers
             }
             catch (Exception ex)
             {
-                Log.Error("AccountantGroups get detail error {@Error}", ex);
+                Log.Error("AccountantGroups get detail error {@Error}", ex.Message); 
                 accountantResponse.DbError();                                
             }
             return accountantResponse;
@@ -92,7 +92,7 @@ namespace SealTypographicWebAPI.Controllers
             }
             catch (Exception ex)
             {
-                Log.Error("AccountantSignAuthorization new error {@Error}", ex);
+                Log.Error("AccountantSignAuthorization new error {@Error}", ex.Message); 
                 accountantCreateResponse.DbError();                
             }
             return accountantCreateResponse;
@@ -114,7 +114,7 @@ namespace SealTypographicWebAPI.Controllers
             }
             catch (Exception ex)
             {
-                Log.Error("AccountantSignAuthorization put accountantFormUpdate error {@Error}", ex);
+                Log.Error("AccountantSignAuthorization put accountantFormUpdate error {@Error}", ex.Message); 
                 response.DbError();                
             }
             return response;
@@ -136,7 +136,7 @@ namespace SealTypographicWebAPI.Controllers
             }
             catch (Exception ex)
             { 
-                Log.Error("AccountantSignAuthorization delete(hide) error {@Error}", ex);
+                Log.Error("AccountantSignAuthorization delete(hide) error {@Error}", ex.Message); 
                 response.DbError();                
             }
             return response;

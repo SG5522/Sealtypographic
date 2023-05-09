@@ -13,33 +13,27 @@ using Serilog;
 namespace SealTypographicWebAPI.Controllers
 {
     /// <summary>
-    /// 用於排版管理的客戶搜尋API
+    /// 用於排版管理的客戶印鑑搜尋管理
     /// </summary>
     [Route("api/[controller]")]
     [ApiController]
-    public class TypographicCustomerSearchController : ControllerBase
+    public class TypographicCustomerSealController : ControllerBase
     {
         private readonly ICustomerService customerService;
         private readonly ICustomerSealService customerSealService;
-        private readonly ILetterheadService letterheadService;
-        private readonly ILetterheadImageService letterheadImageService;
         private readonly ITemporarySealService temporarySealService;        
 
         /// <summary>
         /// 注入Service
         /// </summary>
-        public TypographicCustomerSearchController(
+        public TypographicCustomerSealController(
                                                    ICustomerService customerService,
                                                    ICustomerSealService customerSealService,
-                                                   ILetterheadService letterheadService,
-                                                   ILetterheadImageService letterheadImageService,
                                                    ITemporarySealService temporarySealService
                                               )
         {
             this.customerService = customerService;
             this.customerSealService = customerSealService;
-            this.letterheadService = letterheadService;
-            this.letterheadImageService = letterheadImageService;
             this.temporarySealService = temporarySealService;
         }
 
@@ -60,7 +54,7 @@ namespace SealTypographicWebAPI.Controllers
             }
             catch (Exception ex)
             {
-                Log.Error("TypographicCustomerSearch GetCustomerPaginate error {@Error}", ex);
+                Log.Error("TypographicCustomerSearch GetCustomerPaginate error {@Error}", ex.Message);
                 customerPaginateShort.DbError();
             }
             return customerPaginateShort;
@@ -83,7 +77,7 @@ namespace SealTypographicWebAPI.Controllers
             }
             catch (Exception ex)
             {
-                Log.Error("TypographicCustomerSearch GetQuarter error {@Error}", ex);
+                Log.Error("TypographicCustomerSearch GetQuarter error {@Error}", ex.Message);
                 customerSealQuarterResponse.DbError();
             }
             return customerSealQuarterResponse;
@@ -106,7 +100,7 @@ namespace SealTypographicWebAPI.Controllers
             }
             catch (Exception ex)
             {
-                Log.Error("TypographicCustomerSearch seals error {@Error}", ex);
+                Log.Error("TypographicCustomerSearch seals error {@Error}", ex.Message);
                 customerSealViewModels.DbError();
             }
             return customerSealViewModels;

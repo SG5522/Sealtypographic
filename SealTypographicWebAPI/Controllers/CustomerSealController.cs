@@ -45,7 +45,7 @@ namespace SealTypographicWebAPI.Controllers
             }
             catch (Exception ex)
             {
-                Log.Error("CustomerSeal get quarter error {@Error}", ex);
+                Log.Error("CustomerSeal get quarter error {@Error}", ex.Message); 
                 customerSealQuarters.DbError();
             }
             return customerSealQuarters;
@@ -68,7 +68,7 @@ namespace SealTypographicWebAPI.Controllers
             }
             catch (Exception ex)
             {
-                Log.Error("CustomerSeal get seals error {@Error}", ex);
+                Log.Error("CustomerSeal get seals error {@Error}", ex.Message); 
                 customerSealViewModels.DbError();
             }
             return customerSealViewModels;
@@ -92,7 +92,7 @@ namespace SealTypographicWebAPI.Controllers
             }
             catch (Exception ex)
             {
-                Log.Error("CustomerSeal new error {@Error}", ex);
+                Log.Error("CustomerSeal new error {@Error}", ex.Message); 
                 response.DbError();
             }
             return response;
@@ -115,7 +115,7 @@ namespace SealTypographicWebAPI.Controllers
             }
             catch (Exception ex)
             {
-                Log.Error("CustomerSeal update error {@Error}", ex);
+                Log.Error("CustomerSeal update error {@Error}", ex.Message); 
                 ResponseViewModel responseViewModel = new();
                 responseViewModel.DbError();
                 responses.Add(responseViewModel);
@@ -140,7 +140,7 @@ namespace SealTypographicWebAPI.Controllers
             }
             catch (Exception ex)
             {
-                Log.Error("CustomerSeal pending error {@Error}", ex);
+                Log.Error("CustomerSeal pending error {@Error}", ex.Message); 
                 response.DbError();                                
             }
             return response;
@@ -163,7 +163,7 @@ namespace SealTypographicWebAPI.Controllers
             }
             catch (Exception ex)
             {
-                Log.Error("CustomerSeal invalid error {@Error}", ex);
+                Log.Error("CustomerSeal invalid error {@Error}", ex.Message); 
                 response.DbError();                
             }
             return response;
@@ -186,7 +186,7 @@ namespace SealTypographicWebAPI.Controllers
             }
             catch (Exception ex)
             {
-                Log.Error("CustomerSeal CancelReview error {@Error}", ex);
+                Log.Error("CustomerSeal CancelReview error {@Error}", ex.Message); 
                 response.DbError();
             }
             return response;

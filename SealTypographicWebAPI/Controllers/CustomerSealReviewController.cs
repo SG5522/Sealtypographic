@@ -46,7 +46,7 @@ namespace SealTypographicWebAPI.Controllers
             }
             catch (Exception ex) 
             {
-                Log.Error("CustomerSealReview ReviewPaginate error {@Error}", ex);
+                Log.Error("CustomerSealReview ReviewPaginate error {@Error}", ex.Message); 
                 customerSealReviewViewModelResponse.DbError();
                 return customerSealReviewViewModelResponse;
             }
@@ -70,7 +70,7 @@ namespace SealTypographicWebAPI.Controllers
             }
             catch (Exception ex)
             {
-                Log.Error("CustomerSealQuarterReviewPaginate ReviewDetail error {@Error}", ex);
+                Log.Error("CustomerSealQuarterReviewPaginate ReviewDetail error {@Error}", ex.Message); 
                 customerSealReviewDetailResponse.DbError();
                 return customerSealReviewDetailResponse;
             }
@@ -93,7 +93,7 @@ namespace SealTypographicWebAPI.Controllers
             }
             catch (Exception ex)
             {
-                Log.Error("CustomerSealReview Approval error {@Error}", ex);
+                Log.Error("CustomerSealReview Approval error {@Error}", ex.Message); 
                 response.DbError();
                 return response;
             }
@@ -116,7 +116,7 @@ namespace SealTypographicWebAPI.Controllers
             }
             catch (Exception ex)
             {
-                Log.Error("CustomerSealReview Reject error {@Error}", ex);
+                Log.Error("CustomerSealReview Reject error {@Error}", ex.Message); 
                 response.DbError();
                 return response;
             }
@@ -139,7 +139,7 @@ namespace SealTypographicWebAPI.Controllers
             }
             catch (Exception ex)
             {
-                Log.Error("CustomerSealReview Refuse error {@Error}", ex);
+                Log.Error("CustomerSealReview Refuse error {@Error}", ex.Message); 
                 response.DbError();
                 return response;
             }

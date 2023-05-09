@@ -46,7 +46,7 @@ namespace SealTypographicWebAPI.Controllers
             }
             catch (Exception ex)
             {
-                Log.Error("CustomerSealAuthorization get paginate error {@Error}", ex);                
+                Log.Error("CustomerSealAuthorization get paginate error {@Error}", ex.Message);                 
                 customerPaginateViewModel.DbError();                
             }
             return customerPaginateViewModel;
@@ -69,7 +69,7 @@ namespace SealTypographicWebAPI.Controllers
             }
             catch (Exception ex)
             {
-                Log.Error("Customer paginateShort error {@Error}", ex);
+                Log.Error("Customer paginateShort error {@Error}", ex.Message); 
                 customerPaginateShort.DbError();
             }
             return customerPaginateShort;
@@ -92,7 +92,7 @@ namespace SealTypographicWebAPI.Controllers
             }
             catch (Exception ex)
             {
-                Log.Error("Customer short error {@Error}", ex);
+                Log.Error("Customer short error {@Error}", ex.Message); 
                 customerSummaryResponse.DbError();
             }
             return customerSummaryResponse;
@@ -115,7 +115,7 @@ namespace SealTypographicWebAPI.Controllers
             }
             catch (Exception ex)
             {
-                Log.Error("CustomerSealAuthorization get customerId error {@Error}", ex);                
+                Log.Error("CustomerSealAuthorization get customerId error {@Error}", ex.Message);                 
                 customerDetailViewModel.DbError();                
             }
             return customerDetailViewModel;
@@ -138,7 +138,7 @@ namespace SealTypographicWebAPI.Controllers
             }
             catch (Exception ex)
             {
-                Log.Error("Customer new error {@Error}", ex);
+                Log.Error("Customer new error {@Error}", ex.Message); 
                 createCustomerResponse.DbError();                
             }
             return createCustomerResponse;
@@ -160,7 +160,7 @@ namespace SealTypographicWebAPI.Controllers
             }
             catch (Exception ex)
             {
-                Log.Error("Customer update error {@Error}", ex);
+                Log.Error("Customer update error {@Error}", ex.Message); 
                 response.DbError();                
             }
             return response;
@@ -185,7 +185,7 @@ namespace SealTypographicWebAPI.Controllers
             }
             catch (Exception ex)
             {
-                Log.Error("Customer delete error {@Error}", ex);
+                Log.Error("Customer delete error {@Error}", ex.Message); 
                 response.DbError();
             }
             return response;

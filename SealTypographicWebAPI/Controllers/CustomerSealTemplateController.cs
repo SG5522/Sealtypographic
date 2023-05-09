@@ -41,7 +41,7 @@ namespace SealTypographicWebAPI.Controllers
             }
             catch (Exception ex)
             {
-                Log.Error("CustomerSealTemplate paginate error {@Error}", ex);
+                Log.Error("CustomerSealTemplate paginate error {@Error}", ex.Message); 
                 customerSealTemplateDetailViewModel.DbError();
             }
             return customerSealTemplateDetailViewModel;
@@ -63,7 +63,7 @@ namespace SealTypographicWebAPI.Controllers
             }
             catch (Exception ex)
             {
-                Log.Error("CustomerSealTemplate paginate error {@Error}", ex);
+                Log.Error("CustomerSealTemplate paginate error {@Error}", ex.Message); 
                 viewImage.DbError();
             }
             return viewImage;
@@ -85,7 +85,7 @@ namespace SealTypographicWebAPI.Controllers
             }
             catch (Exception ex)
             {
-                Log.Error("CustomerSealTemplate paginate error {@Error}", ex);
+                Log.Error("CustomerSealTemplate paginate error {@Error}", ex.Message); 
                 customerSealTemplatePaginate.DbError();
             }
             return customerSealTemplatePaginate;
@@ -108,7 +108,7 @@ namespace SealTypographicWebAPI.Controllers
             }
             catch (Exception ex)
             {
-                Log.Error("CustomerSealTemplate new error {@Error}", ex);
+                Log.Error("CustomerSealTemplate new error {@Error}", ex.Message); 
                 response.DbError();
             }
             return response;
@@ -131,7 +131,7 @@ namespace SealTypographicWebAPI.Controllers
             }
             catch (Exception ex)
             {
-                Log.Error("CustomerSealTemplate update error {@Error}", ex);
+                Log.Error("CustomerSealTemplate update error {@Error}", ex.Message); 
                 response.DbError();
             }
 
@@ -155,7 +155,7 @@ namespace SealTypographicWebAPI.Controllers
             }
             catch (Exception ex)
             {
-                Log.Error("CustomerSealTemplate new error {@Error}", ex);
+                Log.Error("CustomerSealTemplate new error {@Error}", ex.Message); 
                 response.DbError();
             }
 

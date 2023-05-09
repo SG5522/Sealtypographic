@@ -43,7 +43,7 @@ namespace SealTypographicWebAPI.Controllers
             }
             catch (Exception ex)
             {
-                Log.Error("AccountantGroups get List error {@Error}", ex);
+                Log.Error("AccountantGroups get List error {@Error}", ex.Message);
                 accountantGroupList.DbError();                
             }
             return accountantGroupList;
@@ -67,7 +67,7 @@ namespace SealTypographicWebAPI.Controllers
             }
             catch (Exception ex)
             {
-                Log.Error("AccountantGroups get paginate error {@Error}", ex);                
+                Log.Error("AccountantGroups get paginate error {@Error}", ex.Message);                
                 accountantGroupResponses.DbError();                
             }
             return accountantGroupResponses;
@@ -90,7 +90,7 @@ namespace SealTypographicWebAPI.Controllers
             }
             catch (Exception ex)
             {
-                Log.Error("AccountantGroups get data error {@Error}", ex);                
+                Log.Error("AccountantGroups get data error {@Error}", ex.Message);                
                 accountantGroupResponse.DbError();                
             }
             return accountantGroupResponse;
@@ -113,7 +113,7 @@ namespace SealTypographicWebAPI.Controllers
             }
             catch (Exception ex)
             {
-                Log.Error("AccountantGroups new error {@Error}", ex);
+                Log.Error("AccountantGroups new error {@Error}", ex.Message);
                 response.DbError();                
             }
             return response;
@@ -136,7 +136,7 @@ namespace SealTypographicWebAPI.Controllers
             }
             catch (Exception ex)
             {
-                Log.Error("AccountantGroups update error {@Error}", ex);
+                Log.Error("AccountantGroups update error {@Error}", ex.Message);
                 response.DbError();                
             }
             return response;
@@ -159,7 +159,7 @@ namespace SealTypographicWebAPI.Controllers
             }
             catch (Exception ex)
             {
-                Log.Error("AccountantGroups delete error {@Error}", ex);
+                Log.Error("AccountantGroups delete error {@Error}", ex.Message);
                 response.DbError();                
             }
             return response;

@@ -44,7 +44,7 @@ namespace SealTypographicWebAPI.Controllers
             }
             catch (Exception ex)
             {
-                Log.Error("ResponseCode ResponseCodeList error {@Error}", ex);                
+                Log.Error("ResponseCode ResponseCodeList error {@Error}", ex.Message);                 
             }
             return responseCodeList;
         }

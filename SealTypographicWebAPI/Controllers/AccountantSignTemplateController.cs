@@ -42,7 +42,7 @@ namespace SealTypographicWebAPI.Controllers
             }
             catch (Exception ex)
             {
-                Log.Error("AccountantSignTemplate paginate error {@Error}", ex);
+                Log.Error("AccountantSignTemplate paginate error {@Error}", ex.Message); 
                 accountantSignTemplateDetailViewModel.DbError();
             }
             return accountantSignTemplateDetailViewModel;
@@ -64,7 +64,7 @@ namespace SealTypographicWebAPI.Controllers
             }
             catch (Exception ex)
             {
-                Log.Error("AccountantSignTemplate viewImage error {@Error}", ex);
+                Log.Error("AccountantSignTemplate viewImage error {@Error}", ex.Message); 
                 viewImage.DbError();
             }
             return viewImage;
@@ -86,7 +86,7 @@ namespace SealTypographicWebAPI.Controllers
             }
             catch (Exception ex)
             {
-                Log.Error("AccountantSignTemplate paginate error {@Error}", ex);
+                Log.Error("AccountantSignTemplate paginate error {@Error}", ex.Message); 
                 accountantSignTemplatePaginate.DbError();
             }
             return accountantSignTemplatePaginate;
@@ -109,7 +109,7 @@ namespace SealTypographicWebAPI.Controllers
             }
             catch (Exception ex)
             {
-                Log.Error("AccountantSignTemplate new error {@Error}", ex);
+                Log.Error("AccountantSignTemplate new error {@Error}", ex.Message); 
                 response.DbError();
             }
             return response;
@@ -132,7 +132,7 @@ namespace SealTypographicWebAPI.Controllers
             }
             catch (Exception ex)
             {
-                Log.Error("AccountantSignTemplate update error {@Error}", ex);
+                Log.Error("AccountantSignTemplate update error {@Error}", ex.Message); 
                 response.DbError();
             }
 
@@ -156,7 +156,7 @@ namespace SealTypographicWebAPI.Controllers
             }
             catch (Exception ex)
             {
-                Log.Error("AccountantSignTemplate new error {@Error}", ex);
+                Log.Error("AccountantSignTemplate new error {@Error}", ex.Message); 
                 response.DbError();
             }
 

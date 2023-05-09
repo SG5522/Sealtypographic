@@ -43,7 +43,7 @@ namespace SealTypographicWebAPI.Controllers
             }
             catch (Exception ex)
             {
-                Log.Error("ReviewStatusResponse PapeOrientation error {@Error}", ex);
+                Log.Error("ReviewStatusResponse PapeOrientation error {@Error}", ex.Message); 
                 templateConfigResponseList.Error();
             }
             return templateConfigResponseList;
@@ -63,7 +63,7 @@ namespace SealTypographicWebAPI.Controllers
             }
             catch (Exception ex)
             {
-                Log.Error("ReviewStatusResponse pageSize error {@Error}", ex);
+                Log.Error("ReviewStatusResponse pageSize error {@Error}", ex.Message); 
                 templateConfigResponseList.Error();
             }
             return templateConfigResponseList;
@@ -83,7 +83,7 @@ namespace SealTypographicWebAPI.Controllers
             }
             catch (Exception ex)
             {
-                Log.Error("ReviewStatusResponse stackMode error {@Error}", ex);
+                Log.Error("ReviewStatusResponse stackMode error {@Error}", ex.Message); 
                 templateConfigResponseList.Error();
             }
             return templateConfigResponseList;

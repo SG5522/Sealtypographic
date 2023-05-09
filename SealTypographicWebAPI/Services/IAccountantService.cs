@@ -25,6 +25,13 @@ namespace SealTypographicWebAPI.Services
         AccountantPaginateViewModel GetPaginate(AccountantSearch accountantSearch);
 
         /// <summary>
+        /// 依搜尋條件獲得資料列表(排版使用)
+        /// </summary>
+        /// <param name="accountantSearch">搜尋條件</param>
+        /// <returns></returns>
+        AccountantPaginateViewModel GetPaginateWithTypographic(AccountantSearch accountantSearch);
+
+        /// <summary>
         /// 新增資料
         /// </summary>
         /// <param name="accountantForm">會計師資料</param>        

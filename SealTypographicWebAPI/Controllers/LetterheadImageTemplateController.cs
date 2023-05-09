@@ -40,7 +40,7 @@ namespace SealTypographicWebAPI.Controllers
             }
             catch (Exception ex)
             {
-                Log.Error("LetterheadTemplate detail error {@Error}", ex);
+                Log.Error("LetterheadTemplate detail error {@Error}", ex.Message); 
                 letterheadTemplateDetailViewModel.DbError();
             }
             return letterheadTemplateDetailViewModel;
@@ -62,7 +62,7 @@ namespace SealTypographicWebAPI.Controllers
             }
             catch (Exception ex)
             {
-                Log.Error("LetterheadImageTemplate viewImage error {@Error}", ex);
+                Log.Error("LetterheadImageTemplate viewImage error {@Error}", ex.Message); 
                 viewImage.DbError();
             }
             return viewImage;
@@ -84,7 +84,7 @@ namespace SealTypographicWebAPI.Controllers
             }
             catch (Exception ex)
             {
-                Log.Error("LetterheadTemplate paginate error {@Error}", ex);
+                Log.Error("LetterheadTemplate paginate error {@Error}", ex.Message); 
                 letterheadTemplatePaginate.DbError();
             }
             return letterheadTemplatePaginate;
@@ -107,7 +107,7 @@ namespace SealTypographicWebAPI.Controllers
             }
             catch (Exception ex)
             {
-                Log.Error("LetterheadTemplate new error {@Error}", ex);
+                Log.Error("LetterheadTemplate new error {@Error}", ex.Message); 
                 response.DbError();
             }
             return response;
@@ -130,7 +130,7 @@ namespace SealTypographicWebAPI.Controllers
             }
             catch (Exception ex)
             {
-                Log.Error("LetterheadTemplate update error {@Error}", ex);
+                Log.Error("LetterheadTemplate update error {@Error}", ex.Message); 
                 response.DbError();
             }
 
@@ -154,7 +154,7 @@ namespace SealTypographicWebAPI.Controllers
             }
             catch (Exception ex)
             {
-                Log.Error("LetterheadTemplate delete error {@Error}", ex);
+                Log.Error("LetterheadTemplate delete error {@Error}", ex.Message); 
                 response.DbError();
             }
 

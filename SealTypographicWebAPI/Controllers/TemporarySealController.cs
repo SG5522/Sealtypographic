@@ -44,7 +44,7 @@ namespace SealTypographicWebAPI.Controllers
             }
             catch (Exception ex)
             {
-                Log.Error("TemporarySeal get paginate error {@Error}", ex);
+                Log.Error("TemporarySeal get paginate error {@Error}", ex.Message); 
                 temporaryPaginateViewModel.DbError();
             }
             return temporaryPaginateViewModel;
@@ -66,7 +66,7 @@ namespace SealTypographicWebAPI.Controllers
             }
             catch (Exception ex)
             {
-                Log.Error("TemporarySeal get detail error {@Error}", ex);
+                Log.Error("TemporarySeal get detail error {@Error}", ex.Message); 
                 temporarySealDetailViewModel.DbError();
             }
             return temporarySealDetailViewModel;
@@ -89,7 +89,7 @@ namespace SealTypographicWebAPI.Controllers
             }
             catch (Exception ex)
             {
-                Log.Error("TemporarySeal new error {@Error}", ex);
+                Log.Error("TemporarySeal new error {@Error}", ex.Message); 
                 response.DbError();
             }
             return response;
@@ -112,7 +112,7 @@ namespace SealTypographicWebAPI.Controllers
             }
             catch (Exception ex)
             {
-                Log.Error("TemporarySeal new update error {@Error}", ex);
+                Log.Error("TemporarySeal new update error {@Error}", ex.Message); 
                 response.DbError();
             }
             return response;
@@ -135,7 +135,7 @@ namespace SealTypographicWebAPI.Controllers
             }
             catch (Exception ex)
             {
-                Log.Error("TemporarySeal delete error {@Error}", ex);
+                Log.Error("TemporarySeal delete error {@Error}", ex.Message); 
                 response.DbError();
             }
             return response;

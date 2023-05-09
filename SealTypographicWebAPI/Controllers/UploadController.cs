@@ -42,7 +42,7 @@ namespace SealTypographicWebAPI.Controllers
             }
             catch (Exception ex)
             {
-                Log.Error("Upload uploadType error {@Error}", ex);
+                Log.Error("Upload uploadType error {@Error}", ex.Message); 
                 uploadTypeResponse.DbError();
             }
             return uploadTypeResponse;
@@ -64,7 +64,7 @@ namespace SealTypographicWebAPI.Controllers
             }
             catch (Exception ex)
             {
-                Log.Error("Upload uploadType error {@Error}", ex);
+                Log.Error("Upload uploadType error {@Error}", ex.Message); 
                 duplicateFileProcessModeResponse.DbError();
             }
             return duplicateFileProcessModeResponse;
@@ -87,7 +87,7 @@ namespace SealTypographicWebAPI.Controllers
             }
             catch (Exception ex)
             {
-                Log.Error("Upload files error {@Error}", ex);
+                Log.Error("Upload files error {@Error}", ex.Message); 
                 uploadTypeResponse.DbError();
             }
             return uploadTypeResponse;
@@ -110,7 +110,7 @@ namespace SealTypographicWebAPI.Controllers
             }
             catch (Exception ex)
             {
-                Log.Error("Upload fileImage error {@Error}", ex);
+                Log.Error("Upload fileImage error {@Error}", ex.Message); 
                 uploadFileImageView.DbError();
             }
             return uploadFileImageView;
@@ -134,7 +134,7 @@ namespace SealTypographicWebAPI.Controllers
             }
             catch (Exception ex)
             {
-                Log.Error("Upload getUploadType error {@Error}", ex);
+                Log.Error("Upload getUploadType error {@Error}", ex.Message); 
                 uploadDuplicateFileNames.DbError();
             }
             return uploadDuplicateFileNames;
@@ -158,7 +158,7 @@ namespace SealTypographicWebAPI.Controllers
             }
             catch (Exception ex)
             {
-                Log.Error("Upload Scan error {@Error}", ex);
+                Log.Error("Upload Scan error {@Error}", ex.Message); 
                 response.DbError();                
             }
             return response;
@@ -181,7 +181,7 @@ namespace SealTypographicWebAPI.Controllers
             }
             catch (Exception ex)
             {
-                Log.Error("Upload new error {@Error}", ex);
+                Log.Error("Upload new error {@Error}", ex.Message); 
                 response.DbError();
             }
             return response;
@@ -204,7 +204,7 @@ namespace SealTypographicWebAPI.Controllers
             }
             catch (Exception ex)
             {
-                Log.Error("Upload new error {@Error}", ex);
+                Log.Error("Upload new error {@Error}", ex.Message); 
                 response.DbError();
             }
             return response;
@@ -227,7 +227,7 @@ namespace SealTypographicWebAPI.Controllers
             }
             catch (Exception ex)
             {
-                Log.Error("Upload Delete error {@Error}", ex);
+                Log.Error("Upload Delete error {@Error}", ex.Message); 
                 response.DbError();
             }
             return response;

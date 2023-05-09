@@ -45,7 +45,7 @@ namespace SealTypographicWebAPI.Controllers
             }
             catch (Exception ex)
             {
-                Log.Error("LetterheadImage StatusList error {@Error}", ex);
+                Log.Error("LetterheadImage StatusList error {@Error}", ex.Message); 
                 letterheadImageStatusResponse.DbError();
             }
             return letterheadImageStatusResponse;
@@ -68,7 +68,7 @@ namespace SealTypographicWebAPI.Controllers
             }
             catch (Exception ex)
             {
-                Log.Error("LetterheadImage get createDates error {@Error}", ex);
+                Log.Error("LetterheadImage get createDates error {@Error}", ex.Message); 
                 letterheadGroupCreateDateViews.DbError();
             }
             return letterheadGroupCreateDateViews;
@@ -91,7 +91,7 @@ namespace SealTypographicWebAPI.Controllers
             }
             catch (Exception ex)
             {
-                Log.Error("LetterheadImage get imageViewModel error {@Error}", ex);
+                Log.Error("LetterheadImage get imageViewModel error {@Error}", ex.Message);
                 letterheadImageViewModel.DbError();
             }
             return letterheadImageViewModel;
@@ -114,7 +114,7 @@ namespace SealTypographicWebAPI.Controllers
             }
             catch (Exception ex)
             {
-                Log.Error("LetterheadImage new error {@Error}", ex);
+                Log.Error("LetterheadImage new error {@Error}", ex.Message);
                 responseViewModel.DbError();
             }
             return responseViewModel;
@@ -137,7 +137,7 @@ namespace SealTypographicWebAPI.Controllers
             }            
             catch (Exception ex)
             {
-                Log.Error("LetterheadImage put error {@Error}", ex);
+                Log.Error("LetterheadImage put error {@Error}", ex.Message);
                 response.DbError();
             }
             return response;

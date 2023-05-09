@@ -15,11 +15,11 @@ using Serilog;
 namespace SealTypographicWebAPI.Controllers
 {
     /// <summary>
-    /// 用於排版管理的客戶搜尋API
+    /// 用於排版管理的會計師簽印搜尋管理
     /// </summary>
     [Route("api/[controller]")]
     [ApiController]
-    public class TypographicAccountantSearchController : ControllerBase
+    public class TypographicAccountantSignController : ControllerBase
     {
 
         private readonly IAccountantService accountantService;
@@ -29,7 +29,7 @@ namespace SealTypographicWebAPI.Controllers
         /// <summary>
         /// 注入Service
         /// </summary>
-        public TypographicAccountantSearchController(IAccountantService accountantService,IAccountantSignService accountantSignService, IAccountantGroupService accountantGroupService)
+        public TypographicAccountantSignController(IAccountantService accountantService,IAccountantSignService accountantSignService, IAccountantGroupService accountantGroupService)
         {
             this.accountantService = accountantService;
             this.accountantSignService = accountantSignService;
@@ -51,7 +51,7 @@ namespace SealTypographicWebAPI.Controllers
             }
             catch (Exception ex)
             {
-                Log.Error("AccountantGroups GroupList error {@Error}", ex.InnerException);
+                Log.Error("AccountantGroups GroupList error {@Error}", ex.Message);
                 accountantGroupList.DbError();
             }
             return accountantGroupList;
@@ -69,16 +69,40 @@ namespace SealTypographicWebAPI.Controllers
             AccountantPaginateViewModel accountantPaginateViewModel = new();
             try
             {
-                Log.Information("TypographicSealSearch GetCustomerPaginate input {@Input}", accountantSearch);
-                accountantPaginateViewModel = accountantService.GetPaginate(accountantSearch);
-                Log.Information("TypographicSealSearch GetCustomerPaginate output {@Output}", accountantPaginateViewModel);
+                Log.Information("TypographicSealSearch paginate input {@Input}", accountantSearch);
+                accountantPaginateViewModel = accountantService.GetPaginateWithTypographic(accountantSearch);
+                Log.Information("TypographicSealSearch paginate output {@Output}", accountantPaginateViewModel);
             }
             catch (Exception ex)
             {
-                Log.Error("TypographicSealSearch GetCustomerPaginate error {@Error}", ex.InnerException);
+                Log.Error("TypographicSealSearch paginate error {@Error}", ex.Message);
                 accountantPaginateViewModel.DbError();
             }
             return accountantPaginateViewModel;
+        }
+
+        /// <summary>
+        /// 取得會計師簽印(簡化資料的分頁)
+        /// </summary>
+        /// <param name="accountantSignGroupId"></param>        
+        /// <returns></returns>
+        //[HttpGet("[Action]/{id}")]
+        [HttpGet("[Action]")]
+        public AccountantSignViewModels Signs(int accountantSignGroupId)
+        {
+            AccountantSignViewModels accountantSignViewModels = new();
+            try
+            {
+                Log.Information("TypographicSealSearch signs input {@Input}", accountantSignGroupId);
+                accountantSignViewModels = accountantSignService.GetSignViewModels(accountantSignGroupId);
+                Log.Information("TypographicSealSearch signs output {@Output}", accountantSignViewModels);
+            }
+            catch (Exception ex)
+            {
+                Log.Error("TypographicSealSearch signs error {@Error}", ex.Message);
+                accountantSignViewModels.DbError();
+            }
+            return accountantSignViewModels;
         }
     }
 }

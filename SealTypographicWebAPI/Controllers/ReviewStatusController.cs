@@ -42,7 +42,7 @@ namespace SealTypographicWebAPI.Controllers
             }
             catch (Exception ex)
             {
-                Log.Error("ReviewStatusResponse StatusList error {@Error}", ex);
+                Log.Error("ReviewStatusResponse StatusList error {@Error}", ex.Message); 
                 reviewStatusResponse.DbError();
             }
             return reviewStatusResponse;

@@ -6,6 +6,7 @@ using SealTypographicWebAPI.Utils;
 using Microsoft.EntityFrameworkCore;
 using AutoMapper;
 using System.ComponentModel.Design;
+using System.Diagnostics.Eventing.Reader;
 
 namespace SealTypographicWebAPI.Services.Implements
 {
@@ -22,7 +23,7 @@ namespace SealTypographicWebAPI.Services.Implements
         /// </summary>
         /// <param name="dbContext"></param>
         /// <param name="mapper"></param>
-        public AccountantService(SealTypographicDbContext dbContext,IMapper mapper)
+        public AccountantService(SealTypographicDbContext dbContext, IMapper mapper)
         {
             this.dbContext = dbContext;
             this.mapper = mapper;
@@ -31,14 +32,14 @@ namespace SealTypographicWebAPI.Services.Implements
         ///<inheritdoc />
         public AccountantDetailResponse GetDetail(int accountantId)
         {
-            AccountantDetailResponse accountantResponse = new();            
+            AccountantDetailResponse accountantResponse = new();
 
             Accountant? accountantQuery = dbContext.Accountants.Include(accountant => accountant.AccountantGroup)
                                                                .FirstOrDefault(accountant => accountant.Id == accountantId);
 
             if (accountantQuery != null)
             {
-                accountantResponse.AccountantDetailViewModel = mapper.Map<AccountantDetailViewModel>(accountantQuery);                
+                accountantResponse.AccountantDetailViewModel = mapper.Map<AccountantDetailViewModel>(accountantQuery);
             }
             accountantResponse.Success();
 
@@ -47,67 +48,14 @@ namespace SealTypographicWebAPI.Services.Implements
 
         ///<inheritdoc />
         public AccountantPaginateViewModel GetPaginate(AccountantSearch accountantSearch)
-        {
-            AccountantPaginateViewModel accountantPaginatesViewModels = new();
-            int companyId = 1;
+        {            
+            return GetStandardPaginate(accountantSearch, false);
+        }
 
-            IQueryable<Accountant> accountantQuery = dbContext.Accountants.Where
-                                                        (
-                                                            accountant => accountant.Company.Id == companyId
-                                                            && accountant.DeleteStatus == DeleteStatus.No
-                                                        );     
-            
-            if (!string.IsNullOrWhiteSpace(accountantSearch.KeyWord))
-            {
-                accountantQuery = accountantQuery.Where
-                                (
-                                    accountant =>
-                                    accountant.Code.ToLower().Contains(accountantSearch.KeyWord.ToLower())                                                         
-                                    || accountant.Name.Contains(accountantSearch.KeyWord)
-                                    || accountant.AccountantGroup.Name.Contains(accountantSearch.KeyWord)
-                                );                                                   
-            }
-
-            accountantQuery = accountantQuery.OrderBy(accountant => accountant.Id);
-            if (accountantQuery.Any())
-            {
-                //取得該頁            
-                List<Accountant> thisPageAccountants = accountantQuery
-                                          .Include(accountant => accountant.AccountantSignGroupJournals)
-                                          .Include(accountant => accountant.AccountantGroup)
-                                          .Skip((accountantSearch.PageNumber - 1) * accountantSearch.PageSize)
-                                          .Take(accountantSearch.PageSize)
-                                          .ToList();
-
-                foreach (Accountant accountant in thisPageAccountants)
-                {
-                    AccountantViewModelWithCreateDate accountantPaginatesViewModel = mapper.Map<AccountantViewModelWithCreateDate>(accountant);
-
-
-                    if(accountant.AccountantSignGroupJournals.Any())
-                    {
-                        accountantPaginatesViewModel.AccountantSignGroupId = accountant.AccountantSignGroupJournals
-                                                                             .Where
-                                                                             (
-                                                                                    x => x.DeleteStatus == DeleteStatus.No
-                                                                                    && x.ReviewStatus < ReviewStatus.Disabled
-                                                                             )
-                                                                             .OrderByDescending(x => x.CreateDate)
-                                                                             .Select(x => x.Id)
-                                                                             .FirstOrDefault();
-                    }
-                   
-                    accountantPaginatesViewModels.ViewModels.Add(accountantPaginatesViewModel);                    
-                }                
-                accountantPaginatesViewModels.PageNumber= accountantSearch.PageNumber;
-                accountantPaginatesViewModels.PageSize = accountantSearch.PageSize;
-                //計算總頁數
-                accountantPaginatesViewModels.TotalPage = TotalPageUtil.GetTotalPage(accountantQuery.Count(), accountantSearch.PageSize);               
-                accountantPaginatesViewModels.TotalCount = accountantQuery.Count();                
-            }
-            accountantPaginatesViewModels.Success();
-
-            return accountantPaginatesViewModels;
+        ///<inheritdoc />
+        public AccountantPaginateViewModel GetPaginateWithTypographic(AccountantSearch accountantSearch)
+        {            
+            return GetStandardPaginate(accountantSearch, true);
         }
 
         ///<inheritdoc />
@@ -120,7 +68,7 @@ namespace SealTypographicWebAPI.Services.Implements
             //尋找公司並與會計師關聯
             Company? companyQuery = dbContext.Companys.Include(x => x.Accountants).FirstOrDefault(x => x.Id == companyId);
 
-            if(companyQuery != null)
+            if (companyQuery != null)
             {
                 //驗證編號是否重複
                 List<string> accountantCodeQuery = companyQuery.Accountants.Where
@@ -153,7 +101,7 @@ namespace SealTypographicWebAPI.Services.Implements
                 }
             }
 
-                        
+
             return accountantCreateResponse;
         }
 
@@ -218,6 +166,106 @@ namespace SealTypographicWebAPI.Services.Implements
                 accountant.UpdateUserId = userid;
                 accountant.UpdateDate = DateTime.Now;
             }
-        }        
+        }
+
+        /// <summary>
+        /// 依搜尋條件獲得資料列表
+        /// </summary>
+        /// <param name="accountantSearch">搜尋條件</param>
+        /// <param name="isTypographicUse">是否給排版使用</param>
+        /// <returns></returns>
+        private AccountantPaginateViewModel GetStandardPaginate(AccountantSearch accountantSearch, bool isTypographicUse)
+        {
+            AccountantPaginateViewModel accountantPaginatesViewModels = new();
+            int companyId = 1;
+
+            IQueryable<Accountant> accountantQuery = dbContext.Accountants.Where
+                                                        (
+                                                            accountant => accountant.Company.Id == companyId
+                                                            && accountant.DeleteStatus == DeleteStatus.No
+                                                        );
+
+            if (!string.IsNullOrWhiteSpace(accountantSearch.KeyWord))
+            {
+                if(isTypographicUse)
+                {
+                    accountantQuery = accountantQuery.Where
+                                    (
+                                        accountant =>
+                                        accountant.Code.ToLower().Contains(accountantSearch.KeyWord.ToLower())
+                                        || accountant.Name.Contains(accountantSearch.KeyWord)
+                                        && accountant.AccountantGroup.Id == accountantSearch.AccountantGroupId
+                                    );
+                }
+                else
+                {
+                    accountantQuery = accountantQuery.Where
+                                    (
+                                        accountant =>
+                                        accountant.Code.ToLower().Contains(accountantSearch.KeyWord.ToLower())
+                                        || accountant.Name.Contains(accountantSearch.KeyWord)
+                                        || accountant.AccountantGroup.Name.Contains(accountantSearch.KeyWord)
+                                    );
+                }
+            }
+
+            accountantQuery = accountantQuery.OrderBy(accountant => accountant.Id);
+            if (accountantQuery.Any())
+            {
+                //取得該頁            
+                List<Accountant> thisPageAccountants = accountantQuery
+                                          .Include(accountant => accountant.AccountantSignGroupJournals)
+                                          .Include(accountant => accountant.AccountantGroup)
+                                          .Skip((accountantSearch.PageNumber - 1) * accountantSearch.PageSize)
+                                          .Take(accountantSearch.PageSize)
+                                          .ToList();
+
+                foreach (Accountant accountant in thisPageAccountants)
+                {
+                    AccountantViewModelWithCreateDate accountantPaginatesViewModel = mapper.Map<AccountantViewModelWithCreateDate>(accountant);
+
+
+                    if (accountant.AccountantSignGroupJournals.Any())
+                    {
+                        if (isTypographicUse)
+                        {
+                            accountantPaginatesViewModel.AccountantSignGroupId = accountant.AccountantSignGroupJournals
+                                                                                .Where
+                                                                                (
+                                                                                    x => x.DeleteStatus == DeleteStatus.No
+                                                                                    && x.ReviewStatus == ReviewStatus.Approval
+                                                                                )
+                                                                                .OrderByDescending(x => x.CreateDate)
+                                                                                .Select(x => x.Id)
+                                                                                .FirstOrDefault();
+                        }
+                        else
+                        {
+                            accountantPaginatesViewModel.AccountantSignGroupId = accountant.AccountantSignGroupJournals
+                                                                                 .Where
+                                                                                 (
+                                                                                        x => x.DeleteStatus == DeleteStatus.No
+                                                                                        && x.ReviewStatus < ReviewStatus.Disabled
+                                                                                 )
+                                                                                 .OrderByDescending(x => x.CreateDate)
+                                                                                 .Select(x => x.Id)
+                                                                                 .FirstOrDefault();
+                        }
+                    }
+
+                    accountantPaginatesViewModels.ViewModels.Add(accountantPaginatesViewModel);
+                }
+                accountantPaginatesViewModels.PageNumber = accountantSearch.PageNumber;
+                accountantPaginatesViewModels.PageSize = accountantSearch.PageSize;
+                //計算總頁數
+                accountantPaginatesViewModels.TotalPage = TotalPageUtil.GetTotalPage(accountantQuery.Count(), accountantSearch.PageSize);
+                accountantPaginatesViewModels.TotalCount = accountantQuery.Count();
+            }
+            accountantPaginatesViewModels.Success();
+
+            return accountantPaginatesViewModels;
+        }
+
+       
     }
 }

@@ -7,7 +7,7 @@
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <DocumentationFile></DocumentationFile>
     <IncrementVersionOnBuild>0.0.2.1+</IncrementVersionOnBuild>
-    <Version>0.0.2.524</Version>
+    <Version>0.0.2.529</Version>
     <PackageIcon>android-chrome-128x128.png</PackageIcon>    
   </PropertyGroup>
 

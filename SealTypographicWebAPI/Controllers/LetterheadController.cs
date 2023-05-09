@@ -46,7 +46,7 @@ namespace SealTypographicWebAPI.Controllers
             }
             catch (Exception ex)
             {
-                Log.Error("LetterheadImage get paginate error {@Error}", ex);
+                Log.Error("LetterheadImage get paginate error {@Error}", ex.Message);
                 letterheadPaginateViewModel.DbError();                
             }
             return letterheadPaginateViewModel;
@@ -70,7 +70,7 @@ namespace SealTypographicWebAPI.Controllers
             }
             catch (Exception ex)
             {
-                Log.Error("LetterheadImage delete(hide) error {@Error}", ex);
+                Log.Error("LetterheadImage delete(hide) error {@Error}", ex.Message);
                 responseViewModel.DbError();                
             }
             return responseViewModel;

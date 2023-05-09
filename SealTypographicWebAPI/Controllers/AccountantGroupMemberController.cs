@@ -53,7 +53,7 @@ namespace SealTypographicWebAPI.Controllers
             }
             catch (Exception ex)
             {
-                Log.Error("AccountantGroupMember FromQuery error {@Error}", ex);
+                Log.Error("AccountantGroupMember FromQuery error {@Error}", ex.Message); 
                 accountantGroupMembers.DbError();
             }
             return accountantGroupMembers;
@@ -76,7 +76,7 @@ namespace SealTypographicWebAPI.Controllers
             }
             catch (Exception ex)
             {
-                Log.Error("AccountantGroupMember get NotTheGroup error {@Error}", ex);                
+                Log.Error("AccountantGroupMember get NotTheGroup error {@Error}", ex.Message);                 
                 notThisGroupMember.DbError();                
             }
             return notThisGroupMember;
@@ -99,7 +99,7 @@ namespace SealTypographicWebAPI.Controllers
             }
             catch (Exception ex)
             {
-                Log.Error("AccountantGroupMember get{accountantId} error {@Error}", ex);                
+                Log.Error("AccountantGroupMember get{accountantId} error {@Error}", ex.Message);                 
                 accountantResponse.DbError();                
             }
             return accountantResponse;
@@ -122,7 +122,7 @@ namespace SealTypographicWebAPI.Controllers
             }
             catch (Exception ex)
             {
-                Log.Error("AccountantGroupMember put error {@Error}", ex);
+                Log.Error("AccountantGroupMember put error {@Error}", ex.Message); 
                 response.DbError();                
             }
             return response;
@@ -145,7 +145,7 @@ namespace SealTypographicWebAPI.Controllers
             }
             catch (Exception ex)
             {
-                Log.Error("AccountantGroupMember UpdateNotGroupMembers error {@Error}", ex);
+                Log.Error("AccountantGroupMember UpdateNotGroupMembers error {@Error}", ex.Message); 
                 response.DbError();                
             }
             return response;

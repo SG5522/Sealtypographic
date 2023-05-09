@@ -45,7 +45,7 @@ namespace SealTypographicWebAPI.Controllers
             }
             catch (Exception ex)
             {             
-                Log.Error("AccountantSign get CreateDates error {@Error}", ex);
+                Log.Error("AccountantSign get CreateDates error {@Error}", ex.Message); 
                 accountantSignStartDates.DbError();                
             }
             return accountantSignStartDates;
@@ -68,7 +68,7 @@ namespace SealTypographicWebAPI.Controllers
             }
             catch (Exception ex)
             {
-                Log.Error("CustomerSeal get signViewModels error {@Error}", ex);
+                Log.Error("CustomerSeal get signViewModels error {@Error}", ex.Message); 
                 accountantSignViewModels.DbError();                
             }
             return accountantSignViewModels;
@@ -91,7 +91,7 @@ namespace SealTypographicWebAPI.Controllers
             }
             catch (Exception ex)
             {                
-                Log.Error("AccountantSign new error {@Error}", ex);
+                Log.Error("AccountantSign new error {@Error}", ex.Message); 
                 response.DbError();
             }
             return response;
@@ -115,7 +115,7 @@ namespace SealTypographicWebAPI.Controllers
             catch (Exception ex)
             {
                 ResponseViewModel response= new();
-                Log.Error("AccountantSign update error {@Error}", ex);
+                Log.Error("AccountantSign update error {@Error}", ex.Message); 
                 response.DbError();
                 responses.Add(response);
             }
@@ -139,7 +139,7 @@ namespace SealTypographicWebAPI.Controllers
             }
             catch (Exception ex)
             {                
-                Log.Error("AccountantSign pending error {@Error}", ex);                
+                Log.Error("AccountantSign pending error {@Error}", ex.Message);                 
                 response.DbError();                
             }
             return response;
@@ -162,7 +162,7 @@ namespace SealTypographicWebAPI.Controllers
             }
             catch (Exception ex)
             {
-                Log.Error("AccountantSign Invalid error {@Error}", ex);                
+                Log.Error("AccountantSign Invalid error {@Error}", ex.Message);                 
                 response.DbError();                  
             }
             return response;
@@ -185,7 +185,7 @@ namespace SealTypographicWebAPI.Controllers
             }
             catch (Exception ex)
             {
-                Log.Error("AccountantSign CancelReview error {@Error}", ex);
+                Log.Error("AccountantSign CancelReview error {@Error}", ex.Message); 
                 response.DbError();
             }
             return response;
