@@ -53,28 +53,6 @@ namespace SealTypographicWebAPI.Controllers
             }
             return temporarySealPaginateViewModel;
         }
-
-        /// <summary>
-        /// 取得信頭圖片
-        /// </summary>
-        /// <param name="letterheadImageId">信頭圖片Id</param>
-        /// <returns></returns>
-        [HttpGet]
-        public TypographicTemporarySealPaginateViewModel ImageViewModel(int letterheadImageId)
-        {
-            TypographicTemporarySealPaginateViewModel typographicTemporarySealPaginateViewModel = new();
-            try
-            {
-                Log.Information("TypographicLetterheadSearch imageViewModel input {@Input}", letterheadImageId);
-                typographicTemporarySealPaginateViewModel = letterheadImageService.GetImageViewModel(letterheadImageId);
-                Log.Information("TypographicLetterheadSearch imageViewModel output {@Output}", typographicTemporarySealPaginateViewModel);
-            }
-            catch (Exception ex)
-            {
-                Log.Error("TypographicLetterheadSearch imageViewModel error {@Error}", ex.Message);
-                typographicTemporarySealPaginateViewModel.DbError();
-            }
-            return typographicTemporarySealPaginateViewModel;
-        }
+        
     }
 }
