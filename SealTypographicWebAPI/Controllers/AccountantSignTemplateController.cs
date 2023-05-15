@@ -38,7 +38,7 @@ namespace SealTypographicWebAPI.Controllers
             {
                 Log.Information("AccountantSignTemplate detail input {@Input}", id);
                 accountantSignTemplateDetailViewModel = accountantSignTemplateService.GetDetail(id);
-                Log.Information("AccountantSignTemplate detail output {@Output}", id);
+                Log.Information("AccountantSignTemplate detail output {@Output}", accountantSignTemplateDetailViewModel);
             }
             catch (Exception ex)
             {

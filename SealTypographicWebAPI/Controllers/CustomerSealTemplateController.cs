@@ -37,7 +37,7 @@ namespace SealTypographicWebAPI.Controllers
             {
                 Log.Information("CustomerSealTemplate detail input {@Input}", id);
                 customerSealTemplateDetailViewModel = customerSealTemplateService.GetDetail(id);
-                Log.Information("CustomerSealTemplate detail output {@Output}", id);
+                Log.Information("CustomerSealTemplate detail output {@Output}", customerSealTemplateDetailViewModel);
             }
             catch (Exception ex)
             {

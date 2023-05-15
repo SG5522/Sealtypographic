@@ -3,9 +3,9 @@
 namespace SealTypographicWebAPI.Models.TemporarySeal
 {
     /// <summary>
-    /// 
+    /// 臨時章資料
     /// </summary>
-    public class TypographicTemporaryViewModel : BaseData
+    public class TypographicTemporarySealViewModel : BaseData
     {
         /// <summary>
         /// 季度
@@ -14,7 +14,7 @@ namespace SealTypographicWebAPI.Models.TemporarySeal
     }
 
     /// <summary>
-    /// 依搜尋結果與分頁顯示臨時章列表
+    /// 依搜尋結果與分頁顯示臨時章列表(排板使用)
     /// </summary>
     public class TypographicTemporarySealPaginateViewModel : PaginateViewModel
     {
@@ -29,6 +29,6 @@ namespace SealTypographicWebAPI.Models.TemporarySeal
         /// <summary>
         /// 臨時章資料列表
         /// </summary>           
-        public List<TypographicTemporaryViewModel> ViewModels { get; set; }
+        public List<TypographicTemporarySealViewModel> ViewModels { get; set; }
     }
 }

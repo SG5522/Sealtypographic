@@ -4,7 +4,7 @@ using DBEntities.Consts;
 using Microsoft.EntityFrameworkCore;
 using SealTypographicWebAPI.Models;
 using SealTypographicWebAPI.Models.AccountantSignTemplate;
-using SealTypographicWebAPI.Models.CustomerSealTemplate;
+using SealTypographicWebAPI.Models.BaseModels;
 using SealTypographicWebAPI.Utils;
 using Serilog;
 
@@ -116,7 +116,7 @@ namespace SealTypographicWebAPI.Services.Implements
                                                                     })
                                                                     .ToList();
 
-                accountantSignTemplatePaginate.ViewModels = thisPageAccountantSignTemplate;
+                accountantSignTemplatePaginate.ViewModels = LoadPaginatedData(accountantSignTemplateQuery, accountantSignTemplateSearch.PageNumber, accountantSignTemplateSearch.PageSize);
                 accountantSignTemplatePaginate.PageNumber = accountantSignTemplateSearch.PageNumber;
                 accountantSignTemplatePaginate.PageSize = accountantSignTemplateSearch.PageSize;
                 //計算總頁數
@@ -124,9 +124,37 @@ namespace SealTypographicWebAPI.Services.Implements
                 accountantSignTemplatePaginate.TotalCount = accountantSignTemplateQuery.Count();
                 accountantSignTemplatePaginate.Success();
             }
-            AccountantSignTemplatePaginateLog accountantSignTemplatePaginateLog = mapper.Map<AccountantSignTemplatePaginateLog>(accountantSignTemplatePaginate);
-            accountantSignTemplatePaginateLog.LogModels = mapper.Map<List<AccountantSignTemplateLogModel>>(accountantSignTemplatePaginate.ViewModels);            
-            Log.Information("AccountantSignTemplate paginate output {@Output}", accountantSignTemplatePaginate);
+            SavePaginateLog(accountantSignTemplatePaginate);
+            return accountantSignTemplatePaginate;
+        }
+
+        /// <summary>
+        /// 取得樣板分頁(排板使用)
+        /// </summary>
+        /// <returns></returns>
+        public AccountantSignTemplatePaginate GetPaginateWithTypographic(PaginateSearch paginateSearch)
+        {
+            AccountantSignTemplatePaginate accountantSignTemplatePaginate = new();
+            int companyId = 1;
+
+            IQueryable<AccountantSignTemplate> accountantSignTemplateQuery = dbContext.AccountantSignTemplates
+                                                                    .Where
+                                                                    (
+                                                                        accountantSignTemplate => accountantSignTemplate.Company.Id == companyId
+                                                                        && accountantSignTemplate.DeleteStatus == DeleteStatus.No
+                                                                    ).OrderBy(accountantSignTemplate => accountantSignTemplate.Id);                                                                        
+
+            if (accountantSignTemplateQuery.Any())
+            {
+                accountantSignTemplatePaginate.ViewModels = LoadPaginatedData(accountantSignTemplateQuery, paginateSearch.PageNumber, paginateSearch.PageSize);
+                accountantSignTemplatePaginate.PageNumber = paginateSearch.PageNumber;
+                accountantSignTemplatePaginate.PageSize = paginateSearch.PageSize;
+                //計算總頁數
+                accountantSignTemplatePaginate.TotalPage = TotalPageUtil.GetTotalPage(accountantSignTemplateQuery.Count(), paginateSearch.PageSize);
+                accountantSignTemplatePaginate.TotalCount = accountantSignTemplateQuery.Count();
+                accountantSignTemplatePaginate.Success();
+            }
+            SavePaginateLog(accountantSignTemplatePaginate);
             return accountantSignTemplatePaginate;
         }
 
@@ -257,6 +285,38 @@ namespace SealTypographicWebAPI.Services.Implements
             }
 
             return response;
+        }
+
+        /// <summary>
+        /// 讀取分頁資料
+        /// </summary>        
+        /// <param name="accountantSignTemplateQuery">樣板</param>
+        /// <param name="pageNumber">頁次</param>
+        /// <param name="pageSize">頁面大小</param>        
+        private List<AccountantSignTemplateViewModel> LoadPaginatedData(IQueryable<AccountantSignTemplate> accountantSignTemplateQuery, int pageNumber, int pageSize)
+        {
+            return
+                accountantSignTemplateQuery
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .Select(accountantSignTemplate => new AccountantSignTemplateViewModel()
+                {
+                    Id = accountantSignTemplate.Id,
+                    Name = accountantSignTemplate.Name,
+                    ImageFullPath = accountantSignTemplate.ThumbnailFullPath,
+                    ThumbnailBase64 = imageService.GetPathToBase64(accountantSignTemplate.ThumbnailFullPath)
+                }).ToList();
+        }
+
+        /// <summary>
+        /// 紀錄分頁Log
+        /// </summary>
+        /// <param name="accountantSignTemplatePaginate"></param>
+        private void SavePaginateLog(AccountantSignTemplatePaginate accountantSignTemplatePaginate)
+        {
+            AccountantSignTemplatePaginateLog accountantSignTemplatePaginateLog = mapper.Map<AccountantSignTemplatePaginateLog>(accountantSignTemplatePaginate);
+            accountantSignTemplatePaginateLog.LogModels = mapper.Map<List<AccountantSignTemplateLogModel>>(accountantSignTemplatePaginate.ViewModels);
+            Log.Information("AccountantSignTemplate paginate output {@Output}", accountantSignTemplatePaginateLog);
         }
 
         /// <summary>

@@ -32,27 +32,50 @@ namespace SealTypographicWebAPI.Controllers
         }
 
         /// <summary>
-        /// 取得信頭資料列表(分頁)
+        /// 取得臨時章資料列表(分頁)
         /// </summary>
-        /// <param name="temporarySealSearch">信頭分頁搜尋</param>
+        /// <param name="typographicTemporarySealSearch">臨時章分頁搜尋</param>
         /// <returns></returns>        
         [HttpGet("[Action]")]
-        public TemporarySealPaginateViewModel Paginate([FromQuery] TemporarySealSearch temporarySealSearch)
+        public TypographicTemporarySealPaginateViewModel Paginate([FromQuery] TypographicTemporarySealSearch typographicTemporarySealSearch)
         {
-            TemporarySealPaginateViewModel temporarySealPaginateViewModel = new();
+            TypographicTemporarySealPaginateViewModel typographicTemporarySealPaginateViewModel = new();
             try
             {
-                Log.Information("TypographicTemporarySeal paginate input {@Input}", temporarySealSearch);
-                temporarySealPaginateViewModel = temporarySealService.GetPaginate(temporarySealSearch);
-                Log.Information("TypographicTemporarySeal paginate output {@Output}", temporarySealPaginateViewModel);
+                Log.Information("TypographicTemporarySeal paginate input {@Input}", typographicTemporarySealSearch);
+                typographicTemporarySealPaginateViewModel = temporarySealService.GetPaginateWithTypographic(typographicTemporarySealSearch);
+                Log.Information("TypographicTemporarySeal paginate output {@Output}", typographicTemporarySealPaginateViewModel);
             }
             catch (Exception ex)
             {
                 Log.Error("TypographicTemporarySeal paginate error {@Error}", ex.Message);
-                temporarySealPaginateViewModel.DbError();
+                typographicTemporarySealPaginateViewModel.DbError();
             }
-            return temporarySealPaginateViewModel;
+            return typographicTemporarySealPaginateViewModel;
         }
-        
+
+        /// <summary>
+        /// 取得臨時章
+        /// </summary>
+        /// <param name="temporaryId">臨時章Id</param>
+        /// <returns></returns>        
+        [HttpGet("[Action]")]
+        public TemporarySealDetailViewModel Seals(int temporaryId)
+        {
+            TemporarySealDetailViewModel typographicTemporarySealPaginateViewModel = new();
+            try
+            {
+                Log.Information("TypographicTemporarySeal seals input {@Input}", temporaryId);
+                typographicTemporarySealPaginateViewModel = temporarySealService.GetDetail(temporaryId);
+                Log.Information("TypographicTemporarySeal seals output {@Output}", typographicTemporarySealPaginateViewModel);
+            }
+            catch (Exception ex)
+            {
+                Log.Error("TypographicTemporarySeal seals error {@Error}", ex.Message);
+                typographicTemporarySealPaginateViewModel.DbError();
+            }
+            return typographicTemporarySealPaginateViewModel;
+        }
+
     }
 }

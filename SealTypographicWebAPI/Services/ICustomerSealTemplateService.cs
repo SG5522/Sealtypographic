@@ -1,6 +1,7 @@
 ﻿using SealTypographicWebAPI.Models.Customer;
 using SealTypographicWebAPI.Models;
 using SealTypographicWebAPI.Models.CustomerSealTemplate;
+using SealTypographicWebAPI.Models.BaseModels;
 
 namespace SealTypographicWebAPI.Services
 {
@@ -29,6 +30,13 @@ namespace SealTypographicWebAPI.Services
         /// <param name="customerSealTemplateSearch">客戶印鑑樣板分頁搜尋</param>
         /// <returns></returns>
         CustomerSealTemplatePaginate GetPaginate(CustomerSealTemplateSearch customerSealTemplateSearch);
+
+        /// <summary>
+        /// 取得樣板分頁(排板使用)
+        /// </summary>
+        /// <param name="paginateSearch">分頁搜尋</param>
+        /// <returns></returns>
+        CustomerSealTemplatePaginate GetPaginateWithTypographic(PaginateSearch paginateSearch);
 
         /// <summary>
         /// 新增客戶印鑑樣板

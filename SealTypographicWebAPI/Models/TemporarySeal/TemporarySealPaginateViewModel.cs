@@ -3,7 +3,7 @@
 namespace SealTypographicWebAPI.Models.TemporarySeal
 {
     /// <summary>
-    /// 
+    /// 臨時章資料
     /// </summary>
     public class TemporaryViewModel : BaseData
     {

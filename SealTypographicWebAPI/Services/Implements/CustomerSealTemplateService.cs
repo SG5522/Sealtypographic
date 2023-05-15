@@ -3,6 +3,7 @@ using DBEntities;
 using DBEntities.Consts;
 using Microsoft.EntityFrameworkCore;
 using SealTypographicWebAPI.Models;
+using SealTypographicWebAPI.Models.BaseModels;
 using SealTypographicWebAPI.Models.CustomerSealTemplate;
 using SealTypographicWebAPI.Utils;
 using Serilog;
@@ -85,11 +86,11 @@ namespace SealTypographicWebAPI.Services.Implements
             int companyId = 1;
 
             IQueryable<CustomerSealTemplate> customerSealTemplateQuery = dbContext.CustomerSealTemplates
-                                                                    .Where
-                                                                    (
-                                                                        customerSealTemplate => customerSealTemplate.Company.Id == companyId                                                                        
-                                                                        && customerSealTemplate.DeleteStatus == DeleteStatus.No
-                                                                    );
+                                                                        .Where
+                                                                        (
+                                                                            customerSealTemplate => customerSealTemplate.Company.Id == companyId                                                                        
+                                                                            && customerSealTemplate.DeleteStatus == DeleteStatus.No
+                                                                        );
 
             if (!string.IsNullOrEmpty(customerSealTemplateSearch.KeyWord))
             {
@@ -103,19 +104,7 @@ namespace SealTypographicWebAPI.Services.Implements
 
             if (customerSealTemplateQuery.Any())
             {
-                List<CustomerSealTemplateViewModel> thisPageCustomerSealTemplate = customerSealTemplateQuery                                                                      
-                                                                    .Skip((customerSealTemplateSearch.PageNumber - 1) * customerSealTemplateSearch.PageSize)
-                                                                    .Take(customerSealTemplateSearch.PageSize)
-                                                                    .Select(customerSealTemplate => new CustomerSealTemplateViewModel()
-                                                                    {
-                                                                        Id = customerSealTemplate.Id,
-                                                                        Name = customerSealTemplate.Name,
-                                                                        ImageFullPath = customerSealTemplate.ThumbnailFullPath,
-                                                                        ThumbnailBase64 = imageService.GetPathToBase64(customerSealTemplate.ThumbnailFullPath)
-                                                                    })
-                                                                    .ToList();
-
-                customerSealTemplatePaginate.ViewModels = thisPageCustomerSealTemplate;
+                customerSealTemplatePaginate.ViewModels = LoadPaginatedData(customerSealTemplateQuery, customerSealTemplateSearch.PageNumber, customerSealTemplateSearch.PageSize);
                 customerSealTemplatePaginate.PageNumber = customerSealTemplateSearch.PageNumber;
                 customerSealTemplatePaginate.PageSize = customerSealTemplateSearch.PageSize;
                 //計算總頁數
@@ -123,9 +112,38 @@ namespace SealTypographicWebAPI.Services.Implements
                 customerSealTemplatePaginate.TotalCount = customerSealTemplateQuery.Count();
                 customerSealTemplatePaginate.Success();
             }
-            CustomerSealTemplatePaginateLog customerSealTemplatePaginateLog = mapper.Map<CustomerSealTemplatePaginateLog>(customerSealTemplatePaginate);
-            customerSealTemplatePaginateLog.LogModels = mapper.Map<List<CustomerSealTemplateLogModel>>(customerSealTemplatePaginate.ViewModels);            
-            Log.Information("CustomerSealTemplate paginate output {@Output}", customerSealTemplatePaginate);
+            SavePaginateLog(customerSealTemplatePaginate);
+            return customerSealTemplatePaginate;
+        }
+
+        /// <summary>
+        /// 取得樣板分頁(排板使用)
+        /// </summary>
+        /// <param name="paginateSearch">分頁搜尋</param>
+        /// <returns></returns>
+        public CustomerSealTemplatePaginate GetPaginateWithTypographic(PaginateSearch paginateSearch)
+        {
+            CustomerSealTemplatePaginate customerSealTemplatePaginate = new();
+            int companyId = 1;
+
+            IQueryable<CustomerSealTemplate> customerSealTemplateQuery = dbContext.CustomerSealTemplates
+                                                                        .Where
+                                                                        (
+                                                                            customerSealTemplate => customerSealTemplate.Company.Id == companyId
+                                                                            && customerSealTemplate.DeleteStatus == DeleteStatus.No                                                                            
+                                                                        ).OrderBy(customerSealTemplate => customerSealTemplate.Id);
+
+            if(customerSealTemplateQuery != null)
+            {                
+                customerSealTemplatePaginate.ViewModels = LoadPaginatedData(customerSealTemplateQuery, paginateSearch.PageNumber, paginateSearch.PageSize);
+                customerSealTemplatePaginate.PageNumber = paginateSearch.PageNumber;
+                customerSealTemplatePaginate.PageSize = paginateSearch.PageSize;
+                //計算總頁數
+                customerSealTemplatePaginate.TotalPage = TotalPageUtil.GetTotalPage(customerSealTemplateQuery.Count(), paginateSearch.PageSize);
+                customerSealTemplatePaginate.TotalCount = customerSealTemplateQuery.Count();
+                customerSealTemplatePaginate.Success();
+            }
+            SavePaginateLog(customerSealTemplatePaginate);
             return customerSealTemplatePaginate;
         }
 
@@ -261,6 +279,38 @@ namespace SealTypographicWebAPI.Services.Implements
         }
 
         /// <summary>
+        /// 讀取分頁資料
+        /// </summary>        
+        /// <param name="customerSealTemplateQuery">樣板</param>
+        /// <param name="pageNumber">頁次</param>
+        /// <param name="pageSize">頁面大小</param>        
+        private List<CustomerSealTemplateViewModel> LoadPaginatedData(IQueryable<CustomerSealTemplate> customerSealTemplateQuery,int pageNumber, int pageSize)
+        {
+            return 
+                customerSealTemplateQuery
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .Select(customerSealTemplate => new CustomerSealTemplateViewModel()
+                {
+                    Id = customerSealTemplate.Id,
+                    Name = customerSealTemplate.Name,
+                    ImageFullPath = customerSealTemplate.ThumbnailFullPath,
+                    ThumbnailBase64 = imageService.GetPathToBase64(customerSealTemplate.ThumbnailFullPath)
+                }).ToList();
+        }
+
+        /// <summary>
+        /// 紀錄分頁Log
+        /// </summary>
+        /// <param name="customerSealTemplatePaginate">分頁列表</param>
+        private void SavePaginateLog(CustomerSealTemplatePaginate customerSealTemplatePaginate)
+        {
+            CustomerSealTemplatePaginateLog customerSealTemplatePaginateLog = mapper.Map<CustomerSealTemplatePaginateLog>(customerSealTemplatePaginate);
+            customerSealTemplatePaginateLog.LogModels = mapper.Map<List<CustomerSealTemplateLogModel>>(customerSealTemplatePaginate.ViewModels);
+            Log.Information("CustomerSealTemplate paginate output {@Output}", customerSealTemplatePaginateLog);
+        }
+
+        /// <summary>
         /// 資料新增修改時基本資料輸入
         /// </summary>
         /// <param name="customerSealTemplate">DB上的樣板資料</param>
@@ -279,8 +329,6 @@ namespace SealTypographicWebAPI.Services.Implements
                 customerSealTemplate.UpdateUserId = userid;
                 customerSealTemplate.UpdateDate = DateTime.Now;
             }
-        }
-
-
+        }        
     }
 }

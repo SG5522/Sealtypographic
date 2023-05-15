@@ -1,5 +1,6 @@
 ﻿using SealTypographicWebAPI.Models;
 using SealTypographicWebAPI.Models.AccountantSignTemplate;
+using SealTypographicWebAPI.Models.BaseModels;
 
 namespace SealTypographicWebAPI.Services
 {
@@ -28,6 +29,13 @@ namespace SealTypographicWebAPI.Services
         /// <param name="accountantSignTemplateSearch">會計師簽印樣板分頁搜尋</param>
         /// <returns></returns>
         AccountantSignTemplatePaginate GetPaginate(AccountantSignTemplateSearch accountantSignTemplateSearch);
+
+        /// <summary>
+        /// 取得樣板分頁(排板使用)
+        /// </summary>
+        /// <param name="paginateSearch"></param>
+        /// <returns></returns>
+        AccountantSignTemplatePaginate GetPaginateWithTypographic(PaginateSearch paginateSearch);
 
         /// <summary>
         /// 新增會計師簽印樣板

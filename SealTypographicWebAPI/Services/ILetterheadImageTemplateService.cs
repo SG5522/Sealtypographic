@@ -1,5 +1,6 @@
 ﻿using SealTypographicWebAPI.Models;
 using SealTypographicWebAPI.Models.AccountantSignTemplate;
+using SealTypographicWebAPI.Models.BaseModels;
 using SealTypographicWebAPI.Models.LetterheadTemplate;
 
 namespace SealTypographicWebAPI.Services
@@ -29,6 +30,13 @@ namespace SealTypographicWebAPI.Services
         /// <param name="letterheadTemplateSearch">信頭樣板分頁搜尋</param>
         /// <returns></returns>
         LetterheadImageTemplatePaginate GetPaginate(LetterheadImageTemplateSearch letterheadTemplateSearch);
+
+        /// <summary>
+        /// 取得樣板分頁(排板使用)
+        /// </summary>
+        /// <param name="paginateSearch">分頁搜尋</param>
+        /// <returns></returns>
+        LetterheadImageTemplatePaginate GetPaginateWithTypographic(PaginateSearch paginateSearch);
 
         /// <summary>
         /// 新增信頭樣板

@@ -151,6 +151,38 @@ namespace SealTypographicWebAPI.Services.Implements
         {
             TypographicTemporarySealPaginateViewModel typographicTemporarySealPaginateViewModel = new();
 
+            int companyId = 1;
+
+            IQueryable<TemporarySealQuarterJournal> temporarySealGroupQuery = dbContext.TemporarySealQuarterJournals
+                                                                    .Where
+                                                                    (
+                                                                        temporarySealGroup => temporarySealGroup.Customer.Company.Id == companyId
+                                                                        && temporarySealGroup.Customer.DeleteStatus == DeleteStatus.No
+                                                                        && temporarySealGroup.DeleteStatus == DeleteStatus.No
+                                                                        && temporarySealGroup.Customer.Id == typographicTemporarySealSearch.CustomerId
+                                                                    ).OrderBy(temporarySealGroup => temporarySealGroup.Quarter);
+
+            if(temporarySealGroupQuery != null)
+            {
+                List<TypographicTemporarySealViewModel> thisPageTemporarySealGroups = temporarySealGroupQuery
+                                                      .Include(temporarySealGroup => temporarySealGroup.Customer)
+                                                      .Skip((typographicTemporarySealSearch.PageNumber - 1) * typographicTemporarySealSearch.PageSize)
+                                                      .Take(typographicTemporarySealSearch.PageSize)
+                                                      .Select(temporarySealGroup => new TypographicTemporarySealViewModel()
+                                                      {
+                                                          Id = temporarySealGroup.Id,                                                          
+                                                          Quarter = temporarySealGroup.Quarter,
+                                                      })
+                                                      .ToList();
+
+                typographicTemporarySealPaginateViewModel.ViewModels = thisPageTemporarySealGroups;
+                typographicTemporarySealPaginateViewModel.PageNumber = typographicTemporarySealSearch.PageNumber;
+                typographicTemporarySealPaginateViewModel.PageSize = typographicTemporarySealSearch.PageSize;
+                //計算總頁數
+                typographicTemporarySealPaginateViewModel.TotalPage = TotalPageUtil.GetTotalPage(temporarySealGroupQuery.Count(), typographicTemporarySealSearch.PageSize);
+                typographicTemporarySealPaginateViewModel.TotalCount = temporarySealGroupQuery.Count();
+            }
+
             return typographicTemporarySealPaginateViewModel;
         }
 

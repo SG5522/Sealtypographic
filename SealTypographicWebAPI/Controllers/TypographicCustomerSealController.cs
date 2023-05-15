@@ -1,7 +1,9 @@
 ﻿using DBEntities.Consts;
 using Microsoft.AspNetCore.Mvc;
 using SealTypographicWebAPI.Models;
+using SealTypographicWebAPI.Models.BaseModels;
 using SealTypographicWebAPI.Models.Customer;
+using SealTypographicWebAPI.Models.CustomerSealTemplate;
 using SealTypographicWebAPI.Models.TemplateConfig;
 using SealTypographicWebAPI.Models.TypographicPDF;
 using SealTypographicWebAPI.Services;
@@ -21,7 +23,7 @@ namespace SealTypographicWebAPI.Controllers
     {
         private readonly ICustomerService customerService;
         private readonly ICustomerSealService customerSealService;
-        private readonly ITemporarySealService temporarySealService;        
+        private readonly ICustomerSealTemplateService customerSealTemplateService;
 
         /// <summary>
         /// 注入Service
@@ -29,12 +31,12 @@ namespace SealTypographicWebAPI.Controllers
         public TypographicCustomerSealController(
                                                    ICustomerService customerService,
                                                    ICustomerSealService customerSealService,
-                                                   ITemporarySealService temporarySealService
+                                                   ICustomerSealTemplateService customerSealTemplateService
                                               )
         {
             this.customerService = customerService;
             this.customerSealService = customerSealService;
-            this.temporarySealService = temporarySealService;
+            this.customerSealTemplateService = customerSealTemplateService;
         }
 
         /// <summary>
@@ -104,6 +106,51 @@ namespace SealTypographicWebAPI.Controllers
                 customerSealViewModels.DbError();
             }
             return customerSealViewModels;
+        }
+
+        /// <summary>
+        /// 客戶印鑑樣板分頁列表
+        /// </summary>
+        /// <param name="paginateSearch">樣板分頁搜尋</param>
+        /// <returns></returns>
+        [HttpGet("[Action]")]
+        public CustomerSealTemplatePaginate TemplatePaginate([FromQuery] PaginateSearch paginateSearch)
+        {
+            CustomerSealTemplatePaginate customerSealTemplatePaginate = new();
+            try
+            {
+                Log.Information("TypographicCustomerSearch templatePaginate input {@Input}", paginateSearch);
+                customerSealTemplatePaginate = customerSealTemplateService.GetPaginateWithTypographic(paginateSearch);
+            }
+            catch (Exception ex)
+            {
+                Log.Error("TypographicCustomerSearch templatePaginate error {@Error}", ex.Message);
+                customerSealTemplatePaginate.DbError();
+            }
+            return customerSealTemplatePaginate;
+        }
+
+        /// <summary>
+        /// 取得客戶印鑑樣板座標
+        /// </summary>
+        /// <param name="customerSealTemplateId">客戶印鑑樣本Id</param>        
+        /// <returns></returns>
+        [HttpGet("[Action]")]
+        public CustomerSealTemplateDetailViewModel TemplateLocation(int customerSealTemplateId)
+        {
+            CustomerSealTemplateDetailViewModel customerSealTemplateDetailViewModel = new();
+            try
+            {
+                Log.Information("TypographicCustomerSearch templateLocation input {@Input}", customerSealTemplateId);
+                customerSealTemplateDetailViewModel = customerSealTemplateService.GetDetail(customerSealTemplateId);
+                Log.Information("TypographicCustomerSearch templateLocation output {@Output}", customerSealTemplateDetailViewModel);
+            }
+            catch (Exception ex)
+            {
+                Log.Error("TypographicCustomerSearch templateLocation error {@Error}", ex.Message);
+                customerSealTemplateDetailViewModel.DbError();
+            }
+            return customerSealTemplateDetailViewModel;
         }
     }
 }
