@@ -6,6 +6,11 @@
     public class TypographicPageViewModel : ResponseViewModel
     {
         /// <summary>
+        /// 頁次Id
+        /// </summary>
+        public int Id { get; set; }
+
+        /// <summary>
         /// 頁數
         /// </summary>        
         public int PageNumber { get; set; }
@@ -31,7 +36,7 @@
         public List<LetterheadImageLocationViewModel> LetterheadImageLocationViewModels { get; set; }
 
         /// <summary>
-        /// 
+        /// 臨時章位置
         /// </summary>
         public List<TemporarySealLocationViewModel> TemporarySealLocationViewModels { get; set;}
     }    

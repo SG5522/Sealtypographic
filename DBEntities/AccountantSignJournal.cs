@@ -14,9 +14,9 @@ namespace DBEntities
         public AccountantSignType ConfigType { get; set; }
 
         /// <summary>
-        /// 會計師簽名與印鑑位置
+        /// 各印鑑簽印排版位置
         /// </summary>
-        public List<AccountantSignLocation> AccountantSignLocations { get; set; }
+        public List<TypographicSealLocation> TypographicSealLocations { get; set; }
 
         /// <summary>
         /// 會計師簽印建立日期歷程表

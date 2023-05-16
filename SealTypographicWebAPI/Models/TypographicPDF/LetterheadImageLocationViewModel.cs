@@ -8,11 +8,6 @@ namespace SealTypographicWebAPI.Models.TypographicPDF
     public class LetterheadImageLocationViewModel : BaseSealLocationViewModel
     {
         /// <summary>
-        /// 信頭圖片ID
-        /// </summary>
-        public int LetterheadImageId { get; set; }
-
-        /// <summary>
         /// 信頭名稱
         /// </summary>
         public string LetterheadName { get; set; }

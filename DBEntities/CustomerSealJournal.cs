@@ -19,12 +19,14 @@ namespace DBEntities
         /// </summary>
         public int Sequence { get; set; }
 
-        public List<CustomerSealLocation> CustomerSealLocations { get; set; }
-
         /// <summary>
         /// 客戶印鑑季度歷程資料表
         /// </summary>
         public CustomerSealQuarterJournal CustomerSealQuarterJournal { get; set; }
 
+        /// <summary>
+        /// 各印鑑簽印排版位置
+        /// </summary>
+        public List<TypographicSealLocation> TypographicSealLocations { get; set; }
     }
 }

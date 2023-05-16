@@ -18,8 +18,8 @@ namespace DBEntities
         public TemporarySealQuarterJournal TemporarySealQuarterJournal { get; set; }
 
         /// <summary>
-        /// 臨時章排版位置
+        /// 各印鑑簽印排版位置
         /// </summary>
-        public List<TemporarySealLocation> TemporarySealLocations { get; set; }
+        public List<TypographicSealLocation> TypographicSealLocations { get; set; }
     }
 }

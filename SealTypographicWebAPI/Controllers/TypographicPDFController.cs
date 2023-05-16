@@ -63,9 +63,9 @@ namespace SealTypographicWebAPI.Controllers
         }
 
         /// <summary>
-        /// 排版資訊(新增使用)
+        /// 新增排版
         /// </summary>
-        /// <param name="typographicPDFForm"></param>
+        /// <param name="typographicPDFForm">排版資訊(新增使用)</param>
         /// <returns></returns>
         [HttpPost]
         public ResponseViewModel New(TypographicPDFForm typographicPDFForm)
@@ -84,13 +84,23 @@ namespace SealTypographicWebAPI.Controllers
         }
 
         /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="id"></param>
-        /// <param name="value"></param>
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        /// 更新PDF排版
+        /// </summary>        
+        /// <param name="typographicPDFSaveForm">排板資訊(存檔使用)</param>        
+        [HttpPut]
+        public ResponseViewModel Save(TypographicPDFSaveForm typographicPDFSaveForm)
         {
+            ResponseViewModel response = new();
+            try
+            {
+                response = typographicPDFService.Save(typographicPDFSaveForm);
+            }
+            catch (Exception ex)
+            {
+                Log.Error("TypographicPDF New error {@Error}", ex.Message);
+                response.Error();
+            }
+            return response;
         }
 
         /// <summary>
@@ -98,8 +108,10 @@ namespace SealTypographicWebAPI.Controllers
         /// </summary>
         /// <param name="id"></param>
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public ResponseViewModel Delete(int id)
         {
+            ResponseViewModel response = new();
+            return response;
         }
     }
 }

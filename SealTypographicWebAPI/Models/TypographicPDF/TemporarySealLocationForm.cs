@@ -8,9 +8,6 @@ namespace SealTypographicWebAPI.Models.TypographicPDF
     /// </summary>
     public class TemporarySealLocationForm : BaseLocationModel
     {
-        /// <summary>
-        /// 臨時章印鑑ID
-        /// </summary>
-        public int TemporarySealId { get; set; }
+
     }
 }

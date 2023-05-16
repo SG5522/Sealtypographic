@@ -8,10 +8,6 @@ namespace SealTypographicWebAPI.Models.TypographicPDF
     /// </summary>
     public class CustomerSealLocationForm : BaseLocationModel
     {
-        /// <summary>
-        /// 客戶印鑑ID
-        /// </summary>
-        public int CustomerSealId { get; set; }
 
     }
 }

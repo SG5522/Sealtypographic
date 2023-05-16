@@ -8,11 +8,6 @@ namespace SealTypographicWebAPI.Models.TypographicPDF
     public class TemporarySealLocationViewModel : BaseSealLocationViewModel
     {
         /// <summary>
-        /// 臨時章印鑑ID
-        /// </summary>
-        public int TemporarySealId { get; set; }
-
-        /// <summary>
         /// 印鑑序號
         /// </summary>
         public int Sequence { get; set; }

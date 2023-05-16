@@ -7,10 +7,6 @@ namespace SealTypographicWebAPI.Models.TypographicPDF
     /// </summary>
     public class LetterheadImageLocationForm : BaseLocationModel
     {
-        /// <summary>
-        /// 信頭圖片ID
-        /// </summary>
-        public int LetterheadImageId { get; set; }
 
     }
 }

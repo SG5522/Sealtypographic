@@ -9,11 +9,6 @@ namespace SealTypographicWebAPI.Models.TypographicPDF
     public class AccountantSingLocationViewModel : BaseSealLocationViewModel
     {
         /// <summary>
-        /// 會計師簽印ID
-        /// </summary>
-        public int AccountantSignId { get; set; }
-
-        /// <summary>
         /// 會計師名稱
         /// </summary>
         /// <example>劉先生</example>

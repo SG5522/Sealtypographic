@@ -20,7 +20,11 @@ namespace DBEntities
         /// </summary>
         public LetterheadImageStatus Status { get; set; }
 
-        public List<LetterheadImageLocation> LetterheadImageLocations { get; set; }
+        /// <summary>
+        /// 各印鑑簽印排版位置
+        /// </summary>
+        public List<TypographicSealLocation> TypographicSealLocations { get; set; }
+
 
         /// <summary>
         /// 信頭圖片建立日期歷程

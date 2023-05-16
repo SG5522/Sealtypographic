@@ -39,23 +39,10 @@ namespace DBEntities
         public TypographicPDF TypographicPDF { get; set; }
 
         /// <summary>
-        /// 客戶印鑑排版位置
+        /// 各印鑑簽印排版位置
         /// </summary>
-        public List<CustomerSealLocation> CustomerSealLocations { get; set; }
+        public List<TypographicSealLocation> TypographicSealLocations { get; set; }
 
-        /// <summary>
-        /// 會計師印鑑簽名排版位置
-        /// </summary>
-        public List<AccountantSignLocation> AccountantSignLocations { get; set; }
 
-        /// <summary>
-        /// 信頭圖片排版位置
-        /// </summary>
-        public List<LetterheadImageLocation> LetterheadImageLocations { get; set; }
-
-        /// <summary>
-        /// 臨時章排版位置
-        /// </summary>
-        public List<TemporarySealLocation> TemporarySealLocations { get; set; }
     }
 }

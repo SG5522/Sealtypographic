@@ -77,26 +77,12 @@ namespace DBEntities
         /// 排版頁
         /// </summary>
         public DbSet<TypographicPage> TypographicPages { get; set; }
+       
 
         /// <summary>
-        /// 客戶印鑑排版位置
+        /// 各印鑑簽印排版位置
         /// </summary>
-        public DbSet<CustomerSealLocation> CustomerSealLocations { get; set; }
-
-        /// <summary>
-        /// 會計師印鑑簽名ID
-        /// </summary>
-        public DbSet<AccountantSignLocation> AccountantSignLocations { get; set; }
-
-        /// <summary>
-        /// 信頭圖片排版位置
-        /// </summary>
-        public DbSet<LetterheadImageLocation> LetterheadImageLocations { get; set; }
-
-        /// <summary>
-        /// 信頭圖片排版位置
-        /// </summary>
-        public DbSet<TemporarySealLocation> TemporarySealLocations { get; set; }
+        public DbSet<TypographicSealLocation> TypographicSealLocations { get; set; }
 
         /// <summary>
         /// 客戶印鑑樣板

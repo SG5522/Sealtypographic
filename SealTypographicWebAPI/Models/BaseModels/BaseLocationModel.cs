@@ -4,7 +4,12 @@
     /// 位置
     /// </summary>
     public abstract class BaseLocationModel
-    {        
+    {
+        /// <summary>
+        /// 各印鑑、簽印Id
+        /// </summary>
+        public int Id { get; set; }
+
         /// <summary>
         /// 最左邊位置
         /// </summary>

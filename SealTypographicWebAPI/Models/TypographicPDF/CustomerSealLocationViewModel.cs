@@ -10,11 +10,6 @@ namespace SealTypographicWebAPI.Models.TypographicPDF
     public class CustomerSealLocationViewModel : BaseSealLocationViewModel
     {
         /// <summary>
-        /// 客戶印鑑ID
-        /// </summary>
-        public int CustomerSealId { get; set; }
-
-        /// <summary>
         /// 印鑑序號
         /// </summary>
         public int Sequence { get; set; }
