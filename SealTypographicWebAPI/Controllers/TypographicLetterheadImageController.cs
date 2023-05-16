@@ -59,7 +59,7 @@ namespace SealTypographicWebAPI.Controllers
         /// </summary>
         /// <param name="letterheadImageId">信頭圖片Id</param>
         /// <returns></returns>
-        [HttpGet]
+        [HttpGet("[Action]")]
         public LetterheadImageViewModel ImageViewModel(int letterheadImageId)
         {
             LetterheadImageViewModel letterheadImageViewModel = new();
@@ -82,7 +82,7 @@ namespace SealTypographicWebAPI.Controllers
         /// </summary>
         /// <param name="paginateSearch">信頭樣板分頁搜尋</param>
         /// <returns></returns>
-        [HttpGet]
+        [HttpGet("[Action]")]
         public LetterheadImageTemplatePaginate TemplatePaginate([FromQuery] PaginateSearch paginateSearch)
         {
             LetterheadImageTemplatePaginate letterheadTemplatePaginate = new();
@@ -104,7 +104,7 @@ namespace SealTypographicWebAPI.Controllers
         /// </summary>
         /// <param name="letterheadImageTemplateId"></param>
         /// <returns></returns>
-        [HttpGet("{letterheadImageTemplateId}")]
+        [HttpGet("[Action]")]
         public LetterheadImageTemplateDetailViewModel TemplateLocation(int letterheadImageTemplateId)
         {
             LetterheadImageTemplateDetailViewModel letterheadTemplateDetailViewModel = new();
