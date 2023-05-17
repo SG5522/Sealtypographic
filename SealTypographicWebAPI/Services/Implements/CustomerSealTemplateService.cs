@@ -114,38 +114,7 @@ namespace SealTypographicWebAPI.Services.Implements
             }
             SavePaginateLog(customerSealTemplatePaginate);
             return customerSealTemplatePaginate;
-        }
-
-        /// <summary>
-        /// 取得樣板分頁(排板使用)
-        /// </summary>
-        /// <param name="paginateSearch">分頁搜尋</param>
-        /// <returns></returns>
-        public CustomerSealTemplatePaginate GetPaginateWithTypographic(PaginateSearch paginateSearch)
-        {
-            CustomerSealTemplatePaginate customerSealTemplatePaginate = new();
-            int companyId = 1;
-
-            IQueryable<CustomerSealTemplate> customerSealTemplateQuery = dbContext.CustomerSealTemplates
-                                                                        .Where
-                                                                        (
-                                                                            customerSealTemplate => customerSealTemplate.Company.Id == companyId
-                                                                            && customerSealTemplate.DeleteStatus == DeleteStatus.No                                                                            
-                                                                        ).OrderBy(customerSealTemplate => customerSealTemplate.Id);
-
-            if(customerSealTemplateQuery != null)
-            {                
-                customerSealTemplatePaginate.ViewModels = LoadPaginatedData(customerSealTemplateQuery, paginateSearch.PageNumber, paginateSearch.PageSize);
-                customerSealTemplatePaginate.PageNumber = paginateSearch.PageNumber;
-                customerSealTemplatePaginate.PageSize = paginateSearch.PageSize;
-                //計算總頁數
-                customerSealTemplatePaginate.TotalPage = TotalPageUtil.GetTotalPage(customerSealTemplateQuery.Count(), paginateSearch.PageSize);
-                customerSealTemplatePaginate.TotalCount = customerSealTemplateQuery.Count();
-                customerSealTemplatePaginate.Success();
-            }
-            SavePaginateLog(customerSealTemplatePaginate);
-            return customerSealTemplatePaginate;
-        }
+        }        
 
         /// <summary>
         /// 新增客戶印鑑樣板

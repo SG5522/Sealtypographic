@@ -52,6 +52,29 @@ namespace SealTypographicWebAPI.Controllers
         }
 
         /// <summary>
+        /// 取得客戶印鑑季度表
+        /// </summary>
+        /// <param name="customerId">客戶ID</param>
+        /// <returns></returns>
+        [HttpGet("[Action]/{customerId}")]
+        public CustomerSealQuarterResponse QuarterWithTypographic(int customerId)
+        {
+            CustomerSealQuarterResponse customerSealQuarters = new();
+            try
+            {
+                Log.Information("CustomerSeal get quarterWithTypographic input {@Input}", customerId);
+                customerSealQuarters = customerSealService.GetQuarterWithTypographic(customerId);
+                Log.Information("CustomerSeal get quarterWithTypographic output {@Output}", customerSealQuarters);
+            }
+            catch (Exception ex)
+            {
+                Log.Error("CustomerSeal get quarterWithTypographic error {@Error}", ex.Message);
+                customerSealQuarters.DbError();
+            }
+            return customerSealQuarters;
+        }
+
+        /// <summary>
         /// 取得客戶印鑑組
         /// </summary>
         /// <param name="customerSealQuarterId">客戶印鑑季度Id</param>             

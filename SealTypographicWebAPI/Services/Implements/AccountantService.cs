@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using AutoMapper;
 using System.ComponentModel.Design;
 using System.Diagnostics.Eventing.Reader;
+using System.Linq;
 
 namespace SealTypographicWebAPI.Services.Implements
 {
@@ -187,25 +188,17 @@ namespace SealTypographicWebAPI.Services.Implements
 
             if (!string.IsNullOrWhiteSpace(accountantSearch.KeyWord))
             {
-                if(isTypographicUse)
+                accountantQuery = accountantQuery.Where
+                (
+                    accountant =>
+                    accountant.Code.ToLower().Contains(accountantSearch.KeyWord.ToLower())
+                    || accountant.Name.Contains(accountantSearch.KeyWord)
+                );
+                
+                if (accountantSearch.AccountantGroupName != null)
                 {
-                    accountantQuery = accountantQuery.Where
-                                    (
-                                        accountant =>
-                                        accountant.Code.ToLower().Contains(accountantSearch.KeyWord.ToLower())
-                                        || accountant.Name.Contains(accountantSearch.KeyWord)
-                                        && accountant.AccountantGroup.Id == accountantSearch.AccountantGroupId
-                                    );
-                }
-                else
-                {
-                    accountantQuery = accountantQuery.Where
-                                    (
-                                        accountant =>
-                                        accountant.Code.ToLower().Contains(accountantSearch.KeyWord.ToLower())
-                                        || accountant.Name.Contains(accountantSearch.KeyWord)
-                                        || accountant.AccountantGroup.Name.Contains(accountantSearch.KeyWord)
-                                    );
+                    accountantQuery = accountantQuery.Where(accountant => accountant.AccountantGroup.Name.Contains(accountantSearch.KeyWord));
+
                 }
             }
 
@@ -220,13 +213,14 @@ namespace SealTypographicWebAPI.Services.Implements
                                           .Take(accountantSearch.PageSize)
                                           .ToList();
 
+
                 foreach (Accountant accountant in thisPageAccountants)
                 {
                     AccountantViewModelWithCreateDate accountantPaginatesViewModel = mapper.Map<AccountantViewModelWithCreateDate>(accountant);
 
 
                     if (accountant.AccountantSignGroupJournals.Any())
-                    {
+                    {                        
                         if (isTypographicUse)
                         {
                             accountantPaginatesViewModel.AccountantSignGroupId = accountant.AccountantSignGroupJournals
@@ -251,9 +245,13 @@ namespace SealTypographicWebAPI.Services.Implements
                                                                                  .Select(x => x.Id)
                                                                                  .FirstOrDefault();
                         }
-                    }
 
-                    accountantPaginatesViewModels.ViewModels.Add(accountantPaginatesViewModel);
+                        if(accountantPaginatesViewModel.AccountantSignGroupId > 0)
+                        {
+                            accountantPaginatesViewModels.ViewModels.Add(accountantPaginatesViewModel);
+                        }
+                        
+                    }                    
                 }
                 accountantPaginatesViewModels.PageNumber = accountantSearch.PageNumber;
                 accountantPaginatesViewModels.PageSize = accountantSearch.PageSize;

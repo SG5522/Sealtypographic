@@ -51,34 +51,6 @@ namespace SealTypographicWebAPI.Services.Implements
         }
 
         /// <summary>
-        /// 取得簡化的客戶資料
-        /// </summary>
-        /// <param name="customerId"></param>
-        /// <returns></returns>
-        public CustomerSummaryResponse GetSummary(int customerId) 
-        {
-            CustomerSummaryResponse customerSummaryResponse = new();
-            Customer? customerQuery = dbContext.Customers.Find(customerId);
-            if(customerQuery != null)
-            {
-                CustomerSummary customerSummary = new()
-                {
-                    Id = customerId,
-                    Code = customerQuery.Code,
-                    Name = customerQuery.Name,
-                };
-                customerSummaryResponse.CustomerSummary = customerSummary;
-                customerSummaryResponse.Success();
-            }
-            else
-            {
-                customerSummaryResponse.CustomeNoData();
-            }
-
-            return customerSummaryResponse;
-        }
-
-        /// <summary>
         /// 取得客戶資料列表(分頁)
         /// </summary>
         /// <param name="customerSearch">客戶分頁搜尋</param>  
@@ -145,43 +117,7 @@ namespace SealTypographicWebAPI.Services.Implements
             customerPaginateViewModel.Success();
 
             return customerPaginateViewModel;
-        }
-
-        /// <summary>
-        /// 取得客戶資料列表(簡化資料的分頁)
-        /// </summary>
-        /// <param name="customerSearch">客戶分頁搜尋</param>
-        /// <returns></returns>
-        public CustomerPaginateShort GetPaginateShort (CustomerSearch customerSearch)
-        {
-            CustomerPaginateShort customerPaginateShort = new ();
-            int companyId = 1;
-            IQueryable<Customer> customerQuery = GetCustomers(companyId, customerSearch.KeyWord);
-            if(customerQuery.Any())
-            {
-                //取得該頁            
-                List<Customer> pageNumberCustomers = customerQuery
-                                          .Skip((customerSearch.PageNumber - 1) * customerSearch.PageSize)
-                                          .Take(customerSearch.PageSize)
-                                          .ToList();
-                foreach (Customer customer in pageNumberCustomers) 
-                {
-                    CustomerSummary customerSummary = new()
-                    {
-                        Id = customer.Id,
-                        Code = customer.Code,
-                        Name = customer.Name
-                    };
-                    customerPaginateShort.Summarys.Add(customerSummary);
-                }
-                customerPaginateShort.PageNumber = customerSearch.PageNumber;
-                customerPaginateShort.PageSize = customerSearch.PageSize;
-                //計算總頁數
-                customerPaginateShort.TotalPage = TotalPageUtil.GetTotalPage(customerQuery.Count(), customerSearch.PageSize);
-                customerPaginateShort.TotalCount = customerQuery.Count();
-            }
-            return customerPaginateShort;
-        }
+        }                
 
         /// <summary>
         /// 新增客戶基本資料

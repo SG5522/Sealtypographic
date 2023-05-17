@@ -5,9 +5,6 @@ using DBEntities;
 using SealTypographicWebAPI.Models;
 using SealTypographicWebAPI.Models.Customer;
 using SealTypographicWebAPI.Utils;
-using SealTypographicWebAPI.Config;
-using Microsoft.Extensions.Options;
-using System.Runtime.CompilerServices;
 
 namespace SealTypographicWebAPI.Services.Implements
 {
@@ -39,29 +36,20 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <param name="customerId">客戶ID</param>        
         /// <returns></returns>
         public CustomerSealQuarterResponse GetQuarter(int customerId)
-        {
-            CustomerSealQuarterResponse customerSealQuarters = new()
-            {
-                CustomerSealQuarters = dbContext.CustomerSealQuarterJournals.Where
-                            (
-                                customerSealQuarterJournal => customerSealQuarterJournal.Customer.Id == customerId
-                                && customerSealQuarterJournal.ReviewStatus <= ReviewStatus.Disabled
-                                && customerSealQuarterJournal.DeleteStatus == DeleteStatus.No
-                            )
-                            .Select(customerSealQuarterJournal => new CustomerSealQuarterViewModel()
-                            {
-                                Id = customerSealQuarterJournal.Id,
-                                Quarter = customerSealQuarterJournal.Quarter,
-                                ReviewStatus = customerSealQuarterJournal.ReviewStatus
-                            })
-                            .OrderByDescending(customerSealQuarterJournal => customerSealQuarterJournal.Quarter)
-                            .ToList()
-            };
-            customerSealQuarters.Success();
-        
-            return customerSealQuarters;
+        {                   
+            return GetQuarterData(customerId, false);
         }
 
+        /// <summary>
+        /// 取得客戶印鑑季度表 (排版使用)
+        /// </summary>
+        /// <param name="customerId"></param>
+        /// <returns></returns>
+        public CustomerSealQuarterResponse GetQuarterWithTypographic(int customerId)
+        {
+            return GetQuarterData(customerId, true);
+        }
+        
         /// <summary>
         /// 取得客戶印鑑組
         /// </summary>
@@ -286,6 +274,40 @@ namespace SealTypographicWebAPI.Services.Implements
         {
             ResponseViewModel response = ChangeReviewStatus(customerSealQuarterId, ReviewStatus.Draft);
             return response;
+        }
+
+        /// <summary>
+        /// 取得客戶印鑑季度資料
+        /// </summary>
+        /// <param name="customerId"></param>
+        /// <param name="isTypographic"></param>
+        /// <returns></returns>
+        private CustomerSealQuarterResponse GetQuarterData(int customerId, bool isTypographic)
+        {
+            CustomerSealQuarterResponse customerSealQuarters = new()
+            {
+                CustomerSealQuarters = dbContext.CustomerSealQuarterJournals.Where
+                            (
+                                customerSealQuarterJournal => customerSealQuarterJournal.Customer.Id == customerId
+                                && customerSealQuarterJournal.ReviewStatus <= ReviewStatus.Disabled
+                                && customerSealQuarterJournal.DeleteStatus == DeleteStatus.No
+                            )
+                            .Select(customerSealQuarterJournal => new CustomerSealQuarterViewModel()
+                            {
+                                Id = customerSealQuarterJournal.Id,
+                                Quarter = customerSealQuarterJournal.Quarter,
+                                ReviewStatus = customerSealQuarterJournal.ReviewStatus
+                            })
+                            .OrderByDescending(customerSealQuarterJournal => customerSealQuarterJournal.Quarter)
+                            .ToList()
+            };
+
+            if (isTypographic)
+            {
+                customerSealQuarters.CustomerSealQuarters.Where(x => x.ReviewStatus == ReviewStatus.Approval);
+            }
+            customerSealQuarters.Success();
+            return customerSealQuarters;
         }
 
         /// <summary>

@@ -23,13 +23,6 @@ namespace SealTypographicWebAPI.Services
         TemporarySealPaginateViewModel GetPaginate(TemporarySealSearch temporarySealSearch);
 
         /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="typographicTemporarySealSearch"></param>
-        /// <returns></returns>
-        TypographicTemporarySealPaginateViewModel GetPaginateWithTypographic(TypographicTemporarySealSearch typographicTemporarySealSearch);
-
-        /// <summary>
         /// 新增客戶基本資料
         /// </summary>
         /// <param name="temporarySealForm">臨時章資料</param>

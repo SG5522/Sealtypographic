@@ -50,53 +50,7 @@ namespace SealTypographicWebAPI.Controllers
                 customerPaginateViewModel.DbError();                
             }
             return customerPaginateViewModel;
-        }
-
-        /// <summary>
-        /// 取得客戶資料列表(簡化資料的分頁)
-        /// </summary>
-        /// <param name="customerSearch">客戶分頁搜尋</param>
-        /// <returns></returns>
-        [HttpGet("[Action]")]
-        public CustomerPaginateShort PaginateShort([FromQuery] CustomerSearch customerSearch)
-        {
-            CustomerPaginateShort customerPaginateShort = new();
-            try
-            {
-                Log.Information("Customer paginateShort input {@Input}", customerSearch);
-                customerPaginateShort = customerService.GetPaginateShort(customerSearch);
-                Log.Information("Customer paginateShort output {@Output}", customerPaginateShort);
-            }
-            catch (Exception ex)
-            {
-                Log.Error("Customer paginateShort error {@Error}", ex.Message); 
-                customerPaginateShort.DbError();
-            }
-            return customerPaginateShort;
-        }
-
-        /// <summary>
-        /// 取得簡化的客戶資料
-        /// </summary>
-        /// <param name="customerId">客戶ID</param>
-        /// <returns></returns>
-        [HttpGet("[Action]/{customerId}")]
-        public CustomerSummaryResponse Summary(int customerId)
-        {
-            CustomerSummaryResponse customerSummaryResponse = new();
-            try
-            {
-                Log.Information("Customer short input {@Input}", customerId);
-                customerSummaryResponse = customerService.GetSummary(customerId);
-                Log.Information("Customer short output {@Output}", customerSummaryResponse);
-            }
-            catch (Exception ex)
-            {
-                Log.Error("Customer short error {@Error}", ex.Message); 
-                customerSummaryResponse.DbError();
-            }
-            return customerSummaryResponse;
-        }
+        }        
 
         /// <summary>
         /// 取得客戶詳細基本資料

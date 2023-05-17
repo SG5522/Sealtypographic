@@ -71,7 +71,7 @@ namespace SealTypographicWebAPI.Services.Implements
                 {
                     TypographicPage typographicPage = new();
                     PageSave(typographicPage, pageInfo);
-                    typographicPages.Add(typographicPage);                    
+                    typographicPages.Add(typographicPage);
                 }
                 typographicPDF.TypographicPages = typographicPages;
                 customer.TypographicPDFs.Add(typographicPDF);                   

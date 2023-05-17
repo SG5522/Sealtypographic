@@ -54,6 +54,29 @@ namespace SealTypographicWebAPI.Controllers
         }
 
         /// <summary>
+        /// 依搜尋條件獲得資料列表(排版使用)
+        /// </summary>
+        /// <param name="accountantSearch">搜尋條件</param>
+        /// <returns></returns>
+        [HttpGet("[Action]")]
+        public AccountantPaginateViewModel PaginateWithTypographic([FromQuery] AccountantSearch accountantSearch)
+        {
+            AccountantPaginateViewModel accountantPaginatesViewModel = new();
+            try
+            {
+                Log.Information("AccountantSignAuthorization paginateWithTypographic input {@Input}", accountantSearch);
+                accountantPaginatesViewModel = accountantService.GetPaginateWithTypographic(accountantSearch);
+                Log.Information("AccountantSignAuthorization paginateWithTypographic output {@Output}", accountantPaginatesViewModel);
+            }
+            catch (Exception ex)
+            {
+                Log.Error("AccountantSignAuthorization paginateWithTypographic error {@Error}", ex.Message);
+                accountantPaginatesViewModel.DbError();
+            }
+            return accountantPaginatesViewModel;
+        }
+
+        /// <summary>
         /// 取得資料
         /// </summary>
         /// <param name="accountantId">會計師ID</param>        
