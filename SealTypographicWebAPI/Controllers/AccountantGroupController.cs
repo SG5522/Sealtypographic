@@ -39,11 +39,11 @@ namespace SealTypographicWebAPI.Controllers
             try
             {                
                 accountantGroupList = accountantGroupService.GetAll();
-                Log.Information("AccountantGroups get List output {@Output}", accountantGroupList);                
+                Log.Information("AccountantGroups List output {@Output}", accountantGroupList);                
             }
             catch (Exception ex)
             {
-                Log.Error("AccountantGroups get List error {@Error}", ex.Message);
+                Log.Error("AccountantGroups List error {@Error}", ex.Message);
                 accountantGroupList.DbError();                
             }
             return accountantGroupList;
@@ -60,14 +60,14 @@ namespace SealTypographicWebAPI.Controllers
             AccountantGroupPaginateViewModel accountantGroupResponses = new();
             try
             {
-                Log.Information("AccountantGroups get paginate input {@Input}", accountantGroupSearch);
+                Log.Information("AccountantGroups paginate input {@Input}", accountantGroupSearch);
                 accountantGroupResponses = accountantGroupService.GetPaginate(accountantGroupSearch);
-                Log.Information("AccountantGroups get paginate output {@Output}", accountantGroupResponses);                
+                Log.Information("AccountantGroups paginate output {@Output}", accountantGroupResponses);                
                 
             }
             catch (Exception ex)
             {
-                Log.Error("AccountantGroups get paginate error {@Error}", ex.Message);                
+                Log.Error("AccountantGroups paginate error {@Error}", ex.Message);                
                 accountantGroupResponses.DbError();                
             }
             return accountantGroupResponses;

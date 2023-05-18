@@ -1,11 +1,12 @@
-﻿using DJScannerLib.Configs;
+﻿using DJLocalAPI.Api;
+using DJScannerLib.Configs;
 using DJScannerLib.Services;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Serilog;
 
-namespace DJLocalAPI.Api
+namespace DJLocalAPI.Services
 {
     /// <summary>
     /// Api Server Service 相關設定
@@ -16,7 +17,7 @@ namespace DJLocalAPI.Api
         /// 
         /// </summary>
         public IScannerService ScannerService;
-        
+
         /// <summary>
         /// 
         /// </summary>
@@ -41,7 +42,7 @@ namespace DJLocalAPI.Api
                 .UseSerilog()
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
-                    webBuilder.ConfigureServices(services => 
+                    webBuilder.ConfigureServices(services =>
                     {
                         services.Configure<FormOptions>(o => new FormOptions
                         {

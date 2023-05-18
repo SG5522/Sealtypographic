@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SealTypographicWebAPI.Models;
-using SealTypographicWebAPI.Models.LetterheadTemplate;
+using SealTypographicWebAPI.Models.LetterheadImageTemplate;
 using SealTypographicWebAPI.Services;
 using Serilog;
 

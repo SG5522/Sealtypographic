@@ -1,7 +1,7 @@
 ﻿using SealTypographicWebAPI.Models.BaseModels;
 using System.Text.Json.Serialization;
 
-namespace SealTypographicWebAPI.Models.LetterheadTemplate
+namespace SealTypographicWebAPI.Models.LetterheadImageTemplate
 {
     /// <summary>
     /// 信頭樣板分頁單列
@@ -34,9 +34,9 @@ namespace SealTypographicWebAPI.Models.LetterheadTemplate
         /// <summary>
         /// New ViewModels
         /// </summary>
-        public LetterheadImageTemplatePaginate() 
+        public LetterheadImageTemplatePaginate()
         {
-            ViewModels = new ();
+            ViewModels = new();
         }
 
         /// <summary>

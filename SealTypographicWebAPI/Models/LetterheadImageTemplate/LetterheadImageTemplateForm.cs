@@ -1,6 +1,6 @@
 ﻿using SealTypographicWebAPI.Models.BaseModels;
 
-namespace SealTypographicWebAPI.Models.LetterheadTemplate
+namespace SealTypographicWebAPI.Models.LetterheadImageTemplate
 {
     /// <summary>
     /// 信頭樣板 (新增使用)

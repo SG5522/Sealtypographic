@@ -3,7 +3,6 @@ using Microsoft.EntityFrameworkCore;
 using DBEntities.Consts;
 using DBEntities;
 using SealTypographicWebAPI.Models;
-using SealTypographicWebAPI.Models.Customer;
 using SealTypographicWebAPI.Models.Letterhead;
 using SealTypographicWebAPI.Utils;
 

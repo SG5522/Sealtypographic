@@ -1,4 +1,4 @@
-﻿namespace SealTypographicWebAPI.Models.LetterheadTemplate
+﻿namespace SealTypographicWebAPI.Models.LetterheadImageTemplate
 {
     /// <summary>
     /// 樣板存檔時紀錄當下的圖片

@@ -10,7 +10,7 @@ using SealTypographicWebAPI.Models.AccountantSignReview;
 using SealTypographicWebAPI.Models.TemporarySeal;
 using SealTypographicWebAPI.Models.CustomerSealTemplate;
 using SealTypographicWebAPI.Models.AccountantSignTemplate;
-using SealTypographicWebAPI.Models.LetterheadTemplate;
+using SealTypographicWebAPI.Models.LetterheadImageTemplate;
 
 namespace SealTypographicWebAPI.Config
 {

@@ -12,6 +12,8 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Hosting.WindowsServices;
 using SealTypographicWebAPI.Models.CustomerSealTemplate;
+using DBEntitiesExtension;
+using Microsoft.Extensions.Options;
 
 string allowSpecificOrigins = "allowSpecificOrigins";
 string allowAllOrigins = "allowAllOrigins";
@@ -56,16 +58,28 @@ builder.Services.AddCors(options =>
 builder.Host.UseSerilog();// <-SeriLog 
 
 #region -- ConectionString --
+#if DEBUG
+builder.Services.AddDbContextPool<SealTypographicExtensionDbContext>(optionsBuilder =>
+{
+    optionsBuilder.UseSqlite(builder.Configuration.GetConnectionString("Sqlite2"), x => x.MigrationsAssembly("Sqlite"));
+
+    optionsBuilder.UseLoggerFactory(LoggerFactory.Create(builder =>
+    {
+        builder.AddConsole().AddDebug();
+    }));
+}, 128);
+#endif
+
 builder.Services.AddDbContextPool<SealTypographicDbContext>(optionsBuilder =>
 {
     string? provider = builder.Configuration.GetValue<string>("Provider");
     switch (provider)
     {
-    case "Sqlite":
-            optionsBuilder.UseSqlite(builder.Configuration.GetConnectionString(provider), x => x.MigrationsAssembly(provider));          
+        case "Sqlite":
+            optionsBuilder.UseSqlite(builder.Configuration.GetConnectionString(provider), x => x.MigrationsAssembly(provider));
             break;
         case "MySql":
-            MySqlServerVersion serverVersion = new(new Version(8, 0, 32));                 
+            MySqlServerVersion serverVersion = new(new Version(8, 0, 32));
             optionsBuilder.UseMySql(builder.Configuration.GetConnectionString(provider), serverVersion, x => x.MigrationsAssembly(provider));
             break;
         case "MsSql":
@@ -82,6 +96,8 @@ builder.Services.AddDbContextPool<SealTypographicDbContext>(optionsBuilder =>
 #endif
 }, 128);
 #endregion
+
+
 
 #region -- Service --
 
@@ -203,6 +219,13 @@ using (IServiceScope scope = app.Services.CreateScope())
         SealTypographicDbContext dbContext = scope.ServiceProvider.GetRequiredService<SealTypographicDbContext>();
         dbContext.Database.Migrate();
         InitialDbData.Initialize(dbContext);
+
+#if DEBUG
+        SealTypographicExtensionDbContext dbContext2 = scope.ServiceProvider.GetRequiredService<SealTypographicExtensionDbContext>();
+        dbContext2.Database.Migrate();
+        InitialDb2Data.Initialize(dbContext2);
+#endif
+
     }
     catch(Exception ex)
     {        

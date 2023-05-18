@@ -1,0 +1,52 @@
+﻿using DBEntitiesExtension.Base;
+using DBEntitiesExtension.Consts;
+
+namespace DBEntitiesExtension
+{
+    /// <summary>
+    /// 排版素材
+    /// </summary>
+    public class TypographyAsset : BaseSeal
+    {
+        /// <summary>
+        /// 印鑑編號(排序)
+        /// </summary>
+        public int Sequence { get; set; }
+
+        /// <summary>
+        /// 印鑑配置類別
+        /// </summary>
+        public SealType SealType { get; set; }
+
+        /// <summary>
+        /// 印鑑子類別
+        /// </summary>
+        public SubSealType SubSealType { get; set; }
+
+        /// <summary>
+        /// 客戶印鑑季度資料表
+        /// </summary>
+        public CustomerSealGroup CustomerSealGroup { get; set; }
+
+        /// <summary>
+        /// 會計師簽印群組
+        /// </summary>
+        public AccountantSignGroup AccountantSignGroup { get; set; }
+
+        /// <summary>
+        /// 事務所信頭
+        /// </summary>
+        public Letterhead Letterhead { get; set; }
+
+        /// <summary>
+        /// 臨時章群組
+        /// </summary>
+        public TemporarySealGroup TemporarySealQuarter { get; set; }
+
+        /// <summary>
+        /// 各印鑑簽印排版位置
+        /// </summary>
+        public List<TypographicSealLocation> TypographicSealLocations { get; set; }
+
+    }
+}

@@ -5,7 +5,6 @@ using SealTypographicWebAPI.Config;
 using DBEntities.Consts;
 using DBEntities;
 using SealTypographicWebAPI.Models;
-using SealTypographicWebAPI.Models.Customer;
 using SealTypographicWebAPI.Models.Letterhead;
 using System.ComponentModel.Design;
 using Microsoft.Extensions.Options;

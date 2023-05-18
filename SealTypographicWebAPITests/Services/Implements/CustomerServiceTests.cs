@@ -13,7 +13,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 
-namespace SealTypographicWebAPI.Services.Implements.Tests
+namespace SealTypographicWebAPITests.Services.Implements
 {
     [TestClass()]
     public class CustomerServiceTests
@@ -28,7 +28,7 @@ namespace SealTypographicWebAPI.Services.Implements.Tests
         public CustomerServiceTests(CustomerService customerService)
         {
             //this.customerService = customerService;            
-            
+
             //string dbName = $"AuthorPostsDb_{DateTime.Now.ToFileTimeUtc()}";
             //dbContext = new DbContextOptionsBuilder<SealTypographicDbContext>()
             //                .UseInMemoryDatabase(dbName)
@@ -40,7 +40,7 @@ namespace SealTypographicWebAPI.Services.Implements.Tests
 
         [TestMethod()]
         public void CustomerServiceTest()
-        {           
+        {
             Assert.Fail();
         }
 
@@ -50,9 +50,9 @@ namespace SealTypographicWebAPI.Services.Implements.Tests
             Assert.Fail();
         }
 
-        [TestMethod()]        
+        [TestMethod()]
         public void GetPaginateTest(CustomerSearch customerSearch)
-        {            
+        {
             customerService.GetPaginate(customerSearch);
             Assert.Fail();
         }

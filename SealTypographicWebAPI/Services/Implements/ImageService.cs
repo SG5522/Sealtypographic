@@ -6,7 +6,7 @@ using DBEntities.Consts;
 using SealTypographicWebAPI.Models;
 using SixLabors.ImageSharp;
 
-namespace SealTypographicWebAPI.Services
+namespace SealTypographicWebAPI.Services.Implements
 {
 
     /// <summary>
@@ -35,8 +35,8 @@ namespace SealTypographicWebAPI.Services
         /// <param name="fullpath"></param>        
         /// <returns></returns>
         public string GetPathToBase64(string fullpath)
-        {            
-            return ImageSharpUtil.PathImageFileToBase64(fullpath);            
+        {
+            return ImageSharpUtil.PathImageFileToBase64(fullpath);
         }
 
         /// <summary>
@@ -46,7 +46,7 @@ namespace SealTypographicWebAPI.Services
         public async Task<string> GetSavedImageFilePath(ImageBase64Info imageBase64Info)
         {
             SaveFullPath saveFullPath = new()
-            {                
+            {
                 Folder = imageBase64Info.RootFolder(),
                 FileName = imageBase64Info.ReName()
             };
@@ -82,7 +82,7 @@ namespace SealTypographicWebAPI.Services
         /// <param name="isResize">是否縮放</param>
         /// <returns></returns>
         public void SaveImage(string imageBase64, string savePath, bool isResize)
-        {            
+        {
             SaveFullPath saveFullPath = new()
             {
                 Folder = Path.GetDirectoryName(savePath),
@@ -158,7 +158,7 @@ namespace SealTypographicWebAPI.Services
         {
             ImageBase64Info imageBase64Info = new()
             {
-                Code = code,                
+                Code = code,
             };
             switch (sealType)
             {

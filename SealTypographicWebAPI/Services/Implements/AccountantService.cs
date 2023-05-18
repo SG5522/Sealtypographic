@@ -5,9 +5,6 @@ using DBEntities.Consts;
 using SealTypographicWebAPI.Utils;
 using Microsoft.EntityFrameworkCore;
 using AutoMapper;
-using System.ComponentModel.Design;
-using System.Diagnostics.Eventing.Reader;
-using System.Linq;
 
 namespace SealTypographicWebAPI.Services.Implements
 {

@@ -4,9 +4,6 @@ using DBEntities.Consts;
 using DBEntities;
 using SealTypographicWebAPI.Models;
 using SealTypographicWebAPI.Models.Accountant;
-using System.Linq;
-using SealTypographicWebAPI.Config;
-using Microsoft.Extensions.Options;
 
 namespace SealTypographicWebAPI.Services.Implements
 {

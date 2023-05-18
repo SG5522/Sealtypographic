@@ -46,7 +46,7 @@ namespace SealTypographicWebAPI.Controllers
             }
             catch (Exception ex)
             {
-                Log.Error("CustomerSealAuthorization get paginate error {@Error}", ex.Message);                 
+                Log.Error("Customer get paginate error {@Error}", ex.Message);                 
                 customerPaginateViewModel.DbError();                
             }
             return customerPaginateViewModel;
@@ -69,7 +69,7 @@ namespace SealTypographicWebAPI.Controllers
             }
             catch (Exception ex)
             {
-                Log.Error("CustomerSealAuthorization get customerId error {@Error}", ex.Message);                 
+                Log.Error("Customer detail error {@Error}", ex.Message);                 
                 customerDetailViewModel.DbError();                
             }
             return customerDetailViewModel;

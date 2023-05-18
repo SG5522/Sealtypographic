@@ -37,7 +37,7 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <returns></returns>
         public CustomerSealQuarterResponse GetQuarter(int customerId)
         {                   
-            return GetQuarterData(customerId, false);
+            return GetStandardQuarter(customerId, false);
         }
 
         /// <summary>
@@ -47,7 +47,7 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <returns></returns>
         public CustomerSealQuarterResponse GetQuarterWithTypographic(int customerId)
         {
-            return GetQuarterData(customerId, true);
+            return GetStandardQuarter(customerId, true);
         }
         
         /// <summary>
@@ -279,32 +279,32 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <summary>
         /// 取得客戶印鑑季度資料
         /// </summary>
-        /// <param name="customerId"></param>
-        /// <param name="isTypographic"></param>
+        /// <param name="customerId">客戶Id</param>
+        /// <param name="isTypographic">是否排版使用</param>
         /// <returns></returns>
-        private CustomerSealQuarterResponse GetQuarterData(int customerId, bool isTypographic)
+        private CustomerSealQuarterResponse GetStandardQuarter(int customerId, bool isTypographic)
         {
             CustomerSealQuarterResponse customerSealQuarters = new()
             {
                 CustomerSealQuarters = dbContext.CustomerSealQuarterJournals.Where
-                            (
-                                customerSealQuarterJournal => customerSealQuarterJournal.Customer.Id == customerId
-                                && customerSealQuarterJournal.ReviewStatus <= ReviewStatus.Disabled
-                                && customerSealQuarterJournal.DeleteStatus == DeleteStatus.No
-                            )
-                            .Select(customerSealQuarterJournal => new CustomerSealQuarterViewModel()
-                            {
-                                Id = customerSealQuarterJournal.Id,
-                                Quarter = customerSealQuarterJournal.Quarter,
-                                ReviewStatus = customerSealQuarterJournal.ReviewStatus
-                            })
-                            .OrderByDescending(customerSealQuarterJournal => customerSealQuarterJournal.Quarter)
-                            .ToList()
+                                        (
+                                            customerSealQuarterJournal => customerSealQuarterJournal.Customer.Id == customerId
+                                            && customerSealQuarterJournal.ReviewStatus <= ReviewStatus.Disabled
+                                            && customerSealQuarterJournal.DeleteStatus == DeleteStatus.No
+                                        )
+                                        .Select(customerSealQuarterJournal => new CustomerSealQuarterViewModel()
+                                        {
+                                            Id = customerSealQuarterJournal.Id,
+                                            Quarter = customerSealQuarterJournal.Quarter,
+                                            ReviewStatus = customerSealQuarterJournal.ReviewStatus
+                                        })
+                                        .OrderByDescending(customerSealQuarterJournal => customerSealQuarterJournal.Quarter)
+                                        .ToList()
             };
 
             if (isTypographic)
             {
-                customerSealQuarters.CustomerSealQuarters.Where(x => x.ReviewStatus == ReviewStatus.Approval);
+                customerSealQuarters.CustomerSealQuarters = customerSealQuarters.CustomerSealQuarters.Where(x => x.ReviewStatus == ReviewStatus.Approval).ToList();
             }
             customerSealQuarters.Success();
             return customerSealQuarters;

@@ -1,6 +1,6 @@
 ﻿using SealTypographicWebAPI.Models.BaseModels;
 
-namespace SealTypographicWebAPI.Models.Customer
+namespace SealTypographicWebAPI.Models.Letterhead
 {
     /// <summary>
     /// 信頭分頁搜尋

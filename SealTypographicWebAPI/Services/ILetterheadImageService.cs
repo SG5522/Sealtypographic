@@ -1,6 +1,5 @@
 ﻿using SealTypographicWebAPI.Models.Letterhead;
 using SealTypographicWebAPI.Models;
-using SealTypographicWebAPI.Models.Customer;
 
 namespace SealTypographicWebAPI.Services
 {

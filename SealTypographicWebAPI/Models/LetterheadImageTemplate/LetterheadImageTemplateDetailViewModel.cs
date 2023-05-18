@@ -1,7 +1,7 @@
 ﻿using DBEntities.Consts;
 using SealTypographicWebAPI.Models.BaseModels;
 
-namespace SealTypographicWebAPI.Models.LetterheadTemplate
+namespace SealTypographicWebAPI.Models.LetterheadImageTemplate
 {
     /// <summary>
     /// 信頭樣板座標
@@ -23,9 +23,9 @@ namespace SealTypographicWebAPI.Models.LetterheadTemplate
         /// <summary>
         /// New ViewModels
         /// </summary>
-        public LetterheadImageTemplateDetailViewModel() 
+        public LetterheadImageTemplateDetailViewModel()
         {
-            LocaltionViewModels = new ();
+            LocaltionViewModels = new();
         }
 
         /// <summary>
@@ -36,6 +36,6 @@ namespace SealTypographicWebAPI.Models.LetterheadTemplate
         /// <summary>
         /// 信頭樣板座標
         /// </summary>
-        public List<LetterheadImageTemplateLocationViewModel> LocaltionViewModels{ get; set; }
+        public List<LetterheadImageTemplateLocationViewModel> LocaltionViewModels { get; set; }
     }
 }

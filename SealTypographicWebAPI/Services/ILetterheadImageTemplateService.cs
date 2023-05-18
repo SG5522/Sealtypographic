@@ -1,7 +1,6 @@
 ﻿using SealTypographicWebAPI.Models;
-using SealTypographicWebAPI.Models.AccountantSignTemplate;
 using SealTypographicWebAPI.Models.BaseModels;
-using SealTypographicWebAPI.Models.LetterheadTemplate;
+using SealTypographicWebAPI.Models.LetterheadImageTemplate;
 
 namespace SealTypographicWebAPI.Services
 {

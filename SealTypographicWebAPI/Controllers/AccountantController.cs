@@ -41,13 +41,13 @@ namespace SealTypographicWebAPI.Controllers
             AccountantPaginateViewModel accountantPaginatesViewModel = new();
             try
             {
-                Log.Information("AccountantSignAuthorization get paginate input {@Input}", accountantSearch);
+                Log.Information("Accountant paginate input {@Input}", accountantSearch);
                 accountantPaginatesViewModel = accountantService.GetPaginate(accountantSearch);
-                Log.Information("AccountantSignAuthorization get paginate output {@Output}", accountantPaginatesViewModel);                
+                Log.Information("Accountant paginate output {@Output}", accountantPaginatesViewModel);                
             }
             catch (Exception ex) 
             {
-                Log.Error("AccountantSignAuthorization get paginate error {@Error}", ex.Message); 
+                Log.Error("Accountant paginate error {@Error}", ex.Message); 
                 accountantPaginatesViewModel.DbError();                                
             }
             return accountantPaginatesViewModel;
@@ -64,13 +64,13 @@ namespace SealTypographicWebAPI.Controllers
             AccountantPaginateViewModel accountantPaginatesViewModel = new();
             try
             {
-                Log.Information("AccountantSignAuthorization paginateWithTypographic input {@Input}", accountantSearch);
+                Log.Information("Accountant paginateWithTypographic input {@Input}", accountantSearch);
                 accountantPaginatesViewModel = accountantService.GetPaginateWithTypographic(accountantSearch);
-                Log.Information("AccountantSignAuthorization paginateWithTypographic output {@Output}", accountantPaginatesViewModel);
+                Log.Information("Accountant paginateWithTypographic output {@Output}", accountantPaginatesViewModel);
             }
             catch (Exception ex)
             {
-                Log.Error("AccountantSignAuthorization paginateWithTypographic error {@Error}", ex.Message);
+                Log.Error("Accountant paginateWithTypographic error {@Error}", ex.Message);
                 accountantPaginatesViewModel.DbError();
             }
             return accountantPaginatesViewModel;
@@ -87,13 +87,13 @@ namespace SealTypographicWebAPI.Controllers
             AccountantDetailResponse accountantResponse = new();
             try
             {
-                Log.Information("AccountantSignAuthorization get detail input {@Input}", accountantId);
+                Log.Information("Accountant detail input {@Input}", accountantId);
                 accountantResponse = accountantService.GetDetail(accountantId);
-                Log.Information("AccountantSignAuthorization get detail output {@Output}", accountantResponse);                
+                Log.Information("Accountant detail output {@Output}", accountantResponse);                
             }
             catch (Exception ex)
             {
-                Log.Error("AccountantGroups get detail error {@Error}", ex.Message); 
+                Log.Error("Accountant detail error {@Error}", ex.Message); 
                 accountantResponse.DbError();                                
             }
             return accountantResponse;
@@ -109,13 +109,13 @@ namespace SealTypographicWebAPI.Controllers
             AccountantCreateResponse accountantCreateResponse = new();
             try
             {
-                Log.Information("AccountantSignAuthorization new input {@Input}", accountantForm);
+                Log.Information("Accountant new input {@Input}", accountantForm);
                 accountantCreateResponse = accountantService.New(accountantForm);
-                Log.Information("AccountantSignAuthorization new output {@Output}", accountantCreateResponse);                       
+                Log.Information("Accountant new output {@Output}", accountantCreateResponse);                       
             }
             catch (Exception ex)
             {
-                Log.Error("AccountantSignAuthorization new error {@Error}", ex.Message); 
+                Log.Error("Accountant new error {@Error}", ex.Message); 
                 accountantCreateResponse.DbError();                
             }
             return accountantCreateResponse;
@@ -131,13 +131,13 @@ namespace SealTypographicWebAPI.Controllers
             ResponseViewModel response = new();
             try
             {
-                Log.Information("AccountantSignAuthorization put input {@Input}", accountantFormUpdate);
+                Log.Information("Accountant update input {@Input}", accountantFormUpdate);
                 response = accountantService.Update(accountantFormUpdate);
-                Log.Information("AccountantSignAuthorization put output {@Output}", response);                
+                Log.Information("Accountant update output {@Output}", response);                
             }
             catch (Exception ex)
             {
-                Log.Error("AccountantSignAuthorization put accountantFormUpdate error {@Error}", ex.Message); 
+                Log.Error("Accountant put update error {@Error}", ex.Message); 
                 response.DbError();                
             }
             return response;
@@ -153,13 +153,13 @@ namespace SealTypographicWebAPI.Controllers
             ResponseViewModel response = new();
             try
             {
-                Log.Information("AccountantSignAuthorization delete(hide) input {@Input}", accountantId);
+                Log.Information("Accountant delete(hide) input {@Input}", accountantId);
                 response = accountantService.Delete(accountantId);
-                Log.Information("AccountantSignAuthorization delete(hide) output {@Output}", response);
+                Log.Information("Accountant delete(hide) output {@Output}", response);
             }
             catch (Exception ex)
             { 
-                Log.Error("AccountantSignAuthorization delete(hide) error {@Error}", ex.Message); 
+                Log.Error("Accountant delete(hide) error {@Error}", ex.Message); 
                 response.DbError();                
             }
             return response;

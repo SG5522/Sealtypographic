@@ -4,7 +4,7 @@ using SealTypographicWebAPI.Config;
 using SealTypographicWebAPI.Models.AccountantSignTemplate;
 using SealTypographicWebAPI.Models.BaseModels;
 
-namespace SealTypographicWebAPI.Models.LetterheadTemplate
+namespace SealTypographicWebAPI.Models.LetterheadImageTemplate
 {
     /// <summary>
     /// 信頭樣板 (更新使用)
