@@ -13,14 +13,9 @@ namespace DBEntitiesExtension
         public Accountant Accountant { get; set; }
 
         /// <summary>
-        /// 上傳檔案資料表
-        /// </summary>
-        public UploadFile UploadFile { get; set; }
-
-        /// <summary>
         /// 排版素材
         /// </summary>
-        public List<TypographyAsset> TypographyAssets { get; set; }
+        public List<TypographyResource> TypographyResources { get; set; }
 
     }
 }

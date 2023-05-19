@@ -4,9 +4,9 @@ using DBEntitiesExtension.Consts;
 namespace DBEntitiesExtension
 {
     /// <summary>
-    /// 排版素材
+    /// 排版資源
     /// </summary>
-    public class TypographyAsset : BaseSeal
+    public class TypographyResource : BaseSeal
     {
         /// <summary>
         /// 印鑑編號(排序)
@@ -41,7 +41,12 @@ namespace DBEntitiesExtension
         /// <summary>
         /// 臨時章群組
         /// </summary>
-        public TemporarySealGroup TemporarySealQuarter { get; set; }
+        public TemporarySealGroup TemporarySealGroup { get; set; }
+
+        /// <summary>
+        /// 上傳檔案資料表
+        /// </summary>
+        public UploadFile UploadFile { get; set; }
 
         /// <summary>
         /// 各印鑑簽印排版位置

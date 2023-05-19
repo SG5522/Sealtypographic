@@ -28,6 +28,11 @@ namespace DBEntitiesExtension
         public Customer Customer { get; set; }
 
         /// <summary>
+        /// 上傳檔案資料表
+        /// </summary>
+        public UploadFile UploadFile { get; set; }
+
+        /// <summary>
         /// 排版頁
         /// </summary>
         public List<TypographicPage> TypographicPages { get; set; }

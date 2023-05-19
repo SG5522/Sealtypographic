@@ -19,6 +19,11 @@ namespace DBEntitiesExtension
         public DbSet<Customer> Customers { get; set; }
 
         /// <summary>
+        /// 季度
+        /// </summary>
+        public DbSet<Quarter> Quarters { get; set; }
+
+        /// <summary>
         /// 客戶印鑑季度資料表
         /// </summary>
         public DbSet<CustomerSealGroup> CustomerSealGroups { get; set; }
@@ -42,6 +47,11 @@ namespace DBEntitiesExtension
         /// 事務所信頭資料表
         /// </summary>
         public DbSet<Letterhead> Letterheads { get; set; }
+
+        /// <summary>
+        /// 排版資源
+        /// </summary>
+        public DbSet<TypographyResource> TypographyResources { get; set; }
 
         /// <summary>
         /// 臨時章群組表

@@ -106,7 +106,14 @@ builder.Services.AddScoped<SealMappingConfigService>();
 builder.Services.AddSingleton<TemplateConfigService>();
 builder.Services.AddScoped<ResponseCodeService>();
 builder.Services.AddScoped<ReviewStatusService>();
+#if RELEASE
 builder.Services.AddAutoMapper(typeof(MapperProfile));
+#endif
+#if DEBUG
+builder.Services.AddAutoMapper(typeof(MapperProfileExtension));
+#endif
+
+#if RELEASE
 
 //DB Process
 builder.Services.AddScoped<ICustomerService, CustomerService>();
@@ -125,6 +132,12 @@ builder.Services.AddScoped<IAccountantSignTemplateService, AccountantSignTemplat
 builder.Services.AddScoped<ILetterheadImageTemplateService, LetterheadImageTemplateService>();
 builder.Services.AddScoped<ITypographicPDFService, TypographicPDFService>();
 builder.Services.AddScoped<UploadService>();
+#endif
+
+#if DEBUG
+builder.Services.AddScoped<ICustomerService, CustomerServiceExtension>();
+builder.Services.AddScoped<ICustomerSealService, CustomerSealServiceExtension>();
+#endif
 
 #endregion
 

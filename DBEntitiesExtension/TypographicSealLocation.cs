@@ -11,6 +11,6 @@ namespace DBEntitiesExtension
         /// <summary>
         /// 排版素材
         /// </summary>
-        public TypographyAsset TypographyAsset { get; set; }
+        public TypographyResource TypographyResource { get; set; }
     }
 }

@@ -20,6 +20,6 @@ namespace DBEntitiesExtension
         /// <summary>
         /// 排版素材
         /// </summary>
-        public List<TypographyAsset> TypographyAssets { get; set; }
+        public List<TypographyResource> TypographyResources { get; set; }
     }
 }

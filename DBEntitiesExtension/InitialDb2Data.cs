@@ -24,6 +24,30 @@ namespace DBEntitiesExtension
                 dbContext.SaveChanges();
             }
 
+            if(!dbContext.Quarters.Any())
+            {
+                List<Quarter> quarters = new();                
+                int nowGregorianYear = 2023;
+                int years = 50;                
+                for(int i = 1; i <= years; i++)
+                {
+                    string gregorianYear = $"{(nowGregorianYear - years) + i}";
+                    string taiwanYear = $"{(nowGregorianYear - 1911 - years) + i}";
+                    for(int period = 1; period <= 4; period++)
+                    {
+                        Quarter quarter = new()
+                        {                            
+                            GregorianYear = gregorianYear,
+                            TaiwanYear = taiwanYear,
+                            Period = $"Q{period}"
+                        };
+                        quarters.Add(quarter);
+                    }
+                }
+                dbContext.Quarters.AddRange(quarters);
+                dbContext.SaveChanges();
+            }
+
             if (!dbContext.AccountantGroups.Any())
             {
                 //建立DB前先建置AccountantGroup無群組資料
