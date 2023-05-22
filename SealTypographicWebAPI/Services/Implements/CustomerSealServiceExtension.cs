@@ -61,6 +61,7 @@ namespace SealTypographicWebAPI.Services.Implements
             
             CustomerSealGroup? customerSealGroup = dbContext.CustomerSealGroups
                                                     .Include(customerSealGroup => customerSealGroup.TypographyResources)
+                                                    .Include(customerSealGroup => customerSealGroup.Quarter)
                                                     .FirstOrDefault
                                                     (
                                                         customerSealGroup => customerSealGroup.Id == customerSealQuarterId                                                                        
@@ -105,9 +106,10 @@ namespace SealTypographicWebAPI.Services.Implements
         {
             ResponseViewModel response = new();            
             List<TypographyResource> typographyResources = new();
-            int userId = 0; //以後從帳號驗證取得Id
+            int userId = 1; //以後從帳號驗證取得Id
 
             Customer? customerQuery = dbContext.Customers.Include(customer => customer.CustomerSealGroups)
+                                       .ThenInclude(customerSealGroup => customerSealGroup.Quarter)
                                        .FirstOrDefault(x => x.Id == customerSealForms.CustomerId);            
 
             if (customerQuery != null)
@@ -120,7 +122,7 @@ namespace SealTypographicWebAPI.Services.Implements
                                         && x.Period == customerSealForms.Quarter.Substring(3)
                                     );
 
-                CustomerSealGroup? customerSealGroupQuery = customerQuery.CustomerSealGroups
+                CustomerSealGroup? customerSealGroupQuery = customerQuery.CustomerSealGroups                                                            
                                                             .FirstOrDefault
                                                             (
                                                                 customerSealQuarterJournal => 
@@ -164,7 +166,7 @@ namespace SealTypographicWebAPI.Services.Implements
         public async Task<List<ResponseViewModel>> Update(CustomerSealUpdate customerSealUpdate)
         {            
             List<ResponseViewModel> responseViewModels = new();            
-            int userId = 0; //從帳號驗證取得Id          
+            int userId = 1; //從帳號驗證取得Id          
 
             CustomerSealGroup? customerSealGroup = dbContext.CustomerSealGroups
                                                 .Include(customerSealGroup => customerSealGroup.Customer)
@@ -270,18 +272,18 @@ namespace SealTypographicWebAPI.Services.Implements
                                         .Include(customerSealGroups => customerSealGroups.Quarter)
                                         .Where
                                         (
-                                            customerSealGroups => customerSealGroups.Customer.Id == customerId
-                                            && customerSealGroups.ReviewStatus <= ReviewStatus.Disabled
-                                            && customerSealGroups.DeleteStatus == DeleteStatus.No
+                                            customerSealGroup => customerSealGroup.Customer.Id == customerId
+                                            && customerSealGroup.ReviewStatus <= ReviewStatus.Disabled
+                                            && customerSealGroup.DeleteStatus == DeleteStatus.No
                                         )
-                                        .Select(customerSealGroups => new CustomerSealQuarterViewModel()
+                                        .OrderByDescending(customerSealGroup => customerSealGroup.Quarter.Id)
+                                        .Select(customerSealGroup => new CustomerSealQuarterViewModel()
                                         {
-                                            Id = customerSealGroups.Id,
-                                            Quarter = QuarterUtil.GetTaiwanYearQuarter(customerSealGroups.Quarter),
+                                            Id = customerSealGroup.Id,
+                                            Quarter = QuarterUtil.GetTaiwanYearQuarter(customerSealGroup.Quarter),
                                             //之後DB更換要調整
-                                            ReviewStatus = (DBEntities.Consts.ReviewStatus)customerSealGroups.ReviewStatus
+                                            ReviewStatus = (DBEntities.Consts.ReviewStatus)customerSealGroup.ReviewStatus
                                         })
-                                        .OrderByDescending(customerSealGroups => customerSealGroups.Quarter)
                                         .ToList()
             };
 

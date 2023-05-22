@@ -459,11 +459,11 @@ namespace Sqlite.Migrations.SealTypographicExtensionDb
                     Sequence = table.Column<int>(type: "INTEGER", nullable: false),
                     SealType = table.Column<byte>(type: "INTEGER", nullable: false),
                     SubSealType = table.Column<int>(type: "INTEGER", nullable: false),
-                    CustomerSealGroupId = table.Column<int>(type: "INTEGER", nullable: false),
-                    AccountantSignGroupId = table.Column<int>(type: "INTEGER", nullable: false),
-                    LetterheadId = table.Column<int>(type: "INTEGER", nullable: false),
-                    TemporarySealGroupId = table.Column<int>(type: "INTEGER", nullable: false),
-                    UploadFileId = table.Column<int>(type: "INTEGER", nullable: false),
+                    CustomerSealGroupId = table.Column<int>(type: "INTEGER", nullable: true),
+                    AccountantSignGroupId = table.Column<int>(type: "INTEGER", nullable: true),
+                    LetterheadId = table.Column<int>(type: "INTEGER", nullable: true),
+                    TemporarySealGroupId = table.Column<int>(type: "INTEGER", nullable: true),
+                    UploadFileId = table.Column<int>(type: "INTEGER", nullable: true),
                     CreateDate = table.Column<DateTime>(type: "TEXT", nullable: false),
                     UpdateDate = table.Column<DateTime>(type: "TEXT", nullable: false),
                     CreateUserId = table.Column<int>(type: "INTEGER", nullable: false),
@@ -479,32 +479,27 @@ namespace Sqlite.Migrations.SealTypographicExtensionDb
                         name: "FK_TypographyResources_AccountantSignGroups_AccountantSignGroupId",
                         column: x => x.AccountantSignGroupId,
                         principalTable: "AccountantSignGroups",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_TypographyResources_CustomerSealGroups_CustomerSealGroupId",
                         column: x => x.CustomerSealGroupId,
                         principalTable: "CustomerSealGroups",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_TypographyResources_Letterheads_LetterheadId",
                         column: x => x.LetterheadId,
                         principalTable: "Letterheads",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_TypographyResources_TemporarySealGroups_TemporarySealGroupId",
                         column: x => x.TemporarySealGroupId,
                         principalTable: "TemporarySealGroups",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_TypographyResources_UploadFiles_UploadFileId",
                         column: x => x.UploadFileId,
                         principalTable: "UploadFiles",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(

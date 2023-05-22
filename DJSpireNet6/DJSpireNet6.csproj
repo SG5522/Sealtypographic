@@ -13,13 +13,14 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Spire.PDF" Version="9.4.12" />
     <PackageReference Include="System.Drawing.Common" Version="7.0.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <Reference Include="Spire.Pdf">
-      <HintPath>Library\Spire.Pdf.dll</HintPath>
-    </Reference>
+    <None Update="license.elic.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

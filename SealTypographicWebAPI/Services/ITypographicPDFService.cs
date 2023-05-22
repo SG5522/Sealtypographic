@@ -16,11 +16,17 @@ namespace SealTypographicWebAPI.Services
         TypographicPDFPaginateViewModel GetPaginate(TypographicPDFSearch typographicPDFSearch);
 
         /// <summary>
+        /// 取得PDF資訊
+        /// </summary>
+        /// <returns></returns>
+        PDFViewModel GetPDFView(int UploadId);
+
+        /// <summary>
         /// 建立PDF排版資訊
         /// </summary>
         /// <param name="typographicPDFForm">排版資訊(新增使用)</param>
         /// <returns></returns>
-        ResponseViewModel New(TypographicPDFForm typographicPDFForm);
+        TypographicPDFNewResronse New(TypographicPDFForm typographicPDFForm);
 
         /// <summary>
         /// 建立PDF排版資訊

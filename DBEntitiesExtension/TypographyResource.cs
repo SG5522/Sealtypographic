@@ -26,27 +26,27 @@ namespace DBEntitiesExtension
         /// <summary>
         /// 客戶印鑑季度資料表
         /// </summary>
-        public CustomerSealGroup CustomerSealGroup { get; set; }
+        public CustomerSealGroup? CustomerSealGroup { get; set; }
 
         /// <summary>
         /// 會計師簽印群組
         /// </summary>
-        public AccountantSignGroup AccountantSignGroup { get; set; }
+        public AccountantSignGroup? AccountantSignGroup { get; set; }
 
         /// <summary>
         /// 事務所信頭
         /// </summary>
-        public Letterhead Letterhead { get; set; }
+        public Letterhead? Letterhead { get; set; }
 
         /// <summary>
         /// 臨時章群組
         /// </summary>
-        public TemporarySealGroup TemporarySealGroup { get; set; }
+        public TemporarySealGroup? TemporarySealGroup { get; set; }
 
         /// <summary>
         /// 上傳檔案資料表
         /// </summary>
-        public UploadFile UploadFile { get; set; }
+        public UploadFile? UploadFile { get; set; }
 
         /// <summary>
         /// 各印鑑簽印排版位置

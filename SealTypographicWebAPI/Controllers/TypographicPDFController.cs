@@ -38,6 +38,19 @@ namespace SealTypographicWebAPI.Controllers
         }
 
         /// <summary>
+        /// 取得PDF
+        /// </summary>
+        /// <param name="uploadId">上傳檔案Id</param>        
+        /// <returns></returns>        
+        [HttpGet("[Action]/{uploadId}")]
+        public PDFViewModel PDFView(int uploadId)
+        {
+            PDFViewModel pDFViewModel = new();
+            pDFViewModel = typographicPDFService.GetPDFView(uploadId);
+            return pDFViewModel;
+        }
+
+        /// <summary>
         /// 取得單頁PDF圖像與排版編輯資訊
         /// </summary>
         /// <param name="typographicPDFPageSearch">排板PDFPage搜尋</param> 
@@ -68,19 +81,19 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="typographicPDFForm">排版資訊(新增使用)</param>
         /// <returns></returns>
         [HttpPost]
-        public ResponseViewModel New(TypographicPDFForm typographicPDFForm)
+        public TypographicPDFNewResronse New(TypographicPDFForm typographicPDFForm)
         {
-            ResponseViewModel response = new();                            
+            TypographicPDFNewResronse typographicPDFNewResronse = new();                            
             try
             {
-                response = typographicPDFService.New(typographicPDFForm);
+                typographicPDFNewResronse = typographicPDFService.New(typographicPDFForm);
             }
             catch (Exception ex)
             {
                 Log.Error("TypographicPDF New error {@Error}", ex.Message);
-                response.Error();
+                typographicPDFNewResronse.Error();
             }                
-            return response;
+            return typographicPDFNewResronse;
         }
 
         /// <summary>

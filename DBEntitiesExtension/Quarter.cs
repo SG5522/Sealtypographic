@@ -21,5 +21,20 @@ namespace DBEntitiesExtension
         /// 季度時期(Q1,Q2,Q3,Q4)
         /// </summary>
         public string Period { get; set; }
+
+        /// <summary>
+        /// 客戶印鑑季度資料表
+        /// </summary>
+        public List<CustomerSealGroup> CustomerSealGroups { get; set; }
+
+        /// <summary>
+        /// 臨時章群組
+        /// </summary>
+        public List<TemporarySealGroup> TemporarySealGroups { get; set; }
+
+        /// <summary>
+        /// PDF排版資訊
+        /// </summary>
+        public List<TypographicPDF> TypographicPDFs { get; set; }
     }
 }

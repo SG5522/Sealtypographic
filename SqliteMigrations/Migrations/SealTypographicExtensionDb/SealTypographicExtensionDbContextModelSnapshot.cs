@@ -647,7 +647,7 @@ namespace Sqlite.Migrations.SealTypographicExtensionDb
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("AccountantSignGroupId")
+                    b.Property<int?>("AccountantSignGroupId")
                         .HasColumnType("INTEGER");
 
                     b.Property<DateTime>("CreateDate")
@@ -656,7 +656,7 @@ namespace Sqlite.Migrations.SealTypographicExtensionDb
                     b.Property<int>("CreateUserId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("CustomerSealGroupId")
+                    b.Property<int?>("CustomerSealGroupId")
                         .HasColumnType("INTEGER");
 
                     b.Property<byte>("DeleteStatus")
@@ -666,7 +666,7 @@ namespace Sqlite.Migrations.SealTypographicExtensionDb
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("LetterheadId")
+                    b.Property<int?>("LetterheadId")
                         .HasColumnType("INTEGER");
 
                     b.Property<byte>("SealType")
@@ -678,7 +678,7 @@ namespace Sqlite.Migrations.SealTypographicExtensionDb
                     b.Property<int>("SubSealType")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("TemporarySealGroupId")
+                    b.Property<int?>("TemporarySealGroupId")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("ThumbnailFullPath")
@@ -690,7 +690,7 @@ namespace Sqlite.Migrations.SealTypographicExtensionDb
                     b.Property<int>("UpdateUserId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("UploadFileId")
+                    b.Property<int?>("UploadFileId")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
@@ -853,7 +853,7 @@ namespace Sqlite.Migrations.SealTypographicExtensionDb
                         .IsRequired();
 
                     b.HasOne("DBEntitiesExtension.Quarter", "Quarter")
-                        .WithMany()
+                        .WithMany("CustomerSealGroups")
                         .HasForeignKey("QuarterId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -905,7 +905,7 @@ namespace Sqlite.Migrations.SealTypographicExtensionDb
                         .IsRequired();
 
                     b.HasOne("DBEntitiesExtension.Quarter", "Quarter")
-                        .WithMany()
+                        .WithMany("TemporarySealGroups")
                         .HasForeignKey("QuarterId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -924,7 +924,7 @@ namespace Sqlite.Migrations.SealTypographicExtensionDb
                         .IsRequired();
 
                     b.HasOne("DBEntitiesExtension.Quarter", "Quarter")
-                        .WithMany()
+                        .WithMany("TypographicPDFs")
                         .HasForeignKey("QuarterId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -976,33 +976,23 @@ namespace Sqlite.Migrations.SealTypographicExtensionDb
                 {
                     b.HasOne("DBEntitiesExtension.AccountantSignGroup", "AccountantSignGroup")
                         .WithMany("TypographyResources")
-                        .HasForeignKey("AccountantSignGroupId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("AccountantSignGroupId");
 
                     b.HasOne("DBEntitiesExtension.CustomerSealGroup", "CustomerSealGroup")
                         .WithMany("TypographyResources")
-                        .HasForeignKey("CustomerSealGroupId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("CustomerSealGroupId");
 
                     b.HasOne("DBEntitiesExtension.Letterhead", "Letterhead")
                         .WithMany("TypographyResources")
-                        .HasForeignKey("LetterheadId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("LetterheadId");
 
                     b.HasOne("DBEntitiesExtension.TemporarySealGroup", "TemporarySealGroup")
                         .WithMany("TypographyResources")
-                        .HasForeignKey("TemporarySealGroupId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("TemporarySealGroupId");
 
                     b.HasOne("DBEntitiesExtension.UploadFile", "UploadFile")
                         .WithMany("TypographyResources")
-                        .HasForeignKey("UploadFileId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("UploadFileId");
 
                     b.Navigation("AccountantSignGroup");
 
@@ -1086,6 +1076,15 @@ namespace Sqlite.Migrations.SealTypographicExtensionDb
             modelBuilder.Entity("DBEntitiesExtension.Letterhead", b =>
                 {
                     b.Navigation("TypographyResources");
+                });
+
+            modelBuilder.Entity("DBEntitiesExtension.Quarter", b =>
+                {
+                    b.Navigation("CustomerSealGroups");
+
+                    b.Navigation("TemporarySealGroups");
+
+                    b.Navigation("TypographicPDFs");
                 });
 
             modelBuilder.Entity("DBEntitiesExtension.Template", b =>

@@ -6,6 +6,7 @@ using DBEntities.Consts;
 using Microsoft.EntityFrameworkCore;
 using DJLib.Models;
 using System.Linq;
+using DJSpireNet6;
 
 namespace SealTypographicWebAPI.Services.Implements
 {
@@ -40,13 +41,35 @@ namespace SealTypographicWebAPI.Services.Implements
         }
 
         /// <summary>
+        /// 取得PDF資訊
+        /// </summary>
+        /// <returns></returns>
+        public PDFViewModel GetPDFView(int uploadFileid)
+        {
+            PDFViewModel pDFViewModel = new ();
+            UploadFile? uploadFile = dbContext.UploadFiles.Find(uploadFileid);
+            if (uploadFile != null) 
+            {
+                PdfView pdfView = new(uploadFile.FullPath);
+                pDFViewModel.TotalPage = pdfView.GetTotalPage();
+                pDFViewModel.PDFBase64 = pdfView.GetBase64ToWebApi();
+                pDFViewModel.Success();
+            }            
+            else
+            {
+                pDFViewModel.DbNoData();
+            }
+            return pDFViewModel;
+        }
+
+        /// <summary>
         /// 建立PDF排版資訊
         /// </summary>
         /// <param name="typographicPDFForm">排版資訊(新增使用)</param>     
         /// <returns></returns>
-        public ResponseViewModel New(TypographicPDFForm typographicPDFForm)
+        public TypographicPDFNewResronse New(TypographicPDFForm typographicPDFForm)
         {
-            ResponseViewModel response = new();            
+            TypographicPDFNewResronse response = new();            
             int userId = 0;
             
             UploadFile? pDFInfo = dbContext.UploadFiles.Find(typographicPDFForm.UploadId);
