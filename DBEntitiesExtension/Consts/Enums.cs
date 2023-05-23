@@ -319,7 +319,7 @@ namespace DBEntitiesExtension.Consts
         AccountingDirector = 14,
 
         /// <summary>
-        /// 印鑑
+        /// 印鑑(會計師)
         /// </summary>
         [Description("Seal")]
         Seal = 21,

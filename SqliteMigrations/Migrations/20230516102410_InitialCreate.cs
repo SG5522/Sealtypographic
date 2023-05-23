@@ -292,7 +292,7 @@ namespace Sqlite.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "AccountantSignGroupJournals",
+                name: "AccountantSignGroups",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
@@ -375,7 +375,7 @@ namespace Sqlite.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "TemporarySealQuarterJournals",
+                name: "TemporarySealGroups",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
@@ -526,7 +526,7 @@ namespace Sqlite.Migrations
                     table.ForeignKey(
                         name: "FK_AccountantSignJournals_AccountantSignGroupJournals_AccountantSignGroupJournalId",
                         column: x => x.AccountantSignGroupJournalId,
-                        principalTable: "AccountantSignGroupJournals",
+                        principalTable: "AccountantSignGroups",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -581,7 +581,7 @@ namespace Sqlite.Migrations
                     table.ForeignKey(
                         name: "FK_TemporarySealJournals_TemporarySealQuarterJournals_TemporarySealQuarterJournalId",
                         column: x => x.TemporarySealQuarterJournalId,
-                        principalTable: "TemporarySealQuarterJournals",
+                        principalTable: "TemporarySealGroups",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -672,7 +672,7 @@ namespace Sqlite.Migrations
 
             migrationBuilder.CreateIndex(
                 name: "IX_AccountantSignGroupJournals_AccountantId",
-                table: "AccountantSignGroupJournals",
+                table: "AccountantSignGroups",
                 column: "AccountantId");
 
             migrationBuilder.CreateIndex(
@@ -742,7 +742,7 @@ namespace Sqlite.Migrations
 
             migrationBuilder.CreateIndex(
                 name: "IX_TemporarySealQuarterJournals_CustomerId",
-                table: "TemporarySealQuarterJournals",
+                table: "TemporarySealGroups",
                 column: "CustomerId");
 
             migrationBuilder.CreateIndex(
@@ -837,7 +837,7 @@ namespace Sqlite.Migrations
                 name: "TypographicPages");
 
             migrationBuilder.DropTable(
-                name: "AccountantSignGroupJournals");
+                name: "AccountantSignGroups");
 
             migrationBuilder.DropTable(
                 name: "CustomerSealQuarterJournals");
@@ -846,7 +846,7 @@ namespace Sqlite.Migrations
                 name: "Letterheads");
 
             migrationBuilder.DropTable(
-                name: "TemporarySealQuarterJournals");
+                name: "TemporarySealGroups");
 
             migrationBuilder.DropTable(
                 name: "TypographicPDFs");

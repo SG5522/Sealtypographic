@@ -1,0 +1,330 @@
+﻿using AutoMapper;
+using DBEntitiesExtension;
+using DBEntitiesExtension.Consts;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
+using SealTypographicWebAPI.Config;
+using SealTypographicWebAPI.Models;
+using SealTypographicWebAPI.Models.TemporarySeal;
+using SealTypographicWebAPI.Utils;
+using Serilog;
+
+namespace SealTypographicWebAPI.Services.Implements
+{
+    /// <summary>
+    /// 管理臨時章資料
+    /// </summary>
+    public class TemporarySealServiceExtension : ITemporarySealService
+    {
+        private readonly SealTypographicExtensionDbContext dbContext;
+        private readonly ImageService imageService;
+        private readonly IMapper mapper;        
+
+        /// <summary>
+        /// 建構
+        /// </summary>
+        /// <param name="dbContext"></param>
+        /// <param name="imageService"></param>
+        /// <param name="mapper"></param>
+        /// <param name="options"></param>
+        public TemporarySealServiceExtension(SealTypographicExtensionDbContext dbContext, ImageService imageService, IMapper mapper)
+        {
+            this.dbContext = dbContext;
+            this.imageService = imageService;
+            this.mapper = mapper;
+        }
+
+        /// <summary>
+        /// 取得臨時章詳細基本資料
+        /// </summary>
+        /// <param name="temporaryId">臨時章ID</param>
+        /// <returns></returns>
+        public TemporarySealDetailViewModel GetDetail(int temporaryId)
+        {
+            TemporarySealDetailViewModel temporarySealDetailViewModel = new();
+            TemporarySealDetailLogModel logModel = new();
+
+            TemporarySealDetailViewModel? temporarySealGroup = dbContext.TemporarySealGroups.AsNoTracking()
+                                                                .Include(temporarySealGroup => temporarySealGroup.TypographyResources)
+                                                                .Include(temporarySealGroup => temporarySealGroup.Customer)
+                                                                .Where(temporarySealGroup => temporarySealGroup.Id == temporaryId)                                                                                    
+                                                                .Select(
+                                                                    x => new TemporarySealDetailViewModel()
+                                                                    {
+                                                                        CustomerId = x.Customer.Id,
+                                                                        CustomerName = x.Customer.Name,
+                                                                        ViewModels = x.TypographyResources
+                                                                        .Where(x => x.DeleteStatus == DeleteStatus.No)
+                                                                        .Select(x => new TemporarySealViewModel() 
+                                                                        { 
+                                                                            Id = x.Id,
+                                                                            Sequence = x.Sequence,
+                                                                            ImageFullPath = x.ImageFullPath
+                                                                        }).ToList()
+                                                                    }
+                                                                ).FirstOrDefault();
+
+            if(temporarySealGroup != null)
+            {           
+                logModel = mapper.Map<TemporarySealDetailLogModel>(temporarySealDetailViewModel);
+                foreach (TemporarySealViewModel temporarySealViewModel in temporarySealGroup.ViewModels)
+                {
+                    //取得路徑轉換ImageBase64
+                    temporarySealViewModel.ImageBase64 = imageService.GetPathToBase64(temporarySealViewModel.ImageFullPath);
+                    //LOG紀錄用
+                    TemporarySealLogModel temporarySealLogModel = mapper.Map<TemporarySealLogModel>(temporarySealViewModel);                    
+                    temporarySealLogModel.ImageFileName = Path.GetFileName(temporarySealViewModel.ImageFullPath);
+                    logModel.ViewModels.Add(temporarySealLogModel);
+                }
+                temporarySealDetailViewModel = temporarySealGroup;
+                temporarySealDetailViewModel.Success();                
+                Log.Information("TemporarySeal detail output {@Output}", logModel);
+            }
+            return temporarySealDetailViewModel;
+        }
+
+        /// <summary>
+        /// 取得臨時章資料列表(分頁)
+        /// </summary>
+        /// <param name="temporarySealSearch">臨時章分頁搜尋</param>        
+        /// <returns></returns>
+        public TemporarySealPaginateViewModel GetPaginate(TemporarySealSearch temporarySealSearch)
+        {
+            TemporarySealPaginateViewModel temporarySealPaginateViewModel = new();
+            
+            int companyId = 1;
+
+            IQueryable<TemporarySealGroup> temporarySealGroupQuery = dbContext.TemporarySealGroups
+                                                                    .Where
+                                                                    (
+                                                                        temporarySealGroup => temporarySealGroup.Customer.Company.Id == companyId
+                                                                        && temporarySealGroup.Customer.DeleteStatus == DeleteStatus.No
+                                                                        && temporarySealGroup.DeleteStatus == DeleteStatus.No
+                                                                    );
+
+            if (!string.IsNullOrEmpty(temporarySealSearch.KeyWord))
+            {
+                temporarySealGroupQuery = temporarySealGroupQuery.Where(temporarySealGroup => temporarySealGroup.Customer.Name.Contains(temporarySealSearch.KeyWord));
+                //排板時會先取得客戶Id在過濾搜尋
+                if(temporarySealSearch.CustomerId != null)
+                {
+                    temporarySealGroupQuery = temporarySealGroupQuery.Where(temporarySealGroup => temporarySealGroup.Customer.Id == temporarySealSearch.CustomerId);
+                }
+            }
+            temporarySealGroupQuery = temporarySealGroupQuery.OrderBy(temporarySealGroup => temporarySealGroup.Id);
+
+            if(temporarySealGroupQuery.Any())
+            {
+
+                List<TemporaryViewModel> thisPageTemporarySealGroups = temporarySealGroupQuery
+                                                                      .Include(temporarySealGroup => temporarySealGroup.Customer)
+                                                                      .Skip((temporarySealSearch.PageNumber - 1) * temporarySealSearch.PageSize)
+                                                                      .Take(temporarySealSearch.PageSize)
+                                                                      .Select(temporarySealGroup => new TemporaryViewModel()
+                                                                      {
+                                                                          Id = temporarySealGroup.Id,
+                                                                          CustomerName = temporarySealGroup.Customer.Name,
+                                                                          Quarter = QuarterUtil.GetTaiwanYearQuarter(temporarySealGroup.Quarter)                                                                          
+                                                                      })
+                                                                      .ToList();
+
+                temporarySealPaginateViewModel.ViewModels = thisPageTemporarySealGroups;
+                temporarySealPaginateViewModel.PageNumber = temporarySealSearch.PageNumber;
+                temporarySealPaginateViewModel.PageSize = temporarySealSearch.PageSize;
+                //計算總頁數
+                temporarySealPaginateViewModel.TotalPage = TotalPageUtil.GetTotalPage(temporarySealGroupQuery.Count(), temporarySealSearch.PageSize);
+                temporarySealPaginateViewModel.TotalCount = temporarySealGroupQuery.Count();
+            }
+            temporarySealPaginateViewModel.Success();
+
+            return temporarySealPaginateViewModel;
+        }
+
+        /// <summary>
+        /// 新增客戶基本資料
+        /// </summary>
+        /// <param name="temporarySealForm">基本資料</param>
+        public async Task<ResponseViewModel> New(TemporarySealForm temporarySealForm)
+        {
+            ResponseViewModel response = new ();
+
+            Customer? customerQuery = dbContext.Customers
+                                    .Include(customer => customer.TemporarySealGroups)                                    
+                                    .ThenInclude(temporarySealGroup => temporarySealGroup.TypographyResources)
+                                    .FirstOrDefault(customer => customer.Id == temporarySealForm.CustomerId);
+            
+            if (customerQuery != null) 
+            {
+                TemporarySealGroup temporarySealGroup = new();
+                List<TypographyResource> typographyResources = new();                
+                ImageBase64Info imageBase64Info = imageService.SetImageBase64InfoWithSeal(customerQuery.Code, (DBEntities.Consts.SealType)SealType.TemporarySeal);
+                int userId = 0;
+                //之後輸入要從前端提供Id
+                temporarySealGroup.Quarter = dbContext.Quarters.Single
+                                            (
+                                                x => x.TaiwanYear == temporarySealForm.Quarter.Substring(0, 3)
+                                                && x.Period == temporarySealForm.Quarter.Substring(3)
+                                            );
+                                
+
+                BaseInputTemporarySealGroup(temporarySealGroup, true, userId);
+
+                await NewTypographyResource(temporarySealForm.Seals, typographyResources, imageBase64Info, userId);
+
+                temporarySealGroup.TypographyResources = typographyResources;
+                customerQuery.TemporarySealGroups.Add(temporarySealGroup);                             
+                dbContext.SaveChanges();
+                response.Success();
+            }
+            else
+            {
+                response.CustomeNoData();
+            }
+            return response;
+        }
+
+        /// <summary>
+        /// 更新臨時章
+        /// </summary>        
+        /// <param name="temporarySealUpdateForm">基本資料</param>
+        public async Task<ResponseViewModel> Update(TemporarySealUpdateForm temporarySealUpdateForm)
+        {
+            ResponseViewModel response = new();
+            int userId = 0;
+            TemporarySealGroup? temporarySealGroup = dbContext.TemporarySealGroups
+                                                            .Include(temporarySealQuarterJournal => temporarySealQuarterJournal.Customer)
+                                                            .Include(temporarySealQuarterJournal => temporarySealQuarterJournal.TypographyResources)
+                                                            .FirstOrDefault(temporarySealGroup => temporarySealGroup.Id == temporarySealUpdateForm.Id);
+            if(temporarySealGroup != null)
+            {                
+                ImageBase64Info imageBase64Info = imageService.SetImageBase64InfoWithSeal(temporarySealGroup.Customer.Code, (DBEntities.Consts.SealType)SealType.TemporarySeal);
+
+                //更新臨時章印鑑組
+                foreach (TemporarySealUpdate temporarySealUpdate in temporarySealUpdateForm.SealsToUpdate)
+                {
+                    TypographyResource? temporarySealJournalQuery = temporarySealGroup.TypographyResources.FirstOrDefault(x => x.Id == temporarySealUpdate.Id);
+                    if(temporarySealJournalQuery != null)
+                    {
+                        imageBase64Info.ImageBase64 = temporarySealUpdate.ImageBase64;
+                        //新增更新後的臨時章
+                        TemporarySeal temporarySeal = new()
+                        {                            
+                            Sequence = temporarySealUpdate.Sequence,                                                        
+                            ImageBase64 = temporarySealUpdate.ImageBase64
+                        };
+
+                        //將更新的ID帶入刪除List
+                        temporarySealUpdateForm.SealIdsToDelete.Add(temporarySealUpdate.Id);
+                        //更新的印鑑移入新增
+                        temporarySealUpdateForm.SealsToCreate.Add(temporarySeal);
+                    }
+                    else
+                    {
+                        response.ErrorItem += $"Update temporarySeal NoData Id:{temporarySealUpdate.Id}";
+                    }
+                }
+
+                //找出需要刪除&更新的臨時章
+                IQueryable<TypographyResource> deleteSeals = temporarySealGroup.TypographyResources
+                                                                                .Where(x => temporarySealUpdateForm.SealIdsToDelete.Contains(x.Id))
+                                                                                .AsQueryable();
+                //標記為刪除
+                foreach(TypographyResource deleteSeal in deleteSeals)
+                {
+                    deleteSeal.DeleteStatus = DeleteStatus.Yes;
+                    TypographyResourceUtil.BaseInputTypographyResource(deleteSeal, false, userId);                    
+                }
+
+                //新增臨時章                   
+                await NewTypographyResource(temporarySealUpdateForm.SealsToCreate, temporarySealGroup.TypographyResources, imageBase64Info, userId);
+
+                if (response.ErrorItem == null)
+                {                                        
+                    dbContext.SaveChanges();
+                    response.Success();
+                }                
+            }
+            else
+            {
+                response.UpdateTemporarySealNoData();
+            }
+
+            return response;
+        }
+
+        /// <summary>
+        /// 刪除臨時章。
+        /// </summary>
+        /// <param name="Id"></param>
+        public ResponseViewModel Delete(int Id)
+        {
+            ResponseViewModel response = new();
+            int userId = 0;
+            TemporarySealGroup? temporarySealGroup = dbContext.TemporarySealGroups.Find(Id);
+            if(temporarySealGroup != null)
+            {
+                temporarySealGroup.DeleteStatus = DeleteStatus.Yes;
+                BaseInputTemporarySealGroup(temporarySealGroup, false, userId);
+                dbContext.SaveChanges();
+                response.Success();
+            }
+            else
+            {
+                response.DeleteTemporarySealNoData();
+            }
+            return response;
+        }
+
+
+
+        /// <summary>
+        /// 客戶印鑑新增修改時基本的資料輸入
+        /// </summary>
+        /// <param name="temporarySealGroup">Db上的印鑑資料</param>
+        /// <param name="isCreate">對Db所做的行動</param>
+        /// <param name="userId">userId</param>
+        private static void BaseInputTemporarySealGroup(TemporarySealGroup temporarySealGroup, bool isCreate, int userId)
+        {
+            if (isCreate)
+            {
+                temporarySealGroup.CreateUserId = userId;
+                temporarySealGroup.CreateDate = DateTime.Now;
+                temporarySealGroup.DeleteStatus = DeleteStatus.No;
+            }
+            else
+            {
+                temporarySealGroup.UpdateUserId = userId;
+                temporarySealGroup.UpdateDate = DateTime.Now;
+            }
+        }
+
+        /// <summary>
+        /// 新增印鑑資料
+        /// </summary>
+        /// <param name="formseals">輸入</param>
+        /// <param name="typographyResources">要輸入資料庫的資源</param>
+        /// <param name="imageBase64Info">圖檔資訊</param>
+        /// <param name="userId">使用者Id</param>
+        /// <returns></returns>
+        private async Task NewTypographyResource(List<TemporarySeal> formseals, List<TypographyResource> typographyResources, ImageBase64Info imageBase64Info, int userId)
+        {
+            foreach (TemporarySeal temporarySeal in formseals)
+            {
+                TypographyResource typographyResource = new()
+                {
+                    SealType = SealType.TemporarySeal,
+                    //輸入model之後要修正為新的db
+                    SubSealType = SubSealType.TemporarySeal,
+                    Sequence = temporarySeal.Sequence
+                };
+                //ImageBase64轉圖檔並存到指定資料夾
+                imageBase64Info.ImageBase64 = temporarySeal.ImageBase64;
+                typographyResource.ImageFullPath = await imageService.GetSavedImageFilePath(imageBase64Info);
+                typographyResource.ThumbnailFullPath = await imageService.GetSavedImageThumbnailFilePath(imageBase64Info, true);
+
+                TypographyResourceUtil.BaseInputTypographyResource(typographyResource, true, userId);
+                typographyResources.Add(typographyResource);
+            }
+        }
+    }
+}

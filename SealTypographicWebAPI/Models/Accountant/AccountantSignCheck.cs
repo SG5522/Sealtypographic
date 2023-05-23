@@ -16,7 +16,7 @@ namespace SealTypographicWebAPI.Models.Accountant
         /// <summary>
         /// 會計師簽印建立日期Id
         /// </summary>
-        public int AccountantSignCreateDateJournalId { get; set; }
+        public int AccountantSignId { get; set; }
 
     }
 }

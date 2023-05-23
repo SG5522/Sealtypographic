@@ -191,12 +191,12 @@ namespace SealTypographicWebAPI.Services.Implements
                     accountant.Code.ToLower().Contains(accountantSearch.KeyWord.ToLower())
                     || accountant.Name.Contains(accountantSearch.KeyWord)
                 );
-                
-                if (accountantSearch.AccountantGroupName != null)
-                {
-                    accountantQuery = accountantQuery.Where(accountant => accountant.AccountantGroup.Name.Contains(accountantSearch.KeyWord));
+            }
 
-                }
+            if (accountantSearch.AccountantGroupName != null)
+            {
+                accountantQuery = accountantQuery.Where(accountant => accountant.AccountantGroup.Name.Contains(accountantSearch.AccountantGroupName));
+
             }
 
             accountantQuery = accountantQuery.OrderBy(accountant => accountant.Id);
@@ -214,41 +214,39 @@ namespace SealTypographicWebAPI.Services.Implements
                 foreach (Accountant accountant in thisPageAccountants)
                 {
                     AccountantViewModelWithCreateDate accountantPaginatesViewModel = mapper.Map<AccountantViewModelWithCreateDate>(accountant);
-
-
-                    if (accountant.AccountantSignGroupJournals.Any())
-                    {                        
-                        if (isTypographicUse)
-                        {
-                            accountantPaginatesViewModel.AccountantSignGroupId = accountant.AccountantSignGroupJournals
-                                                                                .Where
-                                                                                (
-                                                                                    x => x.DeleteStatus == DeleteStatus.No
-                                                                                    && x.ReviewStatus == ReviewStatus.Approval
-                                                                                )
-                                                                                .OrderByDescending(x => x.CreateDate)
-                                                                                .Select(x => x.Id)
-                                                                                .FirstOrDefault();
-                        }
-                        else
-                        {
-                            accountantPaginatesViewModel.AccountantSignGroupId = accountant.AccountantSignGroupJournals
-                                                                                 .Where
-                                                                                 (
-                                                                                        x => x.DeleteStatus == DeleteStatus.No
-                                                                                        && x.ReviewStatus < ReviewStatus.Disabled
-                                                                                 )
-                                                                                 .OrderByDescending(x => x.CreateDate)
-                                                                                 .Select(x => x.Id)
-                                                                                 .FirstOrDefault();
-                        }
-
-                        if(accountantPaginatesViewModel.AccountantSignGroupId > 0)
+                   
+                    if (isTypographicUse)
+                    {
+                        accountantPaginatesViewModel.AccountantSignGroupId = accountant.AccountantSignGroupJournals
+                                                                            .Where
+                                                                            (
+                                                                                x => x.DeleteStatus == DeleteStatus.No
+                                                                                && x.ReviewStatus == ReviewStatus.Approval
+                                                                            )
+                                                                            .OrderByDescending(x => x.CreateDate)
+                                                                            .Select(x => x.Id)
+                                                                            .FirstOrDefault();
+                        if (accountantPaginatesViewModel.AccountantSignGroupId > 0)
                         {
                             accountantPaginatesViewModels.ViewModels.Add(accountantPaginatesViewModel);
                         }
-                        
-                    }                    
+                    }
+                    else
+                    {
+                        accountantPaginatesViewModel.AccountantSignGroupId = accountant.AccountantSignGroupJournals
+                                                                            .Where
+                                                                            (
+                                                                                x => x.DeleteStatus == DeleteStatus.No
+                                                                                && x.ReviewStatus < ReviewStatus.Disabled
+                                                                            )
+                                                                            .OrderByDescending(x => x.CreateDate)
+                                                                            .Select(x => x.Id)
+                                                                            .FirstOrDefault();
+
+                        accountantPaginatesViewModels.ViewModels.Add(accountantPaginatesViewModel);
+                    }
+
+      
                 }
                 accountantPaginatesViewModels.PageNumber = accountantSearch.PageNumber;
                 accountantPaginatesViewModels.PageSize = accountantSearch.PageSize;

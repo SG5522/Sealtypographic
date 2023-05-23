@@ -139,6 +139,10 @@ builder.Services.AddScoped<ITypographicPDFService, TypographicPDFService>();
 builder.Services.AddScoped<ICustomerService, CustomerServiceExtension>();
 builder.Services.AddScoped<ICustomerSealService, CustomerSealServiceExtension>();
 builder.Services.AddScoped<IAccountantService, AccountantServiceExtension>();
+builder.Services.AddScoped<IAccountantSignService, AcoountantSignServiceExtension>();
+builder.Services.AddScoped<ILetterheadService, LetterheadServiceExtension>();
+builder.Services.AddScoped<ILetterheadImageService, LetterheadImageServiceExtension>();
+builder.Services.AddScoped<ITemporarySealService, TemporarySealServiceExtension>();
 #endif
 
 #endregion

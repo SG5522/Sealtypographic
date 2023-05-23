@@ -185,8 +185,13 @@ namespace SealTypographicWebAPI.Config
             CreateMap<LetterheadImageLocationForm, TypographicSealLocation>();
             CreateMap<TemporarySealLocationForm, TypographicSealLocation>();
 
-
-
+            //印鑑與簽印複製使用
+            CreateMap<TypographyResource, TypographyResource>()
+                    .ForMember(x => x.CustomerSealGroup, y => y.Ignore())
+                    .ForMember(x => x.AccountantSignGroup, y => y.Ignore())
+                    .ForMember(x => x.Letterhead, y => y.Ignore())
+                    .ForMember(x => x.TemporarySealGroup, y => y.Ignore())
+                    .ForMember(x => x.Id, y => y.Ignore());
         }
     }
 }

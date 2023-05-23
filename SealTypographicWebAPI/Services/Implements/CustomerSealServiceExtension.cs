@@ -189,6 +189,7 @@ namespace SealTypographicWebAPI.Services.Implements
                         CustomerSeal customerSeal = new()
                         {
                             Sequence = updateSealQuery.Sequence,
+                            //之後需要調整不用轉型
                             SealMappingConfigId = (DBEntities.Consts.CustomerSealType)SealMappingConfigUtil.GetCustomerSealType(updateSealQuery.SubSealType),
                             ImageBase64 = customerSealFormUpdate.ImageBase64
                         };
@@ -339,7 +340,7 @@ namespace SealTypographicWebAPI.Services.Implements
                 {
                     SealType = SealType.Customer,
                     //輸入model之後要修正為新的db
-                    SubSealType = SealMappingConfigUtil.GetSubSealType((CustomerSealType)customerSeal.SealMappingConfigId),
+                    SubSealType = SealMappingConfigUtil.GetSubSealTypeWithCustomer((CustomerSealType)customerSeal.SealMappingConfigId),
                     Sequence = customerSeal.Sequence
                 };
                 //ImageBase64轉圖檔並存到指定資料夾

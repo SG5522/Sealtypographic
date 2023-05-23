@@ -98,6 +98,6 @@ namespace DBEntitiesExtension
         public List<CustomerSealGroup> CustomerSealGroups { get; set; }
 
 
-        public List<TemporarySealGroup> TemporarySealQuarterJournals { get; set; }
+        public List<TemporarySealGroup> TemporarySealGroups { get; set; }
     }
 }

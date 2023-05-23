@@ -138,7 +138,7 @@ namespace Sqlite.Migrations
 
                     b.HasIndex("AccountantId");
 
-                    b.ToTable("AccountantSignGroupJournals");
+                    b.ToTable("AccountantSignGroups");
                 });
 
             modelBuilder.Entity("DBEntities.AccountantSignJournal", b =>
@@ -786,7 +786,7 @@ namespace Sqlite.Migrations
 
                     b.HasIndex("CustomerId");
 
-                    b.ToTable("TemporarySealQuarterJournals");
+                    b.ToTable("TemporarySealGroups");
                 });
 
             modelBuilder.Entity("DBEntities.TypographicPDF", b =>
@@ -1029,7 +1029,7 @@ namespace Sqlite.Migrations
             modelBuilder.Entity("DBEntities.AccountantSignGroupJournal", b =>
                 {
                     b.HasOne("DBEntities.Accountant", "Accountant")
-                        .WithMany("AccountantSignGroupJournals")
+                        .WithMany("AccountantSignGroups")
                         .HasForeignKey("AccountantId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1183,7 +1183,7 @@ namespace Sqlite.Migrations
             modelBuilder.Entity("DBEntities.TemporarySealQuarterJournal", b =>
                 {
                     b.HasOne("DBEntities.Customer", "Customer")
-                        .WithMany("TemporarySealQuarterJournals")
+                        .WithMany("TemporarySealGroups")
                         .HasForeignKey("CustomerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1280,7 +1280,7 @@ namespace Sqlite.Migrations
 
             modelBuilder.Entity("DBEntities.Accountant", b =>
                 {
-                    b.Navigation("AccountantSignGroupJournals");
+                    b.Navigation("AccountantSignGroups");
                 });
 
             modelBuilder.Entity("DBEntities.AccountantGroup", b =>
@@ -1326,7 +1326,7 @@ namespace Sqlite.Migrations
                 {
                     b.Navigation("CustomerSealQuarterJournals");
 
-                    b.Navigation("TemporarySealQuarterJournals");
+                    b.Navigation("TemporarySealGroups");
 
                     b.Navigation("TypographicPDFs");
                 });

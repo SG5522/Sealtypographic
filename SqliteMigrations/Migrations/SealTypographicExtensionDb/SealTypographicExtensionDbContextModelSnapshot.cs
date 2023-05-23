@@ -825,7 +825,7 @@ namespace Sqlite.Migrations.SealTypographicExtensionDb
             modelBuilder.Entity("DBEntitiesExtension.AccountantSignGroup", b =>
                 {
                     b.HasOne("DBEntitiesExtension.Accountant", "Accountant")
-                        .WithMany("AccountantSignGroupJournals")
+                        .WithMany("AccountantSignGroups")
                         .HasForeignKey("AccountantId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -899,7 +899,7 @@ namespace Sqlite.Migrations.SealTypographicExtensionDb
             modelBuilder.Entity("DBEntitiesExtension.TemporarySealGroup", b =>
                 {
                     b.HasOne("DBEntitiesExtension.Customer", "Customer")
-                        .WithMany("TemporarySealQuarterJournals")
+                        .WithMany("TemporarySealGroups")
                         .HasForeignKey("CustomerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1029,7 +1029,7 @@ namespace Sqlite.Migrations.SealTypographicExtensionDb
 
             modelBuilder.Entity("DBEntitiesExtension.Accountant", b =>
                 {
-                    b.Navigation("AccountantSignGroupJournals");
+                    b.Navigation("AccountantSignGroups");
                 });
 
             modelBuilder.Entity("DBEntitiesExtension.AccountantGroup", b =>
@@ -1063,7 +1063,7 @@ namespace Sqlite.Migrations.SealTypographicExtensionDb
                 {
                     b.Navigation("CustomerSealGroups");
 
-                    b.Navigation("TemporarySealQuarterJournals");
+                    b.Navigation("TemporarySealGroups");
 
                     b.Navigation("TypographicPDFs");
                 });

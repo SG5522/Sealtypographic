@@ -213,13 +213,13 @@ namespace SealTypographicWebAPI.Services.Implements
                     }
 
                     //更新及異動的印鑑去除
-                    IQueryable<AccountantSignJournal>? deleteSealQuery = accountantSignGroup.AccountantSignJournals
-                                                                        .Where(x => !accountantSignUpdate.DeleteAccountantSignIds.Contains(x.Id)).AsQueryable();
+                    IQueryable<AccountantSignJournal>? deleteSignQuery = accountantSignGroup.AccountantSignJournals
+                                                                        .Where(x => accountantSignUpdate.DeleteAccountantSignIds.Contains(x.Id)).AsQueryable();
 
-                    foreach (AccountantSignJournal accountantSign in accountantSignGroup.AccountantSignJournals)
+                    foreach (AccountantSignJournal deletesign in deleteSignQuery)
                     {
-                        accountantSign.DeleteStatus = DeleteStatus.Yes;
-                        BaseInputAccountantSignJournal(accountantSign, false, userId);
+                        deletesign.DeleteStatus = DeleteStatus.Yes;
+                        BaseInputAccountantSignJournal(deletesign, false, userId);
                     }
 
                     //新增
@@ -227,7 +227,7 @@ namespace SealTypographicWebAPI.Services.Implements
                     {
                         AccountantSignCheck accountantSignCheck = new()
                         {
-                            AccountantSignCreateDateJournalId = accountantSignGroupJournalQuery.Id,
+                            AccountantSignId = accountantSignGroupJournalQuery.Id,
                             SealMappingConfigId = createAccountantSign.SealMappingConfigId,
                         };
 
@@ -360,7 +360,7 @@ namespace SealTypographicWebAPI.Services.Implements
             AccountantSignJournal? signQuery = dbContext.AccountantSignJournals
                                             .FirstOrDefault
                                             (
-                                                accountantSignJournal => accountantSignJournal.AccountantSignGroupJournal.Id == accountantSignCheck.AccountantSignCreateDateJournalId
+                                                accountantSignJournal => accountantSignJournal.AccountantSignGroupJournal.Id == accountantSignCheck.AccountantSignId
                                                 && accountantSignJournal.ConfigType == accountantSignCheck.SealMappingConfigId
                                                 && accountantSignJournal.DeleteStatus == DeleteStatus.No
                                                 && !DeleteAccountantSignIds.Contains(accountantSignJournal.Id)                                                

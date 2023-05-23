@@ -32,12 +32,36 @@ namespace SealTypographicWebAPI.Utils
         }
 
         /// <summary>
-        /// CustomerSealType轉回SubSealType
+        /// SubSealType轉為AccountantSignType
+        /// </summary>
+        /// <param name="subSealType"></param>
+        /// <returns></returns>
+        public static AccountantSignType GetAccountantSignType(SubSealType subSealType)
+        {
+            switch (subSealType)
+            {
+                case SubSealType.Seal:
+                    return AccountantSignType.Seal;
+                case SubSealType.CHSign:
+                    return AccountantSignType.CHSign;
+                case SubSealType.ENSign:
+                    return AccountantSignType.ENSign;
+                case SubSealType.OldSign:
+                    return AccountantSignType.OldSign;
+                case SubSealType.Other:
+                    return AccountantSignType.Other;
+                default:
+                    throw new ArgumentException("Unhandled subSealType : " + subSealType.ToString());
+            }
+        }
+
+        /// <summary>
+        /// AccountantSignType轉換SubSealType
         /// </summary>
         /// <param name="customerSealType"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentException"></exception>
-        public static SubSealType GetSubSealType(CustomerSealType customerSealType)
+        public static SubSealType GetSubSealTypeWithCustomer(CustomerSealType customerSealType)
         {
             switch (customerSealType)
             {
@@ -52,7 +76,32 @@ namespace SealTypographicWebAPI.Utils
                 case CustomerSealType.Other:
                     return SubSealType.Other;
                 default:
-                    throw new ArgumentException("Unhandled customerSealType : " + customerSealType.ToString());
+                    throw new ArgumentException("Unhandled accountantSignType : " + customerSealType.ToString());
+            }            
+        }
+
+        /// <summary>
+        /// AccountantSignType轉換SubSealType
+        /// </summary>
+        /// <param name="accountantSignType"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentException"></exception>
+        public static SubSealType GetSubSealTypeWithAccountant(AccountantSignType accountantSignType)
+        {
+            switch (accountantSignType)
+            {
+                case AccountantSignType.Seal:
+                    return SubSealType.Seal;
+                case AccountantSignType.CHSign:
+                    return SubSealType.CHSign;
+                case AccountantSignType.ENSign:
+                    return SubSealType.ENSign;
+                case AccountantSignType.OldSign:
+                    return SubSealType.OldSign;
+                case AccountantSignType.Other:
+                    return SubSealType.Other;
+                default:
+                    throw new ArgumentException("Unhandled accountantSignType : " + accountantSignType.ToString());
             }
         }
     }
