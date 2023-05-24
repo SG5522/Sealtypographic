@@ -923,7 +923,7 @@ namespace Sqlite.Migrations
 
                     b.HasIndex("TypographicPageId");
 
-                    b.ToTable("TypographicSealLocations");
+                    b.ToTable("TypographicResourceLocations");
                 });
 
             modelBuilder.Entity("DBEntities.UploadFile", b =>
@@ -1219,31 +1219,31 @@ namespace Sqlite.Migrations
             modelBuilder.Entity("DBEntities.TypographicSealLocation", b =>
                 {
                     b.HasOne("DBEntities.AccountantSignJournal", "AccountantSignJournal")
-                        .WithMany("TypographicSealLocations")
+                        .WithMany("TypographicResourceLocations")
                         .HasForeignKey("AccountantSignJournalId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("DBEntities.CustomerSealJournal", "CustomerSealJournal")
-                        .WithMany("TypographicSealLocations")
+                        .WithMany("TypographicResourceLocations")
                         .HasForeignKey("CustomerSealJournalId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("DBEntities.LetterheadImageJournal", "LetterheadImageJournal")
-                        .WithMany("TypographicSealLocations")
+                        .WithMany("TypographicResourceLocations")
                         .HasForeignKey("LetterheadImageJournalId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("DBEntities.TemporarySealJournal", "TemporarySealJournal")
-                        .WithMany("TypographicSealLocations")
+                        .WithMany("TypographicResourceLocations")
                         .HasForeignKey("TemporarySealJournalId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("DBEntities.TypographicPage", "TypographicPage")
-                        .WithMany("TypographicSealLocations")
+                        .WithMany("TypographicResourceLocations")
                         .HasForeignKey("TypographicPageId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1298,7 +1298,7 @@ namespace Sqlite.Migrations
 
             modelBuilder.Entity("DBEntities.AccountantSignJournal", b =>
                 {
-                    b.Navigation("TypographicSealLocations");
+                    b.Navigation("TypographicResourceLocations");
                 });
 
             modelBuilder.Entity("DBEntities.AccountantSignTemplate", b =>
@@ -1336,7 +1336,7 @@ namespace Sqlite.Migrations
 
             modelBuilder.Entity("DBEntities.CustomerSealJournal", b =>
                 {
-                    b.Navigation("TypographicSealLocations");
+                    b.Navigation("TypographicResourceLocations");
                 });
 
             modelBuilder.Entity("DBEntities.CustomerSealQuarterJournal", b =>
@@ -1356,7 +1356,7 @@ namespace Sqlite.Migrations
 
             modelBuilder.Entity("DBEntities.LetterheadImageJournal", b =>
                 {
-                    b.Navigation("TypographicSealLocations");
+                    b.Navigation("TypographicResourceLocations");
                 });
 
             modelBuilder.Entity("DBEntities.LetterheadImageTemplate", b =>
@@ -1366,7 +1366,7 @@ namespace Sqlite.Migrations
 
             modelBuilder.Entity("DBEntities.TemporarySealJournal", b =>
                 {
-                    b.Navigation("TypographicSealLocations");
+                    b.Navigation("TypographicResourceLocations");
                 });
 
             modelBuilder.Entity("DBEntities.TemporarySealQuarterJournal", b =>
@@ -1381,7 +1381,7 @@ namespace Sqlite.Migrations
 
             modelBuilder.Entity("DBEntities.TypographicPage", b =>
                 {
-                    b.Navigation("TypographicSealLocations");
+                    b.Navigation("TypographicResourceLocations");
                 });
 #pragma warning restore 612, 618
         }

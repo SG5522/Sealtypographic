@@ -138,11 +138,16 @@ builder.Services.AddScoped<ITypographicPDFService, TypographicPDFService>();
 #if DEBUG
 builder.Services.AddScoped<ICustomerService, CustomerServiceExtension>();
 builder.Services.AddScoped<ICustomerSealService, CustomerSealServiceExtension>();
+builder.Services.AddScoped<ICustomerSealReviewService, CustomerSealReviewServiceExtension>();
 builder.Services.AddScoped<IAccountantService, AccountantServiceExtension>();
 builder.Services.AddScoped<IAccountantSignService, AcoountantSignServiceExtension>();
+builder.Services.AddScoped<IAccountantSignReviewService, AccountantSignReviewServiceExtension>();
 builder.Services.AddScoped<ILetterheadService, LetterheadServiceExtension>();
 builder.Services.AddScoped<ILetterheadImageService, LetterheadImageServiceExtension>();
 builder.Services.AddScoped<ITemporarySealService, TemporarySealServiceExtension>();
+builder.Services.AddScoped<ICustomerSealTemplateService, CustomerSealTemplateServiceExtension>();
+builder.Services.AddScoped<IAccountantSignTemplateService, AccountantSignTemplateServiceExtension>();
+builder.Services.AddScoped<ILetterheadImageTemplateService, LetterheadImageTemplateServiceExtension>();
 #endif
 
 #endregion

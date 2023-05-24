@@ -17,14 +17,27 @@ namespace Sqlite.Migrations.SealTypographicExtensionDb
                 {
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    Code = table.Column<string>(type: "TEXT", nullable: false),
-                    BAN = table.Column<string>(type: "TEXT", nullable: true),
                     CreateDate = table.Column<DateTime>(type: "TEXT", nullable: false),
                     UpdateDate = table.Column<DateTime>(type: "TEXT", nullable: false),
                     CreateUserId = table.Column<int>(type: "INTEGER", nullable: false),
                     UpdateUserId = table.Column<int>(type: "INTEGER", nullable: false),
                     DeleteStatus = table.Column<byte>(type: "INTEGER", nullable: false),
-                    Name = table.Column<string>(type: "TEXT", nullable: false)
+                    Name = table.Column<string>(type: "TEXT", nullable: false),
+                    Code = table.Column<string>(type: "TEXT", nullable: false),
+                    ShortName = table.Column<string>(type: "TEXT", nullable: true),
+                    President = table.Column<string>(type: "TEXT", nullable: true),
+                    BAN = table.Column<string>(type: "TEXT", nullable: true),
+                    StockCode = table.Column<string>(type: "TEXT", nullable: true),
+                    PostalCode = table.Column<string>(type: "TEXT", nullable: true),
+                    AddressCity = table.Column<string>(type: "TEXT", nullable: true),
+                    AddressArea = table.Column<string>(type: "TEXT", nullable: true),
+                    AddressStreet = table.Column<string>(type: "TEXT", nullable: true),
+                    AddressLocate = table.Column<string>(type: "TEXT", nullable: true),
+                    ContactName = table.Column<string>(type: "TEXT", nullable: true),
+                    ContactTitle = table.Column<string>(type: "TEXT", nullable: true),
+                    ContactTelephone = table.Column<string>(type: "TEXT", nullable: true),
+                    Telephone = table.Column<string>(type: "TEXT", nullable: true),
+                    Fax = table.Column<string>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -83,6 +96,13 @@ namespace Sqlite.Migrations.SealTypographicExtensionDb
                 {
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
+                    CompanyId = table.Column<int>(type: "INTEGER", nullable: false),
+                    CreateDate = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    UpdateDate = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    CreateUserId = table.Column<int>(type: "INTEGER", nullable: false),
+                    UpdateUserId = table.Column<int>(type: "INTEGER", nullable: false),
+                    DeleteStatus = table.Column<byte>(type: "INTEGER", nullable: false),
+                    Name = table.Column<string>(type: "TEXT", nullable: false),
                     Code = table.Column<string>(type: "TEXT", nullable: false),
                     ShortName = table.Column<string>(type: "TEXT", nullable: true),
                     President = table.Column<string>(type: "TEXT", nullable: true),
@@ -97,14 +117,7 @@ namespace Sqlite.Migrations.SealTypographicExtensionDb
                     ContactTitle = table.Column<string>(type: "TEXT", nullable: true),
                     ContactTelephone = table.Column<string>(type: "TEXT", nullable: true),
                     Telephone = table.Column<string>(type: "TEXT", nullable: true),
-                    Fax = table.Column<string>(type: "TEXT", nullable: true),
-                    CompanyId = table.Column<int>(type: "INTEGER", nullable: false),
-                    CreateDate = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    UpdateDate = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    CreateUserId = table.Column<int>(type: "INTEGER", nullable: false),
-                    UpdateUserId = table.Column<int>(type: "INTEGER", nullable: false),
-                    DeleteStatus = table.Column<byte>(type: "INTEGER", nullable: false),
-                    Name = table.Column<string>(type: "TEXT", nullable: false)
+                    Fax = table.Column<string>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -158,8 +171,8 @@ namespace Sqlite.Migrations.SealTypographicExtensionDb
                     Name = table.Column<string>(type: "TEXT", nullable: false),
                     PageSize = table.Column<int>(type: "INTEGER", nullable: false),
                     PaperOrientation = table.Column<int>(type: "INTEGER", nullable: false),
-                    StackMode = table.Column<int>(type: "INTEGER", nullable: false),
-                    StackShift = table.Column<int>(type: "INTEGER", nullable: false),
+                    StackMode = table.Column<int>(type: "INTEGER", nullable: true),
+                    StackShift = table.Column<int>(type: "INTEGER", nullable: true),
                     ImageViewFullPath = table.Column<string>(type: "TEXT", nullable: false),
                     ThumbnailFullPath = table.Column<string>(type: "TEXT", nullable: false)
                 },
@@ -451,7 +464,7 @@ namespace Sqlite.Migrations.SealTypographicExtensionDb
                 });
 
             migrationBuilder.CreateTable(
-                name: "TypographyResources",
+                name: "TypographicResources",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
@@ -474,41 +487,41 @@ namespace Sqlite.Migrations.SealTypographicExtensionDb
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_TypographyResources", x => x.Id);
+                    table.PrimaryKey("PK_TypographicResources", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_TypographyResources_AccountantSignGroups_AccountantSignGroupId",
+                        name: "FK_TypographicResources_AccountantSignGroups_AccountantSignGroupId",
                         column: x => x.AccountantSignGroupId,
                         principalTable: "AccountantSignGroups",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_TypographyResources_CustomerSealGroups_CustomerSealGroupId",
+                        name: "FK_TypographicResources_CustomerSealGroups_CustomerSealGroupId",
                         column: x => x.CustomerSealGroupId,
                         principalTable: "CustomerSealGroups",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_TypographyResources_Letterheads_LetterheadId",
+                        name: "FK_TypographicResources_Letterheads_LetterheadId",
                         column: x => x.LetterheadId,
                         principalTable: "Letterheads",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_TypographyResources_TemporarySealGroups_TemporarySealGroupId",
+                        name: "FK_TypographicResources_TemporarySealGroups_TemporarySealGroupId",
                         column: x => x.TemporarySealGroupId,
                         principalTable: "TemporarySealGroups",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_TypographyResources_UploadFiles_UploadFileId",
+                        name: "FK_TypographicResources_UploadFiles_UploadFileId",
                         column: x => x.UploadFileId,
                         principalTable: "UploadFiles",
                         principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
-                name: "TypographicSealLocations",
+                name: "TypographicResourceLocations",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    TypographyResourceId = table.Column<int>(type: "INTEGER", nullable: false),
+                    TypographicResourceId = table.Column<int>(type: "INTEGER", nullable: false),
                     Left = table.Column<float>(type: "REAL", nullable: false),
                     Top = table.Column<float>(type: "REAL", nullable: false),
                     Width = table.Column<int>(type: "INTEGER", nullable: false),
@@ -517,17 +530,17 @@ namespace Sqlite.Migrations.SealTypographicExtensionDb
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_TypographicSealLocations", x => x.Id);
+                    table.PrimaryKey("PK_TypographicResourceLocations", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_TypographicSealLocations_TypographicPages_TypographicPageId",
+                        name: "FK_TypographicResourceLocations_TypographicPages_TypographicPageId",
                         column: x => x.TypographicPageId,
                         principalTable: "TypographicPages",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_TypographicSealLocations_TypographyResources_TypographyResourceId",
-                        column: x => x.TypographyResourceId,
-                        principalTable: "TypographyResources",
+                        name: "FK_TypographicResourceLocations_TypographicResources_TypographicResourceId",
+                        column: x => x.TypographicResourceId,
+                        principalTable: "TypographicResources",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -613,38 +626,38 @@ namespace Sqlite.Migrations.SealTypographicExtensionDb
                 column: "UploadFileId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_TypographicSealLocations_TypographicPageId",
-                table: "TypographicSealLocations",
+                name: "IX_TypographicResourceLocations_TypographicPageId",
+                table: "TypographicResourceLocations",
                 column: "TypographicPageId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_TypographicSealLocations_TypographyResourceId",
-                table: "TypographicSealLocations",
-                column: "TypographyResourceId");
+                name: "IX_TypographicResourceLocations_TypographicResourceId",
+                table: "TypographicResourceLocations",
+                column: "TypographicResourceId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_TypographyResources_AccountantSignGroupId",
-                table: "TypographyResources",
+                name: "IX_TypographicResources_AccountantSignGroupId",
+                table: "TypographicResources",
                 column: "AccountantSignGroupId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_TypographyResources_CustomerSealGroupId",
-                table: "TypographyResources",
+                name: "IX_TypographicResources_CustomerSealGroupId",
+                table: "TypographicResources",
                 column: "CustomerSealGroupId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_TypographyResources_LetterheadId",
-                table: "TypographyResources",
+                name: "IX_TypographicResources_LetterheadId",
+                table: "TypographicResources",
                 column: "LetterheadId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_TypographyResources_TemporarySealGroupId",
-                table: "TypographyResources",
+                name: "IX_TypographicResources_TemporarySealGroupId",
+                table: "TypographicResources",
                 column: "TemporarySealGroupId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_TypographyResources_UploadFileId",
-                table: "TypographyResources",
+                name: "IX_TypographicResources_UploadFileId",
+                table: "TypographicResources",
                 column: "UploadFileId");
 
             migrationBuilder.CreateIndex(
@@ -665,7 +678,7 @@ namespace Sqlite.Migrations.SealTypographicExtensionDb
                 name: "TemplateLocations");
 
             migrationBuilder.DropTable(
-                name: "TypographicSealLocations");
+                name: "TypographicResourceLocations");
 
             migrationBuilder.DropTable(
                 name: "Users");
@@ -677,7 +690,7 @@ namespace Sqlite.Migrations.SealTypographicExtensionDb
                 name: "TypographicPages");
 
             migrationBuilder.DropTable(
-                name: "TypographyResources");
+                name: "TypographicResources");
 
             migrationBuilder.DropTable(
                 name: "TypographicPDFs");

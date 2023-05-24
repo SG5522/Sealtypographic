@@ -6,11 +6,11 @@ namespace DBEntitiesExtension
     /// <summary>
     /// 各印鑑簽印排版位置
     /// </summary>
-    public class TypographicSealLocation : BasePageLocation
+    public class TypographicResourceLocation : BasePageLocation
     {
         /// <summary>
         /// 排版素材
         /// </summary>
-        public TypographyResource TypographyResource { get; set; }
+        public TypographicResource TypographicResource { get; set; }
     }
 }

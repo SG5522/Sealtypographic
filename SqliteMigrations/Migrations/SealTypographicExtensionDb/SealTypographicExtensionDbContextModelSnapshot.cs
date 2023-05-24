@@ -152,11 +152,32 @@ namespace Sqlite.Migrations.SealTypographicExtensionDb
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<string>("AddressArea")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("AddressCity")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("AddressLocate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("AddressStreet")
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("BAN")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Code")
                         .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("ContactName")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("ContactTelephone")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("ContactTitle")
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime>("CreateDate")
@@ -168,8 +189,26 @@ namespace Sqlite.Migrations.SealTypographicExtensionDb
                     b.Property<byte>("DeleteStatus")
                         .HasColumnType("INTEGER");
 
+                    b.Property<string>("Fax")
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("Name")
                         .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("PostalCode")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("President")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("ShortName")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("StockCode")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Telephone")
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime>("UpdateDate")
@@ -423,10 +462,10 @@ namespace Sqlite.Migrations.SealTypographicExtensionDb
                     b.Property<int>("PaperOrientation")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("StackMode")
+                    b.Property<int?>("StackMode")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("StackShift")
+                    b.Property<int?>("StackShift")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("ThumbnailFullPath")
@@ -608,40 +647,7 @@ namespace Sqlite.Migrations.SealTypographicExtensionDb
                     b.ToTable("TypographicPages");
                 });
 
-            modelBuilder.Entity("DBEntitiesExtension.TypographicSealLocation", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("Height")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<float>("Left")
-                        .HasColumnType("REAL");
-
-                    b.Property<float>("Top")
-                        .HasColumnType("REAL");
-
-                    b.Property<int>("TypographicPageId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("TypographyResourceId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("Width")
-                        .HasColumnType("INTEGER");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("TypographicPageId");
-
-                    b.HasIndex("TypographyResourceId");
-
-                    b.ToTable("TypographicSealLocations");
-                });
-
-            modelBuilder.Entity("DBEntitiesExtension.TypographyResource", b =>
+            modelBuilder.Entity("DBEntitiesExtension.TypographicResource", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -705,7 +711,40 @@ namespace Sqlite.Migrations.SealTypographicExtensionDb
 
                     b.HasIndex("UploadFileId");
 
-                    b.ToTable("TypographyResources");
+                    b.ToTable("TypographicResources");
+                });
+
+            modelBuilder.Entity("DBEntitiesExtension.TypographicResourceLocation", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("Height")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<float>("Left")
+                        .HasColumnType("REAL");
+
+                    b.Property<float>("Top")
+                        .HasColumnType("REAL");
+
+                    b.Property<int>("TypographicPageId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("TypographicResourceId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("Width")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TypographicPageId");
+
+                    b.HasIndex("TypographicResourceId");
+
+                    b.ToTable("TypographicResourceLocations");
                 });
 
             modelBuilder.Entity("DBEntitiesExtension.UploadFile", b =>
@@ -953,45 +992,26 @@ namespace Sqlite.Migrations.SealTypographicExtensionDb
                     b.Navigation("TypographicPDF");
                 });
 
-            modelBuilder.Entity("DBEntitiesExtension.TypographicSealLocation", b =>
-                {
-                    b.HasOne("DBEntitiesExtension.TypographicPage", "TypographicPage")
-                        .WithMany("TypographicSealLocations")
-                        .HasForeignKey("TypographicPageId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("DBEntitiesExtension.TypographyResource", "TypographyResource")
-                        .WithMany("TypographicSealLocations")
-                        .HasForeignKey("TypographyResourceId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("TypographicPage");
-
-                    b.Navigation("TypographyResource");
-                });
-
-            modelBuilder.Entity("DBEntitiesExtension.TypographyResource", b =>
+            modelBuilder.Entity("DBEntitiesExtension.TypographicResource", b =>
                 {
                     b.HasOne("DBEntitiesExtension.AccountantSignGroup", "AccountantSignGroup")
-                        .WithMany("TypographyResources")
+                        .WithMany("TypographicResources")
                         .HasForeignKey("AccountantSignGroupId");
 
                     b.HasOne("DBEntitiesExtension.CustomerSealGroup", "CustomerSealGroup")
-                        .WithMany("TypographyResources")
+                        .WithMany("TypographicResources")
                         .HasForeignKey("CustomerSealGroupId");
 
                     b.HasOne("DBEntitiesExtension.Letterhead", "Letterhead")
-                        .WithMany("TypographyResources")
+                        .WithMany("TypographicResources")
                         .HasForeignKey("LetterheadId");
 
                     b.HasOne("DBEntitiesExtension.TemporarySealGroup", "TemporarySealGroup")
-                        .WithMany("TypographyResources")
+                        .WithMany("TypographicResources")
                         .HasForeignKey("TemporarySealGroupId");
 
                     b.HasOne("DBEntitiesExtension.UploadFile", "UploadFile")
-                        .WithMany("TypographyResources")
+                        .WithMany("TypographicResources")
                         .HasForeignKey("UploadFileId");
 
                     b.Navigation("AccountantSignGroup");
@@ -1003,6 +1023,25 @@ namespace Sqlite.Migrations.SealTypographicExtensionDb
                     b.Navigation("TemporarySealGroup");
 
                     b.Navigation("UploadFile");
+                });
+
+            modelBuilder.Entity("DBEntitiesExtension.TypographicResourceLocation", b =>
+                {
+                    b.HasOne("DBEntitiesExtension.TypographicPage", "TypographicPage")
+                        .WithMany("TypographicResourceLocations")
+                        .HasForeignKey("TypographicPageId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("DBEntitiesExtension.TypographicResource", "TypographicResource")
+                        .WithMany("TypographicResourceLocations")
+                        .HasForeignKey("TypographicResourceId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("TypographicPage");
+
+                    b.Navigation("TypographicResource");
                 });
 
             modelBuilder.Entity("DBEntitiesExtension.UploadFile", b =>
@@ -1039,7 +1078,7 @@ namespace Sqlite.Migrations.SealTypographicExtensionDb
 
             modelBuilder.Entity("DBEntitiesExtension.AccountantSignGroup", b =>
                 {
-                    b.Navigation("TypographyResources");
+                    b.Navigation("TypographicResources");
                 });
 
             modelBuilder.Entity("DBEntitiesExtension.Company", b =>
@@ -1070,12 +1109,12 @@ namespace Sqlite.Migrations.SealTypographicExtensionDb
 
             modelBuilder.Entity("DBEntitiesExtension.CustomerSealGroup", b =>
                 {
-                    b.Navigation("TypographyResources");
+                    b.Navigation("TypographicResources");
                 });
 
             modelBuilder.Entity("DBEntitiesExtension.Letterhead", b =>
                 {
-                    b.Navigation("TypographyResources");
+                    b.Navigation("TypographicResources");
                 });
 
             modelBuilder.Entity("DBEntitiesExtension.Quarter", b =>
@@ -1094,7 +1133,7 @@ namespace Sqlite.Migrations.SealTypographicExtensionDb
 
             modelBuilder.Entity("DBEntitiesExtension.TemporarySealGroup", b =>
                 {
-                    b.Navigation("TypographyResources");
+                    b.Navigation("TypographicResources");
                 });
 
             modelBuilder.Entity("DBEntitiesExtension.TypographicPDF", b =>
@@ -1104,19 +1143,19 @@ namespace Sqlite.Migrations.SealTypographicExtensionDb
 
             modelBuilder.Entity("DBEntitiesExtension.TypographicPage", b =>
                 {
-                    b.Navigation("TypographicSealLocations");
+                    b.Navigation("TypographicResourceLocations");
                 });
 
-            modelBuilder.Entity("DBEntitiesExtension.TypographyResource", b =>
+            modelBuilder.Entity("DBEntitiesExtension.TypographicResource", b =>
                 {
-                    b.Navigation("TypographicSealLocations");
+                    b.Navigation("TypographicResourceLocations");
                 });
 
             modelBuilder.Entity("DBEntitiesExtension.UploadFile", b =>
                 {
                     b.Navigation("TypographicPDFs");
 
-                    b.Navigation("TypographyResources");
+                    b.Navigation("TypographicResources");
                 });
 #pragma warning restore 612, 618
         }

@@ -10,18 +10,8 @@ namespace DBEntitiesExtension
     /// <summary>
     /// 會計師事務所(公司)
     /// </summary>
-    public class Company : BaseNameData
+    public class Company : BaseDetail
     {
-        /// <summary>
-        /// 公司編號
-        /// </summary>
-        public string Code { get; set; }
-
-        /// <summary>
-        /// 統一編號 (business administration number)
-        /// </summary>
-        public string? BAN { get; set; }
-
         /// <summary>
         /// 客戶資料表
         /// </summary>

@@ -61,13 +61,13 @@ namespace SealTypographicWebAPI.Services.Implements
         {
             LetterheadImageCreateDateViews letterheadImageCreateDateViews = new();
 
-            Letterhead? letterhead = dbContext.Letterheads.Include(x => x.TypographyResources)
+            Letterhead? letterhead = dbContext.Letterheads.Include(x => x.TypographicResources)
                                     .FirstOrDefault(letterhead => letterhead.Id == letterheadId);
 
             if (letterhead != null)
             {
                 letterheadImageCreateDateViews.Name = letterhead.Name;
-                letterheadImageCreateDateViews.CreateDateViews = letterhead.TypographyResources
+                letterheadImageCreateDateViews.CreateDateViews = letterhead.TypographicResources
                                                                 .Where(x => x.DeleteStatus == DeleteStatus.No)
                                                                 .Select(typographyResource => new LetterheadImageCreateDateView()
                                                                 {
@@ -95,7 +95,7 @@ namespace SealTypographicWebAPI.Services.Implements
                 Id = id,
             };
 
-            TypographyResource? typographyResource = dbContext.TypographyResources.FirstOrDefault
+            TypographicResource? typographyResource = dbContext.TypographicResources.FirstOrDefault
                                                                 (
                                                                     x => x.Id == id
                                                                     && x.DeleteStatus == DeleteStatus.No                    
@@ -121,7 +121,7 @@ namespace SealTypographicWebAPI.Services.Implements
             ResponseViewModel response = new();
             Letterhead letterhead = new()
             {
-                TypographyResources = new()
+                TypographicResources = new()
             };
 
             int userId = 1; //以後從帳號驗證取得Id
@@ -138,7 +138,7 @@ namespace SealTypographicWebAPI.Services.Implements
                 letterhead.Name = letterheadImageForm.Name;
                 BaseInputLetterhead(letterhead, true, userId);
 
-                await NewTypographyResource(letterheadImageForm.ImageBase64, letterhead.TypographyResources, imageBase64Info, userId);                
+                await NewTypographyResource(letterheadImageForm.ImageBase64, letterhead.TypographicResources, imageBase64Info, userId);                
 
                 companyQuery.Letterheads.Add(letterhead);
                 dbContext.SaveChanges();
@@ -157,19 +157,19 @@ namespace SealTypographicWebAPI.Services.Implements
             ResponseViewModel response = new();            
             int userId = 1;//之後會從帳號驗證中取得userid
 
-            TypographyResource? updateImageQuery = dbContext.TypographyResources
+            TypographicResource? updateImageQuery = dbContext.TypographicResources
                                                         .Include(typographyResource => typographyResource.Letterhead)
                                                         .ThenInclude(typographyResource => typographyResource.Company)
                                                         .FirstOrDefault(typographyResource => typographyResource.Id == letterheadImageUpdate.Id);            
 
             if (updateImageQuery != null)
             {
-                List<TypographyResource> typographyResources = new();                
+                List<TypographicResource> typographyResources = new();                
                 ImageBase64Info imageBase64Info = imageService.SetImageBase64InfoWithSeal(updateImageQuery.Letterhead.Company.Code, (DBEntities.Consts.SealType)SealType.Letterhead);
 
                 //原圖片狀態變更停用(刪除)
                 updateImageQuery.DeleteStatus = DeleteStatus.Yes;
-                TypographyResourceUtil.BaseInputTypographyResource(updateImageQuery, false, userId);
+                TypographicResourceUtil.BaseInputTypographyResource(updateImageQuery, false, userId);
                 
                 await NewTypographyResource(letterheadImageUpdate.ImageBase64, typographyResources, imageBase64Info, userId);
                 
@@ -177,7 +177,7 @@ namespace SealTypographicWebAPI.Services.Implements
                 updateImageQuery.Letterhead.Name = letterheadImageUpdate.LetterheadName;                                
                 BaseInputLetterhead(updateImageQuery.Letterhead, false, userId);
 
-                updateImageQuery.Letterhead.TypographyResources.AddRange(typographyResources);                
+                updateImageQuery.Letterhead.TypographicResources.AddRange(typographyResources);                
                 dbContext.SaveChanges();
                 response.Success();                
             }
@@ -197,9 +197,9 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <param name="imageBase64Info">圖檔資訊</param>
         /// <param name="userId">使用者Id</param>
         /// <returns></returns>
-        private async Task NewTypographyResource(string imageBase64, List<TypographyResource> typographyResources, ImageBase64Info imageBase64Info, int userId)
+        private async Task NewTypographyResource(string imageBase64, List<TypographicResource> typographyResources, ImageBase64Info imageBase64Info, int userId)
         {
-            TypographyResource typographyResource = new()
+            TypographicResource typographicResource = new()
             {
                 SealType = SealType.Letterhead,
                 //輸入model之後要修正為新的db
@@ -207,11 +207,11 @@ namespace SealTypographicWebAPI.Services.Implements
             };
             //ImageBase64轉圖檔並存到指定資料夾
             imageBase64Info.ImageBase64 = imageBase64;
-            typographyResource.ImageFullPath = await imageService.GetSavedImageFilePath(imageBase64Info);
-            typographyResource.ThumbnailFullPath = await imageService.GetSavedImageThumbnailFilePath(imageBase64Info, true);
+            typographicResource.ImageFullPath = await imageService.GetSavedImageFilePath(imageBase64Info);
+            typographicResource.ThumbnailFullPath = await imageService.GetSavedImageThumbnailFilePath(imageBase64Info, true);
 
-            TypographyResourceUtil.BaseInputTypographyResource(typographyResource, true, userId);
-            typographyResources.Add(typographyResource);
+            TypographicResourceUtil.BaseInputTypographyResource(typographicResource, true, userId);
+            typographyResources.Add(typographicResource);
         }
 
         /// <summary>

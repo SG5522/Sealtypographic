@@ -60,7 +60,7 @@ namespace SealTypographicWebAPI.Services.Implements
             CustomerSealViewModels customerSealViewModels = new();
             
             CustomerSealGroup? customerSealGroup = dbContext.CustomerSealGroups
-                                                    .Include(customerSealGroup => customerSealGroup.TypographyResources)
+                                                    .Include(customerSealGroup => customerSealGroup.TypographicResources)
                                                     .Include(customerSealGroup => customerSealGroup.Quarter)
                                                     .FirstOrDefault
                                                     (
@@ -69,13 +69,13 @@ namespace SealTypographicWebAPI.Services.Implements
                                                                                                                                                                                                         
             if (customerSealGroup != null)
             {
-                List<TypographyResource> customerSeals = customerSealGroup.TypographyResources
+                List<TypographicResource> customerSeals = customerSealGroup.TypographicResources
                                                         .Where(x => x.DeleteStatus == DeleteStatus.No)
                                                         .OrderBy(x => x.SubSealType)
                                                         .ThenBy(x => x.Sequence)
                                                         .ToList();
 
-                foreach (TypographyResource customerSeal in customerSeals)
+                foreach (TypographicResource customerSeal in customerSeals)
                 {
                     CustomerSealViewModel customerSealViewModel = new()
                     {
@@ -105,7 +105,7 @@ namespace SealTypographicWebAPI.Services.Implements
         public async Task<ResponseViewModel> New(CustomerSealForm customerSealForms)
         {
             ResponseViewModel response = new();            
-            List<TypographyResource> typographyResources = new();
+            List<TypographicResource> typographyResources = new();
             int userId = 1; //以後從帳號驗證取得Id
 
             Customer? customerQuery = dbContext.Customers.Include(customer => customer.CustomerSealGroups)
@@ -140,7 +140,7 @@ namespace SealTypographicWebAPI.Services.Implements
                     BaseInputQuarterJournal(customerSealGroup, true, userId);                   
                     await NewTypographyResource(customerSealForms.Seals, typographyResources, imageBase64Info, userId);
 
-                    customerSealGroup.TypographyResources = typographyResources;
+                    customerSealGroup.TypographicResources = typographyResources;
                     customerQuery.CustomerSealGroups.Add(customerSealGroup);                    
                     await dbContext.SaveChangesAsync();
                     response.Success();
@@ -170,7 +170,7 @@ namespace SealTypographicWebAPI.Services.Implements
 
             CustomerSealGroup? customerSealGroup = dbContext.CustomerSealGroups
                                                 .Include(customerSealGroup => customerSealGroup.Customer)
-                                                .Include(customerSealGroup => customerSealGroup.TypographyResources.Where(x => x.DeleteStatus == DeleteStatus.No))
+                                                .Include(customerSealGroup => customerSealGroup.TypographicResources.Where(x => x.DeleteStatus == DeleteStatus.No))
                                                 .FirstOrDefault
                                                 (
                                                     customerSealGroup => customerSealGroup.Id == customerSealUpdate.CustomerSealQuarterId                                                                                                                                                
@@ -183,7 +183,7 @@ namespace SealTypographicWebAPI.Services.Implements
                 //修改印鑑(更新ID移入DeleteCustomerSealIds，更新的資料移入CreateCustomerSeals，之後下一階段調整輸入時要拔掉此項)
                 foreach (CustomerSealUpdateForm customerSealFormUpdate in customerSealUpdate.UpdateCustomerSeals)
                 {                    
-                    TypographyResource? updateSealQuery = customerSealGroup.TypographyResources.FirstOrDefault(x => x.Id == customerSealFormUpdate.Id);                    
+                    TypographicResource? updateSealQuery = customerSealGroup.TypographicResources.FirstOrDefault(x => x.Id == customerSealFormUpdate.Id);                    
                     if (updateSealQuery != null)
                     {
                         CustomerSeal customerSeal = new()
@@ -209,19 +209,19 @@ namespace SealTypographicWebAPI.Services.Implements
                 }
 
                 //刪除印鑑
-                IQueryable<TypographyResource>? deleteSealQuery = customerSealGroup.TypographyResources
+                IQueryable<TypographicResource>? deleteSealQuery = customerSealGroup.TypographicResources
                                                                   .Where(x => customerSealUpdate.DeleteCustomerSealIds.Contains(x.Id)).AsQueryable();
                 if (deleteSealQuery.Any())
                 {
-                    foreach (TypographyResource deleteSeal in deleteSealQuery)
+                    foreach (TypographicResource deleteSeal in deleteSealQuery)
                     {
                         //原印鑑刪除(Hide)
                         deleteSeal.DeleteStatus = DeleteStatus.Yes;
-                        TypographyResourceUtil.BaseInputTypographyResource(deleteSeal, false, userId);
+                        TypographicResourceUtil.BaseInputTypographyResource(deleteSeal, false, userId);
                     }
                 }
                 //新增印鑑     
-                await NewTypographyResource(customerSealUpdate.CreateCustomerSeals, customerSealGroup.TypographyResources, imageBase64Info, userId);
+                await NewTypographyResource(customerSealUpdate.CreateCustomerSeals, customerSealGroup.TypographicResources, imageBase64Info, userId);
                            
                 //無任何回傳訊息(錯誤訊息)就更新資料庫
                 if (!responseViewModels.Any())
@@ -332,11 +332,11 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <param name="imageBase64Info">圖檔資訊</param>
         /// <param name="userId">使用者Id</param>
         /// <returns></returns>
-        private async Task NewTypographyResource(List<CustomerSeal> formseals, List<TypographyResource> typographyResources, ImageBase64Info imageBase64Info, int userId)
+        private async Task NewTypographyResource(List<CustomerSeal> formseals, List<TypographicResource> typographyResources, ImageBase64Info imageBase64Info, int userId)
         {
             foreach (CustomerSeal customerSeal in formseals)
             {
-                TypographyResource typographyResource = new()
+                TypographicResource typographyResource = new()
                 {
                     SealType = SealType.Customer,
                     //輸入model之後要修正為新的db
@@ -348,7 +348,7 @@ namespace SealTypographicWebAPI.Services.Implements
                 typographyResource.ImageFullPath = await imageService.GetSavedImageFilePath(imageBase64Info);
                 typographyResource.ThumbnailFullPath = await imageService.GetSavedImageThumbnailFilePath(imageBase64Info, true);
 
-                TypographyResourceUtil.BaseInputTypographyResource(typographyResource, true, userId);
+                TypographicResourceUtil.BaseInputTypographyResource(typographyResource, true, userId);
                 typographyResources.Add(typographyResource);
             }
         }

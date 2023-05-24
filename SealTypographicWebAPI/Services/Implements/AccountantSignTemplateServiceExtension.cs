@@ -1,0 +1,336 @@
+﻿using AutoMapper;
+using DBEntitiesExtension;
+using DBEntitiesExtension.Consts;
+using Microsoft.EntityFrameworkCore;
+using SealTypographicWebAPI.Models;
+using SealTypographicWebAPI.Models.AccountantSignTemplate;
+using SealTypographicWebAPI.Models.BaseModels;
+using SealTypographicWebAPI.Utils;
+using Serilog;
+
+namespace SealTypographicWebAPI.Services.Implements
+{
+    /// <summary>
+    /// 會計師簽印樣板管理
+    /// </summary>
+    public class AccountantSignTemplateServiceExtension : IAccountantSignTemplateService
+    {
+        private readonly SealTypographicExtensionDbContext dbContext;
+        private readonly ImageService imageService;        
+        private readonly IMapper mapper;
+
+        /// <summary>
+        /// 建構
+        /// </summary>
+        /// <param name="dbContext">EF Core SealTypographic DbContext</param>        
+        /// <param name="mapper">AutoMapper</param>
+        /// <param name="ImageService">取得圖像資料</param>        
+        public AccountantSignTemplateServiceExtension(SealTypographicExtensionDbContext dbContext, IMapper mapper, ImageService ImageService)
+        {
+            this.dbContext = dbContext;
+            this.mapper = mapper;
+            this.imageService = ImageService;
+        }
+
+        /// <summary>
+        /// 會計師簽印樣本詳細
+        /// </summary>
+        /// <returns></returns>
+        public AccountantSignTemplateDetailViewModel GetDetail(int Id)
+        {
+            AccountantSignTemplateDetailViewModel accountantSignTemplateDetailViewModel = new ();
+
+            Template? templateQuery = dbContext.Templates
+                                                    .Include(x => x.TemplateLocations)
+                                                    .FirstOrDefault(x => x.Id == Id);
+
+            if(templateQuery != null) 
+            {
+                accountantSignTemplateDetailViewModel = mapper.Map<AccountantSignTemplateDetailViewModel>(templateQuery);
+                accountantSignTemplateDetailViewModel.LocaltionViewModels = mapper.Map<List<AccountantSignTemplateLocationViewModel>>(templateQuery.TemplateLocations);
+                accountantSignTemplateDetailViewModel.Success();
+            }
+
+            return accountantSignTemplateDetailViewModel;
+        }
+
+        /// <summary>
+        /// 會計師簽印樣板圖片顯示
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public AccountantSignTemplateImageView GetImage(int id)
+        {
+            AccountantSignTemplateImageView viewImage = new();
+
+            string? imagePath = dbContext.Templates.Where(x => x.Id == id)
+                                                   .Select(x => x.ImageViewFullPath).FirstOrDefault();
+
+            if (imagePath != null)
+            {
+                viewImage.ImageBase64 = imageService.GetPathToBase64(imagePath);
+                viewImage.Success();
+            }
+            return viewImage;
+        }
+
+        /// <summary>
+        /// 會計師簽印樣板分頁顯示
+        /// </summary>
+        /// <param name="accountantSignTemplateSearch">會計師簽印樣板分頁搜尋</param>
+        /// <returns></returns>
+        public AccountantSignTemplatePaginate GetPaginate(AccountantSignTemplateSearch accountantSignTemplateSearch)
+        {
+            AccountantSignTemplatePaginate accountantSignTemplatePaginate = new ();            
+            int companyId = 1;
+
+            IQueryable<Template> templateQuery = dbContext.Templates
+                                                .Where
+                                                (
+                                                    template => template.Company.Id == companyId
+                                                    && template.DeleteStatus == DeleteStatus.No
+                                                    && template.TemplateLocations.Any(x => x.SealType == SealType.Accountant)
+                                                );
+
+            if (!string.IsNullOrEmpty(accountantSignTemplateSearch.KeyWord))
+            {
+                templateQuery = templateQuery.Where
+                                (
+                                    accountantSignTemplate => accountantSignTemplate.Name.Contains(accountantSignTemplateSearch.KeyWord)                
+                                );
+            }
+            templateQuery = templateQuery.OrderBy(temporarySealGroup => temporarySealGroup.Id);
+
+            if (templateQuery.Any())
+            {
+                accountantSignTemplatePaginate.ViewModels = LoadPaginatedData(templateQuery, accountantSignTemplateSearch.PageNumber, accountantSignTemplateSearch.PageSize);
+                accountantSignTemplatePaginate.PageNumber = accountantSignTemplateSearch.PageNumber;
+                accountantSignTemplatePaginate.PageSize = accountantSignTemplateSearch.PageSize;
+                //計算總頁數
+                accountantSignTemplatePaginate.TotalPage = TotalPageUtil.GetTotalPage(templateQuery.Count(), accountantSignTemplateSearch.PageSize);
+                accountantSignTemplatePaginate.TotalCount = templateQuery.Count();
+                accountantSignTemplatePaginate.Success();
+            }
+            SavePaginateLog(accountantSignTemplatePaginate);
+            return accountantSignTemplatePaginate;
+        }
+
+        /// <summary>
+        /// 取得樣板分頁(排板使用)
+        /// </summary>
+        /// <returns></returns>
+        public AccountantSignTemplatePaginate GetPaginateWithTypographic(PaginateSearch paginateSearch)
+        {
+            AccountantSignTemplatePaginate accountantSignTemplatePaginate = new();
+            int companyId = 1;
+
+            IQueryable<Template> templateQuery = dbContext.Templates.Where
+                                                                   (
+                                                                       accountantSignTemplate => accountantSignTemplate.Company.Id == companyId
+                                                                       && accountantSignTemplate.DeleteStatus == DeleteStatus.No
+                                                                   ).OrderBy(accountantSignTemplate => accountantSignTemplate.Id);
+
+            if (templateQuery.Any())
+            {
+                accountantSignTemplatePaginate.ViewModels = LoadPaginatedData(templateQuery, paginateSearch.PageNumber, paginateSearch.PageSize);
+                accountantSignTemplatePaginate.PageNumber = paginateSearch.PageNumber;
+                accountantSignTemplatePaginate.PageSize = paginateSearch.PageSize;
+                //計算總頁數
+                accountantSignTemplatePaginate.TotalPage = TotalPageUtil.GetTotalPage(templateQuery.Count(), paginateSearch.PageSize);
+                accountantSignTemplatePaginate.TotalCount = templateQuery.Count();
+                accountantSignTemplatePaginate.Success();
+            }
+            SavePaginateLog(accountantSignTemplatePaginate);
+            return accountantSignTemplatePaginate;
+        }
+
+        /// <summary>
+        /// 新增會計師簽印樣板
+        /// </summary>
+        /// <param name="accountantSignTemplateForm">會計師簽印樣板</param>
+        /// <returns></returns>
+        public async Task<ResponseViewModel> New(AccountantSignTemplateForm accountantSignTemplateForm)
+        {
+            ResponseViewModel response = new();            
+            int userid = 0; //帳號驗證取得ID
+            int companyId = 1; //公司ID
+
+            //尋找公司並與會計師簽印關聯
+            Company? companyQuery = dbContext.Companys
+                                    .Include(x => x.Templates)
+                                    .FirstOrDefault(x => x.Id == companyId);
+
+            if (companyQuery != null) 
+            {
+                Template template = mapper.Map<Template>(accountantSignTemplateForm);
+                List<TemplateLocation> templateLocations = new();
+                //儲存圖片(原圖)
+                ImageBase64Info imageBase64Info = imageService.SetImageBase64InfoWithTemplate(companyQuery.Code, (DBEntities.Consts.SealType)SealType.Accountant);
+                imageBase64Info.ImageBase64 = accountantSignTemplateForm.ImageBase64;
+                template.ImageViewFullPath = await imageService.GetSavedImageFilePath(imageBase64Info);
+                //儲存縮圖
+                imageBase64Info.ImageBase64 = accountantSignTemplateForm.ImageBase64Thumbnail;
+                template.ThumbnailFullPath = await imageService.GetSavedImageThumbnailFilePath(imageBase64Info, false);
+                
+                NewTemplateLoction(accountantSignTemplateForm.AccountantSignTemplateLocationForms, templateLocations);
+                BaseInputAccountantSignTemplate(template, true, userid);
+                template.TemplateLocations = templateLocations;
+                companyQuery.Templates.Add(template);
+
+                await dbContext.SaveChangesAsync();
+                response.Success();
+            }
+            return response;
+        }
+
+        /// <summary>
+        /// 更新會計師簽印樣板
+        /// </summary>        
+        /// <param name="accountantSignTemplateUpdateForm">會計師簽印樣板</param>
+        /// <returns></returns>
+        public async Task<ResponseViewModel> Update(AccountantSignTemplateUpdateForm accountantSignTemplateUpdateForm)
+        {
+            ResponseViewModel response = new ();
+            int userid = 1;
+            Template? templateQuery = dbContext.Templates.Include(x => x.TemplateLocations)
+                                                                       .Include(x => x.Company)
+                                                                       .FirstOrDefault(x => x.Id == accountantSignTemplateUpdateForm.Id);
+
+            if (templateQuery != null)
+            {
+                //儲存圖片(原圖)                
+                await imageService.SaveImageAsync(accountantSignTemplateUpdateForm.ImageBase64, templateQuery.ImageViewFullPath, false);
+                //儲存縮圖                
+                await imageService.SaveImageAsync(accountantSignTemplateUpdateForm.ImageBase64Thumbnail, templateQuery.ThumbnailFullPath, false);
+
+                mapper.Map(accountantSignTemplateUpdateForm, templateQuery);
+                BaseInputAccountantSignTemplate(templateQuery, false, userid);
+
+                //刪除樣本座標
+                foreach (int deleteLocationId in accountantSignTemplateUpdateForm.DeleteLocationIds)
+                {
+                    TemplateLocation? templateLocation = templateQuery.TemplateLocations.FirstOrDefault(x => x.Id == deleteLocationId);
+                    if (templateLocation != null)
+                    {
+                        templateQuery.TemplateLocations.Remove(templateLocation);                        
+                    }
+                }
+                //修改樣本座標
+                foreach (AccountantSignTemplateLocationUpdateForm locationUpdateForm in accountantSignTemplateUpdateForm.LocationUpdateForms)
+                {
+                    TemplateLocation? templateLocation = templateQuery.TemplateLocations.FirstOrDefault(x => x.Id == locationUpdateForm.Id);
+                    if(templateLocation != null) 
+                    {
+                        mapper.Map(locationUpdateForm, templateLocation);
+                        templateLocation.SealType = SealType.Accountant;
+                        //之後要調整為不用轉型
+                        templateLocation.SubSealType = SealMappingConfigUtil.GetSubSealTypeWithAccountant((AccountantSignType)locationUpdateForm.AccountantSignType);
+                    }
+                }
+                //新增樣本座標
+                NewTemplateLoction(accountantSignTemplateUpdateForm.LocationForms, templateQuery.TemplateLocations);
+
+                await dbContext.SaveChangesAsync();
+                response.Success();
+            }           
+            return response;
+        }
+
+        /// <summary>
+        /// 刪除會計師簽印樣板
+        /// </summary>
+        /// <param name="Id">會計師簽印樣板Id</param>
+        /// <returns></returns>
+        public ResponseViewModel Delete (int Id)
+        {
+            ResponseViewModel response = new();
+            int userId = 0;
+
+            Template? templateQuery = dbContext.Templates.Find(Id);
+
+            if(templateQuery != null) 
+            {
+                templateQuery.DeleteStatus = DeleteStatus.Yes;
+                BaseInputAccountantSignTemplate(templateQuery, false, userId);
+                dbContext.SaveChanges();
+                response.Success();
+            }
+            else
+            {
+                response.DeleteAccountantSignTemplateNoData();
+            }
+            return response;
+        }
+
+        /// <summary>
+        /// 讀取分頁資料
+        /// </summary>        
+        /// <param name="templateQuery">樣板</param>
+        /// <param name="pageNumber">頁次</param>
+        /// <param name="pageSize">頁面大小</param>        
+        private List<AccountantSignTemplateViewModel> LoadPaginatedData(IQueryable<Template> templateQuery, int pageNumber, int pageSize)
+        {
+            return
+                templateQuery
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .Select(accountantSignTemplate => new AccountantSignTemplateViewModel()
+                {
+                    Id = accountantSignTemplate.Id,
+                    Name = accountantSignTemplate.Name,
+                    ImageFullPath = accountantSignTemplate.ThumbnailFullPath,
+                    ThumbnailBase64 = imageService.GetPathToBase64(accountantSignTemplate.ThumbnailFullPath)
+                })
+                .ToList();
+        }
+
+        /// <summary>
+        /// 紀錄分頁Log
+        /// </summary>
+        /// <param name="accountantSignTemplatePaginate"></param>
+        private void SavePaginateLog(AccountantSignTemplatePaginate accountantSignTemplatePaginate)
+        {
+            AccountantSignTemplatePaginateLog accountantSignTemplatePaginateLog = mapper.Map<AccountantSignTemplatePaginateLog>(accountantSignTemplatePaginate);
+            accountantSignTemplatePaginateLog.LogModels = mapper.Map<List<AccountantSignTemplateLogModel>>(accountantSignTemplatePaginate.ViewModels);
+            Log.Information("AccountantSignTemplate paginate output {@Output}", accountantSignTemplatePaginateLog);
+        }
+
+        /// <summary>
+        /// 資料新增修改時基本資料輸入
+        /// </summary>
+        /// <param name="template">DB上的樣板資料</param>
+        /// <param name="isCreate">確認是否新增還是更新的動作</param>
+        /// <param name="userid">使用者ID</param>
+        private static void BaseInputAccountantSignTemplate(Template template, bool isCreate, int userid)
+        {
+            if (isCreate)
+            {
+                template.CreateUserId = userid;
+                template.CreateDate = DateTime.Now;
+                template.DeleteStatus = DeleteStatus.No;
+            }
+            else
+            {
+                template.UpdateUserId = userid;
+                template.UpdateDate = DateTime.Now;
+            }
+        }
+
+        /// <summary>
+        /// 新增樣版位置
+        /// </summary>
+        /// <param name="accountantSignTemplateLocationForms"></param>
+        /// <param name="templateLocations"></param>
+        private void NewTemplateLoction(List<AccountantSignTemplateLocationForm> accountantSignTemplateLocationForms, List<TemplateLocation> templateLocations)
+        {
+            foreach (AccountantSignTemplateLocationForm accountantSignTemplateLocationForm in accountantSignTemplateLocationForms)
+            {
+                TemplateLocation templateLocation = mapper.Map<TemplateLocation>(accountantSignTemplateLocationForm);
+                templateLocation.SealType = SealType.Accountant;
+                //之後要調整為不用轉型
+                templateLocation.SubSealType = SealMappingConfigUtil.GetSubSealTypeWithAccountant((AccountantSignType)accountantSignTemplateLocationForm.AccountantSignType);
+                templateLocations.Add(templateLocation);
+            }
+        }
+    }
+}

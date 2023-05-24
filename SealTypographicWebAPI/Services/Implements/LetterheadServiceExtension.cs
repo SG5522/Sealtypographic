@@ -39,7 +39,7 @@ namespace SealTypographicWebAPI.Services.Implements
             ResponseViewModel response = new();
 
             IQueryable<Letterhead> letterheadQuery = dbContext.Letterheads.Where(letterhead => letterhead.DeleteStatus == DeleteStatus.No)
-                                                    .Include(letterhead => letterhead.TypographyResources);
+                                                    .Include(letterhead => letterhead.TypographicResources);
 
             if (!string.IsNullOrWhiteSpace(letterheadSearch.Name))
             {
@@ -63,9 +63,9 @@ namespace SealTypographicWebAPI.Services.Implements
                 {
                     LetterheadViewModel letterheadViewModel = mapper.Map<LetterheadViewModel>(letterheadData);
 
-                    if (letterheadData.TypographyResources.Count > 0)
+                    if (letterheadData.TypographicResources.Count > 0)
                     {
-                        letterheadViewModel.LetterheadImageId = dbContext.TypographyResources.Where
+                        letterheadViewModel.LetterheadImageId = dbContext.TypographicResources.Where
                                                                 (
                                                                     x => x.Letterhead.Id == letterheadData.Id
                                                                     && x.Letterhead.Status == LetterheadImageStatus.Enable
@@ -98,7 +98,7 @@ namespace SealTypographicWebAPI.Services.Implements
         {
             ResponseViewModel response = new();
             int userId = 0;//帳號驗證取得Id
-            Letterhead? letterheadQuery = dbContext.Letterheads.Include(x => x.TypographyResources)
+            Letterhead? letterheadQuery = dbContext.Letterheads.Include(x => x.TypographicResources)
                                           .FirstOrDefault(x => x.Id == id);
 
             if (letterheadQuery != null)
@@ -107,9 +107,9 @@ namespace SealTypographicWebAPI.Services.Implements
                 letterheadQuery.Status = LetterheadImageStatus.Disabled; //應該用不到之後移除或是未來需要審查時在來調整。
                 BaseInputLetterhead(letterheadQuery, false, userId);
 
-                foreach(TypographyResource typographyResource in letterheadQuery.TypographyResources)
+                foreach(TypographicResource typographicResource in letterheadQuery.TypographicResources)
                 {
-                    typographyResource.DeleteStatus = DeleteStatus.Yes;                    
+                    typographicResource.DeleteStatus = DeleteStatus.Yes;                    
                 }
                 
                 dbContext.SaveChanges();

@@ -6,7 +6,7 @@ namespace DBEntitiesExtension
     /// <summary>
     /// 排版資源
     /// </summary>
-    public class TypographyResource : BaseSeal
+    public class TypographicResource : BaseSeal
     {
         /// <summary>
         /// 印鑑編號(排序)
@@ -51,7 +51,7 @@ namespace DBEntitiesExtension
         /// <summary>
         /// 各印鑑簽印排版位置
         /// </summary>
-        public List<TypographicSealLocation> TypographicSealLocations { get; set; }
+        public List<TypographicResourceLocation> TypographicResourceLocations { get; set; }
 
     }
 }

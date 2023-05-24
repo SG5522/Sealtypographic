@@ -13,6 +13,6 @@
         /// <summary>
         /// 縮圖路徑
         /// </summary>
-        public string? ThumbnailFullPath { get; set; }
+        public string?ThumbnailFullPath { get; set; }
     }
 }

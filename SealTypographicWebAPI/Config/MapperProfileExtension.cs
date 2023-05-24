@@ -35,17 +35,21 @@ namespace SealTypographicWebAPI.Config
                     .ForMember(x => x.ImageBase64, y => y.Ignore()) // <---imagebase64要額外處理所以要忽略                    
                     .ReverseMap();
 
-            CreateMap<CustomerSeal, TypographyResource>()
+            CreateMap<CustomerSeal, TypographicResource>()
                     .ForMember(x => x.ImageFullPath, y => y.Ignore()) // <---ImagePath要額外處理所以要忽略                    
                     .ReverseMap();
                
-            CreateMap<CustomerSealUpdateForm, TypographyResource>()
+            CreateMap<CustomerSealViewModel, TypographicResource>()
+                    .ForMember(x => x.ImageFullPath, y => y.Ignore()) // <---ImagePath要額外處理所以要忽略  
+                    .ReverseMap();
+
+            CreateMap<CustomerSealUpdateForm, TypographicResource>()
                     .ForMember(x => x.ImageFullPath, y => y.Ignore()) // <---ImagePath要額外處理所以要忽略
                     .ReverseMap();
 
             //客戶印鑑序號確認用
             CreateMap<CustomerSeal, CustomerSealSequenceCheck>();            
-            CreateMap<TypographyResource, CustomerSealSequenceCheck>();
+            CreateMap<TypographicResource, CustomerSealSequenceCheck>();
 
 
             //客戶印鑑季度審核清單
@@ -86,20 +90,20 @@ namespace SealTypographicWebAPI.Config
             //會計師群組
             CreateMap<AccountantGroup, AccountantGroupViewModel>();            
             CreateMap<AccountantGroupForm, AccountantGroup>();
-            CreateMap<AccountantGroupUpdateForm,AccountantGroup>();            
+            CreateMap<AccountantGroupUpdateForm, AccountantGroup>();            
 
             //會計師印鑑
-            CreateMap<TypographyResource, AccountantSignViewModel>()                    
+            CreateMap<TypographicResource, AccountantSignViewModel>()                    
                     .ForMember(x => x.ImageBase64, y => y.Ignore()) // <---imagebase64要額外處理所以要忽略
                     .ReverseMap();
             
             CreateMap<AccountantSignGroup, AccountantSignViewModel>();
 
-            CreateMap<AccountantSign, TypographyResource>()
+            CreateMap<AccountantSign, TypographicResource>()
                     .ForMember(x => x.ImageFullPath, y => y.Ignore()) // <---imagebase64要額外處理所以要忽略
                     .ReverseMap();
 
-            CreateMap<AccountantSignUpdateForm, TypographyResource>()
+            CreateMap<AccountantSignUpdateForm, TypographicResource>()
                     .ForMember(x => x.ImageFullPath, y => y.Ignore()) // <---imagebase64要額外處理所以要忽略
                     .ReverseMap();
 
@@ -180,13 +184,13 @@ namespace SealTypographicWebAPI.Config
                 .ForMember(x => x.FullPath, y => y.Ignore());
 
             CreateMap<TypographicPageForm, TypographicPage>();
-            CreateMap<CustomerSealLocationForm, TypographicSealLocation>();
-            CreateMap<AccountantSingLocationForm, TypographicSealLocation>();
-            CreateMap<LetterheadImageLocationForm, TypographicSealLocation>();
-            CreateMap<TemporarySealLocationForm, TypographicSealLocation>();
+            CreateMap<CustomerSealLocationForm, TypographicResourceLocation>();
+            CreateMap<AccountantSingLocationForm, TypographicResourceLocation>();
+            CreateMap<LetterheadImageLocationForm, TypographicResourceLocation>();
+            CreateMap<TemporarySealLocationForm, TypographicResourceLocation>();
 
             //印鑑與簽印複製使用
-            CreateMap<TypographyResource, TypographyResource>()
+            CreateMap<TypographicResource, TypographicResource>()
                     .ForMember(x => x.CustomerSealGroup, y => y.Ignore())
                     .ForMember(x => x.AccountantSignGroup, y => y.Ignore())
                     .ForMember(x => x.Letterhead, y => y.Ignore())

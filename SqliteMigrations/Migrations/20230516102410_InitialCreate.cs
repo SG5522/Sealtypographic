@@ -610,7 +610,7 @@ namespace Sqlite.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "TypographicSealLocations",
+                name: "TypographicResourceLocations",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
@@ -757,27 +757,27 @@ namespace Sqlite.Migrations
 
             migrationBuilder.CreateIndex(
                 name: "IX_TypographicSealLocations_AccountantSignJournalId",
-                table: "TypographicSealLocations",
+                table: "TypographicResourceLocations",
                 column: "AccountantSignJournalId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_TypographicSealLocations_CustomerSealJournalId",
-                table: "TypographicSealLocations",
+                table: "TypographicResourceLocations",
                 column: "CustomerSealJournalId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_TypographicSealLocations_LetterheadImageJournalId",
-                table: "TypographicSealLocations",
+                table: "TypographicResourceLocations",
                 column: "LetterheadImageJournalId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_TypographicSealLocations_TemporarySealJournalId",
-                table: "TypographicSealLocations",
+                table: "TypographicResourceLocations",
                 column: "TemporarySealJournalId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_TypographicSealLocations_TypographicPageId",
-                table: "TypographicSealLocations",
+                table: "TypographicResourceLocations",
                 column: "TypographicPageId");
 
             migrationBuilder.CreateIndex(
@@ -804,7 +804,7 @@ namespace Sqlite.Migrations
                 name: "LetterheadImageTemplateLocations");
 
             migrationBuilder.DropTable(
-                name: "TypographicSealLocations");
+                name: "TypographicResourceLocations");
 
             migrationBuilder.DropTable(
                 name: "UploadFiles");

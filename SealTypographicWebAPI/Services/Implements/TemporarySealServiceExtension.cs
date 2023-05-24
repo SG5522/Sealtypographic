@@ -45,7 +45,7 @@ namespace SealTypographicWebAPI.Services.Implements
             TemporarySealDetailLogModel logModel = new();
 
             TemporarySealDetailViewModel? temporarySealGroup = dbContext.TemporarySealGroups.AsNoTracking()
-                                                                .Include(temporarySealGroup => temporarySealGroup.TypographyResources)
+                                                                .Include(temporarySealGroup => temporarySealGroup.TypographicResources)
                                                                 .Include(temporarySealGroup => temporarySealGroup.Customer)
                                                                 .Where(temporarySealGroup => temporarySealGroup.Id == temporaryId)                                                                                    
                                                                 .Select(
@@ -53,7 +53,7 @@ namespace SealTypographicWebAPI.Services.Implements
                                                                     {
                                                                         CustomerId = x.Customer.Id,
                                                                         CustomerName = x.Customer.Name,
-                                                                        ViewModels = x.TypographyResources
+                                                                        ViewModels = x.TypographicResources
                                                                         .Where(x => x.DeleteStatus == DeleteStatus.No)
                                                                         .Select(x => new TemporarySealViewModel() 
                                                                         { 
@@ -150,13 +150,13 @@ namespace SealTypographicWebAPI.Services.Implements
 
             Customer? customerQuery = dbContext.Customers
                                     .Include(customer => customer.TemporarySealGroups)                                    
-                                    .ThenInclude(temporarySealGroup => temporarySealGroup.TypographyResources)
+                                    .ThenInclude(temporarySealGroup => temporarySealGroup.TypographicResources)
                                     .FirstOrDefault(customer => customer.Id == temporarySealForm.CustomerId);
             
             if (customerQuery != null) 
             {
                 TemporarySealGroup temporarySealGroup = new();
-                List<TypographyResource> typographyResources = new();                
+                List<TypographicResource> typographicResources = new();                
                 ImageBase64Info imageBase64Info = imageService.SetImageBase64InfoWithSeal(customerQuery.Code, (DBEntities.Consts.SealType)SealType.TemporarySeal);
                 int userId = 0;
                 //之後輸入要從前端提供Id
@@ -169,9 +169,9 @@ namespace SealTypographicWebAPI.Services.Implements
 
                 BaseInputTemporarySealGroup(temporarySealGroup, true, userId);
 
-                await NewTypographyResource(temporarySealForm.Seals, typographyResources, imageBase64Info, userId);
+                await NewTypographyResource(temporarySealForm.Seals, typographicResources, imageBase64Info, userId);
 
-                temporarySealGroup.TypographyResources = typographyResources;
+                temporarySealGroup.TypographicResources = typographicResources;
                 customerQuery.TemporarySealGroups.Add(temporarySealGroup);                             
                 dbContext.SaveChanges();
                 response.Success();
@@ -193,7 +193,7 @@ namespace SealTypographicWebAPI.Services.Implements
             int userId = 0;
             TemporarySealGroup? temporarySealGroup = dbContext.TemporarySealGroups
                                                             .Include(temporarySealQuarterJournal => temporarySealQuarterJournal.Customer)
-                                                            .Include(temporarySealQuarterJournal => temporarySealQuarterJournal.TypographyResources)
+                                                            .Include(temporarySealQuarterJournal => temporarySealQuarterJournal.TypographicResources)
                                                             .FirstOrDefault(temporarySealGroup => temporarySealGroup.Id == temporarySealUpdateForm.Id);
             if(temporarySealGroup != null)
             {                
@@ -202,7 +202,7 @@ namespace SealTypographicWebAPI.Services.Implements
                 //更新臨時章印鑑組
                 foreach (TemporarySealUpdate temporarySealUpdate in temporarySealUpdateForm.SealsToUpdate)
                 {
-                    TypographyResource? temporarySealJournalQuery = temporarySealGroup.TypographyResources.FirstOrDefault(x => x.Id == temporarySealUpdate.Id);
+                    TypographicResource? temporarySealJournalQuery = temporarySealGroup.TypographicResources.FirstOrDefault(x => x.Id == temporarySealUpdate.Id);
                     if(temporarySealJournalQuery != null)
                     {
                         imageBase64Info.ImageBase64 = temporarySealUpdate.ImageBase64;
@@ -225,18 +225,18 @@ namespace SealTypographicWebAPI.Services.Implements
                 }
 
                 //找出需要刪除&更新的臨時章
-                IQueryable<TypographyResource> deleteSeals = temporarySealGroup.TypographyResources
+                IQueryable<TypographicResource> deleteSeals = temporarySealGroup.TypographicResources
                                                                                 .Where(x => temporarySealUpdateForm.SealIdsToDelete.Contains(x.Id))
                                                                                 .AsQueryable();
                 //標記為刪除
-                foreach(TypographyResource deleteSeal in deleteSeals)
+                foreach(TypographicResource deleteSeal in deleteSeals)
                 {
                     deleteSeal.DeleteStatus = DeleteStatus.Yes;
-                    TypographyResourceUtil.BaseInputTypographyResource(deleteSeal, false, userId);                    
+                    TypographicResourceUtil.BaseInputTypographyResource(deleteSeal, false, userId);                    
                 }
 
                 //新增臨時章                   
-                await NewTypographyResource(temporarySealUpdateForm.SealsToCreate, temporarySealGroup.TypographyResources, imageBase64Info, userId);
+                await NewTypographyResource(temporarySealUpdateForm.SealsToCreate, temporarySealGroup.TypographicResources, imageBase64Info, userId);
 
                 if (response.ErrorItem == null)
                 {                                        
@@ -302,15 +302,15 @@ namespace SealTypographicWebAPI.Services.Implements
         /// 新增印鑑資料
         /// </summary>
         /// <param name="formseals">輸入</param>
-        /// <param name="typographyResources">要輸入資料庫的資源</param>
+        /// <param name="typographicResources">要輸入資料庫的資源</param>
         /// <param name="imageBase64Info">圖檔資訊</param>
         /// <param name="userId">使用者Id</param>
         /// <returns></returns>
-        private async Task NewTypographyResource(List<TemporarySeal> formseals, List<TypographyResource> typographyResources, ImageBase64Info imageBase64Info, int userId)
+        private async Task NewTypographyResource(List<TemporarySeal> formseals, List<TypographicResource> typographicResources, ImageBase64Info imageBase64Info, int userId)
         {
             foreach (TemporarySeal temporarySeal in formseals)
             {
-                TypographyResource typographyResource = new()
+                TypographicResource typographyResource = new()
                 {
                     SealType = SealType.TemporarySeal,
                     //輸入model之後要修正為新的db
@@ -322,8 +322,8 @@ namespace SealTypographicWebAPI.Services.Implements
                 typographyResource.ImageFullPath = await imageService.GetSavedImageFilePath(imageBase64Info);
                 typographyResource.ThumbnailFullPath = await imageService.GetSavedImageThumbnailFilePath(imageBase64Info, true);
 
-                TypographyResourceUtil.BaseInputTypographyResource(typographyResource, true, userId);
-                typographyResources.Add(typographyResource);
+                TypographicResourceUtil.BaseInputTypographyResource(typographyResource, true, userId);
+                typographicResources.Add(typographyResource);
             }
         }
     }

@@ -51,7 +51,7 @@ namespace DBEntitiesExtension
         /// <summary>
         /// 排版資源
         /// </summary>
-        public DbSet<TypographyResource> TypographyResources { get; set; }
+        public DbSet<TypographicResource> TypographicResources { get; set; }
 
         /// <summary>
         /// 臨時章群組表
@@ -71,7 +71,7 @@ namespace DBEntitiesExtension
         /// <summary>
         /// 各印鑑簽印排版位置
         /// </summary>
-        public DbSet<TypographicSealLocation> TypographicSealLocations { get; set; }
+        public DbSet<TypographicResourceLocation> TypographicResourceLocations { get; set; }
 
         /// <summary>
         /// 樣板

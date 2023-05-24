@@ -20,12 +20,12 @@ namespace DBEntitiesExtension.Base
         /// <summary>
         /// 樣板疊放方式
         /// </summary>
-        public StackMode StackMode { get; set; }
+        public StackMode? StackMode { get; set; }
 
         /// <summary>
         /// 樣板疊放位移
         /// </summary>
-        public int StackShift { get; set; }
+        public int? StackShift { get; set; }
 
         /// <summary>
         /// 圖檔路徑

@@ -70,7 +70,7 @@ namespace SealTypographicWebAPI.Services.Implements
             AccountantSignViewModels signViewModels = new();
 
             AccountantSignGroup? accountantSignGroupJournalQuery = dbContext.AccountantSignGroups
-                                                                    .Include(accountantSignGroup => accountantSignGroup.TypographyResources)
+                                                                    .Include(accountantSignGroup => accountantSignGroup.TypographicResources)
                                                                     .FirstOrDefault
                                                                     (
                                                                         accountantSignGroup => accountantSignGroup.Id == accountantSignGroupId
@@ -78,12 +78,12 @@ namespace SealTypographicWebAPI.Services.Implements
 
             if (accountantSignGroupJournalQuery != null)
             {
-                List<TypographyResource> accountantSigns = accountantSignGroupJournalQuery.TypographyResources
+                List<TypographicResource> accountantSigns = accountantSignGroupJournalQuery.TypographicResources
                                                             .Where(x => x.DeleteStatus == DeleteStatus.No)
                                                             .OrderBy(x => x.SubSealType)                                                            
                                                             .ToList();
 
-                foreach (TypographyResource typographyResource in accountantSigns)
+                foreach (TypographicResource typographyResource in accountantSigns)
                 {
                     AccountantSignViewModel accountantSignViewModel = mapper.Map<AccountantSignViewModel>(typographyResource);
                     accountantSignViewModel.ImageBase64 = imageService.GetPathToBase64(typographyResource.ImageFullPath); //資料庫取得圖檔路徑轉BASE64                   
@@ -109,7 +109,7 @@ namespace SealTypographicWebAPI.Services.Implements
         public async Task<ResponseViewModel> New(AccountantSignForms accountantSignForms)
         {
             ResponseViewModel response = new();
-            List<TypographyResource> typographyResources = new();
+            List<TypographicResource> typographyResources = new();
             int userId = 1; //從帳號驗證取得Id
 
             //確認是否有該會計師的資料
@@ -129,7 +129,7 @@ namespace SealTypographicWebAPI.Services.Implements
                 BaseInputSignGroupJournal(accountantSignGroup, true, userId);
                 await NewTypographyResource(accountantSignForms.SignForms, typographyResources, imageBase64Info, userId);
 
-                accountantSignGroup.TypographyResources = typographyResources;
+                accountantSignGroup.TypographicResources = typographyResources;
                 accountantQuery.AccountantSignGroups.Add(accountantSignGroup);
                 dbContext.SaveChanges();
                 response.Success();
@@ -152,7 +152,7 @@ namespace SealTypographicWebAPI.Services.Implements
 
             AccountantSignGroup? accountantSignGroupQuery = dbContext.AccountantSignGroups
                                                                     .Include(accountantSignGroup => accountantSignGroup.Accountant)
-                                                                    .Include(accountantSignGroup => accountantSignGroup.TypographyResources.Where(x => x.DeleteStatus == DeleteStatus.No))
+                                                                    .Include(accountantSignGroup => accountantSignGroup.TypographicResources.Where(x => x.DeleteStatus == DeleteStatus.No))
                                                                     .FirstOrDefault
                                                                     (
                                                                         accountantSignGroupJournal => accountantSignGroupJournal.Id == accountantSignUpdate.AccountantSignGroupId                                                                                        
@@ -172,7 +172,7 @@ namespace SealTypographicWebAPI.Services.Implements
                     //宣告新的簽印
                     AccountantSignGroup accountantSignGroup = new()
                     {
-                        TypographyResources = new()
+                        TypographicResources = new()
                     };
 
                     //之後拔除轉型調整
@@ -181,7 +181,7 @@ namespace SealTypographicWebAPI.Services.Implements
                     //修改(更新ID移入DeleteAccountantSignIds，更新的簽印移入新增CreateAccountantSigns，之後下一階段調整輸入時要拔掉此項)
                     foreach (AccountantSignUpdateForm accountantSignFormUpdate in accountantSignUpdate.UpdateAccountantSigns)
                     {
-                        TypographyResource? updateSignQuery = accountantSignGroupQuery.TypographyResources.FirstOrDefault(x => x.Id == accountantSignFormUpdate.Id);
+                        TypographicResource? updateSignQuery = accountantSignGroupQuery.TypographicResources.FirstOrDefault(x => x.Id == accountantSignFormUpdate.Id);
 
                         if (updateSignQuery != null)
                         {
@@ -206,21 +206,21 @@ namespace SealTypographicWebAPI.Services.Implements
                     }
 
                     //刪除及更新簽印排除
-                    IQueryable<TypographyResource>? deleteSignQuery = accountantSignGroupQuery.TypographyResources.Where
+                    IQueryable<TypographicResource>? deleteSignQuery = accountantSignGroupQuery.TypographicResources.Where
                                                                         (
                                                                             x => !accountantSignUpdate.DeleteAccountantSignIds.Contains(x.Id)                                                                            
                                                                         ).AsQueryable();
 
                     //複製簽印不含刪除與更新的
-                    foreach (TypographyResource copyTypographyResource in deleteSignQuery)
+                    foreach (TypographicResource copyTypographyResource in deleteSignQuery)
                     {
-                        TypographyResource typographyResource = mapper.Map<TypographyResource>(copyTypographyResource);
-                        accountantSignGroup.TypographyResources.Add(typographyResource);
+                        TypographicResource typographyResource = mapper.Map<TypographicResource>(copyTypographyResource);
+                        accountantSignGroup.TypographicResources.Add(typographyResource);
                     }
                     BaseInputSignGroupJournal(accountantSignGroup, true, userId);
 
                     //新增
-                    await NewTypographyResource(accountantSignUpdate.CreateAccountantSigns, accountantSignGroup.TypographyResources, imageBase64Info, userId);                    
+                    await NewTypographyResource(accountantSignUpdate.CreateAccountantSigns, accountantSignGroup.TypographicResources, imageBase64Info, userId);                    
 
                     //沒有任何回傳訊息(錯誤訊息)就更新資料庫
                     if (!responseViewModels.Any())
@@ -334,11 +334,11 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <param name="imageBase64Info">圖檔資訊</param>
         /// <param name="userId">使用者Id</param>
         /// <returns></returns>
-        private async Task NewTypographyResource(List<AccountantSign> formSeals, List<TypographyResource> typographyResources, ImageBase64Info imageBase64Info, int userId)
+        private async Task NewTypographyResource(List<AccountantSign> formSeals, List<TypographicResource> typographyResources, ImageBase64Info imageBase64Info, int userId)
         {
             foreach (AccountantSign accountantSign in formSeals)
             {
-                TypographyResource typographyResource = new()
+                TypographicResource typographyResource = new()
                 {
                     SealType = SealType.Accountant,
                     //輸入model之後要修正為新的db
@@ -349,7 +349,7 @@ namespace SealTypographicWebAPI.Services.Implements
                 typographyResource.ImageFullPath = await imageService.GetSavedImageFilePath(imageBase64Info);
                 typographyResource.ThumbnailFullPath = await imageService.GetSavedImageThumbnailFilePath(imageBase64Info, true);
 
-                TypographyResourceUtil.BaseInputTypographyResource(typographyResource, true, userId);
+                TypographicResourceUtil.BaseInputTypographyResource(typographyResource, true, userId);
                 typographyResources.Add(typographyResource);
             }
         }
