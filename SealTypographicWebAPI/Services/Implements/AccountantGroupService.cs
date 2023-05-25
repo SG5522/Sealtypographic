@@ -1,11 +1,11 @@
 ﻿using AutoMapper;
 using EFCore.BulkExtensions;
-using DBEntities.Consts;
-using DBEntities;
 using SealTypographicWebAPI.Models;
-using SealTypographicWebAPI.Models.Accountant;
 using SealTypographicWebAPI.Models.AccountantGroup;
 using SealTypographicWebAPI.Utils;
+using DBEntities;
+using Microsoft.EntityFrameworkCore;
+using DBEntities.Consts;
 
 namespace SealTypographicWebAPI.Services.Implements
 {
@@ -65,9 +65,14 @@ namespace SealTypographicWebAPI.Services.Implements
         ///<inheritdoc />
         public AccountantGroupPaginateViewModel GetPaginate(AccountantGroupSearch accountantGroupSearch)
         {
-            AccountantGroupPaginateViewModel accountantGroupResponses = new();            
-            
-            IQueryable<AccountantGroup> accountantGroupsQuery = dbContext.AccountantGroups.Where(x => x.DeleteStatus == DeleteStatus.No);
+            AccountantGroupPaginateViewModel accountantGroupResponses = new();
+            int companyId = 1;
+
+            IQueryable<AccountantGroup> accountantGroupsQuery = dbContext.AccountantGroups.Where
+                                                                (
+                                                                    x => x.DeleteStatus == DeleteStatus.No 
+                                                                    && x.Company.Id == companyId
+                                                                );
             if (!string.IsNullOrWhiteSpace(accountantGroupSearch.GroupName))
             {
                 accountantGroupsQuery = accountantGroupsQuery.Where
@@ -103,16 +108,24 @@ namespace SealTypographicWebAPI.Services.Implements
         public ResponseViewModel New(AccountantGroupForm accountantGroupForm)
         {
             ResponseViewModel response = new();
+            int companyId = 1;            
+
             //確認編號是否重複
             AccountantGroup? accountantGroupQuery = dbContext.AccountantGroups
-                                                .FirstOrDefault(accountantGroup => accountantGroup.AccountantGroupNumber == accountantGroupForm.AccountantGroupNumber
-                                                                && accountantGroup.DeleteStatus == DeleteStatus.No);                                                
+                                                .FirstOrDefault
+                                                (
+                                                    accountantGroup => 
+                                                    accountantGroup.AccountantGroupNumber == accountantGroupForm.AccountantGroupNumber
+                                                    && accountantGroup.DeleteStatus == DeleteStatus.No
+                                                    && accountantGroup.Company.Id == companyId
+                                                );                                                
 
             if (accountantGroupQuery == null)
             {
+                Company company = dbContext.Companys.Include(x => x.AccountantGroups).Single(x => x.Id == companyId);
                 AccountantGroup accountantGroup = mapper.Map<AccountantGroup>(accountantGroupForm);
                 accountantGroup.CreateDate = DateTime.Now;
-                dbContext.AccountantGroups.Add(accountantGroup);
+                company.AccountantGroups.Add(accountantGroup);                
                 dbContext.SaveChanges();
                 response.Success();                
             }

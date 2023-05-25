@@ -1,11 +1,10 @@
 ﻿using SealTypographicWebAPI.Models;
 using SealTypographicWebAPI.Models.Customer;
-using DBEntities;
-using DBEntities.Consts;
 using AutoMapper;
 using SealTypographicWebAPI.Utils;
 using Microsoft.EntityFrameworkCore;
-using System.ComponentModel.Design;
+using DBEntities;
+using DBEntities.Consts;
 
 namespace SealTypographicWebAPI.Services.Implements
 {
@@ -74,15 +73,15 @@ namespace SealTypographicWebAPI.Services.Implements
                 {
                     CustomerViewModel customerViewModel = mapper.Map<CustomerViewModel>(customer);
 
-                    List<CustomerSealQuarterJournal> customerSealQuarterJournals = dbContext.CustomerSealQuarterJournals
-                                                                                    .Where(x => x.Customer.Id == customer.Id
-                                                                                    && x.DeleteStatus == DeleteStatus.No
-                                                                                    && x.ReviewStatus < ReviewStatus.Disabled ).ToList();
+                    List<CustomerSealGroup> customerSealGroups = dbContext.CustomerSealGroups
+                                                                        .Where(x => x.Customer.Id == customer.Id
+                                                                        && x.DeleteStatus == DeleteStatus.No
+                                                                        && x.ReviewStatus < ReviewStatus.Disabled ).ToList();
 
-                    if(customerSealQuarterJournals.Any())
+                    if(customerSealGroups.Any())
                     {
                         //取得狀態
-                        if (!customerSealQuarterJournals.Where(x => x.ReviewStatus != ReviewStatus.Approval).Any())
+                        if (!customerSealGroups.Where(x => x.ReviewStatus != ReviewStatus.Approval).Any())
                         {
                             customerViewModel.IsDraff = false;
                             customerViewModel.IsPending = false;
@@ -90,20 +89,20 @@ namespace SealTypographicWebAPI.Services.Implements
                         }
                         else
                         {
-                            if (customerSealQuarterJournals.Where(x => x.ReviewStatus == ReviewStatus.Draft).Any())
+                            if (customerSealGroups.Where(x => x.ReviewStatus == ReviewStatus.Draft).Any())
                             {
                                 customerViewModel.IsDraff = true;
                             }
-                            if (customerSealQuarterJournals.Where(x => x.ReviewStatus == ReviewStatus.Pending).Any())
+                            if (customerSealGroups.Where(x => x.ReviewStatus == ReviewStatus.Pending).Any())
                             {
                                 customerViewModel.IsPending = true;
                             }
-                            if (customerSealQuarterJournals.Where(x => x.ReviewStatus == ReviewStatus.Reject).Any())
+                            if (customerSealGroups.Where(x => x.ReviewStatus == ReviewStatus.Reject).Any())
                             {
                                 customerViewModel.IsReject = true;
                             }
                         }
-                        customerViewModel.CustomerSealQuarterId = customerSealQuarterJournals.OrderByDescending(x => x.Quarter).Select(x => x.Id).FirstOrDefault();                        
+                        customerViewModel.CustomerSealQuarterId = customerSealGroups.OrderByDescending(x => x.Quarter).Select(x => x.Id).FirstOrDefault();                        
                     }
                                     
                     customerPaginateViewModel.ViewModels.Add(customerViewModel);                    

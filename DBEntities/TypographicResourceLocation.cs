@@ -1,6 +1,6 @@
-﻿using DBEntitiesExtension.Base;
+﻿using DBEntities.Base;
 
-namespace DBEntitiesExtension
+namespace DBEntities
 {
 
     /// <summary>

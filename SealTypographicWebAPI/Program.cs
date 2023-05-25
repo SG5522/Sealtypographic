@@ -12,7 +12,6 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Hosting.WindowsServices;
 using SealTypographicWebAPI.Models.CustomerSealTemplate;
-using DBEntitiesExtension;
 using Microsoft.Extensions.Options;
 
 string allowSpecificOrigins = "allowSpecificOrigins";
@@ -59,15 +58,15 @@ builder.Host.UseSerilog();// <-SeriLog
 
 #region -- ConectionString --
 #if DEBUG
-builder.Services.AddDbContextPool<SealTypographicExtensionDbContext>(optionsBuilder =>
-{
-    optionsBuilder.UseSqlite(builder.Configuration.GetConnectionString("Sqlite2"), x => x.MigrationsAssembly("Sqlite"));
+//builder.Services.AddDbContextPool<SealTypographicDbContext>(optionsBuilder =>
+//{
+//    optionsBuilder.UseSqlite(builder.Configuration.GetConnectionString("Sqlite2"), x => x.MigrationsAssembly("Sqlite"));
 
-    optionsBuilder.UseLoggerFactory(LoggerFactory.Create(builder =>
-    {
-        builder.AddConsole().AddDebug();
-    }));
-}, 128);
+//    optionsBuilder.UseLoggerFactory(LoggerFactory.Create(builder =>
+//    {
+//        builder.AddConsole().AddDebug();
+//    }));
+//}, 128);
 #endif
 
 builder.Services.AddDbContextPool<SealTypographicDbContext>(optionsBuilder =>
@@ -106,14 +105,7 @@ builder.Services.AddScoped<SealMappingConfigService>();
 builder.Services.AddSingleton<TemplateConfigService>();
 builder.Services.AddScoped<ResponseCodeService>();
 builder.Services.AddScoped<ReviewStatusService>();
-#if RELEASE
 builder.Services.AddAutoMapper(typeof(MapperProfile));
-#endif
-#if DEBUG
-builder.Services.AddAutoMapper(typeof(MapperProfileExtension));
-#endif
-
-#if RELEASE
 
 //DB Process
 builder.Services.AddScoped<ICustomerService, CustomerService>();
@@ -121,34 +113,17 @@ builder.Services.AddScoped<ICustomerSealService, CustomerSealService>();
 builder.Services.AddScoped<ICustomerSealReviewService, CustomerSealReviewService>();
 builder.Services.AddScoped<IAccountantService, AccountantService>();
 builder.Services.AddScoped<IAccountantGroupService, AccountantGroupService>();
-builder.Services.AddScoped<IAccountantGroupMemberService, AccountantGroupMemberService>();
-builder.Services.AddScoped<IAccountantSignReviewService, AccountantSignReviewService>();
+builder.Services.AddScoped<IAccountantGroupMemberService, AccountantGroupMemberServiceExtension>();
 builder.Services.AddScoped<IAccountantSignService, AcoountantSignService>();
+builder.Services.AddScoped<IAccountantSignReviewService, AccountantSignReviewService>();
 builder.Services.AddScoped<ILetterheadService, LetterheadService>();
 builder.Services.AddScoped<ILetterheadImageService, LetterheadImageService>();
 builder.Services.AddScoped<ITemporarySealService, TemporarySealService>();
 builder.Services.AddScoped<ICustomerSealTemplateService, CustomerSealTemplateService>();
 builder.Services.AddScoped<IAccountantSignTemplateService, AccountantSignTemplateService>();
 builder.Services.AddScoped<ILetterheadImageTemplateService, LetterheadImageTemplateService>();
-
 builder.Services.AddScoped<UploadService>();
-#endif
 builder.Services.AddScoped<ITypographicPDFService, TypographicPDFService>();
-
-#if DEBUG
-builder.Services.AddScoped<ICustomerService, CustomerServiceExtension>();
-builder.Services.AddScoped<ICustomerSealService, CustomerSealServiceExtension>();
-builder.Services.AddScoped<ICustomerSealReviewService, CustomerSealReviewServiceExtension>();
-builder.Services.AddScoped<IAccountantService, AccountantServiceExtension>();
-builder.Services.AddScoped<IAccountantSignService, AcoountantSignServiceExtension>();
-builder.Services.AddScoped<IAccountantSignReviewService, AccountantSignReviewServiceExtension>();
-builder.Services.AddScoped<ILetterheadService, LetterheadServiceExtension>();
-builder.Services.AddScoped<ILetterheadImageService, LetterheadImageServiceExtension>();
-builder.Services.AddScoped<ITemporarySealService, TemporarySealServiceExtension>();
-builder.Services.AddScoped<ICustomerSealTemplateService, CustomerSealTemplateServiceExtension>();
-builder.Services.AddScoped<IAccountantSignTemplateService, AccountantSignTemplateServiceExtension>();
-builder.Services.AddScoped<ILetterheadImageTemplateService, LetterheadImageTemplateServiceExtension>();
-#endif
 
 #endregion
 
@@ -243,13 +218,6 @@ using (IServiceScope scope = app.Services.CreateScope())
         SealTypographicDbContext dbContext = scope.ServiceProvider.GetRequiredService<SealTypographicDbContext>();
         dbContext.Database.Migrate();
         InitialDbData.Initialize(dbContext);
-
-#if DEBUG
-        SealTypographicExtensionDbContext dbContext2 = scope.ServiceProvider.GetRequiredService<SealTypographicExtensionDbContext>();
-        dbContext2.Database.Migrate();
-        InitialDb2Data.Initialize(dbContext2);
-#endif
-
     }
     catch(Exception ex)
     {        

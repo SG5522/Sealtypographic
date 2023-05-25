@@ -219,31 +219,31 @@ namespace DBEntities.Consts
         /// <summary>
         /// 公司
         /// </summary>
-        [Description("Company")]        
+        [Description("Company")]
         Company = 1,
 
         /// <summary>
         /// 負責人
         /// </summary>
-        [Description("President")]        
+        [Description("President")]
         President = 2,
 
         /// <summary>
         /// 經理
         /// </summary>
-        [Description("Manager")]       
+        [Description("Manager")]
         Manager = 3,
 
         /// <summary>
         /// 會計主管
         /// </summary>
-        [Description("Accounting Director")]        
+        [Description("Accounting Director")]
         AccountingDirector = 4,
 
         /// <summary>
         /// 其他
         /// </summary>
-        [Description("Other")]        
+        [Description("Other")]
         Other = 5,
     }
 
@@ -261,32 +261,104 @@ namespace DBEntities.Consts
         /// <summary>
         /// 印鑑
         /// </summary>
-        [Description("Seal")]        
+        [Description("Seal")]
         Seal = 1,
 
         /// <summary>
         /// 中文簽名
         /// </summary>
-        [Description("CHSign")]        
+        [Description("CHSign")]
         CHSign = 2,
 
         /// <summary>
         /// 英文簽名
         /// </summary>
-        [Description("ENSign")]        
+        [Description("ENSign")]
         ENSign = 3,
 
         /// <summary>
         /// 舊式簽名
         /// </summary>
-        [Description("OldSign")]        
+        [Description("OldSign")]
         OldSign = 4,
 
         /// <summary>
         /// 其他
         /// </summary>
-        [Description("Other")]        
-        Other = 5,        
+        [Description("Other")]
+        Other = 5,
+    }
+
+    /// <summary>
+    /// 印鑑子類別
+    /// </summary>
+    public enum SubSealType
+    {
+        /// <summary>
+        /// 公司
+        /// </summary>
+        [Description("Company")]
+        Company = 11,
+
+        /// <summary>
+        /// 負責人
+        /// </summary>
+        [Description("President")]
+        President = 12,
+
+        /// <summary>
+        /// 經理
+        /// </summary>
+        [Description("Manager")]
+        Manager = 13,
+
+        /// <summary>
+        /// 會計主管
+        /// </summary>
+        [Description("Accounting Director")]
+        AccountingDirector = 14,
+
+        /// <summary>
+        /// 印鑑(會計師)
+        /// </summary>
+        [Description("Seal")]
+        Seal = 21,
+
+        /// <summary>
+        /// 中文簽名
+        /// </summary>
+        [Description("CHSign")]
+        CHSign = 22,
+
+        /// <summary>
+        /// 英文簽名
+        /// </summary>
+        [Description("ENSign")]
+        ENSign = 23,
+
+        /// <summary>
+        /// 舊式簽名
+        /// </summary>
+        [Description("OldSign")]
+        OldSign = 24,
+
+        /// <summary>
+        /// 信頭
+        /// </summary>
+        [Description("Letterhead")]
+        Letterhead = 30,
+
+        /// <summary>
+        /// 臨時章
+        /// </summary>
+        [Description("TemporarySeal")]
+        TemporarySeal = 40,
+
+        /// <summary>
+        /// 其他
+        /// </summary>
+        [Description("Other")]
+        Other = 99,
     }
 
     /// <summary>
@@ -305,7 +377,7 @@ namespace DBEntities.Consts
         /// <summary>
         /// 已處理
         /// </summary>
-        Done = 1        
+        Done = 1
     }
 
     /// <summary>
@@ -361,14 +433,14 @@ namespace DBEntities.Consts
         /// <summary>
         /// 
         /// </summary>
-        A3 = 1, 
+        A3 = 1,
 
         /// <summary>
         /// 
         /// </summary>
         A4 = 2,
     }
-    
+
     /// <summary>
     /// 頁面方向
     /// </summary>
@@ -411,6 +483,6 @@ namespace DBEntities.Consts
         /// 信頭圖片樣板
         /// </summary>
         [Description("信頭圖片樣板")]
-        LetterheadImageTemplate = 3,        
+        LetterheadImageTemplate = 3,
     }
 }

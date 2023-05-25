@@ -1,10 +1,10 @@
 ﻿using SealTypographicWebAPI.Models;
 using SealTypographicWebAPI.Models.Accountant;
-using DBEntities;
-using DBEntities.Consts;
 using SealTypographicWebAPI.Utils;
 using Microsoft.EntityFrameworkCore;
 using AutoMapper;
+using DBEntities;
+using DBEntities.Consts;
 
 namespace SealTypographicWebAPI.Services.Implements
 {
@@ -190,13 +190,12 @@ namespace SealTypographicWebAPI.Services.Implements
                     accountant =>
                     accountant.Code.ToLower().Contains(accountantSearch.KeyWord.ToLower())
                     || accountant.Name.Contains(accountantSearch.KeyWord)
-                );
+                );               
             }
 
             if (accountantSearch.AccountantGroupName != null)
             {
                 accountantQuery = accountantQuery.Where(accountant => accountant.AccountantGroup.Name.Contains(accountantSearch.AccountantGroupName));
-
             }
 
             accountantQuery = accountantQuery.OrderBy(accountant => accountant.Id);
@@ -204,7 +203,7 @@ namespace SealTypographicWebAPI.Services.Implements
             {
                 //取得該頁            
                 List<Accountant> thisPageAccountants = accountantQuery
-                                          .Include(accountant => accountant.AccountantSignGroupJournals)
+                                          .Include(accountant => accountant.AccountantSignGroups)
                                           .Include(accountant => accountant.AccountantGroup)
                                           .Skip((accountantSearch.PageNumber - 1) * accountantSearch.PageSize)
                                           .Take(accountantSearch.PageSize)
@@ -214,10 +213,10 @@ namespace SealTypographicWebAPI.Services.Implements
                 foreach (Accountant accountant in thisPageAccountants)
                 {
                     AccountantViewModelWithCreateDate accountantPaginatesViewModel = mapper.Map<AccountantViewModelWithCreateDate>(accountant);
-                   
+                    
                     if (isTypographicUse)
                     {
-                        accountantPaginatesViewModel.AccountantSignGroupId = accountant.AccountantSignGroupJournals
+                        accountantPaginatesViewModel.AccountantSignGroupId = accountant.AccountantSignGroups
                                                                             .Where
                                                                             (
                                                                                 x => x.DeleteStatus == DeleteStatus.No
@@ -226,6 +225,7 @@ namespace SealTypographicWebAPI.Services.Implements
                                                                             .OrderByDescending(x => x.CreateDate)
                                                                             .Select(x => x.Id)
                                                                             .FirstOrDefault();
+
                         if (accountantPaginatesViewModel.AccountantSignGroupId > 0)
                         {
                             accountantPaginatesViewModels.ViewModels.Add(accountantPaginatesViewModel);
@@ -233,7 +233,7 @@ namespace SealTypographicWebAPI.Services.Implements
                     }
                     else
                     {
-                        accountantPaginatesViewModel.AccountantSignGroupId = accountant.AccountantSignGroupJournals
+                        accountantPaginatesViewModel.AccountantSignGroupId = accountant.AccountantSignGroups
                                                                             .Where
                                                                             (
                                                                                 x => x.DeleteStatus == DeleteStatus.No
@@ -244,9 +244,7 @@ namespace SealTypographicWebAPI.Services.Implements
                                                                             .FirstOrDefault();
 
                         accountantPaginatesViewModels.ViewModels.Add(accountantPaginatesViewModel);
-                    }
-
-      
+                    }                                    
                 }
                 accountantPaginatesViewModels.PageNumber = accountantSearch.PageNumber;
                 accountantPaginatesViewModels.PageSize = accountantSearch.PageSize;
@@ -257,8 +255,6 @@ namespace SealTypographicWebAPI.Services.Implements
             accountantPaginatesViewModels.Success();
 
             return accountantPaginatesViewModels;
-        }
-
-       
-    }
+        }        
+    }    
 }

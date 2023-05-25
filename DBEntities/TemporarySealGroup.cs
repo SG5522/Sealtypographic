@@ -1,19 +1,19 @@
-﻿using DBEntitiesExtension.Base;
+﻿using DBEntities.Base;
 
-namespace DBEntitiesExtension
+namespace DBEntities
 {
     /// <summary>
-    /// 客戶印鑑季度資料表
+    /// 臨時章群組
     /// </summary>
-    public class CustomerSealGroup : BaseReviewData
+    public class TemporarySealGroup : BaseData
     {
         /// <summary>
-        /// 季度
+        /// 臨時章季度
         /// </summary>
         public Quarter Quarter { get; set; }
 
         /// <summary>
-        /// 客戶基本資料表
+        /// 客戶資料表
         /// </summary>
         public Customer Customer { get; set; }
 

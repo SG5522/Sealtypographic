@@ -1,11 +1,11 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
-using DBEntities.Consts;
-using DBEntities;
 using SealTypographicWebAPI.Models;
 using SealTypographicWebAPI.Models.Accountant;
 using SealTypographicWebAPI.Models.AccountantSignReview;
 using SealTypographicWebAPI.Utils;
+using DBEntities;
+using DBEntities.Consts;
 
 namespace SealTypographicWebAPI.Services.Implements
 {
@@ -35,14 +35,14 @@ namespace SealTypographicWebAPI.Services.Implements
         public AccountantSignGroupReviewPaginate GetReviewPaginate(AccountantSignSearchReview accountantSignSearchReview)
         {
             AccountantSignGroupReviewPaginate accountantSignGroupReviewPaginate = new();
-            IQueryable<AccountantSignGroupJournal> accountantSignGroupQuery = dbContext.AccountantSignGroupJournals
+            IQueryable<AccountantSignGroup> accountantSignGroupQuery = dbContext.AccountantSignGroups
                                                                             .Include(x => x.Accountant)
                                                                             .ThenInclude(x => x.AccountantGroup)
                                                                             .Where
                                                                             (
                                                                                 x => x.DeleteStatus == DeleteStatus.No
                                                                                 && x.ReviewStatus < ReviewStatus.Disabled
-                                                                            );
+                                                                            ).OrderByDescending(x => x.Id);
 
             if (!string.IsNullOrWhiteSpace(accountantSignSearchReview.KeyWord))
             {
@@ -57,31 +57,61 @@ namespace SealTypographicWebAPI.Services.Implements
 
             if (accountantSignSearchReview.ReviewStatus != null)
             {
-                accountantSignGroupQuery = accountantSignGroupQuery.Where(x => x.ReviewStatus == accountantSignSearchReview.ReviewStatus);
+                accountantSignGroupQuery = accountantSignGroupQuery.Where(x => x.ReviewStatus == (ReviewStatus)accountantSignSearchReview.ReviewStatus);
             }
 
             if (accountantSignGroupQuery.Any())
             {
                 //取得該頁            
-                List<AccountantSignGroupJournal> thisPageAccountantSignQuarter = accountantSignGroupQuery
-                                                    .Include(x => x.AccountantSignJournals)
+                IQueryable<AccountantSignGroup> thisPageAccountantSignQuarter = accountantSignGroupQuery
+                                                    .Include(x => x.TypographicResources)
                                                     .Skip((accountantSignSearchReview.PageNumber - 1) * accountantSignSearchReview.PageSize)
                                                     .Take(accountantSignSearchReview.PageSize)
-                                                    .ToList();
+                                                    .Select
+                                                    (
+                                                        x => new AccountantSignGroup()
+                                                        {
+                                                            Id = x.Id,
+                                                            ReviewStatus = x.ReviewStatus,
+                                                            Accountant = new Accountant() 
+                                                            {
+                                                                Name = x.Accountant.Name,
+                                                                Code = x.Accountant.Code,
+                                                                AccountantGroup = new AccountantGroup() 
+                                                                {
+                                                                    Name = x.Accountant.AccountantGroup.Name
+                                                                }
+                                                            },
+                                                            TypographicResources = x.TypographicResources.Select
+                                                                                    (
+                                                                                        typographicResource => new TypographicResource()
+                                                                                        {
+                                                                                            SubSealType = typographicResource.SubSealType,
+                                                                                            Sequence = typographicResource.Sequence,
+                                                                                            ThumbnailFullPath = typographicResource.ThumbnailFullPath
+                                                                                        }
+                                                                                    ).ToList()
+                                                        }
+                                                    );
+                                                    
 
-                foreach (AccountantSignGroupJournal accountantSignGroupJournal in thisPageAccountantSignQuarter)
+                foreach (AccountantSignGroup accountantSignGroup in thisPageAccountantSignQuarter)
                 {
-                    AccountantSignGroupReviewViewModel accountantSignGroupReviewViewModel = mapper.Map<AccountantSignGroupReviewViewModel>(accountantSignGroupJournal);
+                    AccountantSignGroupReviewViewModel accountantSignGroupReviewViewModel = mapper.Map<AccountantSignGroupReviewViewModel>(accountantSignGroup);
                     
-                    foreach (AccountantSignJournal accountantSign in FilterAccountantSigns(accountantSignGroupJournal.AccountantSignJournals))
+                    foreach (TypographicResource typographyResource in FilterAccountantSigns(accountantSignGroup.TypographicResources))
                     {
                         SignImageInfo signImageInfo = new()
                         {
-                            SealMappingConfigId = accountantSign.ConfigType,
-                            ThumbnailBase64 = imageService.GetPathToBase64(accountantSign.ThumbnailFullPath)
+                            SealMappingConfigId = (AccountantSignType)SealMappingConfigUtil.GetAccountantSignType(typographyResource.SubSealType),                            
                         };
+                        if(typographyResource.ThumbnailFullPath != null)
+                        {
+                            signImageInfo.ThumbnailBase64 = imageService.GetPathToBase64(typographyResource.ThumbnailFullPath);
+                        }
                         accountantSignGroupReviewViewModel.SignImageInfos.Add(signImageInfo);
                     }
+
                     accountantSignGroupReviewPaginate.ViewModels.Add(accountantSignGroupReviewViewModel);
                 }
 
@@ -101,21 +131,21 @@ namespace SealTypographicWebAPI.Services.Implements
         {            
             AccountantSignGroupDetailReviewResponse accountantSignGroupDetailReviewResponse = new();
 
-            AccountantSignGroupJournal? accountantSignGroupQuery = dbContext.AccountantSignGroupJournals
-                                                                   .Include(x => x.Accountant)
-                                                                   .ThenInclude(x => x.AccountantGroup)
-                                                                   .Include(x => x.AccountantSignJournals)                                                                   
-                                                                   .FirstOrDefault(x => x.Id == accountantSignGroupId);
+            AccountantSignGroup? accountantSignGroupQuery = dbContext.AccountantSignGroups
+                                                            .Include(x => x.Accountant)
+                                                            .ThenInclude(x => x.AccountantGroup)
+                                                            .Include(x => x.TypographicResources)                                                                   
+                                                            .FirstOrDefault(x => x.Id == accountantSignGroupId);
             if (accountantSignGroupQuery != null)
             {                
                 accountantSignGroupDetailReviewResponse.ViewModel = mapper.Map<AccountantSignGroupDetailReviewViewModel>(accountantSignGroupQuery.Accountant);
                 accountantSignGroupDetailReviewResponse.ViewModel.Id = accountantSignGroupId;
                 
-                foreach (AccountantSignJournal accountantSignJournal in FilterAccountantSigns(accountantSignGroupQuery.AccountantSignJournals))
+                foreach (TypographicResource typographyResource in FilterAccountantSigns(accountantSignGroupQuery.TypographicResources))
                 {
-                    AccountantSignViewModel accountantSignViewModel = mapper.Map<AccountantSignViewModel>(accountantSignJournal);
-                    accountantSignViewModel.ImageBase64 = imageService.GetPathToBase64(accountantSignJournal.ImageFullPath); //資料庫取得圖檔路徑轉BASE64                                       
-                    accountantSignViewModel.SealMappingConfigId = accountantSignJournal.ConfigType;
+                    AccountantSignViewModel accountantSignViewModel = mapper.Map<AccountantSignViewModel>(typographyResource);
+                    accountantSignViewModel.ImageBase64 = imageService.GetPathToBase64(typographyResource.ImageFullPath); //資料庫取得圖檔路徑轉BASE64                                       
+                    accountantSignViewModel.SealMappingConfigId = (AccountantSignType)SealMappingConfigUtil.GetAccountantSignType(typographyResource.SubSealType);
                     accountantSignGroupDetailReviewResponse.ViewModel.Signs.Add(accountantSignViewModel);
                 }                
             }
@@ -150,15 +180,15 @@ namespace SealTypographicWebAPI.Services.Implements
         /// 過濾標記刪除
         /// 以及排序簽印
         /// </summary>
-        /// <param name="accountantSignJournals"></param>
-        private List<AccountantSignJournal> FilterAccountantSigns(List<AccountantSignJournal> accountantSignJournals)
+        /// <param name="typographyResources"></param>
+        private List<TypographicResource> FilterAccountantSigns(List<TypographicResource> typographyResources)
         {
-            List<AccountantSignJournal> accountantSigns = accountantSignJournals
-                                                          .Where(x => x.DeleteStatus == DeleteStatus.No)
-                                                          .OrderBy(x => x.ConfigType)
-                                                          .ToList();
+            List<TypographicResource> typographyQuery = typographyResources
+                                                        .Where(x => x.DeleteStatus == DeleteStatus.No)
+                                                        .OrderBy(x => x.SubSealType)
+                                                        .ToList();
 
-            return accountantSigns;
+            return typographyQuery;
         }
 
         /// <summary>
@@ -173,8 +203,8 @@ namespace SealTypographicWebAPI.Services.Implements
             ResponseViewModel response = new();
             foreach (int accountantSignGroupId in accountantSignGroupIds)
             {
-                AccountantSignGroupJournal? accountantSignGroupJournal = dbContext.AccountantSignGroupJournals.Include(x => x.Accountant)
-                                                                                                              .FirstOrDefault(x => x.Id == accountantSignGroupId);
+                AccountantSignGroup? accountantSignGroupJournal = dbContext.AccountantSignGroups.Include(x => x.Accountant)
+                                                                                                .FirstOrDefault(x => x.Id == accountantSignGroupId);
                 if (accountantSignGroupJournal != null)
                 {
                     accountantSignGroupJournal.ReviewUserId = userId;
@@ -187,17 +217,17 @@ namespace SealTypographicWebAPI.Services.Implements
                             accountantSignGroupJournal.StartDate = DateTime.Now;
                             accountantSignGroupJournal.EndDate = DateTime.Parse("9999/12/31");
                             //找出審核通過的簽印組
-                            IQueryable<AccountantSignGroupJournal>? accountantSignGroups = dbContext.AccountantSignGroupJournals
-                                                                               .Where
-                                                                               (
-                                                                                   x => x.Accountant.Id == accountantSignGroupJournal.Accountant.Id
-                                                                                   && x.Id != accountantSignGroupId
-                                                                                   && x.ReviewStatus == ReviewStatus.Approval
-                                                                               );
+                            IQueryable<AccountantSignGroup>? accountantSignGroups = dbContext.AccountantSignGroups
+                                                                                   .Where
+                                                                                   (
+                                                                                       x => x.Accountant.Id == accountantSignGroupJournal.Accountant.Id
+                                                                                       && x.Id != accountantSignGroupId
+                                                                                       && x.ReviewStatus == ReviewStatus.Approval
+                                                                                   );
                             //如有審核通過的簽印組則停用
                             if(accountantSignGroups != null)
                             {                                
-                                foreach(AccountantSignGroupJournal accountantSignGroup in accountantSignGroups)
+                                foreach(AccountantSignGroup accountantSignGroup in accountantSignGroups)
                                 {
                                     accountantSignGroup.ReviewStatus = ReviewStatus.Disabled;
                                     accountantSignGroup.EndDate = DateTime.Now;

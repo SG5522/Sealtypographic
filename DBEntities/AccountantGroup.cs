@@ -13,6 +13,11 @@ namespace DBEntities
         public string AccountantGroupNumber { get; set; }
 
         /// <summary>
+        /// 會計師事務所(公司)資料表
+        /// </summary>
+        public Company Company { get; set; }
+
+        /// <summary>
         /// 會計師資料表
         /// </summary>
         public List<Accountant> Accountants { get; set; }

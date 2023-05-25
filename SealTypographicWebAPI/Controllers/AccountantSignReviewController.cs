@@ -56,7 +56,7 @@ namespace SealTypographicWebAPI.Controllers
         /// </summary>
         /// <param name="accountantSignGroupId"></param>        
         /// <returns></returns>
-        [HttpGet("{AccountantSignGroupId}")]
+        [HttpGet("{accountantSignGroupId}")]
         public AccountantSignGroupDetailReviewResponse ReviewDetail(int accountantSignGroupId)
         {
             AccountantSignGroupDetailReviewResponse accountantSignReviewDetailResponse = new();

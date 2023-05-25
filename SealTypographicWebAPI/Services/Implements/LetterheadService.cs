@@ -1,10 +1,10 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
-using DBEntities.Consts;
-using DBEntities;
 using SealTypographicWebAPI.Models;
 using SealTypographicWebAPI.Models.Letterhead;
 using SealTypographicWebAPI.Utils;
+using DBEntities;
+using DBEntities.Consts;
 
 namespace SealTypographicWebAPI.Services.Implements
 {
@@ -39,7 +39,7 @@ namespace SealTypographicWebAPI.Services.Implements
             ResponseViewModel response = new();
 
             IQueryable<Letterhead> letterheadQuery = dbContext.Letterheads.Where(letterhead => letterhead.DeleteStatus == DeleteStatus.No)
-                                                    .Include(letterhead => letterhead.LetterheadImageJournals);
+                                                    .Include(letterhead => letterhead.TypographicResources);
 
             if (!string.IsNullOrWhiteSpace(letterheadSearch.Name))
             {
@@ -63,12 +63,12 @@ namespace SealTypographicWebAPI.Services.Implements
                 {
                     LetterheadViewModel letterheadViewModel = mapper.Map<LetterheadViewModel>(letterheadData);
 
-                    if (letterheadData.LetterheadImageJournals.Count > 0)
+                    if (letterheadData.TypographicResources.Count > 0)
                     {
-                        letterheadViewModel.LetterheadImageId = dbContext.LetterheadImageJournals.Where
+                        letterheadViewModel.LetterheadImageId = dbContext.TypographicResources.Where
                                                                 (
                                                                     x => x.Letterhead.Id == letterheadData.Id
-                                                                    && x.Status == LetterheadImageStatus.Enable
+                                                                    && x.Letterhead.Status == LetterheadImageStatus.Enable
                                                                 )
                                                                 .Max(x => x.Id);
                     }
@@ -98,18 +98,18 @@ namespace SealTypographicWebAPI.Services.Implements
         {
             ResponseViewModel response = new();
             int userId = 0;//帳號驗證取得Id
-            Letterhead? letterheadQuery = dbContext.Letterheads.Include(x => x.LetterheadImageJournals)
+            Letterhead? letterheadQuery = dbContext.Letterheads.Include(x => x.TypographicResources)
                                           .FirstOrDefault(x => x.Id == id);
 
             if (letterheadQuery != null)
             {
                 letterheadQuery.DeleteStatus = DeleteStatus.Yes;
+                letterheadQuery.Status = LetterheadImageStatus.Disabled; //應該用不到之後移除或是未來需要審查時在來調整。
                 BaseInputLetterhead(letterheadQuery, false, userId);
 
-                foreach(LetterheadImageJournal letterheadImageJournal in letterheadQuery.LetterheadImageJournals)
+                foreach(TypographicResource typographicResource in letterheadQuery.TypographicResources)
                 {
-                    letterheadImageJournal.DeleteStatus = DeleteStatus.Yes;
-                    letterheadImageJournal.Status = LetterheadImageStatus.Disabled;
+                    typographicResource.DeleteStatus = DeleteStatus.Yes;                    
                 }
                 
                 dbContext.SaveChanges();
@@ -134,7 +134,7 @@ namespace SealTypographicWebAPI.Services.Implements
             {
                 letterhead.CreateUserId = userid;
                 letterhead.CreateDate = DateTime.Now;
-                letterhead.DeleteStatus = DeleteStatus.No;
+                letterhead.DeleteStatus = DeleteStatus.No;                
             }
             else
             {

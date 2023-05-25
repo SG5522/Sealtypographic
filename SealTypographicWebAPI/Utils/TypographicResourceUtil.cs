@@ -1,5 +1,5 @@
-﻿using DBEntitiesExtension;
-using DBEntitiesExtension.Consts;
+﻿using DBEntities;
+using DBEntities.Consts;
 
 namespace SealTypographicWebAPI.Utils
 {

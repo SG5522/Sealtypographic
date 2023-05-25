@@ -2,11 +2,11 @@
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Options;
 using SealTypographicWebAPI.Config;
-using DBEntities.Consts;
 using DBEntities;
 using SealTypographicWebAPI.Models;
 using SealTypographicWebAPI.Models.Upload;
 using Microsoft.EntityFrameworkCore;
+using DBEntities.Consts;
 
 namespace SealTypographicWebAPI.Services.Implements
 {

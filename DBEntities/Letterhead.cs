@@ -1,9 +1,10 @@
 ﻿using DBEntities.Base;
+using DBEntities.Consts;
 
 namespace DBEntities
 {
     /// <summary>
-    /// 事務所信頭資料表
+    /// 事務所信頭
     /// </summary>
     public class Letterhead : BaseNameData
     {
@@ -13,8 +14,15 @@ namespace DBEntities
         public Company Company { get; set; }
 
         /// <summary>
-        /// 信頭圖片歷程
+        /// 信頭圖片啟用狀態
+        ///  0.啟用
+        /// 10.停用
         /// </summary>
-        public List<LetterheadImageJournal> LetterheadImageJournals { get; set; }
+        public LetterheadImageStatus Status { get; set; }
+
+        /// <summary>
+        /// 排版素材
+        /// </summary>
+        public List<TypographicResource> TypographicResources { get; set; }
     }
 }

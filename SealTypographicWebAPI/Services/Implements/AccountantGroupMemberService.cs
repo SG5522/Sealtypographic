@@ -1,19 +1,18 @@
-﻿using DBEntities;
-using SealTypographicWebAPI.Models;
+﻿using SealTypographicWebAPI.Models;
 using SealTypographicWebAPI.Models.AccountantGroupMember;
 using SealTypographicWebAPI.Models.Accountant;
 using Microsoft.EntityFrameworkCore;
 using AutoMapper;
 using SealTypographicWebAPI.Utils;
+using DBEntities;
 using DBEntities.Consts;
-
 
 namespace SealTypographicWebAPI.Services.Implements
 {
     /// <summary>
     /// 會計師群組成員管理
     /// </summary>
-    public class AccountantGroupMemberService : IAccountantGroupMemberService
+    public class AccountantGroupMemberServiceExtension : IAccountantGroupMemberService
     {
         private readonly SealTypographicDbContext dbContext;
         private readonly IMapper mapper;
@@ -23,7 +22,7 @@ namespace SealTypographicWebAPI.Services.Implements
         /// </summary>
         /// <param name="dbContext"></param>
         /// <param name="mapper"></param>                
-        public AccountantGroupMemberService(SealTypographicDbContext dbContext,IMapper mapper)
+        public AccountantGroupMemberServiceExtension(SealTypographicDbContext dbContext,IMapper mapper)
         {
             this.dbContext = dbContext;
             this.mapper = mapper;
@@ -35,9 +34,13 @@ namespace SealTypographicWebAPI.Services.Implements
             AccountantGroupMembers accountantGroupMembers = new();
             List<AccountantGroupMember> accountantMembers = new();            
             IQueryable<Accountant> accountantQuery = dbContext.Accountants
-                                           .Where(accountant => accountant.AccountantGroupId == accountantGroupMemberSearch.AccountantGroupId
-                                                  && accountant.DeleteStatus == DeleteStatus.No)
-                                           .OrderBy(accountant => accountant.Id);
+                                                    .Where
+                                                    (
+                                                        accountant => 
+                                                        accountant.AccountantGroupId == accountantGroupMemberSearch.AccountantGroupId
+                                                        && accountant.DeleteStatus == DeleteStatus.No                                                        
+                                                    )
+                                                    .OrderBy(accountant => accountant.Id);
 
             if (accountantQuery.Any())
             {

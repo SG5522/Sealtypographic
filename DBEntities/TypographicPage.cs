@@ -1,7 +1,4 @@
-﻿using DBEntities.Base;
-using DBEntities.Consts;
-
-namespace DBEntities
+﻿namespace DBEntities
 {
     /// <summary>
     /// 排版頁
@@ -41,7 +38,7 @@ namespace DBEntities
         /// <summary>
         /// 各印鑑簽印排版位置
         /// </summary>
-        public List<TypographicSealLocation> TypographicSealLocations { get; set; }
+        public List<TypographicResourceLocation> TypographicResourceLocations { get; set; }
 
 
     }

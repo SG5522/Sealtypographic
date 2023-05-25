@@ -40,15 +40,14 @@ namespace SealTypographicWebAPI.Services.Implements
         {
             AccountantSignTemplateDetailViewModel accountantSignTemplateDetailViewModel = new ();
 
-            AccountantSignTemplate? accountantSignTemplateQuery = dbContext.AccountantSignTemplates
-                                                                      .Include(x => x.AccountantSignTemplateLocations)
-                                                                      .FirstOrDefault(x => x.Id == Id);
+            Template? templateQuery = dbContext.Templates
+                                                    .Include(x => x.TemplateLocations)
+                                                    .FirstOrDefault(x => x.Id == Id);
 
-            if(accountantSignTemplateQuery != null) 
+            if(templateQuery != null) 
             {
-                accountantSignTemplateDetailViewModel = mapper.Map<AccountantSignTemplateDetailViewModel>(accountantSignTemplateQuery);
-                accountantSignTemplateDetailViewModel.LocaltionViewModels = mapper.Map<List<AccountantSignTemplateLocationViewModel>>
-                                                                                (accountantSignTemplateQuery.AccountantSignTemplateLocations);
+                accountantSignTemplateDetailViewModel = mapper.Map<AccountantSignTemplateDetailViewModel>(templateQuery);
+                accountantSignTemplateDetailViewModel.LocaltionViewModels = mapper.Map<List<AccountantSignTemplateLocationViewModel>>(templateQuery.TemplateLocations);
                 accountantSignTemplateDetailViewModel.Success();
             }
 
@@ -64,8 +63,8 @@ namespace SealTypographicWebAPI.Services.Implements
         {
             AccountantSignTemplateImageView viewImage = new();
 
-            string? imagePath = dbContext.AccountantSignTemplates.Where(x => x.Id == id)
-                                                                 .Select(x => x.ImageViewFullPath).FirstOrDefault();
+            string? imagePath = dbContext.Templates.Where(x => x.Id == id)
+                                                   .Select(x => x.ImageViewFullPath).FirstOrDefault();
 
             if (imagePath != null)
             {
@@ -85,43 +84,31 @@ namespace SealTypographicWebAPI.Services.Implements
             AccountantSignTemplatePaginate accountantSignTemplatePaginate = new ();            
             int companyId = 1;
 
-            IQueryable<AccountantSignTemplate> accountantSignTemplateQuery = dbContext.AccountantSignTemplates
-                                                                    .Where
-                                                                    (
-                                                                        accountantSignTemplate => accountantSignTemplate.Company.Id == companyId                                                                        
-                                                                        && accountantSignTemplate.DeleteStatus == DeleteStatus.No
-                                                                    );
+            IQueryable<Template> templateQuery = dbContext.Templates
+                                                .Where
+                                                (
+                                                    template => template.Company.Id == companyId
+                                                    && template.DeleteStatus == DeleteStatus.No
+                                                    && template.TemplateLocations.Any(x => x.SealType == SealType.Accountant)
+                                                );
 
             if (!string.IsNullOrEmpty(accountantSignTemplateSearch.KeyWord))
             {
-                accountantSignTemplateQuery = accountantSignTemplateQuery
-                                            .Where
-                                            (
-                                                accountantSignTemplate => accountantSignTemplate.Name.Contains(accountantSignTemplateSearch.KeyWord)                
-                                            );
+                templateQuery = templateQuery.Where
+                                (
+                                    accountantSignTemplate => accountantSignTemplate.Name.Contains(accountantSignTemplateSearch.KeyWord)                
+                                );
             }
-            accountantSignTemplateQuery = accountantSignTemplateQuery.OrderBy(temporarySealGroup => temporarySealGroup.Id);
+            templateQuery = templateQuery.OrderBy(temporarySealGroup => temporarySealGroup.Id);
 
-            if (accountantSignTemplateQuery.Any())
+            if (templateQuery.Any())
             {
-                List<AccountantSignTemplateViewModel> thisPageAccountantSignTemplate = accountantSignTemplateQuery                                                                      
-                                                                    .Skip((accountantSignTemplateSearch.PageNumber - 1) * accountantSignTemplateSearch.PageSize)
-                                                                    .Take(accountantSignTemplateSearch.PageSize)
-                                                                    .Select(accountantSignTemplate => new AccountantSignTemplateViewModel()
-                                                                    {
-                                                                        Id = accountantSignTemplate.Id,
-                                                                        Name = accountantSignTemplate.Name,
-                                                                        ImageFullPath = accountantSignTemplate.ThumbnailFullPath,
-                                                                        ThumbnailBase64 = imageService.GetPathToBase64(accountantSignTemplate.ThumbnailFullPath)
-                                                                    })
-                                                                    .ToList();
-
-                accountantSignTemplatePaginate.ViewModels = LoadPaginatedData(accountantSignTemplateQuery, accountantSignTemplateSearch.PageNumber, accountantSignTemplateSearch.PageSize);
+                accountantSignTemplatePaginate.ViewModels = LoadPaginatedData(templateQuery, accountantSignTemplateSearch.PageNumber, accountantSignTemplateSearch.PageSize);
                 accountantSignTemplatePaginate.PageNumber = accountantSignTemplateSearch.PageNumber;
                 accountantSignTemplatePaginate.PageSize = accountantSignTemplateSearch.PageSize;
                 //計算總頁數
-                accountantSignTemplatePaginate.TotalPage = TotalPageUtil.GetTotalPage(accountantSignTemplateQuery.Count(), accountantSignTemplateSearch.PageSize);
-                accountantSignTemplatePaginate.TotalCount = accountantSignTemplateQuery.Count();
+                accountantSignTemplatePaginate.TotalPage = TotalPageUtil.GetTotalPage(templateQuery.Count(), accountantSignTemplateSearch.PageSize);
+                accountantSignTemplatePaginate.TotalCount = templateQuery.Count();
                 accountantSignTemplatePaginate.Success();
             }
             SavePaginateLog(accountantSignTemplatePaginate);
@@ -137,21 +124,20 @@ namespace SealTypographicWebAPI.Services.Implements
             AccountantSignTemplatePaginate accountantSignTemplatePaginate = new();
             int companyId = 1;
 
-            IQueryable<AccountantSignTemplate> accountantSignTemplateQuery = dbContext.AccountantSignTemplates
-                                                                    .Where
-                                                                    (
-                                                                        accountantSignTemplate => accountantSignTemplate.Company.Id == companyId
-                                                                        && accountantSignTemplate.DeleteStatus == DeleteStatus.No
-                                                                    ).OrderBy(accountantSignTemplate => accountantSignTemplate.Id);                                                                        
+            IQueryable<Template> templateQuery = dbContext.Templates.Where
+                                                                   (
+                                                                       accountantSignTemplate => accountantSignTemplate.Company.Id == companyId
+                                                                       && accountantSignTemplate.DeleteStatus == DeleteStatus.No
+                                                                   ).OrderBy(accountantSignTemplate => accountantSignTemplate.Id);
 
-            if (accountantSignTemplateQuery.Any())
+            if (templateQuery.Any())
             {
-                accountantSignTemplatePaginate.ViewModels = LoadPaginatedData(accountantSignTemplateQuery, paginateSearch.PageNumber, paginateSearch.PageSize);
+                accountantSignTemplatePaginate.ViewModels = LoadPaginatedData(templateQuery, paginateSearch.PageNumber, paginateSearch.PageSize);
                 accountantSignTemplatePaginate.PageNumber = paginateSearch.PageNumber;
                 accountantSignTemplatePaginate.PageSize = paginateSearch.PageSize;
                 //計算總頁數
-                accountantSignTemplatePaginate.TotalPage = TotalPageUtil.GetTotalPage(accountantSignTemplateQuery.Count(), paginateSearch.PageSize);
-                accountantSignTemplatePaginate.TotalCount = accountantSignTemplateQuery.Count();
+                accountantSignTemplatePaginate.TotalPage = TotalPageUtil.GetTotalPage(templateQuery.Count(), paginateSearch.PageSize);
+                accountantSignTemplatePaginate.TotalCount = templateQuery.Count();
                 accountantSignTemplatePaginate.Success();
             }
             SavePaginateLog(accountantSignTemplatePaginate);
@@ -171,36 +157,26 @@ namespace SealTypographicWebAPI.Services.Implements
 
             //尋找公司並與會計師簽印關聯
             Company? companyQuery = dbContext.Companys
-                                    .Include(x => x.AccountantSignTemplates)
-                                    .Select(x => new Company 
-                                    { 
-                                        Id = x.Id , 
-                                        Code = x.Code ,
-                                        AccountantSignTemplates = new List<AccountantSignTemplate>()
-                                    })
+                                    .Include(x => x.Templates)
                                     .FirstOrDefault(x => x.Id == companyId);
 
             if (companyQuery != null) 
             {
-                AccountantSignTemplate accountantSignTemplate = mapper.Map<AccountantSignTemplate>(accountantSignTemplateForm);
+                Template template = mapper.Map<Template>(accountantSignTemplateForm);
+                List<TemplateLocation> templateLocations = new();
                 //儲存圖片(原圖)
-                ImageBase64Info imageBase64Info = imageService.SetImageBase64InfoWithTemplate(companyQuery.Code, SealType.Accountant);
+                ImageBase64Info imageBase64Info = imageService.SetImageBase64InfoWithTemplate(companyQuery.Code, (SealType)SealType.Accountant);
                 imageBase64Info.ImageBase64 = accountantSignTemplateForm.ImageBase64;
-                accountantSignTemplate.ImageViewFullPath = await imageService.GetSavedImageFilePath(imageBase64Info);
+                template.ImageViewFullPath = await imageService.GetSavedImageFilePath(imageBase64Info);
                 //儲存縮圖
                 imageBase64Info.ImageBase64 = accountantSignTemplateForm.ImageBase64Thumbnail;
-                accountantSignTemplate.ThumbnailFullPath = await imageService.GetSavedImageThumbnailFilePath(imageBase64Info, false);
+                template.ThumbnailFullPath = await imageService.GetSavedImageThumbnailFilePath(imageBase64Info, false);
+                
+                NewTemplateLoction(accountantSignTemplateForm.AccountantSignTemplateLocationForms, templateLocations);
+                BaseInputAccountantSignTemplate(template, true, userid);
+                template.TemplateLocations = templateLocations;
+                companyQuery.Templates.Add(template);
 
-                List<AccountantSignTemplateLocation> accountantSignTemplateLocations = new();
-                foreach (AccountantSignTemplateLocationForm accountantSignTemplateLocationForm in accountantSignTemplateForm.AccountantSignTemplateLocationForms)
-                {                   
-                    accountantSignTemplateLocations.Add(mapper.Map<AccountantSignTemplateLocation>(accountantSignTemplateLocationForm));                    
-                }
-                BaseInputAccountantSignTemplate(accountantSignTemplate, true, userid);
-                accountantSignTemplate.AccountantSignTemplateLocations = accountantSignTemplateLocations;                
-                companyQuery.AccountantSignTemplates.Add(accountantSignTemplate);
-                dbContext.Entry(companyQuery).State = EntityState.Unchanged;
-                dbContext.AccountantSignTemplates.Add(accountantSignTemplate);                
                 await dbContext.SaveChangesAsync();
                 response.Success();
             }
@@ -216,50 +192,50 @@ namespace SealTypographicWebAPI.Services.Implements
         {
             ResponseViewModel response = new ();
             int userid = 1;
-            AccountantSignTemplate? accountantSignTemplateQuery = dbContext.AccountantSignTemplates.Include(x => x.AccountantSignTemplateLocations)
-                                                                                                   .Include(x => x.Company)
-                                                                                                   .FirstOrDefault(x => x.Id == accountantSignTemplateUpdateForm.Id);
+            Template? templateQuery = dbContext.Templates.Include(x => x.TemplateLocations)
+                                                                       .Include(x => x.Company)
+                                                                       .FirstOrDefault(x => x.Id == accountantSignTemplateUpdateForm.Id);
 
-            if (accountantSignTemplateQuery != null)
+            if (templateQuery != null)
             {
                 //儲存圖片(原圖)                
-                imageService.SaveImage(accountantSignTemplateUpdateForm.ImageBase64, accountantSignTemplateQuery.ImageViewFullPath, false);
+                await imageService.SaveImageAsync(accountantSignTemplateUpdateForm.ImageBase64, templateQuery.ImageViewFullPath, false);
                 //儲存縮圖                
-                imageService.SaveImage(accountantSignTemplateUpdateForm.ImageBase64Thumbnail, accountantSignTemplateQuery.ThumbnailFullPath, false);
+                await imageService.SaveImageAsync(accountantSignTemplateUpdateForm.ImageBase64Thumbnail, templateQuery.ThumbnailFullPath, false);
 
-                mapper.Map(accountantSignTemplateUpdateForm, accountantSignTemplateQuery);
-                BaseInputAccountantSignTemplate(accountantSignTemplateQuery, false, userid);
+                mapper.Map(accountantSignTemplateUpdateForm, templateQuery);
+                BaseInputAccountantSignTemplate(templateQuery, false, userid);
 
                 //刪除樣本座標
                 foreach (int deleteLocationId in accountantSignTemplateUpdateForm.DeleteLocationIds)
                 {
-                    AccountantSignTemplateLocation? accountantSignTemplateLocation = accountantSignTemplateQuery.AccountantSignTemplateLocations
-                                                                                                          .FirstOrDefault(x => x.Id == deleteLocationId);
-                    if (accountantSignTemplateLocation != null)
+                    TemplateLocation? templateLocation = templateQuery.TemplateLocations.FirstOrDefault(x => x.Id == deleteLocationId);
+                    if (templateLocation != null)
                     {
-                        dbContext.Remove(accountantSignTemplateLocation);
+                        templateQuery.TemplateLocations.Remove(templateLocation);                        
                     }
                 }
                 //修改樣本座標
-                foreach (AccountantSignTemplateLocationUpdateForm signTemplateLocationUpdateForm in accountantSignTemplateUpdateForm.LocationUpdateForms)
+                foreach (AccountantSignTemplateLocationUpdateForm locationUpdateForm in accountantSignTemplateUpdateForm.LocationUpdateForms)
                 {
-                    AccountantSignTemplateLocation? accountantSignTemplateLocation = accountantSignTemplateQuery.AccountantSignTemplateLocations
-                                                                                .FirstOrDefault(x => x.Id == signTemplateLocationUpdateForm.Id);
-                    if(accountantSignTemplateLocation != null) 
+                    TemplateLocation? templateLocation = templateQuery.TemplateLocations.FirstOrDefault(x => x.Id == locationUpdateForm.Id);
+                    if(templateLocation != null) 
                     {
-                        mapper.Map(signTemplateLocationUpdateForm, accountantSignTemplateLocation);
+                        mapper.Map(locationUpdateForm, templateLocation);
+                        templateLocation.SealType = SealType.Accountant;
+                        //之後要調整為不用轉型
+                        templateLocation.SubSealType = SealMappingConfigUtil.GetSubSealTypeWithAccountant((AccountantSignType)locationUpdateForm.AccountantSignType);
                     }
                 }
                 //新增樣本座標
-                foreach (AccountantSignTemplateLocationForm locationForm in accountantSignTemplateUpdateForm.LocationForms)
-                {
-                    accountantSignTemplateQuery.AccountantSignTemplateLocations.Add(mapper.Map<AccountantSignTemplateLocation>(locationForm));
-                }
+                NewTemplateLoction(accountantSignTemplateUpdateForm.LocationForms, templateQuery.TemplateLocations);
+
                 await dbContext.SaveChangesAsync();
                 response.Success();
             }           
             return response;
         }
+
         /// <summary>
         /// 刪除會計師簽印樣板
         /// </summary>
@@ -270,12 +246,12 @@ namespace SealTypographicWebAPI.Services.Implements
             ResponseViewModel response = new();
             int userId = 0;
 
-            AccountantSignTemplate? accountantSignTemplateQuery = dbContext.AccountantSignTemplates.Find(Id);
+            Template? templateQuery = dbContext.Templates.Find(Id);
 
-            if(accountantSignTemplateQuery != null) 
+            if(templateQuery != null) 
             {
-                accountantSignTemplateQuery.DeleteStatus = DeleteStatus.Yes;
-                BaseInputAccountantSignTemplate(accountantSignTemplateQuery, false, userId);
+                templateQuery.DeleteStatus = DeleteStatus.Yes;
+                BaseInputAccountantSignTemplate(templateQuery, false, userId);
                 dbContext.SaveChanges();
                 response.Success();
             }
@@ -283,20 +259,19 @@ namespace SealTypographicWebAPI.Services.Implements
             {
                 response.DeleteAccountantSignTemplateNoData();
             }
-
             return response;
         }
 
         /// <summary>
         /// 讀取分頁資料
         /// </summary>        
-        /// <param name="accountantSignTemplateQuery">樣板</param>
+        /// <param name="templateQuery">樣板</param>
         /// <param name="pageNumber">頁次</param>
         /// <param name="pageSize">頁面大小</param>        
-        private List<AccountantSignTemplateViewModel> LoadPaginatedData(IQueryable<AccountantSignTemplate> accountantSignTemplateQuery, int pageNumber, int pageSize)
+        private List<AccountantSignTemplateViewModel> LoadPaginatedData(IQueryable<Template> templateQuery, int pageNumber, int pageSize)
         {
             return
-                accountantSignTemplateQuery
+                templateQuery
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
                 .Select(accountantSignTemplate => new AccountantSignTemplateViewModel()
@@ -305,7 +280,8 @@ namespace SealTypographicWebAPI.Services.Implements
                     Name = accountantSignTemplate.Name,
                     ImageFullPath = accountantSignTemplate.ThumbnailFullPath,
                     ThumbnailBase64 = imageService.GetPathToBase64(accountantSignTemplate.ThumbnailFullPath)
-                }).ToList();
+                })
+                .ToList();
         }
 
         /// <summary>
@@ -322,21 +298,38 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <summary>
         /// 資料新增修改時基本資料輸入
         /// </summary>
-        /// <param name="accountantSignTemplate">DB上的樣板資料</param>
+        /// <param name="template">DB上的樣板資料</param>
         /// <param name="isCreate">確認是否新增還是更新的動作</param>
         /// <param name="userid">使用者ID</param>
-        private static void BaseInputAccountantSignTemplate(AccountantSignTemplate accountantSignTemplate, bool isCreate, int userid)
+        private static void BaseInputAccountantSignTemplate(Template template, bool isCreate, int userid)
         {
             if (isCreate)
             {
-                accountantSignTemplate.CreateUserId = userid;
-                accountantSignTemplate.CreateDate = DateTime.Now;
-                accountantSignTemplate.DeleteStatus = DeleteStatus.No;
+                template.CreateUserId = userid;
+                template.CreateDate = DateTime.Now;
+                template.DeleteStatus = DeleteStatus.No;
             }
             else
             {
-                accountantSignTemplate.UpdateUserId = userid;
-                accountantSignTemplate.UpdateDate = DateTime.Now;
+                template.UpdateUserId = userid;
+                template.UpdateDate = DateTime.Now;
+            }
+        }
+
+        /// <summary>
+        /// 新增樣版位置
+        /// </summary>
+        /// <param name="accountantSignTemplateLocationForms"></param>
+        /// <param name="templateLocations"></param>
+        private void NewTemplateLoction(List<AccountantSignTemplateLocationForm> accountantSignTemplateLocationForms, List<TemplateLocation> templateLocations)
+        {
+            foreach (AccountantSignTemplateLocationForm accountantSignTemplateLocationForm in accountantSignTemplateLocationForms)
+            {
+                TemplateLocation templateLocation = mapper.Map<TemplateLocation>(accountantSignTemplateLocationForm);
+                templateLocation.SealType = SealType.Accountant;
+                //之後要調整為不用轉型
+                templateLocation.SubSealType = SealMappingConfigUtil.GetSubSealTypeWithAccountant((AccountantSignType)accountantSignTemplateLocationForm.AccountantSignType);
+                templateLocations.Add(templateLocation);
             }
         }
     }

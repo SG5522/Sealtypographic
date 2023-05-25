@@ -1,7 +1,7 @@
-﻿using DBEntitiesExtension.Base;
-using DBEntitiesExtension.Consts;
+﻿using DBEntities.Base;
+using DBEntities.Consts;
 
-namespace DBEntitiesExtension
+namespace DBEntities
 {
     /// <summary>
     /// 樣板位置

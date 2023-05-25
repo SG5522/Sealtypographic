@@ -20,12 +20,17 @@ namespace DBEntities
         /// <summary>
         /// 季度
         /// </summary>
-        public string Quarter { get; set; }
+        public Quarter Quarter { get; set; }
 
         /// <summary>
         /// 客戶
         /// </summary>
         public Customer Customer { get; set; }
+
+        /// <summary>
+        /// 上傳檔案資料表
+        /// </summary>
+        public UploadFile UploadFile { get; set; }
 
         /// <summary>
         /// 排版頁

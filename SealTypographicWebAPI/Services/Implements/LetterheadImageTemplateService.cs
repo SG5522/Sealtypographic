@@ -3,7 +3,6 @@ using DBEntities;
 using DBEntities.Consts;
 using Microsoft.EntityFrameworkCore;
 using SealTypographicWebAPI.Models;
-using SealTypographicWebAPI.Models.AccountantSignTemplate;
 using SealTypographicWebAPI.Models.BaseModels;
 using SealTypographicWebAPI.Models.LetterheadImageTemplate;
 using SealTypographicWebAPI.Utils;
@@ -41,15 +40,14 @@ namespace SealTypographicWebAPI.Services.Implements
         {
             LetterheadImageTemplateDetailViewModel letterheadImageTemplateDetailViewModel = new ();
 
-            LetterheadImageTemplate? letterheadImageTemplateQuery = dbContext.LetterheadImageTemplates
-                                                                      .Include(x => x.LetterheadImageTemplateLocations)
-                                                                      .FirstOrDefault(x => x.Id == Id);
+            Template? templateQuery = dbContext.Templates
+                                                .Include(x => x.TemplateLocations)
+                                                .FirstOrDefault(x => x.Id == Id);
 
-            if(letterheadImageTemplateQuery != null) 
+            if(templateQuery != null) 
             {
-                letterheadImageTemplateDetailViewModel = mapper.Map<LetterheadImageTemplateDetailViewModel>(letterheadImageTemplateQuery);
-                letterheadImageTemplateDetailViewModel.LocaltionViewModels = mapper.Map<List<LetterheadImageTemplateLocationViewModel>>
-                                                                                (letterheadImageTemplateQuery.LetterheadImageTemplateLocations);
+                letterheadImageTemplateDetailViewModel = mapper.Map<LetterheadImageTemplateDetailViewModel>(templateQuery);
+                letterheadImageTemplateDetailViewModel.LocaltionViewModels = mapper.Map<List<LetterheadImageTemplateLocationViewModel>>(templateQuery.TemplateLocations);
                 letterheadImageTemplateDetailViewModel.Success();
 
             }
@@ -66,8 +64,8 @@ namespace SealTypographicWebAPI.Services.Implements
         {
             LetterheadImageTemplateImageView viewImage = new();
 
-            string? imagePath = dbContext.LetterheadImageTemplates.Where(x => x.Id == id)
-                                                                  .Select(x => x.ImageViewFullPath).FirstOrDefault();
+            string? imagePath = dbContext.Templates.Where(x => x.Id == id)
+                                                   .Select(x => x.ImageViewFullPath).FirstOrDefault();
 
             if (imagePath != null)
             {
@@ -87,31 +85,32 @@ namespace SealTypographicWebAPI.Services.Implements
             LetterheadImageTemplatePaginate letterheadImageTemplatePaginate = new ();            
             int companyId = 1;
 
-            IQueryable<LetterheadImageTemplate> letterheadImageTemplateQuery = dbContext.LetterheadImageTemplates
-                                                                    .Where
-                                                                    (
-                                                                        letterheadImageTemplate => letterheadImageTemplate.Company.Id == companyId                                                                        
-                                                                        && letterheadImageTemplate.DeleteStatus == DeleteStatus.No
-                                                                    );
+            IQueryable<Template> templateQuery = dbContext.Templates
+                                                          .Where
+                                                          (
+                                                              template => template.Company.Id == companyId                                                                        
+                                                              && template.DeleteStatus == DeleteStatus.No
+                                                              && template.TemplateLocations.Any(x => x.SealType == SealType.Letterhead)
+                                                          );
 
             if (!string.IsNullOrEmpty(letterheadImageTemplateSearch.KeyWord))
             {
-                letterheadImageTemplateQuery = letterheadImageTemplateQuery
+                templateQuery = templateQuery
                                             .Where
                                             (
                                                 letterheadImageTemplate => letterheadImageTemplate.Name.Contains(letterheadImageTemplateSearch.KeyWord)                
                                             );
             }
-            letterheadImageTemplateQuery = letterheadImageTemplateQuery.OrderBy(temporarySealGroup => temporarySealGroup.Id);
+            templateQuery = templateQuery.OrderBy(temporarySealGroup => temporarySealGroup.Id);
 
-            if (letterheadImageTemplateQuery.Any())
+            if (templateQuery.Any())
             {
-                letterheadImageTemplatePaginate.ViewModels = LoadPaginatedData(letterheadImageTemplateQuery, letterheadImageTemplateSearch.PageNumber, letterheadImageTemplateSearch.PageSize);
+                letterheadImageTemplatePaginate.ViewModels = LoadPaginatedData(templateQuery, letterheadImageTemplateSearch.PageNumber, letterheadImageTemplateSearch.PageSize);
                 letterheadImageTemplatePaginate.PageNumber = letterheadImageTemplateSearch.PageNumber;
                 letterheadImageTemplatePaginate.PageSize = letterheadImageTemplateSearch.PageSize;
                 //計算總頁數
-                letterheadImageTemplatePaginate.TotalPage = TotalPageUtil.GetTotalPage(letterheadImageTemplateQuery.Count(), letterheadImageTemplateSearch.PageSize);
-                letterheadImageTemplatePaginate.TotalCount = letterheadImageTemplateQuery.Count();
+                letterheadImageTemplatePaginate.TotalPage = TotalPageUtil.GetTotalPage(templateQuery.Count(), letterheadImageTemplateSearch.PageSize);
+                letterheadImageTemplatePaginate.TotalCount = templateQuery.Count();
                 letterheadImageTemplatePaginate.Success();
             }
             SavePaginateLog(letterheadImageTemplatePaginate);
@@ -128,12 +127,11 @@ namespace SealTypographicWebAPI.Services.Implements
             LetterheadImageTemplatePaginate letterheadImageTemplatePaginate = new();
             int companyId = 1;
 
-            IQueryable<LetterheadImageTemplate> letterheadImageTemplateQuery = dbContext.LetterheadImageTemplates
-                                                                            .Where
-                                                                            (
-                                                                                letterheadImageTemplate => letterheadImageTemplate.Company.Id == companyId
-                                                                                && letterheadImageTemplate.DeleteStatus == DeleteStatus.No
-                                                                            ).OrderBy(letterheadImageTemplate => letterheadImageTemplate.Id);
+            IQueryable<Template> letterheadImageTemplateQuery = dbContext.Templates.Where
+                                                                        (
+                                                                            letterheadImageTemplate => letterheadImageTemplate.Company.Id == companyId
+                                                                            && letterheadImageTemplate.DeleteStatus == DeleteStatus.No
+                                                                        ).OrderBy(letterheadImageTemplate => letterheadImageTemplate.Id);
 
             if (letterheadImageTemplateQuery.Any())
             {
@@ -162,34 +160,26 @@ namespace SealTypographicWebAPI.Services.Implements
 
             //尋找公司並與會計師簽印關聯
             Company? companyQuery = dbContext.Companys
-                                    .Include(x => x.LetterheadImageTemplates)
-                                    .Select(x => new Company 
-                                    { 
-                                        Id = x.Id , 
-                                        Code = x.Code ,
-                                        LetterheadImageTemplates = new List<LetterheadImageTemplate>()
-                                    })
+                                    .Include(x => x.Templates)
                                     .FirstOrDefault(x => x.Id == companyId);
 
             if (companyQuery != null) 
             {                
-                LetterheadImageTemplate letterheadImageTemplate = mapper.Map<LetterheadImageTemplate>(letterheadImageTemplateForm);
-                List<LetterheadImageTemplateLocation> letterheadImageTemplateLocations = new();
+                Template template = mapper.Map<Template>(letterheadImageTemplateForm);
+                List<TemplateLocation> templateLocations = new();
 
                 //儲存圖片(原圖)
-                ImageBase64Info imageBase64Info = imageService.SetImageBase64InfoWithTemplate(companyQuery.Code, SealType.Letterhead);
+                ImageBase64Info imageBase64Info = imageService.SetImageBase64InfoWithTemplate(companyQuery.Code, (SealType)SealType.Letterhead);
                 imageBase64Info.ImageBase64 = letterheadImageTemplateForm.ImageBase64;
-                letterheadImageTemplate.ImageViewFullPath = await imageService.GetSavedImageFilePath(imageBase64Info);
+                template.ImageViewFullPath = await imageService.GetSavedImageFilePath(imageBase64Info);
                 //儲存縮圖
                 imageBase64Info.ImageBase64 = letterheadImageTemplateForm.ImageBase64Thumbnail;
-                letterheadImageTemplate.ThumbnailFullPath = await imageService.GetSavedImageThumbnailFilePath(imageBase64Info, false);
+                template.ThumbnailFullPath = await imageService.GetSavedImageThumbnailFilePath(imageBase64Info, false);
 
-                letterheadImageTemplateLocations.Add(mapper.Map<LetterheadImageTemplateLocation>(letterheadImageTemplateForm.LetterheadTemplateLocationForm));                       
-                BaseInputLetterheadImageTemplate(letterheadImageTemplate, true, userid);
-                letterheadImageTemplate.LetterheadImageTemplateLocations = letterheadImageTemplateLocations;                
-                companyQuery.LetterheadImageTemplates.Add(letterheadImageTemplate);
-                dbContext.Entry(companyQuery).State = EntityState.Unchanged;
-                dbContext.LetterheadImageTemplates.Add(letterheadImageTemplate);                
+                NewTemplateLoction(letterheadImageTemplateForm.LetterheadTemplateLocationForm, templateLocations);                                     
+                BaseInputLetterheadImageTemplate(template, true, userid);
+                template.TemplateLocations = templateLocations;                
+                companyQuery.Templates.Add(template);         
                 await dbContext.SaveChangesAsync();
                 response.Success();
             }
@@ -205,8 +195,8 @@ namespace SealTypographicWebAPI.Services.Implements
         {
             ResponseViewModel response = new ();
             int userid = 1;
-            LetterheadImageTemplate? letterheadImageTemplateQuery = dbContext.LetterheadImageTemplates.Include(x => x.LetterheadImageTemplateLocations)                                                             
-                                                                                                      .FirstOrDefault(x => x.Id == letterheadImageTemplateUpdateForm.Id);
+            Template? letterheadImageTemplateQuery = dbContext.Templates.Include(x => x.TemplateLocations)                     
+                                                                        .FirstOrDefault(x => x.Id == letterheadImageTemplateUpdateForm.Id);
 
             if (letterheadImageTemplateQuery != null)
             {
@@ -218,11 +208,10 @@ namespace SealTypographicWebAPI.Services.Implements
                 mapper.Map(letterheadImageTemplateUpdateForm, letterheadImageTemplateQuery);
                 BaseInputLetterheadImageTemplate(letterheadImageTemplateQuery, false, userid);
 
-                LetterheadImageTemplateLocation? letterheadImageTemplateLocation = letterheadImageTemplateQuery.LetterheadImageTemplateLocations
-                                                                                .FirstOrDefault(x => x.Id == letterheadImageTemplateUpdateForm.LocationUpdateForm.Id);
-                if (letterheadImageTemplateLocation != null)
+                TemplateLocation? templateLocation = letterheadImageTemplateQuery.TemplateLocations.FirstOrDefault(x => x.Id == letterheadImageTemplateUpdateForm.LocationUpdateForm.Id);
+                if (templateLocation != null)
                 {
-                    mapper.Map(letterheadImageTemplateUpdateForm.LocationUpdateForm, letterheadImageTemplateLocation);
+                    mapper.Map(letterheadImageTemplateUpdateForm.LocationUpdateForm, templateLocation);
                 }
 
                 await dbContext.SaveChangesAsync();
@@ -241,12 +230,12 @@ namespace SealTypographicWebAPI.Services.Implements
             ResponseViewModel response = new();
             int userId = 0;
 
-            LetterheadImageTemplate? letterheadImageTemplateQuery = dbContext.LetterheadImageTemplates.Find(Id);
+            Template? templateQuery = dbContext.Templates.Find(Id);
 
-            if(letterheadImageTemplateQuery != null) 
+            if(templateQuery != null) 
             {
-                letterheadImageTemplateQuery.DeleteStatus = DeleteStatus.Yes;
-                BaseInputLetterheadImageTemplate(letterheadImageTemplateQuery, false, userId);
+                templateQuery.DeleteStatus = DeleteStatus.Yes;
+                BaseInputLetterheadImageTemplate(templateQuery, false, userId);
                 dbContext.SaveChanges();
                 response.Success();
             }
@@ -261,13 +250,13 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <summary>
         /// 讀取分頁資料
         /// </summary>        
-        /// <param name="letterheadImageTemplateQuery">信頭樣板</param>
+        /// <param name="templateQuery">信頭樣板</param>
         /// <param name="pageNumber">頁次</param>
         /// <param name="pageSize">頁面大小</param>        
-        private List<LetterheadImageTemplateViewModel> LoadPaginatedData(IQueryable<LetterheadImageTemplate> letterheadImageTemplateQuery, int pageNumber, int pageSize)
+        private List<LetterheadImageTemplateViewModel> LoadPaginatedData(IQueryable<Template> templateQuery, int pageNumber, int pageSize)
         {
             return
-                letterheadImageTemplateQuery
+                templateQuery
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
                 .Select(letterheadImageTemplate => new LetterheadImageTemplateViewModel()
@@ -293,22 +282,36 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <summary>
         /// 資料新增修改時基本資料輸入
         /// </summary>
-        /// <param name="letterheadImageTemplate">DB上的樣板資料</param>
+        /// <param name="template">DB上的樣板資料</param>
         /// <param name="isCreate">確認是否新增還是更新的動作</param>
         /// <param name="userid">使用者ID</param>
-        private static void BaseInputLetterheadImageTemplate(LetterheadImageTemplate letterheadImageTemplate, bool isCreate, int userid)
+        private static void BaseInputLetterheadImageTemplate(Template template, bool isCreate, int userid)
         {
             if (isCreate)
             {
-                letterheadImageTemplate.CreateUserId = userid;
-                letterheadImageTemplate.CreateDate = DateTime.Now;
-                letterheadImageTemplate.DeleteStatus = DeleteStatus.No;
+                template.CreateUserId = userid;
+                template.CreateDate = DateTime.Now;
+                template.DeleteStatus = DeleteStatus.No;
             }
             else
             {
-                letterheadImageTemplate.UpdateUserId = userid;
-                letterheadImageTemplate.UpdateDate = DateTime.Now;
+                template.UpdateUserId = userid;
+                template.UpdateDate = DateTime.Now;
             }
+        }
+
+        /// <summary>
+        /// 新增樣版位置
+        /// </summary>
+        /// <param name="letterheadImageTemplateLocationForm"></param>
+        /// <param name="templateLocations"></param>
+        private void NewTemplateLoction(LetterheadImageTemplateLocationForm letterheadImageTemplateLocationForm, List<TemplateLocation> templateLocations)
+        {
+            TemplateLocation templateLocation = mapper.Map<TemplateLocation>(letterheadImageTemplateLocationForm);
+            templateLocation.SealType = SealType.Letterhead;
+            //之後要調整為不用轉型
+            templateLocation.SubSealType = SubSealType.Letterhead;
+            templateLocations.Add(templateLocation);            
         }
     }
 }

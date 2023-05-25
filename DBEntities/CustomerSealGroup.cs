@@ -3,14 +3,14 @@
 namespace DBEntities
 {
     /// <summary>
-    /// 客戶印鑑季度歷程資料表
+    /// 客戶印鑑季度資料表
     /// </summary>
-    public class CustomerSealQuarterJournal : BaseReviewData
+    public class CustomerSealGroup : BaseReviewData
     {
         /// <summary>
-        /// 印鑑季度
+        /// 季度
         /// </summary>
-        public string Quarter { get; set; }
+        public Quarter Quarter { get; set; }
 
         /// <summary>
         /// 客戶基本資料表
@@ -18,8 +18,8 @@ namespace DBEntities
         public Customer Customer { get; set; }
 
         /// <summary>
-        /// 客戶印鑑歷程表
+        /// 排版素材
         /// </summary>
-        public List<CustomerSealJournal> CustomerSealJournals { get; set; }
+        public List<TypographicResource> TypographicResources { get; set; }
     }
 }

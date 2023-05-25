@@ -34,5 +34,15 @@ namespace DBEntities
         /// 會計師事務所(公司)資料表
         /// </summary>
         public Company Company { get; set; }
+
+        /// <summary>
+        /// 排版素材
+        /// </summary>
+        public List<TypographicResource> TypographicResources { get; set; }
+
+        /// <summary>
+        /// PDF排版資訊
+        /// </summary>
+        public List<TypographicPDF> TypographicPDFs { get; set; }
     }
 }

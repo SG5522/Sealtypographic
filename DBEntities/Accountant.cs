@@ -30,6 +30,6 @@ namespace DBEntities
         /// <summary>
         /// 會計師印鑑資料(歷程)
         /// </summary>
-        public List<AccountantSignGroupJournal> AccountantSignGroupJournals { get; set; }
+        public List<AccountantSignGroup> AccountantSignGroups { get; set; }
     }
 }

@@ -1,7 +1,4 @@
 ﻿using Microsoft.Extensions.Localization;
-using SealTypographicWebAPI.Config;
-using DBEntities.Consts;
-using SealTypographicWebAPI.Models.SealMappingConfig;
 using SealTypographicWebAPI.Models.TemplateConfig;
 using Microsoft.OpenApi.Extensions;
 

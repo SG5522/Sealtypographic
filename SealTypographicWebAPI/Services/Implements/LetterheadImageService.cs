@@ -2,13 +2,11 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
 using SealTypographicWebAPI.Config;
-using DBEntities.Consts;
-using DBEntities;
 using SealTypographicWebAPI.Models;
 using SealTypographicWebAPI.Models.Letterhead;
-using System.ComponentModel.Design;
-using Microsoft.Extensions.Options;
-using System.Linq;
+using SealTypographicWebAPI.Utils;
+using DBEntities;
+using DBEntities.Consts;
 
 namespace SealTypographicWebAPI.Services.Implements
 {
@@ -55,7 +53,7 @@ namespace SealTypographicWebAPI.Services.Implements
         }
 
         /// <summary>
-        /// 取得信頭名稱與圖片建立日期
+        /// 取得信頭名稱與圖片群組建立日期
         /// </summary>
         /// <param name="letterheadId">信頭Id</param>
         /// <returns></returns>
@@ -63,19 +61,19 @@ namespace SealTypographicWebAPI.Services.Implements
         {
             LetterheadImageCreateDateViews letterheadImageCreateDateViews = new();
 
-            Letterhead? letterhead = dbContext.Letterheads.Include(x => x.LetterheadImageJournals)
+            Letterhead? letterhead = dbContext.Letterheads.Include(x => x.TypographicResources)
                                     .FirstOrDefault(letterhead => letterhead.Id == letterheadId);
 
             if (letterhead != null)
             {
                 letterheadImageCreateDateViews.Name = letterhead.Name;
-                letterheadImageCreateDateViews.CreateDateViews = letterhead.LetterheadImageJournals
+                letterheadImageCreateDateViews.CreateDateViews = letterhead.TypographicResources
                                                                 .Where(x => x.DeleteStatus == DeleteStatus.No)
-                                                                .Select(letterheadImageJournal => new LetterheadImageCreateDateView()
+                                                                .Select(typographyResource => new LetterheadImageCreateDateView()
                                                                 {
-                                                                    Id = letterheadImageJournal.Id,
-                                                                    GroupCreateDate = letterheadImageJournal.CreateDate,
-                                                                    Status = letterheadImageJournal.Status
+                                                                    Id = typographyResource.Id,
+                                                                    GroupCreateDate = letterhead.CreateDate,
+                                                                    Status = (LetterheadImageStatus)letterhead.Status
                                                                 })
                                                                 .OrderByDescending(x => x.Id)
                                                                 .ToList();
@@ -97,15 +95,15 @@ namespace SealTypographicWebAPI.Services.Implements
                 Id = id,
             };
 
-            LetterheadImageJournal? letterheadImageJournalQuery = dbContext.LetterheadImageJournals.FirstOrDefault
-                                                                    (
-                                                                        x => x.Id == id
-                                                                        && x.DeleteStatus == DeleteStatus.No                    
-                                                                    );      
+            TypographicResource? typographyResource = dbContext.TypographicResources.FirstOrDefault
+                                                                (
+                                                                    x => x.Id == id
+                                                                    && x.DeleteStatus == DeleteStatus.No                    
+                                                                );      
                 
-            if (letterheadImageJournalQuery != null)
+            if (typographyResource != null)
             {                                
-                letterheadImageViewModels.ImageBase64 = imageService.GetPathToBase64(letterheadImageJournalQuery.ImageFullPath); //資料庫取得圖檔路徑轉BASE64                                                                                  
+                letterheadImageViewModels.ImageBase64 = imageService.GetPathToBase64(typographyResource.ImageFullPath); //資料庫取得圖檔路徑轉BASE64                                                                                  
                 
             }
             letterheadImageViewModels.Success();
@@ -116,15 +114,17 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <summary>
         /// 新增信頭圖片
         /// </summary>
-        /// <param name="letterheadImageForms">信頭圖片</param>
+        /// <param name="letterheadImageForm">信頭圖片</param>
         /// <returns></returns>
-        public async Task<ResponseViewModel> New(LetterheadImageForm letterheadImageForms)
+        public async Task<ResponseViewModel> New(LetterheadImageForm letterheadImageForm)
         {
-            ResponseViewModel response = new();                  
-            Letterhead letterhead = new();
-            LetterheadImageJournal letterheadImage = new();
-            List<LetterheadImageJournal> letterheadImages = new();
-            int userId = 0; //以後從帳號驗證取得Id
+            ResponseViewModel response = new();
+            Letterhead letterhead = new()
+            {
+                TypographicResources = new()
+            };
+
+            int userId = 1; //以後從帳號驗證取得Id
             int companyId = 1;//之後規劃從帳號取得公司ID
 
             //尋找公司並與客戶關聯
@@ -132,27 +132,18 @@ namespace SealTypographicWebAPI.Services.Implements
 
             if(companyQuery != null)
             {
-                ImageBase64Info imageBase64Info = imageService.SetImageBase64InfoWithSeal(companyQuery.Code, SealType.Letterhead);                
+                ImageBase64Info imageBase64Info = imageService.SetImageBase64InfoWithSeal(companyQuery.Code, (SealType)SealType.Letterhead);                
 
                 //信頭基本資料
-                letterhead.Name = letterheadImageForms.Name;
+                letterhead.Name = letterheadImageForm.Name;
                 BaseInputLetterhead(letterhead, true, userId);
 
-                //ImageBase64轉圖檔並存到指定資料夾
-                imageBase64Info.ImageBase64 = letterheadImageForms.ImageBase64;
-                letterheadImage.ImageFullPath = await imageService.GetSavedImageFilePath(imageBase64Info);
-
-                //新增信頭圖片
-                BaseInputImageJournal(letterheadImage, true, userId);
-                letterheadImages.Add(letterheadImage);
-                //關連信頭基本資料
-                letterhead.LetterheadImageJournals = letterheadImages;
+                await NewTypographyResource(letterheadImageForm.ImageBase64, letterhead.TypographicResources, imageBase64Info, userId);                
 
                 companyQuery.Letterheads.Add(letterhead);
                 dbContext.SaveChanges();
                 response.Success();
             }
-                        
             return response;
         }
 
@@ -164,33 +155,29 @@ namespace SealTypographicWebAPI.Services.Implements
         public async Task<ResponseViewModel> Update(LetterheadImageUpdate letterheadImageUpdate)
         {
             ResponseViewModel response = new();            
-            int userId = 0;//之後會從帳號驗證中取得userid
+            int userId = 1;//之後會從帳號驗證中取得userid
 
-            LetterheadImageJournal? updateImageQuery = dbContext.LetterheadImageJournals
-                                                        .Include(letterheadImageJournal => letterheadImageJournal.Letterhead)
-                                                        .ThenInclude(letterheadImageJournal => letterheadImageJournal.Company)
-                                                        .FirstOrDefault(letterheadImageJournal => letterheadImageJournal.Id == letterheadImageUpdate.Id);                                                        
-
+            TypographicResource? updateImageQuery = dbContext.TypographicResources
+                                                        .Include(typographyResource => typographyResource.Letterhead)
+                                                        .ThenInclude(typographyResource => typographyResource.Company)
+                                                        .FirstOrDefault(typographyResource => typographyResource.Id == letterheadImageUpdate.Id);            
 
             if (updateImageQuery != null)
             {
-                LetterheadImageJournal letterheadImageJournal = new();                
-                ImageBase64Info imageBase64Info = imageService.SetImageBase64InfoWithSeal(updateImageQuery.Letterhead.Company.Code, SealType.Letterhead);                
+                List<TypographicResource> typographyResources = new();                
+                ImageBase64Info imageBase64Info = imageService.SetImageBase64InfoWithSeal(updateImageQuery.Letterhead.Company.Code, (SealType)SealType.Letterhead);
 
-                //原圖片狀態變更停用                
-                BaseInputImageJournal(updateImageQuery, false, userId);               
-
-                //ImageBase64轉圖檔並存到指定資料夾                    
-                imageBase64Info.ImageBase64 = letterheadImageUpdate.ImageBase64;
-                letterheadImageJournal.ImageFullPath = await imageService.GetSavedImageFilePath(imageBase64Info);
-                letterheadImageJournal.Letterhead = updateImageQuery.Letterhead;                
-                BaseInputImageJournal(letterheadImageJournal, true, userId);                
-
+                //原圖片狀態變更停用(刪除)
+                updateImageQuery.DeleteStatus = DeleteStatus.Yes;
+                TypographicResourceUtil.BaseInputTypographyResource(updateImageQuery, false, userId);
+                
+                await NewTypographyResource(letterheadImageUpdate.ImageBase64, typographyResources, imageBase64Info, userId);
+                
                 //變更信頭名稱
                 updateImageQuery.Letterhead.Name = letterheadImageUpdate.LetterheadName;                                
-                BaseInputLetterhead(updateImageQuery.Letterhead, false, userId);                                
+                BaseInputLetterhead(updateImageQuery.Letterhead, false, userId);
 
-                dbContext.LetterheadImageJournals.Add(letterheadImageJournal);                
+                updateImageQuery.Letterhead.TypographicResources.AddRange(typographyResources);                
                 dbContext.SaveChanges();
                 response.Success();                
             }
@@ -203,28 +190,36 @@ namespace SealTypographicWebAPI.Services.Implements
         }        
 
         /// <summary>
-        /// 信頭圖片新增修改時基本的資料輸入
+        /// 新增印鑑、簽印、圖片資料
         /// </summary>
-        /// <param name="letterheadImageJournal">Db上的印鑑資料</param>
-        /// <param name="isCreate">對Db所做的行動</param>
-        /// <param name="userId">建立或更新此檔的user的Id</param>
-        private static void BaseInputImageJournal(LetterheadImageJournal letterheadImageJournal, bool isCreate, int userId)
+        /// <param name="imageBase64">輸入圖片</param>
+        /// <param name="typographyResources">要輸入資料庫的資源</param>
+        /// <param name="imageBase64Info">圖檔資訊</param>
+        /// <param name="userId">使用者Id</param>
+        /// <returns></returns>
+        private async Task NewTypographyResource(string imageBase64, List<TypographicResource> typographyResources, ImageBase64Info imageBase64Info, int userId)
         {
-            if (isCreate)
+            TypographicResource typographicResource = new()
             {
-                letterheadImageJournal.CreateUserId = userId;
-                letterheadImageJournal.CreateDate = DateTime.Now;
-                letterheadImageJournal.DeleteStatus = DeleteStatus.No;
-                letterheadImageJournal.Status = LetterheadImageStatus.Enable;
-            }
-            else
-            {
-                letterheadImageJournal.UpdateUserId = userId;
-                letterheadImageJournal.UpdateDate = DateTime.Now;
-                letterheadImageJournal.Status = LetterheadImageStatus.Disabled;
-            }  
-            
+                SealType = SealType.Letterhead,
+                //輸入model之後要修正為新的db
+                SubSealType = SubSealType.Letterhead,
+            };
+            //ImageBase64轉圖檔並存到指定資料夾
+            imageBase64Info.ImageBase64 = imageBase64;
+            typographicResource.ImageFullPath = await imageService.GetSavedImageFilePath(imageBase64Info);
+            typographicResource.ThumbnailFullPath = await imageService.GetSavedImageThumbnailFilePath(imageBase64Info, true);
+
+            TypographicResourceUtil.BaseInputTypographyResource(typographicResource, true, userId);
+            typographyResources.Add(typographicResource);
         }
+
+        /// <summary>
+        /// 信頭基本輸入
+        /// </summary>
+        /// <param name="letterhead"></param>
+        /// <param name="isCreate"></param>
+        /// <param name="userid"></param>
         private static void BaseInputLetterhead(Letterhead letterhead, bool isCreate, int userid)
         {
             if (isCreate)

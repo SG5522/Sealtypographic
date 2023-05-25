@@ -1,4 +1,4 @@
-﻿using DBEntitiesExtension;
+﻿using DBEntities;
 
 namespace SealTypographicWebAPI.Utils
 {

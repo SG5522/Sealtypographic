@@ -18,6 +18,16 @@ namespace DBEntities.Base
         public PapeOrientation PaperOrientation { get; set; }
 
         /// <summary>
+        /// 樣板疊放方式
+        /// </summary>
+        public StackMode? StackMode { get; set; }
+
+        /// <summary>
+        /// 樣板疊放位移
+        /// </summary>
+        public int? StackShift { get; set; }
+
+        /// <summary>
         /// 圖檔路徑
         /// </summary>
         public string ImageViewFullPath { get; set; }

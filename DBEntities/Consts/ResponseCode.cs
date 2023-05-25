@@ -40,20 +40,20 @@ namespace DBEntities.Consts
         /// <summary>
         /// 建立客戶資料時編號重複
         /// </summary>                
-        [Description("客戶編號重複，無法建檔，請重新確認編號")] 
+        [Description("客戶編號重複，無法建檔，請重新確認編號")]
         CreateCustomerNumberRepeat = 2011,
 
         /// <summary>
         /// 更新客戶資料找不到資料
         /// </summary>
-        [Description("查無客戶資料，無法更新客戶資料")] 
+        [Description("查無客戶資料，無法更新客戶資料")]
         UpdateCustomerNoData = 2021,
 
 
         /// <summary>
         /// 刪除客戶時找不到資料
         /// </summary>
-        [Description("查無客戶資料，無法刪除客戶資料")] 
+        [Description("查無客戶資料，無法刪除客戶資料")]
         DeleteCustomerNoData = 2031,
 
         /// <summary>
@@ -77,50 +77,50 @@ namespace DBEntities.Consts
         /// <summary>
         /// 客戶印鑑建立時季度重複
         /// </summary>        
-        [Description("客戶印鑑季度重複，無法建立新的印鑑")] 
+        [Description("客戶印鑑季度重複，無法建立新的印鑑")]
         CreateCustomerSealQuarterRepeat = 2112,
 
         /// <summary>
         /// 更新客戶印鑑時序號重複
         /// </summary>
-        [Description("客戶印鑑序號重複，無法更新印鑑")] 
+        [Description("客戶印鑑序號重複，無法更新印鑑")]
         UpdateCustomerSealSequenceRepeat = 2121,
 
         /// <summary>
         /// 更新客戶印鑑時找不到資料
         /// </summary>
-        [Description("查無客戶印鑑資料，無法更新印鑑")] 
+        [Description("查無客戶印鑑資料，無法更新印鑑")]
         UpdateCustomerSealNoData = 2122,
 
 
         /// <summary>
         /// 刪除客戶印鑑時找不到資料
         /// </summary>
-        [Description("查無客戶印鑑資料，無法刪除印鑑")] 
+        [Description("查無客戶印鑑資料，無法刪除印鑑")]
         DeleteCustomerSealNoData = 2131,
 
         /// <summary>
         /// 會計師無資料
         /// </summary>
-        [Description("查無會計師資料")] 
+        [Description("查無會計師資料")]
         AccountantNoData = 3001,
 
         /// <summary>
         /// 會計師編號重複
         /// </summary>
-        [Description("會計師編號重複，請重新確認")] 
+        [Description("會計師編號重複，請重新確認")]
         AccountantNumberRepeat = 3002,
 
         /// <summary>
         /// 建立會計師資料失敗
         /// </summary>
-        [Description("建立會計師資料失敗")] 
+        [Description("建立會計師資料失敗")]
         CreateAccountantFailed = 3010,
 
         /// <summary>
         /// 建立會計師資料時編號重複
         /// </summary>
-        [Description("會計師編號重複，無法建檔，請重新確認編號")] 
+        [Description("會計師編號重複，無法建檔，請重新確認編號")]
         CreateAccountantNumberRepeat = 3011,
 
         /// <summary>
@@ -132,37 +132,37 @@ namespace DBEntities.Consts
         /// <summary>
         /// 刪除會計師時找不到資料
         /// </summary>
-        [Description("查無會計師資料，無法刪除會計師資料")] 
+        [Description("查無會計師資料，無法刪除會計師資料")]
         DeleteAccountantNoData = 3031,
 
         /// <summary>
         /// 會計師簽印無資料
         /// </summary>
-        [Description("查無會計師簽印資料")] 
+        [Description("查無會計師簽印資料")]
         AccountantSignNoData = 3101,
 
         /// <summary>
         /// 建立會計計簽印時發現重複
         /// </summary>
-        [Description("會計師簽印序號重複，無法建立新的印鑑")] 
+        [Description("會計師簽印序號重複，無法建立新的印鑑")]
         CreateAccountantSignRepeat = 3111,
 
         /// <summary>
         /// 更新會計師簽印時發現重複
         /// </summary>
-        [Description("會計師簽印序號重複，無法更新印鑑")] 
+        [Description("會計師簽印序號重複，無法更新印鑑")]
         UpdateAccountantSignRepeat = 3121,
 
         /// <summary>
         /// 更新會計師簽印時找不到資料
         /// </summary>
-        [Description("查無會計師簽印資料，無法更新印鑑")] 
+        [Description("查無會計師簽印資料，無法更新印鑑")]
         UpdateAccountantSignNoData = 3122,
 
         /// <summary>
         /// 刪除會計師簽印時找不到資料
         /// </summary>
-        [Description("查無會計師簽印資料，無法刪除印鑑")] 
+        [Description("查無會計師簽印資料，無法刪除印鑑")]
         DeleteAccountantSignNoData = 3131,
 
 
@@ -175,25 +175,25 @@ namespace DBEntities.Consts
         /// <summary>
         /// 會計師群組建立時編號重複
         /// </summary>
-        [Description("會計師群組編號重複，無法建立群組，請重新確認編號")] 
+        [Description("會計師群組編號重複，無法建立群組，請重新確認編號")]
         CreateAccountantGroupNumberRepeat = 3211,
 
         /// <summary>
         /// 更新會計師群組找不到資料
         /// </summary>
-        [Description("查無會計師群組資料，無法更新會計師群組資料")] 
+        [Description("查無會計師群組資料，無法更新會計師群組資料")]
         UpdateAccountantGroupNoData = 3221,
 
         /// <summary>
         /// 刪除會計師群組時找不到資料
         /// </summary>
-        [Description("查無會計師群組資料，無法刪除會計師群組資料")] 
+        [Description("查無會計師群組資料，無法刪除會計師群組資料")]
         DeleteAccountantGroupNoData = 3231,
-        
+
         /// <summary>
         /// 信頭無資料
         /// </summary>
-        [Description("查無信頭資料")] 
+        [Description("查無信頭資料")]
         CreateLetterheadNoData = 4012,
 
         /// <summary>
@@ -205,13 +205,13 @@ namespace DBEntities.Consts
         /// <summary>
         /// 刪除信頭時找不到資料
         /// </summary>
-        [Description("查無信頭資料，無法刪除信頭資料")] 
+        [Description("查無信頭資料，無法刪除信頭資料")]
         DeleteLetterheadNoData = 4031,
-       
+
         /// <summary>
         /// 信頭圖像無資料
         /// </summary>
-        [Description("查無信頭圖像資料")] 
+        [Description("查無信頭圖像資料")]
         LetterheadImageNoData = 4102,
 
         /// <summary>
@@ -223,19 +223,19 @@ namespace DBEntities.Consts
         /// <summary>
         /// 刪除信頭圖像找不到資料
         /// </summary>
-        [Description("查無信頭圖像資料，無法刪除信頭圖像資料")] 
+        [Description("查無信頭圖像資料，無法刪除信頭圖像資料")]
         DeleteLetterheadImageNoData = 4131,
 
         /// <summary>
         /// 上傳失敗
         /// </summary>
-        [Description("檔案上傳失敗，請確認網路環境")] 
+        [Description("檔案上傳失敗，請確認網路環境")]
         FileUploadFailed = 6001,
 
         /// <summary>
         /// 找不到上傳資料
         /// </summary>
-        [Description("查無上傳資料，請確認或重新上傳")] 
+        [Description("查無上傳資料，請確認或重新上傳")]
         FileUploadNoData = 6002,
 
         /// <summary>

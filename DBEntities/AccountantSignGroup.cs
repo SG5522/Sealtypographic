@@ -1,6 +1,6 @@
-﻿using DBEntitiesExtension.Base;
+﻿using DBEntities.Base;
 
-namespace DBEntitiesExtension
+namespace DBEntities
 {
     /// <summary>
     /// 會計師簽印建立日期歷程表

@@ -4,7 +4,6 @@ using SealTypographicWebAPI.Services.Implements;
 using SealTypographicWebAPI.Models;
 using DBEntities.Consts;
 
-
 namespace SealTypographicWebAPI.Controllers
 {
     /// <summary>

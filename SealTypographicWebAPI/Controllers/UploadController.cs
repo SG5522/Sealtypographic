@@ -1,10 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using DBEntities.Consts;
 using SealTypographicWebAPI.Models;
 using SealTypographicWebAPI.Models.Upload;
 using SealTypographicWebAPI.Services.Implements;
 using Serilog;
-
+using DBEntities.Consts;
 
 namespace SealTypographicWebAPI.Controllers
 {
