@@ -31,7 +31,7 @@ namespace DJLib
         /// <returns></returns>
         public static string PathImageFileToBase64(string fullPath)
         {
-            Image image = Image.Load(fullPath, out IImageFormat format);
+            Image image = Image.Load(fullPath, out IImageFormat format);            
             return ImageToBase64(image, format);
         }
         

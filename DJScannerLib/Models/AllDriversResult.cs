@@ -3,22 +3,19 @@
     /// <summary>
     /// 取得所有 TWAIN Drivers 結果
     /// </summary>
-    public class GetDriversResult : BaseResult
+    public class AllDriversResult : BaseResult
     {
-        public GetDriversResult() 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AllDriversResult"/> class.
+        /// </summary>
+        public AllDriversResult() 
         {
             Success = false;
-            Drivers = new List<TWAINDriver>();
             DriverNames = new List<string>();
         }
 
         /// <summary>
-        /// 驅動程式
-        /// </summary>
-        public IList<TWAINDriver> Drivers { get; set; }
-
-        /// <summary>
-        /// 驅動程式字串
+        /// 驅動程式名稱
         /// </summary>
         public IList<string> DriverNames { get; set; }
     }

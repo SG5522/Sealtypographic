@@ -136,7 +136,7 @@ namespace SealTypographicWebAPI.Services.Implements
                 Template template = mapper.Map<Template>(customerSealTemplateForm);
                 List<TemplateLocation> templateLocations = new();
                 //儲存圖片(原圖)
-                ImageBase64Info imageBase64Info = imageService.SetImageBase64InfoWithTemplate(companyQuery.Code, (SealType)SealType.Customer);
+                ImageBase64Info imageBase64Info = imageService.SetImageBase64InfoWithTemplate(companyQuery.Code, SealType.Customer);
                 imageBase64Info.ImageBase64 = customerSealTemplateForm.ImageBase64;
                 template.ImageViewFullPath = await imageService.GetSavedImageFilePath(imageBase64Info);
                 //儲存縮圖

@@ -57,17 +57,6 @@ builder.Services.AddCors(options =>
 builder.Host.UseSerilog();// <-SeriLog 
 
 #region -- ConectionString --
-#if DEBUG
-//builder.Services.AddDbContextPool<SealTypographicDbContext>(optionsBuilder =>
-//{
-//    optionsBuilder.UseSqlite(builder.Configuration.GetConnectionString("Sqlite2"), x => x.MigrationsAssembly("Sqlite"));
-
-//    optionsBuilder.UseLoggerFactory(LoggerFactory.Create(builder =>
-//    {
-//        builder.AddConsole().AddDebug();
-//    }));
-//}, 128);
-#endif
 
 builder.Services.AddDbContextPool<SealTypographicDbContext>(optionsBuilder =>
 {

@@ -25,8 +25,7 @@ namespace SealTypographicWebAPI.Services.Implements
         /// </summary>
         /// <param name="dbContext"></param>
         /// <param name="imageService"></param>
-        /// <param name="mapper"></param>
-        /// <param name="options"></param>
+        /// <param name="mapper"></param>        
         public TemporarySealService(SealTypographicDbContext dbContext, ImageService imageService, IMapper mapper)
         {
             this.dbContext = dbContext;
@@ -157,7 +156,7 @@ namespace SealTypographicWebAPI.Services.Implements
             {
                 TemporarySealGroup temporarySealGroup = new();
                 List<TypographicResource> typographicResources = new();                
-                ImageBase64Info imageBase64Info = imageService.SetImageBase64InfoWithSeal(customerQuery.Code, (SealType)SealType.TemporarySeal);
+                ImageBase64Info imageBase64Info = imageService.SetImageBase64InfoWithSeal(customerQuery.Code, SealType.TemporarySeal);
                 int userId = 0;
                 //之後輸入要從前端提供Id
                 temporarySealGroup.Quarter = dbContext.Quarters.Single
@@ -197,7 +196,7 @@ namespace SealTypographicWebAPI.Services.Implements
                                                             .FirstOrDefault(temporarySealGroup => temporarySealGroup.Id == temporarySealUpdateForm.Id);
             if(temporarySealGroup != null)
             {                
-                ImageBase64Info imageBase64Info = imageService.SetImageBase64InfoWithSeal(temporarySealGroup.Customer.Code, (SealType)SealType.TemporarySeal);
+                ImageBase64Info imageBase64Info = imageService.SetImageBase64InfoWithSeal(temporarySealGroup.Customer.Code, SealType.TemporarySeal);
 
                 //更新臨時章印鑑組
                 foreach (TemporarySealUpdate temporarySealUpdate in temporarySealUpdateForm.SealsToUpdate)

@@ -73,7 +73,7 @@ namespace SealTypographicWebAPI.Services.Implements
                                                                 {
                                                                     Id = typographyResource.Id,
                                                                     GroupCreateDate = letterhead.CreateDate,
-                                                                    Status = (LetterheadImageStatus)letterhead.Status
+                                                                    Status = letterhead.Status
                                                                 })
                                                                 .OrderByDescending(x => x.Id)
                                                                 .ToList();
@@ -132,7 +132,7 @@ namespace SealTypographicWebAPI.Services.Implements
 
             if(companyQuery != null)
             {
-                ImageBase64Info imageBase64Info = imageService.SetImageBase64InfoWithSeal(companyQuery.Code, (SealType)SealType.Letterhead);                
+                ImageBase64Info imageBase64Info = imageService.SetImageBase64InfoWithSeal(companyQuery.Code, SealType.Letterhead);                
 
                 //信頭基本資料
                 letterhead.Name = letterheadImageForm.Name;
@@ -158,14 +158,14 @@ namespace SealTypographicWebAPI.Services.Implements
             int userId = 1;//之後會從帳號驗證中取得userid
 
             TypographicResource? updateImageQuery = dbContext.TypographicResources
-                                                        .Include(typographyResource => typographyResource.Letterhead)
-                                                        .ThenInclude(typographyResource => typographyResource.Company)
-                                                        .FirstOrDefault(typographyResource => typographyResource.Id == letterheadImageUpdate.Id);            
+                                                    .Include(typographyResource => typographyResource.Letterhead)
+                                                    .ThenInclude(letterhead => letterhead.Company)
+                                                    .FirstOrDefault(typographyResource => typographyResource.Id == letterheadImageUpdate.Id);            
 
             if (updateImageQuery != null)
             {
                 List<TypographicResource> typographyResources = new();                
-                ImageBase64Info imageBase64Info = imageService.SetImageBase64InfoWithSeal(updateImageQuery.Letterhead.Company.Code, (SealType)SealType.Letterhead);
+                ImageBase64Info imageBase64Info = imageService.SetImageBase64InfoWithSeal(updateImageQuery.Letterhead.Company.Code, SealType.Letterhead);
 
                 //原圖片狀態變更停用(刪除)
                 updateImageQuery.DeleteStatus = DeleteStatus.Yes;

@@ -169,7 +169,7 @@ namespace SealTypographicWebAPI.Services.Implements
                 List<TemplateLocation> templateLocations = new();
 
                 //儲存圖片(原圖)
-                ImageBase64Info imageBase64Info = imageService.SetImageBase64InfoWithTemplate(companyQuery.Code, (SealType)SealType.Letterhead);
+                ImageBase64Info imageBase64Info = imageService.SetImageBase64InfoWithTemplate(companyQuery.Code, SealType.Letterhead);
                 imageBase64Info.ImageBase64 = letterheadImageTemplateForm.ImageBase64;
                 template.ImageViewFullPath = await imageService.GetSavedImageFilePath(imageBase64Info);
                 //儲存縮圖

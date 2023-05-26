@@ -134,7 +134,7 @@ namespace SealTypographicWebAPI.Services.Implements
                 {
                     CustomerSealGroup customerSealGroup = new();
                     //Consts之後要調整到新的Db
-                    ImageBase64Info imageBase64Info = imageService.SetImageBase64InfoWithSeal(customerQuery.Code, (SealType)SealType.Customer);
+                    ImageBase64Info imageBase64Info = imageService.SetImageBase64InfoWithSeal(customerQuery.Code, SealType.Customer);
 
                     customerSealGroup.Quarter = quarter;                    
                     BaseInputQuarterJournal(customerSealGroup, true, userId);                   

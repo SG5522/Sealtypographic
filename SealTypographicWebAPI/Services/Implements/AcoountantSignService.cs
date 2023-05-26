@@ -124,7 +124,7 @@ namespace SealTypographicWebAPI.Services.Implements
             {                
                 AccountantSignGroup accountantSignGroup = new();
                 //之後調整無需轉型
-                ImageBase64Info imageBase64Info = imageService.SetImageBase64InfoWithSeal(accountantQuery.Code, (SealType)SealType.Accountant);
+                ImageBase64Info imageBase64Info = imageService.SetImageBase64InfoWithSeal(accountantQuery.Code, SealType.Accountant);
                 
                 BaseInputSignGroupJournal(accountantSignGroup, true, userId);
                 await NewTypographyResource(accountantSignForms.SignForms, typographyResources, imageBase64Info, userId);
@@ -176,7 +176,7 @@ namespace SealTypographicWebAPI.Services.Implements
                     };
 
                     //之後拔除轉型調整
-                    ImageBase64Info imageBase64Info = imageService.SetImageBase64InfoWithSeal(accountant.Code, (SealType)SealType.Accountant);
+                    ImageBase64Info imageBase64Info = imageService.SetImageBase64InfoWithSeal(accountant.Code, SealType.Accountant);
 
                     //修改(更新ID移入DeleteAccountantSignIds，更新的簽印移入新增CreateAccountantSigns，之後下一階段調整輸入時要拔掉此項)
                     foreach (AccountantSignUpdateForm accountantSignFormUpdate in accountantSignUpdate.UpdateAccountantSigns)
