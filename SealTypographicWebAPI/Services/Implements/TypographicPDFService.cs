@@ -124,45 +124,33 @@ namespace SealTypographicWebAPI.Services.Implements
         {
             ResponseViewModel response = new();
             TypographicPDF? typographicPDF = dbContext.TypographicPDFs
-                                            .Include(x => x.TypographicPages)
-                                            .ThenInclude(x => x.TypographicResourceLocations)
+                                            //.Include(x => x.TypographicPages)
+                                            //.ThenInclude(x => x.TypographicResourceLocations)
                                             .FirstOrDefault(x => x.Id == typographicPDFSaveForm.TypographicPDFId);
+            
+
+            
+
+
 
             if (typographicPDF != null)
             {
-                // 移除現有的 TypographicResourceLocations
-                //foreach (TypographicPage typographicPage in typographicPDF.TypographicPages)
-                //{
-                //    dbContext.RemoveRange(typographicPage.TypographicResourceLocations);
-                //}
+                List<TypographicPage> typographicPages = new ();
 
-                //// 移除現有的 TypographicPages
-                //dbContext.RemoveRange(typographicPDF.TypographicPages);
-                typographicPDF.TypographicPages = new();
-;                               
                 foreach (TypographicPageForm typographicPageForm in typographicPDFSaveForm.Pages)
                 {
-                    typographicPDF.TypographicPages.Add(PageSave(typographicPageForm));
-                }                
-                try
-                {
-                    dbContext.SaveChanges();
-                    response.Success();
+                    TypographicPage typographicPage = PageSave(typographicPageForm);
+                    typographicPage.TypographicPDF = typographicPDF;
+                    typographicPages.Add(typographicPage);
                 }
-                catch (DbUpdateConcurrencyException ex) 
-                {
-                    // 處理樂觀併發例外
-                    foreach (EntityEntry entry in ex.Entries)
-                    {
-                        entry.Reload();
-                    }
 
-                    // 重新執行更新操作
-                    // ...
+                //刪除舊資料
+                dbContext.TypographicResourceLocations.Where(x => x.TypographicPage.TypographicPDF.Id == typographicPDF.Id).ExecuteDelete();
+                dbContext.TypographicPages.Where(x => x.TypographicPDF.Id == typographicPDF.Id).ExecuteDelete();
 
-                    dbContext.SaveChanges();
-                    response.Success();
-                }
+                dbContext.TypographicPages.AddRange(typographicPages);
+                dbContext.SaveChanges();
+                response.Success();
             }            
             return response;
         }
