@@ -12,18 +12,19 @@ namespace SealTypographicWebAPI.Models.TypographicPDF
         /// <summary>
         ///輸入客戶編號或名稱
         /// </summary>        
-        [Required]
-        public string CustomerKeyWord { get; set; }
+        /// <example>CUS001 or A公司</example>
+        public string? CustomerKeyWord { get; set; }
 
         /// <summary>
         /// 季度
         /// </summary>
+        /// <example>110Q1</example>
         [MaxLength(5)]        
         public string? Quarter { get; set; }
 
         /// <summary>
         /// 建檔狀態(審核狀態)
         /// </summary>
-        public ReviewStatus ReviewStatus { get; set; }
+        public ReviewStatus? ReviewStatus { get; set; }
     }
 }

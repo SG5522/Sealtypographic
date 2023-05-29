@@ -29,10 +29,17 @@ namespace SealTypographicWebAPI.Services
         TypographicPDFNewResronse New(TypographicPDFForm typographicPDFForm);
 
         /// <summary>
-        /// 建立PDF排版資訊
+        /// 儲存PDF排版資訊(更新資料)
         /// </summary>
         /// <param name="typographicPDFSaveForm"></param>
         /// <returns></returns>
         ResponseViewModel Save(TypographicPDFSaveForm typographicPDFSaveForm);
+
+        /// <summary>
+        /// 變更PDF排版建檔狀態(未來會變更為審核狀態)
+        /// </summary>
+        /// <param name="typographicPDFId">PDF排版ID</param>
+        /// <returns></returns>
+        ResponseViewModel Approval(int typographicPDFId);
     }
 }

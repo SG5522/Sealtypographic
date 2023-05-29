@@ -1,4 +1,6 @@
-﻿namespace SealTypographicWebAPI.Models.TypographicPDF
+﻿using DBEntities.Consts;
+
+namespace SealTypographicWebAPI.Models.TypographicPDF
 {
     /// <summary>
     /// 排版資訊
@@ -19,6 +21,11 @@
         /// 客戶Id
         /// </summary>
         public int CustomerId { get; set; }
+
+        /// <summary>
+        /// 季度
+        /// </summary>
+        public string Quarter { get; set; }
 
         /// <summary>
         /// 排版頁數

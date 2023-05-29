@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Azure;
+using DBEntities;
+using Microsoft.AspNetCore.Mvc;
 using SealTypographicWebAPI.Models;
 using SealTypographicWebAPI.Models.TypographicPDF;
 using SealTypographicWebAPI.Services;
@@ -33,7 +35,7 @@ namespace SealTypographicWebAPI.Controllers
         [HttpGet("{id}")]
         public TypographicPagesResponse EditPages(int id)
         {
-            TypographicPagesResponse typographicPageResponse = new();            
+            TypographicPagesResponse typographicPageResponse = new();
             return typographicPageResponse;
         }
 
@@ -56,7 +58,7 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="typographicPDFPageSearch">排板PDFPage搜尋</param> 
         /// <returns></returns>
         [HttpGet("[Action]")]
-        public TypographicPageViewModel PageViewModel(TypographicPDFPageSearch typographicPDFPageSearch) 
+        public TypographicPageViewModel PageViewModel(TypographicPDFPageSearch typographicPDFPageSearch)
         {
             TypographicPageViewModel typographicPageViewModel = new();
             return typographicPageViewModel;
@@ -71,7 +73,18 @@ namespace SealTypographicWebAPI.Controllers
         [HttpGet]
         public TypographicPDFPaginateViewModel Paginate([FromQuery] TypographicPDFSearch typographicPDFSearch)
         {
-            TypographicPDFPaginateViewModel typographicPDFPaginateViewModel = new ();
+            TypographicPDFPaginateViewModel typographicPDFPaginateViewModel = new();
+            try
+            {
+                Log.Information("TypographicPDF paginate input {@Input}", typographicPDFSearch);
+                typographicPDFPaginateViewModel = typographicPDFService.GetPaginate(typographicPDFSearch);
+                Log.Information("TypographicPDF paginate output {@Output}", typographicPDFPaginateViewModel);
+            }
+            catch (Exception ex)
+            {
+                Log.Error("TypographicPDF paginate error {@Error}", ex.Message);
+                typographicPDFPaginateViewModel.DbError();
+            }
             return typographicPDFPaginateViewModel;
         }
 
@@ -83,16 +96,18 @@ namespace SealTypographicWebAPI.Controllers
         [HttpPost]
         public TypographicPDFNewResronse New(TypographicPDFForm typographicPDFForm)
         {
-            TypographicPDFNewResronse typographicPDFNewResronse = new();                            
+            TypographicPDFNewResronse typographicPDFNewResronse = new();
             try
             {
+                Log.Information("TypographicPDF new input {@Input}", typographicPDFNewResronse);
                 typographicPDFNewResronse = typographicPDFService.New(typographicPDFForm);
+                Log.Information("TypographicPDF new output {@Output}", typographicPDFNewResronse);
             }
             catch (Exception ex)
             {
                 Log.Error("TypographicPDF New error {@Error}", ex.Message);
-                typographicPDFNewResronse.Error();
-            }                
+                typographicPDFNewResronse.DbError();
+            }
             return typographicPDFNewResronse;
         }
 
@@ -106,12 +121,36 @@ namespace SealTypographicWebAPI.Controllers
             ResponseViewModel response = new();
             try
             {
+                Log.Information("TypographicPDF save input {@Input}", typographicPDFSaveForm);
                 response = typographicPDFService.Save(typographicPDFSaveForm);
+                Log.Information("TypographicPDF save output {@Output}", response);
             }
             catch (Exception ex)
             {
-                Log.Error("TypographicPDF New error {@Error}", ex.Message);
-                response.Error();
+                Log.Error("TypographicPDF save error {@Error}", ex.Message);
+                response.DbError();
+            }
+            return response;
+        }
+
+        /// <summary>
+        /// 變更PDF排版建檔狀態為完成
+        /// </summary>        
+        /// <param name="typographicPDFId">排板資訊(存檔使用)</param>        
+        [HttpPut("{typographicPDFId}")]
+        public ResponseViewModel Approval(int typographicPDFId)
+        {
+            ResponseViewModel response = new();
+            try
+            {
+                Log.Information("TypographicPDF save input {@Input}", typographicPDFId);
+                response = typographicPDFService.Approval(typographicPDFId);
+                Log.Information("TypographicPDF save output {@Output}", response);
+            }
+            catch (Exception ex)
+            {
+                Log.Error("TypographicPDF save error {@Error}", ex.Message);
+                response.DbError();
             }
             return response;
         }
