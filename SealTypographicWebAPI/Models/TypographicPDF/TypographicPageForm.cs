@@ -6,6 +6,17 @@
     public class TypographicPageForm
     {
         /// <summary>
+        /// new 
+        /// </summary>
+        public TypographicPageForm() 
+        {
+            CustomerSealLocations = new();
+            AccountantSingLocations = new();
+            LetterheadImageLocations = new();
+            TemporarySealLocations = new();
+        }
+
+        /// <summary>
         /// 頁數
         /// </summary>        
         /// <example>1</example>

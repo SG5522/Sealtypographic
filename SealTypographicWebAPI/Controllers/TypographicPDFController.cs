@@ -1,6 +1,4 @@
-﻿using Azure;
-using DBEntities;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using SealTypographicWebAPI.Models;
 using SealTypographicWebAPI.Models.TypographicPDF;
 using SealTypographicWebAPI.Services;
@@ -36,6 +34,17 @@ namespace SealTypographicWebAPI.Controllers
         public TypographicPagesResponse EditPages(int id)
         {
             TypographicPagesResponse typographicPageResponse = new();
+            try
+            {
+                Log.Information("TypographicPDF PDFView input {@Input}", id);
+                typographicPageResponse = typographicPDFService.GetEditPages(id);
+                Log.Information("TypographicPDF PDFView output {@Output}", typographicPageResponse);
+            }
+            catch (Exception ex)
+            {
+                Log.Error("TypographicPDF PDFView error {@Error}", ex.Message);
+                typographicPageResponse.DbError();
+            }
             return typographicPageResponse;
         }
 

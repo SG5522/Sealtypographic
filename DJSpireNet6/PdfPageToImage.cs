@@ -21,13 +21,10 @@ namespace DJSpireNet6
             //Open pdf document
             PdfDocument pdf = new();
             pdf.LoadFromFile(pdfPageToImage.Path);
-            
             Image image = pdf.SaveAsImage(pdfPageToImage.PageIndex);
-            MemoryStream memoryStream = new();
-            //pdf.SaveToStream(memoryStream);
+            MemoryStream memoryStream = new ();
             image.Save(memoryStream, ImageFormat.Png);
             byte[] imagebytes = memoryStream.ToArray();
-            
             return $"{"data:image/png;base64,"}{Convert.ToBase64String(imagebytes)}";
         }
     }

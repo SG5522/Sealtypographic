@@ -4,12 +4,12 @@ using Microsoft.Extensions.Hosting;
 namespace DJLocalApp.Services
 {
     /// <summary>
-    /// 
+    /// 健康檢查 Server-Sent Events
     /// </summary>
     public class HealthCheckService : BackgroundService
     {
         #region Fields
-        private const string HEARTBEAT_MESSAGE_FORMAT = "D & J Image Local API V. {0} Heart Check ({1})";
+        private const string HEALTH_CHECK_MESSAGE_FORMAT = "D & J Image Local API V. {0} Heart Check ({1})";
 
         private readonly IServerSentEventsService serverSentEventsService;
         #endregion
@@ -39,7 +39,7 @@ namespace DJLocalApp.Services
         {
             while (!stoppingToken.IsCancellationRequested)
             {
-                await serverSentEventsService.SendEventAsync(String.Format(HEARTBEAT_MESSAGE_FORMAT, this.GetType().Assembly.GetName().Version, DateTime.Now.ToLocalTime()));
+                await serverSentEventsService.SendEventAsync(string.Format(HEALTH_CHECK_MESSAGE_FORMAT, this.GetType().Assembly.GetName().Version, DateTime.Now.ToLocalTime()));
 
                 await Task.Delay(TimeSpan.FromSeconds(60), stoppingToken);
             }

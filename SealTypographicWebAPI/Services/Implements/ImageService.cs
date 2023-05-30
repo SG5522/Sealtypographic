@@ -147,7 +147,6 @@ namespace SealTypographicWebAPI.Services.Implements
             await ImageSharpUtil.SaveFileAsync(imageInfo.Image, imageInfo.ImageFormat, saveFullPath);
         }
 
-
         /// <summary>
         /// 設定ImageBase64Info(依SealType設定路徑)
         /// </summary>

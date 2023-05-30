@@ -16,6 +16,12 @@ namespace SealTypographicWebAPI.Services
         TypographicPDFPaginateViewModel GetPaginate(TypographicPDFSearch typographicPDFSearch);
 
         /// <summary>
+        /// 取得已編輯PDF頁次資訊
+        /// </summary>
+        /// <param name="id">TypographicPDFId</param>       
+        TypographicPagesResponse GetEditPages(int id);
+
+        /// <summary>
         /// 取得PDF資訊
         /// </summary>
         /// <returns></returns>

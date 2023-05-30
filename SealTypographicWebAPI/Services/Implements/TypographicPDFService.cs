@@ -3,14 +3,10 @@ using SealTypographicWebAPI.Models.TypographicPDF;
 using SealTypographicWebAPI.Models;
 using Microsoft.EntityFrameworkCore;
 using DJSpireNet6;
+using DJSpire;
 using DBEntities;
 using DBEntities.Consts;
 using SealTypographicWebAPI.Utils;
-using DJLib.Models;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
-using static Microsoft.Extensions.Logging.EventSource.LoggingEventSource;
-using System.Linq;
-using SealTypographicWebAPI.Models.Customer;
 
 namespace SealTypographicWebAPI.Services.Implements
 {
@@ -113,6 +109,62 @@ namespace SealTypographicWebAPI.Services.Implements
         }
 
         /// <summary>
+        /// 取得已編輯PDF頁次資訊
+        /// </summary>
+        /// <param name="id">TypographicPDFId</param>
+        /// <returns></returns>
+        public TypographicPagesResponse GetEditPages(int id)
+        {
+            TypographicPagesResponse typographicPagesResponse = new();
+            TypographicPDF? typographicPDF = dbContext.TypographicPDFs
+                                            .Include(x => x.TypographicPages)
+                                            .ThenInclude(x => x.TypographicResourceLocations)
+                                            .FirstOrDefault(x => x.Id == id);
+
+            if(typographicPDF != null)
+            {
+                typographicPagesResponse.Id = id;
+                foreach(TypographicPage typographicPage in typographicPDF.TypographicPages)
+                {
+                    TypographicPageForm pageForm = new()
+                    {
+                        PageNumber = typographicPage.PageNumber,
+                        DeleteCheck = typographicPage.DeleteCheck,
+                        BlankCheck = typographicPage.BlankCheck,
+                        IsAccountantCertificate = typographicPage.IsAccountantCertificate
+                    };
+                    foreach(TypographicResourceLocation typographicResourceLocation in typographicPage.TypographicResourceLocations)
+                    {                        
+                        switch (typographicResourceLocation.TypographicResource.SealType)
+                        {
+                            case SealType.Customer:
+                                CustomerSealLocationForm customerSealLocationForm = mapper.Map<CustomerSealLocationForm>(typographicResourceLocation);
+                                customerSealLocationForm.Id = id;
+                                pageForm.CustomerSealLocations.Add(customerSealLocationForm);
+                                break;
+                            case SealType.Accountant:
+                                AccountantSingLocationForm accountantSingLocationForm = mapper.Map<AccountantSingLocationForm>(typographicResourceLocation);
+                                accountantSingLocationForm.Id = id;
+                                pageForm.AccountantSingLocations.Add(accountantSingLocationForm);
+                                break;
+                            case SealType.Letterhead:
+                                LetterheadImageLocationForm letterheadImageLocationForm = mapper.Map<LetterheadImageLocationForm>(typographicResourceLocation);
+                                letterheadImageLocationForm.Id = id;
+                                pageForm.LetterheadImageLocations.Add(letterheadImageLocationForm);
+                                break;
+                            case SealType.TemporarySeal:
+                                TemporarySealLocationForm temporarySealLocationForm = mapper.Map<TemporarySealLocationForm>(typographicResourceLocation);
+                                temporarySealLocationForm.Id = id;
+                                pageForm.TemporarySealLocations.Add(temporarySealLocationForm);
+                                break;
+                        }                            
+                    }
+                }
+            }                                            
+            return typographicPagesResponse;
+        }
+
+        /// <summary>
         /// 取得PDF資訊
         /// </summary>
         /// <returns></returns>
@@ -154,14 +206,13 @@ namespace SealTypographicWebAPI.Services.Implements
 
             if (typographicPages != null)
             {
-                PdfPageToImage pdfPageToImage = new()
+                DJSpire.PdfPageToImage pdfPageToImage = new()
                 {
                     Path = typographicPages.TypographicPDF.UploadFile.FullPath,
                     PageIndex = typographicPages.PageNumber,
                 };
-                typographicPageViewModel.PDFImageBase64 = PdfPageToImage.GetImageBase64(pdfPageToImage);
-            }
-                                            
+                typographicPageViewModel.PDFImageBase64 = DJSpire.PdfPageToImage.GetImageBase64(pdfPageToImage);
+            }                                            
 
             return typographicPageViewModel;
         }

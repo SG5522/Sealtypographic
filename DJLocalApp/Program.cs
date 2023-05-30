@@ -1,3 +1,4 @@
+using DJLocalApp.Extensions;
 using DJScannerLib.Services;
 using Lib.AspNetCore.ServerSentEvents;
 using Microsoft.AspNetCore.Builder;
@@ -5,6 +6,7 @@ using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using SealAPIWrap;
 using Serilog;
 using System.Reflection;
 
@@ -57,6 +59,9 @@ namespace DJLocalApp
             builder.Services.AddSingleton<IHostedService, Services.HealthCheckService>();
             builder.Services.AddSingleton<IScanCallbackService, ScanCallbackService>();
             builder.Services.AddSingleton<IScannerService, ScannerService>();
+            builder.Services.AddSingleton<ISealService, SealService>();
+
+            builder.Services.AddAutoMapper(typeof(MapperProfile));
 
             builder.Services.AddSwaggerGen(c =>
             {

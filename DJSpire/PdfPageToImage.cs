@@ -32,7 +32,7 @@ namespace DJSpire
             
             byte[] imagebytes = stream.ToArray();
 
-            return Convert.ToBase64String(imagebytes); ;
+            return $"{"data:image/png;base64,"}{Convert.ToBase64String(imagebytes)}";
         }
     }
 }
