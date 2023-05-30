@@ -20,8 +20,4 @@
     <ProjectReference Include="..\DJLib\DJLib.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Configs\" />
-  </ItemGroup>
-
 </Project>

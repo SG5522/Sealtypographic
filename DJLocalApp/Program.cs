@@ -42,7 +42,6 @@ namespace DJLocalApp
                                   });
             });
 
-            builder.Services.AddServerSentEvents();
             builder.Services.AddResponseCompression(options =>
             {
                 options.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(new[] { "text/event-stream" });
@@ -51,12 +50,12 @@ namespace DJLocalApp
             builder.Services.AddControllers();
 
             builder.Services.AddScoped<FrmMain>();
+
+            builder.Services.AddServerSentEvents();
+            builder.Services.AddServerSentEvents<IScanCallbackSSEService, ScanCallbackSSEService>();
+
             builder.Services.AddSingleton<IHostedService, Services.HealthCheckService>();
-            builder.Services.AddServerSentEvents<IScanCallbackSSEService, ScanCallbackSSEService>(options =>
-            {
-                options.ReconnectInterval = 5000;
-            });
-            builder.Services.AddTransient<IScanCallbackService, ScanCallbackService>();
+            builder.Services.AddSingleton<IScanCallbackService, ScanCallbackService>();
             builder.Services.AddSingleton<IScannerService, ScannerService>();
 
             builder.Services.AddSwaggerGen(c =>

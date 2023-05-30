@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <title>Server-Sent Events (SSE) Heartbeat Receiver</title>
+    </head>
+    <body>
+		<button type="button" onclick="doScan();">Scan</button> 
+		<button type="button" onclick="doStopScan();">Stop Scan</button> 
+        <div id="healthOutput"></div>
+        <div id="healthMessage"></div>
+		<div id="scancallback"></div>
+        <script>
+            var healthOutput = document.getElementById('healthOutput');
+            var healthMessage = document.getElementById('healthMessage');
+			var scancallback = document.getElementById('scancallback');
+
+            var changeHtml = function(element, data) {
+                element.innerHTML = data;
+            };
+			var showScanCallback = function(datas) {
+				var dataArray = datas.split('@');
+				dataArray.forEach(data => {
+					var elem = document.createElement("img");
+					elem.setAttribute("src", data);
+					elem.setAttribute("height", "768");
+					elem.setAttribute("width", "1024");
+					elem.setAttribute("alt", "Scan Image");
+					scancallback.appendChild(elem);
+					scancallback.appendChild(document.createElement('hr'));
+				});
+			};
+
+            var healthsource = new EventSource('http://localhost:22431/health-check');
+            healthsource.onopen = function() { 
+				changeHtml(healthOutput, '-- CONNECTION ESTABLISHED --'); 
+				changeHtml(healthMessage, '');
+			}; 
+            healthsource.onerror = function () { 
+				changeHtml(healthOutput, '-- CONNECTION FAILED --'); 
+				changeHtml(healthMessage, 'Error: ' + new Date());
+			};
+
+            healthsource.onmessage = function (event) {
+                console.log('Health SSE EVENT: { id: "' + event.id + '", type: "' + event.type + '", data: "' + event.data + '" }')
+
+                changeHtml(healthMessage, event.data);
+
+                if (event.id == "CLOSE") {
+                    healthsource.close(); 
+                }
+            }
+			
+			var scansource = new EventSource('http://localhost:22431/scan-callback');
+			scansource.onopen = function() { 
+				console.log('Scan Callback connect ok!'); 
+			}; 
+			scansource.onmessage = function (event) {
+				showScanCallback(event.data);
+			};
+			scansource.addEventListener('alert', function(event) {
+				alert(event.data);
+			});
+			
+			var doScan = function() {
+				fetch('http://localhost:22431/api/Scanner/Scan')
+					.then(response => {
+						console.log(response)
+					});
+			}
+			
+			var doStopScan = function() {
+				fetch('http://localhost:22431/api/Scanner/StopScan')
+					.then(response => {
+						console.log(response)
+					});
+			}
+        </script>
+    </body>
+</html>

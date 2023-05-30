@@ -1,5 +1,6 @@
 ﻿using DJScannerLib.Models;
 using Microsoft.Extensions.Logging;
+using Microsoft.VisualBasic;
 using NTwain;
 using NTwain.Data;
 using SixLabors.ImageSharp;
@@ -31,6 +32,7 @@ namespace DJScannerLib.Services
 
         private bool canCapture = false;
         private bool stopScan = false;
+        private IList<string> base64Strings = new List<string>();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ScannerService"/> class.
@@ -91,7 +93,15 @@ namespace DJScannerLib.Services
                 DataSource setDataSource = twainSession.FirstOrDefault(ds => string.Equals(ds.Name, driverName));
                 if (setDataSource != null)
                 {
-                    returnCode = setDataSource.Open();
+                    if(!setDataSource.IsOpen)
+                    {
+                        returnCode = setDataSource.Open();
+                    }
+                    else
+                    {
+                        returnCode = ReturnCode.Success;
+                    }
+                    
                     if (returnCode == ReturnCode.Success)
                     {
                         canCapture = true;
@@ -112,28 +122,12 @@ namespace DJScannerLib.Services
         {
             if (twainSession.State == 4)
             {
-            //    //_twain.CurrentSource.CapXferCount.Set(4);
-
                 stopScan = false;
 
-                //    if (_twain.CurrentSource.Capabilities.CapUIControllable.IsSupported)//.SupportedCaps.Contains(CapabilityId.CapUIControllable))
-                //    {
-                //        // hide scanner ui if possible
                 if (twainSession.CurrentSource.Enable(SourceEnableMode.NoUI, false, IntPtr.Zero) == ReturnCode.Success)
                 {
                     canCapture = false;
-                    //panelOptions.Enabled = false;
                 }
-                //    }
-                //    else
-                //    {
-                //        if (_twain.CurrentSource.Enable(SourceEnableMode.ShowUI, true, this.Handle) == ReturnCode.Success)
-                //        {
-                //            btnStopScan.Enabled = true;
-                //            btnStartCapture.Enabled = false;
-                //            panelOptions.Enabled = false;
-                //        }
-                //    }
             }
         }
 
@@ -179,7 +173,7 @@ namespace DJScannerLib.Services
                     Stream stream = e.GetNativeImageStream();
                     if (stream != null)
                     {
-                        image = Image.Load(stream, out IImageFormat imageFormat);
+                        image = Image.Load(stream);
                     }
                 }
 
@@ -188,7 +182,8 @@ namespace DJScannerLib.Services
                     MemoryStream stream2 = new();
                     image.SaveAsJpeg(stream2);
                     string result = "data:image/jpeg;base64," + Convert.ToBase64String(stream2.ToArray());
-                    scanCallbackService.SendAsync(result, false);
+                    //scanCallbackService.SendAsync(result, false);
+                    base64Strings.Add(result);
                 }
             };
             twainSession.SourceDisabled += (s, e) =>
@@ -196,13 +191,11 @@ namespace DJScannerLib.Services
                 logger.LogInformation("Source disabled event on thread " + Thread.CurrentThread.ManagedThreadId);
                 canCapture = true;
                 stopScan = false;
-                //this.BeginInvoke(new Action(() =>
-                //{
-                //    btnStopScan.Enabled = false;
-                //    btnStartCapture.Enabled = true;
-                //    panelOptions.Enabled = true;
-                //    LoadSourceCaps();
-                //}));
+                if (base64Strings.Count > 0)
+                {
+                    scanCallbackService.SendAsync(string.Join("@", base64Strings), false);
+                    base64Strings = new List<string>();
+                }
             };
             twainSession.TransferReady += (s, e) =>
             {
@@ -241,7 +234,14 @@ namespace DJScannerLib.Services
 
                 if(twainSession.DefaultSource != null)
                 {
-                    returnCode = twainSession.DefaultSource.Open();
+                    if(!twainSession.DefaultSource.IsOpen) 
+                    {
+                        returnCode = twainSession.DefaultSource.Open();
+                    }
+                    else
+                    {
+                        returnCode = ReturnCode.Success;
+                    }
 
                     canCapture = (returnCode == ReturnCode.Success);
                 }

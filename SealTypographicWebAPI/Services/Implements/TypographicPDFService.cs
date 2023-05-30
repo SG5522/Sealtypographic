@@ -135,13 +135,34 @@ namespace SealTypographicWebAPI.Services.Implements
         }
 
         /// <summary>
-        /// 
+        /// 取得單頁PDF圖像與排版編輯資訊
         /// </summary>
-        /// <param name="typographicPDFPageSearch"></param>
+        /// <param name="typographicPDFPageSearch">排板PDFPage搜尋</param>
         /// <returns></returns>
         public TypographicPageViewModel GetPageView(TypographicPDFPageSearch typographicPDFPageSearch)
         {
             TypographicPageViewModel typographicPageViewModel = new();
+            TypographicPage? typographicPages = dbContext.TypographicPages
+                                                .Include(x => x.TypographicPDF)
+                                                .ThenInclude( x => x.UploadFile)
+                                                .Include(x => x.TypographicResourceLocations)
+                                                .FirstOrDefault
+                                                (
+                                                    x => x.TypographicPDF.Id == typographicPDFPageSearch.Id
+                                                    && x.PageNumber == typographicPDFPageSearch.PageNumber
+                                                );
+
+            if (typographicPages != null)
+            {
+                PdfPageToImage pdfPageToImage = new()
+                {
+                    Path = typographicPages.TypographicPDF.UploadFile.FullPath,
+                    PageIndex = typographicPages.PageNumber,
+                };
+                typographicPageViewModel.PDFImageBase64 = PdfPageToImage.GetImageBase64(pdfPageToImage);
+            }
+                                            
+
             return typographicPageViewModel;
         }
 

@@ -22,6 +22,13 @@ namespace SealTypographicWebAPI.Services
         PDFViewModel GetPDFView(int UploadId);
 
         /// <summary>
+        /// 取得單頁PDF圖像與排版編輯資訊
+        /// </summary>
+        /// <param name="typographicPDFPageSearch">排板PDFPage搜尋</param>
+        /// <returns></returns>
+        public TypographicPageViewModel GetPageView(TypographicPDFPageSearch typographicPDFPageSearch);
+
+        /// <summary>
         /// 建立PDF排版資訊
         /// </summary>
         /// <param name="typographicPDFForm">排版資訊(新增使用)</param>

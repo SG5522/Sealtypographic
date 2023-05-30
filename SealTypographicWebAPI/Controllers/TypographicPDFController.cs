@@ -48,7 +48,17 @@ namespace SealTypographicWebAPI.Controllers
         public PDFViewModel PDFView(int uploadId)
         {
             PDFViewModel pDFViewModel = new();
-            pDFViewModel = typographicPDFService.GetPDFView(uploadId);
+            try
+            {
+                Log.Information("TypographicPDF PDFView input {@Input}", uploadId);
+                pDFViewModel = typographicPDFService.GetPDFView(uploadId);
+                Log.Information("TypographicPDF PDFView output {@Output}", pDFViewModel);
+            }
+            catch (Exception ex)
+            {
+                Log.Error("TypographicPDF PDFView error {@Error}", ex.Message);
+                pDFViewModel.DbError();
+            }            
             return pDFViewModel;
         }
 
@@ -58,9 +68,20 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="typographicPDFPageSearch">排板PDFPage搜尋</param> 
         /// <returns></returns>
         [HttpGet("[Action]")]
-        public TypographicPageViewModel PageViewModel(TypographicPDFPageSearch typographicPDFPageSearch)
-        {
+        public TypographicPageViewModel PageViewModel([FromQuery] TypographicPDFPageSearch typographicPDFPageSearch)
+        {            
             TypographicPageViewModel typographicPageViewModel = new();
+            try
+            {
+                Log.Information("TypographicPDF PageViewModel input {@Input}", typographicPDFPageSearch);
+                typographicPageViewModel = typographicPDFService.GetPageView(typographicPDFPageSearch);
+                Log.Information("TypographicPDF PageViewModel output {@Output}", typographicPageViewModel);
+            }
+            catch (Exception ex)
+            {
+                Log.Error("TypographicPDF PDFView error {@Error}", ex.Message);
+                typographicPageViewModel.DbError();
+            }
             return typographicPageViewModel;
         }
 

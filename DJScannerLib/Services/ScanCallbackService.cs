@@ -32,5 +32,20 @@ namespace DJScannerLib.Services
                 Data = new List<string> { base64String }
             });
         }
+
+        /// <summary>
+        /// Sends the asynchronous.
+        /// </summary>
+        /// <param name="base64Strings">The base64 strings.</param>
+        /// <param name="alert">if set to <c>true</c> [alert].</param>
+        /// <returns></returns>
+        public Task SendAsync(IList<string> base64Strings, bool alert)
+        {
+            return scanCallbackSSEService.SendEventAsync(new ServerSentEvent
+            {
+                Type = alert ? "alert" : null,
+                Data = base64Strings
+            });
+        }
     }
 }

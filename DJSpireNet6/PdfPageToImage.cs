@@ -24,7 +24,7 @@ namespace DJSpireNet6
             
             Image image = pdf.SaveAsImage(pdfPageToImage.PageIndex);
             MemoryStream memoryStream = new();
-            pdf.SaveToStream(memoryStream);
+            //pdf.SaveToStream(memoryStream);
             image.Save(memoryStream, ImageFormat.Png);
             byte[] imagebytes = memoryStream.ToArray();
             
