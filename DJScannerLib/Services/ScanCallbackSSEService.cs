@@ -3,11 +3,7 @@ using Microsoft.Extensions.Options;
 
 namespace DJScannerLib.Services
 {
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <seealso cref="Lib.AspNetCore.ServerSentEvents.ServerSentEventsService" />
-    /// <seealso cref="DJScannerLib.Services.IScanCallbackSSEService" />
+    /// <inheritdoc/>
     public class ScanCallbackSSEService : ServerSentEventsService, IScanCallbackSSEService
     {
         /// <summary>

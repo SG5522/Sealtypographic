@@ -4,7 +4,7 @@ using SealAPIWrap.Models;
 namespace DJLocalApp.Extensions
 {
     /// <summary>
-    /// 
+    /// For Auto Mapper設定
     /// </summary>
     /// <seealso cref="AutoMapper.Profile" />
     public class MapperProfile : Profile

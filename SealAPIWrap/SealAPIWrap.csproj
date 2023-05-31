@@ -5,6 +5,7 @@
     <Platforms>AnyCPU;x64;x86</Platforms>
     <PlatformTarget>x64</PlatformTarget>
     <AssemblyVersion>4.2.0</AssemblyVersion>
+    <GenerateDocumentationFile>True</GenerateDocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>

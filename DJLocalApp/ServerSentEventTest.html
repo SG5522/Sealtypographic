@@ -2,7 +2,7 @@
 <html>
     <head>
         <meta charset="utf-8" />
-        <title>Server-Sent Events (SSE) Heartbeat Receiver</title>
+        <title>Server-Sent Events (SSE) Receiver</title>
     </head>
     <body>
 		<button type="button" onclick="doScan();">Scan</button> 
@@ -31,6 +31,7 @@
 				});
 			};
 
+			// Health Check SSE Source
             var healthsource = new EventSource('http://localhost:22431/health-check');
             healthsource.onopen = function() { 
 				changeHtml(healthOutput, '-- CONNECTION ESTABLISHED --'); 
@@ -50,12 +51,14 @@
                     healthsource.close(); 
                 }
             }
-			
+
+			// Scan Callback Source
 			var scansource = new EventSource('http://localhost:22431/scan-callback');
 			scansource.onopen = function() { 
 				console.log('Scan Callback connect ok!'); 
 			}; 
 			scansource.onmessage = function (event) {
+				scancallback.innerHTML = '';
 				showScanCallback(event.data);
 			};
 			scansource.addEventListener('alert', function(event) {

@@ -61,19 +61,19 @@ namespace DJLocalApp
         private void BtnCurrentDriver_Click(object sender, EventArgs e)
         {
             CurrentDriverResult result = scannerService.GetCurrentDriver();
-            TvwShow.LoadJson(JsonSerializer.Serialize(result), true, true);
+            TvwShow.LoadJson("Current Drive", JsonSerializer.Serialize(result), true, true);
         }
 
         private void BtnSetDriver_Click(object sender, EventArgs e)
         {
             bool result = scannerService.SetDriver("123");
-            TvwShow.LoadJson(JsonSerializer.Serialize(result), true, true);
+            TvwShow.LoadJson("Set Driver", JsonSerializer.Serialize(result), true, true);
         }
 
         private void BtnAllDrivers_Click(object sender, EventArgs e)
         {
             AllDriversResult result = scannerService.GetAllDrivers();
-            TvwShow.LoadJson(JsonSerializer.Serialize(result), true, true);
+            TvwShow.LoadJson("All Srivers", JsonSerializer.Serialize(result), true, true);
         }
     }
 }

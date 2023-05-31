@@ -4,7 +4,7 @@ using System.Runtime.InteropServices;
 namespace SealAPIWrap
 {
     /// <summary>
-    /// 
+    /// 呼叫天創C++ Dll元件
     /// </summary>
     public class ApiWrap
     {

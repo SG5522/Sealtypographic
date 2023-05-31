@@ -19,16 +19,11 @@ namespace DJScannerLib.Services
         // interface to TWAIN
         private TwainSession twainSession;
 
-        // Setup information...
-        //private DataSource defaultDataSource;
-
         private IList<string> dataSourceNames = new List<string>();
 
         private IList<DataSource> dataSources = new List<DataSource>();
 
         private ReturnCode returnCode = ReturnCode.Failure;
-
-        int cnt = 0;
 
         private bool canCapture = false;
         private bool stopScan = false;
@@ -120,7 +115,7 @@ namespace DJScannerLib.Services
         ///<inheritdoc />
         public void Scan()
         {
-            if (twainSession.State == 4)
+            if (canCapture && twainSession.State == 4)
             {
                 stopScan = false;
 
@@ -143,6 +138,9 @@ namespace DJScannerLib.Services
             twainSession.CurrentSource?.Enable(SourceEnableMode.ShowUIOnly, true, IntPtr.Zero);  
         }
 
+        /// <summary>
+        /// 初始化、設定TWAIN
+        /// </summary>
         private void SetupTwain()
         {
             twainSession = new TwainSession(TWIdentity.CreateFromAssembly(DataGroups.Image, Assembly.GetEntryAssembly()));

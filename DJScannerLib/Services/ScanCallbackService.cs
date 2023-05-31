@@ -2,28 +2,21 @@
 
 namespace DJScannerLib.Services
 {
-    /// <summary>
-    /// 
-    /// </summary>
+    /// <inheritdoc/>
     public class ScanCallbackService : IScanCallbackService
     {
         private readonly IScanCallbackSSEService scanCallbackSSEService;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ScanCallbackService"/> class.
+        /// 建構
         /// </summary>
-        /// <param name="scanCallbackSSEService">The scan callback sse service.</param>
+        /// <param name="scanCallbackSSEService"></param>
         public ScanCallbackService(IScanCallbackSSEService scanCallbackSSEService)
         {
             this.scanCallbackSSEService = scanCallbackSSEService;
         }
 
-        /// <summary>
-        /// Sends the asynchronous.
-        /// </summary>
-        /// <param name="base64String">The base64 string.</param>
-        /// <param name="alert">if set to <c>true</c> [alert].</param>
-        /// <returns></returns>
+        /// <inheritdoc/>
         public Task SendAsync(string base64String, bool alert)
         {
             return scanCallbackSSEService.SendEventAsync(new ServerSentEvent
@@ -33,12 +26,7 @@ namespace DJScannerLib.Services
             });
         }
 
-        /// <summary>
-        /// Sends the asynchronous.
-        /// </summary>
-        /// <param name="base64Strings">The base64 strings.</param>
-        /// <param name="alert">if set to <c>true</c> [alert].</param>
-        /// <returns></returns>
+        /// <inheritdoc/>
         public Task SendAsync(IList<string> base64Strings, bool alert)
         {
             return scanCallbackSSEService.SendEventAsync(new ServerSentEvent

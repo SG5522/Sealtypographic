@@ -1,12 +1,12 @@
 ﻿namespace DJScannerLib.Services
 {
     /// <summary>
-    /// 
+    /// Scan Callback 服務
     /// </summary>
     public interface IScanCallbackService
     {
         /// <summary>
-        /// Sends the asynchronous.
+        /// 傳送Base64圖檔資料
         /// </summary>
         /// <param name="base64String">The base64 string.</param>
         /// <param name="alert">if set to <c>true</c> [alert].</param>
@@ -14,7 +14,7 @@
         Task SendAsync(string base64String, bool alert);
 
         /// <summary>
-        /// Sends the asynchronous.
+        /// 傳送多筆Base64圖檔資料
         /// </summary>
         /// <param name="base64Strings">The base64 strings.</param>
         /// <param name="alert">if set to <c>true</c> [alert].</param>

@@ -3,7 +3,7 @@
 namespace SealAPIWrap.Models
 {
     /// <summary>
-    /// 驗印結果輔助顯示傳入資料
+    /// 驗印結果輔助顯示Api傳入資料
     /// </summary>
     public class SealShowForm : SealShowRequest
     {

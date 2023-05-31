@@ -4,11 +4,19 @@ using static System.Text.Json.JsonElement;
 namespace DJLocalApp.Extensions
 {
     /// <summary>
-    /// 
+    /// TreeView Extension
     /// </summary>
     public static class JsonTreeViewLoader
     {
-        public static void LoadJson(this System.Windows.Forms.TreeView treeView, string jsonString, bool isClean, bool isExpand)
+        /// <summary>
+        /// 載入JSON String
+        /// </summary>
+        /// <param name="treeView"></param>
+        /// <param name="rootName"></param>
+        /// <param name="jsonString"></param>
+        /// <param name="isClean"></param>
+        /// <param name="isExpand"></param>
+        public static void LoadJson(this System.Windows.Forms.TreeView treeView, string rootName, string jsonString, bool isClean, bool isExpand)
         {
             if(isClean)
             {
@@ -21,7 +29,7 @@ namespace DJLocalApp.Extensions
             }
 
             JsonDocument jsonDocumentObject = JsonDocument.Parse(jsonString);
-            AddObjectNodes(jsonDocumentObject, "JSON", treeView.Nodes);
+            AddObjectNodes(jsonDocumentObject, rootName, treeView.Nodes);
 
             if(isExpand)
             {
@@ -29,6 +37,12 @@ namespace DJLocalApp.Extensions
             }
         }
 
+        /// <summary>
+        /// 增加JSON Object
+        /// </summary>
+        /// <param name="jsonDocumentObject"></param>
+        /// <param name="name"></param>
+        /// <param name="parent"></param>
         public static void AddObjectNodes(JsonDocument jsonDocumentObject, string name, TreeNodeCollection parent)
         {
             var node = new TreeNode(name);

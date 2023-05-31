@@ -3,7 +3,7 @@
 namespace SealAPIWrap.Models
 {
     /// <summary>
-    /// 圖像處理傳入資料
+    /// 圖像處理Api傳入資料
     /// </summary>
     public class ImageProcessForm : ImageProcessRequest
     {

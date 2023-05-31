@@ -3,7 +3,7 @@
 namespace SealAPIWrap.Models
 {
     /// <summary>
-    /// 建印傳入資料
+    /// 建印Api傳入資料
     /// </summary>
     public class SealBuildForm : SealBuildRequest
     {

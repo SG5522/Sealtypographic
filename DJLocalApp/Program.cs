@@ -1,4 +1,5 @@
 using DJLocalApp.Extensions;
+using DJScannerLib.Models;
 using DJScannerLib.Services;
 using Lib.AspNetCore.ServerSentEvents;
 using Microsoft.AspNetCore.Builder;
@@ -7,6 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using SealAPIWrap;
+using SealAPIWrap.Models;
 using Serilog;
 using System.Reflection;
 
@@ -44,6 +46,7 @@ namespace DJLocalApp
                                   });
             });
 
+            // 增加SSE(Server-Sent Events)所需的Content Type
             builder.Services.AddResponseCompression(options =>
             {
                 options.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(new[] { "text/event-stream" });
@@ -53,9 +56,12 @@ namespace DJLocalApp
 
             builder.Services.AddScoped<FrmMain>();
 
+            // 預設的SSE(Server-Sent Events)
             builder.Services.AddServerSentEvents();
+            // Scan Callback SSE
             builder.Services.AddServerSentEvents<IScanCallbackSSEService, ScanCallbackSSEService>();
 
+            // 健康檢查服務(提供預設SSE使用)
             builder.Services.AddSingleton<IHostedService, Services.HealthCheckService>();
             builder.Services.AddSingleton<IScanCallbackService, ScanCallbackService>();
             builder.Services.AddSingleton<IScannerService, ScannerService>();
@@ -73,6 +79,8 @@ namespace DJLocalApp
                 });
 
                 c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, $"{Assembly.GetExecutingAssembly().GetName().Name}.xml"), true);
+                c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, $"{typeof(BaseResult).Assembly.GetName().Name}.xml"), true);
+                c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, $"{typeof(ApiRequest).Assembly.GetName().Name}.xml"), true);
             });
 
             WebApp = builder.Build();
@@ -82,6 +90,7 @@ namespace DJLocalApp
             WebApp.UseAuthorization();
 
             WebApp.MapControllers();
+            // SSE所需要的url path
             WebApp.UseResponseCompression().UseRouting().UseEndpoints(endpoints =>
             {
                 endpoints.MapServerSentEvents("/health-check");
