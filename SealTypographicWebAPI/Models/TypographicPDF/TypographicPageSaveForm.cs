@@ -33,7 +33,7 @@ namespace SealTypographicWebAPI.Models.TypographicPDF
         /// <summary>
         /// 會計師簽名印鑑位置
         /// </summary>
-        public List<AccountantSingLocationForm> AccountantSingLocations { get; set; }
+        public List<AccountantSignLocationForm> AccountantSingLocations { get; set; }
 
         /// <summary>
         /// 信頭圖片位置

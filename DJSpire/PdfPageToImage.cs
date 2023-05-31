@@ -7,57 +7,57 @@ namespace DJSpire
     public class PdfPageToImage
     {
         private string path;
+        private int pageIndex;
+
         /// <summary>
         /// PDF檔案路徑
         /// </summary>
-        public string Path {
-            get { return path; }
-            set 
-            { 
+        public string Path 
+        { 
+            get{ return path; }
+            set
+            {
                 path = value;
                 if(!string.IsNullOrWhiteSpace(path))
                 {
                     Document = new PdfDocument(path);
-                    GetIndex();
-                }
+                }                
             } 
         }
 
         /// <summary>
         /// PDF頁次
         /// </summary>
-        public int PageIndex { get; set; }
-
+        public int PageIndex 
+        {
+            get { return pageIndex; }
+            set
+            { 
+                pageIndex = value;
+                if (Document != null)
+                {
+                    IndexDocument = new PdfDocument();
+                    IndexDocument.InsertPage(Document, PageIndex);
+                }
+            }
+        }
+        
+        /// <summary>
+        /// 原PDF檔
+        /// </summary>
         public PdfDocument Document { get; set; }
+
+        /// <summary>
+        /// 指定頁次的PDF檔
+        /// </summary>
         public PdfDocument IndexDocument { get; set; }
 
 
-        public PdfPageToImage()
+        public Stream GetImageStream()
         {
-
-        }
-
-        private void GetIndex()
-        {
-            if (Document != null && PageIndex >= 0)
-            {
-                IndexDocument.InsertPage(Document, PageIndex);
-            }
-        }
-
-        public static string GetImageBase64(PdfPageToImage pdfPageToImage)
-        {
-            //Open pdf document
-            PdfDocument pdf = new PdfDocument();
-            pdf.LoadFromFile(pdfPageToImage.Path);
-            Stream stream = new MemoryStream();
-            pdf.SaveToImageStream(pdfPageToImage.PageIndex, stream, "png");
-            //Stream stream = pdf.SaveAsImage(pdfPageToImage.PageIndex);
-            MemoryStream memoryStream = new MemoryStream();
-            stream.CopyTo(memoryStream);
-            byte[] imagebytes = memoryStream.ToArray();
-
-            return $"{"data:image/png;base64,"}{Convert.ToBase64String(imagebytes)}";
+            Stream stream = new MemoryStream();            
+            IndexDocument.SaveToImageStream(0, stream, "png");
+            return stream;
         }
     }
 }

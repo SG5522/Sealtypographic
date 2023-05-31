@@ -1,10 +1,11 @@
 ﻿using DJLib;
-using DJLib.Models;
 using Microsoft.Extensions.Options;
 using SealTypographicWebAPI.Config;
 using SealTypographicWebAPI.Models;
 using SixLabors.ImageSharp;
 using DBEntities.Consts;
+using SixLabors.ImageSharp.Formats;
+using DJLib.Models;
 
 namespace SealTypographicWebAPI.Services.Implements
 {
@@ -37,6 +38,17 @@ namespace SealTypographicWebAPI.Services.Implements
         public string GetPathToBase64(string fullpath)
         {
             return ImageSharpUtil.PathImageFileToBase64(fullpath);
+        }
+
+        /// <summary>
+        /// Stream 轉Base64
+        /// </summary>
+        /// <param name="stream"></param>
+        /// <returns></returns>
+        public string GetStreamToBase64(Stream stream)
+        {
+            Image image = Image.Load(stream, out IImageFormat format);
+            return image.ToBase64String(format);
         }
 
         /// <summary>

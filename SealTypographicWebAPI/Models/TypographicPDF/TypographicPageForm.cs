@@ -11,7 +11,7 @@
         public TypographicPageForm() 
         {
             CustomerSealLocations = new();
-            AccountantSingLocations = new();
+            AccountantSignLocations = new();
             LetterheadImageLocations = new();
             TemporarySealLocations = new();
         }
@@ -48,7 +48,7 @@
         /// <summary>
         /// 會計師簽名印鑑位置
         /// </summary>
-        public List<AccountantSingLocationForm> AccountantSingLocations { get; set; }
+        public List<AccountantSignLocationForm> AccountantSignLocations { get; set; }
 
         /// <summary>
         /// 信頭圖片位置

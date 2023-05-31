@@ -6,6 +6,17 @@
     public class TypographicPageViewModel : ResponseViewModel
     {
         /// <summary>
+        /// NEW
+        /// </summary>
+        public TypographicPageViewModel()
+        {
+            CustomerSealLocationViewModels = new();
+            AccountantSignLocationViewModels = new();
+            LetterheadImageLocationViewModels = new();
+            TemporarySealLocationViewModels = new();
+        }
+
+        /// <summary>
         /// 頁次Id
         /// </summary>
         public int Id { get; set; }
@@ -28,7 +39,7 @@
         /// <summary>
         /// 會計師簽名印鑑位置
         /// </summary>
-        public List<AccountantSingLocationViewModel> AccountantSingLocationViewModels { get; set; }
+        public List<AccountantSignLocationViewModel> AccountantSignLocationViewModels { get; set; }
 
         /// <summary>
         /// 信頭圖片位置

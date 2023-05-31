@@ -6,7 +6,7 @@ namespace SealTypographicWebAPI.Models.TypographicPDF
     /// <summary>
     /// 會計師簽印位置與TIPS顯示
     /// </summary>
-    public class AccountantSingLocationViewModel : BaseSealLocationViewModel
+    public class AccountantSignLocationViewModel : BaseSealLocationViewModel
     {
         /// <summary>
         /// 會計師名稱

@@ -30,7 +30,7 @@ namespace DJLib.Models
         public static ImageInfo FromImageBase64(string ImageBase64)
         {
             string base64String = ImageBase64.Substring(ImageBase64.IndexOf("base64,") + 7);
-             return FromBase64(base64String);
+            return FromBase64(base64String);
         }
 
         /// <summary>
@@ -54,7 +54,7 @@ namespace DJLib.Models
         /// <param name="imageInfo">圖片資訊</param>
         /// <param name="scale">縮放比例 1.00 = 100%  0.01 = 1%</param>        
         public static void ReSize(ImageInfo imageInfo, double scale)
-        {            
+        {
             int width = (int)(imageInfo.Image.Width * scale);
             int height = (int)(imageInfo.Image.Height * scale);
             imageInfo.Image.Mutate(x => x.Resize(width, height));
@@ -63,14 +63,14 @@ namespace DJLib.Models
         public static void Transparent(ImageInfo imageInfo)
         {
             float threshold = 0.5F;
-            Color sourceColor = Color.White;            
+            Color sourceColor = Color.White;
             Color targetColor = Color.Transparent;
             RecolorBrush brush = new RecolorBrush(sourceColor, targetColor, threshold);
             imageInfo.Image.Mutate
                         (
                             //x => x.Fill(graphicsOptions,brush,)
                             x => x.Clear(brush)
-                        );            
+                        );
         }
     }
 }

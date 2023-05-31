@@ -6,7 +6,6 @@ using DJSpire;
 using DBEntities;
 using DBEntities.Consts;
 using SealTypographicWebAPI.Utils;
-using Azure;
 
 namespace SealTypographicWebAPI.Services.Implements
 {
@@ -17,16 +16,19 @@ namespace SealTypographicWebAPI.Services.Implements
     {
         private readonly SealTypographicDbContext dbContext;
         private readonly IMapper mapper;
+        private readonly ImageService imageService;
 
         /// <summary>
         /// 取得DB與Automapper
         /// </summary>
         /// <param name="dbContext"></param>
         /// <param name="mapper"></param>
-        public TypographicPDFService(SealTypographicDbContext dbContext, IMapper mapper)
+        /// <param name="imageService"></param>
+        public TypographicPDFService(SealTypographicDbContext dbContext, IMapper mapper, ImageService imageService)
         {
             this.dbContext = dbContext;
             this.mapper = mapper;
+            this.imageService = imageService;
         }
 
         /// <summary>
@@ -143,9 +145,9 @@ namespace SealTypographicWebAPI.Services.Implements
                                 pageForm.CustomerSealLocations.Add(customerSealLocationForm);
                                 break;
                             case SealType.Accountant:
-                                AccountantSingLocationForm accountantSingLocationForm = mapper.Map<AccountantSingLocationForm>(typographicResourceLocation);
-                                accountantSingLocationForm.Id = id;
-                                pageForm.AccountantSingLocations.Add(accountantSingLocationForm);
+                                AccountantSignLocationForm accountantSignLocationForm = mapper.Map<AccountantSignLocationForm>(typographicResourceLocation);
+                                accountantSignLocationForm.Id = id;
+                                pageForm.AccountantSignLocations.Add(accountantSignLocationForm);
                                 break;
                             case SealType.Letterhead:
                                 LetterheadImageLocationForm letterheadImageLocationForm = mapper.Map<LetterheadImageLocationForm>(typographicResourceLocation);
@@ -196,25 +198,109 @@ namespace SealTypographicWebAPI.Services.Implements
         public TypographicPageViewModel GetPageView(TypographicPDFPageSearch typographicPDFPageSearch)
         {
             TypographicPageViewModel typographicPageViewModel = new();
-            TypographicPage? typographicPages = dbContext.TypographicPages
-                                                .Include(x => x.TypographicPDF)
-                                                .ThenInclude( x => x.UploadFile)
-                                                .Include(x => x.TypographicResourceLocations)
-                                                .FirstOrDefault
-                                                (
-                                                    x => x.TypographicPDF.Id == typographicPDFPageSearch.Id
-                                                    && x.PageNumber == typographicPDFPageSearch.PageNumber
-                                                );
+            TypographicPDF? typographicPDF = dbContext.TypographicPDFs
+                                            .Include(x => x.UploadFile)
+                                            .Select
+                                            (
+                                                x => new TypographicPDF()
+                                                {
+                                                    Id = x.Id,
+                                                    UploadFile = new UploadFile()
+                                                    {
+                                                        Id = x.UploadFile.Id,
+                                                        FullPath = x.UploadFile.FullPath,
+                                                    }
+                                                }
+                                            )
+                                            .FirstOrDefault
+                                            (
+                                                x => x.Id == typographicPDFPageSearch.Id                                                
+                                            );
+                                                
 
-            if (typographicPages != null)
+            if (typographicPDF != null)
             {
+                //取得單頁PDF圖檔
                 PdfPageToImage pdfPageToImage = new()
                 {
-                    Path = typographicPages.TypographicPDF.UploadFile.FullPath,
-                    PageIndex = typographicPages.PageNumber,
+                    Path = typographicPDF.UploadFile.FullPath,
+                    PageIndex = typographicPDFPageSearch.PageNumber,
                 };
-                typographicPageViewModel.PDFImageBase64 = PdfPageToImage.GetImageBase64(pdfPageToImage);
-            }                                            
+                
+                typographicPageViewModel.PageNumber = typographicPDFPageSearch.PageNumber;
+                typographicPageViewModel.PDFImageBase64 = imageService.GetStreamToBase64(pdfPageToImage.GetImageStream());
+                
+
+                TypographicPage? typographicPages = dbContext.TypographicPages
+                                                    .Include(x => x.TypographicPDF)
+                                                    .Include(x => x.TypographicResourceLocations)
+                                                    .ThenInclude(x => x.TypographicResource)
+                                                    .FirstOrDefault(
+                                                                        x => x.TypographicPDF.Id == typographicPDFPageSearch.Id
+                                                                        && x.PageNumber == typographicPDFPageSearch.PageNumber
+                                                                    );
+                
+
+                //如有該頁有編輯頁面資訊才進行查詢
+                if (typographicPages != null)
+                {
+                    typographicPageViewModel.Id = typographicPages.Id;
+                    #region 顯示已編輯頁次內裡面所有的印鑑擺放位置與顯示名稱
+                    foreach (TypographicResourceLocation typographicResourceLocation in typographicPages.TypographicResourceLocations) 
+                    {
+                        switch (typographicResourceLocation.TypographicResource.SealType)
+                        {
+                            case SealType.Customer:                                
+                                CustomerSealLocationViewModel customerSealLocationViewModel = mapper.Map<CustomerSealLocationViewModel>(typographicResourceLocation);
+                                customerSealLocationViewModel.Sequence = typographicResourceLocation.TypographicResource.Sequence;
+                                customerSealLocationViewModel.CustomerSealType = SealMappingConfigUtil.GetCustomerSealType(typographicResourceLocation.TypographicResource.SubSealType);
+                                customerSealLocationViewModel.ImageBase64 = imageService.GetPathToBase64(typographicResourceLocation.TypographicResource.ImageFullPath);
+                                typographicPageViewModel.CustomerSealLocationViewModels.Add(customerSealLocationViewModel);
+                                break;
+                            case SealType.Accountant:
+                                string accountantName = dbContext.Accountants
+                                                        .Single
+                                                        (
+                                                            x => x.AccountantSignGroups.Any
+                                                            (
+                                                                x => x.TypographicResources.Any
+                                                                (
+                                                                    x => x.Id == typographicResourceLocation.TypographicResource.Id
+                                                                )
+                                                            )
+                                                        ).Name;                                                        
+                                AccountantSignLocationViewModel accountantSignLocationViewModel = mapper.Map<AccountantSignLocationViewModel>(typographicResourceLocation);
+                                accountantSignLocationViewModel.AccountantSignType = SealMappingConfigUtil.GetAccountantSignType(typographicResourceLocation.TypographicResource.SubSealType);
+                                accountantSignLocationViewModel.AccountantName = accountantName;
+                                accountantSignLocationViewModel.ImageBase64 = imageService.GetPathToBase64(typographicResourceLocation.TypographicResource.ImageFullPath);
+                                typographicPageViewModel.AccountantSignLocationViewModels.Add(accountantSignLocationViewModel);
+                                break;
+                            case SealType.Letterhead:
+                                string letterheadName = dbContext.Letterheads
+                                                        .Single
+                                                        (
+                                                            x => x.TypographicResources.Any
+                                                            (
+                                                                x => x.Id == typographicResourceLocation.TypographicResource.Id
+                                                            )
+                                                        ).Name;
+                                LetterheadImageLocationViewModel letterheadImageLocationForm = mapper.Map<LetterheadImageLocationViewModel>(typographicResourceLocation);
+                                letterheadImageLocationForm.LetterheadName = letterheadName;
+                                letterheadImageLocationForm.ImageBase64 = imageService.GetPathToBase64(typographicResourceLocation.TypographicResource.ImageFullPath);
+                                typographicPageViewModel.LetterheadImageLocationViewModels.Add(letterheadImageLocationForm);
+                                break;
+                            case SealType.TemporarySeal:
+                                TemporarySealLocationViewModel temporarySealLocationViewModel = mapper.Map<TemporarySealLocationViewModel>(typographicResourceLocation);
+                                temporarySealLocationViewModel.Sequence = typographicResourceLocation.TypographicResource.Sequence;
+                                temporarySealLocationViewModel.ImageBase64 = imageService.GetPathToBase64(typographicResourceLocation.TypographicResource.ImageFullPath);
+                                typographicPageViewModel.TemporarySealLocationViewModels.Add(temporarySealLocationViewModel);
+                                break;
+                        }
+                    }
+                    #endregion                    
+                }
+                typographicPageViewModel.Success();
+            }            
 
             return typographicPageViewModel;
         }
@@ -387,10 +473,10 @@ namespace SealTypographicWebAPI.Services.Implements
             }
 
             //會計師簽印座標
-            foreach (AccountantSingLocationForm accountantSingLocationForm in pageFrom.AccountantSingLocations)
+            foreach (AccountantSignLocationForm accountantSignLocationForm in pageFrom.AccountantSignLocations)
             {
-                TypographicResourceLocation typographicResourceLocation = mapper.Map<TypographicResourceLocation>(accountantSingLocationForm);
-                typographicResourceLocation.TypographicResource = dbContext.TypographicResources.Single(x => x.Id == accountantSingLocationForm.Id);
+                TypographicResourceLocation typographicResourceLocation = mapper.Map<TypographicResourceLocation>(accountantSignLocationForm);
+                typographicResourceLocation.TypographicResource = dbContext.TypographicResources.Single(x => x.Id == accountantSignLocationForm.Id);
                 typographicResourceLocations.Add(typographicResourceLocation);
             }
 

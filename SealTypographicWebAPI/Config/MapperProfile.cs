@@ -188,7 +188,7 @@ namespace SealTypographicWebAPI.Config
             CreateMap<CustomerSealLocationForm, TypographicResourceLocation>()
                     .ForMember(x => x.Id, y => y.Ignore()) //此ID非為ResourceLocation的ID而是關聯用的ID
                     .ReverseMap();
-            CreateMap<AccountantSingLocationForm, TypographicResourceLocation>()
+            CreateMap<AccountantSignLocationForm, TypographicResourceLocation>()
                     .ForMember(x => x.Id, y => y.Ignore()) //此ID非為ResourceLocation的ID而是關聯用的ID
                     .ReverseMap();
             CreateMap<LetterheadImageLocationForm, TypographicResourceLocation>()
@@ -197,6 +197,11 @@ namespace SealTypographicWebAPI.Config
             CreateMap<TemporarySealLocationForm, TypographicResourceLocation>()
                     .ForMember(x => x.Id, y => y.Ignore()) //此ID非為ResourceLocation的ID而是關聯用的ID
                     .ReverseMap();
+
+            CreateMap<TypographicResourceLocation, CustomerSealLocationViewModel>();
+            CreateMap<TypographicResourceLocation, AccountantSignLocationViewModel>();
+            CreateMap<TypographicResourceLocation, LetterheadImageLocationViewModel>();
+            CreateMap<TypographicResourceLocation, TemporarySealLocationViewModel>();
 
             //印鑑與簽印複製使用
             CreateMap<TypographicResource, TypographicResource>()
