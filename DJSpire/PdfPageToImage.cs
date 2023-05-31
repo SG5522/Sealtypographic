@@ -1,7 +1,6 @@
 ﻿using Spire.Pdf;
-using Spire.Pdf.Graphics;
-using System.IO;
 using System;
+using System.IO;
 
 namespace DJSpire
 {
@@ -28,9 +27,12 @@ namespace DJSpire
             //Open pdf document
             PdfDocument pdf = new PdfDocument();
             pdf.LoadFromFile(pdfPageToImage.Path);
-            MemoryStream stream = (MemoryStream)pdf.SaveAsImage(pdfPageToImage.PageIndex);
-            
-            byte[] imagebytes = stream.ToArray();
+            Stream stream = new MemoryStream();
+            pdf.SaveToImageStream(pdfPageToImage.PageIndex, stream, "png");
+            //Stream stream = pdf.SaveAsImage(pdfPageToImage.PageIndex);
+            MemoryStream memoryStream = new MemoryStream();
+            stream.CopyTo(memoryStream);
+            byte[] imagebytes = memoryStream.ToArray();
 
             return $"{"data:image/png;base64,"}{Convert.ToBase64String(imagebytes)}";
         }

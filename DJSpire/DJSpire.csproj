@@ -5,9 +5,26 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Reference Include="Spire.Pdf">
-      <HintPath>..\..\SpireOffice\Bin\netstandard2.0\Spire.Pdf.dll</HintPath>
+    <PackageReference Include="SkiaSharp" Version="2.88.3" />
+    <PackageReference Include="System.Buffers" Version="4.5.1" />
+    <PackageReference Include="System.Memory" Version="4.5.5" />
+    <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="6.0.0" />
+    <PackageReference Include="System.Text.Encoding.CodePages" Version="7.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="Spire.License">
+      <HintPath>Library\Spire.License.dll</HintPath>
     </Reference>
+    <Reference Include="Spire.Pdf">
+      <HintPath>Library\Spire.Pdf.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="license.elic.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

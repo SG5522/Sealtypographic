@@ -2,11 +2,11 @@
 using SealTypographicWebAPI.Models.TypographicPDF;
 using SealTypographicWebAPI.Models;
 using Microsoft.EntityFrameworkCore;
-using DJSpireNet6;
 using DJSpire;
 using DBEntities;
 using DBEntities.Consts;
 using SealTypographicWebAPI.Utils;
+using Azure;
 
 namespace SealTypographicWebAPI.Services.Implements
 {
@@ -157,9 +157,11 @@ namespace SealTypographicWebAPI.Services.Implements
                                 temporarySealLocationForm.Id = id;
                                 pageForm.TemporarySealLocations.Add(temporarySealLocationForm);
                                 break;
-                        }                            
+                        }
                     }
+                    typographicPagesResponse.Pages.Add(pageForm);
                 }
+                typographicPagesResponse.Success();
             }                                            
             return typographicPagesResponse;
         }
@@ -206,12 +208,12 @@ namespace SealTypographicWebAPI.Services.Implements
 
             if (typographicPages != null)
             {
-                DJSpire.PdfPageToImage pdfPageToImage = new()
+                PdfPageToImage pdfPageToImage = new()
                 {
                     Path = typographicPages.TypographicPDF.UploadFile.FullPath,
                     PageIndex = typographicPages.PageNumber,
                 };
-                typographicPageViewModel.PDFImageBase64 = DJSpire.PdfPageToImage.GetImageBase64(pdfPageToImage);
+                typographicPageViewModel.PDFImageBase64 = PdfPageToImage.GetImageBase64(pdfPageToImage);
             }                                            
 
             return typographicPageViewModel;
