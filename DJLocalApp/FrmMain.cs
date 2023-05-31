@@ -1,8 +1,11 @@
+using DJLocalApp.Api.Controllers;
 using DJLocalApp.Extensions;
 using DJScannerLib.Models;
 using DJScannerLib.Services;
 using System.Drawing.Imaging;
 using System.Text.Json;
+using System.Windows.Controls;
+using System.Windows.Forms;
 
 namespace DJLocalApp
 {
@@ -45,6 +48,7 @@ namespace DJLocalApp
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            NotifyIco.Text = string.Format("D & J Local App Run OK. V{0}", typeof(SysController).Assembly.GetName().Version);
             RefreshUrl();
         }
 
@@ -55,6 +59,7 @@ namespace DJLocalApp
             foreach (string url in urls)
             {
                 LstUrl.Items.Add(url);
+                TsmUrls.DropDownItems.Add(url);
             }
         }
 
@@ -74,6 +79,15 @@ namespace DJLocalApp
         {
             AllDriversResult result = scannerService.GetAllDrivers();
             TvwShow.LoadJson("All Srivers", JsonSerializer.Serialize(result), true, true);
+        }
+
+        private void FrmMain_Resize(object sender, EventArgs e)
+        {
+            if (WindowState == FormWindowState.Minimized)
+            {
+                NotifyIco.Visible = true;
+                Hide();
+            }
         }
     }
 }

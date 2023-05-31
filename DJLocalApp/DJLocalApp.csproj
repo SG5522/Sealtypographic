@@ -8,6 +8,7 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <GenerateDocumentationFile>True</GenerateDocumentationFile>
         <PlatformTarget>x64</PlatformTarget>
+        <ApplicationIcon>localapi2002_256.ico</ApplicationIcon>
     </PropertyGroup>
 
     <ItemGroup>
@@ -26,6 +27,7 @@
         <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
         <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       </Content>
+      <Content Include="localapi2002_256.ico" />
     </ItemGroup>
 
 	<ItemGroup>

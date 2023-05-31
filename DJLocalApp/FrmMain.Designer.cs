@@ -28,6 +28,8 @@
         /// </summary>
         private void InitializeComponent()
         {
+            components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FrmMain));
             TlpMain = new TableLayoutPanel();
             TlpAPI = new TableLayoutPanel();
             LstUrl = new ListBox();
@@ -35,11 +37,15 @@
             TlpScanner = new TableLayoutPanel();
             BtnCurrentDriver = new Button();
             BtnSetDriver = new Button();
-            TvwShow = new TreeView();
             BtnAllDrivers = new Button();
+            TvwShow = new TreeView();
+            NotifyIco = new NotifyIcon(components);
+            CmsNotify = new ContextMenuStrip(components);
+            TsmUrls = new ToolStripMenuItem();
             TlpMain.SuspendLayout();
             TlpAPI.SuspendLayout();
             TlpScanner.SuspendLayout();
+            CmsNotify.SuspendLayout();
             SuspendLayout();
             // 
             // TlpMain
@@ -138,14 +144,6 @@
             BtnSetDriver.UseVisualStyleBackColor = true;
             BtnSetDriver.Click += BtnSetDriver_Click;
             // 
-            // TvwShow
-            // 
-            TvwShow.Dock = DockStyle.Fill;
-            TvwShow.Location = new Point(531, 3);
-            TvwShow.Name = "TvwShow";
-            TvwShow.Size = new Size(266, 444);
-            TvwShow.TabIndex = 2;
-            // 
             // BtnAllDrivers
             // 
             BtnAllDrivers.Dock = DockStyle.Fill;
@@ -157,19 +155,51 @@
             BtnAllDrivers.UseVisualStyleBackColor = true;
             BtnAllDrivers.Click += BtnAllDrivers_Click;
             // 
+            // TvwShow
+            // 
+            TvwShow.Dock = DockStyle.Fill;
+            TvwShow.Location = new Point(531, 3);
+            TvwShow.Name = "TvwShow";
+            TvwShow.Size = new Size(266, 444);
+            TvwShow.TabIndex = 2;
+            // 
+            // NotifyIco
+            // 
+            NotifyIco.ContextMenuStrip = CmsNotify;
+            NotifyIco.Icon = (Icon)resources.GetObject("NotifyIco.Icon");
+            NotifyIco.Text = "Running";
+            NotifyIco.Visible = true;
+            // 
+            // CmsNotify
+            // 
+            CmsNotify.Items.AddRange(new ToolStripItem[] { TsmUrls });
+            CmsNotify.Name = "CmsNotify";
+            CmsNotify.Size = new Size(181, 48);
+            // 
+            // TsmUrls
+            // 
+            TsmUrls.Name = "TsmUrls";
+            TsmUrls.Size = new Size(180, 22);
+            TsmUrls.Text = "API Urls";
+            // 
             // FrmMain
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 450);
             Controls.Add(TlpMain);
+            Icon = (Icon)resources.GetObject("$this.Icon");
             Name = "FrmMain";
+            ShowInTaskbar = false;
             Text = "D & J Local App";
+            WindowState = FormWindowState.Minimized;
             Load += Form1_Load;
+            Resize += FrmMain_Resize;
             TlpMain.ResumeLayout(false);
             TlpAPI.ResumeLayout(false);
             TlpAPI.PerformLayout();
             TlpScanner.ResumeLayout(false);
+            CmsNotify.ResumeLayout(false);
             ResumeLayout(false);
         }
 
@@ -183,5 +213,8 @@
         private TreeView TvwShow;
         private Button BtnSetDriver;
         private Button BtnAllDrivers;
+        private NotifyIcon NotifyIco;
+        private ContextMenuStrip CmsNotify;
+        private ToolStripMenuItem TsmUrls;
     }
 }
