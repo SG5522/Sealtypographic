@@ -35,7 +35,7 @@ namespace SealTypographicWebAPI.Config
         }
 
         /// <summary>
-        /// 信頭授權書放置路徑
+        /// 信頭放置路徑
         /// </summary>
         public string LetterheadImage
         {

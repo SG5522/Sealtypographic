@@ -6,6 +6,8 @@ using DJSpire;
 using DBEntities;
 using DBEntities.Consts;
 using SealTypographicWebAPI.Utils;
+using DJSpire.Services;
+using Serilog;
 
 namespace SealTypographicWebAPI.Services.Implements
 {
@@ -174,19 +176,22 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <returns></returns>
         public PDFViewModel GetPDFView(int uploadFileid)
         {
-            PDFViewModel pDFViewModel = new ();
+            PDFViewModel pDFViewModel = new ();            
             UploadFile? uploadFile = dbContext.UploadFiles.Find(uploadFileid);
             if (uploadFile != null) 
             {
-                PdfView pdfView = new(uploadFile.FullPath);
-                pDFViewModel.TotalPage = pdfView.GetTotalPage();
-                pDFViewModel.PDFBase64 = pdfView.GetBase64ToWebApi();
-                pDFViewModel.Success();
+                PDFService pDFService = new(){ Path = uploadFile.FullPath };
+                pDFViewModel.PDFFullPath = uploadFile.FullPath; //Log使用
+                pDFViewModel.TotalPage = pDFService.GetTotalPage();
+                pDFViewModel.PDFBase64 = pDFService.GetPDFBase64();                
+                pDFViewModel.Success();                
             }            
             else
             {
                 pDFViewModel.DbNoData();
             }
+            
+            Log.Information("TypographicPDF PDFView output {@Output}", mapper.Map<PDFViewModel>(pDFViewModel));
             return pDFViewModel;
         }
 
@@ -221,15 +226,14 @@ namespace SealTypographicWebAPI.Services.Implements
             if (typographicPDF != null)
             {
                 //取得單頁PDF圖檔
-                PdfPageToImage pdfPageToImage = new()
+                PDFService pDFService = new()
                 {
                     Path = typographicPDF.UploadFile.FullPath,
                     PageIndex = typographicPDFPageSearch.PageNumber,
                 };
                 
                 typographicPageViewModel.PageNumber = typographicPDFPageSearch.PageNumber;
-                typographicPageViewModel.PDFImageBase64 = imageService.GetStreamToBase64(pdfPageToImage.GetImageStream());
-                
+                typographicPageViewModel.PDFImageBase64 = pDFService.GetPageImageBase64();                
 
                 TypographicPage? typographicPages = dbContext.TypographicPages
                                                     .Include(x => x.TypographicPDF)

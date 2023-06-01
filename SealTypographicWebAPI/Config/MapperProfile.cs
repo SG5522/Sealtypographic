@@ -185,6 +185,9 @@ namespace SealTypographicWebAPI.Config
 
             CreateMap<TypographicPageForm, TypographicPage>();
 
+            CreateMap<PDFViewModel, PDFViewModel>()
+                    .ForMember(x => x.PDFBase64, y => y.Ignore());
+
             CreateMap<CustomerSealLocationForm, TypographicResourceLocation>()
                     .ForMember(x => x.Id, y => y.Ignore()) //此ID非為ResourceLocation的ID而是關聯用的ID
                     .ReverseMap();

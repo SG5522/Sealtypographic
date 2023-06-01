@@ -10,6 +10,9 @@ using ICSharpCode.SharpZipLib.BZip2;
 
 namespace DJSharpZipLib
 {
+    /// <summary>
+    /// UNDONE 已做完但未測試
+    /// </summary>
     public class DJGZip
     {
         /// <summary>

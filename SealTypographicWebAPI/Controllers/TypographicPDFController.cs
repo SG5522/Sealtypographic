@@ -60,8 +60,7 @@ namespace SealTypographicWebAPI.Controllers
             try
             {
                 Log.Information("TypographicPDF PDFView input {@Input}", uploadId);
-                pDFViewModel = typographicPDFService.GetPDFView(uploadId);
-                Log.Information("TypographicPDF PDFView output {@Output}", pDFViewModel);
+                pDFViewModel = typographicPDFService.GetPDFView(uploadId);                
             }
             catch (Exception ex)
             {

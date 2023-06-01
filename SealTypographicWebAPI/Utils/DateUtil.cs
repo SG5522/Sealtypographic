@@ -5,7 +5,7 @@ namespace SealTypographicWebAPI.Utils
     /// <summary>
     /// 啟用日期
     /// </summary>
-    public class AvailableDateUtil
+    public class DateUtil
     {
         /// <summary>
         /// 取得未啟用時間(0000/01/01)
@@ -25,9 +25,9 @@ namespace SealTypographicWebAPI.Utils
             return Get(Available.Activated);
         }
 
-        private static DateTime Get(Available availableDate)
+        private static DateTime Get(Available available)
         {
-            switch (availableDate)
+            switch (available)
             {
                 case Available.NotActivated:
                     return DateTime.Parse("0001/01/01");

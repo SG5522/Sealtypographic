@@ -1,4 +1,5 @@
 ﻿using DBEntities.Base;
+using System.Text.Json.Serialization;
 
 namespace SealTypographicWebAPI.Models.TypographicPDF
 {
@@ -16,5 +17,11 @@ namespace SealTypographicWebAPI.Models.TypographicPDF
         /// 單頁顯示
         /// </summary>
         public string PDFBase64 { get; set; }
+
+        /// <summary>
+        /// PDF路徑
+        /// </summary>
+        [JsonIgnore]
+        public string PDFFullPath { get; set; }
     }
 }

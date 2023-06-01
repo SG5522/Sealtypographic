@@ -7,7 +7,7 @@ using SevenZip.Compression.LZMA;
 namespace DJSharpZipLib
 {
     /// <summary>
-    /// 7ZIP目前無法正常壓縮
+    /// UNDONE 7ZIP目前無法正常壓縮
     /// </summary>
     public class DJ7Zip
     {

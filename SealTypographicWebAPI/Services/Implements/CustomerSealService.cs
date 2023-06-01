@@ -319,8 +319,8 @@ namespace SealTypographicWebAPI.Services.Implements
                 customerSealGroup.UpdateUserId = userId;
                 customerSealGroup.UpdateDate = DateTime.Now;
             }
-            customerSealGroup.StartDate = AvailableDateUtil.NotActivated();
-            customerSealGroup.EndDate = AvailableDateUtil.NotActivated();                
+            customerSealGroup.StartDate = DateUtil.NotActivated();
+            customerSealGroup.EndDate = DateUtil.NotActivated();                
             customerSealGroup.ReviewStatus = ReviewStatus.Draft;
         }
 

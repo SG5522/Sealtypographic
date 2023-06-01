@@ -41,17 +41,6 @@ namespace SealTypographicWebAPI.Services.Implements
         }
 
         /// <summary>
-        /// Stream 轉Base64
-        /// </summary>
-        /// <param name="stream"></param>
-        /// <returns></returns>
-        public string GetStreamToBase64(Stream stream)
-        {
-            Image image = Image.Load(stream, out IImageFormat format);
-            return image.ToBase64String(format);
-        }
-
-        /// <summary>
         /// Base64轉圖檔並存檔回傳存檔路徑
         /// </summary>
         /// <param name="imageBase64Info">ImageBase64資訊</param>        
