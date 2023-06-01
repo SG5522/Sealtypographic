@@ -38,6 +38,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SealAPIWrap", "SealAPIWrap\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DJSpire", "DJSpire\DJSpire.csproj", "{2B9BAA77-0545-403E-B9DE-7CF27AF554EC}"
 EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "DJLocalAppSetup", "DJLocalAppSetup\DJLocalAppSetup.vdproj", "{201EC9D4-51DF-4AD6-A0BB-7E5AB1A32AD7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -216,6 +218,12 @@ Global
 		{2B9BAA77-0545-403E-B9DE-7CF27AF554EC}.Release|x64.Build.0 = Release|Any CPU
 		{2B9BAA77-0545-403E-B9DE-7CF27AF554EC}.Release|x86.ActiveCfg = Release|Any CPU
 		{2B9BAA77-0545-403E-B9DE-7CF27AF554EC}.Release|x86.Build.0 = Release|Any CPU
+		{201EC9D4-51DF-4AD6-A0BB-7E5AB1A32AD7}.Debug|Any CPU.ActiveCfg = Debug
+		{201EC9D4-51DF-4AD6-A0BB-7E5AB1A32AD7}.Debug|x64.ActiveCfg = Debug
+		{201EC9D4-51DF-4AD6-A0BB-7E5AB1A32AD7}.Debug|x86.ActiveCfg = Debug
+		{201EC9D4-51DF-4AD6-A0BB-7E5AB1A32AD7}.Release|Any CPU.ActiveCfg = Release
+		{201EC9D4-51DF-4AD6-A0BB-7E5AB1A32AD7}.Release|x64.ActiveCfg = Release
+		{201EC9D4-51DF-4AD6-A0BB-7E5AB1A32AD7}.Release|x86.ActiveCfg = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
