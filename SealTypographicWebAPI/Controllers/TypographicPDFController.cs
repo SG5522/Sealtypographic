@@ -51,16 +51,17 @@ namespace SealTypographicWebAPI.Controllers
         /// <summary>
         /// 取得PDF
         /// </summary>
-        /// <param name="uploadId">上傳檔案Id</param>        
+        /// <param name="uploadId">上傳檔案Id</param>
+        /// <param name="pageNumber">pdf頁次</param>        
         /// <returns></returns>        
-        [HttpGet("[Action]/{uploadId}")]
-        public PDFViewModel PDFView(int uploadId)
+        [HttpGet("[Action]")]
+        public PDFViewModel PDFView(int uploadId, int pageNumber)
         {
             PDFViewModel pDFViewModel = new();
             try
             {
-                Log.Information("TypographicPDF PDFView input {@Input}", uploadId);
-                pDFViewModel = typographicPDFService.GetPDFView(uploadId);                
+                Log.Information("TypographicPDF PDFView input {@Input}", uploadId, pageNumber);
+                pDFViewModel = typographicPDFService.GetPDFView(uploadId, pageNumber);                
             }
             catch (Exception ex)
             {

@@ -40,7 +40,7 @@ namespace DJSpire.Services
                 if (Document != null)
                 {
                     IndexDocument = new PdfDocument();
-                    IndexDocument.InsertPage(Document, PageIndex);
+                    IndexDocument.InsertPage(Document, PageIndex - 1);
                 }
             }
         }
@@ -89,30 +89,35 @@ namespace DJSpire.Services
         }
 
         /// <summary>
-        /// PDF檔案轉Stream
-        /// </summary>
-        /// <returns></returns>
-        public MemoryStream GetPDFStream()
-        {
-            MemoryStream stream = new MemoryStream();
-            Document.SaveToStream(stream);
-            return stream;
-        }
-
-        /// <summary>
         /// PDF檔案轉Base64
         /// </summary>
         /// <returns></returns>
         public string GetPDFBase64()
         {
-            //Stream to Array
-            byte[] pdfBytes = GetPDFStream().ToArray();
-            return $"{"data:application/pdf;base64,"}{Convert.ToBase64String(pdfBytes)}";
+            MemoryStream stream = new MemoryStream();
+            Document.SaveToStream(stream);
+            return GetMemoryStreamToBase64(stream);
         }
+
+        public string GetPDFPageBase64()
+        {
+            MemoryStream stream = new MemoryStream();
+            IndexDocument.SaveToStream(stream);
+            return GetMemoryStreamToBase64(stream);
+        }
+
 
         public int GetTotalPage()
         {
             return Document.Pages.Count;
         }
+
+        private string GetMemoryStreamToBase64(MemoryStream memoryStream)
+        {
+            byte[] pdfBytes = memoryStream.ToArray();
+            return $"{"data:application/pdf;base64,"}{Convert.ToBase64String(pdfBytes)}";
+        }
+        
+
     }
 }

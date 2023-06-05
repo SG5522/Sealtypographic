@@ -22,10 +22,12 @@ namespace SealTypographicWebAPI.Services
         TypographicPagesResponse GetEditPages(int id);
 
         /// <summary>
-        /// 取得PDF資訊
+        /// 取得PDF單頁內容
         /// </summary>
+        /// <param name="uploadFileid">上傳檔案Id</param>
+        /// <param name="pageNumber">pdf頁次</param>  
         /// <returns></returns>
-        PDFViewModel GetPDFView(int UploadId);
+        PDFViewModel GetPDFView(int uploadFileid, int pageNumber);
 
         /// <summary>
         /// 取得單頁PDF圖像與排版編輯資訊

@@ -122,7 +122,7 @@ namespace SealTypographicWebAPI.Services.Implements
             TypographicPagesResponse typographicPagesResponse = new();
             TypographicPDF? typographicPDF = dbContext.TypographicPDFs
                                             .Include(x => x.TypographicPages)
-                                            .ThenInclude(x => x.TypographicResourceLocations)
+                                            .ThenInclude(x => x.TypographicResourceLocations)                                            
                                             .FirstOrDefault(x => x.Id == id);
 
             if(typographicPDF != null)
@@ -138,8 +138,9 @@ namespace SealTypographicWebAPI.Services.Implements
                         IsAccountantCertificate = typographicPage.IsAccountantCertificate
                     };
                     foreach(TypographicResourceLocation typographicResourceLocation in typographicPage.TypographicResourceLocations)
-                    {                        
-                        switch (typographicResourceLocation.TypographicResource.SealType)
+                    {
+                        TypographicResource typographicResource = dbContext.TypographicResources.Single(x => x.Id == typographicResourceLocation.TypographicResource.Id);
+                        switch (typographicResource.SealType)
                         {
                             case SealType.Customer:
                                 CustomerSealLocationForm customerSealLocationForm = mapper.Map<CustomerSealLocationForm>(typographicResourceLocation);
@@ -172,18 +173,25 @@ namespace SealTypographicWebAPI.Services.Implements
 
         /// <summary>
         /// 取得PDF資訊
+        /// <param name="uploadFileid">上傳檔案Id</param>
+        /// <param name="pageNumber">pdf頁次</param>  
         /// </summary>
         /// <returns></returns>
-        public PDFViewModel GetPDFView(int uploadFileid)
+        public PDFViewModel GetPDFView(int uploadFileid, int pageNumber)
         {
             PDFViewModel pDFViewModel = new ();            
             UploadFile? uploadFile = dbContext.UploadFiles.Find(uploadFileid);
             if (uploadFile != null) 
             {
-                PDFService pDFService = new(){ Path = uploadFile.FullPath };
+                //取得單頁PDF圖檔
+                PDFService pDFService = new()
+                {
+                    Path = uploadFile.FullPath,
+                    PageIndex = pageNumber,
+                };
                 pDFViewModel.PDFFullPath = uploadFile.FullPath; //Log使用
                 pDFViewModel.TotalPage = pDFService.GetTotalPage();
-                pDFViewModel.PDFBase64 = pDFService.GetPDFBase64();                
+                pDFViewModel.PDFBase64 = pDFService.GetPDFPageBase64();                
                 pDFViewModel.Success();                
             }            
             else
