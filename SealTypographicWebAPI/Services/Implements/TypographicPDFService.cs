@@ -120,15 +120,15 @@ namespace SealTypographicWebAPI.Services.Implements
         public TypographicPagesResponse GetEditPages(int id)
         {
             TypographicPagesResponse typographicPagesResponse = new();
-            TypographicPDF? typographicPDF = dbContext.TypographicPDFs
-                                            .Include(x => x.TypographicPages)
-                                            .ThenInclude(x => x.TypographicResourceLocations)                                            
-                                            .FirstOrDefault(x => x.Id == id);
+            IQueryable<TypographicPage> typographicPages = dbContext.TypographicPages
+                                                        .Include(x => x.TypographicResourceLocations)
+                                                        .ThenInclude(x => x.TypographicResource)
+                                                        .Where(x => x.TypographicPDF.Id == id);
 
-            if(typographicPDF != null)
+            if(typographicPages != null)
             {
                 typographicPagesResponse.Id = id;
-                foreach(TypographicPage typographicPage in typographicPDF.TypographicPages)
+                foreach(TypographicPage typographicPage in typographicPages)
                 {
                     TypographicPageForm pageForm = new()
                     {
@@ -138,9 +138,8 @@ namespace SealTypographicWebAPI.Services.Implements
                         IsAccountantCertificate = typographicPage.IsAccountantCertificate
                     };
                     foreach(TypographicResourceLocation typographicResourceLocation in typographicPage.TypographicResourceLocations)
-                    {
-                        TypographicResource typographicResource = dbContext.TypographicResources.Single(x => x.Id == typographicResourceLocation.TypographicResource.Id);
-                        switch (typographicResource.SealType)
+                    {                        
+                        switch (typographicResourceLocation.TypographicResource.SealType)
                         {
                             case SealType.Customer:
                                 CustomerSealLocationForm customerSealLocationForm = mapper.Map<CustomerSealLocationForm>(typographicResourceLocation);
