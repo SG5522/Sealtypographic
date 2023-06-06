@@ -185,7 +185,7 @@ namespace SealTypographicWebAPI.Services.Implements
                 //取得單頁PDF圖檔
                 PDFService pDFService = new()
                 {
-                    Path = uploadFile.FullPath,
+                    PDFPath = uploadFile.FullPath,
                     PageIndex = pageNumber,
                 };
                 pDFViewModel.PDFFullPath = uploadFile.FullPath; //Log使用
@@ -235,7 +235,7 @@ namespace SealTypographicWebAPI.Services.Implements
                 //取得單頁PDF圖檔
                 PDFService pDFService = new()
                 {
-                    Path = typographicPDF.UploadFile.FullPath,
+                    PDFPath = typographicPDF.UploadFile.FullPath,
                     PageIndex = typographicPDFPageSearch.PageNumber,
                 };
                 
@@ -314,6 +314,29 @@ namespace SealTypographicWebAPI.Services.Implements
             }            
 
             return typographicPageViewModel;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="typographicPDFId"></param>
+        /// <returns></returns>
+        public string GetEditPdf(int typographicPDFId)
+        {
+            IQueryable<TypographicPage> typographicPages = dbContext.TypographicPages
+                                                            .Include(x => x.TypographicResourceLocations)
+                                                            .ThenInclude(x => x.TypographicResource)
+                                                            .Where(x => x.TypographicPDF.Id == typographicPDFId);
+
+            if(typographicPages != null)
+            {
+
+            }
+            else
+            {
+
+            }
+            return string.Empty;
         }
 
         /// <summary>

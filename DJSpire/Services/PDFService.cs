@@ -2,6 +2,7 @@
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Formats;
 using Spire.Pdf;
+using Spire.Pdf.Graphics;
 using System;
 using System.IO;
 
@@ -9,21 +10,21 @@ namespace DJSpire.Services
 {
     public class PDFService
     {
-        private string path;
+        private string pDFpath;
         private int pageIndex;
 
         /// <summary>
         /// PDF檔案路徑
         /// </summary>
-        public string Path
+        public string PDFPath
         {
-            get { return path; }
+            get { return pDFpath; }
             set
             {
-                path = value;
-                if (!string.IsNullOrWhiteSpace(path))
+                pDFpath = value;
+                if (!string.IsNullOrWhiteSpace(pDFpath))
                 {
-                    Document = new PdfDocument(path);
+                    Document = new PdfDocument(pDFpath);
                 }
             }
         }
@@ -110,6 +111,14 @@ namespace DJSpire.Services
         public int GetTotalPage()
         {
             return Document.Pages.Count;
+        }
+
+        public void GetEditPDFBase64(Stream stream)
+        {
+            PdfPageBase pdfPage = Document.Pages[0];
+            PdfImage pdfImage = PdfImage.FromStream(stream);
+            Document.Pages[0].Canvas.DrawImage(pdfImage, 0, 0, 40, 40);
+            Document.SaveToFile(Path.Combine(Path.GetPathRoot(PDFPath), "123.pdf"));
         }
 
         private string GetMemoryStreamToBase64(MemoryStream memoryStream)

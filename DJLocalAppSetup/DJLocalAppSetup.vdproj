@@ -15,7 +15,7 @@
     {
         "Entry"
         {
-        "MsmKey" = "8:_48217BB1728B48FA82E05D9044E035E5"
+        "MsmKey" = "8:_2C5131088B3F462488555850DB1EB255"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -65,7 +65,7 @@
         "DisplayName" = "8:Release"
         "IsDebugOnly" = "11:FALSE"
         "IsReleaseOnly" = "11:TRUE"
-        "OutputFilename" = "8:Release\\DJLocalAppSetup.msi"
+        "OutputFilename" = "8:Release\\DJLocalApp.msi"
         "PackageFilesAs" = "3:2"
         "PackageFileSize" = "3:-2147483648"
         "CabType" = "3:1"
@@ -77,18 +77,13 @@
         "InstallerBootstrapper" = "3:2"
             "BootstrapperCfg:{63ACBE69-63AA-4F98-B2B6-99F9E24495F2}"
             {
-            "Enabled" = "11:TRUE"
+            "Enabled" = "11:FALSE"
             "PromptEnabled" = "11:TRUE"
             "PrerequisitesLocation" = "2:1"
             "Url" = "8:"
             "ComponentsUrl" = "8:"
                 "Items"
                 {
-                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:Microsoft.NetCore.DesktopRuntime.6.0.x64"
-                    {
-                    "Name" = "8:.NET Desktop 執行階段 6.0.16 (x64)"
-                    "ProductCode" = "8:Microsoft.NetCore.DesktopRuntime.6.0.x64"
-                    }
                 }
             }
         }
@@ -199,7 +194,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:DJLocalApp"
         "ProductCode" = "8:{955805DE-92C5-4CAB-B55A-FF4E27D043DF}"
-        "PackageCode" = "8:{77189E0A-BBAB-43D1-9D1B-7438E4DCFB9B}"
+        "PackageCode" = "8:{62265260-330E-435F-B783-667BB5394138}"
         "UpgradeCode" = "8:{33E7AC88-ABA9-47EC-BAF2-DA8D2DD1836B}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
@@ -341,7 +336,7 @@
         }
         "Shortcut"
         {
-            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_2E465DB05D2348FFA262334652F0B9AF"
+            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_91ACA4D130204B0D8154391307994761"
             {
             "Name" = "8:DJLocalApp"
             "Arguments" = "8:"
@@ -349,13 +344,13 @@
             "ShowCmd" = "3:1"
             "IconIndex" = "3:0"
             "Transitive" = "11:FALSE"
-            "Target" = "8:_48217BB1728B48FA82E05D9044E035E5"
+            "Target" = "8:_2C5131088B3F462488555850DB1EB255"
             "Folder" = "8:_2E889BDFAD97470797133D1684C9EF8C"
             "WorkingFolder" = "8:_9A844D76981147089021C71CF8C0875C"
             "Icon" = "8:_82EFAEF8BDB441F697B802A028EA5DD6"
             "Feature" = "8:"
             }
-            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_D91D92C77AD74E759A2FFB67F86A3D80"
+            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_DBDE3F71528B47AABFFBB8474A43AEFA"
             {
             "Name" = "8:DJLocalApp"
             "Arguments" = "8:"
@@ -363,7 +358,7 @@
             "ShowCmd" = "3:1"
             "IconIndex" = "3:0"
             "Transitive" = "11:FALSE"
-            "Target" = "8:_48217BB1728B48FA82E05D9044E035E5"
+            "Target" = "8:_2C5131088B3F462488555850DB1EB255"
             "Folder" = "8:_23CE7563E8B541C2A50BCA373A997814"
             "WorkingFolder" = "8:_9A844D76981147089021C71CF8C0875C"
             "Icon" = "8:_82EFAEF8BDB441F697B802A028EA5DD6"
@@ -768,9 +763,9 @@
         }
         "ProjectOutput"
         {
-            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_48217BB1728B48FA82E05D9044E035E5"
+            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_2C5131088B3F462488555850DB1EB255"
             {
-            "SourcePath" = "8:..\\DJLocalApp\\obj\\Debug\\net6.0-windows\\apphost.exe"
+            "SourcePath" = "8:..\\DJLocalApp\\obj\\Release\\net6.0-windows\\apphost.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_9A844D76981147089021C71CF8C0875C"
@@ -792,6 +787,7 @@
             "OutputGroupCanonicalName" = "8:PublishItems"
             "OutputProjectGuid" = "8:{DD6AABBF-A550-4B84-B6E2-0CC9FB59806B}"
             "ShowKeyOutput" = "11:TRUE"
+            "PublishProfilePath" = "8:Properties\\PublishProfiles\\FolderProfile.pubxml"
                 "ExcludeFilters"
                 {
                 }

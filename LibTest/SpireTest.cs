@@ -1,6 +1,6 @@
 ﻿using DJLib;
 using DJLib.Models;
-using DJSpireNet6;
+using DJSpire.Services;
 
 namespace LibTest
 {
@@ -34,20 +34,13 @@ namespace LibTest
 
         private void BtnStart_Click(object sender, EventArgs e)
         {
-            PdfPageToImage pdfPageToImage = new()
+            PDFService pDFService = new()
             {
-                PageIndex = 1,
-                Path = Dialog.FileName
+                PDFPath = "C:\\DJimage\\TestSealcard\\2222.pdf"
             };
 
-            ImageInfo imageInfo = ImageInfo.FromImageBase64(PdfPageToImage.GetImageBase64(pdfPageToImage));
-
-            SaveFullPath saveFullPath = new()
-            {
-                FileName = "test",
-                Folder = "D:\\works\\SealTypographicWebAPI\\"
-            };
-            ImageSharpUtil.SaveFile(imageInfo.Image, imageInfo.ImageFormat, saveFullPath);
+            Stream imageStream = File.OpenRead(Dialog.FileName);
+            pDFService.GetEditPDFBase64(imageStream);
         }
 
         private void BtnToImageBas64_Click(object sender, EventArgs e)

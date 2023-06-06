@@ -12,7 +12,7 @@
     <ProjectReference Include="..\DJEncryption\DJEncryption.csproj" />
     <ProjectReference Include="..\DJLib\DJLib.csproj" />
     <ProjectReference Include="..\DJSharpZipLib\DJSharpZipLib.csproj" />
-    <ProjectReference Include="..\DJSpireNet6\DJSpireNet6.csproj" />
+    <ProjectReference Include="..\DJSpire\DJSpire.csproj" />
   </ItemGroup>
 
   <ItemGroup>
