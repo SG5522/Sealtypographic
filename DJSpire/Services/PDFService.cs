@@ -1,30 +1,43 @@
 ﻿using DJSpire.Consts;
+using DJSpire.Models;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Formats;
 using Spire.Pdf;
 using Spire.Pdf.Graphics;
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Text.RegularExpressions;
 
 namespace DJSpire.Services
 {
     public class PDFService
     {
-        private string pDFpath;
+        private string pdfpath;
         private int pageIndex;
+
+        /// <summary>
+        /// 原PDF檔
+        /// </summary>
+        public PdfDocument Document { get; set; }
+
+        /// <summary>
+        /// 指定頁次的PDF檔
+        /// </summary>
+        public PdfDocument IndexDocument { get; set; }
 
         /// <summary>
         /// PDF檔案路徑
         /// </summary>
         public string PDFPath
         {
-            get { return pDFpath; }
+            get { return pdfpath; }
             set
             {
-                pDFpath = value;
-                if (!string.IsNullOrWhiteSpace(pDFpath))
+                pdfpath = value;
+                if (!string.IsNullOrWhiteSpace(pdfpath))
                 {
-                    Document = new PdfDocument(pDFpath);
+                    Document = new PdfDocument(pdfpath);
                 }
             }
         }
@@ -37,24 +50,15 @@ namespace DJSpire.Services
             get { return pageIndex; }
             set
             {
-                pageIndex = value;
-                if (Document != null)
+                pageIndex = value - 1;
+                if (Document != null & pageIndex >= 0)
                 {
                     IndexDocument = new PdfDocument();
-                    IndexDocument.InsertPage(Document, PageIndex - 1);
+                    IndexDocument.InsertPage(Document, pageIndex);
                 }
             }
         }
 
-        /// <summary>
-        /// 原PDF檔
-        /// </summary>
-        public PdfDocument Document { get; set; }
-
-        /// <summary>
-        /// 指定頁次的PDF檔
-        /// </summary>
-        public PdfDocument IndexDocument { get; set; }
 
         /// <summary>
         /// 圖片轉為Stream
@@ -78,8 +82,8 @@ namespace DJSpire.Services
                 default:
                     imageTypeString = "jpg";
                     break;
-            }
-            IndexDocument.SaveToImageStream(0, stream, imageTypeString);
+            }            
+            IndexDocument.SaveToImageStream(0, stream, imageTypeString);            
             return stream;
         }
 
@@ -96,7 +100,7 @@ namespace DJSpire.Services
         public string GetPDFBase64()
         {
             MemoryStream stream = new MemoryStream();
-            Document.SaveToStream(stream);
+            Document.SaveToStream(stream);            
             return GetMemoryStreamToBase64(stream);
         }
 
@@ -113,11 +117,19 @@ namespace DJSpire.Services
             return Document.Pages.Count;
         }
 
-        public void GetEditPDFBase64(Stream stream)
-        {
-            PdfPageBase pdfPage = Document.Pages[0];
-            PdfImage pdfImage = PdfImage.FromStream(stream);
-            Document.Pages[0].Canvas.DrawImage(pdfImage, 0, 0, 40, 40);
+        public void GetEditPDFBase64(List<SpireEditPage> spireEditPages)
+        {            
+            foreach(SpireEditPage spireEditPage in spireEditPages)
+            {
+                    Document.Pages[spireEditPage.PageNumber].Canvas.DrawImage
+                    (
+                        PdfImage.FromStream(spireEditPage.ImageStream), 
+                        spireEditPage.Left, 
+                        spireEditPage.Top, 
+                        spireEditPage.Width, 
+                        spireEditPage.Height
+                    );
+            }                             
             Document.SaveToFile(Path.Combine(Path.GetPathRoot(PDFPath), "123.pdf"));
         }
 
@@ -125,8 +137,6 @@ namespace DJSpire.Services
         {
             byte[] pdfBytes = memoryStream.ToArray();
             return $"{"data:application/pdf;base64,"}{Convert.ToBase64String(pdfBytes)}";
-        }
-        
-
+        }        
     }
 }

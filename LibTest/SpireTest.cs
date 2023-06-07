@@ -1,5 +1,6 @@
 ﻿using DJLib;
 using DJLib.Models;
+using DJSpire.Models;
 using DJSpire.Services;
 
 namespace LibTest
@@ -39,8 +40,31 @@ namespace LibTest
                 PDFPath = "C:\\DJimage\\TestSealcard\\2222.pdf"
             };
 
-            Stream imageStream = File.OpenRead(Dialog.FileName);
-            pDFService.GetEditPDFBase64(imageStream);
+            ImageInfo imageInfo = ImageInfo.FromPath(Dialog.FileName);
+            imageInfo.Transparent();
+
+            List<SpireEditPage> spireEditPages = new()
+            {
+                new SpireEditPage
+                {
+                    ImageBase64 = imageInfo.ImageToBase64(),
+                    PageNumber = 1,
+                    Left = 0,
+                    Top = 0,
+                    Width = 40,
+                    Height = 40,
+                },
+                new SpireEditPage 
+                {
+                    ImageBase64 = imageInfo.ImageToBase64(),
+                    PageNumber = 1,
+                    Left = 0,
+                    Top = 50,
+                    Width = 40,
+                    Height = 40,
+                }
+            };
+            pDFService.GetEditPDFBase64(spireEditPages);
         }
 
         private void BtnToImageBas64_Click(object sender, EventArgs e)

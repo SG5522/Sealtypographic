@@ -102,10 +102,10 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <returns></returns>
         private void SaveImage(string imageBase64, SaveFullPath saveFullPath, bool isResize)
         {
-            ImageInfo imageInfo = ImageInfo.FromImageBase64(imageBase64);
+            ImageInfo imageInfo = ImageInfo.FromImageBase64(imageBase64);            
             if (isResize)
             {
-                ImageInfo.ReSize(imageInfo, sealPathOption.ResizeScale);
+                imageInfo.ReSize(imageInfo, sealPathOption.ResizeScale);
             }
             ImageSharpUtil.SaveFile(imageInfo.Image, imageInfo.ImageFormat, saveFullPath);
         }
@@ -143,7 +143,7 @@ namespace SealTypographicWebAPI.Services.Implements
             ImageInfo imageInfo = ImageInfo.FromImageBase64(imageBase64);
             if (isResize)
             {
-                ImageInfo.ReSize(imageInfo, sealPathOption.ResizeScale);
+                imageInfo.ReSize(imageInfo, sealPathOption.ResizeScale);
             }
             await ImageSharpUtil.SaveFileAsync(imageInfo.Image, imageInfo.ImageFormat, saveFullPath);
         }
