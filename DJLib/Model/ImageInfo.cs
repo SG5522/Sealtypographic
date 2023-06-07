@@ -78,11 +78,6 @@ namespace DJLib.Models
         /// <param name="threshold">臨界點</param>
         public void Transparent(float threshold = 0.1F)
         {
-            RecolorBrush brush = new RecolorBrush(Color.White, Color.Transparent, threshold);            
-            Image.Mutate(x =>
-            {
-                x.Fill(brush);
-            });
             PngEncoder encoder = new PngEncoder()
             {
                 ColorType = PngColorType.RgbWithAlpha,
@@ -90,6 +85,15 @@ namespace DJLib.Models
                 BitDepth = PngBitDepth.Bit8,
                 CompressionLevel = PngCompressionLevel.BestSpeed
             };
+
+            RecolorBrush brush = new RecolorBrush(Color.White, Color.Transparent, threshold);      
+            
+
+            Image.Mutate(x =>
+            {
+                x.Fill(brush,);
+            });
+
 
             Image.SaveAsPng("C:\\123.png", encoder);            
                             //x.Clear(brush));            
