@@ -47,4 +47,8 @@
 	  <ProjectReference Include="..\DJScannerLib\DJScannerLib.csproj" />
 	  <ProjectReference Include="..\SealAPIWrap\SealAPIWrap.csproj" />
 	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="Properties\PublishProfiles\" />
+	</ItemGroup>
 </Project>

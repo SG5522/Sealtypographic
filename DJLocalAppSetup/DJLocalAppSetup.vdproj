@@ -21,7 +21,7 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_82EFAEF8BDB441F697B802A028EA5DD6"
+        "MsmKey" = "8:_3C90246B67FC41A486AC8CD342847C50"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -45,7 +45,7 @@
         "InstallerBootstrapper" = "3:2"
             "BootstrapperCfg:{63ACBE69-63AA-4F98-B2B6-99F9E24495F2}"
             {
-            "Enabled" = "11:TRUE"
+            "Enabled" = "11:FALSE"
             "PromptEnabled" = "11:TRUE"
             "PrerequisitesLocation" = "2:1"
             "Url" = "8:"
@@ -54,7 +54,7 @@
                 {
                     "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:.NETFramework,Version=v4.7.2"
                     {
-                    "Name" = "8:Microsoft .NET Framework 4.7.2 (x86 and x64)"
+                    "Name" = "8:Microsoft .NET Framework 4.7.2 (x86 和 x64)"
                     "ProductCode" = "8:.NETFramework,Version=v4.7.2"
                     }
                 }
@@ -92,6 +92,21 @@
     {
         "CustomAction"
         {
+            "{4AA51A2D-7D85-4A59-BA75-B0809FC8B380}:_FAF6A45FF0EF4260B14ED3FF27F0C9EF"
+            {
+            "Name" = "8:Run DJLocalApp"
+            "Condition" = "8:"
+            "Object" = "8:_2C5131088B3F462488555850DB1EB255"
+            "FileType" = "3:2"
+            "InstallAction" = "3:2"
+            "Arguments" = "8:/Commit"
+            "EntryPoint" = "8:"
+            "Sequence" = "3:1"
+            "Identifier" = "8:_B7E6AD38_1BC1_4208_BD73_241C002742A1"
+            "InstallerClass" = "11:FALSE"
+            "CustomActionData" = "8:"
+            "Run64Bit" = "11:TRUE"
+            }
         }
         "DefaultFeature"
         {
@@ -117,10 +132,10 @@
         }
         "File"
         {
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_82EFAEF8BDB441F697B802A028EA5DD6"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_3C90246B67FC41A486AC8CD342847C50"
             {
-            "SourcePath" = "8:..\\DJLocalApp\\localapi2002_256.ico"
-            "TargetName" = "8:localapi2002_256.ico"
+            "SourcePath" = "8:C:\\Users\\PandaWu\\Downloads\\localapi2002_32.ico"
+            "TargetName" = "8:localapi2002_32.ico"
             "Tag" = "8:"
             "Folder" = "8:_9A844D76981147089021C71CF8C0875C"
             "Condition" = "8:"
@@ -165,6 +180,17 @@
                 {
                 }
             }
+            "{1525181F-901A-416C-8A58-119130FE478E}:_60E786A98A2241D590DCEB8B7A1C3B82"
+            {
+            "Name" = "8:#1928"
+            "AlwaysCreate" = "11:FALSE"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Property" = "8:StartupFolder"
+                "Folders"
+                {
+                }
+            }
             "{3C67513D-01DD-4637-8A68-80971EB9504F}:_9A844D76981147089021C71CF8C0875C"
             {
             "DefaultLocation" = "8:[ProgramFiles64Folder][Manufacturer]\\[ProductName]"
@@ -194,24 +220,24 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:DJLocalApp"
         "ProductCode" = "8:{955805DE-92C5-4CAB-B55A-FF4E27D043DF}"
-        "PackageCode" = "8:{62265260-330E-435F-B783-667BB5394138}"
+        "PackageCode" = "8:{EF846C9F-01C7-4569-9636-84951DAA141D}"
         "UpgradeCode" = "8:{33E7AC88-ABA9-47EC-BAF2-DA8D2DD1836B}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:FALSE"
         "DetectNewerInstalledVersion" = "11:TRUE"
-        "InstallAllUsers" = "11:FALSE"
+        "InstallAllUsers" = "11:TRUE"
         "ProductVersion" = "8:1.0.0"
-        "Manufacturer" = "8:DJImage"
+        "Manufacturer" = "8:D & J Image Corp."
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"
-        "Title" = "8:DJLocalAppSetup"
+        "Title" = "8:D & J Local App Setup"
         "Subject" = "8:"
-        "ARPCONTACT" = "8:DJImage"
+        "ARPCONTACT" = "8:D & J Image Corp."
         "Keywords" = "8:"
         "ARPCOMMENTS" = "8:DJLocalApp"
-        "ARPURLINFOABOUT" = "8:"
-        "ARPPRODUCTICON" = "8:"
+        "ARPURLINFOABOUT" = "8:http://www.djimage.com.tw"
+        "ARPPRODUCTICON" = "8:_3C90246B67FC41A486AC8CD342847C50"
         "ARPIconIndex" = "3:0"
         "SearchPath" = "8:"
         "UseSystemSearchPath" = "11:TRUE"
@@ -226,84 +252,6 @@
             {
                 "Keys"
                 {
-                    "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_C2275C1CD71440D98FC4CB6B00CA5698"
-                    {
-                    "Name" = "8:Software"
-                    "Condition" = "8:"
-                    "AlwaysCreate" = "11:FALSE"
-                    "DeleteAtUninstall" = "11:FALSE"
-                    "Transitive" = "11:FALSE"
-                        "Keys"
-                        {
-                            "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_BE1F17DE4A204C84B48DA898A6463EBF"
-                            {
-                            "Name" = "8:Microsoft"
-                            "Condition" = "8:"
-                            "AlwaysCreate" = "11:FALSE"
-                            "DeleteAtUninstall" = "11:FALSE"
-                            "Transitive" = "11:FALSE"
-                                "Keys"
-                                {
-                                    "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_5E5A2FEBC4C747368CAB654D5D211FE6"
-                                    {
-                                    "Name" = "8:Windows"
-                                    "Condition" = "8:"
-                                    "AlwaysCreate" = "11:FALSE"
-                                    "DeleteAtUninstall" = "11:FALSE"
-                                    "Transitive" = "11:FALSE"
-                                        "Keys"
-                                        {
-                                            "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_8844EDA1E6904104A4C5227372FA5E8C"
-                                            {
-                                            "Name" = "8:CurrentVersion"
-                                            "Condition" = "8:"
-                                            "AlwaysCreate" = "11:FALSE"
-                                            "DeleteAtUninstall" = "11:FALSE"
-                                            "Transitive" = "11:FALSE"
-                                                "Keys"
-                                                {
-                                                    "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_9074D8A7DEF94AFDBF373DC79E4F2AF3"
-                                                    {
-                                                    "Name" = "8:Run"
-                                                    "Condition" = "8:"
-                                                    "AlwaysCreate" = "11:FALSE"
-                                                    "DeleteAtUninstall" = "11:FALSE"
-                                                    "Transitive" = "11:FALSE"
-                                                        "Keys"
-                                                        {
-                                                        }
-                                                        "Values"
-                                                        {
-                                                            "{ADCFDA98-8FDD-45E4-90BC-E3D20B029870}:_64CE19FCEF794F32810B1EE97453F1F9"
-                                                            {
-                                                            "Name" = "8:DJLocalApp"
-                                                            "Condition" = "8:"
-                                                            "Transitive" = "11:FALSE"
-                                                            "ValueTypes" = "3:1"
-                                                            "Value" = "8:[TARGETDIR]DJLocalApp.exe"
-                                                            }
-                                                        }
-                                                    }
-                                                }
-                                                "Values"
-                                                {
-                                                }
-                                            }
-                                        }
-                                        "Values"
-                                        {
-                                        }
-                                    }
-                                }
-                                "Values"
-                                {
-                                }
-                            }
-                        }
-                        "Values"
-                        {
-                        }
-                    }
                 }
             }
             "HKCU"
@@ -336,6 +284,20 @@
         }
         "Shortcut"
         {
+            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_27D3E4FB286C4EE7B9DFFC2197FDBD39"
+            {
+            "Name" = "8:DJLocalApp"
+            "Arguments" = "8:"
+            "Description" = "8:"
+            "ShowCmd" = "3:1"
+            "IconIndex" = "3:0"
+            "Transitive" = "11:FALSE"
+            "Target" = "8:_2C5131088B3F462488555850DB1EB255"
+            "Folder" = "8:_60E786A98A2241D590DCEB8B7A1C3B82"
+            "WorkingFolder" = "8:_9A844D76981147089021C71CF8C0875C"
+            "Icon" = "8:_3C90246B67FC41A486AC8CD342847C50"
+            "Feature" = "8:"
+            }
             "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_91ACA4D130204B0D8154391307994761"
             {
             "Name" = "8:DJLocalApp"
@@ -347,21 +309,7 @@
             "Target" = "8:_2C5131088B3F462488555850DB1EB255"
             "Folder" = "8:_2E889BDFAD97470797133D1684C9EF8C"
             "WorkingFolder" = "8:_9A844D76981147089021C71CF8C0875C"
-            "Icon" = "8:_82EFAEF8BDB441F697B802A028EA5DD6"
-            "Feature" = "8:"
-            }
-            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_DBDE3F71528B47AABFFBB8474A43AEFA"
-            {
-            "Name" = "8:DJLocalApp"
-            "Arguments" = "8:"
-            "Description" = "8:"
-            "ShowCmd" = "3:1"
-            "IconIndex" = "3:0"
-            "Transitive" = "11:FALSE"
-            "Target" = "8:_2C5131088B3F462488555850DB1EB255"
-            "Folder" = "8:_23CE7563E8B541C2A50BCA373A997814"
-            "WorkingFolder" = "8:_9A844D76981147089021C71CF8C0875C"
-            "Icon" = "8:_82EFAEF8BDB441F697B802A028EA5DD6"
+            "Icon" = "8:_3C90246B67FC41A486AC8CD342847C50"
             "Feature" = "8:"
             }
         }
@@ -678,7 +626,7 @@
                 {
                     "{688940B3-5CA9-4162-8DEE-2993FA9D8CBC}:_DC74E2C277D44A5194058CE44C4062FA"
                     {
-                    "Sequence" = "3:100"
+                    "Sequence" = "3:200"
                     "DisplayName" = "8:已經完成"
                     "UseDynamicProperties" = "11:TRUE"
                     "IsDependency" = "11:FALSE"
@@ -765,7 +713,7 @@
         {
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_2C5131088B3F462488555850DB1EB255"
             {
-            "SourcePath" = "8:..\\DJLocalApp\\obj\\Release\\net6.0-windows\\apphost.exe"
+            "SourcePath" = "8:..\\DJLocalApp\\obj\\Debug\\net6.0-windows\\win-x64\\apphost.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_9A844D76981147089021C71CF8C0875C"
