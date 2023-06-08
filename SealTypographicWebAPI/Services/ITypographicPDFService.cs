@@ -34,7 +34,14 @@ namespace SealTypographicWebAPI.Services
         /// </summary>
         /// <param name="typographicPDFPageSearch">排板PDFPage搜尋</param>
         /// <returns></returns>
-        public TypographicPageViewModel GetPageView(TypographicPDFPageSearch typographicPDFPageSearch);
+        TypographicPageViewModel GetPageView(TypographicPDFPageSearch typographicPDFPageSearch);
+
+        /// <summary>
+        /// 建立排版後的PDF
+        /// </summary>
+        /// <param name="typographicPDFId">typographicPDFId</param>
+        /// <returns></returns>
+        TypographicPagePDFResponse MakeTyporaphicPDF(int typographicPDFId);
 
         /// <summary>
         /// 建立PDF排版資訊

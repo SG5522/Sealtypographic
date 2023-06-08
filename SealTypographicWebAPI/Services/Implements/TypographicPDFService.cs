@@ -8,6 +8,9 @@ using DBEntities.Consts;
 using SealTypographicWebAPI.Utils;
 using DJSpire.Services;
 using Serilog;
+using DJSpire.Models;
+using DJLib.Models;
+using System.Linq;
 
 namespace SealTypographicWebAPI.Services.Implements
 {
@@ -317,26 +320,43 @@ namespace SealTypographicWebAPI.Services.Implements
         }
 
         /// <summary>
-        /// 
+        /// 建立排版後的PDF
         /// </summary>
-        /// <param name="typographicPDFId"></param>
+        /// <param name="typographicPDFId">typographicPDFId</param>
         /// <returns></returns>
-        public string GetEditPdf(int typographicPDFId)
+        public TypographicPagePDFResponse MakeTyporaphicPDF(int typographicPDFId)
         {
+            TypographicPagePDFResponse typographicPagePDFResponse = new ();
+
             IQueryable<TypographicPage> typographicPages = dbContext.TypographicPages
                                                             .Include(x => x.TypographicResourceLocations)
                                                             .ThenInclude(x => x.TypographicResource)
                                                             .Where(x => x.TypographicPDF.Id == typographicPDFId);
 
-            if(typographicPages != null)
-            {
+            string? pdfPath = dbContext.TypographicPDFs.Include(x => x.UploadFile).Single(x => x.Id == typographicPDFId).UploadFile.FullPath;
 
+            if (typographicPages != null)
+            {
+                List<EditPage> editPages = new();
+                PDFService pDFService = new() { PDFPath = pdfPath };                
+
+                foreach(TypographicPage typographicPage in typographicPages)
+                { 
+                    editPages.Add(new EditPage
+                    {
+                        PageNumber = typographicPage.PageNumber,
+                        EditImages = mapper.Map<List<EditImage>>(typographicPage.TypographicResourceLocations)
+                    });
+                }                
+                typographicPagePDFResponse.PDFBase64 = pDFService.GetEditPDFBase64(editPages);
+                typographicPagePDFResponse.Success();                
             }
             else
             {
-
+                typographicPagePDFResponse.Error();
             }
-            return string.Empty;
+            Log.Information("TypographicPDF makePDF output {@Output}", typographicPagePDFResponse.Message);
+            return typographicPagePDFResponse;
         }
 
         /// <summary>

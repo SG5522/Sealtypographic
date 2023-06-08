@@ -11,6 +11,8 @@ using SealTypographicWebAPI.Models.CustomerSealTemplate;
 using SealTypographicWebAPI.Models.AccountantSignTemplate;
 using SealTypographicWebAPI.Models.LetterheadImageTemplate;
 using DBEntities;
+using DJSpire.Models;
+using DJLib.Models;
 
 namespace SealTypographicWebAPI.Config
 {
@@ -213,6 +215,17 @@ namespace SealTypographicWebAPI.Config
                     .ForMember(x => x.Letterhead, y => y.Ignore())
                     .ForMember(x => x.TemporarySealGroup, y => y.Ignore())
                     .ForMember(x => x.Id, y => y.Ignore());
+
+            CreateMap<TypographicPage, EditPage>();
+            CreateMap<TypographicResourceLocation, EditImage>()
+                .ForMember(x => x.ImageBase64, y => y.MapFrom(o => new string(ImageInfo.FromPath(o.TypographicResource.ImageFullPath).ImageToBase64())));
+
+
+
+
+
+
+
         }
     }
 }

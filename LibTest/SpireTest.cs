@@ -43,28 +43,35 @@ namespace LibTest
             ImageInfo imageInfo = ImageInfo.FromPath(Dialog.FileName);
             imageInfo.Transparent();
 
-            List<SpireEditPage> spireEditPages = new()
+
+
+            List<EditPage> editPages = new()
             {
-                new SpireEditPage
+                new EditPage
                 {
-                    ImageBase64 = imageInfo.ImageToBase64(),
                     PageNumber = 1,
-                    Left = 0,
-                    Top = 0,
-                    Width = 40,
-                    Height = 40,
-                },
-                new SpireEditPage 
-                {
-                    ImageBase64 = imageInfo.ImageToBase64(),
-                    PageNumber = 1,
-                    Left = 0,
-                    Top = 50,
-                    Width = 40,
-                    Height = 40,
-                }
+                    EditImages = new List<EditImage>
+                    {
+                        new EditImage
+                        {
+                            ImageBase64 = imageInfo.ImageToBase64(),
+                            Left = 0,
+                            Top = 50,
+                            Width = 40,
+                            Height = 40
+                        },
+                        new EditImage
+                        {
+                            ImageBase64 = imageInfo.ImageToBase64(),
+                            Left = 0,
+                            Top = 0,
+                            Width = 40,
+                            Height = 40,
+                        }
+                    }
+                }                
             };
-            pDFService.GetEditPDFBase64(spireEditPages);
+            pDFService.GetEditPDFBase64(editPages);
         }
 
         private void BtnToImageBas64_Click(object sender, EventArgs e)

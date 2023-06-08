@@ -94,6 +94,28 @@ namespace SealTypographicWebAPI.Controllers
             return typographicPageViewModel;
         }
 
+        /// <summary>
+        /// 建立排版後的PDF(Base64)
+        /// </summary>
+        /// <param name="typographicPDFId">typographicPDFId</param>
+        /// <returns></returns>
+        [HttpGet("[Action]")]
+        public TypographicPagePDFResponse MakePDF(int typographicPDFId)
+        {
+            TypographicPagePDFResponse typographicPagePDFResponse = new();
+            try
+            {
+                Log.Information("TypographicPDF makePDF input {@Input}", typographicPDFId);
+                typographicPagePDFResponse = typographicPDFService.MakeTyporaphicPDF(typographicPDFId);                
+            }
+            catch (Exception ex)
+            {
+                Log.Error("TypographicPDF MakePDF error {@Error}", ex.Message);
+                typographicPagePDFResponse.DbError();
+            }
+            return typographicPagePDFResponse;
+        }
+
 
         /// <summary>
         /// 排板分頁搜尋

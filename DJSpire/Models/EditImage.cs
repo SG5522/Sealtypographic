@@ -1,19 +1,12 @@
-﻿using Spire.Pdf.Graphics;
-using System;
+﻿using System;
 using System.IO;
 using System.Text.RegularExpressions;
 
 namespace DJSpire.Models
 {
-    public class SpireEditPage
-    {        
+    public class EditImage
+    {
         private string imageBase64;
-
-        /// <summary>
-        /// 頁次
-        /// </summary>
-        public int PageNumber { get; set; }        
-             
         /// <summary>
         /// ImageBase64字串
         /// </summary>
@@ -50,6 +43,9 @@ namespace DJSpire.Models
         /// </summary>
         public int Height { get; set; }
 
+        /// <summary>
+        /// 圖片流
+        /// </summary>
         public Stream ImageStream { get; set; }
     }
 }

@@ -117,20 +117,24 @@ namespace DJSpire.Services
             return Document.Pages.Count;
         }
 
-        public void GetEditPDFBase64(List<SpireEditPage> spireEditPages)
-        {            
-            foreach(SpireEditPage spireEditPage in spireEditPages)
+        public string GetEditPDFBase64(List<EditPage> editPages)
+        {                        
+            foreach(EditPage spireEditPage in editPages)
             {
+                foreach(EditImage editImage in spireEditPage.EditImages)
+                {
                     Document.Pages[spireEditPage.PageNumber].Canvas.DrawImage
                     (
-                        PdfImage.FromStream(spireEditPage.ImageStream), 
-                        spireEditPage.Left, 
-                        spireEditPage.Top, 
-                        spireEditPage.Width, 
-                        spireEditPage.Height
+                        PdfImage.FromStream(editImage.ImageStream),
+                        editImage.Left,
+                        editImage.Top,
+                        editImage.Width,
+                        editImage.Height
                     );
+                }
             }                             
             Document.SaveToFile(Path.Combine(Path.GetPathRoot(PDFPath), "123.pdf"));
+            return GetPDFBase64();
         }
 
         private string GetMemoryStreamToBase64(MemoryStream memoryStream)

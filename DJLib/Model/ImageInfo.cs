@@ -5,6 +5,8 @@ using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Drawing.Processing;
 using System;
 using SixLabors.ImageSharp.Formats.Png;
+using System.Text;
+using System.Text.RegularExpressions;
 
 namespace DJLib.Models
 {
@@ -30,7 +32,8 @@ namespace DJLib.Models
         /// <returns></returns>
         public static ImageInfo FromImageBase64(string ImageBase64)
         {            
-            return FromBase64(ImageBase64.Substring(ImageBase64.IndexOf("base64,") + 7));
+            //return FromBase64(ImageBase64.Substring(ImageBase64.IndexOf("base64,") + 7));
+            return FromBase64(Regex.Replace(ImageBase64, @"^data:image\/[a-zA-Z]+;base64,", string.Empty));
         }
 
         /// <summary>
@@ -40,10 +43,6 @@ namespace DJLib.Models
         /// <returns></returns>
         public static ImageInfo FromBase64(string base64String)
         {
-            //ImageInfo imageInfo = new ImageInfo();
-            //byte[] bytes = Convert.FromBase64String(base64String);
-            //imageInfo.Image = Image.Load(bytes, out IImageFormat format);
-            //imageInfo.ImageFormat = format;
             return new ImageInfo()
             {
                 Image = Image.Load(Convert.FromBase64String(base64String), out IImageFormat format),
@@ -78,25 +77,16 @@ namespace DJLib.Models
         /// <param name="threshold">臨界點</param>
         public void Transparent(float threshold = 0.1F)
         {
-            PngEncoder encoder = new PngEncoder()
-            {
-                ColorType = PngColorType.RgbWithAlpha,
-                TransparentColorMode = PngTransparentColorMode.Preserve,
-                BitDepth = PngBitDepth.Bit8,
-                CompressionLevel = PngCompressionLevel.BestSpeed
-            };
-
             RecolorBrush brush = new RecolorBrush(Color.White, Color.Transparent, threshold);      
             
-
             Image.Mutate(x =>
             {
-                x.Fill(brush,);
+                x.Fill(brush).BackgroundColor(new Rgba32(255, 255, 255 , 0));
             });
 
-
-            Image.SaveAsPng("C:\\123.png", encoder);            
-                            //x.Clear(brush));            
+            //Image.SaveAsPng("C:\\123.png", encoder);            
+            //x.Clear(brush));            
+            Image.SaveAsPng("C:\\123.png");
         }
 
         public string ImageToBase64()

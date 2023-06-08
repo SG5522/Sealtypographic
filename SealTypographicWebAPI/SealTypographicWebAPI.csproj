@@ -7,7 +7,7 @@
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <DocumentationFile></DocumentationFile>
     <IncrementVersionOnBuild>0.0.2.1+</IncrementVersionOnBuild>
-    <Version>0.0.2.970</Version>
+    <Version>0.0.2.977</Version>
     <PackageIcon>android-chrome-128x128.png</PackageIcon>    
   </PropertyGroup>
 
@@ -16,10 +16,6 @@
     <Content Remove="logs\**" />
     <EmbeddedResource Remove="logs\**" />
     <None Remove="logs\**" />
-  </ItemGroup>
-
-  <ItemGroup>    
-    <Compile Remove="Services\Implements\ImageFuntion.cs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -53,8 +49,5 @@
     <ProjectReference Include="..\MySqlMigrations\MySql.csproj" />
     <ProjectReference Include="..\SqliteMigrations\Sqlite.csproj" />
   </ItemGroup>
-
-
-  <ProjectExtensions><VisualStudio><UserProperties appsettings_1json__JsonSchema="" /></VisualStudio></ProjectExtensions>
 
 </Project>
