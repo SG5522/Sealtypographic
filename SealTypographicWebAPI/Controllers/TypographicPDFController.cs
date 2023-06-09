@@ -95,9 +95,9 @@ namespace SealTypographicWebAPI.Controllers
         }
 
         /// <summary>
-        /// 建立排版後的PDF(Base64)
+        /// 讀取輸出排版PDF的資訊
         /// </summary>
-        /// <param name="typographicPDFId">輸出PDF檔案時的設定</param>
+        /// <param name="typographicPDFId">PDFID</param>
         /// <returns></returns>
         [HttpGet("[Action]")]
         public TypographicPDFSettingViewModel SettingPDFView(int typographicPDFId)

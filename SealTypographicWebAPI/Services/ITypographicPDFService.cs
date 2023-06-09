@@ -37,7 +37,7 @@ namespace SealTypographicWebAPI.Services
         TypographicPageViewModel GetPageView(TypographicPDFPageSearch typographicPDFPageSearch);
 
         /// <summary>
-        /// 讀取PDF輸出內容
+        /// 讀取排版PDF的資訊
         /// </summary>
         /// <param name="typographicPDFId">PDFID</param>
         /// <returns></returns>
