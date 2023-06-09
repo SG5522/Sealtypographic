@@ -328,19 +328,24 @@ namespace SealTypographicWebAPI.Services.Implements
         {
             TypographicPagePDFResponse typographicPagePDFResponse = new ();
             bool isBlank = true;
-            IQueryable<TypographicPage> typographicPages = dbContext.TypographicPages
-                                                            .Include(x => x.TypographicResourceLocations)
-                                                            .ThenInclude(x => x.TypographicResource)
-                                                            .Where(x => x.TypographicPDF.Id == typographicPDFId);
 
-            string? pdfPath = dbContext.TypographicPDFs.Include(x => x.UploadFile).Single(x => x.Id == typographicPDFId).UploadFile.FullPath;
-
-            if (typographicPages != null)
+            List<EditPage> editPages = mapper.ProjectTo<EditPage>
+                                        (
+                                            dbContext.TypographicPages
+                                            .Include(x => x.TypographicResourceLocations)
+                                            .ThenInclude(x => x.TypographicResource)
+                                            .Where(x => x.TypographicPDF.Id == typographicPDFId)
+                                        ).ToList();            
+            if (editPages != null)
             {
-                PDFService pDFService = new() { PDFPath = pdfPath };
-                List<EditPage> editPages = mapper.Map<List<EditPage>>(typographicPages);                                             
+                string? pdfPath = dbContext.UploadFiles
+                                .Where(x => x.TypographicPDFs.Any(x => x.Id == typographicPDFId))
+                                .Select(x => x.FullPath)
+                                .FirstOrDefault();
+
+                PDFService pDFService = new() { PDFPath = pdfPath };                
                 typographicPagePDFResponse.PDFBase64 = pDFService.GetEditPDFBase64(editPages, isBlank);
-                typographicPagePDFResponse.Success();                
+                typographicPagePDFResponse.Success();
             }
             else
             {
