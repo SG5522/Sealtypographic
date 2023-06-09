@@ -117,25 +117,80 @@ namespace DJSpire.Services
             return Document.Pages.Count;
         }
 
-        public string GetEditPDFBase64(List<EditPage> editPages)
+        public string GetEditPDFBase64(List<EditPage> editPages, bool isBlank)
         {                        
-            foreach(EditPage spireEditPage in editPages)
-            {
-                foreach(EditImage editImage in spireEditPage.EditImages)
-                {
-                    Document.Pages[spireEditPage.PageNumber].Canvas.DrawImage
-                    (
-                        PdfImage.FromStream(editImage.ImageStream),
-                        editImage.Left,
-                        editImage.Top,
-                        editImage.Width,
-                        editImage.Height
-                    );
-                }
-            }                             
+            Insert(editPages, isBlank);//            
+            DeletePage(editPages);//刪除頁
+
             Document.SaveToFile(Path.Combine(Path.GetPathRoot(PDFPath), "123.pdf"));
             return GetPDFBase64();
         }
+
+        /// <summary>
+        /// PDF上依參數塞入印鑑
+        /// </summary>
+        /// <param name="editPages"></param>
+        private void Insert(List<EditPage> editPages,bool isBlank)
+        {
+            for (int i = editPages.Count - 1; i > 0; i--)
+            {
+                if (!editPages[i].DeleteCheck)
+                {
+                    if(isBlank & editPages[i].BlankCheck)
+                    {
+                        InsertBlankPage(editPages[i].PageNumber);
+                    }
+                    InsertAccountantCertificate();//加入會計師證明書
+                    foreach (EditImage editImage in editPages[i].EditImages)
+                    {
+                        Document.Pages[editPages[i].PageNumber].Canvas.DrawImage
+                        (
+                            PdfImage.FromStream(editImage.ImageStream),
+                            editImage.Left,
+                            editImage.Top,
+                            editImage.Width,
+                            editImage.Height
+                        );
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// 刪除頁
+        /// </summary>
+        /// <param name="editPages"></param>
+        private void DeletePage(List<EditPage> editPages)
+        {
+            foreach (EditPage editPage in editPages)
+            {
+                if (editPage.DeleteCheck)
+                {
+                    Document.Pages.RemoveAt(editPage.PageNumber);
+                }
+            }
+        }
+
+        private void InsertBlankPage(int pageNumber)
+        {
+            if (pageNumber % 2 == 0)
+            {
+                Document.Pages.Insert(pageNumber + 1);
+                Document.Pages.Insert(pageNumber - 1);
+            }
+            else
+            {
+                Document.Pages.Insert(pageNumber + 1);
+            }
+        }
+
+
+
+        private void InsertAccountantCertificate()
+        {
+
+        }
+
 
         private string GetMemoryStreamToBase64(MemoryStream memoryStream)
         {

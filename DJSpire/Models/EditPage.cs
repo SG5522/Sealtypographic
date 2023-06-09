@@ -27,7 +27,22 @@ namespace DJSpire.Models
                 pageNumber = value - 1;
             }
         }        
-        
+
+        /// <summary>
+        /// 空白頁確認
+        /// </summary>
+        public bool BlankCheck { get; set; }
+
+        /// <summary>
+        /// 刪除頁確認
+        /// </summary>
+        public bool DeleteCheck { get; set; }
+
+        /// <summary>
+        /// 此頁是否加入會計師證明書
+        /// </summary>
+        public bool IsAccountantCertificate { get; set; }
+
         /// <summary>
         /// 圖像與座標
         /// </summary>

@@ -216,7 +216,9 @@ namespace SealTypographicWebAPI.Config
                     .ForMember(x => x.TemporarySealGroup, y => y.Ignore())
                     .ForMember(x => x.Id, y => y.Ignore());
 
-            CreateMap<TypographicPage, EditPage>();
+            CreateMap<TypographicPage, EditPage>()
+                 .ForMember(x => x.EditImages , y => y.MapFrom(o => o.TypographicResourceLocations));
+                
             CreateMap<TypographicResourceLocation, EditImage>()
                 .ForMember(x => x.ImageBase64, y => y.MapFrom(o => new string(ImageInfo.FromPath(o.TypographicResource.ImageFullPath).ImageToBase64())));
 

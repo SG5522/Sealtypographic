@@ -327,7 +327,7 @@ namespace SealTypographicWebAPI.Services.Implements
         public TypographicPagePDFResponse MakeTyporaphicPDF(int typographicPDFId)
         {
             TypographicPagePDFResponse typographicPagePDFResponse = new ();
-
+            bool isBlank = true;
             IQueryable<TypographicPage> typographicPages = dbContext.TypographicPages
                                                             .Include(x => x.TypographicResourceLocations)
                                                             .ThenInclude(x => x.TypographicResource)
@@ -337,18 +337,9 @@ namespace SealTypographicWebAPI.Services.Implements
 
             if (typographicPages != null)
             {
-                List<EditPage> editPages = new();
-                PDFService pDFService = new() { PDFPath = pdfPath };                
-
-                foreach(TypographicPage typographicPage in typographicPages)
-                { 
-                    editPages.Add(new EditPage
-                    {
-                        PageNumber = typographicPage.PageNumber,
-                        EditImages = mapper.Map<List<EditImage>>(typographicPage.TypographicResourceLocations)
-                    });
-                }                
-                typographicPagePDFResponse.PDFBase64 = pDFService.GetEditPDFBase64(editPages);
+                PDFService pDFService = new() { PDFPath = pdfPath };
+                List<EditPage> editPages = mapper.Map<List<EditPage>>(typographicPages);                                             
+                typographicPagePDFResponse.PDFBase64 = pDFService.GetEditPDFBase64(editPages, isBlank);
                 typographicPagePDFResponse.Success();                
             }
             else

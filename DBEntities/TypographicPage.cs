@@ -26,7 +26,7 @@
         public bool DeleteCheck { get; set; }
 
         /// <summary>
-        /// 此頁是否為會計師證明書
+        /// 此頁是否加入會計師證明書
         /// </summary>
         public bool IsAccountantCertificate { get; set; }
 
