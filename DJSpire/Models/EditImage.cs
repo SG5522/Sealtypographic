@@ -4,6 +4,9 @@ using System.Text.RegularExpressions;
 
 namespace DJSpire.Models
 {
+    /// <summary>
+    /// PDF排版圖像與位置
+    /// </summary>
     public class EditImage
     {
         private string imageBase64;

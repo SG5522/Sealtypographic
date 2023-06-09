@@ -1,8 +1,4 @@
-﻿using DBEntities.Consts;
-using SealTypographicWebAPI.Models.BaseModels;
-using System.ComponentModel.DataAnnotations;
-
-namespace SealTypographicWebAPI.Models
+﻿namespace SealTypographicWebAPI.Models
 {
     /// <summary>
     ///  (使用印鑑、簽名、LOGO)

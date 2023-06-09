@@ -111,17 +111,24 @@ namespace DJSpire.Services
             return GetMemoryStreamToBase64(stream);
         }
 
-
+        /// <summary>
+        /// 回傳PDF總頁數
+        /// </summary>
+        /// <returns></returns>
         public int GetTotalPage()
         {
             return Document.Pages.Count;
         }
 
-        public string GetEditPDFBase64(List<EditPage> editPages, bool isBlank)
+        /// <summary>
+        /// 取得包含編輯內容的PDFBase64
+        /// </summary>
+        /// <param name="editPDF"></param>
+        /// <returns></returns>
+        public string GetEditPDFBase64(EditPDF editPDF)
         {                        
-            Insert(editPages, isBlank);//            
-            DeletePage(editPages);//刪除頁
-
+            EditInsert(editPDF);  
+            Document.ColorSpace = editPDF.PdfColorSpace;
             Document.SaveToFile(Path.Combine(Path.GetPathRoot(PDFPath), "123.pdf"));
             return GetPDFBase64();
         }
@@ -129,21 +136,24 @@ namespace DJSpire.Services
         /// <summary>
         /// PDF上依參數塞入印鑑
         /// </summary>
-        /// <param name="editPages"></param>
-        private void Insert(List<EditPage> editPages,bool isBlank)
+        /// <param name="editPDF"></param>
+        private void EditInsert(EditPDF editPDF)
         {
-            for (int i = editPages.Count - 1; i > 0; i--)
+            for (int i = editPDF.EditPages.Count - 1; i > 0; i--)
             {
-                if (!editPages[i].DeleteCheck)
+                if (!editPDF.EditPages[i].DeleteCheck)//確認此頁是否為刪除
                 {
-                    if(isBlank & editPages[i].BlankCheck)
+                    if (editPDF.IsBlank & editPDF.EditPages[i].BlankCheck)//確認是否加入空白頁
                     {
-                        InsertBlankPage(editPages[i].PageNumber);
+                        InsertBlankPage(editPDF.EditPages[i].PageNumber);//新增空白頁
                     }
-                    InsertAccountantCertificate();//加入會計師證明書
-                    foreach (EditImage editImage in editPages[i].EditImages)
+                    if (editPDF.EditPages[i].IsAccountantCertificate)
                     {
-                        Document.Pages[editPages[i].PageNumber].Canvas.DrawImage
+                        InsertAccountantCertificate(editPDF.EditPages[i].PageNumber);//加入會計師證明書
+                    }                    
+                    foreach (EditImage editImage in editPDF.EditPages[i].EditImages)
+                    {
+                        Document.Pages[editPDF.EditPages[i].PageNumber].Canvas.DrawImage
                         (
                             PdfImage.FromStream(editImage.ImageStream),
                             editImage.Left,
@@ -153,23 +163,13 @@ namespace DJSpire.Services
                         );
                     }
                 }
-            }
-        }
-
-        /// <summary>
-        /// 刪除頁
-        /// </summary>
-        /// <param name="editPages"></param>
-        private void DeletePage(List<EditPage> editPages)
-        {
-            foreach (EditPage editPage in editPages)
-            {
-                if (editPage.DeleteCheck)
+                else
                 {
-                    Document.Pages.RemoveAt(editPage.PageNumber);
+                    Document.Pages.RemoveAt(editPDF.EditPages[i].PageNumber);
                 }
             }
         }
+
 
         private void InsertBlankPage(int pageNumber)
         {
@@ -186,9 +186,9 @@ namespace DJSpire.Services
 
 
 
-        private void InsertAccountantCertificate()
+        private void InsertAccountantCertificate(int pageNumber)
         {
-
+            Document.Pages.Insert(pageNumber + 1);
         }
 
 

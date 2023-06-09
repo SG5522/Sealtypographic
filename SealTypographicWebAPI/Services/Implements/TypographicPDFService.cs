@@ -2,15 +2,14 @@
 using SealTypographicWebAPI.Models.TypographicPDF;
 using SealTypographicWebAPI.Models;
 using Microsoft.EntityFrameworkCore;
-using DJSpire;
 using DBEntities;
 using DBEntities.Consts;
 using SealTypographicWebAPI.Utils;
 using DJSpire.Services;
-using Serilog;
 using DJSpire.Models;
-using DJLib.Models;
-using System.Linq;
+using Serilog;
+
+
 
 namespace SealTypographicWebAPI.Services.Implements
 {
@@ -213,101 +212,72 @@ namespace SealTypographicWebAPI.Services.Implements
         public TypographicPageViewModel GetPageView(TypographicPDFPageSearch typographicPDFPageSearch)
         {
             TypographicPageViewModel typographicPageViewModel = new();
-            TypographicPDF? typographicPDF = dbContext.TypographicPDFs
-                                            .Include(x => x.UploadFile)
-                                            .Select
-                                            (
-                                                x => new TypographicPDF()
-                                                {
-                                                    Id = x.Id,
-                                                    UploadFile = new UploadFile()
-                                                    {
-                                                        Id = x.UploadFile.Id,
-                                                        FullPath = x.UploadFile.FullPath,
-                                                    }
-                                                }
-                                            )
-                                            .FirstOrDefault
-                                            (
-                                                x => x.Id == typographicPDFPageSearch.Id                                                
-                                            );
-                                                
 
-            if (typographicPDF != null)
+            string? pdfFullPath = dbContext.TypographicPDFs.Include(x => x.UploadFile)
+                                 .Where(x => x.Id == typographicPDFPageSearch.Id)
+                                 .Select(x => x.FullPath)
+                                 .FirstOrDefault();
+
+            if (pdfFullPath != null)
             {
                 //取得單頁PDF圖檔
                 PDFService pDFService = new()
                 {
-                    PDFPath = typographicPDF.UploadFile.FullPath,
+                    PDFPath = pdfFullPath,
                     PageIndex = typographicPDFPageSearch.PageNumber,
                 };
                 
                 typographicPageViewModel.PageNumber = typographicPDFPageSearch.PageNumber;
-                typographicPageViewModel.PDFImageBase64 = pDFService.GetPageImageBase64();                
+                typographicPageViewModel.PDFImageBase64 = pDFService.GetPageImageBase64();
 
                 TypographicPage? typographicPages = dbContext.TypographicPages
-                                                    .Include(x => x.TypographicPDF)
                                                     .Include(x => x.TypographicResourceLocations)
                                                     .ThenInclude(x => x.TypographicResource)
-                                                    .FirstOrDefault(
-                                                                        x => x.TypographicPDF.Id == typographicPDFPageSearch.Id
-                                                                        && x.PageNumber == typographicPDFPageSearch.PageNumber
-                                                                    );
-                
+                                                    .FirstOrDefault
+                                                    (
+                                                        x => x.TypographicPDF.Id == typographicPDFPageSearch.Id
+                                                        && x.PageNumber == typographicPDFPageSearch.PageNumber
+                                                    );
 
                 //如有該頁有編輯頁面資訊才進行查詢
                 if (typographicPages != null)
                 {
                     typographicPageViewModel.Id = typographicPages.Id;
                     #region 顯示已編輯頁次內裡面所有的印鑑擺放位置與顯示名稱
-                    foreach (TypographicResourceLocation typographicResourceLocation in typographicPages.TypographicResourceLocations) 
+                    foreach (TypographicResourceLocation typographicResourceLocation in typographicPages.TypographicResourceLocations)
                     {
                         switch (typographicResourceLocation.TypographicResource.SealType)
                         {
-                            case SealType.Customer:                                
-                                CustomerSealLocationViewModel customerSealLocationViewModel = mapper.Map<CustomerSealLocationViewModel>(typographicResourceLocation);
-                                customerSealLocationViewModel.Sequence = typographicResourceLocation.TypographicResource.Sequence;
-                                customerSealLocationViewModel.CustomerSealType = SealMappingConfigUtil.GetCustomerSealType(typographicResourceLocation.TypographicResource.SubSealType);
-                                customerSealLocationViewModel.ImageBase64 = imageService.GetPathToBase64(typographicResourceLocation.TypographicResource.ImageFullPath);
-                                typographicPageViewModel.CustomerSealLocationViewModels.Add(customerSealLocationViewModel);
+                            case SealType.Customer:
+                                typographicPageViewModel.CustomerSealLocationViewModels.Add(mapper.Map<CustomerSealLocationViewModel>(typographicResourceLocation));
                                 break;
                             case SealType.Accountant:
-                                string accountantName = dbContext.Accountants
-                                                        .Single
+                                string accountantName = dbContext.Accountants.Where
                                                         (
                                                             x => x.AccountantSignGroups.Any
                                                             (
-                                                                x => x.TypographicResources.Any
-                                                                (
-                                                                    x => x.Id == typographicResourceLocation.TypographicResource.Id
-                                                                )
+                                                                x => x.TypographicResources.Any(x => x.Id == typographicResourceLocation.TypographicResource.Id)
                                                             )
-                                                        ).Name;                                                        
+                                                        ).Select(x => x.Name).Single();
                                 AccountantSignLocationViewModel accountantSignLocationViewModel = mapper.Map<AccountantSignLocationViewModel>(typographicResourceLocation);
-                                accountantSignLocationViewModel.AccountantSignType = SealMappingConfigUtil.GetAccountantSignType(typographicResourceLocation.TypographicResource.SubSealType);
                                 accountantSignLocationViewModel.AccountantName = accountantName;
-                                accountantSignLocationViewModel.ImageBase64 = imageService.GetPathToBase64(typographicResourceLocation.TypographicResource.ImageFullPath);
                                 typographicPageViewModel.AccountantSignLocationViewModels.Add(accountantSignLocationViewModel);
                                 break;
                             case SealType.Letterhead:
                                 string letterheadName = dbContext.Letterheads
-                                                        .Single
+                                                        .Where
                                                         (
                                                             x => x.TypographicResources.Any
                                                             (
                                                                 x => x.Id == typographicResourceLocation.TypographicResource.Id
                                                             )
-                                                        ).Name;
+                                                        ).Select(x => x.Name).Single();
                                 LetterheadImageLocationViewModel letterheadImageLocationForm = mapper.Map<LetterheadImageLocationViewModel>(typographicResourceLocation);
                                 letterheadImageLocationForm.LetterheadName = letterheadName;
-                                letterheadImageLocationForm.ImageBase64 = imageService.GetPathToBase64(typographicResourceLocation.TypographicResource.ImageFullPath);
                                 typographicPageViewModel.LetterheadImageLocationViewModels.Add(letterheadImageLocationForm);
                                 break;
                             case SealType.TemporarySeal:
-                                TemporarySealLocationViewModel temporarySealLocationViewModel = mapper.Map<TemporarySealLocationViewModel>(typographicResourceLocation);
-                                temporarySealLocationViewModel.Sequence = typographicResourceLocation.TypographicResource.Sequence;
-                                temporarySealLocationViewModel.ImageBase64 = imageService.GetPathToBase64(typographicResourceLocation.TypographicResource.ImageFullPath);
-                                typographicPageViewModel.TemporarySealLocationViewModels.Add(temporarySealLocationViewModel);
+                                typographicPageViewModel.TemporarySealLocationViewModels.Add(mapper.Map<TemporarySealLocationViewModel>(typographicResourceLocation));
                                 break;
                         }
                     }
@@ -320,31 +290,62 @@ namespace SealTypographicWebAPI.Services.Implements
         }
 
         /// <summary>
+        /// 讀取PDF輸出內容
+        /// </summary>
+        /// <param name="typographicPDFId">PDFID</param>
+        /// <returns></returns>
+        public TypographicPDFSettingViewModel GetTypographicPDFSetting(int typographicPDFId)
+        {
+            TypographicPDFSettingViewModel? typographicPDFSettingViewModel = mapper.ProjectTo<TypographicPDFSettingViewModel>
+                                                                            (
+                                                                                dbContext.TypographicPDFs.Include(x => x.UploadFile)
+                                                                                                        .Include(x => x.Quarter)
+                                                                                                        .Include(x => x.TypographicPages)
+                                                                                                        .Where(x => x.Id == typographicPDFId)
+                                                                            ).FirstOrDefault();
+            if(typographicPDFSettingViewModel != null)
+            {
+                typographicPDFSettingViewModel.Success();
+            }
+            else
+            {
+                typographicPDFSettingViewModel = new();
+                typographicPDFSettingViewModel.DbNoData();
+            }
+
+            return typographicPDFSettingViewModel;
+        }
+
+        /// <summary>
         /// 建立排版後的PDF
         /// </summary>
-        /// <param name="typographicPDFId">typographicPDFId</param>
+        /// <param name="typographicPDFMakeSetting">輸出PDF檔案時的設定</param>
         /// <returns></returns>
-        public TypographicPagePDFResponse MakeTyporaphicPDF(int typographicPDFId)
+        public TypographicPDFMakeResponse MakeTyporaphicPDF(TypographicPDFMakeSetting typographicPDFMakeSetting)
         {
-            TypographicPagePDFResponse typographicPagePDFResponse = new ();
-            bool isBlank = true;
-
+            TypographicPDFMakeResponse typographicPagePDFResponse = new ();            
             List<EditPage> editPages = mapper.ProjectTo<EditPage>
                                         (
                                             dbContext.TypographicPages
                                             .Include(x => x.TypographicResourceLocations)
                                             .ThenInclude(x => x.TypographicResource)
-                                            .Where(x => x.TypographicPDF.Id == typographicPDFId)
+                                            .Where(x => x.TypographicPDF.Id == typographicPDFMakeSetting.TypographicPDFId)
                                         ).ToList();            
             if (editPages != null)
             {
+                EditPDF editPDF = new()
+                {
+                    PdfColorSpace = typographicPDFMakeSetting.PdfColorSpace,
+                    IsBlank = typographicPDFMakeSetting.IsBlank,
+                    EditPages = editPages
+                };
                 string? pdfPath = dbContext.UploadFiles
-                                .Where(x => x.TypographicPDFs.Any(x => x.Id == typographicPDFId))
+                                .Where(x => x.TypographicPDFs.Any(x => x.Id == typographicPDFMakeSetting.TypographicPDFId))
                                 .Select(x => x.FullPath)
-                                .FirstOrDefault();
+                                .FirstOrDefault();                
 
                 PDFService pDFService = new() { PDFPath = pdfPath };                
-                typographicPagePDFResponse.PDFBase64 = pDFService.GetEditPDFBase64(editPages, isBlank);
+                typographicPagePDFResponse.PDFBase64 = pDFService.GetEditPDFBase64(editPDF);
                 typographicPagePDFResponse.Success();
             }
             else

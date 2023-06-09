@@ -71,7 +71,7 @@ namespace LibTest
                     }
                 }                
             };
-            pDFService.GetEditPDFBase64(editPages);
+            //pDFService.GetEditPDFBase64(editPages, true);
         }
 
         private void BtnToImageBas64_Click(object sender, EventArgs e)

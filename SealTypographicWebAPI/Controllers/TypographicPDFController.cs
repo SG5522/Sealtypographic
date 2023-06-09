@@ -97,16 +97,39 @@ namespace SealTypographicWebAPI.Controllers
         /// <summary>
         /// 建立排版後的PDF(Base64)
         /// </summary>
-        /// <param name="typographicPDFId">typographicPDFId</param>
+        /// <param name="typographicPDFId">輸出PDF檔案時的設定</param>
         /// <returns></returns>
         [HttpGet("[Action]")]
-        public TypographicPagePDFResponse MakePDF(int typographicPDFId)
+        public TypographicPDFSettingViewModel SettingPDFView(int typographicPDFId)
         {
-            TypographicPagePDFResponse typographicPagePDFResponse = new();
+            TypographicPDFSettingViewModel typographicPDFSettingViewModel = new();
             try
             {
                 Log.Information("TypographicPDF makePDF input {@Input}", typographicPDFId);
-                typographicPagePDFResponse = typographicPDFService.MakeTyporaphicPDF(typographicPDFId);                
+                typographicPDFSettingViewModel = typographicPDFService.GetTypographicPDFSetting(typographicPDFId);
+            }
+            catch (Exception ex)
+            {
+                Log.Error("TypographicPDF MakePDF error {@Error}", ex.Message);
+                typographicPDFSettingViewModel.DbError();
+            }
+            return typographicPDFSettingViewModel;
+        }
+
+
+        /// <summary>
+        /// 建立排版後的PDF(Base64)
+        /// </summary>
+        /// <param name="typographicPDFMakeSetting">輸出PDF檔案時的設定</param>
+        /// <returns></returns>
+        [HttpGet("[Action]")]
+        public TypographicPDFMakeResponse MakePDF(TypographicPDFMakeSetting typographicPDFMakeSetting)
+        {
+            TypographicPDFMakeResponse typographicPagePDFResponse = new();
+            try
+            {
+                Log.Information("TypographicPDF makePDF input {@Input}", typographicPDFMakeSetting);
+                typographicPagePDFResponse = typographicPDFService.MakeTyporaphicPDF(typographicPDFMakeSetting);                
             }
             catch (Exception ex)
             {

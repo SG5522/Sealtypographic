@@ -2,6 +2,9 @@
 
 namespace DJSpire.Models
 {
+    /// <summary>
+    /// PDF該頁的編輯內容
+    /// </summary>
     public class EditPage
     {
         private int pageNumber;

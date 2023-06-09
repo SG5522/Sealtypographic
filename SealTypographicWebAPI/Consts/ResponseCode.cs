@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
 
-namespace DBEntities.Consts
+namespace SealTypographicWebAPI.Consts
 {
     /// <summary>
     /// API傳輸結果代碼

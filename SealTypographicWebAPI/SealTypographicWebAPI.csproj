@@ -7,7 +7,7 @@
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <DocumentationFile></DocumentationFile>
     <IncrementVersionOnBuild>0.0.2.1+</IncrementVersionOnBuild>
-    <Version>0.0.2.987</Version>
+    <Version>0.0.2.1009</Version>
     <PackageIcon>android-chrome-128x128.png</PackageIcon>    
   </PropertyGroup>
 
@@ -48,6 +48,12 @@
     <ProjectReference Include="..\DJSpire\DJSpire.csproj" />
     <ProjectReference Include="..\MySqlMigrations\MySql.csproj" />
     <ProjectReference Include="..\SqliteMigrations\Sqlite.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="Spire.Pdf">
+      <HintPath>..\DJSpire\Library\Spire.Pdf.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
 </Project>
