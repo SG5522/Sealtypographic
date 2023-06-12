@@ -139,21 +139,14 @@ namespace DJSpire.Services
         /// <param name="editPDF"></param>
         private void EditInsert(EditPDF editPDF)
         {
-            for (int i = editPDF.EditPages.Count - 1; i > 0; i--)
+            for (int pageCount = editPDF.EditPages.Count ; pageCount > 0; pageCount--)
             {
-                if (!editPDF.EditPages[i].DeleteCheck)//確認此頁是否為刪除
+                int pageIndex = pageCount - 1;
+                if (!editPDF.EditPages[pageIndex].DeleteCheck)//確認此頁是否為刪除
                 {
-                    if (editPDF.IsBlank & editPDF.EditPages[i].BlankCheck)//確認是否加入空白頁
+                    foreach (EditImage editImage in editPDF.EditPages[pageIndex].EditImages)
                     {
-                        InsertBlankPage(editPDF.EditPages[i].PageNumber);//新增空白頁
-                    }
-                    if (editPDF.EditPages[i].IsAccountantCertificate)
-                    {
-                        InsertAccountantCertificate(editPDF.EditPages[i].PageNumber);//加入會計師證明書
-                    }                    
-                    foreach (EditImage editImage in editPDF.EditPages[i].EditImages)
-                    {
-                        Document.Pages[editPDF.EditPages[i].PageNumber].Canvas.DrawImage
+                        Document.Pages[editPDF.EditPages[pageIndex].PageNumber].Canvas.DrawImage
                         (
                             PdfImage.FromStream(editImage.ImageStream),
                             editImage.Left,
@@ -162,25 +155,33 @@ namespace DJSpire.Services
                             editImage.Height
                         );
                     }
+                    if (editPDF.IsBlank & editPDF.EditPages[pageIndex].BlankCheck)//確認是否加入空白頁
+                    {
+                        InsertBlankPage(editPDF.EditPages[pageIndex].PageNumber + 1);//新增空白頁
+                    }
+                    if (editPDF.EditPages[pageIndex].IsAccountantCertificate)
+                    {
+                        InsertAccountantCertificate(editPDF.EditPages[pageIndex].PageNumber);//加入會計師證明書
+                    }                    
                 }
                 else
                 {
-                    Document.Pages.RemoveAt(editPDF.EditPages[i].PageNumber);
+                    Document.Pages.RemoveAt(editPDF.EditPages[pageIndex].PageNumber);
                 }
             }
         }
 
 
         private void InsertBlankPage(int pageNumber)
-        {
+        {            
             if (pageNumber % 2 == 0)
             {
-                Document.Pages.Insert(pageNumber + 1);
                 Document.Pages.Insert(pageNumber - 1);
+                Document.Pages.Insert(pageNumber + 1);                
             }
             else
             {
-                Document.Pages.Insert(pageNumber + 1);
+                Document.Pages.Insert(pageNumber);
             }
         }
 
@@ -188,7 +189,7 @@ namespace DJSpire.Services
 
         private void InsertAccountantCertificate(int pageNumber)
         {
-            Document.Pages.Insert(pageNumber + 1);
+            Document.Pages.Insert(pageNumber);
         }
 
 

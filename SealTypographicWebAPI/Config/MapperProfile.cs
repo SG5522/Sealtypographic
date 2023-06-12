@@ -231,16 +231,17 @@ namespace SealTypographicWebAPI.Config
                     .ForMember(x => x.TemporarySealGroup, y => y.Ignore())
                     .ForMember(x => x.Id, y => y.Ignore());
 
-            //PDF輸出前的一部份資料抓取的Map
+            //讀取PDF概要內容的Map
             CreateMap<TypographicPDF, TypographicPDFSettingViewModel>()
+                 .ForMember(x => x.OriginalFileName, y => y.MapFrom(o => o.OriginFileName))
                  .ForMember(x => x.Quarter, y => y.MapFrom(o => new string($"{o.Quarter.GregorianYear}{o.Quarter.Period}")))
                  .ForMember(x => x.EditPageCount, y => y.MapFrom(o => (o.TypographicPages.Count())))
                  .ForMember(x => x.BlankPageCount, y => y.MapFrom(o => (o.TypographicPages.Where(x => x.BlankCheck == true).Count())));
 
-            //PDF該頁的編輯內容Map
+            //PDF該頁的編輯內容的Map
             CreateMap<TypographicPage, EditPage>()
                  .ForMember(x => x.EditImages , y => y.MapFrom(o => o.TypographicResourceLocations));
-            // PDF排版圖像與位置Map
+            // PDF排版圖像與位置的Map
             CreateMap<TypographicResourceLocation, EditImage>()
                 .ForMember(x => x.ImageBase64, y => y.MapFrom(o => new string(ImageInfo.FromPath(o.TypographicResource.ImageFullPath).ImageToBase64())));
 

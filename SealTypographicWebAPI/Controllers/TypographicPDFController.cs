@@ -51,8 +51,8 @@ namespace SealTypographicWebAPI.Controllers
         /// <summary>
         /// 取得PDF
         /// </summary>
-        /// <param name="uploadId">上傳檔案Id</param>
-        /// <param name="pageNumber">pdf頁次</param>        
+        /// <param name="uploadId" example="1">上傳檔案Id</param>
+        /// <param name="pageNumber" example="1">pdf頁次</param>        
         /// <returns></returns>        
         [HttpGet("[Action]")]
         public PDFViewModel PDFView(int uploadId, int pageNumber)
@@ -100,45 +100,22 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="typographicPDFId">PDFID</param>
         /// <returns></returns>
         [HttpGet("[Action]")]
-        public TypographicPDFSettingViewModel SettingPDFView(int typographicPDFId)
+        public TypographicPDFSettingViewModel PDFSummary(int typographicPDFId)
         {
             TypographicPDFSettingViewModel typographicPDFSettingViewModel = new();
             try
             {
-                Log.Information("TypographicPDF makePDF input {@Input}", typographicPDFId);
-                typographicPDFSettingViewModel = typographicPDFService.GetTypographicPDFSetting(typographicPDFId);
+                Log.Information("TypographicPDF pdfSummary input {@Input}", typographicPDFId);
+                typographicPDFSettingViewModel = typographicPDFService.GetTypographicPDFSummary(typographicPDFId);
+                Log.Information("TypographicPDF pdfSummary output {@Output}", typographicPDFSettingViewModel);
             }
             catch (Exception ex)
             {
-                Log.Error("TypographicPDF MakePDF error {@Error}", ex.Message);
+                Log.Error("TypographicPDF pdfSummary error {@Error}", ex.Message);
                 typographicPDFSettingViewModel.DbError();
             }
             return typographicPDFSettingViewModel;
-        }
-
-
-        /// <summary>
-        /// 建立排版後的PDF(Base64)
-        /// </summary>
-        /// <param name="typographicPDFMakeSetting">輸出PDF檔案時的設定</param>
-        /// <returns></returns>
-        [HttpGet("[Action]")]
-        public TypographicPDFMakeResponse MakePDF(TypographicPDFMakeSetting typographicPDFMakeSetting)
-        {
-            TypographicPDFMakeResponse typographicPagePDFResponse = new();
-            try
-            {
-                Log.Information("TypographicPDF makePDF input {@Input}", typographicPDFMakeSetting);
-                typographicPagePDFResponse = typographicPDFService.MakeTyporaphicPDF(typographicPDFMakeSetting);                
-            }
-            catch (Exception ex)
-            {
-                Log.Error("TypographicPDF MakePDF error {@Error}", ex.Message);
-                typographicPagePDFResponse.DbError();
-            }
-            return typographicPagePDFResponse;
-        }
-
+        }       
 
         /// <summary>
         /// 排板分頁搜尋
@@ -206,6 +183,28 @@ namespace SealTypographicWebAPI.Controllers
                 response.DbError();
             }
             return response;
+        }
+
+        /// <summary>
+        /// 建立排版後的PDF(Base64)
+        /// </summary>
+        /// <param name="typographicPDFMakeSetting">輸出PDF檔案時的設定</param>
+        /// <returns></returns>
+        [HttpPost("[Action]")]
+        public TypographicPDFMakeResponse MakePDF(TypographicPDFMakeSetting typographicPDFMakeSetting)
+        {
+            TypographicPDFMakeResponse typographicPagePDFResponse = new();
+            try
+            {
+                Log.Information("TypographicPDF makePDF input {@Input}", typographicPDFMakeSetting);
+                typographicPagePDFResponse = typographicPDFService.MakeTyporaphicPDF(typographicPDFMakeSetting);
+            }
+            catch (Exception ex)
+            {
+                Log.Error("TypographicPDF MakePDF error {@Error}", ex.Message);
+                typographicPagePDFResponse.DbError();
+            }
+            return typographicPagePDFResponse;
         }
 
         /// <summary>

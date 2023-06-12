@@ -1,11 +1,9 @@
 ﻿using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Drawing.Processing;
 using SixLabors.ImageSharp.Formats;
 using SixLabors.ImageSharp.Processing;
 using SixLabors.ImageSharp.PixelFormats;
-using SixLabors.ImageSharp.Drawing.Processing;
 using System;
-using SixLabors.ImageSharp.Formats.Png;
-using System.Text;
 using System.Text.RegularExpressions;
 
 namespace DJLib.Models
@@ -24,6 +22,11 @@ namespace DJLib.Models
         /// 圖片格式
         /// </summary>
         public IImageFormat ImageFormat { get; set; }
+
+        /// <summary>
+        /// 包含alpha值的Image
+        /// </summary>
+        public Image<Rgba32> ImageRGBA32 { get; set; }
 
         /// <summary>
         /// ImageBase64 含","前面的文字(例 data:image/png;base64) 轉ImageInfo
@@ -59,6 +62,15 @@ namespace DJLib.Models
             };
         }
 
+        public static ImageInfo FromPathWithAlpha(string path)
+        {
+            return new ImageInfo()
+            {
+                ImageRGBA32 = Image.Load(path, out IImageFormat format),
+                ImageFormat = format
+            };
+        }
+
         /// <summary>
         /// 調整圖片大小(Image)
         /// </summary>
@@ -77,16 +89,22 @@ namespace DJLib.Models
         /// <param name="threshold">臨界點</param>
         public void Transparent(float threshold = 0.1F)
         {
-            RecolorBrush brush = new RecolorBrush(Color.White, Color.Transparent, threshold);      
-            
-            Image.Mutate(x =>
+            RecolorBrush brush = new RecolorBrush(Color.White, Color.Transparent, threshold);
+            ImageRGBA32 = Image
+
+            byte[] bytes = Convert.FromBase64String(Regex.Replace(Image.ToBase64String(ImageFormat), @"^data:image\/[a-zA-Z]+;base64,", string.Empty));
+            Image<Rgba32> image = (Image<Rgba32>)Image.Load(bytes);            
+            image.Mutate(x =>
             {
-                x.Fill(brush).BackgroundColor(new Rgba32(255, 255, 255 , 0));
+                x.Fill(brush);                
             });
+
+
+            image.Save("C:\\123.png");
 
             //Image.SaveAsPng("C:\\123.png", encoder);            
             //x.Clear(brush));            
-            Image.SaveAsPng("C:\\123.png");
+            //Image.SaveAsPng("C:\\123.png");
         }
 
         public string ImageToBase64()

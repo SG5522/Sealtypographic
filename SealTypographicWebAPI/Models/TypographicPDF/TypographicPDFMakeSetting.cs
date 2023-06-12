@@ -22,10 +22,5 @@ namespace SealTypographicWebAPI.Models.TypographicPDF
         /// 是否輸出空白頁
         /// </summary>
         public bool IsBlank { get; set; }
-
-        /// <summary>
-        /// 輸出檔名
-        /// </summary>
-        public string FileName { get; set; }
     }
 }

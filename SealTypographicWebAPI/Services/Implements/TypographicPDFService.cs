@@ -290,11 +290,11 @@ namespace SealTypographicWebAPI.Services.Implements
         }
 
         /// <summary>
-        /// 讀取排版PDF的資訊
+        /// 讀取排版PDF的概要
         /// </summary>
         /// <param name="typographicPDFId">PDFID</param>
         /// <returns></returns>
-        public TypographicPDFSettingViewModel GetTypographicPDFSetting(int typographicPDFId)
+        public TypographicPDFSettingViewModel GetTypographicPDFSummary(int typographicPDFId)
         {
             TypographicPDFSettingViewModel? typographicPDFSettingViewModel = mapper.ProjectTo<TypographicPDFSettingViewModel>
                                                                             (

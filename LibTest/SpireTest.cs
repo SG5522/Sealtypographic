@@ -42,35 +42,7 @@ namespace LibTest
 
             ImageInfo imageInfo = ImageInfo.FromPath(Dialog.FileName);
             imageInfo.Transparent();
-
-
-
-            List<EditPage> editPages = new()
-            {
-                new EditPage
-                {
-                    PageNumber = 1,
-                    EditImages = new List<EditImage>
-                    {
-                        new EditImage
-                        {
-                            ImageBase64 = imageInfo.ImageToBase64(),
-                            Left = 0,
-                            Top = 50,
-                            Width = 40,
-                            Height = 40
-                        },
-                        new EditImage
-                        {
-                            ImageBase64 = imageInfo.ImageToBase64(),
-                            Left = 0,
-                            Top = 0,
-                            Width = 40,
-                            Height = 40,
-                        }
-                    }
-                }                
-            };
+            
             //pDFService.GetEditPDFBase64(editPages, true);
         }
 
