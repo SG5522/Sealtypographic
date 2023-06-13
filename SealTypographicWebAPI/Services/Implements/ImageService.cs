@@ -107,7 +107,7 @@ namespace SealTypographicWebAPI.Services.Implements
             {
                 imageInfo.ReSize(imageInfo, sealPathOption.ResizeScale);
             }
-            ImageSharpUtil.SaveFile(imageInfo.Image, imageInfo.ImageFormat, saveFullPath);
+            ImageSharpUtil.SaveFile(imageInfo.SourceImage, imageInfo.ImageFormat, saveFullPath);
         }
 
         /// <summary>
@@ -145,7 +145,7 @@ namespace SealTypographicWebAPI.Services.Implements
             {
                 imageInfo.ReSize(imageInfo, sealPathOption.ResizeScale);
             }
-            await ImageSharpUtil.SaveFileAsync(imageInfo.Image, imageInfo.ImageFormat, saveFullPath);
+            await ImageSharpUtil.SaveFileAsync(imageInfo.SourceImage, imageInfo.ImageFormat, saveFullPath);
         }
 
         /// <summary>

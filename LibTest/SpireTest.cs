@@ -40,9 +40,12 @@ namespace LibTest
                 PDFPath = "C:\\DJimage\\TestSealcard\\2222.pdf"
             };
 
-            ImageInfo imageInfo = ImageInfo.FromPath(Dialog.FileName);
-            imageInfo.Transparent();
-            
+            //ImageInfo imageInfo = ImageInfo.FromPath(Dialog.FileName);
+            //ImageInfo imageInfo = ImageInfo.FromPathWithAlpha(Dialog.FileName);
+            //imageInfo.Transparent();
+
+            OpenCvUtil.Transparent(Dialog.FileName);
+
             //pDFService.GetEditPDFBase64(editPages, true);
         }
 

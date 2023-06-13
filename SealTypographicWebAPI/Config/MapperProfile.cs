@@ -15,7 +15,6 @@ using DJSpire.Models;
 using DJLib.Models;
 using DBEntities.Consts;
 using SealTypographicWebAPI.Utils;
-using SealTypographicWebAPI.Services.Implements;
 using DJLib;
 
 namespace SealTypographicWebAPI.Config
@@ -25,6 +24,9 @@ namespace SealTypographicWebAPI.Config
     /// </summary>
     public class MapperProfile : Profile
     {        
+        /// <summary>
+        /// 建置
+        /// </summary>
         public MapperProfile()
         {            
             //客戶基本資料
@@ -49,10 +51,6 @@ namespace SealTypographicWebAPI.Config
             CreateMap<CustomerSealUpdateForm, TypographicResource>()
                     .ForMember(x => x.ImageFullPath, y => y.Ignore()) // <---ImagePath要額外處理所以要忽略
                     .ReverseMap();
-
-            //客戶印鑑序號確認用
-            CreateMap<CustomerSeal, CustomerSealSequenceCheck>();            
-            CreateMap<TypographicResource, CustomerSealSequenceCheck>();
 
 
             //客戶印鑑季度審核清單
@@ -116,16 +114,16 @@ namespace SealTypographicWebAPI.Config
 
             //會計師簽印審核清單
             CreateMap<AccountantSignGroup, AccountantSignGroupReviewViewModel>()
-                .ForMember(x => x.Name, y => y.MapFrom(o => o.Accountant.Name))
-                .ForMember(x => x.Code, y => y.MapFrom(o => o.Accountant.Code))
-                .ForMember(x => x.GroupName, y => y.MapFrom(o => o.Accountant.AccountantGroup.Name))
-                .ForMember(x => x.ReviewStatus, y => y.MapFrom(o => o.ReviewStatus))
+                .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Accountant.Name))
+                .ForMember(dest => dest.Code, opt => opt.MapFrom(o => o.Accountant.Code))
+                .ForMember(dest => dest.GroupName, opt => opt.MapFrom(o => o.Accountant.AccountantGroup.Name))
+                .ForMember(dest => dest.ReviewStatus, opt => opt.MapFrom(o => o.ReviewStatus))
                 .ReverseMap();
 
             //會計師簽印審核詳細資料
             CreateMap<Accountant, AccountantSignGroupDetailReviewViewModel>()
-                 .ForMember(x => x.Id, y => y.Ignore())
-                 .ForMember(x => x.GroupName, y => y.MapFrom(o => o.AccountantGroup.Name))
+                 .ForMember(dest => dest.Id, y => y.Ignore())
+                 .ForMember(dest => dest.GroupName, y => y.MapFrom(o => o.AccountantGroup.Name))
                  .ReverseMap();
 
             //信頭基本資料
@@ -244,12 +242,6 @@ namespace SealTypographicWebAPI.Config
             // PDF排版圖像與位置的Map
             CreateMap<TypographicResourceLocation, EditImage>()
                 .ForMember(x => x.ImageBase64, y => y.MapFrom(o => new string(ImageInfo.FromPath(o.TypographicResource.ImageFullPath).ImageToBase64())));
-
-
-
-
-
-
 
         }
     }

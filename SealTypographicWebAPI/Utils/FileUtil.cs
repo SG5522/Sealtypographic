@@ -1,17 +1,10 @@
-﻿using DBEntities.Consts;
-using DBEntities;
-using Microsoft.AspNetCore.Http;
-using System.IO;
-using Microsoft.Extensions.Options;
-using SealTypographicWebAPI.Config;
-using SealTypographicWebAPI.Models;
-
+﻿
 namespace SealTypographicWebAPI.Utils
 {
     /// <summary>
     /// IFormFile相關的處理。
     /// </summary>
-    public class FormFileUtil
+    public class FileUtil
     {
         /// <summary>
         /// 透過IFromFile存檔並回傳存檔位置
@@ -59,7 +52,5 @@ namespace SealTypographicWebAPI.Utils
             using Stream stream = new FileStream(savePath, FileMode.Create);
             await formFile.CopyToAsync(stream);
         }
-
-
     }
 }

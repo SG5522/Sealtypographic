@@ -94,7 +94,7 @@ builder.Services.AddScoped<SealMappingConfigService>();
 builder.Services.AddSingleton<TemplateConfigService>();
 builder.Services.AddScoped<ResponseCodeService>();
 builder.Services.AddScoped<ReviewStatusService>();
-builder.Services.AddAutoMapper(typeof(MapperProfile));
+builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
 
 //DB Process
 builder.Services.AddScoped<ICustomerService, CustomerService>();
