@@ -35,10 +35,10 @@ namespace LibTest
 
         private void BtnStart_Click(object sender, EventArgs e)
         {
-            PDFService pDFService = new()
-            {
-                PDFPath = "C:\\DJimage\\TestSealcard\\2222.pdf"
-            };
+            //PDFService pDFService = new()
+            //{
+            //    PDFPath = "C:\\DJimage\\TestSealcard\\2222.pdf"
+            //};
 
             //ImageInfo imageInfo = ImageInfo.FromPath(Dialog.FileName);
             //ImageInfo imageInfo = ImageInfo.FromPathWithAlpha(Dialog.FileName);

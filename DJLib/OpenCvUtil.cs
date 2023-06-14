@@ -1,4 +1,5 @@
-﻿using OpenCvSharp;
+using OpenCvSharp;
+using SixLabors.ImageSharp.ColorSpaces;
 using System;
 
 namespace DJLib
@@ -16,12 +17,35 @@ namespace DJLib
             Mat sourceImage = Cv2.ImRead(path);
             Mat outMat = GetMat(sourceImage, 150);
             outMat.SaveImage("C://123.png");            
+            //Mat outImage = new Mat();
+            Mat sourceImage = Cv2.ImRead(path);            
+            //Cv2.CvtColor(sourceImage, outImage, ColorConversionCodes.BGR2BGRA);
+            Mat maskMat = GetMaskMat(sourceImage, 160);
+            //MergeMask(sourceImage, outImage, maskMat);
+            maskMat.SaveImage(@"D:\Temp\123.png");
+            //Mat[] mats = outImage.Split();
         }
 
-        private static Mat GetMat(Mat srcMat,int threshold)
+        private static Mat GetMaskMatForEach(Mat srcMat, int threshold)
         {
             Mat tempMat = srcMat.CvtColor(ColorConversionCodes.BGR2BGRA);
-            //Mat[] splitMats = tempMat.Split();
+            unsafe
+            {
+                tempMat.ForEachAsVec4b((ptrValue, ptrPosition) =>
+                {
+                    if (ptrValue->Item0 > threshold && ptrValue->Item1 > threshold && ptrValue->Item2 > threshold)
+                    {
+                        ptrValue->Item3 = 0;
+                    }
+                });
+            }
+
+            return tempMat;
+        }
+
+        private static Mat GetMaskMat(Mat srcMat, int threshold)
+        {
+            Mat tempMat = srcMat.CvtColor(ColorConversionCodes.BGR2BGRA);
 
             for (int row = 0; row < tempMat.Rows; row++)
             {
@@ -35,7 +59,9 @@ namespace DJLib
                     }
                 }
             }
+
             return tempMat;
         }
+       }
     }
 }
