@@ -1,6 +1,4 @@
 using OpenCvSharp;
-using SixLabors.ImageSharp.ColorSpaces;
-using System;
 
 namespace DJLib
 {
@@ -11,12 +9,6 @@ namespace DJLib
     {
         public static void Transparent(string path)
         {
-            
-            //Mat tmpMat = new Mat();
-            //Mat alphaMat = new Mat();
-            Mat sourceImage = Cv2.ImRead(path);
-            Mat outMat = GetMat(sourceImage, 150);
-            outMat.SaveImage("C://123.png");            
             //Mat outImage = new Mat();
             Mat sourceImage = Cv2.ImRead(path);            
             //Cv2.CvtColor(sourceImage, outImage, ColorConversionCodes.BGR2BGRA);
@@ -62,6 +54,5 @@ namespace DJLib
 
             return tempMat;
         }
-       }
     }
 }
