@@ -1,4 +1,6 @@
 using OpenCvSharp;
+using SixLabors.ImageSharp.Drawing;
+using System.IO;
 
 namespace DJLib
 {
@@ -7,17 +9,40 @@ namespace DJLib
     /// </summary>
     public class OpenCvUtil
     {
+        /// <summary>
+        /// 透明化(輸入路徑)
+        /// </summary>
+        /// <param name="path">路徑</param>
         public static void Transparent(string path)
-        {
-            //Mat outImage = new Mat();
-            Mat sourceImage = Cv2.ImRead(path);            
-            //Cv2.CvtColor(sourceImage, outImage, ColorConversionCodes.BGR2BGRA);
-            Mat maskMat = GetMaskMat(sourceImage, 160);
-            //MergeMask(sourceImage, outImage, maskMat);
-            maskMat.SaveImage(@"D:\Temp\123.png");
-            //Mat[] mats = outImage.Split();
+        {            
+            TransparentProcess(Cv2.ImRead(path));
         }
 
+        /// <summary>
+        /// 透明化(輸入流)
+        /// </summary>
+        /// <param name="stream">流</param>
+        public static void Transparent(Stream stream)
+        {            
+            TransparentProcess(Mat.FromStream(stream, ImreadModes.AnyColor));
+        }
+
+        /// <summary>
+        /// 圖片透通
+        /// </summary>
+        /// <param name="srcMat"></param>
+        private static void TransparentProcess(Mat srcMat)
+        {
+            Mat maskMat = GetMaskMat(srcMat, 160);
+            maskMat.SaveImage(@"D:\123.png");
+        }
+
+        /// <summary>
+        /// 取得
+        /// </summary>
+        /// <param name="srcMat"></param>
+        /// <param name="threshold"></param>
+        /// <returns></returns>
         private static Mat GetMaskMatForEach(Mat srcMat, int threshold)
         {
             Mat tempMat = srcMat.CvtColor(ColorConversionCodes.BGR2BGRA);
@@ -31,10 +56,15 @@ namespace DJLib
                     }
                 });
             }
-
             return tempMat;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="srcMat"></param>
+        /// <param name="threshold"></param>
+        /// <returns></returns>
         private static Mat GetMaskMat(Mat srcMat, int threshold)
         {
             Mat tempMat = srcMat.CvtColor(ColorConversionCodes.BGR2BGRA);
@@ -51,8 +81,24 @@ namespace DJLib
                     }
                 }
             }
-
             return tempMat;
+        }
+
+        private static Mat GetMat2(Mat srcMat)
+        {
+            //定義紅色範圍
+            Scalar lowerRed = new Scalar(0, 0, 150);
+            Scalar upperRed = new Scalar(80, 80, 255);
+
+            // 提取紅色範圍內的像素
+            Mat redMask = new Mat();
+            Cv2.InRange(srcMat, lowerRed, upperRed, redMask);
+
+            // 透明化非紅色範圍的像素
+            Mat MaskResult = new Mat();
+            Cv2.BitwiseAnd(srcMat, srcMat, MaskResult, redMask);
+            
+            return GetMaskMat(MaskResult, 255);
         }
     }
 }
