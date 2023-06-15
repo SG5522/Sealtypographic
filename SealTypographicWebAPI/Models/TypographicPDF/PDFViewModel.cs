@@ -14,9 +14,9 @@ namespace SealTypographicWebAPI.Models.TypographicPDF
         public int TotalPage { get; set; }
 
         /// <summary>
-        /// 單頁顯示
+        /// 單頁顯示(圖片)
         /// </summary>
-        public string PDFBase64 { get; set; }
+        public string ImageBase64 { get; set; }
 
         /// <summary>
         /// PDF路徑

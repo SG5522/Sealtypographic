@@ -181,18 +181,18 @@ namespace SealTypographicWebAPI.Services.Implements
         public PDFViewModel GetPDFView(int uploadFileid, int pageNumber)
         {
             PDFViewModel pDFViewModel = new ();            
-            UploadFile? uploadFile = dbContext.UploadFiles.Find(uploadFileid);
-            if (uploadFile != null) 
+            string? uploadPath = dbContext.UploadFiles.Where(x => x.Id == uploadFileid).Select(x => x.FullPath).FirstOrDefault();
+            if (uploadPath != null) 
             {
                 //取得單頁PDF圖檔
                 PDFService pDFService = new()
                 {
-                    PDFPath = uploadFile.FullPath,
+                    PDFPath = uploadPath,
                     PageIndex = pageNumber,
                 };
-                pDFViewModel.PDFFullPath = uploadFile.FullPath; //Log使用
+                pDFViewModel.PDFFullPath = uploadPath; //Log使用
                 pDFViewModel.TotalPage = pDFService.GetTotalPage();
-                pDFViewModel.PDFBase64 = pDFService.GetPDFPageBase64();                
+                pDFViewModel.ImageBase64 = pDFService.GetPageImageBase64();                
                 pDFViewModel.Success();                
             }            
             else

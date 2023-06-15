@@ -5,6 +5,7 @@ using SixLabors.ImageSharp.Processing;
 using SixLabors.ImageSharp.PixelFormats;
 using System;
 using System.Text.RegularExpressions;
+using System.IO;
 
 namespace DJLib.Models
 {
@@ -23,10 +24,7 @@ namespace DJLib.Models
         /// </summary>
         public IImageFormat ImageFormat { get; set; }
 
-        /// <summary>
-        /// 包含alpha值的Image
-        /// </summary>
-        public Image<Rgba32> ImageRGBA32 { get; set; }
+        
 
         /// <summary>
         /// ImageBase64 含","前面的文字(例 data:image/png;base64) 轉ImageInfo
@@ -62,15 +60,6 @@ namespace DJLib.Models
             };
         }
 
-        public static ImageInfo FromPathWithAlpha(string path)
-        {
-            return new ImageInfo()
-            {
-                ImageRGBA32 = Image.Load<Rgba32>(path, out IImageFormat format),
-                ImageFormat = format
-            };
-        }
-
         /// <summary>
         /// 調整圖片大小(Image)
         /// </summary>
@@ -87,21 +76,11 @@ namespace DJLib.Models
         /// 白色透明化
         /// </summary>
         /// <param name="threshold">臨界點</param>
-        public void Transparent(float threshold = 0.1F)
-        {            
-            if(ImageRGBA32 != null)
-            {
-                RecolorBrush brush = new RecolorBrush(Color.White, Color.Transparent, threshold);
-                //byte[] bytes = Convert.FromBase64String(Regex.Replace(Image.ToBase64String(ImageFormat), @"^data:image\/[a-zA-Z]+;base64,", string.Empty));
-                ImageRGBA32.Mutate(x => { x.Clear(brush); });
-                ImageRGBA32.Save("C:\\123.png");
-            }
-
-                               
-
-            //Image.SaveAsPng("C:\\123.png", encoder);            
-            //x.Clear(brush));            
-            //Image.SaveAsPng("C:\\123.png");
+        public Stream Transparent(int threshold = 160)
+        {
+            Stream stream = new MemoryStream();
+            SourceImage.Save(stream,ImageFormat);            
+            return OpenCvUtil.TransparentToStream(stream, threshold);
         }
 
         public string ImageToBase64()

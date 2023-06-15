@@ -38,7 +38,7 @@ namespace SealTypographicWebAPI.Controllers
             {
                 Log.Information("TypographicPDF PDFView input {@Input}", id);
                 typographicPageResponse = typographicPDFService.GetEditPages(id);
-                Log.Information("TypographicPDF PDFView output {@Output}", typographicPageResponse);
+                //Log.Information("TypographicPDF PDFView output {@Output}", typographicPageResponse);
             }
             catch (Exception ex)
             {
@@ -84,7 +84,7 @@ namespace SealTypographicWebAPI.Controllers
             {
                 Log.Information("TypographicPDF PageViewModel input {@Input}", typographicPDFPageSearch);
                 typographicPageViewModel = typographicPDFService.GetPageView(typographicPDFPageSearch);
-                Log.Information("TypographicPDF PageViewModel output {@Output}", typographicPageViewModel);
+                //Log.Information("TypographicPDF PageViewModel output {@Output}", typographicPageViewModel);
             }
             catch (Exception ex)
             {

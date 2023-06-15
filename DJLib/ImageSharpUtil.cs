@@ -19,9 +19,28 @@ namespace DJLib
         /// <param name="image"></param>
         /// <param name="format"></param>        
         /// <returns></returns>
-        public static string ImageToBase64(Image image,IImageFormat format)
+        //public static string ImageToBase64(Image image,IImageFormat format)
+        public static string ImageToBase64(ImageInfo imageInfo)
         {                    
-            return image.ToBase64String(format);
+            return imageInfo.SourceImage.ToBase64String(imageInfo.ImageFormat);
+        }
+
+        /// <summary>
+        /// 轉成Stream
+        /// </summary>
+        /// <param name="ImageInfo">影像</param>
+        public static Stream ToStream(ImageInfo imageInfo)
+        {
+            try
+            {
+                Stream stream = new MemoryStream();
+                imageInfo.SourceImage.Save(stream, imageInfo.ImageFormat);
+                return stream;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
 
         /// <summary>
@@ -30,11 +49,11 @@ namespace DJLib
         /// <param name="fullPath"></param>
         /// <returns></returns>
         public static string PathImageFileToBase64(string fullPath)
-        {
-            Image image = Image.Load(fullPath, out IImageFormat format);            
-            return ImageToBase64(image, format);
+        {                       
+            return ImageToBase64(ImageInfo.FromPath(fullPath));
         }
-        
+
+
         /// <summary>
         /// 存檔 支援格式(jpeg, bmp, gif, pbm, png, tga, tiff, Tga,WebP)
         /// </summary>

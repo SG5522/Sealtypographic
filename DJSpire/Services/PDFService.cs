@@ -3,11 +3,11 @@ using DJSpire.Models;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Formats;
 using Spire.Pdf;
+using Spire.Pdf.Conversion;
 using Spire.Pdf.Graphics;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Text.RegularExpressions;
+
 
 namespace DJSpire.Services
 {
@@ -87,7 +87,7 @@ namespace DJSpire.Services
             return stream;
         }
 
-        public string GetPageImageBase64(ImageType imageType = ImageType.Jpg)
+        public string GetPageImageBase64(ImageType imageType = ImageType.Png)
         {
             Image image = Image.Load(GetPageImageStream(imageType), out IImageFormat format);
             return image.ToBase64String(format);            
@@ -97,10 +97,17 @@ namespace DJSpire.Services
         /// PDF檔案轉Base64
         /// </summary>
         /// <returns></returns>
-        public string GetPDFBase64()
+        public string GetPDFBase64(PdfColorSpace pdfColorSpace)
         {
             MemoryStream stream = new MemoryStream();
-            Document.SaveToStream(stream);            
+            Document.SaveToStream(stream);
+            if (pdfColorSpace == PdfColorSpace.GrayScale)
+            {
+                PdfGrayConverter pdfGrayConverter = new PdfGrayConverter(stream);
+                pdfGrayConverter.ToGrayPdf(stream);
+            }
+            FileStream streamToWrite = new FileStream(Path.Combine(@"D:\", "123.pdf"), FileMode.Create);            
+            stream.CopyTo(streamToWrite);
             return GetMemoryStreamToBase64(stream);
         }
 
@@ -126,11 +133,9 @@ namespace DJSpire.Services
         /// <param name="editPDF"></param>
         /// <returns></returns>
         public string GetEditPDFBase64(EditPDF editPDF)
-        {                        
-            EditInsert(editPDF);  
-            Document.ColorSpace = editPDF.PdfColorSpace;
-            Document.SaveToFile(Path.Combine(Path.GetPathRoot(PDFPath), "123.pdf"));
-            return GetPDFBase64();
+        {            
+            EditInsert(editPDF);                          
+            return GetPDFBase64(editPDF.PdfColorSpace);
         }
 
         /// <summary>
