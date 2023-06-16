@@ -449,7 +449,7 @@ namespace Sqlite.Migrations
                     PageNumber = table.Column<int>(type: "INTEGER", nullable: false),
                     BlankCheck = table.Column<bool>(type: "INTEGER", nullable: false),
                     DeleteCheck = table.Column<bool>(type: "INTEGER", nullable: false),
-                    IsAccountantCertificate = table.Column<bool>(type: "INTEGER", nullable: false),
+                    UploadFileId = table.Column<int>(type: "INTEGER", nullable: true),
                     TypographicPDFId = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
@@ -461,6 +461,11 @@ namespace Sqlite.Migrations
                         principalTable: "TypographicPDFs",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_TypographicPages_UploadFiles_UploadFileId",
+                        column: x => x.UploadFileId,
+                        principalTable: "UploadFiles",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -609,6 +614,11 @@ namespace Sqlite.Migrations
                 name: "IX_TypographicPages_TypographicPDFId",
                 table: "TypographicPages",
                 column: "TypographicPDFId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_TypographicPages_UploadFileId",
+                table: "TypographicPages",
+                column: "UploadFileId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_TypographicPDFs_CustomerId",

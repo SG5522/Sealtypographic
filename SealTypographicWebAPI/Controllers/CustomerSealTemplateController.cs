@@ -102,7 +102,7 @@ namespace SealTypographicWebAPI.Controllers
             ResponseViewModel response = new ();
             try
             {                
-                Log.Information("CustomerSealTemplate new input {@Input}", customerSealTemplateForm);
+                Log.Information("CustomerSealTemplate new input {@Input}", $"{customerSealTemplateForm.Name}");
                 response = await customerSealTemplateService.New(customerSealTemplateForm);
                 Log.Information("CustomerSealTemplate new output {@Output}", response);
             }

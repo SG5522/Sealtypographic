@@ -11,4 +11,16 @@ namespace DJSpire.Consts
         Png,
         Bmp 
     }        
+
+    public enum PDFColor
+    {
+        /// <summary>
+        /// 原始顏色(彩色)
+        /// </summary>
+        Original,
+        /// <summary>
+        /// 灰階(黑白)
+        /// </summary>
+        GrayScale
+    }
 }

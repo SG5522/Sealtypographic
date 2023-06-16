@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Routing.Constraints;
-using Spire.Pdf.Graphics;
+﻿using DJSpire.Consts;
 
 namespace SealTypographicWebAPI.Models.TypographicPDF
 {
@@ -15,8 +14,10 @@ namespace SealTypographicWebAPI.Models.TypographicPDF
 
         /// <summary>
         /// PDF輸出顏色
+        /// 0 彩色(原色)
+        /// 1 黑白(灰階)
         /// </summary>
-        public PdfColorSpace PdfColorSpace { get; set; }
+        public PDFColor PDFColor { get; set; }
 
         /// <summary>
         /// 是否輸出空白頁

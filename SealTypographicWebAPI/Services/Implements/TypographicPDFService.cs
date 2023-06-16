@@ -8,8 +8,7 @@ using SealTypographicWebAPI.Utils;
 using DJSpire.Services;
 using DJSpire.Models;
 using Serilog;
-
-
+using DJLib;
 
 namespace SealTypographicWebAPI.Services.Implements
 {
@@ -122,53 +121,23 @@ namespace SealTypographicWebAPI.Services.Implements
         public TypographicPagesResponse GetEditPages(int id)
         {
             TypographicPagesResponse typographicPagesResponse = new();
-            IQueryable<TypographicPage> typographicPages = dbContext.TypographicPages
-                                                        .Include(x => x.TypographicResourceLocations)
-                                                        .ThenInclude(x => x.TypographicResource)
-                                                        .Where(x => x.TypographicPDF.Id == id);
-
-            if(typographicPages != null)
+            IQueryable<TypographicPageForm> typographicPageForms = mapper.ProjectTo<TypographicPageForm>
+                                                                    (
+                                                                            dbContext.TypographicPages
+                                                                            .Include(x => x.TypographicResourceLocations)                                                    
+                                                                            .Where(x => x.TypographicPDF.Id == id)                                                    
+                                                                    );
+            
+            if (typographicPageForms != null)
             {
                 typographicPagesResponse.Id = id;
-                foreach(TypographicPage typographicPage in typographicPages)
-                {
-                    TypographicPageForm pageForm = new()
-                    {
-                        PageNumber = typographicPage.PageNumber,
-                        DeleteCheck = typographicPage.DeleteCheck,
-                        BlankCheck = typographicPage.BlankCheck,
-                        IsAccountantCertificate = typographicPage.IsAccountantCertificate
-                    };
-                    foreach(TypographicResourceLocation typographicResourceLocation in typographicPage.TypographicResourceLocations)
-                    {                        
-                        switch (typographicResourceLocation.TypographicResource.SealType)
-                        {
-                            case SealType.Customer:
-                                CustomerSealLocationForm customerSealLocationForm = mapper.Map<CustomerSealLocationForm>(typographicResourceLocation);
-                                customerSealLocationForm.Id = id;
-                                pageForm.CustomerSealLocations.Add(customerSealLocationForm);
-                                break;
-                            case SealType.Accountant:
-                                AccountantSignLocationForm accountantSignLocationForm = mapper.Map<AccountantSignLocationForm>(typographicResourceLocation);
-                                accountantSignLocationForm.Id = id;
-                                pageForm.AccountantSignLocations.Add(accountantSignLocationForm);
-                                break;
-                            case SealType.Letterhead:
-                                LetterheadImageLocationForm letterheadImageLocationForm = mapper.Map<LetterheadImageLocationForm>(typographicResourceLocation);
-                                letterheadImageLocationForm.Id = id;
-                                pageForm.LetterheadImageLocations.Add(letterheadImageLocationForm);
-                                break;
-                            case SealType.TemporarySeal:
-                                TemporarySealLocationForm temporarySealLocationForm = mapper.Map<TemporarySealLocationForm>(typographicResourceLocation);
-                                temporarySealLocationForm.Id = id;
-                                pageForm.TemporarySealLocations.Add(temporarySealLocationForm);
-                                break;
-                        }
-                    }
-                    typographicPagesResponse.Pages.Add(pageForm);
-                }
+                typographicPagesResponse.Pages = typographicPageForms.ToList();
                 typographicPagesResponse.Success();
-            }                                            
+            }
+            else
+            {
+                typographicPagesResponse.DbNoData();
+            }
             return typographicPagesResponse;
         }
 
@@ -333,9 +302,18 @@ namespace SealTypographicWebAPI.Services.Implements
                                         ).ToList();            
             if (editPages != null)
             {
+                //透通圖片
+                foreach(EditPage page in editPages)
+                {
+                    foreach (EditImage editimage in page.EditImages)
+                    {
+                        editimage.ImageStream = OpenCvUtil.TransparentToStream(editimage.ImageStream, 160);
+                    }
+                }                    
+
                 EditPDF editPDF = new()
                 {
-                    PdfColorSpace = typographicPDFMakeSetting.PdfColorSpace,
+                    PDFColor = typographicPDFMakeSetting.PDFColor,
                     IsBlank = typographicPDFMakeSetting.IsBlank,
                     EditPages = editPages
                 };
@@ -513,8 +491,12 @@ namespace SealTypographicWebAPI.Services.Implements
             typographicPage.PageNumber = pageFrom.PageNumber;
             typographicPage.BlankCheck = pageFrom.BlankCheck;
             typographicPage.DeleteCheck = pageFrom.DeleteCheck;
-            typographicPage.IsAccountantCertificate = pageFrom.IsAccountantCertificate;
 
+            if(pageFrom.AccountantCertificateId != 0)
+            {                
+                typographicPage.UploadFile = dbContext.UploadFiles.Find(pageFrom.AccountantCertificateId);
+            }
+            
             //客戶印鑑座標
             foreach (CustomerSealLocationForm customerSealLocationForm in pageFrom.CustomerSealLocations)
             {

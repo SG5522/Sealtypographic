@@ -26,9 +26,9 @@
         public bool DeleteCheck { get; set; }
 
         /// <summary>
-        /// 此頁是否加入會計師證明書
+        /// 會計師證明書(若是NULL則此頁不加入會計師證明書)
         /// </summary>
-        public bool IsAccountantCertificate { get; set; }
+        public UploadFile? UploadFile { get; set; }
 
         /// <summary>
         /// 排版PDF資料表

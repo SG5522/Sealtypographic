@@ -97,18 +97,23 @@ namespace DJSpire.Services
         /// PDF檔案轉Base64
         /// </summary>
         /// <returns></returns>
-        public string GetPDFBase64(PdfColorSpace pdfColorSpace)
+        public string GetPDFBase64(PDFColor pdfColor)
         {
-            MemoryStream stream = new MemoryStream();
+            MemoryStream stream = new MemoryStream();            
             Document.SaveToStream(stream);
-            if (pdfColorSpace == PdfColorSpace.GrayScale)
+            if (pdfColor == PDFColor.GrayScale)
             {
+                MemoryStream grayStream = new MemoryStream();
                 PdfGrayConverter pdfGrayConverter = new PdfGrayConverter(stream);
-                pdfGrayConverter.ToGrayPdf(stream);
+                pdfGrayConverter.ToGrayPdf(grayStream);                
+                return GetMemoryStreamToBase64(grayStream);
             }
-            FileStream streamToWrite = new FileStream(Path.Combine(@"D:\", "123.pdf"), FileMode.Create);            
-            stream.CopyTo(streamToWrite);
-            return GetMemoryStreamToBase64(stream);
+            else
+            {                
+                return GetMemoryStreamToBase64(stream);
+            }
+            
+                          
         }
 
         public string GetPDFPageBase64()
@@ -135,7 +140,7 @@ namespace DJSpire.Services
         public string GetEditPDFBase64(EditPDF editPDF)
         {            
             EditInsert(editPDF);                          
-            return GetPDFBase64(editPDF.PdfColorSpace);
+            return GetPDFBase64(editPDF.PDFColor);
         }
 
         /// <summary>
@@ -164,9 +169,15 @@ namespace DJSpire.Services
                     {
                         InsertBlankPage(editPDF.EditPages[pageIndex].PageNumber + 1);//新增空白頁
                     }
-                    if (editPDF.EditPages[pageIndex].IsAccountantCertificate)
+                    if (editPDF.EditPages[pageIndex].AccountantCertificatePath != string.Empty)
                     {
-                        InsertAccountantCertificate(editPDF.EditPages[pageIndex].PageNumber);//加入會計師證明書
+                        Document.Pages.Insert(editPDF.EditPages[pageIndex].PageNumber);
+                        PdfImage pdfImage = PdfImage.FromStream(editPDF.EditPages[pageIndex].AccountantCertificateImageStream);
+
+                        Document.Pages[editPDF.EditPages[pageIndex].PageNumber].Canvas.DrawImage
+                        (
+                            pdfImage, 0, 0
+                        );
                     }                    
                 }
                 else
@@ -188,13 +199,6 @@ namespace DJSpire.Services
             {
                 Document.Pages.Insert(pageNumber);
             }
-        }
-
-
-
-        private void InsertAccountantCertificate(int pageNumber)
-        {
-            Document.Pages.Insert(pageNumber);
         }
 
 

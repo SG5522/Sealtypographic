@@ -21,7 +21,7 @@ namespace DJSpire.Models
                 imageBase64 = value;
                 if (imageBase64 != string.Empty)
                 {
-                    ImageStream = new MemoryStream(Convert.FromBase64String(Regex.Replace(ImageBase64, @"^data:image\/[a-zA-Z]+;base64,", string.Empty)));
+                    ImageStream = new MemoryStream(Convert.FromBase64String(Regex.Replace(ImageBase64, @"^data:image\/[a-zA-Z]+;base64,", string.Empty)));                    
                 }
             }
         }

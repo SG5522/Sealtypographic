@@ -1,4 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Text.RegularExpressions;
 
 namespace DJSpire.Models
 {
@@ -8,13 +11,15 @@ namespace DJSpire.Models
     public class EditPage
     {
         private int pageNumber;
+        private string accountantCertificatePath;
+
         /// <summary>
         /// 建置
         /// </summary>
         public EditPage() 
         {
             EditImages = new List<EditImage>();
-        }
+        }        
 
         /// <summary>
         /// 頁次
@@ -42,9 +47,25 @@ namespace DJSpire.Models
         public bool DeleteCheck { get; set; }
 
         /// <summary>
-        /// 此頁是否加入會計師證明書
+        /// 下頁加入會計師證明書
         /// </summary>
-        public bool IsAccountantCertificate { get; set; }
+        public string AccountantCertificatePath 
+        {
+            get { return accountantCertificatePath; }
+            set
+            {
+                accountantCertificatePath = value;
+                if (accountantCertificatePath != string.Empty)
+                {
+                    AccountantCertificateImageStream = File.OpenRead(accountantCertificatePath);
+                }
+            }
+        }
+
+        /// <summary>
+        /// 會計師證明書圖片轉成流
+        /// </summary>
+        public Stream AccountantCertificateImageStream { get; set; }
 
         /// <summary>
         /// 圖像與座標

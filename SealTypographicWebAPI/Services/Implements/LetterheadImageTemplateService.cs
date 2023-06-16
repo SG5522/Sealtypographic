@@ -38,18 +38,23 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <returns></returns>
         public LetterheadImageTemplateDetailViewModel GetDetail(int Id)
         {
-            LetterheadImageTemplateDetailViewModel letterheadImageTemplateDetailViewModel = new ();
+            LetterheadImageTemplateDetailViewModel letterheadImageTemplateDetailViewModel = mapper.Map<LetterheadImageTemplateDetailViewModel>
+                                                                                            (
+                                                                                                dbContext.Templates
+                                                                                                .Include(x => x.TemplateLocations)
+                                                                                                .FirstOrDefault(x => x.Id == Id)
+                                                                                            );
 
-            Template? templateQuery = dbContext.Templates
-                                                .Include(x => x.TemplateLocations)
-                                                .FirstOrDefault(x => x.Id == Id);
 
-            if(templateQuery != null) 
+            if(letterheadImageTemplateDetailViewModel != null) 
             {
-                letterheadImageTemplateDetailViewModel = mapper.Map<LetterheadImageTemplateDetailViewModel>(templateQuery);
-                letterheadImageTemplateDetailViewModel.LocaltionViewModels = mapper.Map<List<LetterheadImageTemplateLocationViewModel>>(templateQuery.TemplateLocations);
                 letterheadImageTemplateDetailViewModel.Success();
 
+            }
+            else
+            {
+                letterheadImageTemplateDetailViewModel = new();
+                letterheadImageTemplateDetailViewModel.DbNoData();
             }
 
             return letterheadImageTemplateDetailViewModel;
@@ -178,8 +183,9 @@ namespace SealTypographicWebAPI.Services.Implements
 
                 NewTemplateLoction(letterheadImageTemplateForm.LetterheadTemplateLocationForm, templateLocations);                                     
                 BaseInputLetterheadImageTemplate(template, true, userid);
-                template.TemplateLocations = templateLocations;                
-                companyQuery.Templates.Add(template);         
+                template.TemplateLocations = templateLocations;
+                template.Company = companyQuery;
+                dbContext.Templates.Add(template);                      
                 await dbContext.SaveChangesAsync();
                 response.Success();
             }

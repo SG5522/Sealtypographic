@@ -37,17 +37,21 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <returns></returns>
         public CustomerSealTemplateDetailViewModel GetDetail(int Id)
         {
-            CustomerSealTemplateDetailViewModel customerSealTemplateDetailViewModel = new ();
-
-            Template? templateQuery = dbContext.Templates
-                                                .Include(x => x.TemplateLocations)
-                                                .FirstOrDefault(x => x.Id == Id);
-
-            if(templateQuery != null) 
+            CustomerSealTemplateDetailViewModel customerSealTemplateDetailViewModel = mapper.Map<CustomerSealTemplateDetailViewModel>
+                                                                                        (
+                                                                                            dbContext.Templates
+                                                                                            .Include(x => x.TemplateLocations)
+                                                                                            .FirstOrDefault(x => x.Id == Id)
+                                                                                        );
+            
+            if(customerSealTemplateDetailViewModel != null)
             {
-                customerSealTemplateDetailViewModel = mapper.Map<CustomerSealTemplateDetailViewModel>(templateQuery);
-                customerSealTemplateDetailViewModel.LocaltionViewModels = mapper.Map<List<CustomerSealTemplateLocationViewModel>>(templateQuery.TemplateLocations);
                 customerSealTemplateDetailViewModel.Success();
+            }
+            else
+            {
+                customerSealTemplateDetailViewModel = new();
+                customerSealTemplateDetailViewModel.DbNoData();
             }
 
             return customerSealTemplateDetailViewModel;
@@ -145,9 +149,9 @@ namespace SealTypographicWebAPI.Services.Implements
                 
                 NewTemplateLoction(customerSealTemplateForm.CustomerSealTemplateLocationForms, templateLocations);
                 BaseInputCustomerSealTemplate(template, true, userid);
-                template.TemplateLocations = templateLocations;                
-                companyQuery.Templates.Add(template);
-                                  
+                template.TemplateLocations = templateLocations;                                
+                template.Company = companyQuery;
+                dbContext.Templates.Add(template);
                 await dbContext.SaveChangesAsync();
                 response.Success();
             }

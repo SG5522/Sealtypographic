@@ -1,4 +1,5 @@
-﻿using Spire.Pdf.Graphics;
+﻿using DJSpire.Consts;
+using Spire.Pdf.Graphics;
 using System.Collections.Generic;
 
 
@@ -14,8 +15,8 @@ namespace DJSpire.Models
         /// <summary>
         /// PDF輸出顏色
         /// </summary>
-        public PdfColorSpace PdfColorSpace { get; set; }
-
+        public PDFColor PDFColor { get; set; }
+        
         /// <summary>
         /// 是否空白頁
         /// </summary>

@@ -38,17 +38,21 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <returns></returns>
         public AccountantSignTemplateDetailViewModel GetDetail(int Id)
         {
-            AccountantSignTemplateDetailViewModel accountantSignTemplateDetailViewModel = new ();
+            AccountantSignTemplateDetailViewModel accountantSignTemplateDetailViewModel = mapper.Map<AccountantSignTemplateDetailViewModel>
+                                                                                        (
+                                                                                            dbContext.Templates.Include(x => x.TemplateLocations)
+                                                                                            .Include(x => x.TemplateLocations)
+                                                                                            .FirstOrDefault(x => x.Id == Id)
+                                                                                        );
 
-            Template? templateQuery = dbContext.Templates
-                                                    .Include(x => x.TemplateLocations)
-                                                    .FirstOrDefault(x => x.Id == Id);
-
-            if(templateQuery != null) 
+            if(accountantSignTemplateDetailViewModel != null) 
             {
-                accountantSignTemplateDetailViewModel = mapper.Map<AccountantSignTemplateDetailViewModel>(templateQuery);
-                accountantSignTemplateDetailViewModel.LocaltionViewModels = mapper.Map<List<AccountantSignTemplateLocationViewModel>>(templateQuery.TemplateLocations);
                 accountantSignTemplateDetailViewModel.Success();
+            }
+            else
+            {
+                accountantSignTemplateDetailViewModel = new();
+                accountantSignTemplateDetailViewModel.DbNoData();
             }
 
             return accountantSignTemplateDetailViewModel;
@@ -175,7 +179,8 @@ namespace SealTypographicWebAPI.Services.Implements
                 NewTemplateLoction(accountantSignTemplateForm.AccountantSignTemplateLocationForms, templateLocations);
                 BaseInputAccountantSignTemplate(template, true, userid);
                 template.TemplateLocations = templateLocations;
-                companyQuery.Templates.Add(template);
+                template.Company = companyQuery;
+                dbContext.Templates.Add(template);                
 
                 await dbContext.SaveChangesAsync();
                 response.Success();

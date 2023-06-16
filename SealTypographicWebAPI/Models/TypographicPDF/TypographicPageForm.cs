@@ -1,4 +1,7 @@
-﻿namespace SealTypographicWebAPI.Models.TypographicPDF
+﻿using DBEntities;
+using System.Text.Json.Serialization;
+
+namespace SealTypographicWebAPI.Models.TypographicPDF
 {
     /// <summary>
     /// 排版資訊
@@ -35,10 +38,10 @@
         public bool DeleteCheck { get; set; }
 
         /// <summary>
-        /// 此頁是否為會計師證明書
+        /// 會計師證明書的ID
         /// </summary>
         /// <example>false</example>
-        public bool IsAccountantCertificate { get; set; }
+        public int AccountantCertificateId { get; set; }
 
         /// <summary>
         /// 客戶印鑑位置

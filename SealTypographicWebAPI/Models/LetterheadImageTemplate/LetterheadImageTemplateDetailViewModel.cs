@@ -8,10 +8,6 @@ namespace SealTypographicWebAPI.Models.LetterheadImageTemplate
     /// </summary>
     public class LetterheadImageTemplateLocationViewModel : BaseLocationModel
     {
-        /// <summary>
-        /// 樣板座標Id
-        /// </summary>
-        public int Id { get; set; }
 
     }
 

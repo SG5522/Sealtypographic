@@ -44,7 +44,7 @@ namespace LibTest
             //ImageInfo imageInfo = ImageInfo.FromPathWithAlpha(Dialog.FileName);
             //imageInfo.Transparent();
 
-            OpenCvUtil.Transparent(Dialog.FileName);
+            OpenCvUtil.TransparentToStream(Dialog.FileName, 160);
 
             //pDFService.GetEditPDFBase64(editPages, true);
         }

@@ -631,18 +631,20 @@ namespace Sqlite.Migrations
                     b.Property<bool>("DeleteCheck")
                         .HasColumnType("INTEGER");
 
-                    b.Property<bool>("IsAccountantCertificate")
-                        .HasColumnType("INTEGER");
-
                     b.Property<int>("PageNumber")
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("TypographicPDFId")
                         .HasColumnType("INTEGER");
 
+                    b.Property<int?>("UploadFileId")
+                        .HasColumnType("INTEGER");
+
                     b.HasKey("Id");
 
                     b.HasIndex("TypographicPDFId");
+
+                    b.HasIndex("UploadFileId");
 
                     b.ToTable("TypographicPages");
                 });
@@ -989,7 +991,13 @@ namespace Sqlite.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("DBEntities.UploadFile", "UploadFile")
+                        .WithMany()
+                        .HasForeignKey("UploadFileId");
+
                     b.Navigation("TypographicPDF");
+
+                    b.Navigation("UploadFile");
                 });
 
             modelBuilder.Entity("DBEntities.TypographicResource", b =>
