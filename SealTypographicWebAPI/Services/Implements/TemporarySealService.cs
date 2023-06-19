@@ -3,10 +3,7 @@ using DBEntities;
 using DBEntities.Consts;
 using DJLib.Models;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
-using SealTypographicWebAPI.Config;
 using SealTypographicWebAPI.Models;
-using SealTypographicWebAPI.Models.Customer;
 using SealTypographicWebAPI.Models.TemporarySeal;
 using SealTypographicWebAPI.Utils;
 using Serilog;
@@ -43,7 +40,6 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <returns></returns>
         public TemporarySealDetailViewModel GetDetail(int temporaryId, bool isTransparent)
         {            
-            TemporarySealDetailLogModel logModel = new();
             TemporarySealDetailViewModel? temporarySealDetailViewModel = mapper.ProjectTo<TemporarySealDetailViewModel>
                                                                         (
                                                                             dbContext.TemporarySealGroups
@@ -54,17 +50,16 @@ namespace SealTypographicWebAPI.Services.Implements
 
             if(temporarySealDetailViewModel != null)
             {           
-                logModel = mapper.Map<TemporarySealDetailLogModel>(temporarySealDetailViewModel);
                 if(isTransparent)
                 {
-                    foreach (CustomerSealViewModel customerSealViewModel in customerSealViewModels.SealViewModels)
+                    foreach (TemporarySealViewModel temporarySealViewModel in temporarySealDetailViewModel.ViewModels)
                     {
-                        ImageInfo imageInfo = ImageInfo.FromImageBase64(customerSealViewModel.ImageBase64);
-                        customerSealViewModel.ImageBase64 = imageInfo.TransparentToImageBase64();
+                        ImageInfo imageInfo = ImageInfo.FromImageBase64(temporarySealViewModel.ImageBase64);
+                        temporarySealViewModel.ImageBase64 = imageInfo.TransparentToImageBase64();
                     }
                 }
                 temporarySealDetailViewModel.Success();                
-                Log.Information("TemporarySeal detail output {@Output}", logModel);
+                Log.Information("TemporarySeal detail output {@Output}", mapper.Map<TemporarySealDetailLogModel>(temporarySealDetailViewModel));
             }
             else
             {
