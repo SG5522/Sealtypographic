@@ -77,15 +77,16 @@ namespace SealTypographicWebAPI.Controllers
         /// 取得信頭圖片
         /// </summary>
         /// <param name="id">信頭圖片Id</param>
+        /// <param name="isTransparent">是否白底透明化</param>
         /// <returns></returns>
         [HttpGet]
-        public LetterheadImageViewModel ImageViewModel(int id)
+        public LetterheadImageViewModel ImageViewModel(int id, bool isTransparent)
         {
             LetterheadImageViewModel letterheadImageViewModel = new();
             try
             {
                 Log.Information("LetterheadImage get imageViewModel input {@Input}", id);
-                letterheadImageViewModel = letterheadImageService.GetImageViewModel(id);
+                letterheadImageViewModel = letterheadImageService.GetImageViewModel(id, isTransparent);
                 Log.Information("LetterheadImage get imageViewModel output {@Output}", letterheadImageViewModel);
             }
             catch (Exception ex)

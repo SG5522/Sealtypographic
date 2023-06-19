@@ -1,10 +1,12 @@
 ﻿using AutoMapper;
 using DBEntities;
 using DBEntities.Consts;
+using DJLib.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using SealTypographicWebAPI.Config;
 using SealTypographicWebAPI.Models;
+using SealTypographicWebAPI.Models.Customer;
 using SealTypographicWebAPI.Models.TemporarySeal;
 using SealTypographicWebAPI.Utils;
 using Serilog;
@@ -37,47 +39,37 @@ namespace SealTypographicWebAPI.Services.Implements
         /// 取得臨時章詳細基本資料
         /// </summary>
         /// <param name="temporaryId">臨時章ID</param>
+        /// <param name="isTransparent">是否白底透明化</param>
         /// <returns></returns>
-        public TemporarySealDetailViewModel GetDetail(int temporaryId)
-        {
-            TemporarySealDetailViewModel temporarySealDetailViewModel = new();
+        public TemporarySealDetailViewModel GetDetail(int temporaryId, bool isTransparent)
+        {            
             TemporarySealDetailLogModel logModel = new();
+            TemporarySealDetailViewModel? temporarySealDetailViewModel = mapper.ProjectTo<TemporarySealDetailViewModel>
+                                                                        (
+                                                                            dbContext.TemporarySealGroups
+                                                                            .Include(x => x.TypographicResources)
+                                                                            .Include(x => x.Customer)
+                                                                            .Where(x => x.Id == temporaryId)
+                                                                        ).FirstOrDefault();           
 
-            TemporarySealDetailViewModel? temporarySealGroup = dbContext.TemporarySealGroups.AsNoTracking()
-                                                                .Include(temporarySealGroup => temporarySealGroup.TypographicResources)
-                                                                .Include(temporarySealGroup => temporarySealGroup.Customer)
-                                                                .Where(temporarySealGroup => temporarySealGroup.Id == temporaryId)                                                                                    
-                                                                .Select(
-                                                                    x => new TemporarySealDetailViewModel()
-                                                                    {
-                                                                        CustomerId = x.Customer.Id,
-                                                                        CustomerName = x.Customer.Name,
-                                                                        ViewModels = x.TypographicResources
-                                                                        .Where(x => x.DeleteStatus == DeleteStatus.No)
-                                                                        .Select(x => new TemporarySealViewModel() 
-                                                                        { 
-                                                                            Id = x.Id,
-                                                                            Sequence = x.Sequence,
-                                                                            ImageFullPath = x.ImageFullPath
-                                                                        }).ToList()
-                                                                    }
-                                                                ).FirstOrDefault();
-
-            if(temporarySealGroup != null)
+            if(temporarySealDetailViewModel != null)
             {           
                 logModel = mapper.Map<TemporarySealDetailLogModel>(temporarySealDetailViewModel);
-                foreach (TemporarySealViewModel temporarySealViewModel in temporarySealGroup.ViewModels)
+                if(isTransparent)
                 {
-                    //取得路徑轉換ImageBase64
-                    temporarySealViewModel.ImageBase64 = imageService.GetPathToBase64(temporarySealViewModel.ImageFullPath);
-                    //LOG紀錄用
-                    TemporarySealLogModel temporarySealLogModel = mapper.Map<TemporarySealLogModel>(temporarySealViewModel);                    
-                    temporarySealLogModel.ImageFileName = Path.GetFileName(temporarySealViewModel.ImageFullPath);
-                    logModel.ViewModels.Add(temporarySealLogModel);
+                    foreach (CustomerSealViewModel customerSealViewModel in customerSealViewModels.SealViewModels)
+                    {
+                        ImageInfo imageInfo = ImageInfo.FromImageBase64(customerSealViewModel.ImageBase64);
+                        customerSealViewModel.ImageBase64 = imageInfo.TransparentToImageBase64();
+                    }
                 }
-                temporarySealDetailViewModel = temporarySealGroup;
                 temporarySealDetailViewModel.Success();                
                 Log.Information("TemporarySeal detail output {@Output}", logModel);
+            }
+            else
+            {
+                temporarySealDetailViewModel = new();
+                temporarySealDetailViewModel.TemporarySealNoData();
             }
             return temporarySealDetailViewModel;
         }

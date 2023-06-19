@@ -12,8 +12,9 @@ namespace SealTypographicWebAPI.Services
         /// 取得臨時章詳細基本資料
         /// </summary>
         /// <param name="temporaryId">臨時章ID</param>
+        /// <param name="isTransparent">是否白底透明化</param>
         /// <returns></returns>
-        TemporarySealDetailViewModel GetDetail(int temporaryId);
+        TemporarySealDetailViewModel GetDetail(int temporaryId, bool isTransparent);
 
         /// <summary>
         /// 取得臨時章資料列表(分頁)

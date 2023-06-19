@@ -25,8 +25,9 @@ namespace SealTypographicWebAPI.Services
         /// 取得信頭圖片
         /// </summary>
         /// <param name="id">信頭圖片Id</param>
+        /// <param name="isTransparent">是否白底透明化</param>
         /// <returns></returns>
-        LetterheadImageViewModel GetImageViewModel(int id);
+        LetterheadImageViewModel GetImageViewModel(int id, bool isTransparent);
 
         /// <summary>
         /// 異動信頭圖片

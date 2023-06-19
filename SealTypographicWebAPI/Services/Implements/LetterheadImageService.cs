@@ -7,6 +7,9 @@ using SealTypographicWebAPI.Models.Letterhead;
 using SealTypographicWebAPI.Utils;
 using DBEntities;
 using DBEntities.Consts;
+using DJLib.Models;
+using SealTypographicWebAPI.Models.Accountant;
+using DJLib;
 
 namespace SealTypographicWebAPI.Services.Implements
 {
@@ -87,28 +90,33 @@ namespace SealTypographicWebAPI.Services.Implements
         /// 取得信頭圖片
         /// </summary>
         /// <param name="id">信頭圖片Id</param>
+        /// <param name="isTransparent">是否白底透明化</param>
         /// <returns></returns>
-        public LetterheadImageViewModel GetImageViewModel(int id)
+        public LetterheadImageViewModel GetImageViewModel(int id, bool isTransparent)
         {
-            LetterheadImageViewModel letterheadImageViewModels = new()
-            {                
-                Id = id,
-            };
+            LetterheadImageViewModel? letterheadImageViewModel = dbContext.TypographicResources
+                                                                .Where(x => x.Id == id && x.DeleteStatus == DeleteStatus.No)
+                                                                .Select(x => new LetterheadImageViewModel
+                                                                {
+                                                                    Id = x.Id,
+                                                                    ImageBase64 = ImageSharpUtil.PathImageFileToBase64(x.ImageFullPath)
+                                                                }).FirstOrDefault(); 
 
-            TypographicResource? typographyResource = dbContext.TypographicResources.FirstOrDefault
-                                                                (
-                                                                    x => x.Id == id
-                                                                    && x.DeleteStatus == DeleteStatus.No                    
-                                                                );      
-                
-            if (typographyResource != null)
-            {                                
-                letterheadImageViewModels.ImageBase64 = imageService.GetPathToBase64(typographyResource.ImageFullPath); //資料庫取得圖檔路徑轉BASE64                                                                                  
-                
+            if (letterheadImageViewModel != null)
+            {                                                                                                                        
+                if(isTransparent)
+                {
+                    ImageInfo imageInfo = ImageInfo.FromImageBase64(letterheadImageViewModel.ImageBase64);
+                    letterheadImageViewModel.ImageBase64 = imageInfo.TransparentToImageBase64();
+                }
+                letterheadImageViewModel.Success();
             }
-            letterheadImageViewModels.Success();
-
-            return letterheadImageViewModels;            
+            else
+            {
+                letterheadImageViewModel = new();
+                letterheadImageViewModel.LetterheadImageNoData();
+            }            
+            return letterheadImageViewModel;            
         }
 
         /// <summary>

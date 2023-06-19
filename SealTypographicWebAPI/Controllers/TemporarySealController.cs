@@ -54,15 +54,16 @@ namespace SealTypographicWebAPI.Controllers
         /// 取得臨時章印鑑組
         /// </summary>
         /// <param name="id"></param>
+        /// <param name="isTransparent"></param>
         /// <returns></returns>        
         [HttpGet("{id}")]
-        public TemporarySealDetailViewModel Detail(int id)
+        public TemporarySealDetailViewModel Detail(int id, bool isTransparent)
         {
             TemporarySealDetailViewModel temporarySealDetailViewModel = new();
             try
             {
                 Log.Information("TemporarySeal detail input {@Input}", id);
-                temporarySealDetailViewModel = temporarySealService.GetDetail(id);               
+                temporarySealDetailViewModel = temporarySealService.GetDetail(id, isTransparent);               
             }
             catch (Exception ex)
             {

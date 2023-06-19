@@ -40,9 +40,9 @@ namespace SealTypographicWebAPI.Models.TypographicPDF
         /// <summary>
         /// 會計師證明書的ID
         /// </summary>
-        /// <example>false</example>
+        /// <example>0</example>
         public int AccountantCertificateId { get; set; }
-
+        
         /// <summary>
         /// 客戶印鑑位置
         /// </summary>        

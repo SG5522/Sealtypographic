@@ -54,16 +54,17 @@ namespace SealTypographicWebAPI.Controllers
         /// <summary>
         /// 取得會計師簽印組
         /// </summary>
-        /// <param name="accountantSignGroupId">會計師簽印群組Id</param>        
+        /// <param name="accountantSignGroupId">會計師簽印群組Id</param>
+        /// <param name="isTransparent" example="false" >是否白底透明化</param>        
         /// <returns></returns>        
         [HttpGet]
-        public AccountantSignViewModels Signs(int accountantSignGroupId)
+        public AccountantSignViewModels Signs(int accountantSignGroupId, bool isTransparent)
         {
             AccountantSignViewModels accountantSignViewModels = new();
             try
             {
                 Log.Information("AccountantSign get signViewModels input {@Input}", accountantSignGroupId);
-                accountantSignViewModels = accountantSignService.GetSignViewModels(accountantSignGroupId);
+                accountantSignViewModels = accountantSignService.GetSignViewModels(accountantSignGroupId, isTransparent);
                 Log.Information("AccountantSign get signViewModels output {@Output}", accountantSignViewModels);
             }
             catch (Exception ex)

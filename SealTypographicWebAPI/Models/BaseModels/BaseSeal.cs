@@ -4,7 +4,7 @@
     /// 新增客戶印鑑、會計師簽印的基本資料
     /// </summary>
     public class BaseSeal : BaseData
-    {       
+    {        
         /// <summary>
         /// 圖檔字串(Base64)
         /// </summary>

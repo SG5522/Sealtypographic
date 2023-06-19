@@ -5,6 +5,8 @@ using SealTypographicWebAPI.Models.Accountant;
 using SealTypographicWebAPI.Utils;
 using DBEntities;
 using DBEntities.Consts;
+using DJLib.Models;
+using SealTypographicWebAPI.Models.Customer;
 
 namespace SealTypographicWebAPI.Services.Implements
 {
@@ -64,41 +66,35 @@ namespace SealTypographicWebAPI.Services.Implements
         /// 取得會計師簽印組
         /// </summary>
         /// <param name="accountantSignGroupId"></param>
+        /// <param name="isTransparent">是否白底透明化</param>
         /// <returns></returns>
-        public AccountantSignViewModels GetSignViewModels(int accountantSignGroupId)
+        public AccountantSignViewModels GetSignViewModels(int accountantSignGroupId, bool isTransparent)
         {
-            AccountantSignViewModels signViewModels = new();
+            AccountantSignViewModels? accountantSignViewModels = mapper.ProjectTo<AccountantSignViewModels>
+                                                                (
+                                                                    dbContext.AccountantSignGroups
+                                                                    .Include(x => x.TypographicResources)
+                                                                ).FirstOrDefault(x => x.AccountantSignGroupId == accountantSignGroupId);
 
-            AccountantSignGroup? accountantSignGroupJournalQuery = dbContext.AccountantSignGroups
-                                                                    .Include(accountantSignGroup => accountantSignGroup.TypographicResources)
-                                                                    .FirstOrDefault
-                                                                    (
-                                                                        accountantSignGroup => accountantSignGroup.Id == accountantSignGroupId
-                                                                    );
-
-            if (accountantSignGroupJournalQuery != null)
+            if (accountantSignViewModels != null)
             {
-                List<TypographicResource> accountantSigns = accountantSignGroupJournalQuery.TypographicResources
-                                                            .Where(x => x.DeleteStatus == DeleteStatus.No)
-                                                            .OrderBy(x => x.SubSealType)                                                            
-                                                            .ToList();
-
-                foreach (TypographicResource typographyResource in accountantSigns)
+                if (isTransparent)
                 {
-                    AccountantSignViewModel accountantSignViewModel = mapper.Map<AccountantSignViewModel>(typographyResource);
-                    accountantSignViewModel.ImageBase64 = imageService.GetPathToBase64(typographyResource.ImageFullPath); //資料庫取得圖檔路徑轉BASE64                   
-                    
-                    accountantSignViewModel.SealMappingConfigId = (AccountantSignType)SealMappingConfigUtil.GetAccountantSignType(typographyResource.SubSealType);
-                    signViewModels.SignViewModels.Add(accountantSignViewModel);
+                    foreach (AccountantSignViewModel accountantSignViewModel in accountantSignViewModels.SignViewModels)
+                    {
+                        ImageInfo imageInfo = ImageInfo.FromImageBase64(accountantSignViewModel.ImageBase64);
+                        accountantSignViewModel.ImageBase64 = imageInfo.TransparentToImageBase64();
+                    }
                 }
-                signViewModels.AccountantSignGroupId = accountantSignGroupId;
-                signViewModels.GroupCreateDate = accountantSignGroupJournalQuery.CreateDate;
-                //之後調整ReviewStatus不需轉型
-                signViewModels.ReviewStatus = (ReviewStatus)accountantSignGroupJournalQuery.ReviewStatus;                                
+                accountantSignViewModels.Success();
             }
-            signViewModels.Success();
+            else
+            {
+                accountantSignViewModels = new();
+                accountantSignViewModels.AccountantSignNoData();
+            }
 
-            return signViewModels;
+            return accountantSignViewModels;
         }
 
         /// <summary>

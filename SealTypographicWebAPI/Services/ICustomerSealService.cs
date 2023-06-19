@@ -26,8 +26,9 @@ namespace SealTypographicWebAPI.Services
         /// 取得客戶印鑑組
         /// </summary>
         /// <param name="customerSealQuarterId">客戶印鑑季度Id</param>
+        /// <param name="isTransparent">是否白底透明化</param>
         /// <returns></returns>
-        CustomerSealViewModels GetSeals(int customerSealQuarterId);
+        CustomerSealViewModels GetSeals(int customerSealQuarterId, bool isTransparent);
 
         /// <summary>
         /// 新增客戶印鑑組資料

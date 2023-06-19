@@ -8,6 +8,8 @@ using SealTypographicWebAPI.Models.AccountantSignReview;
 using SealTypographicWebAPI.Models.TemporarySeal;
 
 using DBEntities;
+using DJLib;
+using SealTypographicWebAPI.Utils;
 
 namespace SealTypographicWebAPI.Config
 {
@@ -28,17 +30,23 @@ namespace SealTypographicWebAPI.Config
             CreateMap<CustomerUpdateForm, Customer>();
 
             //客戶印鑑
-            CreateMap<CustomerSealGroup, CustomerSealViewModel>()
-                    .ForMember(x => x.ImageBase64, y => y.Ignore()) // <---imagebase64要額外處理所以要忽略                    
-                    .ReverseMap();
+            CreateMap<CustomerSealGroup, CustomerSealViewModels>()
+                    .ForMember(dst => dst.CustomerSealQuarterId, opt => opt.MapFrom(src => src.Id))
+                    .ForMember(dst => dst.Quarter, opt => opt.MapFrom(src => new string($"{src.Quarter.TaiwanYear}{src.Quarter.Period}")))
+                    .ForMember(dst => dst.ReviewStatus, opt => opt.MapFrom(src => src.ReviewStatus))
+                    .ForMember(dst => dst.SealViewModels, opt => opt.MapFrom(src => src.TypographicResources));
 
+            CreateMap<TypographicResource, CustomerSealViewModel>()
+                    .ForMember(dst => dst.SealMappingConfigId, opt => opt.MapFrom(src => SealMappingConfigUtil.GetCustomerSealType(src.SubSealType)))
+                    .ForMember(dst => dst.ImageBase64, opt => opt.MapFrom(src => ImageSharpUtil.PathImageFileToBase64(src.ImageFullPath)));
+                    
             CreateMap<CustomerSeal, TypographicResource>()
                     .ForMember(x => x.ImageFullPath, y => y.Ignore()) // <---ImagePath要額外處理所以要忽略                    
                     .ReverseMap();
-               
+
             CreateMap<CustomerSealViewModel, TypographicResource>()
-                    .ForMember(x => x.ImageFullPath, y => y.Ignore()) // <---ImagePath要額外處理所以要忽略  
-                    .ReverseMap();
+                    .ForMember(x => x.ImageFullPath, y => y.Ignore()); // <---ImagePath要額外處理所以要忽略  
+
 
             CreateMap<CustomerSealUpdateForm, TypographicResource>()
                     .ForMember(x => x.ImageFullPath, y => y.Ignore()) // <---ImagePath要額外處理所以要忽略
@@ -55,8 +63,8 @@ namespace SealTypographicWebAPI.Config
 
             //客戶印鑑審核詳細資料
             CreateMap<Customer, CustomerSealQuarterDetailReviewViewModel>()
-                 .ForMember(x => x.Id, y => y.Ignore())
-                 .ReverseMap();
+                     .ForMember(x => x.Id, y => y.Ignore())
+                     .ReverseMap();
 
             //會計師基本資料
             CreateMap<Accountant, AccountantViewModel>()                    
@@ -90,11 +98,19 @@ namespace SealTypographicWebAPI.Config
                     .ForMember(x => x.ImageBase64, y => y.Ignore()) // <---imagebase64要額外處理所以要忽略
                     .ReverseMap();
             
-            CreateMap<AccountantSignGroup, AccountantSignViewModel>();
+            CreateMap<AccountantSignGroup, AccountantSignViewModels>()
+                    .ForMember(dst => dst.AccountantSignGroupId, opt => opt.MapFrom(src => src.Id))
+                    .ForMember(dst => dst.GroupCreateDate, opt => opt.MapFrom(src => src.CreateDate))
+                    .ForMember(dst => dst.ReviewStatus, opt => opt.MapFrom(src => src.ReviewStatus))
+                    .ForMember(dst => dst.SignViewModels, opt => opt.MapFrom(src => src.TypographicResources));
+
+            CreateMap<TypographicResource, AccountantSignViewModel>()
+                    .ForMember(dst => dst.SealMappingConfigId, opt => opt.MapFrom(src => SealMappingConfigUtil.GetAccountantSignType(src.SubSealType)))
+                    .ForMember(dst => dst.ImageBase64, opt => opt.MapFrom(src => ImageSharpUtil.PathImageFileToBase64(src.ImageFullPath)));
 
             CreateMap<AccountantSign, TypographicResource>()
-                    .ForMember(x => x.ImageFullPath, y => y.Ignore()) // <---imagebase64要額外處理所以要忽略
-                    .ReverseMap();
+                    .ForMember(x => x.ImageFullPath, y => y.Ignore()); // <---imagebase64要額外處理所以要忽略
+
 
             CreateMap<AccountantSignUpdateForm, TypographicResource>()
                     .ForMember(x => x.ImageFullPath, y => y.Ignore()) // <---imagebase64要額外處理所以要忽略
@@ -106,17 +122,17 @@ namespace SealTypographicWebAPI.Config
 
             //會計師簽印審核清單
             CreateMap<AccountantSignGroup, AccountantSignGroupReviewViewModel>()
-                .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Accountant.Name))
-                .ForMember(dest => dest.Code, opt => opt.MapFrom(o => o.Accountant.Code))
-                .ForMember(dest => dest.GroupName, opt => opt.MapFrom(o => o.Accountant.AccountantGroup.Name))
-                .ForMember(dest => dest.ReviewStatus, opt => opt.MapFrom(o => o.ReviewStatus))
-                .ReverseMap();
+                    .ForMember(dst => dst.Name, opt => opt.MapFrom(src => src.Accountant.Name))
+                    .ForMember(dst => dst.Code, opt => opt.MapFrom(src => src.Accountant.Code))
+                    .ForMember(dst => dst.GroupName, opt => opt.MapFrom(src => src.Accountant.AccountantGroup.Name))
+                    .ForMember(dst => dst.ReviewStatus, opt => opt.MapFrom(src => src.ReviewStatus))
+                    .ReverseMap();
 
             //會計師簽印審核詳細資料
             CreateMap<Accountant, AccountantSignGroupDetailReviewViewModel>()
-                 .ForMember(dest => dest.Id, y => y.Ignore())
-                 .ForMember(dest => dest.GroupName, y => y.MapFrom(o => o.AccountantGroup.Name))
-                 .ReverseMap();
+                     .ForMember(dst => dst.Id, y => y.Ignore())
+                     .ForMember(dst => dst.GroupName, y => y.MapFrom(o => o.AccountantGroup.Name))
+                     .ReverseMap();
 
             //信頭基本資料
             CreateMap<Letterhead, LetterheadViewModel>();
@@ -124,8 +140,18 @@ namespace SealTypographicWebAPI.Config
             //臨時章Log使用
             CreateMap<TemporarySealViewModel, TemporarySealLogModel>();
             CreateMap<TemporarySealDetailViewModel, TemporarySealDetailLogModel>()
-                .ForMember(x => x.ViewModels, y => y.Ignore())                
-                .ReverseMap();                 
+                    .ForMember(dst => dst.ViewModels, y => y.Ignore());
+
+            CreateMap<TemporarySealGroup, TemporarySealDetailViewModel>()
+                    .ForMember(dst => dst.CustomerId, opt => opt.MapFrom(src => src.Customer.Id))
+                    .ForMember(dst => dst.CustomerName, opt => opt.MapFrom(src => src.Customer.Name))
+                    .ForMember(dst => dst.ViewModels, opt => opt.MapFrom(src => src.TypographicResources));
+
+            CreateMap<TypographicResource, TemporarySealViewModel>()
+                    .ForMember(dst => dst.Id, opt => opt.MapFrom(src => src.Id))
+                    .ForMember(dst => dst.Sequence, opt => opt.MapFrom(src => src.Sequence))
+                    .ForMember(dst => dst.ImageFullPath, opt => opt.MapFrom(src => src.ImageFullPath))
+                    .ForMember(dst => dst.ImageBase64, opt => opt.MapFrom(src => ImageSharpUtil.PathImageFileToBase64(src.ImageFullPath)));
         }
     }
 }

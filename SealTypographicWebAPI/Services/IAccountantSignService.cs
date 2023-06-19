@@ -20,8 +20,9 @@ namespace SealTypographicWebAPI.Services
         /// 取得會計師簽印組
         /// </summary>
         /// <param name="accountantSignGroupId">會計師簽印群組Id</param>
+        /// <param name="isTransparent">是否白底透明化</param>
         /// <returns></returns>
-        public AccountantSignViewModels GetSignViewModels(int accountantSignGroupId);
+        public AccountantSignViewModels GetSignViewModels(int accountantSignGroupId, bool isTransparent);
 
         /// <summary>
         /// 新增會計師簽印組

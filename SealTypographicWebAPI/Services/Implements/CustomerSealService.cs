@@ -5,6 +5,8 @@ using SealTypographicWebAPI.Models.Customer;
 using SealTypographicWebAPI.Utils;
 using DBEntities;
 using DBEntities.Consts;
+using DJLib;
+using DJLib.Models;
 
 namespace SealTypographicWebAPI.Services.Implements
 {
@@ -49,50 +51,39 @@ namespace SealTypographicWebAPI.Services.Implements
         {
             return GetStandardQuarter(customerId, true);
         }
-        
+
         /// <summary>
         /// 取得客戶印鑑組
         /// </summary>
         /// <param name="customerSealQuarterId">客戶印鑑季度Id</param>
+        /// <param name="isTransparent">是否白底透明化</param>
         /// <returns></returns>
-        public CustomerSealViewModels GetSeals(int customerSealQuarterId)
-        {
-            CustomerSealViewModels customerSealViewModels = new();
+        public CustomerSealViewModels GetSeals(int customerSealQuarterId, bool isTransparent)
+        {            
+            CustomerSealViewModels? customerSealViewModels = mapper.ProjectTo<CustomerSealViewModels>
+                                                            (
+                                                                dbContext.CustomerSealGroups
+                                                                .Include(customerSealGroup => customerSealGroup.TypographicResources)
+                                                                .Include(customerSealGroup => customerSealGroup.Quarter)                                                    
+                                                            ).FirstOrDefault(x => x.CustomerSealQuarterId == customerSealQuarterId);            
             
-            CustomerSealGroup? customerSealGroup = dbContext.CustomerSealGroups
-                                                    .Include(customerSealGroup => customerSealGroup.TypographicResources)
-                                                    .Include(customerSealGroup => customerSealGroup.Quarter)
-                                                    .FirstOrDefault
-                                                    (
-                                                        customerSealGroup => customerSealGroup.Id == customerSealQuarterId                                                                        
-                                                    );  
-                                                                                                                                                                                                        
-            if (customerSealGroup != null)
+            if (customerSealViewModels != null)
             {
-                List<TypographicResource> customerSeals = customerSealGroup.TypographicResources
-                                                        .Where(x => x.DeleteStatus == DeleteStatus.No)
-                                                        .OrderBy(x => x.SubSealType)
-                                                        .ThenBy(x => x.Sequence)
-                                                        .ToList();
-
-                foreach (TypographicResource customerSeal in customerSeals)
+                if(isTransparent)
                 {
-                    CustomerSealViewModel customerSealViewModel = new()
+                    foreach(CustomerSealViewModel customerSealViewModel in customerSealViewModels.SealViewModels)
                     {
-                        Id = customerSeal.Id,
-                        ImageBase64 = imageService.GetPathToBase64(customerSeal.ImageFullPath), //從資料庫取得圖檔路徑轉BASE64   
-                        //const暫時用轉型的，之後調整model一併換成新的
-                        SealMappingConfigId = (CustomerSealType)SealMappingConfigUtil.GetCustomerSealType(customerSeal.SubSealType),
-                        Sequence = customerSeal.Sequence,
-                    };
-                    customerSealViewModels.SealViewModels.Add(customerSealViewModel);
+                        ImageInfo imageInfo = ImageInfo.FromImageBase64(customerSealViewModel.ImageBase64);                        
+                        customerSealViewModel.ImageBase64 = imageInfo.TransparentToImageBase64();
+                    }
                 }
-                customerSealViewModels.CustomerSealQuarterId = customerSealQuarterId;
-                customerSealViewModels.Quarter = QuarterUtil.GetTaiwanYearQuarter(customerSealGroup.Quarter);
-                //const暫時用轉型的，之後調整model一併換成新的
-                customerSealViewModels.ReviewStatus = (ReviewStatus)customerSealGroup.ReviewStatus;                
+                customerSealViewModels.Success();
             }
-            customerSealViewModels.Success();
+            else
+            {
+                customerSealViewModels = new();
+                customerSealViewModels.CustomerSealNoData();
+            }
         
             return customerSealViewModels;
         }

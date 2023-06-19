@@ -77,16 +77,17 @@ namespace SealTypographicWebAPI.Controllers
         /// <summary>
         /// 取得客戶印鑑組
         /// </summary>
-        /// <param name="customerSealQuarterId">客戶印鑑季度Id</param>             
+        /// <param name="customerSealQuarterId">客戶印鑑季度Id</param>
+        /// <param name="isTransparent" example="false">是否白底透明化處理</param>             
         /// <returns></returns>        
         [HttpGet("[Action]")]
-        public CustomerSealViewModels Seals(int customerSealQuarterId)
+        public CustomerSealViewModels Seals(int customerSealQuarterId, bool isTransparent)
         {
             CustomerSealViewModels customerSealViewModels = new();
             try
             {
                 Log.Information("CustomerSeal get seals input {@Input}", customerSealQuarterId);
-                customerSealViewModels = customerSealService.GetSeals(customerSealQuarterId);
+                customerSealViewModels = customerSealService.GetSeals(customerSealQuarterId, isTransparent);
                 Log.Information("CustomerSeal get seals output {@Output}", customerSealViewModels);
             }
             catch (Exception ex)

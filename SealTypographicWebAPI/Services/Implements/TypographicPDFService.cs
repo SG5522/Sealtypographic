@@ -82,23 +82,13 @@ namespace SealTypographicWebAPI.Services.Implements
 
             if(typographicPDFs.Any())
             {
-                IQueryable<TypographicPDF> thisPageTypographicPDFs = typographicPDFs
+                typographicPDFPaginateViewModel.ViewModels = mapper.ProjectTo<TypographicPDFViewModel>
+                                                            (
+                                                                    typographicPDFs
                                                                     .Skip((typographicPDFSearch.PageNumber - 1) * typographicPDFSearch.PageSize)
-                                                                    .Take(typographicPDFSearch.PageSize);
+                                                                    .Take(typographicPDFSearch.PageSize)
+                                                            ).ToList();
 
-                foreach(TypographicPDF typographicPDF in thisPageTypographicPDFs)
-                {
-                    TypographicPDFViewModel typographicPDFViewModel = new()
-                    {
-                        Id = typographicPDF.Id,
-                        CustomerCode = typographicPDF.Customer.Code,
-                        CustomerName = typographicPDF.Customer.Name,
-                        OriginFileName = typographicPDF.UploadFile.OriginalFileName,
-                        Quarter = $"{typographicPDF.Quarter.TaiwanYear}{typographicPDF.Quarter.Period}",
-                        ReviewStatus = typographicPDF.ReviewStatus
-                    };
-                    typographicPDFPaginateViewModel.ViewModels.Add(typographicPDFViewModel);
-                }
                 int totalCount = typographicPDFs.Count();
                 typographicPDFPaginateViewModel.PageNumber = typographicPDFSearch.PageNumber;
                 typographicPDFPaginateViewModel.PageSize = typographicPDFSearch.PageSize;
@@ -120,22 +110,21 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <returns></returns>
         public TypographicPagesResponse GetEditPages(int id)
         {
-            TypographicPagesResponse typographicPagesResponse = new();
-            IQueryable<TypographicPageForm> typographicPageForms = mapper.ProjectTo<TypographicPageForm>
-                                                                    (
-                                                                            dbContext.TypographicPages
-                                                                            .Include(x => x.TypographicResourceLocations)                                                    
-                                                                            .Where(x => x.TypographicPDF.Id == id)                                                    
-                                                                    );
-            
-            if (typographicPageForms != null)
+            TypographicPagesResponse? typographicPagesResponse = mapper.ProjectTo<TypographicPagesResponse>
+                                                                (
+                                                                    dbContext.TypographicPDFs
+                                                                    .Include(x => x.TypographicPages)
+                                                                    .ThenInclude(x => x.TypographicResourceLocations)
+                                                                    .AsSplitQuery()
+                                                                ).FirstOrDefault(x => x.Id == id);
+
+            if (typographicPagesResponse != null)
             {
-                typographicPagesResponse.Id = id;
-                typographicPagesResponse.Pages = typographicPageForms.ToList();
                 typographicPagesResponse.Success();
             }
             else
             {
+                typographicPagesResponse = new();
                 typographicPagesResponse.DbNoData();
             }
             return typographicPagesResponse;
@@ -180,14 +169,22 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <returns></returns>
         public TypographicPageViewModel GetPageView(TypographicPDFPageSearch typographicPDFPageSearch)
         {
-            TypographicPageViewModel typographicPageViewModel = new();
+            TypographicPageViewModel? typographicPageViewModel = new();
 
             string? pdfFullPath = dbContext.TypographicPDFs.Include(x => x.UploadFile)
                                  .Where(x => x.Id == typographicPDFPageSearch.Id)
                                  .Select(x => x.FullPath)
                                  .FirstOrDefault();
 
-            if (pdfFullPath != null)
+            typographicPageViewModel = mapper.ProjectTo<TypographicPageViewModel>
+                                    (
+                                        dbContext.TypographicPages
+                                        .Include(x => x.TypographicResourceLocations)
+                                        .ThenInclude(x => x.TypographicResource)
+                                        .AsSplitQuery()
+                                    ).FirstOrDefault(x => x.Id == typographicPDFPageSearch.Id && x.PageNumber == typographicPDFPageSearch.PageNumber);
+
+            if (pdfFullPath != null && typographicPageViewModel != null)
             {
                 //取得單頁PDF圖檔
                 PDFService pDFService = new()
@@ -195,66 +192,15 @@ namespace SealTypographicWebAPI.Services.Implements
                     PDFPath = pdfFullPath,
                     PageIndex = typographicPDFPageSearch.PageNumber,
                 };
-                
-                typographicPageViewModel.PageNumber = typographicPDFPageSearch.PageNumber;
+
                 typographicPageViewModel.PDFImageBase64 = pDFService.GetPageImageBase64();
-
-                TypographicPage? typographicPages = dbContext.TypographicPages
-                                                    .Include(x => x.TypographicResourceLocations)
-                                                    .ThenInclude(x => x.TypographicResource)
-                                                    .FirstOrDefault
-                                                    (
-                                                        x => x.TypographicPDF.Id == typographicPDFPageSearch.Id
-                                                        && x.PageNumber == typographicPDFPageSearch.PageNumber
-                                                    );
-
-                //如有該頁有編輯頁面資訊才進行查詢
-                if (typographicPages != null)
-                {
-                    typographicPageViewModel.Id = typographicPages.Id;
-                    #region 顯示已編輯頁次內裡面所有的印鑑擺放位置與顯示名稱
-                    foreach (TypographicResourceLocation typographicResourceLocation in typographicPages.TypographicResourceLocations)
-                    {
-                        switch (typographicResourceLocation.TypographicResource.SealType)
-                        {
-                            case SealType.Customer:
-                                typographicPageViewModel.CustomerSealLocationViewModels.Add(mapper.Map<CustomerSealLocationViewModel>(typographicResourceLocation));
-                                break;
-                            case SealType.Accountant:
-                                string accountantName = dbContext.Accountants.Where
-                                                        (
-                                                            x => x.AccountantSignGroups.Any
-                                                            (
-                                                                x => x.TypographicResources.Any(x => x.Id == typographicResourceLocation.TypographicResource.Id)
-                                                            )
-                                                        ).Select(x => x.Name).Single();
-                                AccountantSignLocationViewModel accountantSignLocationViewModel = mapper.Map<AccountantSignLocationViewModel>(typographicResourceLocation);
-                                accountantSignLocationViewModel.AccountantName = accountantName;
-                                typographicPageViewModel.AccountantSignLocationViewModels.Add(accountantSignLocationViewModel);
-                                break;
-                            case SealType.Letterhead:
-                                string letterheadName = dbContext.Letterheads
-                                                        .Where
-                                                        (
-                                                            x => x.TypographicResources.Any
-                                                            (
-                                                                x => x.Id == typographicResourceLocation.TypographicResource.Id
-                                                            )
-                                                        ).Select(x => x.Name).Single();
-                                LetterheadImageLocationViewModel letterheadImageLocationForm = mapper.Map<LetterheadImageLocationViewModel>(typographicResourceLocation);
-                                letterheadImageLocationForm.LetterheadName = letterheadName;
-                                typographicPageViewModel.LetterheadImageLocationViewModels.Add(letterheadImageLocationForm);
-                                break;
-                            case SealType.TemporarySeal:
-                                typographicPageViewModel.TemporarySealLocationViewModels.Add(mapper.Map<TemporarySealLocationViewModel>(typographicResourceLocation));
-                                break;
-                        }
-                    }
-                    #endregion                    
-                }
-                typographicPageViewModel.Success();
+                typographicPageViewModel.Success();                
             }            
-
+            else
+            {
+                typographicPageViewModel = new();
+                typographicPageViewModel.DbNoData();
+            }
             return typographicPageViewModel;
         }
 

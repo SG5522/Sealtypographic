@@ -33,18 +33,16 @@ namespace LibTest
             dialog.Filter = "所有檔案(*.*)|*.*";
         }
 
-        private void BtnStart_Click(object sender, EventArgs e)
+        private async void BtnStart_Click(object sender, EventArgs e)
         {
-            //PDFService pDFService = new()
-            //{
-            //    PDFPath = "C:\\DJimage\\TestSealcard\\2222.pdf"
-            //};
+            
+            Stream stream = OpenCvUtil.TransparentToStream(Dialog.FileName, 160);
 
-            //ImageInfo imageInfo = ImageInfo.FromPath(Dialog.FileName);
-            //ImageInfo imageInfo = ImageInfo.FromPathWithAlpha(Dialog.FileName);
-            //imageInfo.Transparent();
-
-            OpenCvUtil.TransparentToStream(Dialog.FileName, 160);
+            using (FileStream fileStream = File.Create(@"D:\123.png"))
+            {
+                stream.Position = 0;
+                await stream.CopyToAsync(fileStream);
+            }
 
             //pDFService.GetEditPDFBase64(editPages, true);
         }

@@ -34,7 +34,7 @@ namespace DJLib.Models
         public static ImageInfo FromImageBase64(string ImageBase64)
         {            
             //return FromBase64(ImageBase64.Substring(ImageBase64.IndexOf("base64,") + 7));
-            return FromBase64(Regex.Replace(ImageBase64, @"^data:image\/[a-zA-Z]+;base64,", string.Empty));
+            return FromBase64(Regex.Replace(ImageBase64, @"^data:image\/[a-zA-Z]+;base64,", string.Empty));            
         }
 
         /// <summary>
@@ -73,14 +73,24 @@ namespace DJLib.Models
         }
 
         /// <summary>
+        /// 白色透明化(stream)
+        /// </summary>
+        /// <param name="threshold">臨界點</param>
+        public Stream TransparentToStream(int threshold = 160)
+        {
+            Stream stream = new MemoryStream();
+            SourceImage.Save(stream,ImageFormat);
+            stream.Position = 0;
+            return OpenCvUtil.TransparentToStream(stream, threshold);
+        }
+
+        /// <summary>
         /// 白色透明化
         /// </summary>
         /// <param name="threshold">臨界點</param>
-        public Stream Transparent(int threshold = 160)
-        {
-            Stream stream = new MemoryStream();
-            SourceImage.Save(stream,ImageFormat);            
-            return OpenCvUtil.TransparentToStream(stream, threshold);
+        public string TransparentToImageBase64(int threshold = 160)
+        {            
+            return Image.Load(TransparentToStream(threshold), out IImageFormat imageFormat).ToBase64String(imageFormat);
         }
 
         public string ImageToBase64()
