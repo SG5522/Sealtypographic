@@ -56,8 +56,8 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="id"></param>
         /// <param name="isTransparent"></param>
         /// <returns></returns>        
-        [HttpGet("{id}")]
-        public TemporarySealDetailViewModel Detail(int id, bool isTransparent)
+        [HttpGet("[Action]")]
+        public TemporarySealDetailViewModel Detail([FromQuery] int id, bool isTransparent)
         {
             TemporarySealDetailViewModel temporarySealDetailViewModel = new();
             try

@@ -64,13 +64,13 @@ namespace SealTypographicWebAPI.Config
                     .ForMember(dst => dst.Id, opt => opt.MapFrom(src => src.TypographicResource.Id));
 
             CreateMap<CustomerSealLocationForm, TypographicResourceLocation>()
-                    .ForMember(dst => dst.Id, y => y.Ignore()); //此ID非為ResourceLocation的ID而是關聯用的ID                    
+                    .ForMember(dst => dst.Id, opt => opt.Ignore());                           
             CreateMap<AccountantSignLocationForm, TypographicResourceLocation>()
-                    .ForMember(dst => dst.Id, y => y.Ignore()); //此ID非為ResourceLocation的ID而是關聯用的ID                    
+                    .ForMember(dst => dst.Id, opt => opt.Ignore()); //此ID非為ResourceLocation的ID而是關聯用的ID                    
             CreateMap<LetterheadImageLocationForm, TypographicResourceLocation>()
-                    .ForMember(dst => dst.Id, y => y.Ignore()); //此ID非為ResourceLocation的ID而是關聯用的ID                    
+                    .ForMember(dst => dst.Id, opt => opt.Ignore()); //此ID非為ResourceLocation的ID而是關聯用的ID                    
             CreateMap<TemporarySealLocationForm, TypographicResourceLocation>()
-                    .ForMember(dst => dst.Id, y => y.Ignore()); //此ID非為ResourceLocation的ID而是關聯用的ID
+                    .ForMember(dst => dst.Id, opt => opt.Ignore()); //此ID非為ResourceLocation的ID而是關聯用的ID
                     
             //單頁詳細資料(PDFPage)
             CreateMap<TypographicPage, TypographicPageViewModel>()

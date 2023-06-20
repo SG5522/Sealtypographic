@@ -70,5 +70,12 @@ namespace SealTypographicWebAPI.Services
         /// <param name="typographicPDFId">PDF排版ID</param>
         /// <returns></returns>
         ResponseViewModel Approval(int typographicPDFId);
+
+        /// <summary>
+        /// 刪除排版PDF(標記刪除)
+        /// </summary>
+        /// <param name="typographicPDFId"></param>
+        /// <returns></returns>
+        ResponseViewModel Delete(int typographicPDFId);
     }
 }

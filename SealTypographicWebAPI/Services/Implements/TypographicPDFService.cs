@@ -287,7 +287,7 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <returns></returns>
         public TypographicPDFNewResronse New(TypographicPDFForm typographicPDFForm)
         {
-            TypographicPDFNewResronse response = new();            
+            TypographicPDFNewResronse typographicPDFNewResronse = new();            
             int userId = 0;
             
             UploadFile? pDFInfo = dbContext.UploadFiles.Find(typographicPDFForm.UploadId);
@@ -323,13 +323,14 @@ namespace SealTypographicWebAPI.Services.Implements
                 
                 dbContext.TypographicPDFs.Add(typographicPDF);                   
                 dbContext.SaveChanges();
-                response.Success();
+                typographicPDFNewResronse.TypographicPDFId = typographicPDF.Id;
+                typographicPDFNewResronse.Success();
             }
             else
             {
-                response.DbNoData();
+                typographicPDFNewResronse.DbNoData();
             }
-            return response;
+            return typographicPDFNewResronse;
         }
 
         /// <summary>
@@ -359,6 +360,7 @@ namespace SealTypographicWebAPI.Services.Implements
                 typographicPDF.ReviewStatus = ReviewStatus.Approval;
                 BaseInputTypographicPDF(typographicPDF, false, userId);
                 List<TypographicPage> newPages = new ();
+                newPages = mapper.Map<List<TypographicPage>>(typographicPDFSaveForm.Pages);
 
                 foreach (TypographicPageForm typographicPageForm in typographicPDFSaveForm.Pages)
                 {
@@ -380,6 +382,32 @@ namespace SealTypographicWebAPI.Services.Implements
         public ResponseViewModel Approval(int typographicPDFId)
         {            
             return ChangeReviewStatus(typographicPDFId, ReviewStatus.Approval);
+        }
+
+        /// <summary>
+        /// 刪除
+        /// </summary>
+        /// <param name="typographicPDFId">排版PDF ID</param>
+        /// <returns></returns>
+        public ResponseViewModel Delete(int typographicPDFId)
+        {
+            ResponseViewModel response = new();
+            TypographicPDF? typographicPDF = dbContext.TypographicPDFs.Find(typographicPDFId);
+            int userId = 1;
+            if(typographicPDF != null)
+            {
+                typographicPDF.DeleteStatus = DeleteStatus.Yes;
+                typographicPDF.ReviewStatus = ReviewStatus.Disabled;
+                BaseInputTypographicPDF(typographicPDF, false, userId);
+                dbContext.SaveChanges();
+                response.Success();
+            }
+            else
+            {
+                response.DbNoData();
+            }
+            
+            return response;
         }
 
         /// <summary>

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using DBEntities;
+using Microsoft.AspNetCore.Mvc;
 using SealTypographicWebAPI.Models;
 using SealTypographicWebAPI.Models.TypographicPDF;
 using SealTypographicWebAPI.Services;
@@ -230,13 +231,24 @@ namespace SealTypographicWebAPI.Controllers
         }
 
         /// <summary>
-        /// 
+        /// 刪除排版PDF(標記刪除)
         /// </summary>
-        /// <param name="id"></param>
-        [HttpDelete("{id}")]
-        public ResponseViewModel Delete(int id)
+        /// <param name="typographicPDFId"></param>
+        [HttpDelete("{typographicPDFId}")]
+        public ResponseViewModel Delete(int typographicPDFId)
         {
             ResponseViewModel response = new();
+            try
+            {
+                Log.Information("TypographicPDF delete input {@Input}", typographicPDFId);
+                response = typographicPDFService.Delete(typographicPDFId);
+                Log.Information("TypographicPDF delete output {@Output}", response);
+            }
+            catch (Exception ex)
+            {
+                Log.Error("TypographicPDF delete error {@Error}", ex.Message);
+                response.DbError();
+            }
             return response;
         }
     }
