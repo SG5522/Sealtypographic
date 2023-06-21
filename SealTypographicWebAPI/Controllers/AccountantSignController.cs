@@ -31,21 +31,21 @@ namespace SealTypographicWebAPI.Controllers
         /// <summary>
         /// 取得會計師簽印建立日期列表
         /// </summary>
-        /// <param name="accountantID">會計師ID</param>        
+        /// <param name="accountantId">會計師ID</param>        
         /// <returns></returns>
-        [HttpGet("{accountantID}")]
-        public AccountantSignGroupResponse CreateDates(int accountantID)
+        [HttpGet("{accountantId}")]
+        public AccountantSignGroupResponse GetCreateDates(int accountantId)
         {
             AccountantSignGroupResponse accountantSignStartDates = new ();
             try
             {
-                Log.Information("AccountantSign get CreateDates input {@Input}", accountantID);
-                accountantSignStartDates = accountantSignService.GetCreateDates(accountantID);
-                Log.Information("AccountantSign get CreateDates output {@Output}", accountantSignStartDates);                        
+                Log.Information("AccountantSign get GetCreateDates input {@Input}", accountantId);
+                accountantSignStartDates = accountantSignService.GetCreateDates(accountantId);
+                Log.Information("AccountantSign get GetCreateDates output {@Output}", accountantSignStartDates);                        
             }
             catch (Exception ex)
             {             
-                Log.Error("AccountantSign get CreateDates error {@Error}", ex.Message); 
+                Log.Error("AccountantSign get GetCreateDates error {@Error}", ex.Message); 
                 accountantSignStartDates.DbError();                
             }
             return accountantSignStartDates;

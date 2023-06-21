@@ -42,7 +42,7 @@ namespace SealTypographicWebAPI.Controllers
             try
             {
                 Log.Information("Accountant paginate input {@Input}", accountantSearch);
-                accountantPaginatesViewModel = accountantService.GetPaginate(accountantSearch);
+                accountantPaginatesViewModel = accountantService.GetPaginate(accountantSearch, false);
                 Log.Information("Accountant paginate output {@Output}", accountantPaginatesViewModel);                
             }
             catch (Exception ex) 
@@ -65,7 +65,7 @@ namespace SealTypographicWebAPI.Controllers
             try
             {
                 Log.Information("Accountant paginateWithTypographic input {@Input}", accountantSearch);
-                accountantPaginatesViewModel = accountantService.GetPaginateWithTypographic(accountantSearch);
+                accountantPaginatesViewModel = accountantService.GetPaginate(accountantSearch, true);
                 Log.Information("Accountant paginateWithTypographic output {@Output}", accountantPaginatesViewModel);
             }
             catch (Exception ex)

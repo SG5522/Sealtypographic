@@ -6,7 +6,7 @@ using SealTypographicWebAPI.Utils;
 using DBEntities;
 using DBEntities.Consts;
 using DJLib.Models;
-using SealTypographicWebAPI.Models.Customer;
+using AutoMapper.QueryableExtensions;
 
 namespace SealTypographicWebAPI.Services.Implements
 {
@@ -17,7 +17,9 @@ namespace SealTypographicWebAPI.Services.Implements
     {
         private readonly SealTypographicDbContext dbContext;
         private readonly ImageService imageService;
-        private readonly IMapper mapper;        
+        private readonly IMapper mapper;   
+        private readonly AutoMapper.IConfigurationProvider configurationProvider;
+
         /// <summary>
         /// 取得DB與ResponseService
         /// </summary>
@@ -28,6 +30,7 @@ namespace SealTypographicWebAPI.Services.Implements
         {
             this.dbContext = dbContext;            
             this.mapper = mapper;
+            configurationProvider = mapper.ConfigurationProvider;
             this.imageService = imageService;            
         }
 
@@ -41,24 +44,24 @@ namespace SealTypographicWebAPI.Services.Implements
             AccountantSignGroupResponse accountantSignStartDates = new()
             {
                 AccountantSignGroups = dbContext.AccountantSignGroups
-                                                       .Where
-                                                       (
-                                                            accountantSignGroup => accountantSignGroup.Accountant.Id == accountantId
-                                                            && accountantSignGroup.ReviewStatus <= ReviewStatus.Disabled
-                                                            && accountantSignGroup.DeleteStatus == DeleteStatus.No
-                                                       )
-                                                       .Select(accountantSignGroup => new AccountantSignGroupViewModel()
-                                                       {
-                                                           Id = accountantSignGroup.Id,
-                                                           GroupCreateDate = accountantSignGroup.CreateDate,
-                                                           //之後調整ReviewStatus不需轉型
-                                                           ReviewStatus = (ReviewStatus)accountantSignGroup.ReviewStatus
-                                                       })                                                       
-                                                       .OrderByDescending(accountantSignGroup => accountantSignGroup.GroupCreateDate)                                                       
-                                                       .ToList()
+                                        .Where
+                                        (
+                                            accountantSignGroup => accountantSignGroup.Accountant.Id == accountantId
+                                            && accountantSignGroup.ReviewStatus <= ReviewStatus.Disabled
+                                            && accountantSignGroup.DeleteStatus == DeleteStatus.No
+                                        ).ProjectTo<AccountantSignGroupViewModel>(configurationProvider)
+                                        .OrderByDescending(accountantSignGroup => accountantSignGroup.GroupCreateDate)
+                                        .ToList()
             };
-            accountantSignStartDates.Success();
-
+            if(accountantSignStartDates.AccountantSignGroups.Any())
+            {
+                accountantSignStartDates.Success();
+            }
+            else
+            {
+                accountantSignStartDates.DbNoData();
+            }
+            
             return accountantSignStartDates;
         }
 
@@ -70,11 +73,11 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <returns></returns>
         public AccountantSignViewModels GetSignViewModels(int accountantSignGroupId, bool isTransparent)
         {
-            AccountantSignViewModels? accountantSignViewModels = mapper.ProjectTo<AccountantSignViewModels>
-                                                                (
-                                                                    dbContext.AccountantSignGroups
-                                                                    .Include(x => x.TypographicResources)
-                                                                ).FirstOrDefault(x => x.AccountantSignGroupId == accountantSignGroupId);
+
+            AccountantSignViewModels? accountantSignViewModels = dbContext.AccountantSignGroups
+                                                                .Include(x => x.TypographicResources)
+                                                                .ProjectTo<AccountantSignViewModels>(configurationProvider)
+                                                                .FirstOrDefault(x => x.AccountantSignGroupId == accountantSignGroupId);        
 
             if (accountantSignViewModels != null)
             {

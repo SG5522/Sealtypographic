@@ -20,9 +20,9 @@ namespace DJLib
         /// <param name="format"></param>        
         /// <returns></returns>
         //public static string ImageToBase64(Image image,IImageFormat format)
-        public static string ImageToBase64(ImageInfo imageInfo)
+        public static string ToBase64(ImageInfo imageInfo)
         {                    
-            return imageInfo.SourceImage.ToBase64String(imageInfo.ImageFormat);
+            return imageInfo.ToBase64();
         }
 
         /// <summary>
@@ -50,7 +50,7 @@ namespace DJLib
         /// <returns></returns>
         public static string PathImageFileToBase64(string fullPath)
         {                       
-            return ImageToBase64(ImageInfo.FromPath(fullPath));
+            return ToBase64(ImageInfo.FromPath(fullPath));
         }
 
 

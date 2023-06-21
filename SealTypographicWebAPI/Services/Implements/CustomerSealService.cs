@@ -5,8 +5,8 @@ using SealTypographicWebAPI.Models.Customer;
 using SealTypographicWebAPI.Utils;
 using DBEntities;
 using DBEntities.Consts;
-using DJLib;
 using DJLib.Models;
+using AutoMapper.QueryableExtensions;
 
 namespace SealTypographicWebAPI.Services.Implements
 {
@@ -18,18 +18,20 @@ namespace SealTypographicWebAPI.Services.Implements
         private readonly SealTypographicDbContext dbContext;
         private readonly ImageService imageService;
         private readonly IMapper mapper;
+        private readonly AutoMapper.IConfigurationProvider configurationProvider;
 
         /// <summary>
         /// 建構
         /// </summary>
         /// <param name="dbContext"></param>        
         /// <param name="mapper"></param>
-        /// <param name="imageSharpService"></param>
-        public CustomerSealService(SealTypographicDbContext dbContext, IMapper mapper, ImageService imageSharpService)
+        /// <param name="imageService"></param>
+        public CustomerSealService(SealTypographicDbContext dbContext, IMapper mapper, ImageService imageService)
         {
             this.dbContext = dbContext;
             this.mapper = mapper;
-            this.imageService = imageSharpService;            
+            configurationProvider = mapper.ConfigurationProvider;
+            this.imageService = imageService;                   
         }
 
         /// <summary>
@@ -265,29 +267,21 @@ namespace SealTypographicWebAPI.Services.Implements
                                         .Where
                                         (
                                             customerSealGroup => customerSealGroup.Customer.Id == customerId
-                                            && customerSealGroup.ReviewStatus <= ReviewStatus.Disabled
+                                            && isTypographic ? customerSealGroup.ReviewStatus <= ReviewStatus.Approval
+                                            : customerSealGroup.ReviewStatus <= ReviewStatus.Disabled
                                             && customerSealGroup.DeleteStatus == DeleteStatus.No
                                         )
-                                        .OrderByDescending(customerSealGroup => customerSealGroup.Quarter.Id)
-                                        .Select(customerSealGroup => new CustomerSealQuarterViewModel()
-                                        {
-                                            Id = customerSealGroup.Id,
-                                            Quarter = QuarterUtil.GetTaiwanYearQuarter(customerSealGroup.Quarter),
-                                            //之後DB更換要調整
-                                            ReviewStatus = (ReviewStatus)customerSealGroup.ReviewStatus
-                                        })
+                                        .ProjectTo<CustomerSealQuarterViewModel>(configurationProvider)
                                         .ToList()
             };
-
-            if (isTypographic)
+            if(customerSealQuarters.CustomerSealQuarters.Any())
             {
-                customerSealQuarters.CustomerSealQuarters = customerSealQuarters.CustomerSealQuarters
-                                                                                .Where
-                                                                                (   //之後DB更換要調整
-                                                                                    x => x.ReviewStatus == (ReviewStatus)ReviewStatus.Approval
-                                                                                ).ToList();
+                customerSealQuarters.Success();
             }
-            customerSealQuarters.Success();
+            else
+            {
+                customerSealQuarters.CustomerSealNoData();
+            }
             return customerSealQuarters;
         }
 

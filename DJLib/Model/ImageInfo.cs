@@ -24,29 +24,18 @@ namespace DJLib.Models
         /// </summary>
         public IImageFormat ImageFormat { get; set; }
 
-        
+
 
         /// <summary>
-        /// ImageBase64 含","前面的文字(例 data:image/png;base64) 轉ImageInfo
+        /// ImageBase64 轉ImageInfo
         /// </summary>
         /// <param name="ImageBase64"></param>
         /// <returns></returns>
         public static ImageInfo FromImageBase64(string ImageBase64)
-        {            
-            //return FromBase64(ImageBase64.Substring(ImageBase64.IndexOf("base64,") + 7));
-            return FromBase64(Regex.Replace(ImageBase64, @"^data:image\/[a-zA-Z]+;base64,", string.Empty));            
-        }
-
-        /// <summary>
-        /// Base64不含","前面的文字(例 data:image/png;base64,拿掉) 轉ImageInfo
-        /// </summary>
-        /// <param name="base64String"></param>
-        /// <returns></returns>
-        public static ImageInfo FromBase64(string base64String)
         {
             return new ImageInfo()
             {
-                SourceImage = Image.Load(Convert.FromBase64String(base64String), out IImageFormat format),
+                SourceImage = Image.Load(Regex.Replace(ImageBase64, @"^data:image\/[a-zA-Z]+;base64,", string.Empty), out IImageFormat format),
                 ImageFormat = format
             };
         }
@@ -93,7 +82,7 @@ namespace DJLib.Models
             return Image.Load(TransparentToStream(threshold), out IImageFormat imageFormat).ToBase64String(imageFormat);
         }
 
-        public string ImageToBase64()
+        public string ToBase64()
         {
             return SourceImage.ToBase64String(ImageFormat);
         }
