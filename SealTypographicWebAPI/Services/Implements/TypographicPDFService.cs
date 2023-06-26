@@ -9,6 +9,8 @@ using DJSpire.Services;
 using DJSpire.Models;
 using Serilog;
 using DJLib;
+using AutoMapper.QueryableExtensions;
+using DJSpire.Consts;
 
 namespace SealTypographicWebAPI.Services.Implements
 {
@@ -19,7 +21,7 @@ namespace SealTypographicWebAPI.Services.Implements
     {
         private readonly SealTypographicDbContext dbContext;
         private readonly IMapper mapper;
-        private readonly ImageService imageService;
+        private readonly AutoMapper.IConfigurationProvider configurationProvider;
 
         /// <summary>
         /// 取得DB與Automapper
@@ -27,11 +29,11 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <param name="dbContext"></param>
         /// <param name="mapper"></param>
         /// <param name="imageService"></param>
-        public TypographicPDFService(SealTypographicDbContext dbContext, IMapper mapper, ImageService imageService)
+        public TypographicPDFService(SealTypographicDbContext dbContext, IMapper mapper)
         {
             this.dbContext = dbContext;
-            this.mapper = mapper;
-            this.imageService = imageService;
+            this.mapper = mapper;            
+            configurationProvider = mapper.ConfigurationProvider;
         }
 
         /// <summary>
@@ -232,6 +234,46 @@ namespace SealTypographicWebAPI.Services.Implements
         }
 
         /// <summary>
+        /// 取得排版後的PDFBase64
+        /// </summary>
+        /// <param name="typographicPDFId">PDF排版ID</param>
+        /// <returns></returns>
+        public TypographicPDFEditViewResponse GetEditPDFView(int typographicPDFId)
+        {
+            TypographicPDFEditViewResponse typographicPDFEditViewResponse = new();
+
+            List<EditPage> editPages = dbContext.TypographicPages
+                                        .Include(x => x.TypographicResourceLocations)
+                                        .ThenInclude(x => x.TypographicResource)
+                                        .Where(x => x.TypographicPDF.Id == typographicPDFId)
+                                        .ProjectTo<EditPage>(configurationProvider).ToList();
+
+            if (editPages != null)
+            {
+                EditPDF editPDF = new()
+                {
+                    PDFColor = PDFColor.Original,
+                    IsBlank = false,
+                    EditPages = editPages
+                };
+                string? pdfPath = dbContext.UploadFiles
+                                .Where(x => x.TypographicPDFs.Any(x => x.Id == typographicPDFId))
+                                .Select(x => x.FullPath)
+                                .FirstOrDefault();
+
+                PDFService pDFService = new() { PDFPath = pdfPath };
+                typographicPDFEditViewResponse.PDFBase64 = pDFService.GetEditPDFBase64(editPDF);
+                typographicPDFEditViewResponse.Success();
+            }
+            else
+            {
+                typographicPDFEditViewResponse.DbNoData();
+            }
+
+            return typographicPDFEditViewResponse;
+        }
+
+        /// <summary>
         /// 建立排版後的PDF
         /// </summary>
         /// <param name="typographicPDFMakeSetting">輸出PDF檔案時的設定</param>
@@ -239,24 +281,16 @@ namespace SealTypographicWebAPI.Services.Implements
         public TypographicPDFMakeResponse MakeTyporaphicPDF(TypographicPDFMakeSetting typographicPDFMakeSetting)
         {
             TypographicPDFMakeResponse typographicPagePDFResponse = new ();            
-            List<EditPage> editPages = mapper.ProjectTo<EditPage>
-                                        (
-                                            dbContext.TypographicPages
-                                            .Include(x => x.TypographicResourceLocations)
-                                            .ThenInclude(x => x.TypographicResource)
-                                            .Where(x => x.TypographicPDF.Id == typographicPDFMakeSetting.TypographicPDFId)
-                                        ).ToList();            
+
+            List<EditPage> editPages = dbContext.TypographicPages
+                                        .Include(x => x.TypographicResourceLocations)
+                                        .ThenInclude(x => x.TypographicResource)
+                                        .Where(x => x.TypographicPDF.Id == typographicPDFMakeSetting.TypographicPDFId)
+                                        .ProjectTo<EditPage>(configurationProvider).ToList();
+
             if (editPages != null)
             {
-                //透通圖片
-                foreach(EditPage page in editPages)
-                {
-                    foreach (EditImage editimage in page.EditImages)
-                    {
-                        editimage.ImageStream = OpenCvUtil.TransparentToStream(editimage.ImageStream, 160);
-                    }
-                }                    
-
+           
                 EditPDF editPDF = new()
                 {
                     PDFColor = typographicPDFMakeSetting.PDFColor,

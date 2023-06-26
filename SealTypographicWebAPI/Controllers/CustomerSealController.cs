@@ -40,7 +40,7 @@ namespace SealTypographicWebAPI.Controllers
             try
             {
                 Log.Information("CustomerSeal get quarter input {@Input}", customerId);
-                customerSealQuarters = customerSealService.GetQuarter(customerId);
+                customerSealQuarters = customerSealService.GetQuarter(customerId, false);
                 Log.Information("CustomerSeal get quarter output {@Output}", customerSealQuarters);
             }
             catch (Exception ex)
@@ -63,7 +63,7 @@ namespace SealTypographicWebAPI.Controllers
             try
             {
                 Log.Information("CustomerSeal get quarterWithTypographic input {@Input}", customerId);
-                customerSealQuarters = customerSealService.GetQuarterWithTypographic(customerId);
+                customerSealQuarters = customerSealService.GetQuarter(customerId, true);
                 Log.Information("CustomerSeal get quarterWithTypographic output {@Output}", customerSealQuarters);
             }
             catch (Exception ex)

@@ -48,8 +48,8 @@ namespace LibTest
         }
 
         private void BtnToImageBas64_Click(object sender, EventArgs e)
-        {
-            ImageSharpUtil.PathImageFileToBase64(Dialog.FileName);
+        {            
+            ImageInfo.FromPath(Dialog.FileName).ToBase64();
         }
     }
 }

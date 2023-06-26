@@ -10,7 +10,7 @@ using System.IO;
 namespace DJLib.Models
 {
     /// <summary>
-    /// 
+    /// 圖片資訊
     /// </summary>
     public class ImageInfo
     {
@@ -24,8 +24,6 @@ namespace DJLib.Models
         /// </summary>
         public IImageFormat ImageFormat { get; set; }
 
-
-
         /// <summary>
         /// ImageBase64 轉ImageInfo
         /// </summary>
@@ -35,7 +33,7 @@ namespace DJLib.Models
         {
             return new ImageInfo()
             {
-                SourceImage = Image.Load(Regex.Replace(ImageBase64, @"^data:image\/[a-zA-Z]+;base64,", string.Empty), out IImageFormat format),
+                SourceImage = Image.Load(Convert.FromBase64String(Regex.Replace(ImageBase64, @"^data:image\/[a-zA-Z]+;base64,", string.Empty)), out IImageFormat format),
                 ImageFormat = format
             };
         }
@@ -82,9 +80,24 @@ namespace DJLib.Models
             return Image.Load(TransparentToStream(threshold), out IImageFormat imageFormat).ToBase64String(imageFormat);
         }
 
+        /// <summary>
+        /// 轉成Base64
+        /// </summary>
+        /// <returns></returns>
         public string ToBase64()
         {
             return SourceImage.ToBase64String(ImageFormat);
+        }
+
+        /// <summary>
+        /// 轉成Stream
+        /// </summary>
+        /// <returns></returns>
+        public Stream ToStream()
+        {
+            Stream stream = new MemoryStream();
+            SourceImage.Save(stream, ImageFormat);
+            return stream;
         }
     }
 }

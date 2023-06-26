@@ -37,21 +37,34 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <summary>
         /// 取得客戶印鑑季度表
         /// </summary>
-        /// <param name="customerId">客戶ID</param>        
+        /// <param name="customerId">客戶ID</param>
+        /// <param name="isTypographic">是否排版使用</param>        
         /// <returns></returns>
-        public CustomerSealQuarterResponse GetQuarter(int customerId)
-        {                   
-            return GetStandardQuarter(customerId, false);
-        }
-
-        /// <summary>
-        /// 取得客戶印鑑季度表 (排版使用)
-        /// </summary>
-        /// <param name="customerId"></param>
-        /// <returns></returns>
-        public CustomerSealQuarterResponse GetQuarterWithTypographic(int customerId)
-        {
-            return GetStandardQuarter(customerId, true);
+        public CustomerSealQuarterResponse GetQuarter(int customerId, bool isTypographic)
+        {                               
+            CustomerSealQuarterResponse customerSealQuarters = new()
+            {
+                CustomerSealQuarters = dbContext.CustomerSealGroups
+                                        .Include(customerSealGroups => customerSealGroups.Quarter)
+                                        .Where
+                                        (
+                                            customerSealGroup => customerSealGroup.Customer.Id == customerId
+                                            && isTypographic ? customerSealGroup.ReviewStatus <= ReviewStatus.Approval
+                                            : customerSealGroup.ReviewStatus <= ReviewStatus.Disabled
+                                            && customerSealGroup.DeleteStatus == DeleteStatus.No
+                                        )
+                                        .ProjectTo<CustomerSealQuarterViewModel>(configurationProvider)
+                                        .ToList()
+            };
+            if (customerSealQuarters.CustomerSealQuarters.Any())
+            {
+                customerSealQuarters.Success();
+            }
+            else
+            {
+                customerSealQuarters.CustomerSealNoData();
+            }
+            return customerSealQuarters;
         }
 
         /// <summary>
@@ -62,12 +75,11 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <returns></returns>
         public CustomerSealViewModels GetSeals(int customerSealQuarterId, bool isTransparent)
         {            
-            CustomerSealViewModels? customerSealViewModels = mapper.ProjectTo<CustomerSealViewModels>
-                                                            (
-                                                                dbContext.CustomerSealGroups
-                                                                .Include(customerSealGroup => customerSealGroup.TypographicResources)
-                                                                .Include(customerSealGroup => customerSealGroup.Quarter)                                                    
-                                                            ).FirstOrDefault(x => x.CustomerSealQuarterId == customerSealQuarterId);            
+            CustomerSealViewModels? customerSealViewModels = dbContext.CustomerSealGroups
+                                                            .Include(customerSealGroup => customerSealGroup.TypographicResources)
+                                                            .Include(customerSealGroup => customerSealGroup.Quarter)
+                                                            .ProjectTo<CustomerSealViewModels>(configurationProvider)
+                                                            .FirstOrDefault(x => x.CustomerSealQuarterId == customerSealQuarterId);            
             
             if (customerSealViewModels != null)
             {
@@ -250,40 +262,7 @@ namespace SealTypographicWebAPI.Services.Implements
         {
             ResponseViewModel response = ChangeReviewStatus(customerSealQuarterId, ReviewStatus.Draft);
             return response;
-        }
-
-        /// <summary>
-        /// 取得客戶印鑑季度資料
-        /// </summary>
-        /// <param name="customerId">客戶Id</param>
-        /// <param name="isTypographic">是否排版使用</param>
-        /// <returns></returns>
-        private CustomerSealQuarterResponse GetStandardQuarter(int customerId, bool isTypographic)
-        {
-            CustomerSealQuarterResponse customerSealQuarters = new()
-            {
-                CustomerSealQuarters = dbContext.CustomerSealGroups
-                                        .Include(customerSealGroups => customerSealGroups.Quarter)
-                                        .Where
-                                        (
-                                            customerSealGroup => customerSealGroup.Customer.Id == customerId
-                                            && isTypographic ? customerSealGroup.ReviewStatus <= ReviewStatus.Approval
-                                            : customerSealGroup.ReviewStatus <= ReviewStatus.Disabled
-                                            && customerSealGroup.DeleteStatus == DeleteStatus.No
-                                        )
-                                        .ProjectTo<CustomerSealQuarterViewModel>(configurationProvider)
-                                        .ToList()
-            };
-            if(customerSealQuarters.CustomerSealQuarters.Any())
-            {
-                customerSealQuarters.Success();
-            }
-            else
-            {
-                customerSealQuarters.CustomerSealNoData();
-            }
-            return customerSealQuarters;
-        }
+        }        
 
         /// <summary>
         /// 客戶印鑑新增修改時基本的資料輸入
@@ -325,7 +304,7 @@ namespace SealTypographicWebAPI.Services.Implements
                 {
                     SealType = SealType.Customer,
                     //輸入model之後要修正為新的db
-                    SubSealType = SealMappingConfigUtil.GetSubSealTypeWithCustomer((CustomerSealType)customerSeal.SealMappingConfigId),
+                    SubSealType = SealMappingConfigUtil.GetSubSealTypeWithCustomer(customerSeal.SealMappingConfigId),
                     Sequence = customerSeal.Sequence
                 };
                 //ImageBase64轉圖檔並存到指定資料夾

@@ -142,6 +142,29 @@ namespace SealTypographicWebAPI.Controllers
         }
 
         /// <summary>
+        /// 取得排版後的PDFBase64
+        /// </summary>
+        /// <param name="typographicPDFId">PDF排版ID</param>
+        /// <returns></returns>
+        [HttpGet("[Action]/{typographicPDFId}")]
+        public TypographicPDFEditViewResponse EditPDFView(int typographicPDFId)
+        {
+            TypographicPDFEditViewResponse typographicPDFEditViewResponse = new();
+            try
+            {
+                Log.Information("TypographicPDF geEditPDFView input {@Input}", typographicPDFId);
+                typographicPDFEditViewResponse = typographicPDFService.GetEditPDFView(typographicPDFId);                
+            }
+            catch (Exception ex)
+            {
+                Log.Error("TypographicPDF paginate error {@Error}", ex.Message);
+                typographicPDFEditViewResponse.DbError();
+            }
+            return typographicPDFEditViewResponse;
+        }
+
+
+        /// <summary>
         /// 新增排版
         /// </summary>
         /// <param name="typographicPDFForm">排版資訊(新增使用)</param>

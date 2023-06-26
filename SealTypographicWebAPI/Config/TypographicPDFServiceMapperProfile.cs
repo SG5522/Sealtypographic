@@ -136,8 +136,10 @@ namespace SealTypographicWebAPI.Config
                  .ForMember(dst => dst.AccountantCertificatePath, opt => opt.MapFrom(src => src.UploadFile != null ? src.UploadFile.FullPath : string.Empty))
                  .ForMember(dst => dst.EditImages, y => y.MapFrom(o => o.TypographicResourceLocations));
             // PDF排版圖像與位置的Map
-            CreateMap<TypographicResourceLocation, EditImage>()
-                .ForMember(dst => dst.ImageBase64, y => y.MapFrom(o => new string(ImageInfo.FromPath(o.TypographicResource.ImageFullPath).ToBase64())));
+            CreateMap<TypographicResourceLocation, EditImage>()                
+                //透通處理
+                .ForMember(dst => dst.ImageStream, opt => opt.MapFrom(src => OpenCvUtil.TransparentToStream(src.TypographicResource.ImageFullPath, 160)));
+
 
         }
     }

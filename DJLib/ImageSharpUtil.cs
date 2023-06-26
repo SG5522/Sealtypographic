@@ -14,62 +14,31 @@ namespace DJLib
     public class ImageSharpUtil
     {
         /// <summary>
-        /// 圖片轉base64
-        /// </summary>
-        /// <param name="image"></param>
-        /// <param name="format"></param>        
-        /// <returns></returns>
-        //public static string ImageToBase64(Image image,IImageFormat format)
-        public static string ToBase64(ImageInfo imageInfo)
-        {                    
-            return imageInfo.ToBase64();
-        }
-
-        /// <summary>
-        /// 轉成Stream
-        /// </summary>
-        /// <param name="ImageInfo">影像</param>
-        public static Stream ToStream(ImageInfo imageInfo)
-        {
-            try
-            {
-                Stream stream = new MemoryStream();
-                imageInfo.SourceImage.Save(stream, imageInfo.ImageFormat);
-                return stream;
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
-        }
-
-        /// <summary>
         /// 檔案路徑圖片轉base64
         /// </summary>
         /// <param name="fullPath"></param>
         /// <returns></returns>
         public static string PathImageFileToBase64(string fullPath)
         {                       
-            return ToBase64(ImageInfo.FromPath(fullPath));
+            return ImageInfo.FromPath(fullPath).ToBase64();
         }
-
 
         /// <summary>
         /// 存檔 支援格式(jpeg, bmp, gif, pbm, png, tga, tiff, Tga,WebP)
         /// </summary>
         /// <param name="image">影像</param>
-        /// <param name="format">格式</param>
-        /// <param name="saveFullPath">存檔資訊</param>
-        public static void SaveFile(Image image, IImageFormat format, SaveFullPath saveFullPath)
+        
+        /// <param name="savePath">存檔路徑</param>
+        public static void SaveFile(ImageInfo imageInfo, string savePath)
         {            
             try
             {
-                if (!Directory.Exists(saveFullPath.Folder))
+                string rootPath = Path.GetDirectoryName(savePath);
+                if (!Directory.Exists(rootPath))
                 {
-                    Directory.CreateDirectory(saveFullPath.Folder);
+                    Directory.CreateDirectory(rootPath);
                 }
-                saveFullPath.FileName += $".{format.Name.ToLower()}";
-                image.Save(Path.Combine(saveFullPath.Folder, saveFullPath.FileName));
+                imageInfo.SourceImage.Save(savePath);
             }
             catch(Exception ex)
             {
@@ -79,20 +48,20 @@ namespace DJLib
 
         /// <summary>
         /// 存檔 支援格式(jpeg, bmp, gif, pbm, png, tga, tiff, Tga,WebP)
-        /// </summary>
-        /// <param name="image">影像</param>
-        /// <param name="format">格式</param>
-        /// <param name="saveFullPath">存檔資訊</param>
-        public static async Task SaveFileAsync(Image image, IImageFormat format, SaveFullPath saveFullPath)
+        /// </summary>        
+        /// <param name="imageInfo">圖片資訊</param>
+        /// <param name="savePath">存檔位置</param>
+        public static async Task SaveFileAsync(ImageInfo imageInfo, string savePath)
         {
             try
             {
-                if (!Directory.Exists(saveFullPath.Folder))
+                string rootPath = Path.GetDirectoryName(savePath);                
+                if (!Directory.Exists(rootPath))
                 {
-                    Directory.CreateDirectory(saveFullPath.Folder);
-                }
-                saveFullPath.FileName += $".{format.Name.ToLower()}";
-                await image.SaveAsync(Path.Combine(saveFullPath.Folder, saveFullPath.FileName));
+                    Directory.CreateDirectory(rootPath);
+                }                
+
+                await imageInfo.SourceImage.SaveAsync(savePath);
             }
             catch (Exception ex)
             {

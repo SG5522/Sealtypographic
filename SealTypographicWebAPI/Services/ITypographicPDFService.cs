@@ -51,6 +51,13 @@ namespace SealTypographicWebAPI.Services
         TypographicPDFMakeResponse MakeTyporaphicPDF(TypographicPDFMakeSetting typographicPDFMakeSetting);
 
         /// <summary>
+        /// 取得排版後的PDFBase64
+        /// </summary>
+        /// <param name="typographicPDFId">PDF排版ID</param>
+        /// <returns></returns>
+        TypographicPDFEditViewResponse GetEditPDFView(int typographicPDFId);
+
+        /// <summary>
         /// 建立PDF排版資訊
         /// </summary>
         /// <param name="typographicPDFForm">排版資訊(新增使用)</param>

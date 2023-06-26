@@ -2,6 +2,7 @@
 using DJSharpZipLib;
 using DJEncryption;
 using System.Text;
+using DJLib.Models;
 
 namespace LibTest
 {
@@ -35,8 +36,8 @@ namespace LibTest
             if (dialog.ShowDialog() == DialogResult.OK)
             {
                 RSAEncryption rSAEncryption = new();
-                string filepath = dialog.FileName;
-                string ImageBase64 = ImageSharpUtil.PathImageFileToBase64(filepath);
+                string filePath = dialog.FileName;                
+                string ImageBase64 = ImageInfo.FromPath(filePath).ToBase64();
                 string base64String = ImageBase64[(ImageBase64.IndexOf("base64,") + 7)..];
                 byte[] bytes = Convert.FromBase64String(base64String);
                 AESEncryption encryptionWithAES = AESEncryption.Encrypte(bytes, 12);

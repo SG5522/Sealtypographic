@@ -11,16 +11,10 @@ namespace SealTypographicWebAPI.Services
         /// <summary>
         /// 取得客戶印鑑季度表
         /// </summary>
-        /// <param name="customerID">客戶ID</param>        
+        /// <param name="customerId">客戶ID</param>        
+        /// <param name="isTypographic">是否排版使用</param>        
         /// <returns></returns>
-        CustomerSealQuarterResponse GetQuarter(int customerID);
-
-        /// <summary>
-        /// 取得客戶印鑑季度表 (排版使用)
-        /// </summary>
-        /// <param name="customerId"></param>
-        /// <returns></returns>
-        CustomerSealQuarterResponse GetQuarterWithTypographic(int customerId);
+        CustomerSealQuarterResponse GetQuarter(int customerId, bool isTypographic);
 
         /// <summary>
         /// 取得客戶印鑑組
