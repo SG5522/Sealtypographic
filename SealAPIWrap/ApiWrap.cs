@@ -56,11 +56,10 @@ namespace SealAPIWrap
         /// 3. 圖像旋轉(需傳入旋轉角度，順時針0 - 360)
         /// 若相對應參數都有傳入，執行順序為：圖像裁剪>圖像DPI轉換>圖像旋轉
         /// </summary>
-        /// <param name="modID">模型 ID【預留參數，先預設傳入 0】</param>
         /// <param name="input">輸入JSON</param>
         /// <returns></returns>
         [DllImport(@"Resources\lib\libsealinterface.dll", EntryPoint = "image_process", CallingConvention = CallingConvention.StdCall)]
-        public static extern IntPtr ImageProcess(long modID, string input);
+        public static extern IntPtr ImageProcess(string input);
 
         /// <summary>
         /// 驗印結果輔助顯示函數
@@ -70,11 +69,10 @@ namespace SealAPIWrap
         /// 2. 折角圖查看
         /// 3. 殘像對比查看
         /// </summary>
-        /// <param name="modID">模型 ID【預留參數，先預設傳入 0】</param>
         /// <param name="input">輸入JSON</param>
         /// <returns></returns>
         [DllImport(@"Resources\lib\libsealinterface.dll", EntryPoint = "seal_show", CallingConvention = CallingConvention.StdCall)]
-        public static extern IntPtr SealShow(long modID, string input);
+        public static extern IntPtr SealShow(string input);
 
         /// <summary>
         /// 釋放資料函數

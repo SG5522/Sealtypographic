@@ -20,7 +20,15 @@ namespace SealAPIWrap
                 
                 //利用Method Invoke取得ApiWrap要執行的Method資訊
                 MethodInfo methodInfo = typeof(ApiWrap).GetMethod(opMode.ToString());
-                IntPtr? returnIntPtr = methodInfo.Invoke(typeof(ApiWrap), new object[] { ApiWrap.DEFAULT_MODID, inputString }) as IntPtr?;
+                IntPtr? returnIntPtr;
+                if (opMode == OPMode.ImageProcess || opMode == OPMode.SealShow)
+                {
+                    returnIntPtr = methodInfo.Invoke(typeof(ApiWrap), new object[] { inputString }) as IntPtr?;
+                }
+                else
+                {
+                    returnIntPtr = methodInfo.Invoke(typeof(ApiWrap), new object[] { ApiWrap.DEFAULT_MODID, inputString }) as IntPtr?;
+                }
 
                 result = JsonSerializer.Deserialize<K>(Marshal.PtrToStringAnsi(returnIntPtr.Value));
                 if (result.RetCode != ApiWrap.RETURN_SUCCESS)

@@ -1,11 +1,8 @@
 ﻿using DJScannerLib.Models;
 using Microsoft.Extensions.Logging;
-using Microsoft.VisualBasic;
 using NTwain;
 using NTwain.Data;
 using SixLabors.ImageSharp;
-using SixLabors.ImageSharp.Formats;
-using SixLabors.ImageSharp.Formats.Jpeg;
 using System.Reflection;
 
 namespace DJScannerLib.Services
