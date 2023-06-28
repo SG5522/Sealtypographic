@@ -1,5 +1,4 @@
 ﻿using Microsoft.Extensions.Logging.Abstractions;
-using Newtonsoft.Json;
 
 namespace SealTypographicWebAPI.Models
 {

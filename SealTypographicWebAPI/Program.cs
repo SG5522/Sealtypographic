@@ -3,16 +3,18 @@ using SealTypographicWebAPI.Services;
 using DBEntities;
 using System.Reflection;
 using Microsoft.EntityFrameworkCore;
+
 using Serilog;
 using SealTypographicWebAPI.Services.Implements;
 using SealTypographicWebAPI.Config;
 using Microsoft.AspNetCore.Mvc.Razor;
-using Microsoft.AspNetCore.Authentication.OpenIdConnect;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Hosting.WindowsServices;
-using SealTypographicWebAPI.Models.CustomerSealTemplate;
-using Microsoft.Extensions.Options;
+using Quartz;
+using SealTypographicWebAPI.Models;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using static OpenIddict.Abstractions.OpenIddictConstants;
 
 string allowSpecificOrigins = "allowSpecificOrigins";
 string allowAllOrigins = "allowAllOrigins";
@@ -76,14 +78,39 @@ builder.Services.AddDbContextPool<SealTypographicDbContext>(optionsBuilder =>
         default:
             throw new Exception($"Unsupported provider: {provider}");
     }
+
+    // Register the entity sets needed by OpenIddict.
+    // Note: use the generic overload if you need
+    // to replace the default OpenIddict entities.
+    optionsBuilder.UseOpenIddict();
+
 #if DEBUG
     optionsBuilder.UseLoggerFactory(LoggerFactory.Create(builder =>
     {
-        builder.AddConsole().AddDebug();
+        builder.AddConsole().AddDebug();        
     }));
 #endif
 }, 128);
 #endregion
+
+// Register the Identity services.
+builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
+    .AddEntityFrameworkStores<SealTypographicDbContext>()
+    .AddDefaultTokenProviders()
+    .AddDefaultUI();
+
+// OpenIddict offers native integration with Quartz.NET to perform scheduled tasks
+// (like pruning orphaned authorizations/tokens from the database) at regular intervals.
+builder.Services.AddQuartz(options =>
+{
+    options.UseMicrosoftDependencyInjectionJobFactory();
+    options.UseSimpleTypeLoader();
+    options.UseInMemoryStore();
+});
+
+// Register the Quartz.NET service and configure it to block shutdown until jobs are complete.
+builder.Services.AddQuartzHostedService(options => options.WaitForJobsToComplete = true);
+
 
 
 
@@ -118,7 +145,8 @@ builder.Services.AddScoped<ITypographicPDFService, TypographicPDFService>();
 
 #region -- Authentication --
 //builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
-//    .AddEntityFrameworkStores<ApplicationDbContext>();
+//    .AddEntityFrameworkStores<SealTypographicDbContext>();
+
 
 //builder.Services.AddAuthentication(options =>
 //{
@@ -128,8 +156,9 @@ builder.Services.AddScoped<ITypographicPDFService, TypographicPDFService>();
 //{
 //    options.Authority = identityUrl.ToString();
 
-//})
-//;
+//});
+
+
 #endregion
 
 builder.Services.AddLocalization(option => option.ResourcesPath = "Resource");

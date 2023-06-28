@@ -14,8 +14,8 @@ namespace SealTypographicWebAPI.Models.Accountant
         public string? KeyWord { get; set; }   
         
         /// <summary>
-        /// 會計師群組名稱
+        /// 會計師群組編號
         /// </summary>
-        public string? AccountantGroupName { get; set; }
+        public string? AccountantGroupNumber { get; set; }
     }
 }

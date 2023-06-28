@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
-
+using System.Text.Json;
 
 namespace SealTypographicWebAPI.Controllers
 {
@@ -26,7 +25,7 @@ namespace SealTypographicWebAPI.Controllers
                 userid,
                 password,
             };
-            return JsonConvert.SerializeObject(json);
+            return JsonSerializer.Serialize(json);
         }
     }
 }

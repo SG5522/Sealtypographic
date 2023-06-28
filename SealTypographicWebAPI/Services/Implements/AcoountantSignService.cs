@@ -1,4 +1,4 @@
-using AutoMapper;
+﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using SealTypographicWebAPI.Models;
 using SealTypographicWebAPI.Models.Accountant;
@@ -6,9 +6,7 @@ using SealTypographicWebAPI.Utils;
 using DBEntities;
 using DBEntities.Consts;
 using DJLib.Models;
-using SealTypographicWebAPI.Models.Customer;
 using AutoMapper.QueryableExtensions;
-using IConfigurationProvider = AutoMapper.IConfigurationProvider;
 
 namespace SealTypographicWebAPI.Services.Implements
 {
@@ -19,8 +17,8 @@ namespace SealTypographicWebAPI.Services.Implements
     {
         private readonly SealTypographicDbContext dbContext;
         private readonly ImageService imageService;
-        private readonly IMapper mapper;
-        private readonly IConfigurationProvider configurationProvider;
+        private readonly IMapper mapper;   
+        private readonly AutoMapper.IConfigurationProvider configurationProvider;
 
         /// <summary>
         /// 取得DB與ResponseService
@@ -31,7 +29,8 @@ namespace SealTypographicWebAPI.Services.Implements
         public AcoountantSignService(SealTypographicDbContext dbContext, IMapper mapper, ImageService imageService)
         {
             this.dbContext = dbContext;            
-            this.configurationProvider = mapper.ConfigurationProvider;
+            this.mapper = mapper;
+            configurationProvider = mapper.ConfigurationProvider;
             this.imageService = imageService;            
         }
 
@@ -74,10 +73,6 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <returns></returns>
         public AccountantSignViewModels GetSignViewModels(int accountantSignGroupId, bool isTransparent)
         {
-            AccountantSignViewModels? accountantSignViewModels = dbContext.AccountantSignGroups
-                                                                    .Include(x => x.TypographicResources)
-                                                                    .ProjectTo<AccountantSignViewModels>(configurationProvider)
-                                                                    .FirstOrDefault(x => x.AccountantSignGroupId == accountantSignGroupId);
 
             AccountantSignViewModels? accountantSignViewModels = dbContext.AccountantSignGroups
                                                                 .Include(x => x.TypographicResources)

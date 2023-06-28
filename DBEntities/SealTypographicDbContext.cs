@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using System.Xml;
 
 namespace DBEntities
@@ -6,7 +7,7 @@ namespace DBEntities
     /// <summary>
     /// EF Core SealTypographic DbContext
     /// </summary>
-    public class SealTypographicDbContext : DbContext
+    public class SealTypographicDbContext : IdentityDbContext
     {
         /// <summary>
         /// 會計師事務所(公司)
