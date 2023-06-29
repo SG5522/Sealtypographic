@@ -16,6 +16,10 @@ namespace DJSpire.Services
         private string pdfpath;
         private int pageIndex;
 
+        //public PDFService()
+        //{            
+        //    Spire.License.LicenseProvider.SetLicenseFileFullPath($"{AppDomain.CurrentDomain.BaseDirectory}license.elic.xml");
+        //}
         /// <summary>
         /// 原PDF檔
         /// </summary>
@@ -111,9 +115,7 @@ namespace DJSpire.Services
             else
             {                
                 return GetMemoryStreamToBase64(stream);
-            }
-            
-                          
+            }                                      
         }
 
         public string GetPDFPageBase64()
@@ -187,7 +189,6 @@ namespace DJSpire.Services
             }
         }
 
-
         private void InsertBlankPage(int pageNumber)
         {            
             if (pageNumber % 2 == 0)
@@ -200,7 +201,6 @@ namespace DJSpire.Services
                 Document.Pages.Insert(pageNumber);
             }
         }
-
 
         private string GetMemoryStreamToBase64(MemoryStream memoryStream)
         {

@@ -1,20 +1,14 @@
-﻿using Microsoft.OpenApi.Models;
-using SealTypographicWebAPI.Services;
-using DBEntities;
-using System.Reflection;
-using Microsoft.EntityFrameworkCore;
-
+﻿using DBEntities;
 using Serilog;
+using System.Reflection;
+using SealTypographicWebAPI.Services;
 using SealTypographicWebAPI.Services.Implements;
 using SealTypographicWebAPI.Config;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.AspNetCore.Identity;
-using Quartz;
-using SealTypographicWebAPI.Models;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using static OpenIddict.Abstractions.OpenIddictConstants;
+using Microsoft.OpenApi.Models;
+
 
 string allowSpecificOrigins = "allowSpecificOrigins";
 string allowAllOrigins = "allowAllOrigins";
@@ -79,11 +73,6 @@ builder.Services.AddDbContextPool<SealTypographicDbContext>(optionsBuilder =>
             throw new Exception($"Unsupported provider: {provider}");
     }
 
-    // Register the entity sets needed by OpenIddict.
-    // Note: use the generic overload if you need
-    // to replace the default OpenIddict entities.
-    optionsBuilder.UseOpenIddict();
-
 #if DEBUG
     optionsBuilder.UseLoggerFactory(LoggerFactory.Create(builder =>
     {
@@ -92,27 +81,6 @@ builder.Services.AddDbContextPool<SealTypographicDbContext>(optionsBuilder =>
 #endif
 }, 128);
 #endregion
-
-// Register the Identity services.
-builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
-    .AddEntityFrameworkStores<SealTypographicDbContext>()
-    .AddDefaultTokenProviders()
-    .AddDefaultUI();
-
-// OpenIddict offers native integration with Quartz.NET to perform scheduled tasks
-// (like pruning orphaned authorizations/tokens from the database) at regular intervals.
-builder.Services.AddQuartz(options =>
-{
-    options.UseMicrosoftDependencyInjectionJobFactory();
-    options.UseSimpleTypeLoader();
-    options.UseInMemoryStore();
-});
-
-// Register the Quartz.NET service and configure it to block shutdown until jobs are complete.
-builder.Services.AddQuartzHostedService(options => options.WaitForJobsToComplete = true);
-
-
-
 
 #region -- Service --
 
@@ -157,7 +125,6 @@ builder.Services.AddScoped<ITypographicPDFService, TypographicPDFService>();
 //    options.Authority = identityUrl.ToString();
 
 //});
-
 
 #endregion
 

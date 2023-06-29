@@ -260,7 +260,7 @@ namespace SealTypographicWebAPI.Services.Implements
                                 .Where(x => x.TypographicPDFs.Any(x => x.Id == typographicPDFId))
                                 .Select(x => x.FullPath)
                                 .FirstOrDefault();
-
+                
                 PDFService pDFService = new() { PDFPath = pdfPath };
                 typographicPDFEditViewResponse.PDFBase64 = pDFService.GetEditPDFBase64(editPDF);
                 typographicPDFEditViewResponse.Success();
