@@ -10,7 +10,7 @@
 
   <ItemGroup>
     <EmbeddedResource Include="license.elic.xml">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
   </ItemGroup>
 

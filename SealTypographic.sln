@@ -38,6 +38,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DJSpire", "DJSpire\DJSpire.
 EndProject
 Project("{840C416C-B8F3-42BC-B0DD-F6BB14C9F8CB}") = "DJLocalAppInstaller", "DJLocalAppInstaller\DJLocalAppInstaller.aiproj", "{9CB118D0-6286-465D-B166-C04941C30197}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DJImageAuthorizationServer", "DJImageAuthorizationServer\DJImageAuthorizationServer.csproj", "{FE702ED5-9D6D-43C9-BE44-1774AE92283D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		All|Any CPU = All|Any CPU
@@ -303,6 +305,24 @@ Global
 		{9CB118D0-6286-465D-B166-C04941C30197}.Release|x64.Build.0 = DefaultBuild
 		{9CB118D0-6286-465D-B166-C04941C30197}.Release|x86.ActiveCfg = DefaultBuild
 		{9CB118D0-6286-465D-B166-C04941C30197}.Release|x86.Build.0 = DefaultBuild
+		{FE702ED5-9D6D-43C9-BE44-1774AE92283D}.All|Any CPU.ActiveCfg = Debug|Any CPU
+		{FE702ED5-9D6D-43C9-BE44-1774AE92283D}.All|Any CPU.Build.0 = Debug|Any CPU
+		{FE702ED5-9D6D-43C9-BE44-1774AE92283D}.All|x64.ActiveCfg = Debug|Any CPU
+		{FE702ED5-9D6D-43C9-BE44-1774AE92283D}.All|x64.Build.0 = Debug|Any CPU
+		{FE702ED5-9D6D-43C9-BE44-1774AE92283D}.All|x86.ActiveCfg = Debug|Any CPU
+		{FE702ED5-9D6D-43C9-BE44-1774AE92283D}.All|x86.Build.0 = Debug|Any CPU
+		{FE702ED5-9D6D-43C9-BE44-1774AE92283D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FE702ED5-9D6D-43C9-BE44-1774AE92283D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FE702ED5-9D6D-43C9-BE44-1774AE92283D}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{FE702ED5-9D6D-43C9-BE44-1774AE92283D}.Debug|x64.Build.0 = Debug|Any CPU
+		{FE702ED5-9D6D-43C9-BE44-1774AE92283D}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{FE702ED5-9D6D-43C9-BE44-1774AE92283D}.Debug|x86.Build.0 = Debug|Any CPU
+		{FE702ED5-9D6D-43C9-BE44-1774AE92283D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FE702ED5-9D6D-43C9-BE44-1774AE92283D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FE702ED5-9D6D-43C9-BE44-1774AE92283D}.Release|x64.ActiveCfg = Release|Any CPU
+		{FE702ED5-9D6D-43C9-BE44-1774AE92283D}.Release|x64.Build.0 = Release|Any CPU
+		{FE702ED5-9D6D-43C9-BE44-1774AE92283D}.Release|x86.ActiveCfg = Release|Any CPU
+		{FE702ED5-9D6D-43C9-BE44-1774AE92283D}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

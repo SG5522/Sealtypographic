@@ -6,7 +6,6 @@ using SealTypographicWebAPI.Services.Implements;
 using SealTypographicWebAPI.Config;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc.Razor;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.OpenApi.Models;
 
 

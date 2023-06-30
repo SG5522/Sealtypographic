@@ -27,8 +27,7 @@ namespace SealTypographicWebAPI.Services.Implements
         /// 取得DB與Automapper
         /// </summary>
         /// <param name="dbContext"></param>
-        /// <param name="mapper"></param>
-        /// <param name="imageService"></param>
+        /// <param name="mapper"></param>        
         public TypographicPDFService(SealTypographicDbContext dbContext, IMapper mapper)
         {
             this.dbContext = dbContext;
@@ -393,8 +392,7 @@ namespace SealTypographicWebAPI.Services.Implements
                                         );
                 typographicPDF.ReviewStatus = ReviewStatus.Approval;
                 BaseInputTypographicPDF(typographicPDF, false, userId);
-                List<TypographicPage> newPages = new ();
-                newPages = mapper.Map<List<TypographicPage>>(typographicPDFSaveForm.Pages);
+                List<TypographicPage> newPages = new ();                
 
                 foreach (TypographicPageForm typographicPageForm in typographicPDFSaveForm.Pages)
                 {
