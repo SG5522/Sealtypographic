@@ -26,5 +26,10 @@ namespace SealTypographicWebAPI.Models.TypographicPDF
         /// 空白頁數
         /// </summary>
         public int BlankPageCount { get; set; }
+
+        /// <summary>
+        /// 預設輸出PDF檔名
+        /// </summary>
+        public string DefaultPdfFileName { get; set; }
     }
 }

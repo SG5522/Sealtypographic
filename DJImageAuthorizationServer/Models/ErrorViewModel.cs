@@ -1,9 +1,14 @@
+using System.ComponentModel.DataAnnotations;
+using System.Xml.Linq;
+
 namespace DJImageAuthorizationServer.Models
 {
     public class ErrorViewModel
     {
-        public string? RequestId { get; set; }
+        [Display(Name = "Error")]
+        public string Error { get; set; }
 
-        public bool ShowRequestId => !string.IsNullOrEmpty(RequestId);
+        [Display(Name = "Description")]
+        public string ErrorDescription { get; set; }
     }
 }

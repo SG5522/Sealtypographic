@@ -24,6 +24,8 @@ namespace SealTypographicWebAPI.Models.TypographicPDF
 
         /// <summary>
         /// 建檔狀態(審核狀態)
+        /// 0.通過
+        /// 10.編輯中
         /// </summary>
         public ReviewStatus? ReviewStatus { get; set; }
     }

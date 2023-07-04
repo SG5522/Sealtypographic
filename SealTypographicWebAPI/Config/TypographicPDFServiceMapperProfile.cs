@@ -130,7 +130,8 @@ namespace SealTypographicWebAPI.Config
                  .ForMember(dst => dst.OriginalFileName, y => y.MapFrom(o => o.OriginFileName))
                  .ForMember(dst => dst.Quarter, y => y.MapFrom(o => new string($"{o.Quarter.TaiwanYear}{o.Quarter.Period}")))
                  .ForMember(dst => dst.EditPageCount, y => y.MapFrom(o => (o.TypographicPages.Count())))
-                 .ForMember(dst => dst.BlankPageCount, y => y.MapFrom(o => (o.TypographicPages.Where(x => x.BlankCheck == true).Count())));
+                 .ForMember(dst => dst.BlankPageCount, y => y.MapFrom(o => (o.TypographicPages.Where(x => x.BlankCheck == true).Count())))
+                 .ForMember(dst => dst.DefaultPdfFileName, opt => opt.MapFrom(src => new string(PdfFileNameUtil.GetName(src.Customer.Code, src.Quarter))));
 
             //PDF該頁的編輯內容的Map
             CreateMap<TypographicPage, EditPage>()

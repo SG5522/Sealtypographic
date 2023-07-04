@@ -212,13 +212,13 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <returns></returns>
         public TypographicPDFSettingViewModel GetTypographicPDFSummary(int typographicPDFId)
         {
-            TypographicPDFSettingViewModel? typographicPDFSettingViewModel = mapper.ProjectTo<TypographicPDFSettingViewModel>
-                                                                            (
-                                                                                dbContext.TypographicPDFs.Include(x => x.UploadFile)
-                                                                                                        .Include(x => x.Quarter)
-                                                                                                        .Include(x => x.TypographicPages)
-                                                                                                        .Where(x => x.Id == typographicPDFId)
-                                                                            ).FirstOrDefault();
+            TypographicPDFSettingViewModel? typographicPDFSettingViewModel = dbContext.TypographicPDFs
+                                                                            .Include(x => x.UploadFile)
+                                                                            .Include(x => x.Quarter)
+                                                                            .Include(x => x.TypographicPages)
+                                                                            .Where(x => x.Id == typographicPDFId)
+                                                                            .ProjectTo<TypographicPDFSettingViewModel>(configurationProvider)
+                                                                            .FirstOrDefault();
             if(typographicPDFSettingViewModel != null)
             {
                 typographicPDFSettingViewModel.Success();

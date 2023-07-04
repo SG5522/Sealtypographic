@@ -38,7 +38,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DJSpire", "DJSpire\DJSpire.
 EndProject
 Project("{840C416C-B8F3-42BC-B0DD-F6BB14C9F8CB}") = "DJLocalAppInstaller", "DJLocalAppInstaller\DJLocalAppInstaller.aiproj", "{9CB118D0-6286-465D-B166-C04941C30197}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DJImageAuthorizationServer", "DJImageAuthorizationServer\DJImageAuthorizationServer.csproj", "{FE702ED5-9D6D-43C9-BE44-1774AE92283D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DJImageAuthorizationServer", "DJImageAuthorizationServer\DJImageAuthorizationServer.csproj", "{FE702ED5-9D6D-43C9-BE44-1774AE92283D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
