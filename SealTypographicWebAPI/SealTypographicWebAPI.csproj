@@ -7,7 +7,7 @@
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <DocumentationFile></DocumentationFile>
     <IncrementVersionOnBuild>0.0.2.1+</IncrementVersionOnBuild>
-    <Version>0.0.2.1334</Version>
+    <Version>0.0.2.1345</Version>
     <PackageIcon>android-chrome-128x128.png</PackageIcon>    
   </PropertyGroup>
 
@@ -27,6 +27,7 @@
 
   <ItemGroup>
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
+    <PackageReference Include="DJImageLib" Version="1.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.19" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="6.0.19" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="7.0.8">
@@ -43,7 +44,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\DBEntities\DBEntities.csproj" />
-    <ProjectReference Include="..\DJLib\DJLib.csproj" />
     <ProjectReference Include="..\DJSpire\DJSpire.csproj" />
     <ProjectReference Include="..\MySqlMigrations\MySql.csproj" />
     <ProjectReference Include="..\SqliteMigrations\Sqlite.csproj" />

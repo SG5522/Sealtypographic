@@ -39,13 +39,13 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
 builder.Services.Configure<Fido2Configuration>(builder.Configuration.GetSection("fido2"));
 builder.Services.AddScoped<Fido2Store>();
 
-//builder.Services.AddSession(options =>
-//{
-//    options.IdleTimeout = TimeSpan.FromMinutes(2);
-//    options.Cookie.HttpOnly = true;
-//    options.Cookie.SameSite = SameSiteMode.None;
-//    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
-//});
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(2);
+    options.Cookie.HttpOnly = true;
+    options.Cookie.SameSite = SameSiteMode.None;
+    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+});
 
 builder.Services.Configure<IdentityOptions>(options =>
 {

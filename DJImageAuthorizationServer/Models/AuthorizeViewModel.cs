@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace OpeniddictServer.ViewModels.Authorization;
+namespace DJImageAuthorizationServer.Models.Authorization;
 
 public class AuthorizeViewModel
 {

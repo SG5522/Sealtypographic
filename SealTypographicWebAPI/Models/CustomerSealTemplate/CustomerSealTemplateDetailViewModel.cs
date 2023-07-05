@@ -9,11 +9,6 @@ namespace SealTypographicWebAPI.Models.CustomerSealTemplate
     public class CustomerSealTemplateLocationViewModel : BaseLocationModel
     {
         /// <summary>
-        /// 樣板座標Id
-        /// </summary>
-        public int Id { get; set; }
-
-        /// <summary>
         /// 客戶印鑑類別
         /// </summary>
         public CustomerSealType CustomerSealType { get; set; }

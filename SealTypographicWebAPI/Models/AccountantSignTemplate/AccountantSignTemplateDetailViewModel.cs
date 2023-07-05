@@ -9,11 +9,6 @@ namespace SealTypographicWebAPI.Models.AccountantSignTemplate
     public class AccountantSignTemplateLocationViewModel : BaseLocationModel
     {
         /// <summary>
-        /// Id
-        /// </summary>
-        public int Id { get; set; }
-
-        /// <summary>
         /// 會計師簽印類別
         /// </summary>
         public AccountantSignType AccountantSignType { get; set; }

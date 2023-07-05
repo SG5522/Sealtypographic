@@ -11,11 +11,6 @@ namespace SealTypographicWebAPI.Models.CustomerSealTemplate
     public class CustomerSealTemplateLocationUpdateForm : BaseLocationModel
     {
         /// <summary>
-        /// 樣板座標Id
-        /// </summary>
-        /// <example>1</example>
-        public int Id { get; set; }
-        /// <summary>
         /// 客戶印鑑類別
         /// </summary>
         /// <example>1</example>
