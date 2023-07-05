@@ -36,6 +36,8 @@ Project("{840C416C-B8F3-42BC-B0DD-F6BB14C9F8CB}") = "DJLocalAppInstaller", "DJLo
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DJImageAuthorizationServer", "DJImageAuthorizationServer\DJImageAuthorizationServer.csproj", "{FE702ED5-9D6D-43C9-BE44-1774AE92283D}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DJScannerLib", "..\ScannerLib\DJScannerLib\DJScannerLib.csproj", "{2BCBB263-929E-40AA-9092-2B9319ED13A6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		All|Any CPU = All|Any CPU
@@ -283,6 +285,24 @@ Global
 		{FE702ED5-9D6D-43C9-BE44-1774AE92283D}.Release|x64.Build.0 = Release|Any CPU
 		{FE702ED5-9D6D-43C9-BE44-1774AE92283D}.Release|x86.ActiveCfg = Release|Any CPU
 		{FE702ED5-9D6D-43C9-BE44-1774AE92283D}.Release|x86.Build.0 = Release|Any CPU
+		{2BCBB263-929E-40AA-9092-2B9319ED13A6}.All|Any CPU.ActiveCfg = Debug|Any CPU
+		{2BCBB263-929E-40AA-9092-2B9319ED13A6}.All|Any CPU.Build.0 = Debug|Any CPU
+		{2BCBB263-929E-40AA-9092-2B9319ED13A6}.All|x64.ActiveCfg = Debug|Any CPU
+		{2BCBB263-929E-40AA-9092-2B9319ED13A6}.All|x64.Build.0 = Debug|Any CPU
+		{2BCBB263-929E-40AA-9092-2B9319ED13A6}.All|x86.ActiveCfg = Debug|Any CPU
+		{2BCBB263-929E-40AA-9092-2B9319ED13A6}.All|x86.Build.0 = Debug|Any CPU
+		{2BCBB263-929E-40AA-9092-2B9319ED13A6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2BCBB263-929E-40AA-9092-2B9319ED13A6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2BCBB263-929E-40AA-9092-2B9319ED13A6}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{2BCBB263-929E-40AA-9092-2B9319ED13A6}.Debug|x64.Build.0 = Debug|Any CPU
+		{2BCBB263-929E-40AA-9092-2B9319ED13A6}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{2BCBB263-929E-40AA-9092-2B9319ED13A6}.Debug|x86.Build.0 = Debug|Any CPU
+		{2BCBB263-929E-40AA-9092-2B9319ED13A6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2BCBB263-929E-40AA-9092-2B9319ED13A6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2BCBB263-929E-40AA-9092-2B9319ED13A6}.Release|x64.ActiveCfg = Release|Any CPU
+		{2BCBB263-929E-40AA-9092-2B9319ED13A6}.Release|x64.Build.0 = Release|Any CPU
+		{2BCBB263-929E-40AA-9092-2B9319ED13A6}.Release|x86.ActiveCfg = Release|Any CPU
+		{2BCBB263-929E-40AA-9092-2B9319ED13A6}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

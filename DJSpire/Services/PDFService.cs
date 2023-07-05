@@ -130,7 +130,7 @@ namespace DJSpire.Services
         /// </summary>
         /// <returns></returns>
         public int GetTotalPage()
-        {
+        {            
             return Document.Pages.Count;
         }
 
@@ -158,13 +158,20 @@ namespace DJSpire.Services
                 {
                     foreach (EditImage editImage in editPDF.EditPages[pageIndex].EditImages)
                     {
+                        //Create PdfUnitConvertor to convert the unit
+                        PdfUnitConvertor unitCvtr = new PdfUnitConvertor();                        
+                        //Convert the size with "pixel"
+                        float pixelWidth = unitCvtr.ConvertUnits(Document.Pages[editPDF.EditPages[pageIndex].PageNumber].Size.Width, PdfGraphicsUnit.Point, PdfGraphicsUnit.Pixel);
+                        float pixelHeight = unitCvtr.ConvertUnits(Document.Pages[editPDF.EditPages[pageIndex].PageNumber].Size.Height, PdfGraphicsUnit.Point, PdfGraphicsUnit.Pixel);
+                        float reSizeWidth = pixelWidth / editImage.Width;
+                        float reSizeHeight = pixelHeight / editImage.Height;
                         Document.Pages[editPDF.EditPages[pageIndex].PageNumber].Canvas.DrawImage
                         (
                             PdfImage.FromStream(editImage.ImageStream),
-                            editImage.Left,
-                            editImage.Top,
-                            editImage.Width,
-                            editImage.Height
+                            editImage.Left * reSizeWidth,
+                            editImage.Top * reSizeHeight,
+                            editImage.Width * reSizeWidth,
+                            editImage.Height * reSizeHeight
                         );
                     }
                     if (editPDF.IsBlank & editPDF.EditPages[pageIndex].BlankCheck)//確認是否加入空白頁
@@ -179,7 +186,7 @@ namespace DJSpire.Services
                         Document.Pages[editPDF.EditPages[pageIndex].PageNumber].Canvas.DrawImage
                         (
                             pdfImage, 0, 0
-                        );
+                        );                        
                     }                    
                 }
                 else

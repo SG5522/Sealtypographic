@@ -140,7 +140,8 @@ namespace SealTypographicWebAPI.Config
             // PDF排版圖像與位置的Map
             CreateMap<TypographicResourceLocation, EditImage>()                
                 //透通處理
-                .ForMember(dst => dst.ImageStream, opt => opt.MapFrom(src => OpenCvUtil.TransparentToStream(src.TypographicResource.ImageFullPath, 160)));
+                //.ForMember(dst => dst.ImageStream, opt => opt.MapFrom(src => OpenCvUtil.TransparentToStream(src.TypographicResource.ImageFullPath, 160)))
+                .ForMember(dst => dst.ImageBase64, opt => opt.MapFrom(src => Convert.ToBase64String(OpenCvUtil.TransparentToBytes(src.TypographicResource.ImageFullPath, 160))));
 
 
         }

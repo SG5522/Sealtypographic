@@ -45,6 +45,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <ProjectReference Include="..\..\ScannerLib\DJScannerLib\DJScannerLib.csproj" />
 	  <ProjectReference Include="..\SealAPIWrap\SealAPIWrap.csproj" />
 	</ItemGroup>
 
