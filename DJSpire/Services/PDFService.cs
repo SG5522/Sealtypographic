@@ -2,6 +2,8 @@
 using DJSpire.Models;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Formats;
+using SixLabors.ImageSharp.Processing;
+using SkiaSharp;
 using Spire.Pdf;
 using Spire.Pdf.Conversion;
 using Spire.Pdf.Graphics;
@@ -86,14 +88,21 @@ namespace DJSpire.Services
                 default:
                     imageTypeString = "jpg";
                     break;
-            }            
+            }
+            
             IndexDocument.SaveToImageStream(0, stream, imageTypeString);            
             return stream;
         }
 
         public string GetPageImageBase64(ImageType imageType = ImageType.Png)
         {
-            Image image = Image.Load(GetPageImageStream(imageType), out IImageFormat format);
+            Image image = Image.Load(GetPageImageStream(imageType), out IImageFormat format);            
+            //int width = (int)(image.Width * scale);
+            //int height = (int)(image.Height * scale);
+            //image.Mutate(delegate (IImageProcessingContext x)
+            //{
+            //    x.Resize(width, height);
+            //});
             return image.ToBase64String(format);            
         }
 
@@ -155,23 +164,20 @@ namespace DJSpire.Services
             {
                 int pageIndex = pageCount - 1;
                 if (!editPDF.EditPages[pageIndex].DeleteCheck)//確認此頁是否為刪除
-                {
+                {                                        
                     foreach (EditImage editImage in editPDF.EditPages[pageIndex].EditImages)
                     {
                         //Create PdfUnitConvertor to convert the unit
                         PdfUnitConvertor unitCvtr = new PdfUnitConvertor();                        
-                        //Convert the size with "pixel"
-                        float pixelWidth = unitCvtr.ConvertUnits(Document.Pages[editPDF.EditPages[pageIndex].PageNumber].Size.Width, PdfGraphicsUnit.Point, PdfGraphicsUnit.Pixel);
-                        float pixelHeight = unitCvtr.ConvertUnits(Document.Pages[editPDF.EditPages[pageIndex].PageNumber].Size.Height, PdfGraphicsUnit.Point, PdfGraphicsUnit.Pixel);
-                        float reSizeWidth = pixelWidth / editImage.Width;
-                        float reSizeHeight = pixelHeight / editImage.Height;
+                        Document.Pages[editPDF.EditPages[pageIndex].PageNumber].Canvas.SetTransparency(1f, 1f, PdfBlendMode.Multiply);                        
                         Document.Pages[editPDF.EditPages[pageIndex].PageNumber].Canvas.DrawImage
                         (
                             PdfImage.FromStream(editImage.ImageStream),
-                            editImage.Left * reSizeWidth,
-                            editImage.Top * reSizeHeight,
-                            editImage.Width * reSizeWidth,
-                            editImage.Height * reSizeHeight
+                            //1 inch = 72pt, and when dpi = 300, 1 inch = 300px. So when dpi = 300, 1px = 0.24pt
+                            editImage.Left * 0.24f,
+                            editImage.Top * 0.24f,
+                            editImage.Width * 0.24f,
+                            editImage.Height * 0.24f
                         );
                     }
                     if (editPDF.IsBlank & editPDF.EditPages[pageIndex].BlankCheck)//確認是否加入空白頁

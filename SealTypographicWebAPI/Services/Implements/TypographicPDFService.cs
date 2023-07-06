@@ -11,6 +11,7 @@ using Serilog;
 using DJLib;
 using AutoMapper.QueryableExtensions;
 using DJSpire.Consts;
+using DJLib.Models;
 
 namespace SealTypographicWebAPI.Services.Implements
 {
@@ -151,7 +152,7 @@ namespace SealTypographicWebAPI.Services.Implements
                 };
                 pDFViewModel.PDFFullPath = uploadPath; //Log使用
                 pDFViewModel.TotalPage = pDFService.GetTotalPage();
-                pDFViewModel.ImageBase64 = pDFService.GetPageImageBase64();                
+                pDFViewModel.ImageBase64 = pDFService.GetPageImageBase64();
                 pDFViewModel.Success();                
             }            
             else
@@ -280,12 +281,12 @@ namespace SealTypographicWebAPI.Services.Implements
         public TypographicPDFMakeResponse MakeTyporaphicPDF(TypographicPDFMakeSetting typographicPDFMakeSetting)
         {
             TypographicPDFMakeResponse typographicPagePDFResponse = new ();            
-
+            //取得排版的頁面印鑑與座標
             List<EditPage> editPages = dbContext.TypographicPages
-                                        .Include(x => x.TypographicResourceLocations)
-                                        .ThenInclude(x => x.TypographicResource)
-                                        .Where(x => x.TypographicPDF.Id == typographicPDFMakeSetting.TypographicPDFId)
-                                        .ProjectTo<EditPage>(configurationProvider).ToList();
+                                            .Include(x => x.TypographicResourceLocations)
+                                            .ThenInclude(x => x.TypographicResource)
+                                            .Where(x => x.TypographicPDF.Id == typographicPDFMakeSetting.TypographicPDFId)
+                                            .ProjectTo<EditPage>(configurationProvider).ToList();
 
             if (editPages != null)
             {
