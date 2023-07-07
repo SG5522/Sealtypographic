@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
-using System.Threading.Tasks;
+﻿using System.Security.Claims;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
@@ -14,18 +10,18 @@ using OpenIddict.Abstractions;
 using OpenIddict.Server.AspNetCore;
 using DJImageAuthorizationServer.Helpers;
 using DJImageAuthorizationServer.Entities;
-using DJImageAuthorizationServer.Models.Authorization;
+using DJImageAuthorizationServer.Models;
 using static OpenIddict.Abstractions.OpenIddictConstants;
 
 namespace DJImageAuthorizationServer.Controllers
 {
     public class AuthorizationController : Controller
     {
-        private readonly IOpenIddictApplicationManager _applicationManager;
-        private readonly IOpenIddictAuthorizationManager _authorizationManager;
-        private readonly IOpenIddictScopeManager _scopeManager;
-        private readonly SignInManager<ApplicationUser> _signInManager;
-        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IOpenIddictApplicationManager applicationManager;
+        private readonly IOpenIddictAuthorizationManager authorizationManager;
+        private readonly IOpenIddictScopeManager scopeManager;
+        private readonly SignInManager<ApplicationUser> signInManager;
+        private readonly UserManager<ApplicationUser> userManager;
 
         public AuthorizationController(
             IOpenIddictApplicationManager applicationManager,
@@ -34,11 +30,11 @@ namespace DJImageAuthorizationServer.Controllers
             SignInManager<ApplicationUser> signInManager,
             UserManager<ApplicationUser> userManager)
         {
-            _applicationManager = applicationManager;
-            _authorizationManager = authorizationManager;
-            _scopeManager = scopeManager;
-            _signInManager = signInManager;
-            _userManager = userManager;
+            this.applicationManager = applicationManager;
+            this.authorizationManager = authorizationManager;
+            this.scopeManager = scopeManager;
+            this.signInManager = signInManager;
+            this.userManager = userManager;
         }
 
         [HttpGet("~/connect/authorize")]
@@ -84,7 +80,7 @@ namespace DJImageAuthorizationServer.Controllers
                 {
                     return Forbid(
                         authenticationSchemes: OpenIddictServerAspNetCoreDefaults.AuthenticationScheme,
-                        properties: new AuthenticationProperties(new Dictionary<string, string?>
+                        properties: new AuthenticationProperties(new Dictionary<string, string>
                         {
                             [OpenIddictServerAspNetCoreConstants.Properties.Error] = Errors.LoginRequired,
                             [OpenIddictServerAspNetCoreConstants.Properties.ErrorDescription] = "The user is not logged in."
@@ -101,29 +97,29 @@ namespace DJImageAuthorizationServer.Controllers
             }
 
             // Retrieve the profile of the logged in user.
-            ApplicationUser user = await _userManager.GetUserAsync(result.Principal) ??
+            ApplicationUser user = await userManager.GetUserAsync(result.Principal) ??
                                 throw new InvalidOperationException("The user details cannot be retrieved.");
 
             // Retrieve the application details from the database.
-            object application = await _applicationManager.FindByClientIdAsync(request.ClientId) ??
+            object application = await applicationManager.FindByClientIdAsync(request.ClientId) ??
                 throw new InvalidOperationException("Details concerning the calling client application cannot be found.");
 
             // Retrieve the permanent authorizations associated with the user and the calling client application.
-            List<object>? authorizations = await _authorizationManager.FindAsync(
-                                                subject: await _userManager.GetUserIdAsync(user),
-                                                client: await _applicationManager.GetIdAsync(application),
+            List<object> authorizations = await authorizationManager.FindAsync(
+                                                subject: await userManager.GetUserIdAsync(user),
+                                                client: await applicationManager.GetIdAsync(application),
                                                 status: Statuses.Valid,
                                                 type: AuthorizationTypes.Permanent,
                                                 scopes: request.GetScopes()).ToListAsync();
 
-            switch (await _applicationManager.GetConsentTypeAsync(application))
+            switch (await applicationManager.GetConsentTypeAsync(application))
             {
                 // If the consent is external (e.g when authorizations are granted by a sysadmin),
                 // immediately return an error if no authorization can be found in the database.
                 case ConsentTypes.External when !authorizations.Any():
                     return Forbid(
                         authenticationSchemes: OpenIddictServerAspNetCoreDefaults.AuthenticationScheme,
-                        properties: new AuthenticationProperties(new Dictionary<string, string?>
+                        properties: new AuthenticationProperties(new Dictionary<string, string>
                         {
                             [OpenIddictServerAspNetCoreConstants.Properties.Error] = Errors.ConsentRequired,
                             [OpenIddictServerAspNetCoreConstants.Properties.ErrorDescription] =
@@ -135,28 +131,28 @@ namespace DJImageAuthorizationServer.Controllers
                 case ConsentTypes.Implicit:
                 case ConsentTypes.External when authorizations.Any():
                 case ConsentTypes.Explicit when authorizations.Any() && !request.HasPrompt(Prompts.Consent):
-                    ClaimsPrincipal principal = await _signInManager.CreateUserPrincipalAsync(user);
+                    ClaimsPrincipal principal = await signInManager.CreateUserPrincipalAsync(user);
 
                     // Note: in this sample, the granted scopes match the requested scope
                     // but you may want to allow the user to uncheck specific scopes.
                     // For that, simply restrict the list of scopes before calling SetScopes.
                     principal.SetScopes(request.GetScopes());
-                    principal.SetResources(await _scopeManager.ListResourcesAsync(principal.GetScopes()).ToListAsync());
+                    principal.SetResources(await scopeManager.ListResourcesAsync(principal.GetScopes()).ToListAsync());
 
                     // Automatically create a permanent authorization to avoid requiring explicit consent
                     // for future authorization or token requests containing the same scopes.
-                    object? authorization = authorizations.LastOrDefault();
+                    object authorization = authorizations.LastOrDefault();
                     if (authorization == null)
                     {
-                        authorization = await _authorizationManager.CreateAsync(
+                        authorization = await authorizationManager.CreateAsync(
                             principal: principal,
-                            subject: await _userManager.GetUserIdAsync(user),
-                            client: await _applicationManager.GetIdAsync(application),
+                            subject: await userManager.GetUserIdAsync(user),
+                            client: await applicationManager.GetIdAsync(application),
                             type: AuthorizationTypes.Permanent,
                             scopes: principal.GetScopes());
                     }
 
-                    principal.SetAuthorizationId(await _authorizationManager.GetIdAsync(authorization));
+                    principal.SetAuthorizationId(await authorizationManager.GetIdAsync(authorization));
 
                     foreach (Claim claim in principal.Claims)
                     {
@@ -171,7 +167,7 @@ namespace DJImageAuthorizationServer.Controllers
                 case ConsentTypes.Systematic when request.HasPrompt(Prompts.None):
                     return Forbid(
                         authenticationSchemes: OpenIddictServerAspNetCoreDefaults.AuthenticationScheme,
-                        properties: new AuthenticationProperties(new Dictionary<string, string?>
+                        properties: new AuthenticationProperties(new Dictionary<string, string>
                         {
                             [OpenIddictServerAspNetCoreConstants.Properties.Error] = Errors.ConsentRequired,
                             [OpenIddictServerAspNetCoreConstants.Properties.ErrorDescription] =
@@ -182,7 +178,7 @@ namespace DJImageAuthorizationServer.Controllers
                 default:
                     return View(new AuthorizeViewModel
                     {
-                        ApplicationName = await _applicationManager.GetDisplayNameAsync(application),
+                        ApplicationName = await applicationManager.GetDisplayNameAsync(application),
                         Scope = request.Scope
                     });
             }
@@ -192,21 +188,21 @@ namespace DJImageAuthorizationServer.Controllers
         [HttpPost("~/connect/authorize"), ValidateAntiForgeryToken]
         public async Task<IActionResult> Accept()
         {
-            OpenIddictRequest? request = HttpContext.GetOpenIddictServerRequest() ??
+            OpenIddictRequest request = HttpContext.GetOpenIddictServerRequest() ??
                                 throw new InvalidOperationException("The OpenID Connect request cannot be retrieved.");
 
             // Retrieve the profile of the logged in user.
-            ApplicationUser user = await _userManager.GetUserAsync(User) ??
+            ApplicationUser user = await userManager.GetUserAsync(User) ??
                                 throw new InvalidOperationException("The user details cannot be retrieved.");
 
             // Retrieve the application details from the database.
-            object? application = await _applicationManager.FindByClientIdAsync(request.ClientId) ??
+            object application = await applicationManager.FindByClientIdAsync(request.ClientId) ??
                         throw new InvalidOperationException("Details concerning the calling client application cannot be found.");
 
             // Retrieve the permanent authorizations associated with the user and the calling client application.
-            List<object>? authorizations = await _authorizationManager.FindAsync(
-                                            subject: await _userManager.GetUserIdAsync(user),
-                                            client: await _applicationManager.GetIdAsync(application),
+            List<object> authorizations = await authorizationManager.FindAsync(
+                                            subject: await userManager.GetUserIdAsync(user),
+                                            client: await applicationManager.GetIdAsync(application),
                                             status: Statuses.Valid,
                                             type: AuthorizationTypes.Permanent,
                                             scopes: request.GetScopes()).ToListAsync();
@@ -214,11 +210,11 @@ namespace DJImageAuthorizationServer.Controllers
             // Note: the same check is already made in the other action but is repeated
             // here to ensure a malicious user can't abuse this POST-only endpoint and
             // force it to return a valid response without the external authorization.
-            if (!authorizations.Any() && await _applicationManager.HasConsentTypeAsync(application, ConsentTypes.External))
+            if (!authorizations.Any() && await applicationManager.HasConsentTypeAsync(application, ConsentTypes.External))
             {
                 return Forbid(
                     authenticationSchemes: OpenIddictServerAspNetCoreDefaults.AuthenticationScheme,
-                    properties: new AuthenticationProperties(new Dictionary<string, string?>
+                    properties: new AuthenticationProperties(new Dictionary<string, string>
                     {
                         [OpenIddictServerAspNetCoreConstants.Properties.Error] = Errors.ConsentRequired,
                         [OpenIddictServerAspNetCoreConstants.Properties.ErrorDescription] =
@@ -226,28 +222,28 @@ namespace DJImageAuthorizationServer.Controllers
                     }));
             }
 
-            ClaimsPrincipal principal = await _signInManager.CreateUserPrincipalAsync(user);
+            ClaimsPrincipal principal = await signInManager.CreateUserPrincipalAsync(user);
 
             // Note: in this sample, the granted scopes match the requested scope
             // but you may want to allow the user to uncheck specific scopes.
             // For that, simply restrict the list of scopes before calling SetScopes.
             principal.SetScopes(request.GetScopes());
-            principal.SetResources(await _scopeManager.ListResourcesAsync(principal.GetScopes()).ToListAsync());
+            principal.SetResources(await scopeManager.ListResourcesAsync(principal.GetScopes()).ToListAsync());
 
             // Automatically create a permanent authorization to avoid requiring explicit consent
             // for future authorization or token requests containing the same scopes.
-            object? authorization = authorizations.LastOrDefault();
+            object authorization = authorizations.LastOrDefault();
             if (authorization == null)
             {
-                authorization = await _authorizationManager.CreateAsync(
+                authorization = await authorizationManager.CreateAsync(
                     principal: principal,
-                    subject: await _userManager.GetUserIdAsync(user),
-                    client: await _applicationManager.GetIdAsync(application),
+                    subject: await userManager.GetUserIdAsync(user),
+                    client: await applicationManager.GetIdAsync(application),
                     type: AuthorizationTypes.Permanent,
                     scopes: principal.GetScopes());
             }
 
-            principal.SetAuthorizationId(await _authorizationManager.GetIdAsync(authorization));
+            principal.SetAuthorizationId(await authorizationManager.GetIdAsync(authorization));
 
             foreach (Claim claim in principal.Claims)
             {
@@ -273,7 +269,7 @@ namespace DJImageAuthorizationServer.Controllers
             // Ask ASP.NET Core Identity to delete the local and external cookies created
             // when the user agent is redirected from the external identity provider
             // after a successful authentication flow (e.g Google or Facebook).
-            await _signInManager.SignOutAsync();
+            await signInManager.SignOutAsync();
 
             // Returning a SignOutResult will ask OpenIddict to redirect the user agent
             // to the post_logout_redirect_uri specified by the client application or to
@@ -289,23 +285,102 @@ namespace DJImageAuthorizationServer.Controllers
         [HttpPost("~/connect/token"), Produces("application/json")]
         public async Task<IActionResult> Exchange()
         {
-            var request = HttpContext.GetOpenIddictServerRequest() ??
-                throw new InvalidOperationException("The OpenID Connect request cannot be retrieved.");
+            OpenIddictRequest request = HttpContext.GetOpenIddictServerRequest() ??
+                    throw new InvalidOperationException("The OpenID Connect request cannot be retrieved.");
 
-            //if (request.IsAuthorizationCodeGrantType() || request.IsRefreshTokenGrantType())
-            //{
-            //    return await HandleExchangeCodeGrantType();
-            //}
+            if (request.IsAuthorizationCodeGrantType() || request.IsRefreshTokenGrantType())
+            {
+                return await HandleExchangeCodeGrantType();
+            }
 
-            //if (request.IsClientCredentialsGrantType())
-            //{
-            //    // Note: the client credentials are automatically validated by OpenIddict:
-            //    // if client_id or client_secret are invalid, this action won't be invoked.
+            if (request.IsClientCredentialsGrantType())
+            {
+                // Note: the client credentials are automatically validated by OpenIddict:
+                // if client_id or client_secret are invalid, this action won't be invoked.
 
-            //    return await HandleExchangeClientCredentialsGrantType(request);
-            //}
+                return await HandleExchangeClientCredentialsGrantType(request);
+            }
 
             throw new InvalidOperationException("The specified grant type is not supported.");
+        }               
+
+        private async Task<IActionResult> HandleExchangeClientCredentialsGrantType(OpenIddictRequest request)
+        {            
+            // Retrieve the application details from the database.
+            object application = await applicationManager.FindByClientIdAsync(request.ClientId) ??
+                throw new InvalidOperationException("The application details cannot be found in the database.");
+
+            // Create the claims-based identity that will be used by OpenIddict to generate tokens.
+            ClaimsIdentity identity = new ClaimsIdentity(
+                                    authenticationType: TokenValidationParameters.DefaultAuthenticationType,
+                                    nameType: Claims.Name,
+                                    roleType: Claims.Role);
+
+            // Add the claims that will be persisted in the tokens (use the client_id as the subject identifier).
+            identity.AddClaim(Claims.Subject, await applicationManager.GetClientIdAsync(application));
+            identity.AddClaim(Claims.Name, await applicationManager.GetDisplayNameAsync(application));
+
+            // Note: In the original OAuth 2.0 specification, the client credentials grant
+            // doesn't return an identity token, which is an OpenID Connect concept.
+            //
+            // As a non-standardized extension, OpenIddict allows returning an id_token
+            // to convey information about the client application when the "openid" scope
+            // is granted (i.e specified when calling principal.SetScopes()). When the "openid"
+            // scope is not explicitly set, no identity token is returned to the client application.
+
+            // Set the list of scopes granted to the client application in access_token.
+            ClaimsPrincipal principal = new ClaimsPrincipal(identity);
+            principal.SetScopes(request.GetScopes());
+            principal.SetResources(await scopeManager.ListResourcesAsync(principal.GetScopes()).ToListAsync());
+
+            foreach (var claim in principal.Claims)
+            {
+                claim.SetDestinations(GetDestinations(claim, principal));
+            }
+
+            return SignIn(principal, OpenIddictServerAspNetCoreDefaults.AuthenticationScheme);
+        }
+
+        private async Task<IActionResult> HandleExchangeCodeGrantType()
+        {
+            // Retrieve the claims principal stored in the authorization code/device code/refresh token.
+            ClaimsPrincipal principal = (await HttpContext.AuthenticateAsync(OpenIddictServerAspNetCoreDefaults.AuthenticationScheme)).Principal;
+
+            // Retrieve the user profile corresponding to the authorization code/refresh token.
+            // Note: if you want to automatically invalidate the authorization code/refresh token
+            // when the user password/roles change, use the following line instead:
+            // var user = _signInManager.ValidateSecurityStampAsync(info.Principal);
+            ApplicationUser user = await userManager.GetUserAsync(principal);
+            if (user == null)
+            {
+                return Forbid(
+                    authenticationSchemes: OpenIddictServerAspNetCoreDefaults.AuthenticationScheme,
+                    properties: new AuthenticationProperties(new Dictionary<string, string>
+                    {
+                        [OpenIddictServerAspNetCoreConstants.Properties.Error] = Errors.InvalidGrant,
+                        [OpenIddictServerAspNetCoreConstants.Properties.ErrorDescription] = "The token is no longer valid."
+                    }));
+            }
+
+            // Ensure the user is still allowed to sign in.
+            if (!await signInManager.CanSignInAsync(user))
+            {
+                return Forbid(
+                    authenticationSchemes: OpenIddictServerAspNetCoreDefaults.AuthenticationScheme,
+                    properties: new AuthenticationProperties(new Dictionary<string, string>
+                    {
+                        [OpenIddictServerAspNetCoreConstants.Properties.Error] = Errors.InvalidGrant,
+                        [OpenIddictServerAspNetCoreConstants.Properties.ErrorDescription] = "The user is no longer allowed to sign in."
+                    }));
+            }
+
+            foreach (var claim in principal.Claims)
+            {
+                claim.SetDestinations(GetDestinations(claim, principal));
+            }
+
+            // Returning a SignInResult will ask OpenIddict to issue the appropriate access/identity tokens.
+            return SignIn(principal, OpenIddictServerAspNetCoreDefaults.AuthenticationScheme);
         }
 
         private IEnumerable<string> GetDestinations(Claim claim, ClaimsPrincipal principal)
@@ -313,7 +388,6 @@ namespace DJImageAuthorizationServer.Controllers
             // Note: by default, claims are NOT automatically included in the access and identity tokens.
             // To allow OpenIddict to serialize them, you must attach them a destination, that specifies
             // whether they should be included in access tokens, in identity tokens or in both.
-
             switch (claim.Type)
             {
                 case Claims.Name:
@@ -331,7 +405,6 @@ namespace DJImageAuthorizationServer.Controllers
                         yield return Destinations.IdentityToken;
 
                     yield break;
-
                 case Claims.Role:
                     yield return Destinations.AccessToken;
 

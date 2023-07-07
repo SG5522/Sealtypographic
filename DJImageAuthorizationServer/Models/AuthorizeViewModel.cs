@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace DJImageAuthorizationServer.Models.Authorization;
+namespace DJImageAuthorizationServer.Models;
 
 public class AuthorizeViewModel
 {
