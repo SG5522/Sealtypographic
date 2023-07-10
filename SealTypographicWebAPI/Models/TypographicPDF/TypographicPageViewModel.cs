@@ -27,6 +27,16 @@
         public int PageNumber { get; set; }
 
         /// <summary>
+        /// PDF圖片寬度
+        /// </summary>
+        public int PDFImageWidth { get; set; }
+
+        /// <summary>
+        /// PDF圖片高度
+        /// </summary>
+        public int PDFImageHeight { get; set; }
+
+        /// <summary>
         /// PDF單頁圖片
         /// </summary>
         public string PDFImageBase64 { get; set; }

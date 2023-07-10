@@ -71,8 +71,9 @@ namespace DJImageAuthorizationServer.Areas.Identity.Pages.Account
             ///     directly from your code. This API may change or be removed in future releases.
             /// </summary>
             [Required]
-            [EmailAddress]
-            public string Email { get; set; }
+            [RegularExpression("^[A-Za-z0-9]+$", ErrorMessage ="請輸入英數字")]
+            [StringLength(30, ErrorMessage ="輸入上限為30字")]
+            public string UserName { get; set; }
 
             /// <summary>
             ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
@@ -117,7 +118,7 @@ namespace DJImageAuthorizationServer.Areas.Identity.Pages.Account
             {
                 // This doesn't count login failures towards account lockout
                 // To enable password failures to trigger account lockout, set lockoutOnFailure: true
-                var result = await signInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: false);
+                var result = await signInManager.PasswordSignInAsync(Input.UserName, Input.Password, Input.RememberMe, lockoutOnFailure: false);
                 if (result.Succeeded)
                 {
                     logger.LogInformation("User logged in.");
@@ -125,7 +126,7 @@ namespace DJImageAuthorizationServer.Areas.Identity.Pages.Account
                 }
                 if (result.RequiresTwoFactor)
                 {
-                    var fido2ItemExistsForUser = await fido2Store.GetCredentialsByUserNameAsync(Input.Email);
+                    var fido2ItemExistsForUser = await fido2Store.GetCredentialsByUserNameAsync(Input.UserName);
                     if (fido2ItemExistsForUser.Count > 0)
                     {
                         return RedirectToPage("./LoginFido2Mfa", new { ReturnUrl = returnUrl, Input.RememberMe });

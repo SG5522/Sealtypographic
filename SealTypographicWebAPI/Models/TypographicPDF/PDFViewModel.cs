@@ -9,12 +9,22 @@ namespace SealTypographicWebAPI.Models.TypographicPDF
     public class PDFViewModel : ResponseViewModel
     {
         /// <summary>
-        /// 總頁數
+        /// PDF總頁數
         /// </summary>
         public int TotalPage { get; set; }
 
         /// <summary>
-        /// 單頁顯示(圖片)
+        /// 單頁圖片寬度
+        /// </summary>
+        public int ImageWidth { get; set; }
+
+        /// <summary>
+        /// 單頁圖片高度
+        /// </summary>
+        public int ImageHeight { get; set; }
+
+        /// <summary>
+        /// Image64(單頁顯示)
         /// </summary>
         public string ImageBase64 { get; set; }
 

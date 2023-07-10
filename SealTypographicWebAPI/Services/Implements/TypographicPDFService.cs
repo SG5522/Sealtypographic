@@ -12,6 +12,7 @@ using DJLib;
 using AutoMapper.QueryableExtensions;
 using DJSpire.Consts;
 using DJLib.Models;
+using SealTypographicWebAPI.Consts;
 
 namespace SealTypographicWebAPI.Services.Implements
 {
@@ -84,12 +85,11 @@ namespace SealTypographicWebAPI.Services.Implements
 
             if(typographicPDFs.Any())
             {
-                typographicPDFPaginateViewModel.ViewModels = mapper.ProjectTo<TypographicPDFViewModel>
-                                                            (
-                                                                    typographicPDFs
-                                                                    .Skip((typographicPDFSearch.PageNumber - 1) * typographicPDFSearch.PageSize)
-                                                                    .Take(typographicPDFSearch.PageSize)
-                                                            ).ToList();
+                typographicPDFPaginateViewModel.ViewModels = typographicPDFs
+                                                            .Skip((typographicPDFSearch.PageNumber - 1) * typographicPDFSearch.PageSize)
+                                                            .Take(typographicPDFSearch.PageSize)
+                                                            .ProjectTo<TypographicPDFViewModel>(configurationProvider)
+                                                            .ToList();
 
                 int totalCount = typographicPDFs.Count();
                 typographicPDFPaginateViewModel.PageNumber = typographicPDFSearch.PageNumber;
@@ -112,13 +112,13 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <returns></returns>
         public TypographicPagesResponse GetEditPages(int id)
         {
-            TypographicPagesResponse? typographicPagesResponse = mapper.ProjectTo<TypographicPagesResponse>
-                                                                (
-                                                                    dbContext.TypographicPDFs
-                                                                    .Include(x => x.TypographicPages)
-                                                                    .ThenInclude(x => x.TypographicResourceLocations)
-                                                                    .AsSplitQuery()
-                                                                ).FirstOrDefault(x => x.Id == id);
+            TypographicPagesResponse? typographicPagesResponse = dbContext.TypographicPDFs
+                                                                .Include(x => x.TypographicPages)
+                                                                .ThenInclude(x => x.TypographicResourceLocations)
+                                                                .AsSplitQuery()
+                                                                .Where(x => x.Id == id)
+                                                                .ProjectTo<TypographicPagesResponse>(configurationProvider)
+                                                                .FirstOrDefault();
 
             if (typographicPagesResponse != null)
             {
@@ -150,9 +150,13 @@ namespace SealTypographicWebAPI.Services.Implements
                     PDFPath = uploadPath,
                     PageIndex = pageNumber,
                 };
+                PDFImageInfo pDFImageInfo = pDFService.GetPageImageInfo(PDFImageScaleConsts.Default);
+
                 pDFViewModel.PDFFullPath = uploadPath; //Log使用
-                pDFViewModel.TotalPage = pDFService.GetTotalPage();
-                pDFViewModel.ImageBase64 = pDFService.GetPageImageBase64();
+                pDFViewModel.TotalPage = pDFService.GetTotalPage();                
+                pDFViewModel.ImageWidth = pDFImageInfo.Width;
+                pDFViewModel.ImageHeight = pDFImageInfo.Height;
+                pDFViewModel.ImageBase64 = pDFImageInfo.ImageBase64;              
                 pDFViewModel.Success();                
             }            
             else
@@ -180,10 +184,10 @@ namespace SealTypographicWebAPI.Services.Implements
 
             typographicPageViewModel = mapper.ProjectTo<TypographicPageViewModel>
                                     (
-                                        dbContext.TypographicPages
-                                        .Include(x => x.TypographicResourceLocations)
-                                        .ThenInclude(x => x.TypographicResource)
-                                        .AsSplitQuery()
+                                    dbContext.TypographicPages
+                                    .Include(x => x.TypographicResourceLocations)
+                                    .ThenInclude(x => x.TypographicResource)
+                                    .AsSplitQuery()
                                     ).FirstOrDefault(x => x.Id == typographicPDFPageSearch.Id && x.PageNumber == typographicPDFPageSearch.PageNumber);
 
             if (pdfFullPath != null && typographicPageViewModel != null)
@@ -194,8 +198,11 @@ namespace SealTypographicWebAPI.Services.Implements
                     PDFPath = pdfFullPath,
                     PageIndex = typographicPDFPageSearch.PageNumber,
                 };
+                PDFImageInfo pDFImageInfo = pDFService.GetPageImageInfo(PDFImageScaleConsts.Default);
 
-                typographicPageViewModel.PDFImageBase64 = pDFService.GetPageImageBase64();
+                typographicPageViewModel.PDFImageWidth = pDFImageInfo.Width;
+                typographicPageViewModel.PDFImageHeight = pDFImageInfo.Height;
+                typographicPageViewModel.PDFImageBase64 = pDFImageInfo.ImageBase64;                
                 typographicPageViewModel.Success();                
             }            
             else
@@ -508,7 +515,7 @@ namespace SealTypographicWebAPI.Services.Implements
             foreach (CustomerSealLocationForm customerSealLocationForm in pageFrom.CustomerSealLocations)
             {
                 TypographicResourceLocation typographicResourceLocation = mapper.Map<TypographicResourceLocation>(customerSealLocationForm);
-                typographicResourceLocation.TypographicResource = dbContext.TypographicResources.Single(x => x.Id == customerSealLocationForm.Id);
+                typographicResourceLocation.TypographicResource = GetTypographicResource(customerSealLocationForm.Id);
                 typographicResourceLocations.Add(typographicResourceLocation);
             }
 
@@ -516,7 +523,7 @@ namespace SealTypographicWebAPI.Services.Implements
             foreach (AccountantSignLocationForm accountantSignLocationForm in pageFrom.AccountantSignLocations)
             {
                 TypographicResourceLocation typographicResourceLocation = mapper.Map<TypographicResourceLocation>(accountantSignLocationForm);
-                typographicResourceLocation.TypographicResource = dbContext.TypographicResources.Single(x => x.Id == accountantSignLocationForm.Id);
+                typographicResourceLocation.TypographicResource = GetTypographicResource(accountantSignLocationForm.Id);
                 typographicResourceLocations.Add(typographicResourceLocation);
             }
 
@@ -524,7 +531,7 @@ namespace SealTypographicWebAPI.Services.Implements
             foreach (LetterheadImageLocationForm letterheadImageLocationForm in pageFrom.LetterheadImageLocations)
             {
                 TypographicResourceLocation typographicResourceLocation = mapper.Map<TypographicResourceLocation>(letterheadImageLocationForm);
-                typographicResourceLocation.TypographicResource = dbContext.TypographicResources.Single(x => x.Id == letterheadImageLocationForm.Id);
+                typographicResourceLocation.TypographicResource = GetTypographicResource(letterheadImageLocationForm.Id);
                 typographicResourceLocations.Add(typographicResourceLocation);
             }
 
@@ -532,7 +539,7 @@ namespace SealTypographicWebAPI.Services.Implements
             foreach (TemporarySealLocationForm temporarySealLocationForm in pageFrom.TemporarySealLocations)
             {
                 TypographicResourceLocation typographicResourceLocation = mapper.Map<TypographicResourceLocation>(temporarySealLocationForm);
-                typographicResourceLocation.TypographicResource = dbContext.TypographicResources.Single(x => x.Id == temporarySealLocationForm.Id);
+                typographicResourceLocation.TypographicResource = GetTypographicResource(temporarySealLocationForm.Id);
                 typographicResourceLocations.Add(typographicResourceLocation);
             }
             typographicPage.TypographicResourceLocations = typographicResourceLocations;
@@ -540,5 +547,14 @@ namespace SealTypographicWebAPI.Services.Implements
             return typographicPage;
         }
 
+        /// <summary>
+        /// 取得typographicResource實體
+        /// </summary>
+        /// <param name="typographicResourceId"></param>
+        /// <returns></returns>
+        private TypographicResource GetTypographicResource(int typographicResourceId)
+        {
+            return dbContext.TypographicResources.Single(x => x.Id == typographicResourceId);
+        }
     }
 }

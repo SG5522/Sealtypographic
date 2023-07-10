@@ -18,10 +18,6 @@ namespace DJSpire.Services
         private string pdfpath;
         private int pageIndex;
 
-        //public PDFService()
-        //{            
-        //    Spire.License.LicenseProvider.SetLicenseFileFullPath($"{AppDomain.CurrentDomain.BaseDirectory}license.elic.xml");
-        //}
         /// <summary>
         /// 原PDF檔
         /// </summary>
@@ -94,16 +90,25 @@ namespace DJSpire.Services
             return stream;
         }
 
-        public string GetPageImageBase64(ImageType imageType = ImageType.Png)
-        {
+        public PDFImageInfo GetPageImageInfo(double scale, ImageType imageType = ImageType.Png)
+        {            
             Image image = Image.Load(GetPageImageStream(imageType), out IImageFormat format);            
-            //int width = (int)(image.Width * scale);
-            //int height = (int)(image.Height * scale);
-            //image.Mutate(delegate (IImageProcessingContext x)
-            //{
-            //    x.Resize(width, height);
-            //});
-            return image.ToBase64String(format);            
+            if (scale != 1.0)
+            {
+                int width = (int)(image.Width * scale);
+                int height = (int)(image.Height * scale);
+                image.Mutate(delegate (IImageProcessingContext x)
+                {
+                    x.Resize(width, height);
+                });
+            }
+
+            return new PDFImageInfo()
+            {
+                Width = image.Width,
+                Height = image.Height,
+                ImageBase64 = image.ToBase64String(format)
+            };
         }
 
         /// <summary>
@@ -173,7 +178,7 @@ namespace DJSpire.Services
                         Document.Pages[editPDF.EditPages[pageIndex].PageNumber].Canvas.DrawImage
                         (
                             PdfImage.FromStream(editImage.ImageStream),
-                            //1 inch = 72pt, and when dpi = 300, 1 inch = 300px. So when dpi = 300, 1px = 0.24pt
+                            //1 inch = 72pt, and when dpi = 300, 1 inch = 300px. So when dpi = 300, 1px = 0.24pt                            
                             editImage.Left * 0.24f,
                             editImage.Top * 0.24f,
                             editImage.Width * 0.24f,
