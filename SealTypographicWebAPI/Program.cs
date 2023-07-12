@@ -181,7 +181,7 @@ builder.Host.UseWindowsService();
 
 var app = builder.Build();
 
-if (app.Environment.IsDevelopment())
+if (!app.Environment.IsProduction())
 {
     //app.UseStaticFiles();
     app.UseSwagger();
