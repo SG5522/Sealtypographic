@@ -15,22 +15,17 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using DJImageAuthorizationServer.Entities;
-using DJImageAuthorizationServer.Fido2;
 
 namespace DJImageAuthorizationServer.Areas.Identity.Pages.Account
 {
     public class LoginModel : PageModel
     {
-        private readonly SignInManager<ApplicationUser> signInManager;
-        private readonly Fido2Store fido2Store;
+        private readonly SignInManager<ApplicationUser> signInManager;        
         private readonly ILogger<LoginModel> logger;
 
-        public LoginModel(SignInManager<ApplicationUser> signInManager,
-            Fido2Store fido2Store,
-            ILogger<LoginModel> logger)
+        public LoginModel(SignInManager<ApplicationUser> signInManager, ILogger<LoginModel> logger)
         {
-            this.signInManager = signInManager;
-            this.fido2Store = fido2Store;
+            this.signInManager = signInManager;            
             this.logger = logger;
         }
 
@@ -123,16 +118,6 @@ namespace DJImageAuthorizationServer.Areas.Identity.Pages.Account
                 {
                     logger.LogInformation("User logged in.");
                     return LocalRedirect(returnUrl);
-                }
-                if (result.RequiresTwoFactor)
-                {
-                    var fido2ItemExistsForUser = await fido2Store.GetCredentialsByUserNameAsync(Input.UserName);
-                    if (fido2ItemExistsForUser.Count > 0)
-                    {
-                        return RedirectToPage("./LoginFido2Mfa", new { ReturnUrl = returnUrl, Input.RememberMe });
-                    }
-
-                    return RedirectToPage("./LoginWith2fa", new { ReturnUrl = returnUrl, RememberMe = Input.RememberMe });
                 }
                 if (result.IsLockedOut)
                 {

@@ -1,5 +1,4 @@
-﻿using DJImageAuthorizationServer.Fido2;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace DJImageAuthorizationServer.Entities
@@ -8,13 +7,10 @@ namespace DJImageAuthorizationServer.Entities
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
-        }
-        public DbSet<FidoStoredCredential> FidoStoredCredential => Set<FidoStoredCredential>();
+        }        
 
         protected override void OnModelCreating(ModelBuilder builder)
-        {
-            builder.Entity<FidoStoredCredential>().HasKey(m => m.Id);
-
+        {            
             base.OnModelCreating(builder);
         }
     }

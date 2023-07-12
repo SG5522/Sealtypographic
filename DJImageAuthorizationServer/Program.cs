@@ -1,8 +1,6 @@
 using DJImageAuthorizationServer.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using DJImageAuthorizationServer.Fido2;
-using Fido2NetLib;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using Microsoft.IdentityModel.Tokens;
@@ -34,11 +32,8 @@ builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
   .AddEntityFrameworkStores<ApplicationDbContext>()
   .AddDefaultTokenProviders()
-  .AddDefaultUI()
-  .AddTokenProvider<Fido2UserTwoFactorTokenProvider>("FIDO2");
+  .AddDefaultUI();
 
-builder.Services.Configure<Fido2Configuration>(builder.Configuration.GetSection("fido2"));
-builder.Services.AddScoped<Fido2Store>();
 
 builder.Services.AddSession(options =>
 {
