@@ -8,10 +8,8 @@ using SealTypographicWebAPI.Utils;
 using DJSpire.Services;
 using DJSpire.Models;
 using Serilog;
-using DJLib;
 using AutoMapper.QueryableExtensions;
 using DJSpire.Consts;
-using DJLib.Models;
 using SealTypographicWebAPI.Consts;
 
 namespace SealTypographicWebAPI.Services.Implements

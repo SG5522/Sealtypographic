@@ -7,7 +7,7 @@
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <DocumentationFile></DocumentationFile>
     <IncrementVersionOnBuild>0.0.2.1+</IncrementVersionOnBuild>
-    <Version>0.0.2.1416</Version>
+    <Version>0.0.2.1421</Version>
     <PackageIcon>android-chrome-128x128.png</PackageIcon>
     <Configurations>Debug;Release</Configurations>    
   </PropertyGroup>
@@ -29,6 +29,7 @@
   <ItemGroup>
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
     <PackageReference Include="DJImageLib" Version="1.0.1" />
+    <PackageReference Include="Keycloak.AuthServices.Authentication" Version="1.5.2" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.19" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="6.0.19" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="7.0.8">

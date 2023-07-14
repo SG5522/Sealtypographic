@@ -52,5 +52,18 @@ namespace SealTypographicWebAPI.Utils
             using Stream stream = new FileStream(savePath, FileMode.Create);
             await formFile.CopyToAsync(stream);
         }
+
+        /// <summary>
+        /// 確認是否有圖檔，如有就刪除
+        /// </summary>
+        /// <param name="savePath"></param>
+        /// <returns></returns>
+        public static void DeleteImage(string savePath)
+        {
+            if(File.Exists(savePath))
+            {
+                File.Delete(savePath);
+            }
+        }
     }
 }

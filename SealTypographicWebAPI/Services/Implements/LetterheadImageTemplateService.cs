@@ -3,6 +3,7 @@ using DBEntities;
 using DBEntities.Consts;
 using Microsoft.EntityFrameworkCore;
 using SealTypographicWebAPI.Models;
+using SealTypographicWebAPI.Models.AccountantSignTemplate;
 using SealTypographicWebAPI.Models.BaseModels;
 using SealTypographicWebAPI.Models.LetterheadImageTemplate;
 using SealTypographicWebAPI.Utils;
@@ -201,20 +202,27 @@ namespace SealTypographicWebAPI.Services.Implements
         {
             ResponseViewModel response = new ();
             int userid = 1;
-            Template? letterheadImageTemplateQuery = dbContext.Templates.Include(x => x.TemplateLocations)                     
-                                                                        .FirstOrDefault(x => x.Id == letterheadImageTemplateUpdateForm.Id);
+            Template? template = dbContext.Templates.Include(x => x.TemplateLocations)    
+                                .Include(x => x.Company)
+                                .FirstOrDefault(x => x.Id == letterheadImageTemplateUpdateForm.Id);
 
-            if (letterheadImageTemplateQuery != null)
+            if (template != null)
             {
+                //刪除原圖與縮圖
+                FileUtil.DeleteImage(template.ImageViewFullPath);
+                FileUtil.DeleteImage(template.ThumbnailFullPath);
                 //儲存圖片(原圖)                
-                await imageService.SaveImageAsync(letterheadImageTemplateUpdateForm.ImageBase64, letterheadImageTemplateQuery.ImageViewFullPath, false);
-                //儲存縮圖                
-                await imageService.SaveImageAsync(letterheadImageTemplateUpdateForm.ImageBase64Thumbnail, letterheadImageTemplateQuery.ThumbnailFullPath, false);
+                ImageBase64Info imageBase64Info = imageService.SetImageBase64InfoWithTemplate(template.Company.Code, SealType.Letterhead);
+                imageBase64Info.ImageBase64 = letterheadImageTemplateUpdateForm.ImageBase64;
+                template.ImageViewFullPath = await imageService.GetSavedImageFilePath(imageBase64Info);
+                //儲存縮圖
+                imageBase64Info.ImageBase64 = letterheadImageTemplateUpdateForm.ImageBase64Thumbnail;
+                template.ThumbnailFullPath = await imageService.GetSavedImageThumbnailFilePath(imageBase64Info, false);
 
-                mapper.Map(letterheadImageTemplateUpdateForm, letterheadImageTemplateQuery);
-                BaseInputLetterheadImageTemplate(letterheadImageTemplateQuery, false, userid);
+                mapper.Map(letterheadImageTemplateUpdateForm, template);
+                BaseInputLetterheadImageTemplate(template, false, userid);
 
-                TemplateLocation? templateLocation = letterheadImageTemplateQuery.TemplateLocations.FirstOrDefault(x => x.Id == letterheadImageTemplateUpdateForm.LocationUpdateForm.Id);
+                TemplateLocation? templateLocation = template.TemplateLocations.FirstOrDefault(x => x.Id == letterheadImageTemplateUpdateForm.LocationUpdateForm.Id);
                 if (templateLocation != null)
                 {
                     mapper.Map(letterheadImageTemplateUpdateForm.LocationUpdateForm, templateLocation);

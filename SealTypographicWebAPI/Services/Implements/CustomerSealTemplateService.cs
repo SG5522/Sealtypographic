@@ -167,43 +167,50 @@ namespace SealTypographicWebAPI.Services.Implements
         {
             ResponseViewModel response = new ();
             int userid = 1;
-            Template? templateQuery = dbContext.Templates.Include(x => x.TemplateLocations)                                                             
-                                                         .FirstOrDefault(x => x.Id == customerSealTemplateUpdateForm.Id);
+            Template? template = dbContext.Templates.Include(x => x.TemplateLocations)      
+                                .Include(x => x.Company)            
+                                .FirstOrDefault(x => x.Id == customerSealTemplateUpdateForm.Id);
 
-            if (templateQuery != null)
+            if (template != null)
             {
+                //刪除原圖與縮圖
+                FileUtil.DeleteImage(template.ImageViewFullPath);
+                FileUtil.DeleteImage(template.ThumbnailFullPath);
                 //儲存圖片(原圖)                
-                await imageService.SaveImageAsync(customerSealTemplateUpdateForm.ImageBase64, templateQuery.ImageViewFullPath, false);
-                //儲存縮圖                
-                await imageService.SaveImageAsync(customerSealTemplateUpdateForm.ImageBase64Thumbnail, templateQuery.ThumbnailFullPath, false);
-
-                mapper.Map(customerSealTemplateUpdateForm, templateQuery);
-                BaseInputCustomerSealTemplate(templateQuery, false, userid);
+                ImageBase64Info imageBase64Info = imageService.SetImageBase64InfoWithTemplate(template.Company.Code, SealType.Customer);                                
+                imageBase64Info.ImageBase64 = customerSealTemplateUpdateForm.ImageBase64;
+                template.ImageViewFullPath = await imageService.GetSavedImageFilePath(imageBase64Info);
+                //儲存縮圖
+                imageBase64Info.ImageBase64 = customerSealTemplateUpdateForm.ImageBase64Thumbnail;
+                template.ThumbnailFullPath = await imageService.GetSavedImageThumbnailFilePath(imageBase64Info, false);
+                
+                mapper.Map(customerSealTemplateUpdateForm, template);
+                BaseInputCustomerSealTemplate(template, false, userid);
                 
                 //刪除樣本座標
                 foreach(int deleteLocationId in customerSealTemplateUpdateForm.DeleteLocationIds)
                 {
-                    TemplateLocation? templateLocation = templateQuery.TemplateLocations.FirstOrDefault(x => x.Id == deleteLocationId);
+                    TemplateLocation? templateLocation = template.TemplateLocations.FirstOrDefault(x => x.Id == deleteLocationId);
                     if(templateLocation != null)
                     {
-                        templateQuery.TemplateLocations.Remove(templateLocation);                        
+                        template.TemplateLocations.Remove(templateLocation);                        
                     }
                 }
                 //修改樣本座標
                 foreach(CustomerSealTemplateLocationUpdateForm locationUpdateForm in customerSealTemplateUpdateForm.LocationUpdateForms)
                 {
-                    TemplateLocation? templateLocation = templateQuery.TemplateLocations.FirstOrDefault(x => x.Id == locationUpdateForm.Id);
+                    TemplateLocation? templateLocation = template.TemplateLocations.FirstOrDefault(x => x.Id == locationUpdateForm.Id);
 
                     if(templateLocation != null) 
                     {
                         mapper.Map(locationUpdateForm, templateLocation);
                         templateLocation.SealType = SealType.Customer;
-                        //之後要調整為不用轉型
-                        templateLocation.SubSealType = SealMappingConfigUtil.GetSubSealTypeWithCustomer((CustomerSealType)locationUpdateForm.CustomerSealType);                        
+
+                        templateLocation.SubSealType = SealMappingConfigUtil.GetSubSealTypeWithCustomer(locationUpdateForm.CustomerSealType);                        
                     }
                 }
                 //新增樣本座標
-                NewTemplateLoction(customerSealTemplateUpdateForm.LocationForms, templateQuery.TemplateLocations);
+                NewTemplateLoction(customerSealTemplateUpdateForm.LocationForms, template.TemplateLocations);
 
                 await dbContext.SaveChangesAsync();
                 response.Success();
