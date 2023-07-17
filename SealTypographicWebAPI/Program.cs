@@ -7,7 +7,14 @@ using SealTypographicWebAPI.Config;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.OpenApi.Models;
-
+using SixLabors.ImageSharp;
+using Keycloak.AuthServices.Authentication;
+using Microsoft.Extensions.Configuration;
+using Keycloak.AuthServices.Authorization;
+using Microsoft.Extensions.Hosting;
+using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
+using Microsoft.IdentityModel.Logging;
 
 string allowSpecificOrigins = "allowSpecificOrigins";
 string allowAllOrigins = "allowAllOrigins";
@@ -110,23 +117,6 @@ builder.Services.AddScoped<ITypographicPDFService, TypographicPDFService>();
 
 #endregion
 
-#region -- Authentication --
-//builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
-//    .AddEntityFrameworkStores<SealTypographicDbContext>();
-
-
-//builder.Services.AddAuthentication(options =>
-//{
-//    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-//})
-//.AddOpenIdConnect(options =>
-//{
-//    options.Authority = identityUrl.ToString();
-
-//});
-
-#endregion
-
 builder.Services.AddLocalization(option => option.ResourcesPath = "Resource");
 
 string[] supportedCultures = new[] { "en-US", "zh-TW"  };
@@ -177,6 +167,10 @@ builder.Services.AddSwaggerGen(c =>
     //c.SchemaFilter<EnumSchemaFilter>();
 });
 
+#region -- Authentication --
+builder.Services.AddKeycloakAuthentication(builder.Configuration);
+#endregion
+
 builder.Host.UseWindowsService();
 
 var app = builder.Build();
@@ -209,10 +203,15 @@ using (IServiceScope scope = app.Services.CreateScope())
     }
 }
 
-
+app.UseAuthentication();
 app.UseAuthorization();
 //app.UseSerilogRequestLogging(); // <-SeriLog 
 
 app.MapControllers();
+
+app.MapGet("/", (ClaimsPrincipal user) =>
+{
+    app.Logger.LogInformation(user.Identity.Name);
+}).RequireAuthorization();
 
 app.Run();
