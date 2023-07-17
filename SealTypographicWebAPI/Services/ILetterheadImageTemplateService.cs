@@ -31,13 +31,6 @@ namespace SealTypographicWebAPI.Services
         LetterheadImageTemplatePaginate GetPaginate(LetterheadImageTemplateSearch letterheadTemplateSearch);
 
         /// <summary>
-        /// 取得樣板分頁(排板使用)
-        /// </summary>
-        /// <param name="paginateSearch">分頁搜尋</param>
-        /// <returns></returns>
-        LetterheadImageTemplatePaginate GetPaginateWithTypographic(PaginateSearch paginateSearch);
-
-        /// <summary>
         /// 新增信頭樣板
         /// </summary>
         /// <param name="letterheadTemplateForm">信頭樣板</param>

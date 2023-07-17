@@ -4,6 +4,7 @@ using SealTypographicWebAPI.Models.AccountantSignTemplate;
 using SealTypographicWebAPI.Models.LetterheadImageTemplate;
 using DBEntities;
 using SealTypographicWebAPI.Utils;
+using DJLib;
 
 namespace SealTypographicWebAPI.Config
 {
@@ -66,7 +67,13 @@ namespace SealTypographicWebAPI.Config
             //信頭樣板單筆查詢使用
             CreateMap<Template, LetterheadImageTemplateDetailViewModel>()
                     .ForMember(dst => dst.LocaltionViewModels, opt => opt.MapFrom(src => src.TemplateLocations));
-            CreateMap<TemplateLocation, LetterheadImageTemplateLocationViewModel>();                    
+            CreateMap<TemplateLocation, LetterheadImageTemplateLocationViewModel>();
+
+
+            CreateMap <Template, LetterheadImageTemplateViewModel>()
+                    .ForMember(dst => dst.ImageFullPath, opt => opt.MapFrom(src => src.ThumbnailFullPath))
+                    .ForMember(dst => dst.ThumbnailBase64, opt => opt.MapFrom(src => ImageSharpUtil.PathImageFileToBase64(src.ThumbnailFullPath)));
+
             //Log使用
             CreateMap<LetterheadImageTemplateViewModel, LetterheadImageTemplateLogModel>();
             CreateMap<LetterheadImageTemplatePaginate, LetterheadImageTemplatePaginateLog>();            

@@ -183,7 +183,7 @@ namespace SealTypographicWebAPI.Services.Implements
 
             if (customerSealGroup != null)
             {
-                ImageBase64Info imageBase64Info = imageService.SetImageBase64InfoWithSeal(customerSealGroup.Customer.Code, (SealType)SealType.Customer);
+                ImageBase64Info imageBase64Info = imageService.SetImageBase64InfoWithSeal(customerSealGroup.Customer.Code, SealType.Customer);
 
                 //修改印鑑(更新ID移入DeleteCustomerSealIds，更新的資料移入CreateCustomerSeals，之後下一階段調整輸入時要拔掉此項)
                 foreach (CustomerSealUpdateForm customerSealFormUpdate in customerSealUpdate.UpdateCustomerSeals)
@@ -193,9 +193,8 @@ namespace SealTypographicWebAPI.Services.Implements
                     {
                         CustomerSeal customerSeal = new()
                         {
-                            Sequence = updateSealQuery.Sequence,
-                            //之後需要調整不用轉型
-                            SealMappingConfigId = (CustomerSealType)SealMappingConfigUtil.GetCustomerSealType(updateSealQuery.SubSealType),
+                            Sequence = updateSealQuery.Sequence,                            
+                            SealMappingConfigId = SealMappingConfigUtil.GetCustomerSealType(updateSealQuery.SubSealType),
                             ImageBase64 = customerSealFormUpdate.ImageBase64
                         };
 
@@ -225,6 +224,7 @@ namespace SealTypographicWebAPI.Services.Implements
                         TypographicResourceUtil.BaseInputTypographyResource(deleteSeal, false, userId);
                     }
                 }
+
                 //新增印鑑     
                 await NewTypographyResource(customerSealUpdate.CreateCustomerSeals, customerSealGroup.TypographicResources, imageBase64Info, userId);
                            

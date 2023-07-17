@@ -5,6 +5,7 @@ using SealTypographicWebAPI.Models.Letterhead;
 using SealTypographicWebAPI.Utils;
 using DBEntities;
 using DBEntities.Consts;
+using AutoMapper.QueryableExtensions;
 
 namespace SealTypographicWebAPI.Services.Implements
 {
@@ -15,6 +16,7 @@ namespace SealTypographicWebAPI.Services.Implements
     {
         private readonly SealTypographicDbContext dbContext;
         private readonly IMapper mapper;
+        private readonly AutoMapper.IConfigurationProvider configurationProvider;
 
         /// <summary>
         /// 取得DB與ResponseService
@@ -25,6 +27,7 @@ namespace SealTypographicWebAPI.Services.Implements
         {
             this.dbContext = dbContext;
             this.mapper = mapper;
+            configurationProvider = mapper.ConfigurationProvider;
         }
 
         /// <summary>
@@ -53,29 +56,13 @@ namespace SealTypographicWebAPI.Services.Implements
 
             if (letterheadQuery.Any())
             {
-                //取得該頁            
-                List<Letterhead> pageNumberLetterheads = letterheadQuery
-                                                      .Skip((letterheadSearch.PageNumber - 1) * letterheadSearch.PageSize)
-                                                      .Take(letterheadSearch.PageSize)
-                                                      .ToList();                                
+                //取得該頁  
+                letterheadPaginateViewModel.ViewModels = letterheadQuery
+                                                          .Skip((letterheadSearch.PageNumber - 1) * letterheadSearch.PageSize)
+                                                          .Take(letterheadSearch.PageSize)
+                                                          .ProjectTo<LetterheadViewModel>(configurationProvider)
+                                                          .ToList();
 
-                foreach (Letterhead letterheadData in pageNumberLetterheads)
-                {
-                    LetterheadViewModel letterheadViewModel = mapper.Map<LetterheadViewModel>(letterheadData);
-
-                    if (letterheadData.TypographicResources.Count > 0)
-                    {
-                        letterheadViewModel.LetterheadImageId = dbContext.TypographicResources.Where
-                                                                (
-                                                                    x => x.Letterhead.Id == letterheadData.Id
-                                                                    && x.Letterhead.Status == LetterheadImageStatus.Enable
-                                                                )
-                                                                .Max(x => x.Id);
-                    }
-                    letterheadViewModels.Add(letterheadViewModel);
-                }
-
-                letterheadPaginateViewModel.ViewModels = letterheadViewModels;
                 letterheadPaginateViewModel.PageNumber = letterheadSearch.PageNumber;
                 letterheadPaginateViewModel.PageSize = letterheadSearch.PageSize;
                 //計算總頁數

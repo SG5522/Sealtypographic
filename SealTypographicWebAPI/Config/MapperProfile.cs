@@ -35,7 +35,7 @@ namespace SealTypographicWebAPI.Config
                     .ForMember(dst => dst.CustomerSealQuarterId, opt => opt.MapFrom(src => src.Id))
                     .ForMember(dst => dst.Quarter, opt => opt.MapFrom(src => new string($"{src.Quarter.TaiwanYear}{src.Quarter.Period}")))
                     .ForMember(dst => dst.ReviewStatus, opt => opt.MapFrom(src => src.ReviewStatus))
-                    .ForMember(dst => dst.SealViewModels, opt => opt.MapFrom(src => src.TypographicResources));
+                    .ForMember(dst => dst.SealViewModels, opt => opt.MapFrom(src => src.TypographicResources.Where(x => x.DeleteStatus == DeleteStatus.No)));
 
             CreateMap<TypographicResource, CustomerSealViewModel>()
                     .ForMember(dst => dst.SealMappingConfigId, opt => opt.MapFrom(src => SealMappingConfigUtil.GetCustomerSealType(src.SubSealType)))
@@ -114,7 +114,7 @@ namespace SealTypographicWebAPI.Config
                     .ForMember(dst => dst.AccountantSignGroupId, opt => opt.MapFrom(src => src.Id))
                     .ForMember(dst => dst.GroupCreateDate, opt => opt.MapFrom(src => src.CreateDate))
                     .ForMember(dst => dst.ReviewStatus, opt => opt.MapFrom(src => src.ReviewStatus))
-                    .ForMember(dst => dst.SignViewModels, opt => opt.MapFrom(src => src.TypographicResources));
+                    .ForMember(dst => dst.SignViewModels, opt => opt.MapFrom(src => src.TypographicResources.Where(x => x.DeleteStatus == DeleteStatus.No)));
 
             CreateMap<TypographicResource, AccountantSignViewModel>()
                     .ForMember(dst => dst.SealMappingConfigId, opt => opt.MapFrom(src => SealMappingConfigUtil.GetAccountantSignType(src.SubSealType)))
@@ -147,7 +147,8 @@ namespace SealTypographicWebAPI.Config
                      .ReverseMap();
 
             //信頭基本資料
-            CreateMap<Letterhead, LetterheadViewModel>();
+            CreateMap<Letterhead, LetterheadViewModel>()
+                      .ForMember(dst => dst.LetterheadImageId, opt => opt.MapFrom(src => src.TypographicResources.Single(x => x.DeleteStatus == DeleteStatus.No).Id));
 
             //臨時章Log使用
             CreateMap<TemporarySealViewModel, TemporarySealLogModel>();

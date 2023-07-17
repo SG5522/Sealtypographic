@@ -1,13 +1,14 @@
 ﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using DBEntities;
 using DBEntities.Consts;
 using Microsoft.EntityFrameworkCore;
 using SealTypographicWebAPI.Models;
-using SealTypographicWebAPI.Models.AccountantSignTemplate;
 using SealTypographicWebAPI.Models.BaseModels;
 using SealTypographicWebAPI.Models.LetterheadImageTemplate;
 using SealTypographicWebAPI.Utils;
 using Serilog;
+using System.Drawing.Printing;
 
 namespace SealTypographicWebAPI.Services.Implements
 {
@@ -19,6 +20,7 @@ namespace SealTypographicWebAPI.Services.Implements
         private readonly SealTypographicDbContext dbContext;
         private readonly ImageService imageService;        
         private readonly IMapper mapper;
+        private readonly AutoMapper.IConfigurationProvider configurationProvider;
 
         /// <summary>
         /// 建構
@@ -30,7 +32,9 @@ namespace SealTypographicWebAPI.Services.Implements
         {
             this.dbContext = dbContext;
             this.mapper = mapper;
-            this.imageService = imageSharpService;            
+            configurationProvider = mapper.ConfigurationProvider;
+            this.imageService = imageSharpService;
+            
         }
 
         /// <summary>
@@ -39,12 +43,12 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <returns></returns>
         public LetterheadImageTemplateDetailViewModel GetDetail(int Id)
         {
-            LetterheadImageTemplateDetailViewModel letterheadImageTemplateDetailViewModel = mapper.Map<LetterheadImageTemplateDetailViewModel>
-                                                                                            (
-                                                                                                dbContext.Templates
-                                                                                                .Include(x => x.TemplateLocations)
-                                                                                                .FirstOrDefault(x => x.Id == Id)
-                                                                                            );
+            LetterheadImageTemplateDetailViewModel? letterheadImageTemplateDetailViewModel = dbContext.Templates
+                                                                                            .Include(x => x.TemplateLocations)
+                                                                                            .Where(x => x.Id == Id)
+                                                                                            .ProjectTo<LetterheadImageTemplateDetailViewModel>(configurationProvider)
+                                                                                            .FirstOrDefault();
+
 
 
             if(letterheadImageTemplateDetailViewModel != null) 
@@ -101,17 +105,21 @@ namespace SealTypographicWebAPI.Services.Implements
 
             if (!string.IsNullOrEmpty(letterheadImageTemplateSearch.KeyWord))
             {
-                templateQuery = templateQuery
-                                            .Where
-                                            (
-                                                letterheadImageTemplate => letterheadImageTemplate.Name.Contains(letterheadImageTemplateSearch.KeyWord)                
-                                            );
+                templateQuery = templateQuery.Where
+                                (
+                                    letterheadImageTemplate => letterheadImageTemplate.Name.Contains(letterheadImageTemplateSearch.KeyWord)                
+                                );
             }
             templateQuery = templateQuery.OrderBy(temporarySealGroup => temporarySealGroup.Id);
 
             if (templateQuery.Any())
             {
-                letterheadImageTemplatePaginate.ViewModels = LoadPaginatedData(templateQuery, letterheadImageTemplateSearch.PageNumber, letterheadImageTemplateSearch.PageSize);
+                letterheadImageTemplatePaginate.ViewModels = templateQuery
+                                                            .Skip((letterheadImageTemplateSearch.PageNumber - 1) * letterheadImageTemplateSearch.PageSize)
+                                                            .Take(letterheadImageTemplateSearch.PageSize)
+                                                            .ProjectTo<LetterheadImageTemplateViewModel>(configurationProvider)
+                                                            .ToList();
+
                 letterheadImageTemplatePaginate.PageNumber = letterheadImageTemplateSearch.PageNumber;
                 letterheadImageTemplatePaginate.PageSize = letterheadImageTemplateSearch.PageSize;
                 //計算總頁數
@@ -121,37 +129,7 @@ namespace SealTypographicWebAPI.Services.Implements
             }
             SavePaginateLog(letterheadImageTemplatePaginate);
             return letterheadImageTemplatePaginate;
-        }
-
-        /// <summary>
-        /// 取得樣板分頁(排板使用)
-        /// </summary>
-        /// <param name="paginateSearch">分頁搜尋</param>
-        /// <returns></returns>
-        public LetterheadImageTemplatePaginate GetPaginateWithTypographic(PaginateSearch paginateSearch)
-        {
-            LetterheadImageTemplatePaginate letterheadImageTemplatePaginate = new();
-            int companyId = 1;
-
-            IQueryable<Template> letterheadImageTemplateQuery = dbContext.Templates.Where
-                                                                        (
-                                                                            letterheadImageTemplate => letterheadImageTemplate.Company.Id == companyId
-                                                                            && letterheadImageTemplate.DeleteStatus == DeleteStatus.No
-                                                                        ).OrderBy(letterheadImageTemplate => letterheadImageTemplate.Id);
-
-            if (letterheadImageTemplateQuery.Any())
-            {
-                letterheadImageTemplatePaginate.ViewModels = LoadPaginatedData(letterheadImageTemplateQuery, paginateSearch.PageNumber, paginateSearch.PageSize);
-                letterheadImageTemplatePaginate.PageNumber = paginateSearch.PageNumber;
-                letterheadImageTemplatePaginate.PageSize = paginateSearch.PageSize;
-                //計算總頁數
-                letterheadImageTemplatePaginate.TotalPage = TotalPageUtil.GetTotalPage(letterheadImageTemplateQuery.Count(), paginateSearch.PageSize);
-                letterheadImageTemplatePaginate.TotalCount = letterheadImageTemplateQuery.Count();
-                letterheadImageTemplatePaginate.Success();
-            }
-            SavePaginateLog(letterheadImageTemplatePaginate);
-            return letterheadImageTemplatePaginate;
-        }
+        }        
 
         /// <summary>
         /// 信頭簽印樣板
@@ -259,27 +237,6 @@ namespace SealTypographicWebAPI.Services.Implements
             }
 
             return response;
-        }
-
-        /// <summary>
-        /// 讀取分頁資料
-        /// </summary>        
-        /// <param name="templateQuery">信頭樣板</param>
-        /// <param name="pageNumber">頁次</param>
-        /// <param name="pageSize">頁面大小</param>        
-        private List<LetterheadImageTemplateViewModel> LoadPaginatedData(IQueryable<Template> templateQuery, int pageNumber, int pageSize)
-        {
-            return
-                templateQuery
-                .Skip((pageNumber - 1) * pageSize)
-                .Take(pageSize)
-                .Select(letterheadImageTemplate => new LetterheadImageTemplateViewModel()
-                {
-                    Id = letterheadImageTemplate.Id,
-                    Name = letterheadImageTemplate.Name,
-                    ImageFullPath = letterheadImageTemplate.ThumbnailFullPath,
-                    ThumbnailBase64 = imageService.GetPathToBase64(letterheadImageTemplate.ThumbnailFullPath)
-                }).ToList();
         }
 
         /// <summary>
