@@ -15,6 +15,8 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
 using Microsoft.IdentityModel.Logging;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Extensions.Options;
 
 string allowSpecificOrigins = "allowSpecificOrigins";
 string allowAllOrigins = "allowAllOrigins";
@@ -157,8 +159,7 @@ builder.Services.AddSwaggerGen(c =>
         //    Name = "Use under LICX",
         //    Url = new Uri("https://example.com/license"),
         //}
-    });   
-
+    });
     //@解決部份宣告不為nullable 但還是nullable:true 的問題
     c.SupportNonNullableReferenceTypes();
 
@@ -168,7 +169,14 @@ builder.Services.AddSwaggerGen(c =>
 });
 
 #region -- Authentication --
-builder.Services.AddKeycloakAuthentication(builder.Configuration);
+//builder.Services.AddKeycloakAuthentication(builder.Configuration);
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, o =>
+            {
+                o.MetadataAddress = "https://<your-keycloak-server>/realms/<your-realm>/.well-known/openid-configuration";
+                o.Authority = "https://<your-keycloak-server>/realms/<your-realm>";
+                o.Audience = "account";
+            });
 #endregion
 
 builder.Host.UseWindowsService();
