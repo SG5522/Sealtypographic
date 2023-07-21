@@ -41,18 +41,17 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <param name="isTypographic">是否排版使用</param>        
         /// <returns></returns>
         public CustomerSealQuarterResponse GetQuarter(int customerId, bool isTypographic)
-        {                               
+        {
             CustomerSealQuarterResponse customerSealQuarters = new()
-            {
-                CustomerSealQuarters = dbContext.CustomerSealGroups
+            {               
+                CustomerSealQuarters = dbContext.CustomerSealGroups                                        
                                         .Include(customerSealGroups => customerSealGroups.Quarter)
                                         .Where
                                         (
                                             customerSealGroup => customerSealGroup.Customer.Id == customerId
-                                            && isTypographic ? customerSealGroup.ReviewStatus <= ReviewStatus.Approval
-                                            : customerSealGroup.ReviewStatus <= ReviewStatus.Disabled
+                                            && isTypographic ? customerSealGroup.ReviewStatus <= ReviewStatus.Approval : customerSealGroup.ReviewStatus <= ReviewStatus.Disabled
                                             && customerSealGroup.DeleteStatus == DeleteStatus.No
-                                        )
+                                        )                                        
                                         .ProjectTo<CustomerSealQuarterViewModel>(configurationProvider)
                                         .ToList()
             };

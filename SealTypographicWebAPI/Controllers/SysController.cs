@@ -9,7 +9,8 @@ namespace SealTypographicWebAPI.Controllers
     /// 系統訊息
     /// </summary>
     [Route("api/[controller]")]
-    [ApiController]    
+    [ApiController]
+    [Authorize]
     public class SysController : ControllerBase
     {
         private readonly ILogger<SysController> logger;

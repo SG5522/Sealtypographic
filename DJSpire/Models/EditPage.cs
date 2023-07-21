@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
-using System.Text.RegularExpressions;
 
 namespace DJSpire.Models
 {
@@ -56,8 +54,8 @@ namespace DJSpire.Models
             {
                 accountantCertificatePath = value;
                 if (accountantCertificatePath != string.Empty)
-                {
-                    AccountantCertificateImageStream = File.OpenRead(accountantCertificatePath);
+                {                    
+                    AccountantCertificateStream = File.OpenRead(accountantCertificatePath);
                 }
             }
         }
@@ -65,7 +63,7 @@ namespace DJSpire.Models
         /// <summary>
         /// 會計師證明書圖片轉成流
         /// </summary>
-        public Stream AccountantCertificateImageStream { get; set; }
+        public Stream AccountantCertificateStream { get; set; }
 
         /// <summary>
         /// 圖像與座標

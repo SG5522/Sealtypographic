@@ -3,7 +3,6 @@ using DJSpire.Models;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Formats;
 using SixLabors.ImageSharp.Processing;
-using SkiaSharp;
 using Spire.Pdf;
 using Spire.Pdf.Conversion;
 using Spire.Pdf.Graphics;
@@ -189,15 +188,24 @@ namespace DJSpire.Services
                     {
                         InsertBlankPage(editPDF.EditPages[pageIndex].PageNumber + 1);//新增空白頁
                     }
+                    //插入會計師證明書
                     if (editPDF.EditPages[pageIndex].AccountantCertificatePath != string.Empty)
-                    {
-                        Document.Pages.Insert(editPDF.EditPages[pageIndex].PageNumber);
-                        PdfImage pdfImage = PdfImage.FromStream(editPDF.EditPages[pageIndex].AccountantCertificateImageStream);
-
-                        Document.Pages[editPDF.EditPages[pageIndex].PageNumber].Canvas.DrawImage
-                        (
-                            pdfImage, 0, 0
-                        );                        
+                    {                                                
+                        if (Path.GetExtension(editPDF.EditPages[pageIndex].AccountantCertificatePath) != ".pdf")
+                        {                            
+                            PdfImage pdfImage = PdfImage.FromStream(editPDF.EditPages[pageIndex].AccountantCertificateStream);
+                            //插入空白頁至指定頁數的下一頁
+                            Document.Pages.Insert(editPDF.EditPages[pageIndex].PageNumber + 1);
+                            Document.Pages[editPDF.EditPages[pageIndex].PageNumber +1].Canvas.DrawImage
+                            (
+                                pdfImage, 0, 0
+                            );
+                        }
+                        else
+                        {
+                            PdfDocument accountantCertificatePdf = new PdfDocument(editPDF.EditPages[pageIndex].AccountantCertificateStream);                            
+                            Document.InsertPage(accountantCertificatePdf, 0, editPDF.EditPages[pageIndex].PageNumber + 1);                            
+                        }                      
                     }                    
                 }
                 else
