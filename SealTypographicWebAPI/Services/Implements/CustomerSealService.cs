@@ -42,21 +42,33 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <returns></returns>
         public CustomerSealQuarterResponse GetQuarter(int customerId, bool isTypographic)
         {
-            CustomerSealQuarterResponse customerSealQuarters = new()
-            {               
-                CustomerSealQuarters = dbContext.CustomerSealGroups                                        
-                                        .Include(customerSealGroups => customerSealGroups.Quarter)
-                                        .Where
-                                        (
-                                            customerSealGroup => customerSealGroup.Customer.Id == customerId
-                                            && isTypographic ? customerSealGroup.ReviewStatus <= ReviewStatus.Approval : customerSealGroup.ReviewStatus <= ReviewStatus.Disabled
-                                            && customerSealGroup.DeleteStatus == DeleteStatus.No
-                                        )                                        
-                                        .ProjectTo<CustomerSealQuarterViewModel>(configurationProvider)
-                                        .ToList()
-            };
-            if (customerSealQuarters.CustomerSealQuarters.Any())
+            CustomerSealQuarterResponse customerSealQuarters = new();            
+            IQueryable<CustomerSealGroup> customerSealGroups = dbContext.CustomerSealGroups
+                                                                .Include(customerSealGroups => customerSealGroups.Quarter)
+                                                                .Where
+                                                                (
+                                                                    customerSealGroup => customerSealGroup.Customer.Id == customerId                                                                    
+                                                                    && customerSealGroup.DeleteStatus == DeleteStatus.No
+                                                                );
+
+            if (isTypographic)
             {
+                customerSealQuarters.CustomerSealQuarters = customerSealGroups
+                                                            .Where(customerSealGroup => customerSealGroup.ReviewStatus <= ReviewStatus.Approval)
+                                                            .ProjectTo<CustomerSealQuarterViewModel>(configurationProvider)
+                                                            .ToList();                  
+            }
+            else
+            {
+                customerSealQuarters.CustomerSealQuarters = customerSealGroups
+                                                            .Where(customerSealGroup => customerSealGroup.ReviewStatus <= ReviewStatus.Disabled)
+                                                            .ProjectTo<CustomerSealQuarterViewModel>(configurationProvider)
+                                                            .ToList();
+            }
+
+
+            if (customerSealQuarters.CustomerSealQuarters.Any())
+            {                
                 customerSealQuarters.Success();
             }
             else

@@ -57,11 +57,14 @@ namespace SealTypographicWebAPI.Services.Implements
                                                     .Where
                                                     (                                                        
                                                         accountant => accountant.Company.Id == companyId
-                                                        && accountant.DeleteStatus == DeleteStatus.No
-                                                        && isTypographicUse ? 
-                                                               accountant.AccountantSignGroups.Any(x => x.ReviewStatus == ReviewStatus.Approval)
-                                                            :  accountant.AccountantSignGroups.Any(x => x.ReviewStatus < ReviewStatus.Disabled) || !accountant.AccountantSignGroups.Any()
+                                                        && accountant.DeleteStatus == DeleteStatus.No                                                       
                                                     );
+
+            if(isTypographicUse)
+            {
+                accountantQuery = accountantQuery.Where(accountant => accountant.AccountantSignGroups.Any(x => x.ReviewStatus == ReviewStatus.Approval));
+            }
+
 
             if (!string.IsNullOrWhiteSpace(accountantSearch.KeyWord))
             {

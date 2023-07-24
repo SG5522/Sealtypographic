@@ -3,8 +3,6 @@ using SealTypographicWebAPI.Models.Customer;
 using SealTypographicWebAPI.Models.Accountant;
 using SealTypographicWebAPI.Models.Letterhead;
 using SealTypographicWebAPI.Models.AccountantGroup;
-using SealTypographicWebAPI.Models.CustomerSealReview;
-using SealTypographicWebAPI.Models.AccountantSignReview;
 using SealTypographicWebAPI.Models.TemporarySeal;
 
 using DBEntities;
@@ -51,25 +49,7 @@ namespace SealTypographicWebAPI.Config
 
             CreateMap<CustomerSealUpdateForm, TypographicResource>()
                     .ForMember(x => x.ImageFullPath, y => y.Ignore()) // <---ImagePath要額外處理所以要忽略
-                    .ReverseMap();
-
-
-            //客戶印鑑季度審核清單
-            CreateMap<CustomerSealGroup, CustomerSealQuarterReviewViewModel>()                    
-                    .ForMember(dst => dst.Name, opt => opt.MapFrom(src => src.Customer.Name))
-                    .ForMember(x => x.Code, y => y.MapFrom(o => o.Customer.Code))
-                    .ForMember(x => x.Quarter, y => y.MapFrom(o => o.Quarter))
-                    .ForMember(x => x.ReviewStatus, y => y.MapFrom(o => o.ReviewStatus))
-                    .ReverseMap();
-
-            CreateMap<CustomerSealGroup, CustomerSealQuarterViewModel>()
-                    .ForMember(dst => dst.Quarter, opt => opt.MapFrom(src => QuarterUtil.GetTaiwanYearQuarter(src.Quarter)));
-
-
-            //客戶印鑑審核詳細資料
-            CreateMap<Customer, CustomerSealQuarterDetailReviewViewModel>()
-                     .ForMember(x => x.Id, y => y.Ignore())
-                     .ReverseMap();
+                    .ReverseMap();           
 
             //會計師基本資料
             CreateMap<Accountant, AccountantViewModel>()                    
@@ -131,20 +111,6 @@ namespace SealTypographicWebAPI.Config
             //會計師簽印重複確認
             CreateMap<AccountantSign, AccountantSignCheck>();
             CreateMap<AccountantSignUpdateForm, AccountantSignCheck>();
-
-            //會計師簽印審核清單
-            CreateMap<AccountantSignGroup, AccountantSignGroupReviewViewModel>()
-                    .ForMember(dst => dst.Name, opt => opt.MapFrom(src => src.Accountant.Name))
-                    .ForMember(dst => dst.Code, opt => opt.MapFrom(src => src.Accountant.Code))
-                    .ForMember(dst => dst.GroupName, opt => opt.MapFrom(src => src.Accountant.AccountantGroup.Name))
-                    .ForMember(dst => dst.ReviewStatus, opt => opt.MapFrom(src => src.ReviewStatus))
-                    .ReverseMap();
-
-            //會計師簽印審核詳細資料
-            CreateMap<Accountant, AccountantSignGroupDetailReviewViewModel>()
-                     .ForMember(dst => dst.Id, y => y.Ignore())
-                     .ForMember(dst => dst.GroupName, y => y.MapFrom(o => o.AccountantGroup.Name))
-                     .ReverseMap();
 
             //信頭基本資料
             CreateMap<Letterhead, LetterheadViewModel>()

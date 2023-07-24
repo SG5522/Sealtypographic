@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using DBEntities;
 using DBEntities.Consts;
 using Microsoft.EntityFrameworkCore;
 using SealTypographicWebAPI.Models;
-using SealTypographicWebAPI.Models.Customer;
 using SealTypographicWebAPI.Models.CustomerSealReview;
 using SealTypographicWebAPI.Utils;
 
@@ -14,21 +14,20 @@ namespace SealTypographicWebAPI.Services.Implements
     /// </summary>
     public class CustomerSealReviewService : ICustomerSealReviewService
     {
-        private readonly SealTypographicDbContext dbContext;
-        private readonly ImageService imageService;
+        private readonly SealTypographicDbContext dbContext;        
         private readonly IMapper mapper;
+        private readonly AutoMapper.IConfigurationProvider configurationProvider;
 
         /// <summary>
         /// 建構
         /// </summary>
-        /// <param name="dbContext"></param>
-        /// <param name="imageService"></param>
+        /// <param name="dbContext"></param>        
         /// <param name="mapper"></param>        
-        public CustomerSealReviewService(SealTypographicDbContext dbContext, ImageService imageService, IMapper mapper)
+        public CustomerSealReviewService(SealTypographicDbContext dbContext, IMapper mapper)
         {
-            this.dbContext = dbContext;
-            this.imageService = imageService;
+            this.dbContext = dbContext;            
             this.mapper = mapper;
+            configurationProvider = mapper.ConfigurationProvider;
         }
 
         ///<inheritdoc />
@@ -44,7 +43,7 @@ namespace SealTypographicWebAPI.Services.Implements
                                                                     (
                                                                         customerSealGroup => customerSealGroup.DeleteStatus == DeleteStatus.No
                                                                         && customerSealGroup.ReviewStatus < ReviewStatus.Disabled
-                                                                        && customerSealGroup.Customer.Company.Id == companyId
+                                                                        && customerSealGroup.Customer.Company.Id == companyId      
                                                                     ).OrderByDescending(x => x.Quarter.Id);
                             
 
@@ -60,70 +59,18 @@ namespace SealTypographicWebAPI.Services.Implements
 
             if (customerSealSearchReview.ReviewStatus != null)
             {
-                customerSealQuarterQuery = customerSealQuarterQuery.Where(customerSealJournal => customerSealJournal.ReviewStatus == (ReviewStatus)customerSealSearchReview.ReviewStatus);
+                customerSealQuarterQuery = customerSealQuarterQuery.Where(customerSealJournal => customerSealJournal.ReviewStatus == customerSealSearchReview.ReviewStatus);
             }
 
             if (customerSealQuarterQuery.Any())
             {
-                //取得該頁            
-                IQueryable<CustomerSealGroup> thisPageCustomerSealGroup = customerSealQuarterQuery
-                                                                        .Include(x => x.TypographicResources)                                                                        
-                                                                        .Skip((customerSealSearchReview.PageNumber - 1) * customerSealSearchReview.PageSize)
-                                                                        .Take(customerSealSearchReview.PageSize)                                                                        
-                                                                        .Select
-                                                                        (
-                                                                            x => new CustomerSealGroup()
-                                                                            {
-                                                                                Id = x.Id,
-                                                                                ReviewStatus = x.ReviewStatus,
-                                                                                Customer = new Customer()
-                                                                                {
-                                                                                    Name = x.Customer.Name,
-                                                                                    Code = x.Customer.Code
-                                                                                },
-                                                                                TypographicResources = x.TypographicResources.Select
-                                                                                (
-                                                                                    typographicResource => new TypographicResource()
-                                                                                    {
-                                                                                        SubSealType = typographicResource.SubSealType,
-                                                                                        Sequence = typographicResource.Sequence,
-                                                                                        ThumbnailFullPath = typographicResource.ThumbnailFullPath
-                                                                                    }
-                                                                                ).ToList(),
-                                                                                Quarter = new Quarter()
-                                                                                {                                                                                    
-                                                                                    GregorianYear = x.Quarter.GregorianYear,
-                                                                                    TaiwanYear = x.Quarter.TaiwanYear,
-                                                                                    Period = x.Quarter.Period,
-                                                                                },
-                                                                            }
-                                                                        );                                                                        
-
-
-                foreach (CustomerSealGroup customerSealGroup in thisPageCustomerSealGroup)
-                {
-                    CustomerSealQuarterReviewViewModel customerSealQuarterReviewViewModel = mapper.Map<CustomerSealQuarterReviewViewModel>(customerSealGroup);
-                    customerSealQuarterReviewViewModel.Quarter = QuarterUtil.GetTaiwanYearQuarter(customerSealGroup.Quarter);
-
-                    TypographicResourceUtil.FilterDeleteResource(customerSealGroup.TypographicResources);
-
-                    foreach (TypographicResource typographyResource in customerSealGroup.TypographicResources)
-                    {
-                        SealImageInfo sealImageInfo = new()
-                        {
-                            SealMappingConfigId = (CustomerSealType)SealMappingConfigUtil.GetCustomerSealType(typographyResource.SubSealType),
-                            Sequence = typographyResource.Sequence,                            
-                        };
-                        if(typographyResource.ThumbnailFullPath != null)
-                        {
-                            sealImageInfo.ThumbnailBase64 = imageService.GetPathToBase64(typographyResource.ThumbnailFullPath);
-                        }
-
-                        customerSealQuarterReviewViewModel.SealImageInfos.Add(sealImageInfo);
-                    }                    
-                    customerSealQuarterResponse.ViewModels.Add(customerSealQuarterReviewViewModel);
-                }
-
+                //取得該頁                   
+                customerSealQuarterResponse.ViewModels = customerSealQuarterQuery
+                                                        .Include(x => x.TypographicResources)
+                                                        .Skip((customerSealSearchReview.PageNumber - 1) * customerSealSearchReview.PageSize)
+                                                        .Take(customerSealSearchReview.PageSize)
+                                                        .ProjectTo<CustomerSealQuarterReviewViewModel>(configurationProvider)
+                                                        .ToList();
                 //計算總頁數
                 int totalPage = customerSealQuarterQuery.Count();
                 customerSealQuarterResponse.TotalPage = TotalPageUtil.GetTotalPage(totalPage, customerSealSearchReview.PageSize);
@@ -140,30 +87,19 @@ namespace SealTypographicWebAPI.Services.Implements
         public CustomerSealQuarterDetailReviewResponse GetReviewDetail(int customerSealQuarterId)
         {
             CustomerSealQuarterDetailReviewResponse customerSealReviewDetailResponse = new();
-                        
-            CustomerSealGroup? customerSealGroupQuery = dbContext.CustomerSealGroups
-                                                        .Include(x => x.Customer)
-                                                        .Include(x => x.Quarter)
-                                                        .Include(x => x.TypographicResources)
-                                                        .FirstOrDefault(x => x.Id == customerSealQuarterId);
+            CustomerSealQuarterDetailReviewViewModel? customerSealGroupQuery = dbContext.CustomerSealGroups
+                                                                                .Include(x => x.Customer)
+                                                                                .Include(x => x.Quarter)
+                                                                                .Include(x => x.TypographicResources)
+                                                                                .Where(x => x.Id == customerSealQuarterId)
+                                                                                .ProjectTo<CustomerSealQuarterDetailReviewViewModel>(configurationProvider)
+                                                                                .FirstOrDefault();
+
             if (customerSealGroupQuery != null)
             {
-                customerSealReviewDetailResponse.ViewModel = mapper.Map<CustomerSealQuarterDetailReviewViewModel>(customerSealGroupQuery.Customer);
-
-                customerSealReviewDetailResponse.ViewModel.Id = customerSealQuarterId;
-                customerSealReviewDetailResponse.ViewModel.Quarter = QuarterUtil.GetTaiwanYearQuarter(customerSealGroupQuery.Quarter);
-
-                TypographicResourceUtil.FilterDeleteResource(customerSealGroupQuery.TypographicResources);
-
-                foreach (TypographicResource typographicResource in FilterCustomerSeals(customerSealGroupQuery.TypographicResources))
-                {
-                    CustomerSealViewModel customerSealViewModel = mapper.Map<CustomerSealViewModel>(typographicResource);
-                    customerSealViewModel.ImageBase64 = imageService.GetPathToBase64(typographicResource.ImageFullPath); //資料庫取得圖檔路徑轉BASE64                                       
-                    customerSealViewModel.SealMappingConfigId = (CustomerSealType)SealMappingConfigUtil.GetCustomerSealType(typographicResource.SubSealType);
-                    customerSealReviewDetailResponse.ViewModel.Seals.Add(customerSealViewModel);
-                }                
-            }
-            customerSealReviewDetailResponse.Success();
+                customerSealReviewDetailResponse.ViewModel = customerSealGroupQuery;
+                customerSealReviewDetailResponse.Success();
+            }            
         
             return customerSealReviewDetailResponse;
         }
@@ -187,22 +123,6 @@ namespace SealTypographicWebAPI.Services.Implements
         {
             int userId = 0;//之後要調整從驗證帳號中取得ID
             return StatusChange(customerSealQuarterIds, ReviewStatus.Refuse, userId);
-        }
-
-        /// <summary>
-        /// 過濾客戶印鑑
-        /// 過濾標記刪除
-        /// 以及排序簽印
-        /// </summary>
-        /// <param name="typographicResource"></param>
-        private List<TypographicResource> FilterCustomerSeals(List<TypographicResource> typographicResource)
-        {
-            List<TypographicResource> typographicQuery = typographicResource
-                                                    .Where(x => x.DeleteStatus == DeleteStatus.No)
-                                                    .OrderBy(x => x.SubSealType)
-                                                    .ThenBy(x => x.Sequence)
-                                                    .ToList();
-            return typographicQuery;
         }
 
         /// <summary>

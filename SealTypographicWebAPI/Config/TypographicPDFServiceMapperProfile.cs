@@ -2,11 +2,9 @@
 using SealTypographicWebAPI.Models.TypographicPDF;
 using DBEntities;
 using DJSpire.Models;
-using DJLib.Models;
 using DBEntities.Consts;
 using SealTypographicWebAPI.Utils;
 using DJLib;
-using Microsoft.EntityFrameworkCore;
 
 namespace SealTypographicWebAPI.Config
 {

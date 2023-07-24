@@ -1,5 +1,4 @@
-﻿using DBEntities;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using SealTypographicWebAPI.Models;
 using SealTypographicWebAPI.Models.Customer;
 using SealTypographicWebAPI.Services;
@@ -41,7 +40,7 @@ namespace SealTypographicWebAPI.Controllers
             try
             {
                 Log.Information("Customer paginate input {@Input}", customerSearch);
-                customerPaginateViewModel = customerService.GetPaginate(customerSearch);
+                customerPaginateViewModel = customerService.GetPaginate(customerSearch, false);
                 Log.Information("Customer paginate output {@Output}", customerPaginateViewModel);
             }
             catch (Exception ex)
@@ -50,7 +49,31 @@ namespace SealTypographicWebAPI.Controllers
                 customerPaginateViewModel.DbError();                
             }
             return customerPaginateViewModel;
-        }        
+        }
+
+        /// <summary>
+        /// 取得客戶資料列表(分頁)
+        /// </summary>
+        /// <param name="customerSearch">客戶分頁搜尋</param>        
+        /// <returns></returns>
+        [HttpGet("[Action]")]
+        public CustomerPaginateViewModel PaginateWithTypographic([FromQuery] CustomerSearch customerSearch)
+        {
+            CustomerPaginateViewModel customerPaginateViewModel = new();
+            try
+            {
+                Log.Information("Customer paginateWithTypographic input {@Input}", customerSearch);
+                customerPaginateViewModel = customerService.GetPaginate(customerSearch, true);
+                Log.Information("Customer paginateWithTypographic output {@Output}", customerPaginateViewModel);
+            }
+            catch (Exception ex)
+            {
+                Log.Error("Customer get paginateWithTypographic error {@Error}", ex.Message);
+                customerPaginateViewModel.DbError();
+            }
+            return customerPaginateViewModel;
+        }
+
 
         /// <summary>
         /// 取得客戶詳細基本資料

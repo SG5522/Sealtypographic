@@ -5,6 +5,7 @@ using SealTypographicWebAPI.Utils;
 using Microsoft.EntityFrameworkCore;
 using DBEntities;
 using DBEntities.Consts;
+using AutoMapper.QueryableExtensions;
 
 namespace SealTypographicWebAPI.Services.Implements
 {
@@ -15,6 +16,7 @@ namespace SealTypographicWebAPI.Services.Implements
     {
         private readonly SealTypographicDbContext dbContext;        
         private readonly IMapper mapper;
+        private readonly AutoMapper.IConfigurationProvider configurationProvider;
 
         /// <summary>
         /// 建構
@@ -25,6 +27,7 @@ namespace SealTypographicWebAPI.Services.Implements
         {
             this.dbContext = dbContext;            
             this.mapper = mapper;
+            configurationProvider = mapper.ConfigurationProvider;
         }
 
         /// <summary>
@@ -52,31 +55,53 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <summary>
         /// 取得客戶資料列表(分頁)
         /// </summary>
-        /// <param name="customerSearch">客戶分頁搜尋</param>  
+        /// <param name="customerSearch">客戶分頁搜尋</param>
+        /// <param name="isTypographicUse">是否給排版使用</param>  
         /// <returns></returns>
-        public CustomerPaginateViewModel GetPaginate(CustomerSearch customerSearch)
-        {
+        public CustomerPaginateViewModel GetPaginate(CustomerSearch customerSearch, bool isTypographicUse)
+        {            
             CustomerPaginateViewModel customerPaginateViewModel = new();
             int companyId = 1;           
+            
+            IQueryable<Customer> customerQuery = dbContext.Customers.Where
+                                                (
+                                                    x => x.Company.Id == companyId
+                                                    && x.DeleteStatus == DeleteStatus.No
+                                                );
 
-            IQueryable<Customer> customerQuery = GetCustomers(companyId, customerSearch.KeyWord);
+            if (isTypographicUse)
+            {
+                customerQuery = customerQuery.Where(accountant => accountant.CustomerSealGroups.Any(x => x.ReviewStatus == ReviewStatus.Approval));
+            }
+
+            if (!string.IsNullOrWhiteSpace(customerSearch.KeyWord))
+            {
+                customerQuery = customerQuery.Where
+                (
+                    customer =>
+                    customer.Code.ToLower().Contains(customerSearch.KeyWord.ToLower())
+                    || customer.Name.Contains(customerSearch.KeyWord)
+                );
+            }
+            customerQuery = customerQuery.OrderBy(customer => customer.Code);
+
 
             if (customerQuery.Any())
             {
-                //取得該頁            
-                List<Customer> pageNumberCustomers = customerQuery
-                                          .Skip((customerSearch.PageNumber - 1) * customerSearch.PageSize)
-                                          .Take(customerSearch.PageSize)                                   
-                                          .ToList();
-                
-                foreach (Customer customer in pageNumberCustomers)
-                {
-                    CustomerViewModel customerViewModel = mapper.Map<CustomerViewModel>(customer);
 
-                    List<CustomerSealGroup> customerSealGroups = dbContext.CustomerSealGroups
-                                                                        .Where(x => x.Customer.Id == customer.Id
+                //取得該頁            
+                List<CustomerViewModel> thisPageCustomers = customerQuery                                                    
+                                                            .Skip((customerSearch.PageNumber - 1) * customerSearch.PageSize)
+                                                            .Take(customerSearch.PageSize)
+                                                            .ProjectTo<CustomerViewModel>(configurationProvider)
+                                                            .ToList();
+
+                foreach (CustomerViewModel customerViewModel in thisPageCustomers)
+                {                         
+                    IQueryable<CustomerSealGroup> customerSealGroups = dbContext.CustomerSealGroups
+                                                                        .Where(x => x.Customer.Id == customerViewModel.Id
                                                                         && x.DeleteStatus == DeleteStatus.No
-                                                                        && x.ReviewStatus < ReviewStatus.Disabled ).ToList();
+                                                                        && x.ReviewStatus < ReviewStatus.Disabled );
 
                     if(customerSealGroups.Any())
                     {

@@ -416,13 +416,13 @@ namespace DBEntities.Consts
         /// <summary>
         /// 直式疊放
         /// </summary>
-        [Description("直式疊放")]
+        [Description("直式排放")]
         Vertical = 0,
 
         /// <summary>
         /// 橫式疊放
         /// </summary>
-        [Description("橫式疊放")]
+        [Description("橫式排放")]
         Horizontal = 1,
     }
     /// <summary>
