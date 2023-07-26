@@ -245,6 +245,12 @@ namespace SealTypographicWebAPI.Consts
         TemporarySealNoData = 7001,
 
         /// <summary>
+        /// 臨時章季度重複
+        /// </summary>
+        [Description("臨時章季度重複")]
+        TemporarySealQuarterRepeat = 7002,
+
+        /// <summary>
         /// 更新臨時章找不到資料
         /// </summary>
         [Description("查無臨時章資料，無法更新臨時章資料")]

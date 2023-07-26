@@ -37,12 +37,16 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <returns></returns>
         public CustomerDetailViewModel GetDetail(int customerId)
         {
-            CustomerDetailViewModel customerDetailViewModel = new();                        
-            Customer? customerQuery = dbContext.Customers.Find(customerId);         
-            
-            if (customerQuery != null)
+            CustomerDetailViewModel customerDetailViewModel = new();                                    
+
+            CustomerDetail? customerDetail = dbContext.Customers
+                                            .Where(x => x.Id == customerId)
+                                            .ProjectTo<CustomerDetail>(configurationProvider)
+                                            .FirstOrDefault();
+
+            if (customerDetail != null)
             {
-                customerDetailViewModel.CustomerDetail = mapper.Map<CustomerDetail>(customerQuery);
+                customerDetailViewModel.CustomerDetail = customerDetail;
                 customerDetailViewModel.Success();
             }
             else

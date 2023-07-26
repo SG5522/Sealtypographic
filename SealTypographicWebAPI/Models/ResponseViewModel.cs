@@ -374,6 +374,15 @@ namespace SealTypographicWebAPI.Models
         }
 
         /// <summary>
+        /// 臨時章季度重複
+        /// </summary>
+        public void TemporarySealQuarterRepeat()
+        {
+            Code = (int)ResponseCode.TemporarySealQuarterRepeat;
+            Message = "Temporary seal quarter Repeat";
+        }
+
+        /// <summary>
         /// 更新臨時章時找不到資料
         /// </summary>
         public void UpdateTemporarySealNoData()

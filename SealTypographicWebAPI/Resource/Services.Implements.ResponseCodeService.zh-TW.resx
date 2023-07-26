@@ -201,6 +201,10 @@
     <value>查無會計師簽印資料，無法刪除印鑑</value>
     <comment>3131</comment>
   </data>
+  <data name="DeleteAccountantSignTemplateNoData" xml:space="preserve">
+    <value>查無會計師簽印樣板，無法刪除資料</value>
+    <comment>8104</comment>
+  </data>
   <data name="DeleteCustomerNoData" xml:space="preserve">
     <value>查無客戶資料，無法刪除客戶資料</value>
     <comment>2031</comment>
@@ -209,6 +213,10 @@
     <value>查無客戶印鑑資料，無法刪除印鑑</value>
     <comment>2131</comment>
   </data>
+  <data name="DeleteCustomerSealTemplateNoData" xml:space="preserve">
+    <value>查無客戶印鑑樣板，無法刪除資料</value>
+    <comment>8004</comment>
+  </data>
   <data name="DeleteLetterheadImageNoData" xml:space="preserve">
     <value>查無信頭圖像資料，無法刪除信頭圖像資料</value>
     <comment>4131</comment>
@@ -216,6 +224,14 @@
   <data name="DeleteLetterheadNoData" xml:space="preserve">
     <value>查無信頭資料，無法刪除信頭資料</value>
     <comment>4031</comment>
+  </data>
+  <data name="DeleteLetterImageTemplateNoData" xml:space="preserve">
+    <value>查無信頭樣板，無法刪除資料</value>
+    <comment>8204</comment>
+  </data>
+  <data name="DeleteTemporarySealNoData" xml:space="preserve">
+    <value>查無臨時章資料，無法刪除臨時章資料</value>
+    <comment>7004</comment>
   </data>
   <data name="FileUploadFailed" xml:space="preserve">
     <value>檔案上傳失敗，請確認網路環境</value>
@@ -232,6 +248,14 @@
   <data name="Success" xml:space="preserve">
     <value>成功</value>
     <comment>0</comment>
+  </data>
+  <data name="TemporarySealNoData" xml:space="preserve">
+    <value>查無臨時章</value>
+    <comment>7001</comment>
+  </data>
+  <data name="TemporarySealQuarterRepeat" xml:space="preserve">
+    <value>臨時章季度重複</value>
+    <comment>7002</comment>
   </data>
   <data name="UpdateAccountantGroupNoData" xml:space="preserve">
     <value>查無會計師群組資料，無法更新會計師群組資料</value>
@@ -268,5 +292,9 @@
   <data name="UpdateLetterheadNoData" xml:space="preserve">
     <value>查無信頭資料，無法更新信頭資料</value>
     <comment>4021</comment>
+  </data>
+  <data name="UpdateTemporarySealNoData" xml:space="preserve">
+    <value>查無臨時章資料，無法更新臨時章資料</value>
+    <comment>7003</comment>
   </data>
 </root>

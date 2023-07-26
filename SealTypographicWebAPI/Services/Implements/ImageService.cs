@@ -2,9 +2,7 @@
 using Microsoft.Extensions.Options;
 using SealTypographicWebAPI.Config;
 using SealTypographicWebAPI.Models;
-using SixLabors.ImageSharp;
 using DBEntities.Consts;
-using SixLabors.ImageSharp.Formats;
 using DJLib.Models;
 
 namespace SealTypographicWebAPI.Services.Implements

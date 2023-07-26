@@ -67,7 +67,7 @@ namespace SealTypographicWebAPI.Services.Implements
                 typographicPDFs = typographicPDFs.Where
                                 (
                                     x => x.Quarter.TaiwanYear.Contains(typographicPDFSearch.Quarter.Substring(0, 3))
-                                    && x.Quarter.Period == typographicPDFSearch.Quarter.Substring(3)
+                                    || x.Quarter.Period == typographicPDFSearch.Quarter.Substring(3)
                                 );
             }
 

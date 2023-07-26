@@ -30,6 +30,7 @@ builder.Services.Configure<SealPathOption>(
 builder.Services.Configure<TemplateImagePathOption>(
     builder.Configuration.GetSection("TemplateImagePath"));
 
+
 //addCors
 builder.Services.AddCors(options =>
 {
@@ -134,6 +135,9 @@ builder.Configuration
     .GetSection(KeycloakAuthenticationOptions.Section)
     .Bind(keycloakAuthenticationOptions, opt => opt.BindNonPublicProperties = true);
 
+builder.Services.AddSingleton(keycloakAuthenticationOptions);
+
+
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo
@@ -182,6 +186,7 @@ builder.Services.AddSwaggerGen(c =>
             {
                 {securityScheme, Array.Empty<string>()}
             });
+    // 取得TOKEN
     //c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
     //{
     //    Name = "Authorization",

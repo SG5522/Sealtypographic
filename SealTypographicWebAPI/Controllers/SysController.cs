@@ -1,5 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Keycloak.AuthServices.Authentication;
+using Microsoft.Extensions.Options;
+using SealTypographicWebAPI.Config;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -14,14 +17,21 @@ namespace SealTypographicWebAPI.Controllers
     public class SysController : ControllerBase
     {
         private readonly ILogger<SysController> logger;
+        private readonly IWebHostEnvironment environment;
+        private readonly KeycloakAuthenticationOptions keycloakAuthenticationOptions;
 
         /// <summary>
         /// 建構
         /// </summary>
         /// <param name="logger"></param>
-        public SysController(ILogger<SysController> logger)
+        /// <param name="environment"></param>
+        /// <param name="keycloakAuthenticationOptions"></param>
+        public SysController(ILogger<SysController> logger, IWebHostEnvironment environment, KeycloakAuthenticationOptions keycloakAuthenticationOptions)
+            //IOptionsSnapshot<KeycloakAuthenticationOptions> keycloakAuthenticationOptions)
         {
             this.logger = logger;
+            this.environment = environment;
+            this.keycloakAuthenticationOptions = keycloakAuthenticationOptions;
         }
 
         /// <summary>
@@ -38,28 +48,26 @@ namespace SealTypographicWebAPI.Controllers
         }
 
         /// <summary>
-        /// 取得ASPNETCOREENVIRONMENT的環境變數
+        /// 取得ENVIRONMENT的環境變數
         /// </summary>
         /// <returns></returns>
         [HttpGet("[Action]")]
-        public string EnvironmentVariable()
+        public string EnvironmentName()
         {
-
-            logger.LogDebug("Check EnvironmentVariable");
-            string result;
-            string? aspnetcoreEnvironment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");            
-
-            if (aspnetcoreEnvironment != string.Empty)
-            {
-                result = $"{"ASPNETCORE_ENVIRONMENT :"}{aspnetcoreEnvironment}";
-            }
-            else
-            {
-                result = $"{"ENVIRONMENT :"}{Environment.GetEnvironmentVariable("environment")}";
-            }
-            
-            logger.LogDebug("Check EnvironmentVariable End");
+            logger.LogDebug("Check EnvironmentName");
+            string result = $"{"ENVIRONMENT :"}{environment.EnvironmentName}";            
+            logger.LogDebug("Check EnvironmentName End");
             return result;
+        }
+
+        /// <summary>
+        /// 取得Keycloak參數
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("[Action]")]
+        public KeycloakAuthenticationOptions Keycloak()
+        {
+            return keycloakAuthenticationOptions;
         }
     }
 }
