@@ -1,22 +1,14 @@
-﻿using DBEntities;
-using Serilog;
-using System.Reflection;
+using DBEntities;
+using Keycloak.AuthServices.Authentication;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Mvc.Razor;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
+using SealTypographicWebAPI.Config;
 using SealTypographicWebAPI.Services;
 using SealTypographicWebAPI.Services.Implements;
-using SealTypographicWebAPI.Config;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Mvc.Razor;
-using Microsoft.OpenApi.Models;
-using SixLabors.ImageSharp;
-using Keycloak.AuthServices.Authentication;
-using Microsoft.Extensions.Configuration;
-using Keycloak.AuthServices.Authorization;
-using Microsoft.Extensions.Hosting;
-using Microsoft.AspNetCore.Authorization;
-using System.Security.Claims;
-using Microsoft.IdentityModel.Logging;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.Extensions.Options;
+using Serilog;
+using System.Reflection;
 
 string allowSpecificOrigins = "allowSpecificOrigins";
 string allowAllOrigins = "allowAllOrigins";
@@ -136,12 +128,14 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 
+KeycloakAuthenticationOptions keycloakAuthenticationOptions = new();
+
+builder.Configuration
+    .GetSection(KeycloakAuthenticationOptions.Section)
+    .Bind(keycloakAuthenticationOptions, opt => opt.BindNonPublicProperties = true);
+
 builder.Services.AddSwaggerGen(c =>
 {
-    //Set the comments path for the Swagger JSON and UI.
-    string xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-    string xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
-
     c.SwaggerDoc("v1", new OpenApiInfo
     {        
         Version = Assembly.GetExecutingAssembly().GetName().Version?.ToString(),
@@ -163,20 +157,72 @@ builder.Services.AddSwaggerGen(c =>
     //@解決部份宣告不為nullable 但還是nullable:true 的問題
     c.SupportNonNullableReferenceTypes();
 
-    c.IncludeXmlComments(xmlPath,true);
-    
+    c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, $"{Assembly.GetExecutingAssembly().GetName().Name}.xml"), true);
+    var securityScheme = new OpenApiSecurityScheme
+    {
+        Name = "Auth",
+        Type = SecuritySchemeType.OAuth2,
+        Reference = new OpenApiReference
+        {
+            Id = JwtBearerDefaults.AuthenticationScheme,
+            Type = ReferenceType.SecurityScheme
+        },
+        Flows = new OpenApiOAuthFlows
+        {
+            AuthorizationCode = new OpenApiOAuthFlow
+            {
+                AuthorizationUrl = new Uri($"{keycloakAuthenticationOptions.KeycloakUrlRealm}/protocol/openid-connect/auth"),
+                TokenUrl = new Uri($"{keycloakAuthenticationOptions.KeycloakUrlRealm}/protocol/openid-connect/token"),
+                Scopes = new Dictionary<string, string>(),
+            }
+        }
+    };
+    c.AddSecurityDefinition(securityScheme.Reference.Id, securityScheme);
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement
+            {
+                {securityScheme, Array.Empty<string>()}
+            });
+    //c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
+    //{
+    //    Name = "Authorization",
+    //    In = ParameterLocation.Header,
+    //    Type = SecuritySchemeType.ApiKey,
+    //    Scheme = "Bearer",
+    //    BearerFormat = "JWT",
+    //    Description = "JWT Authorization header using the Bearer scheme."
+    //});
+
+    //c.AddSecurityRequirement(new OpenApiSecurityRequirement
+    //    {
+    //        {
+    //            new OpenApiSecurityScheme
+    //            {
+    //                Reference = new OpenApiReference
+    //                {
+    //                    Type = ReferenceType.SecurityScheme,
+    //                    Id = "Bearer"
+    //                }
+    //            },
+    //            new string[] {}
+    //        }
+    //    });
     //c.SchemaFilter<EnumSchemaFilter>();
 });
 
 #region -- Authentication --
-//builder.Services.AddKeycloakAuthentication(builder.Configuration);
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-            .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, o =>
-            {
-                o.MetadataAddress = "https://<your-keycloak-server>/realms/<your-realm>/.well-known/openid-configuration";
-                o.Authority = "https://<your-keycloak-server>/realms/<your-realm>";
-                o.Audience = "account";
-            });
+builder.Services.AddKeycloakAuthentication(keycloakAuthenticationOptions, options =>
+{
+    options.RequireHttpsMetadata = false;
+    options.Audience = "account";
+});
+//builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+//            .AddJwtBearer(o =>
+//            {
+//                o.RequireHttpsMetadata = false;
+//                //o.MetadataAddress = builder.Configuration["Jwt:MetadataAddress"];
+//                o.Authority = builder.Configuration["Jwt:Authority"];
+//                o.Audience = builder.Configuration["Jwt:Audience"];
+//            });
 #endregion
 
 builder.Host.UseWindowsService();
@@ -217,9 +263,9 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-app.MapGet("/", (ClaimsPrincipal user) =>
-{
-    app.Logger.LogInformation(user.Identity.Name);
-}).RequireAuthorization();
+//app.MapGet("/", (ClaimsPrincipal user) =>
+//{
+//    app.Logger.LogInformation(user.Identity.Name);
+//}).RequireAuthorization();
 
 app.Run();

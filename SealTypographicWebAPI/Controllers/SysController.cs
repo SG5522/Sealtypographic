@@ -28,7 +28,7 @@ namespace SealTypographicWebAPI.Controllers
         /// 簡易測試系統狀態
         /// </summary>
         /// <returns></returns>
-        [HttpGet("[Action]")]
+        [HttpGet]
         public string Hello()
         {
             logger.LogDebug("Hello Begin");
