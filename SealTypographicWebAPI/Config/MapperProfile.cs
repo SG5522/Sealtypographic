@@ -64,7 +64,7 @@ namespace SealTypographicWebAPI.Config
                     .ForMember(dst => dst.AccountantSignGroupId, opt => opt.MapFrom
                     (
                         src => src.AccountantSignGroups.Any() ? src.AccountantSignGroups.First().Id : 0
-                    ));;
+                    ));
 
             CreateMap<Accountant, AccountantDetailViewModel>()
                     .ForMember(x => x.AccountantNumber, y => y.MapFrom(o => o.Code))
@@ -118,19 +118,27 @@ namespace SealTypographicWebAPI.Config
 
             //臨時章Log使用
             CreateMap<TemporarySealViewModel, TemporarySealLogModel>();
+
             CreateMap<TemporarySealDetailViewModel, TemporarySealDetailLogModel>()
                     .ForMember(dst => dst.ViewModels, y => y.Ignore());
 
             CreateMap<TemporarySealGroup, TemporarySealDetailViewModel>()
                     .ForMember(dst => dst.CustomerId, opt => opt.MapFrom(src => src.Customer.Id))
                     .ForMember(dst => dst.CustomerName, opt => opt.MapFrom(src => src.Customer.Name))
-                    .ForMember(dst => dst.ViewModels, opt => opt.MapFrom(src => src.TypographicResources));
+                    .ForMember(dst => dst.ViewModels, opt => opt.MapFrom(src => src.TypographicResources
+                                                                        .Where(x => x.DeleteStatus == DeleteStatus.No)
+                                                                        .OrderBy(x => x.Sequence)));
 
             CreateMap<TypographicResource, TemporarySealViewModel>()
                     .ForMember(dst => dst.Id, opt => opt.MapFrom(src => src.Id))
                     .ForMember(dst => dst.Sequence, opt => opt.MapFrom(src => src.Sequence))
                     .ForMember(dst => dst.ImageFullPath, opt => opt.MapFrom(src => src.ImageFullPath))
                     .ForMember(dst => dst.ImageBase64, opt => opt.MapFrom(src => ImageSharpUtil.PathImageFileToBase64(src.ImageFullPath)));
+
+            CreateMap<TemporarySealGroup, TemporaryViewModel>()
+                    .ForMember(dst => dst.Id, opt => opt.MapFrom(src => src.Id))
+                    .ForMember(dst => dst.CustomerName, opt => opt.MapFrom(src => src.Customer.Name))
+                    .ForMember(dst => dst.Quarter, opt => opt.MapFrom(src => QuarterUtil.GetTaiwanYearQuarter(src.Quarter)));
         }
     }
 }

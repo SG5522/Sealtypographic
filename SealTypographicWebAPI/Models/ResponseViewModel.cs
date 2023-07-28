@@ -428,6 +428,15 @@ namespace SealTypographicWebAPI.Models
         }
 
         /// <summary>
+        /// 季度不可超過年份(第三階段之後不需要判斷這部份)
+        /// </summary>
+        public void QuarterOutOfRange()
+        {
+            Code = (int)ResponseCode.QuarterOutOfRange;
+            Message = "Quarter out of range";
+        }
+
+        /// <summary>
         /// 回傳失敗
         /// </summary>
         public void Error()

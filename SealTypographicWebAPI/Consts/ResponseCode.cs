@@ -26,6 +26,13 @@ namespace SealTypographicWebAPI.Consts
         DbError = 1001,
 
         /// <summary>
+        /// 季度不可超過年份(第三階段之後不需要判斷這部份)
+        /// </summary>
+        [Description("季度不可超出範圍")]
+        QuarterOutOfRange = 1002,
+
+
+        /// <summary>
         /// 客戶無資料
         /// </summary>
         [Description("查無客戶資料")]

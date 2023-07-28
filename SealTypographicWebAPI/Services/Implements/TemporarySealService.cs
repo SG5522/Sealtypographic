@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using DBEntities;
 using DBEntities.Consts;
 using DJLib.Models;
@@ -17,7 +18,8 @@ namespace SealTypographicWebAPI.Services.Implements
     {
         private readonly SealTypographicDbContext dbContext;
         private readonly ImageService imageService;
-        private readonly IMapper mapper;        
+        private readonly IMapper mapper;
+        private readonly AutoMapper.IConfigurationProvider configurationProvider;
 
         /// <summary>
         /// 建構
@@ -30,6 +32,7 @@ namespace SealTypographicWebAPI.Services.Implements
             this.dbContext = dbContext;
             this.imageService = imageService;
             this.mapper = mapper;
+            configurationProvider = mapper.ConfigurationProvider;
         }
 
         /// <summary>
@@ -40,24 +43,23 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <returns></returns>
         public TemporarySealDetailViewModel GetDetail(int temporaryId, bool isTransparent)
         {            
-            TemporarySealDetailViewModel? temporarySealDetailViewModel = mapper.ProjectTo<TemporarySealDetailViewModel>
-                                                                        (
-                                                                            dbContext.TemporarySealGroups
-                                                                            .Include(x => x.TypographicResources)
-                                                                            .Include(x => x.Customer)
-                                                                            .Where(x => x.Id == temporaryId)
-                                                                        ).FirstOrDefault();           
+            TemporarySealDetailViewModel? temporarySealDetailViewModel = dbContext.TemporarySealGroups
+                                                                        .Include(x => x.TypographicResources)
+                                                                        .Include(x => x.Customer)                                                                        
+                                                                        .Where(x => x.Id == temporaryId)                                                                          
+                                                                        .ProjectTo<TemporarySealDetailViewModel>(configurationProvider)                                                                        
+                                                                        .FirstOrDefault();
 
             if(temporarySealDetailViewModel != null)
-            {           
-                if(isTransparent)
+            {               
+                if (isTransparent)
                 {
                     foreach (TemporarySealViewModel temporarySealViewModel in temporarySealDetailViewModel.ViewModels)
                     {
                         ImageInfo imageInfo = ImageInfo.FromImageBase64(temporarySealViewModel.ImageBase64);
                         temporarySealViewModel.ImageBase64 = imageInfo.TransparentToImageBase64();
                     }
-                }
+                }                
                 temporarySealDetailViewModel.Success();                
                 Log.Information("TemporarySeal detail output {@Output}", mapper.Map<TemporarySealDetailLogModel>(temporarySealDetailViewModel));
             }
@@ -97,24 +99,18 @@ namespace SealTypographicWebAPI.Services.Implements
                     temporarySealGroupQuery = temporarySealGroupQuery.Where(temporarySealGroup => temporarySealGroup.Customer.Id == temporarySealSearch.CustomerId);
                 }
             }
-            temporarySealGroupQuery = temporarySealGroupQuery.OrderBy(temporarySealGroup => temporarySealGroup.Id);
+            temporarySealGroupQuery = temporarySealGroupQuery.OrderByDescending(temporarySealGroup => temporarySealGroup.Customer.Id)
+                                                             .ThenByDescending(temporarySealGroup => temporarySealGroup.Quarter);
 
             if(temporarySealGroupQuery.Any())
-            {
+            {                
+                temporarySealPaginateViewModel.ViewModels = temporarySealGroupQuery
+                                                            .Include(temporarySealGroup => temporarySealGroup.Customer)
+                                                            .Skip((temporarySealSearch.PageNumber - 1) * temporarySealSearch.PageSize)
+                                                            .Take(temporarySealSearch.PageSize)
+                                                            .ProjectTo<TemporaryViewModel>(configurationProvider)
+                                                            .ToList();
 
-                List<TemporaryViewModel> thisPageTemporarySealGroups = temporarySealGroupQuery
-                                                                      .Include(temporarySealGroup => temporarySealGroup.Customer)
-                                                                      .Skip((temporarySealSearch.PageNumber - 1) * temporarySealSearch.PageSize)
-                                                                      .Take(temporarySealSearch.PageSize)
-                                                                      .Select(temporarySealGroup => new TemporaryViewModel()
-                                                                      {
-                                                                          Id = temporarySealGroup.Id,
-                                                                          CustomerName = temporarySealGroup.Customer.Name,
-                                                                          Quarter = QuarterUtil.GetTaiwanYearQuarter(temporarySealGroup.Quarter)                                                                          
-                                                                      })
-                                                                      .ToList();
-
-                temporarySealPaginateViewModel.ViewModels = thisPageTemporarySealGroups;
                 temporarySealPaginateViewModel.PageNumber = temporarySealSearch.PageNumber;
                 temporarySealPaginateViewModel.PageSize = temporarySealSearch.PageSize;
                 //計算總頁數
@@ -136,12 +132,19 @@ namespace SealTypographicWebAPI.Services.Implements
 
             //取得季度
             //之後輸入要從前端提供Id
-            Quarter quarter = dbContext.Quarters.Single
-                            (
-                                x => x.TaiwanYear == temporarySealForm.Quarter.Substring(0, 3)
-                                && x.Period == temporarySealForm.Quarter.Substring(3)
-                            );
+            Quarter? quarter = dbContext.Quarters.FirstOrDefault
+                                (
+                                    x => x.TaiwanYear == temporarySealForm.Quarter.Substring(0, 3)
+                                    && x.Period == temporarySealForm.Quarter.Substring(3)
+                                );
+            if(quarter != null)
+            {
 
+            }
+            else
+            {
+                response.Error();
+            }
             Customer? customerQuery = dbContext.Customers
                                     .Include(customer => customer.TemporarySealGroups)                                    
                                     .ThenInclude(temporarySealGroup => temporarySealGroup.TypographicResources)

@@ -47,8 +47,8 @@ namespace SealTypographicWebAPI.Services.Implements
                                                                 .Include(customerSealGroups => customerSealGroups.Quarter)
                                                                 .Where
                                                                 (
-                                                                    customerSealGroup => customerSealGroup.Customer.Id == customerId                                                                    
-                                                                    && customerSealGroup.DeleteStatus == DeleteStatus.No
+                                                                customerSealGroup => customerSealGroup.Customer.Id == customerId                                                                    
+                                                                && customerSealGroup.DeleteStatus == DeleteStatus.No
                                                                 );
 
             if (isTypographic)
@@ -88,9 +88,10 @@ namespace SealTypographicWebAPI.Services.Implements
         {            
             CustomerSealViewModels? customerSealViewModels = dbContext.CustomerSealGroups
                                                             .Include(customerSealGroup => customerSealGroup.TypographicResources)
-                                                            .Include(customerSealGroup => customerSealGroup.Quarter)
+                                                            .Include(customerSealGroup => customerSealGroup.Quarter) 
+                                                            .Where(x => x.Id == customerSealQuarterId)
                                                             .ProjectTo<CustomerSealViewModels>(configurationProvider)
-                                                            .FirstOrDefault(x => x.CustomerSealQuarterId == customerSealQuarterId);            
+                                                            .FirstOrDefault();            
             
             if (customerSealViewModels != null)
             {
