@@ -31,7 +31,6 @@ namespace SealTypographicWebAPI.Consts
         [Description("季度不可超出範圍")]
         QuarterOutOfRange = 1002,
 
-
         /// <summary>
         /// 客戶無資料
         /// </summary>

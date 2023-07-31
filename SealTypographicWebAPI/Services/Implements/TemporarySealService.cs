@@ -137,48 +137,49 @@ namespace SealTypographicWebAPI.Services.Implements
                                     x => x.TaiwanYear == temporarySealForm.Quarter.Substring(0, 3)
                                     && x.Period == temporarySealForm.Quarter.Substring(3)
                                 );
-            if(quarter != null)
-            {
 
-            }
-            else
+            if (quarter != null)
             {
-                response.Error();
-            }
-            Customer? customerQuery = dbContext.Customers
-                                    .Include(customer => customer.TemporarySealGroups)                                    
-                                    .ThenInclude(temporarySealGroup => temporarySealGroup.TypographicResources)
-                                    .FirstOrDefault
-                                    (
-                                        customer => customer.Id == temporarySealForm.CustomerId                                        
-                                    );
-            
-            if (customerQuery != null) 
-            {                
-                if (!customerQuery.TemporarySealGroups.Any(x => x.Quarter == quarter))
+                Customer? customerQuery = dbContext.Customers
+                                        .Include(customer => customer.TemporarySealGroups)
+                                        .ThenInclude(temporarySealGroup => temporarySealGroup.TypographicResources)
+                                        .FirstOrDefault
+                                        (
+                                            customer => customer.Id == temporarySealForm.CustomerId
+                                        );
+
+                if (customerQuery != null)
                 {
-                    TemporarySealGroup temporarySealGroup = new();
-                    List<TypographicResource> typographicResources = new();
-                    ImageBase64Info imageBase64Info = imageService.SetImageBase64InfoWithSeal(customerQuery.Code, SealType.TemporarySeal);
-                    int userId = 0;
+                    if (!customerQuery.TemporarySealGroups.Any(x => x.Quarter == quarter))
+                    {
+                        TemporarySealGroup temporarySealGroup = new();
+                        List<TypographicResource> typographicResources = new();
+                        ImageBase64Info imageBase64Info = imageService.SetImageBase64InfoWithSeal(customerQuery.Code, SealType.TemporarySeal);
+                        int userId = 0;
 
-                    BaseInputTemporarySealGroup(temporarySealGroup, true, userId);
-                    await NewTypographyResource(temporarySealForm.Seals, typographicResources, imageBase64Info, userId);
-                    temporarySealGroup.Quarter = quarter;
-                    temporarySealGroup.TypographicResources = typographicResources;
-                    customerQuery.TemporarySealGroups.Add(temporarySealGroup);
-                    dbContext.SaveChanges();
-                    response.Success();
+                        BaseInputTemporarySealGroup(temporarySealGroup, true, userId);
+                        await NewTypographyResource(temporarySealForm.Seals, typographicResources, imageBase64Info, userId);
+                        temporarySealGroup.Quarter = quarter;
+                        temporarySealGroup.TypographicResources = typographicResources;
+                        customerQuery.TemporarySealGroups.Add(temporarySealGroup);
+                        dbContext.SaveChanges();
+                        response.Success();
+                    }
+                    else
+                    {
+                        response.TemporarySealQuarterRepeat();
+                    }
                 }
                 else
                 {
-                    response.TemporarySealQuarterRepeat();
+                    response.CustomeNoData();
                 }
             }
             else
             {
-                response.CustomeNoData();
+                response.QuarterOutOfRange();
             }
+
             return response;
         }
 
@@ -273,8 +274,6 @@ namespace SealTypographicWebAPI.Services.Implements
             }
             return response;
         }
-
-
 
         /// <summary>
         /// 客戶印鑑新增修改時基本的資料輸入
