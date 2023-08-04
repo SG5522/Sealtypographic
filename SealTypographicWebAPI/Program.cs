@@ -1,13 +1,19 @@
 using DBEntities;
 using Keycloak.AuthServices.Authentication;
+using Keycloak.AuthServices.Authorization;
+using Keycloak.AuthServices.Sdk.Admin;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.OpenApi.Models;
 using SealTypographicWebAPI.Config;
 using SealTypographicWebAPI.Services;
 using SealTypographicWebAPI.Services.Implements;
 using Serilog;
+using SixLabors.ImageSharp;
 using System.Reflection;
 
 string allowSpecificOrigins = "allowSpecificOrigins";
@@ -137,7 +143,6 @@ builder.Configuration
 
 builder.Services.AddSingleton(keycloakAuthenticationOptions);
 
-
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo
@@ -229,6 +234,28 @@ builder.Services.AddKeycloakAuthentication(keycloakAuthenticationOptions, option
 //                o.Audience = builder.Configuration["Jwt:Audience"];
 //            });
 #endregion
+
+KeycloakProtectionClientOptions? authorizationOptions = builder.Configuration
+                                                        .GetSection(KeycloakProtectionClientOptions.Section)
+                                                        .Get<KeycloakProtectionClientOptions>();
+
+builder.Services
+    .AddAuthorization(o => o.AddPolicy("IsAdmin", b =>
+    {
+        b.RequireRealmRoles("admin");
+        b.RequireResourceRoles("r-admin");
+        // TokenValidationParameters.RoleClaimType is overriden
+        // by KeycloakRolesClaimsTransformation
+        b.RequireRole("r-admin");
+    }))
+    .AddKeycloakAuthorization(authorizationOptions);
+
+var adminClientOptions = builder.Configuration
+    .GetSection(KeycloakAdminClientOptions.Section)
+    .Get<KeycloakAdminClientOptions>();
+
+builder.Services.AddKeycloakAdminHttpClient(adminClientOptions);
+
 
 builder.Host.UseWindowsService();
 
