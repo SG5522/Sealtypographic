@@ -1,7 +1,4 @@
-﻿using DBEntities.Consts;
-using DJLib.Models;
-
-namespace SealTypographicWebAPI.Models
+﻿namespace SealTypographicWebAPI.Models
 {
     /// <summary>
     /// ImageBase64資訊

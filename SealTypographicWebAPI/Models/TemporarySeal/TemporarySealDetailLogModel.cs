@@ -1,28 +1,5 @@
-﻿using SealTypographicWebAPI.Models.BaseModels;
-using System.Collections.Generic;
-using System.Text.Encodings.Web;
-using System.Text.Json;
-using System.Text.Json.Serialization;
-
-namespace SealTypographicWebAPI.Models.TemporarySeal
+﻿namespace SealTypographicWebAPI.Models.TemporarySeal
 {
-    /// <summary>
-    /// 臨時章
-    /// </summary>
-    public class TemporarySealLogModel : BaseData
-    {
-        /// <summary>
-        /// 印鑑編號(排序)
-        /// </summary>
-        public int Sequence { get; set; }
-
-        /// <summary>
-        /// 紀錄檔名使用
-        /// </summary>        
-        public string ImageFileName { get; set; }
-
-    }
-
     /// <summary>
     /// 臨時章詳細
     /// </summary>

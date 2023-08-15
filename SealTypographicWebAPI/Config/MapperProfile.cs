@@ -9,6 +9,7 @@ using DBEntities;
 using DJLib;
 using SealTypographicWebAPI.Utils;
 using DBEntities.Consts;
+using DJLib.Models;
 
 namespace SealTypographicWebAPI.Config
 {
@@ -117,10 +118,10 @@ namespace SealTypographicWebAPI.Config
                       .ForMember(dst => dst.LetterheadImageId, opt => opt.MapFrom(src => src.TypographicResources.Single(x => x.DeleteStatus == DeleteStatus.No).Id));
 
             //臨時章Log使用
+            CreateMap<TemporarySealDetailViewModel, TemporarySealDetailLogModel>();       
+                //subList
             CreateMap<TemporarySealViewModel, TemporarySealLogModel>();
 
-            CreateMap<TemporarySealDetailViewModel, TemporarySealDetailLogModel>()
-                    .ForMember(dst => dst.ViewModels, y => y.Ignore());
 
             CreateMap<TemporarySealGroup, TemporarySealDetailViewModel>()
                     .ForMember(dst => dst.CustomerId, opt => opt.MapFrom(src => src.Customer.Id))

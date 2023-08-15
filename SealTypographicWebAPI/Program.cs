@@ -13,7 +13,6 @@ using SealTypographicWebAPI.Config;
 using SealTypographicWebAPI.Services;
 using SealTypographicWebAPI.Services.Implements;
 using Serilog;
-using SixLabors.ImageSharp;
 using System.Reflection;
 
 string allowSpecificOrigins = "allowSpecificOrigins";
@@ -254,7 +253,7 @@ var adminClientOptions = builder.Configuration
     .GetSection(KeycloakAdminClientOptions.Section)
     .Get<KeycloakAdminClientOptions>();
 
-builder.Services.AddKeycloakAdminHttpClient(adminClientOptions);
+//builder.Services.AddKeycloakAdminHttpClient(adminClientOptions);
 
 
 builder.Host.UseWindowsService();
