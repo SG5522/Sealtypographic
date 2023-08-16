@@ -20,7 +20,7 @@ namespace SealTypographicWebAPI.Controllers
         private readonly ILogger<SysController> logger;
         private readonly IWebHostEnvironment environment;
         private readonly KeycloakAuthenticationOptions keycloakAuthenticationOptions;
-        private readonly ClaimsPrincipal claimsPrincipal;
+        //private readonly ClaimsPrincipal claimsPrincipal;
 
         /// <summary>
         /// 建構
@@ -28,13 +28,13 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="logger"></param>
         /// <param name="environment"></param>
         /// <param name="keycloakAuthenticationOptions"></param>   
-        public SysController(ILogger<SysController> logger, IWebHostEnvironment environment, KeycloakAuthenticationOptions keycloakAuthenticationOptions,
-            ClaimsPrincipal claimsPrincipal)
+        public SysController(ILogger<SysController> logger, IWebHostEnvironment environment, KeycloakAuthenticationOptions keycloakAuthenticationOptions)
+        //    ClaimsPrincipal claimsPrincipal)
         {
             this.logger = logger;
             this.environment = environment;
             this.keycloakAuthenticationOptions = keycloakAuthenticationOptions;
-            this.claimsPrincipal = claimsPrincipal;
+            //this.claimsPrincipal = claimsPrincipal;
         }
 
         /// <summary>
@@ -46,6 +46,7 @@ namespace SealTypographicWebAPI.Controllers
         {
             logger.LogDebug("Hello Begin");
             string result = string.Format("Server Run OK. Ver. {0}", typeof(SysController).Assembly.GetName().Version);
+            IEnumerable<Claim> users = User.Claims;            
             logger.LogDebug("Hello End");
             return result;
         }
@@ -73,14 +74,14 @@ namespace SealTypographicWebAPI.Controllers
             return keycloakAuthenticationOptions;
         }
 
-        /// <summary>
-        /// 取得Keycloak參數
-        /// </summary>
-        /// <returns></returns>
-        [HttpGet("[Action]")]
-        public string UserName()
-        {            
-            return claimsPrincipal.Identity.Name;
-        }
+        ///// <summary>
+        ///// 取得Keycloak參數
+        ///// </summary>
+        ///// <returns></returns>
+        //[HttpGet("[Action]")]
+        //public string UserName()
+        //{            
+        //    return claimsPrincipal.Identity.Name;
+        //}
     }
 }

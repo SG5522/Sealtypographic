@@ -234,28 +234,6 @@ builder.Services.AddKeycloakAuthentication(keycloakAuthenticationOptions, option
 //            });
 #endregion
 
-KeycloakProtectionClientOptions? authorizationOptions = builder.Configuration
-                                                        .GetSection(KeycloakProtectionClientOptions.Section)
-                                                        .Get<KeycloakProtectionClientOptions>();
-
-builder.Services
-    .AddAuthorization(o => o.AddPolicy("IsAdmin", b =>
-    {
-        b.RequireRealmRoles("admin");
-        b.RequireResourceRoles("r-admin");
-        // TokenValidationParameters.RoleClaimType is overriden
-        // by KeycloakRolesClaimsTransformation
-        b.RequireRole("r-admin");
-    }))
-    .AddKeycloakAuthorization(authorizationOptions);
-
-var adminClientOptions = builder.Configuration
-    .GetSection(KeycloakAdminClientOptions.Section)
-    .Get<KeycloakAdminClientOptions>();
-
-//builder.Services.AddKeycloakAdminHttpClient(adminClientOptions);
-
-
 builder.Host.UseWindowsService();
 
 var app = builder.Build();
@@ -293,10 +271,5 @@ app.UseAuthorization();
 //app.UseSerilogRequestLogging(); // <-SeriLog 
 
 app.MapControllers();
-
-//app.MapGet("/", (ClaimsPrincipal user) =>
-//{
-//    app.Logger.LogInformation(user.Identity.Name);
-//}).RequireAuthorization();
 
 app.Run();
