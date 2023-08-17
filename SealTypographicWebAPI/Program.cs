@@ -97,6 +97,7 @@ builder.Services.AddScoped<ResponseCodeService>();
 builder.Services.AddScoped<ReviewStatusService>();
 builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
 
+
 //DB Process
 builder.Services.AddScoped<ICustomerService, CustomerService>();
 builder.Services.AddScoped<ICustomerSealService, CustomerSealService>();
