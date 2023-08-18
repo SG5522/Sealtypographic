@@ -1,16 +1,21 @@
-﻿using DBEntities.Base;
+﻿using Microsoft.AspNetCore.Identity;
 
 namespace DBEntities
 {
     /// <summary>
     /// 使用者
     /// </summary>
-    public class User : BaseData
+    public class User : IdentityUser
     {
+        public User() : base()
+        {
+            Id = 0;
+        }
+
         /// <summary>
-        /// 登入帳號
+        /// 
         /// </summary>
-        public string Account { get; set; }
+        public new int Id { get; set; }
 
         /// <summary>
         /// 密碼
