@@ -5,17 +5,12 @@ namespace DBEntities
     /// <summary>
     /// 使用者
     /// </summary>
-    public class User : IdentityUser
+    public class User : IdentityUser<int>
     {
         public User() : base()
         {
             Id = 0;
         }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public new int Id { get; set; }
 
         /// <summary>
         /// 密碼

@@ -4,8 +4,10 @@ using Keycloak.AuthServices.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using RestSharp;
+using RestSharp.Authenticators;
 using RestSharp.Authenticators.OAuth2;
 using RTools_NTS.Util;
+using SealTypographicWebAPI.Config;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -19,16 +21,19 @@ namespace SealTypographicWebAPI.Controllers
     public class AuthController : ControllerBase
     {
         private string apiurl = "http://djimage.myftp.org:50001/";
-        //private readonly RestClient client;
-        private readonly KeycloakAuthenticationOptions keycloakAuthenticationOptions;
-
+        //private readonly RestClient client;        
+        private readonly RestClient client;
 
         /// <summary>
         /// 建置
         /// </summary>
-        public AuthController(KeycloakAuthenticationOptions keycloakAuthenticationOptions)
-        {
-            this.keycloakAuthenticationOptions = keycloakAuthenticationOptions;
+        public AuthController()
+        {            
+            RestClientOptions options = new(apiurl)
+            {
+                Authenticator = new KeyCloakAuthenticator("http://djimage.myftp.org:50500/realms/djidentity/protocol/openid-connect/token", "webapi", "YTXFZmbRWKIzktPHwinRwd55yqYWRf3F")
+            };
+            client = new (options);
         }
 
         /// <summary>
@@ -39,15 +44,18 @@ namespace SealTypographicWebAPI.Controllers
         public async Task<IActionResult> Get()
         {
 
-            //if (Request.Headers.Authorization.ToString() != null)
-            OAuth2AuthorizationRequestHeaderAuthenticator authenticator = new(
-                                Request.Headers["Authorization"], "Bearer"
-            );
-            RestClientOptions options = new(apiurl)
-            {
-                Authenticator = authenticator
-            };
-            RestClient client = new RestClient(options);
+            ////if (Request.Headers.Authorization.ToString() != null)
+            //OAuth2AuthorizationRequestHeaderAuthenticator authenticator = new(
+            //                    Request.Headers["Authorization"], "Bearer"
+            //);
+
+            //RestClientOptions options = new(apiurl)
+            //{
+            //    //Authenticator = authenticator
+            //    Authenticator = new HttpBasicAuthenticator ("admin","1qaz@WSX")
+            //};
+            //RestClient client = new RestClient(options);
+
 
             RestRequest request = new("api/Sys/Keycloak");
             //request.AddParameter("status", 1);
