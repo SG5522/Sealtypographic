@@ -18,9 +18,8 @@ namespace SealTypographicWebAPI.Controllers
     [Route("api/[controller]")]
     [ApiController]
     public class AuthController : ControllerBase
-    {
-        //private string apiurl = "http://djimage.myftp.org:50001/";
-        private string apiurl = "http://localhost:5069/";
+    {        
+        private string apiurl = "http://djimage.myftp.org:50500/admin/realms/djidentity/";
         private readonly RestClient client;
 
         /// <summary>
@@ -30,7 +29,7 @@ namespace SealTypographicWebAPI.Controllers
         {            
             RestClientOptions options = new(apiurl)
             {
-                Authenticator = new KeyCloakAuthenticator("http://djimage.myftp.org:50500/realms/djidentity/protocol/openid-connect/token", "restsharpTest", "kQn91disKag8AMZN7IT1gIB7egoLaL0P")
+                Authenticator = new KeyCloakAuthenticator("http://djimage.myftp.org:50500/realms/djidentity/", "admin-cli", "")
             };
             client = new (options);
         }
@@ -42,25 +41,10 @@ namespace SealTypographicWebAPI.Controllers
         [HttpGet]
         public async Task<IActionResult> Get()
         {
+            RestRequest request = new("users",Method.Get);            
+            var response = await client.ExecuteGetAsync(request);
 
-            ////if (Request.Headers.Authorization.ToString() != null)
-            //OAuth2AuthorizationRequestHeaderAuthenticator authenticator = new(
-            //                    Request.Headers["Authorization"], "Bearer"
-            //);
-
-            //RestClientOptions options = new(apiurl)
-            //{
-            //    //Authenticator = authenticator
-            //    Authenticator = new HttpBasicAuthenticator ("admin","1qaz@WSX")
-            //};
-            //RestClient client = new RestClient(options);
-
-
-            RestRequest request = new("api/Sys/Keycloak");
-            //request.AddParameter("status", 1);
-            RestResponse<KeycloakAuthenticationOptions> response = await client.ExecuteGetAsync<KeycloakAuthenticationOptions>(request);
-
-            return Ok(response.Data);            
+            return Ok(response.Content);            
         }
 
         /// <summary>

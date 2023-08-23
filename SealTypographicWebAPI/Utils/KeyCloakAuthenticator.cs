@@ -1,6 +1,5 @@
 ﻿using RestSharp;
 using RestSharp.Authenticators;
-using RestSharp.Authenticators.OAuth2;
 using System.Text.Json.Serialization;
 
 namespace SealTypographicWebAPI.Utils
@@ -14,7 +13,7 @@ namespace SealTypographicWebAPI.Utils
     }
 
     /// <summary>
-    /// 
+    /// KeyCloak驗證器(取得token使用)
     /// </summary>
     public class KeyCloakAuthenticator : AuthenticatorBase
     {
@@ -46,29 +45,24 @@ namespace SealTypographicWebAPI.Utils
             return new HeaderParameter(KnownHeaders.Authorization, Token);
         }
 
+        /// <summary>
+        /// 獲得token
+        /// </summary>
+        /// <returns></returns>
         async Task<string> GetToken()
         {
             RestClientOptions options = new(baseUrl);
-            //{
-            //    Authenticator = new OAuth2AuthorizationRequestHeaderAuthenticator(clientId, clientSecret),
-            //};
-
-            //RestClientOptions options = new(baseUrl)
-            //{
-            //    Authenticator = new HttpBasicAuthenticator(clientId, clientSecret),
-            //};
 
             RestClient client = new(options);
-            RestRequest request = new RestRequest("oauth2/token") { Method = Method.Post }
-                .AddHeader("Accept", "application/json")
-                .AddHeader("Content-Type", "application/x-www-form-urlencoded")
-                .AddParameter("grant_type", "client_credentials")
-                .AddParameter("client_id", clientId)
-                .AddParameter("client_secret", clientSecret)
-                .AddParameter("username","admin")
-                .AddParameter("password", "1qaz@WSX");
+            RestRequest request = new ("protocol/openid-connect/token", Method.Post);
+            request.AddHeader("Content-Type", "application/x-www-form-urlencoded");
+            request.AddParameter("username", "admin");
+            request.AddParameter("password", "1qaz@WSX");
+            request.AddParameter("grant_type", "password");
+            request.AddParameter("client_id", clientId);
+            request.AddParameter("client_Secret", clientSecret);
             TokenResponse? response = await client.PostAsync<TokenResponse>(request);            
-            return $"{response!.TokenType}{response!.AccessToken}";
+            return $"{response!.TokenType} {response!.AccessToken}";
         }
     }
 }

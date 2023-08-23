@@ -396,7 +396,7 @@ namespace SealTypographicWebAPI.Services.Implements
                                             x => x.TaiwanYear == typographicPDFSaveForm.Quarter.Substring(0, 3)
                                             && x.Period == typographicPDFSaveForm.Quarter.Substring(3)
                                         );
-                typographicPDF.ReviewStatus = ReviewStatus.Approval;
+                typographicPDF.ReviewStatus = ReviewStatus.Draft;
                 BaseInputTypographicPDF(typographicPDF, false, userId);
                 List<TypographicPage> newPages = new ();                
 
