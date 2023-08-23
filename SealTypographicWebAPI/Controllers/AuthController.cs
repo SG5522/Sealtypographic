@@ -6,8 +6,7 @@ using Microsoft.Extensions.Options;
 using RestSharp;
 using RestSharp.Authenticators;
 using RestSharp.Authenticators.OAuth2;
-using RTools_NTS.Util;
-using SealTypographicWebAPI.Config;
+using SealTypographicWebAPI.Utils;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -20,8 +19,8 @@ namespace SealTypographicWebAPI.Controllers
     [ApiController]
     public class AuthController : ControllerBase
     {
-        private string apiurl = "http://djimage.myftp.org:50001/";
-        //private readonly RestClient client;        
+        //private string apiurl = "http://djimage.myftp.org:50001/";
+        private string apiurl = "http://localhost:5069/";
         private readonly RestClient client;
 
         /// <summary>
@@ -31,7 +30,7 @@ namespace SealTypographicWebAPI.Controllers
         {            
             RestClientOptions options = new(apiurl)
             {
-                Authenticator = new KeyCloakAuthenticator("http://djimage.myftp.org:50500/realms/djidentity/protocol/openid-connect/token", "webapi", "YTXFZmbRWKIzktPHwinRwd55yqYWRf3F")
+                Authenticator = new KeyCloakAuthenticator("http://djimage.myftp.org:50500/realms/djidentity/protocol/openid-connect/token", "restsharpTest", "kQn91disKag8AMZN7IT1gIB7egoLaL0P")
             };
             client = new (options);
         }

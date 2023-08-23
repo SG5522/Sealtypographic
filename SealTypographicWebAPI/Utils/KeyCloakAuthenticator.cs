@@ -3,7 +3,7 @@ using RestSharp.Authenticators;
 using RestSharp.Authenticators.OAuth2;
 using System.Text.Json.Serialization;
 
-namespace SealTypographicWebAPI.Config
+namespace SealTypographicWebAPI.Utils
 {
     record TokenResponse
     {
@@ -48,16 +48,26 @@ namespace SealTypographicWebAPI.Config
 
         async Task<string> GetToken()
         {
-            RestClientOptions options = new(baseUrl)
-            {
-                Authenticator = new OAuth2AuthorizationRequestHeaderAuthenticator(clientId, clientSecret),               
-            };
+            RestClientOptions options = new(baseUrl);
+            //{
+            //    Authenticator = new OAuth2AuthorizationRequestHeaderAuthenticator(clientId, clientSecret),
+            //};
+
+            //RestClientOptions options = new(baseUrl)
+            //{
+            //    Authenticator = new HttpBasicAuthenticator(clientId, clientSecret),
+            //};
 
             RestClient client = new(options);
-
-            RestRequest request = new RestRequest("oauth2/token")
-                .AddParameter("grant_type", "client_credentials");
-            TokenResponse? response = await client.PostAsync<TokenResponse>(request);
+            RestRequest request = new RestRequest("oauth2/token") { Method = Method.Post }
+                .AddHeader("Accept", "application/json")
+                .AddHeader("Content-Type", "application/x-www-form-urlencoded")
+                .AddParameter("grant_type", "client_credentials")
+                .AddParameter("client_id", clientId)
+                .AddParameter("client_secret", clientSecret)
+                .AddParameter("username","admin")
+                .AddParameter("password", "1qaz@WSX");
+            TokenResponse? response = await client.PostAsync<TokenResponse>(request);            
             return $"{response!.TokenType}{response!.AccessToken}";
         }
     }
