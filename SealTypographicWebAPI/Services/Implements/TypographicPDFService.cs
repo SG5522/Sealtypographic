@@ -58,7 +58,7 @@ namespace SealTypographicWebAPI.Services.Implements
                 typographicPDFs = typographicPDFs.Where
                                 (
                                     x => x.Customer.Code.ToLower().Contains(typographicPDFSearch.CustomerKeyWord.ToLower())
-                                    || x.Customer.Name.Contains(typographicPDFSearch.CustomerKeyWord)
+                                    || x.Customer.Name.ToLower().Contains(typographicPDFSearch.CustomerKeyWord.ToLower())
                                 );
             }
 

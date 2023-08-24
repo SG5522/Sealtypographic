@@ -35,6 +35,8 @@ builder.Services.Configure<SealPathOption>(
 builder.Services.Configure<TemplateImagePathOption>(
     builder.Configuration.GetSection("TemplateImagePath"));
 
+builder.Services.Configure<KeyCloakAdminOption>(
+    builder.Configuration.GetSection("KeycloakAdmin"));
 
 //addCors
 builder.Services.AddCors(options =>

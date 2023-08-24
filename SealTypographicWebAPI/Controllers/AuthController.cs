@@ -1,14 +1,13 @@
-﻿using Azure.Core;
-using DBEntities;
-using Keycloak.AuthServices.Authentication;
+﻿using DBEntities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using RestSharp;
-using RestSharp.Authenticators;
-using RestSharp.Authenticators.OAuth2;
+using SealTypographicWebAPI.Config;
+using SealTypographicWebAPI.Models.KeyCloak;
 using SealTypographicWebAPI.Utils;
+using System.Text.Json;
 
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace SealTypographicWebAPI.Controllers
 {
@@ -17,19 +16,22 @@ namespace SealTypographicWebAPI.Controllers
     /// </summary>
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class AuthController : ControllerBase
-    {        
-        private string apiurl = "http://djimage.myftp.org:50500/admin/realms/djidentity/";
+    {                
         private readonly RestClient client;
+        private readonly KeyCloakAdminOption keyCloakAdminOption;
 
         /// <summary>
         /// 建置
         /// </summary>
-        public AuthController()
-        {            
-            RestClientOptions options = new(apiurl)
+        public AuthController(IOptionsSnapshot<KeyCloakAdminOption> keyCloakAdminOption)
+        {
+            this.keyCloakAdminOption = keyCloakAdminOption.Value;
+
+            RestClientOptions options = new(this.keyCloakAdminOption.ApiBaseUrl)
             {
-                Authenticator = new KeyCloakAuthenticator("http://djimage.myftp.org:50500/realms/djidentity/", "admin-cli", "")
+                Authenticator = new KeyCloakAuthenticator(keyCloakAdminOption.Value)
             };
             client = new (options);
         }
@@ -41,9 +43,8 @@ namespace SealTypographicWebAPI.Controllers
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            RestRequest request = new("users",Method.Get);            
-            var response = await client.ExecuteGetAsync(request);
-
+            RestRequest request = new("users",Method.Get);
+            RestResponse response = await client.ExecuteGetAsync(request);
             return Ok(response.Content);            
         }
 
@@ -61,10 +62,19 @@ namespace SealTypographicWebAPI.Controllers
             return Ok(user);
         }
 
-        // POST api/<ValuesController>
+        /// <summary>
+        /// 註測帳號
+        /// </summary>
+        /// <param name="keyCloakUserData"></param>        
         [HttpPost]
-        public void Post([FromBody] string value)
+        public async Task<IActionResult> New([FromBody] KeyCloakUserData keyCloakUserData)
         {
+            RestRequest request = new("users", Method.Post);
+            request.AddHeader("Content-Type", "application/json");
+            string userData = JsonSerializer.Serialize(keyCloakUserData);
+            request.AddStringBody(userData, DataFormat.Json);
+            RestResponse response = await client.ExecuteAsync(request);
+            return Ok(response.Content);
         }
 
         // PUT api/<ValuesController>/5

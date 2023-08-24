@@ -7,7 +7,7 @@
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <DocumentationFile></DocumentationFile>
     <IncrementVersionOnBuild>0.0.2.1+</IncrementVersionOnBuild>
-    <Version>0.0.2.1735</Version>
+    <Version>0.0.2.1748</Version>
     <PackageIcon>android-chrome-128x128.png</PackageIcon>
     <Configurations>Debug;Release</Configurations>    
   </PropertyGroup>
@@ -65,10 +65,6 @@
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </Content>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Models\KeyCloak\" />
   </ItemGroup>
 
 </Project>

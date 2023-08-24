@@ -1,5 +1,6 @@
 ﻿using RestSharp;
 using RestSharp.Authenticators;
+using SealTypographicWebAPI.Config;
 using System.Text.Json.Serialization;
 
 namespace SealTypographicWebAPI.Utils
@@ -17,21 +18,15 @@ namespace SealTypographicWebAPI.Utils
     /// </summary>
     public class KeyCloakAuthenticator : AuthenticatorBase
     {
-        private readonly string baseUrl;
-        private readonly string clientId;
-        private readonly string clientSecret;
+        private readonly KeyCloakAdminOption keyCloakAdmin;
 
         /// <summary>
         /// 建置
         /// </summary>
-        /// <param name="baseUrl"></param>
-        /// <param name="clientId"></param>
-        /// <param name="clientSecret"></param>
-        public KeyCloakAuthenticator(string baseUrl, string clientId, string clientSecret) : base("")
+        /// <param name="keyCloakAdminOption"></param>
+        public KeyCloakAuthenticator(KeyCloakAdminOption keyCloakAdminOption) : base("")
         {
-            this.baseUrl = baseUrl;
-            this.clientId = clientId;
-            this.clientSecret = clientSecret;
+            keyCloakAdmin = keyCloakAdminOption;
         }
 
         /// <summary>
@@ -51,16 +46,16 @@ namespace SealTypographicWebAPI.Utils
         /// <returns></returns>
         async Task<string> GetToken()
         {
-            RestClientOptions options = new(baseUrl);
+            RestClientOptions options = new(keyCloakAdmin.TokenBaseUrl);
 
             RestClient client = new(options);
             RestRequest request = new ("protocol/openid-connect/token", Method.Post);
             request.AddHeader("Content-Type", "application/x-www-form-urlencoded");
-            request.AddParameter("username", "admin");
-            request.AddParameter("password", "1qaz@WSX");
+            request.AddParameter("username", keyCloakAdmin.UserName);
+            request.AddParameter("password", keyCloakAdmin.Pwaosrsd);
             request.AddParameter("grant_type", "password");
-            request.AddParameter("client_id", clientId);
-            request.AddParameter("client_Secret", clientSecret);
+            request.AddParameter("client_id", keyCloakAdmin.ClientId);
+            request.AddParameter("client_Secret", keyCloakAdmin.ClientSecret);
             TokenResponse? response = await client.PostAsync<TokenResponse>(request);            
             return $"{response!.TokenType} {response!.AccessToken}";
         }
