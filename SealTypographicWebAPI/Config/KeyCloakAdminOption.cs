@@ -3,7 +3,7 @@
     /// <summary>
     /// KeyCloakAdmin的參數
     /// </summary>
-    public class KeyCloakAdminOption
+    public class KeycloakAdminOption
     {
         /// <summary>
         /// KeyCloak的Realm

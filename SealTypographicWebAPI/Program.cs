@@ -35,7 +35,7 @@ builder.Services.Configure<SealPathOption>(
 builder.Services.Configure<TemplateImagePathOption>(
     builder.Configuration.GetSection("TemplateImagePath"));
 
-builder.Services.Configure<KeyCloakAdminOption>(
+builder.Services.Configure<KeycloakAdminOption>(
     builder.Configuration.GetSection("KeycloakAdmin"));
 
 //addCors
@@ -97,6 +97,7 @@ builder.Services.AddScoped<SealMappingConfigService>();
 builder.Services.AddSingleton<TemplateConfigService>();
 builder.Services.AddScoped<ResponseCodeService>();
 builder.Services.AddScoped<ReviewStatusService>();
+builder.Services.AddScoped<IKeycloakAdminService,KeycloakAdminService>();
 builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
 
 

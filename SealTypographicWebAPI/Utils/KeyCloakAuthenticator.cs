@@ -16,15 +16,15 @@ namespace SealTypographicWebAPI.Utils
     /// <summary>
     /// KeyCloak驗證器(取得token使用)
     /// </summary>
-    public class KeyCloakAuthenticator : AuthenticatorBase
+    public class KeycloakAuthenticator : AuthenticatorBase
     {
-        private readonly KeyCloakAdminOption keyCloakAdmin;
+        private readonly KeycloakAdminOption keyCloakAdmin;
 
         /// <summary>
         /// 建置
         /// </summary>
         /// <param name="keyCloakAdminOption"></param>
-        public KeyCloakAuthenticator(KeyCloakAdminOption keyCloakAdminOption) : base("")
+        public KeycloakAuthenticator(KeycloakAdminOption keyCloakAdminOption) : base("")
         {
             keyCloakAdmin = keyCloakAdminOption;
         }
