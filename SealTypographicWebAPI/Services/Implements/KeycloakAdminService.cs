@@ -39,19 +39,50 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <returns></returns>
         public async Task<string> GetUserData(string userName)
         {
-            RestRequest request = new(KeycloakAdminConsts.Users, Method.Get);
+            RestRequest request = new(KeycloakAdminUrlConsts.Users, Method.Get);
             request.AddParameter("username", userName);
             request.AddParameter("exact", true);
             RestResponse response = await client.ExecuteGetAsync(request);
             return response.Content;
         }
 
-        public async Task<string> GetRoles(string clientId)
+        /// <summary>
+        /// 取得client的role資料
+        /// </summary>
+        /// <returns></returns>
+        public async Task<KeyCloakClientRolesResponse> GetRoles()
         {
-            RestRequest request = new(KeycloakAdminConsts.Clinets, Method.Get);
-            request.AddParameter("clientId", clientId);
+            KeyCloakClientRolesResponse keyCloakClientRolesResponse = new();
+            RestRequest request = new(KeycloakAdminUrlConsts.Role, Method.Get);
+            request.AddUrlSegment("id", keyCloakAdminOption.ResourceId);
             RestResponse response = await client.ExecuteGetAsync(request);
-            return response.Content;
+            if(response.IsSuccessful && response.Content!= null)
+            {
+                List<KeyCloakClientRole>? keyCloakClientRoles = JsonSerializer.Deserialize<List<KeyCloakClientRole>>(response.Content);
+                if(keyCloakClientRoles != null)
+                {
+                    keyCloakClientRolesResponse.KeyCloakClientRoles = keyCloakClientRoles;
+                    keyCloakClientRolesResponse.Success();
+                }
+                else
+                {
+                    keyCloakClientRolesResponse.Error();
+                }
+            }
+
+            //List<KeyCloakClientRole>? keyCloakClientRoles = await client.GetJsonAsync<List<KeyCloakClientRole>>(KeycloakAdminUrlConsts.Role, new { id = keyCloakAdminOption.ResourceId });
+            //if(keyCloakClientRoles != null)
+            //{
+            //    keyCloakClientRolesResponse.KeyCloakClientRoles = keyCloakClientRoles;
+            //    keyCloakClientRolesResponse.Success();
+            //}
+
+
+            //keyCloakClientRolesResponse.KeyCloakClientRoles = await client.GetJsonAsync<List<KeyCloakClientRole>>(KeycloakAdminUrlConsts.Role);            
+            //RestResponse response = await client.ExecuteGetAsync(request);
+            
+
+            return keyCloakClientRolesResponse;
         }
 
         /// <summary>
@@ -62,7 +93,7 @@ namespace SealTypographicWebAPI.Services.Implements
         public async Task<ResponseViewModel> New(KeyCloakUserData keyCloakUserData)
         {
             ResponseViewModel response = new();
-            RestRequest request = new(KeycloakAdminConsts.Users, Method.Post);
+            RestRequest request = new(KeycloakAdminUrlConsts.Users, Method.Post);
 
             request.AddHeader("Content-Type", "application/json");            
             request.AddStringBody(JsonSerializer.Serialize(keyCloakUserData), DataFormat.Json);

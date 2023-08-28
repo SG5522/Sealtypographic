@@ -50,18 +50,19 @@ namespace SealTypographicWebAPI.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet("[Action]")]
-        public async Task<string> GetClinetId(string clientId)
+        public async Task<KeyCloakClientRolesResponse> GetClinetId()
         {
-            string response = string.Empty;
+            KeyCloakClientRolesResponse keyCloakClientRolesResponse = new ();
             try
             {
-                response = await keyCloakAdminService.GetRoles(clientId);
+                keyCloakClientRolesResponse = await keyCloakAdminService.GetRoles();
             }
             catch (Exception ex)
             {
-                response = ex.Message;
+                keyCloakClientRolesResponse.Error();
+                keyCloakClientRolesResponse.Message = ex.Message;
             }
-            return response;
+            return keyCloakClientRolesResponse;
         }
 
         /// <summary>

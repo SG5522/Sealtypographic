@@ -17,10 +17,9 @@ namespace SealTypographicWebAPI.Services
 
         /// <summary>
         /// 取得Roles
-        /// </summary>
-        /// <param name="clientId"></param>
+        /// </summary>        
         /// <returns></returns>
-        Task<string> GetRoles(string clientId);
+        Task<KeyCloakClientRolesResponse> GetRoles();
 
         /// <summary>
         /// 

@@ -36,6 +36,11 @@
         public string Pwaosrsd { get; set; }
 
         /// <summary>
+        /// ClientId的"Id"(guid)
+        /// </summary>
+        public string ResourceId { get; set; }
+
+        /// <summary>
         /// KeyCloak的Admin RestApi的Url
         /// </summary>
         public string ApiBaseUrl

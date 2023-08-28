@@ -3,7 +3,7 @@
     /// <summary>
     /// Keycloak取
     /// </summary>
-    public class KeycloakAdminConsts
+    public class KeycloakAdminUrlConsts
     {
         /// <summary>
         /// Users管理相關
@@ -16,8 +16,9 @@
         public const string UsersCount = "users/count";
 
         /// <summary>
-        /// Clinets資料
+        /// Role資料
         /// </summary>
-        public const string Clinets = "clients";
+        //public const string Role = "clients/79c9ec63-c06a-4386-888a-1e7b71478f05/roles";
+        public const string Role = "clients/{id}/roles";
     }
 }
