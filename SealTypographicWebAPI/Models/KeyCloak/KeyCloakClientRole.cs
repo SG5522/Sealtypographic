@@ -5,7 +5,7 @@ namespace SealTypographicWebAPI.Models.KeyCloak
     /// <summary>
     /// 該Role的名稱與說明
     /// </summary>
-    public class KeyCloakClientRole
+    public class KeycloakClientRole
     {
         /// <summary>
         /// id

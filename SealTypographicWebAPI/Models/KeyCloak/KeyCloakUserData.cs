@@ -5,7 +5,7 @@ namespace SealTypographicWebAPI.Models.KeyCloak
     /// <summary>
     /// KeyCloak的使用者註冊資料
     /// </summary>
-    public class KeyCloakUserData
+    public class KeycloakUserData
     {
         /// <summary>
         /// 
@@ -23,6 +23,6 @@ namespace SealTypographicWebAPI.Models.KeyCloak
         /// 密碼資料
         /// </summary>
         [JsonPropertyName("credentials")]
-        public List<KeyCloakCredentials> Credentials { get; set; }
+        public List<KeycloakCredentials> Credentials { get; set; }
     }
 }

@@ -50,9 +50,9 @@ namespace SealTypographicWebAPI.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet("[Action]")]
-        public async Task<KeyCloakClientRolesResponse> GetClinetId()
+        public async Task<KeycloakClientRolesResponse> GetClinetId()
         {
-            KeyCloakClientRolesResponse keyCloakClientRolesResponse = new ();
+            KeycloakClientRolesResponse keyCloakClientRolesResponse = new ();
             try
             {
                 keyCloakClientRolesResponse = await keyCloakAdminService.GetRoles();
@@ -70,7 +70,7 @@ namespace SealTypographicWebAPI.Controllers
         /// </summary>
         /// <param name="keyCloakUserData"></param>        
         [HttpPost]
-        public async Task<ResponseViewModel> New([FromBody] KeyCloakUserData keyCloakUserData)
+        public async Task<ResponseViewModel> New([FromBody] KeycloakUserData keyCloakUserData)
         {
             //RestRequest request = new("users", Method.Post);
             //request.AddHeader("Content-Type", "application/json");

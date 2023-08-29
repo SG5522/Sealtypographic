@@ -75,6 +75,29 @@ namespace SealTypographicWebAPI.Controllers
         }
 
         /// <summary>
+        /// 取得客戶印鑑季度表
+        /// </summary>
+        /// <param name="customerSealQuarterPaginateSearch">客戶ID</param>
+        /// <returns></returns>
+        [HttpGet("[Action]")]
+        public CustomerSealQuarterPaginateViewModel QuarterWithTypographic([FromQuery] CustomerSealQuarterPaginateSearch customerSealQuarterPaginateSearch)
+        {
+            CustomerSealQuarterPaginateViewModel customerSealQuarterPaginateViewModel = new();
+            try
+            {
+                Log.Information("CustomerSeal get quarterWithTypographic input {@Input}", customerSealQuarterPaginateSearch);
+                customerSealQuarterPaginateViewModel = customerSealService.GetQuarterWithPaginate(customerSealQuarterPaginateSearch, true);
+                Log.Information("CustomerSeal get quarterWithTypographic output {@Output}", customerSealQuarterPaginateViewModel);
+            }
+            catch (Exception ex)
+            {
+                Log.Error("CustomerSeal get quarterWithTypographic error {@Error}", ex.Message);
+                customerSealQuarterPaginateViewModel.DbError();
+            }
+            return customerSealQuarterPaginateViewModel;
+        }
+
+        /// <summary>
         /// 取得客戶印鑑組
         /// </summary>
         /// <param name="customerSealQuarterId">客戶印鑑季度Id</param>

@@ -17,8 +17,7 @@
 
         /// <summary>
         /// Role資料
-        /// </summary>
-        //public const string Role = "clients/79c9ec63-c06a-4386-888a-1e7b71478f05/roles";
+        /// </summary>        
         public const string Role = "clients/{id}/roles";
     }
 }

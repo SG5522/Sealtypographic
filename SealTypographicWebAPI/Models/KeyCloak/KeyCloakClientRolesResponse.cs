@@ -5,11 +5,11 @@ namespace SealTypographicWebAPI.Models.KeyCloak
     /// <summary>
     /// ClinetRole的規則清單
     /// </summary>
-    public class KeyCloakClientRolesResponse : ResponseViewModel
+    public class KeycloakClientRolesResponse : ResponseViewModel
     {
         /// <summary>
         /// 此Client所有的Role內容
         /// </summary>
-        public List<KeyCloakClientRole> KeyCloakClientRoles { get; set; }
+        public List<KeycloakClientRole> Roles { get; set; }
     }
 }

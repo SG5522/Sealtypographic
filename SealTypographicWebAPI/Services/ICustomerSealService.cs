@@ -17,6 +17,14 @@ namespace SealTypographicWebAPI.Services
         CustomerSealQuarterResponse GetQuarter(int customerId, bool isTypographic);
 
         /// <summary>
+        /// 取得客戶印鑑季度表(分頁)
+        /// </summary>
+        /// <param name="customerSealQuarterPaginateSearch">印鑑季度分頁搜尋</param>
+        /// <param name="isTypographic">是否排版使用</param>
+        /// <returns></returns>
+        CustomerSealQuarterPaginateViewModel GetQuarterWithPaginate(CustomerSealQuarterPaginateSearch customerSealQuarterPaginateSearch, bool isTypographic);
+
+        /// <summary>
         /// 取得客戶印鑑組
         /// </summary>
         /// <param name="customerSealQuarterId">客戶印鑑季度Id</param>

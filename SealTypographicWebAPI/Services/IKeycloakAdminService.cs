@@ -19,13 +19,13 @@ namespace SealTypographicWebAPI.Services
         /// 取得Roles
         /// </summary>        
         /// <returns></returns>
-        Task<KeyCloakClientRolesResponse> GetRoles();
+        Task<KeycloakClientRolesResponse> GetRoles();
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="keyCloakUserData"></param>
         /// <returns></returns>
-        Task<ResponseViewModel> New(KeyCloakUserData keyCloakUserData);
+        Task<ResponseViewModel> New(KeycloakUserData keyCloakUserData);
     }
 }

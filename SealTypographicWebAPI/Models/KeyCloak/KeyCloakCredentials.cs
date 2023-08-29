@@ -5,7 +5,7 @@ namespace SealTypographicWebAPI.Models.KeyCloak
     /// <summary>
     /// KeyCloak的使用者密碼相關
     /// </summary>
-    public class KeyCloakCredentials
+    public class KeycloakCredentials
     {
         /// <summary>
         /// 

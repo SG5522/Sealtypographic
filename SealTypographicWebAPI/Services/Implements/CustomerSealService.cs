@@ -79,6 +79,52 @@ namespace SealTypographicWebAPI.Services.Implements
         }
 
         /// <summary>
+        /// 取得客戶印鑑季度表(分頁)
+        /// </summary>
+        /// <param name="customerSealQuarterPaginateSearch">印鑑季度分頁搜尋</param>
+        /// <param name="isTypographic">是否排版使用</param>
+        /// <returns></returns>
+        public CustomerSealQuarterPaginateViewModel GetQuarterWithPaginate(CustomerSealQuarterPaginateSearch customerSealQuarterPaginateSearch, bool isTypographic)
+        {
+            CustomerSealQuarterPaginateViewModel customerSealQuarterPaginateViewModel = new ();
+
+            IQueryable<CustomerSealGroup> customerSealGroups = dbContext.CustomerSealGroups
+                                                                .Include(customerSealGroups => customerSealGroups.Quarter)
+                                                                .Where
+                                                                (
+                                                                    customerSealGroup => customerSealGroup.Customer.Id == customerSealQuarterPaginateSearch.CustomerId
+                                                                    && customerSealGroup.DeleteStatus == DeleteStatus.No                                                                                    
+                                                                )
+                                                                .Skip((customerSealQuarterPaginateSearch.PageNumber - 1) * customerSealQuarterPaginateSearch.PageSize)
+                                                                .Take(customerSealQuarterPaginateSearch.PageSize);                                                                                
+            if(customerSealGroups.Any())
+            {                                
+                if(isTypographic)
+                {
+                    customerSealQuarterPaginateViewModel.CustomerSealQuarters = customerSealGroups
+                                                                                .Where(customerSealGroup => customerSealGroup.ReviewStatus <= ReviewStatus.Approval)
+                                                                                .ProjectTo<CustomerSealQuarterViewModel>(configurationProvider)
+                                                                                .ToList();
+                }
+                else
+                {
+                    customerSealQuarterPaginateViewModel.CustomerSealQuarters = customerSealGroups
+                                                                                .Where(customerSealGroup => customerSealGroup.ReviewStatus <= ReviewStatus.Disabled)
+                                                                                .ProjectTo<CustomerSealQuarterViewModel>(configurationProvider)
+                                                                                .ToList();
+                }
+                customerSealQuarterPaginateViewModel.Success();
+            }
+            else
+            {
+                customerSealQuarterPaginateViewModel.CustomerSealNoData();
+            }
+
+            return customerSealQuarterPaginateViewModel;
+        }
+
+
+        /// <summary>
         /// 取得客戶印鑑組
         /// </summary>
         /// <param name="customerSealQuarterId">客戶印鑑季度Id</param>

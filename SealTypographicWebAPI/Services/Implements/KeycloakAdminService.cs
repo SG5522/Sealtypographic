@@ -15,7 +15,7 @@ namespace SealTypographicWebAPI.Services.Implements
     public class KeycloakAdminService : IKeycloakAdminService
     {
         private readonly RestClient client;
-        private readonly KeycloakAdminOption keyCloakAdminOption;
+        private readonly KeycloakAdminOption keycloakAdminOption;
 
         /// <summary>
         /// 建置
@@ -23,9 +23,9 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <param name="keyCloakAdminOption">讀取appsetting keyCloakAdmin的參數</param>
         public KeycloakAdminService(IOptionsSnapshot<KeycloakAdminOption> keyCloakAdminOption)
         {
-            this.keyCloakAdminOption = keyCloakAdminOption.Value;
+            keycloakAdminOption = keyCloakAdminOption.Value;
 
-            RestClientOptions options = new(this.keyCloakAdminOption.ApiBaseUrl)
+            RestClientOptions options = new(keycloakAdminOption.ApiBaseUrl)
             {
                 Authenticator = new KeycloakAuthenticator(keyCloakAdminOption.Value)
             };
@@ -50,53 +50,41 @@ namespace SealTypographicWebAPI.Services.Implements
         /// 取得client的role資料
         /// </summary>
         /// <returns></returns>
-        public async Task<KeyCloakClientRolesResponse> GetRoles()
+        public async Task<KeycloakClientRolesResponse> GetRoles()
         {
-            KeyCloakClientRolesResponse keyCloakClientRolesResponse = new();
+            KeycloakClientRolesResponse keycloakClientRolesResponse = new();
             RestRequest request = new(KeycloakAdminUrlConsts.Role, Method.Get);
-            request.AddUrlSegment("id", keyCloakAdminOption.ResourceId);
+            request.AddUrlSegment("id", keycloakAdminOption.ResourceId);
             RestResponse response = await client.ExecuteGetAsync(request);
             if(response.IsSuccessful && response.Content!= null)
             {
-                List<KeyCloakClientRole>? keyCloakClientRoles = JsonSerializer.Deserialize<List<KeyCloakClientRole>>(response.Content);
-                if(keyCloakClientRoles != null)
+                List<KeycloakClientRole>? keycloakClientRoles = JsonSerializer.Deserialize<List<KeycloakClientRole>>(response.Content);
+                if(keycloakClientRoles != null)
                 {
-                    keyCloakClientRolesResponse.KeyCloakClientRoles = keyCloakClientRoles;
-                    keyCloakClientRolesResponse.Success();
+                    keycloakClientRolesResponse.Roles = keycloakClientRoles;
+                    keycloakClientRolesResponse.Success();
                 }
                 else
                 {
-                    keyCloakClientRolesResponse.Error();
+                    keycloakClientRolesResponse.Error();
                 }
             }
 
-            //List<KeyCloakClientRole>? keyCloakClientRoles = await client.GetJsonAsync<List<KeyCloakClientRole>>(KeycloakAdminUrlConsts.Role, new { id = keyCloakAdminOption.ResourceId });
-            //if(keyCloakClientRoles != null)
-            //{
-            //    keyCloakClientRolesResponse.KeyCloakClientRoles = keyCloakClientRoles;
-            //    keyCloakClientRolesResponse.Success();
-            //}
-
-
-            //keyCloakClientRolesResponse.KeyCloakClientRoles = await client.GetJsonAsync<List<KeyCloakClientRole>>(KeycloakAdminUrlConsts.Role);            
-            //RestResponse response = await client.ExecuteGetAsync(request);
-            
-
-            return keyCloakClientRolesResponse;
+            return keycloakClientRolesResponse;
         }
 
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="keyCloakUserData"></param>
+        /// <param name="keycloakUserData"></param>
         /// <returns></returns>
-        public async Task<ResponseViewModel> New(KeyCloakUserData keyCloakUserData)
+        public async Task<ResponseViewModel> New(KeycloakUserData keycloakUserData)
         {
             ResponseViewModel response = new();
             RestRequest request = new(KeycloakAdminUrlConsts.Users, Method.Post);
 
             request.AddHeader("Content-Type", "application/json");            
-            request.AddStringBody(JsonSerializer.Serialize(keyCloakUserData), DataFormat.Json);
+            request.AddStringBody(JsonSerializer.Serialize(keycloakUserData), DataFormat.Json);
             RestResponse restResponse = await client.ExecuteAsync(request);
 
             if(restResponse.Content == "")
