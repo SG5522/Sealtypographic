@@ -40,7 +40,7 @@ namespace LibTest
                 string ImageBase64 = ImageInfo.FromPath(filePath).ToBase64();
                 string base64String = ImageBase64[(ImageBase64.IndexOf("base64,") + 7)..];
                 byte[] bytes = Convert.FromBase64String(base64String);
-                AESEncryption encryptionWithAES = AESEncryption.Encrypte(bytes, 12);
+                AESEncryption encryptionWithAES = AESEncryption.Encrypt(bytes, 12);
                 // 生成 RSA 公鑰和私鑰
                 string publicKey = rSAEncryption.GetPublicKey();
                 string privateKey = rSAEncryption.GetPrivateKey();

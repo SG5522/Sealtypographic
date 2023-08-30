@@ -1,7 +1,9 @@
-﻿using Microsoft.Extensions.Options;
+﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using RestSharp;
 using SealTypographicWebAPI.Config;
 using SealTypographicWebAPI.Consts;
+using SealTypographicWebAPI.Controllers;
 using SealTypographicWebAPI.Models;
 using SealTypographicWebAPI.Models.KeyCloak;
 using SealTypographicWebAPI.Utils;
@@ -16,12 +18,14 @@ namespace SealTypographicWebAPI.Services.Implements
     {
         private readonly RestClient client;
         private readonly KeycloakAdminOption keycloakAdminOption;
+        private readonly ILogger<KeycloakAdminService> logger;
 
         /// <summary>
         /// 建置
         /// </summary>
         /// <param name="keyCloakAdminOption">讀取appsetting keyCloakAdmin的參數</param>
-        public KeycloakAdminService(IOptionsSnapshot<KeycloakAdminOption> keyCloakAdminOption)
+        /// <param name="logger">Logger</param>
+        public KeycloakAdminService(IOptionsSnapshot<KeycloakAdminOption> keyCloakAdminOption, ILogger<KeycloakAdminService> logger)
         {
             keycloakAdminOption = keyCloakAdminOption.Value;
 
@@ -30,6 +34,8 @@ namespace SealTypographicWebAPI.Services.Implements
                 Authenticator = new KeycloakAuthenticator(keyCloakAdminOption.Value)
             };
             client = new(options);
+
+            this.logger = logger;
         }
 
         /// <summary>
@@ -39,7 +45,7 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <returns></returns>
         public async Task<string> GetUserData(string userName)
         {
-            RestRequest request = new(KeycloakAdminUrlConsts.Users, Method.Get);
+            RestRequest request = new(KeycloakAdminUrlConsts.Users, Method.Get);            
             request.AddParameter("username", userName);
             request.AddParameter("exact", true);
             RestResponse response = await client.ExecuteGetAsync(request);
@@ -53,23 +59,37 @@ namespace SealTypographicWebAPI.Services.Implements
         public async Task<KeycloakClientRolesResponse> GetRoles()
         {
             KeycloakClientRolesResponse keycloakClientRolesResponse = new();
-            RestRequest request = new(KeycloakAdminUrlConsts.Role, Method.Get);
-            request.AddUrlSegment("id", keycloakAdminOption.ResourceId);
-            RestResponse response = await client.ExecuteGetAsync(request);
-            if(response.IsSuccessful && response.Content!= null)
-            {
-                List<KeycloakClientRole>? keycloakClientRoles = JsonSerializer.Deserialize<List<KeycloakClientRole>>(response.Content);
-                if(keycloakClientRoles != null)
+            try
+            {                
+                RestRequest request = new(KeycloakAdminUrlConsts.Role, Method.Get);
+                request.AddUrlSegment("id", keycloakAdminOption.ResourceId);
+                RestResponse response = await client.ExecuteGetAsync(request);
+                if (response.IsSuccessful && response.Content != null)
                 {
-                    keycloakClientRolesResponse.Roles = keycloakClientRoles;
-                    keycloakClientRolesResponse.Success();
+                    List<KeycloakClientRole>? keycloakClientRoles = JsonSerializer.Deserialize<List<KeycloakClientRole>>(response.Content);
+                    if (keycloakClientRoles != null)
+                    {
+                        keycloakClientRolesResponse.Roles = keycloakClientRoles;
+                        keycloakClientRolesResponse.Success();
+                        logger.LogInformation("GetRoles Success");
+                    }
+                    else
+                    {
+                        keycloakClientRolesResponse.KeycloakNoData();
+                        logger.LogError("GetRoles Nodata");
+                    }
                 }
                 else
                 {
                     keycloakClientRolesResponse.Error();
+                    logger.LogError("GetRoles keycloak Api Get Roles errorMessage {message}", response.ErrorMessage);
                 }
             }
-
+            catch (Exception ex) 
+            {
+                logger.LogError("GetRoles Api Error {message}", ex.Message);
+            }
+            
             return keycloakClientRolesResponse;
         }
 

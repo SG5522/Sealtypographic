@@ -40,6 +40,15 @@ namespace SealTypographicWebAPI.Models
         }
 
         /// <summary>
+        /// Keycloak API抓不到資料
+        /// </summary>
+        public void KeycloakNoData()
+        {
+            Code = (int)ResponseCode.KeycloakNoData;
+            //Message = "Keycloak API抓不到資料";
+        }
+
+        /// <summary>
         /// DbNoData
         /// </summary>
         public void DbNoData()

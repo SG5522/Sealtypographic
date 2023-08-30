@@ -10,7 +10,8 @@ namespace SealTypographicWebAPI.Models.KeyCloak
         /// <summary>
         /// 
         /// </summary>
-        [JsonPropertyName("type")]
+        /// <example>password</example>
+        [JsonPropertyName("type")]        
         public string Type { get; set; }
 
         /// <summary>

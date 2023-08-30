@@ -13,9 +13,9 @@ namespace DBEntities
         }
 
         /// <summary>
-        /// 密碼
+        /// Keycloak上的UserId
         /// </summary>
-        public string Pwaosrsd { get; set; }
+        public string KeycloakUserId { get; set; }
 
         /// <summary>
         /// 會計師事務所(公司)

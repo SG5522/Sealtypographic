@@ -1,10 +1,12 @@
-﻿using DBEntities;
+﻿using Azure.Identity;
+using DBEntities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using SealTypographicWebAPI.Models;
 using SealTypographicWebAPI.Models.KeyCloak;
 using SealTypographicWebAPI.Services;
-
+using Serilog;
 
 namespace SealTypographicWebAPI.Controllers
 {
@@ -31,12 +33,12 @@ namespace SealTypographicWebAPI.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        public async Task<string> Get(string userName)
+        public async Task<string> Get()
         {
             string response = string.Empty;
             try
             {
-                response = await keyCloakAdminService.GetUserData(userName);               
+                response = await keyCloakAdminService.GetUserData(User.Identity.Name);               
             }
             catch (Exception ex)
             {
@@ -55,7 +57,7 @@ namespace SealTypographicWebAPI.Controllers
             KeycloakClientRolesResponse keyCloakClientRolesResponse = new ();
             try
             {
-                keyCloakClientRolesResponse = await keyCloakAdminService.GetRoles();
+                keyCloakClientRolesResponse = await keyCloakAdminService.GetRoles();                
             }
             catch (Exception ex)
             {

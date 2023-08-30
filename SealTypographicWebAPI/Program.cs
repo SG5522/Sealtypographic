@@ -170,7 +170,7 @@ builder.Services.AddSwaggerGen(c =>
     c.SupportNonNullableReferenceTypes();
 
     c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, $"{Assembly.GetExecutingAssembly().GetName().Name}.xml"), true);
-    var securityScheme = new OpenApiSecurityScheme
+    OpenApiSecurityScheme securityScheme = new()
     {
         Name = "Auth",
         Type = SecuritySchemeType.OAuth2,
@@ -191,9 +191,9 @@ builder.Services.AddSwaggerGen(c =>
     };
     c.AddSecurityDefinition(securityScheme.Reference.Id, securityScheme);
     c.AddSecurityRequirement(new OpenApiSecurityRequirement
-            {
-                {securityScheme, Array.Empty<string>()}
-            });
+    {
+        {securityScheme, Array.Empty<string>()}
+    });
     // 取得TOKEN
     //c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
     //{

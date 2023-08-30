@@ -31,53 +31,31 @@ namespace SealTypographicWebAPI.Controllers
         /// <summary>
         /// 取得客戶印鑑季度表
         /// </summary>
-        /// <param name="customerId">客戶ID</param>
+        /// <param name="customerSealQuarterPaginateSearch">印鑑季度分頁搜尋</param>
         /// <returns></returns>
-        [HttpGet("{customerId}")]
-        public CustomerSealQuarterResponse Quarter(int customerId)
+        [HttpGet("[Action]")]
+        public CustomerSealQuarterPaginateViewModel Quarter([FromQuery] CustomerSealQuarterPaginateSearch customerSealQuarterPaginateSearch)
         {
-            CustomerSealQuarterResponse customerSealQuarters = new();
+            CustomerSealQuarterPaginateViewModel customerSealQuarterPaginateViewModel = new();
             try
             {
-                Log.Information("CustomerSeal get quarter input {@Input}", customerId);
-                customerSealQuarters = customerSealService.GetQuarter(customerId, false);
-                Log.Information("CustomerSeal get quarter output {@Output}", customerSealQuarters);
-            }
-            catch (Exception ex)
-            {
-                Log.Error("CustomerSeal get quarter error {@Error}", ex.Message); 
-                customerSealQuarters.DbError();
-            }
-            return customerSealQuarters;
-        }
-
-        /// <summary>
-        /// 取得客戶印鑑季度表
-        /// </summary>
-        /// <param name="customerId">客戶ID</param>
-        /// <returns></returns>
-        [HttpGet("[Action]/{customerId}")]
-        public CustomerSealQuarterResponse QuarterWithTypographic(int customerId)
-        {
-            CustomerSealQuarterResponse customerSealQuarters = new();
-            try
-            {
-                Log.Information("CustomerSeal get quarterWithTypographic input {@Input}", customerId);
-                customerSealQuarters = customerSealService.GetQuarter(customerId, true);
-                Log.Information("CustomerSeal get quarterWithTypographic output {@Output}", customerSealQuarters);
+                Log.Information("CustomerSeal get quarterWithTypographic input {@Input}", customerSealQuarterPaginateSearch);
+                customerSealQuarterPaginateViewModel = customerSealService.GetQuarter(customerSealQuarterPaginateSearch, false);
+                Log.Information("CustomerSeal get quarterWithTypographic output {@Output}", customerSealQuarterPaginateViewModel);
             }
             catch (Exception ex)
             {
                 Log.Error("CustomerSeal get quarterWithTypographic error {@Error}", ex.Message);
-                customerSealQuarters.DbError();
+                customerSealQuarterPaginateViewModel.Error();
+                customerSealQuarterPaginateViewModel.Message = ex.Message;
             }
-            return customerSealQuarters;
-        }
+            return customerSealQuarterPaginateViewModel;
+        }        
 
         /// <summary>
         /// 取得客戶印鑑季度表
         /// </summary>
-        /// <param name="customerSealQuarterPaginateSearch">客戶ID</param>
+        /// <param name="customerSealQuarterPaginateSearch">印鑑季度分頁搜尋</param>
         /// <returns></returns>
         [HttpGet("[Action]")]
         public CustomerSealQuarterPaginateViewModel QuarterWithTypographic([FromQuery] CustomerSealQuarterPaginateSearch customerSealQuarterPaginateSearch)
@@ -86,13 +64,14 @@ namespace SealTypographicWebAPI.Controllers
             try
             {
                 Log.Information("CustomerSeal get quarterWithTypographic input {@Input}", customerSealQuarterPaginateSearch);
-                customerSealQuarterPaginateViewModel = customerSealService.GetQuarterWithPaginate(customerSealQuarterPaginateSearch, true);
+                customerSealQuarterPaginateViewModel = customerSealService.GetQuarter(customerSealQuarterPaginateSearch, true);
                 Log.Information("CustomerSeal get quarterWithTypographic output {@Output}", customerSealQuarterPaginateViewModel);
             }
             catch (Exception ex)
             {
                 Log.Error("CustomerSeal get quarterWithTypographic error {@Error}", ex.Message);
-                customerSealQuarterPaginateViewModel.DbError();
+                customerSealQuarterPaginateViewModel.Error();
+                customerSealQuarterPaginateViewModel.Message = ex.Message;
             }
             return customerSealQuarterPaginateViewModel;
         }

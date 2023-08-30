@@ -2,7 +2,6 @@
 using System.IO;
 using System.Security.Cryptography;
 using System.Text;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace DJEncryption
 {
@@ -17,7 +16,7 @@ namespace DJEncryption
         /// </summary>
         /// <param name="inputBytes">輸入的Byte[]</param>
         /// <param name="password">密碼</param>
-        public static AESEncryption Encrypte(byte[] inputBytes, int passwordLength)
+        public static AESEncryption Encrypt(byte[] inputBytes, int passwordLength)
         {
             AESEncryption encryptionWithAES = new AESEncryption();
             RijndaelManaged rijndaelManaged = new RijndaelManaged();
