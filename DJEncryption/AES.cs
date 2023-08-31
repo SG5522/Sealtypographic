@@ -90,21 +90,51 @@ namespace DJEncryption
             return result;
         }
 
+        /// <summary>
+        /// 預設加密方式
+        /// </summary>
         public void Encrypt()
         {
             EncryptString = Encrypt(SourceString, Key, IV, CipherMode, PaddingMode);
         }
 
+        /// <summary>
+        /// 按照設定提供Key iv 進行加密
+        /// </summary>
+        /// <param name="sourceString">原始字串(base64)</param>
+        /// <param name="key"></param>
+        /// <param name="iv"></param>
+        /// <returns></returns>
         public static string Encrypt(string sourceString, string key, string iv)
         {
             return Encrypt(sourceString, key, iv, DEFAULT_CIPHER_MODE, DEFAULT_PADDING_MODE);
         }
-
+        /// <summary>
+        /// 按照設定提供Key iv 
+        /// 與定義 cipherMode 與 paddingMode
+        /// 進行加密
+        /// </summary>
+        /// <param name="sourceString">原始字串(base64)</param>
+        /// <param name="key"></param>
+        /// <param name="iv"></param>
+        /// <param name="cipherMode"></param>
+        /// <param name="paddingMode"></param>
+        /// <returns></returns>
         public static string Encrypt(string sourceString, string key, string iv, CipherMode cipherMode, PaddingMode paddingMode)
         {
             return Convert.ToBase64String(Encrypt(Encoding.UTF8.GetBytes(sourceString), Convert.FromBase64String(key), Convert.FromBase64String(iv), cipherMode, paddingMode));
         }
 
+        /// <summary>
+        /// 使用byte[]的方式提供來源進行加密
+        /// </summary>
+        /// <param name="sourceBytes">原始資料Bytes格式</param>
+        /// <param name="key">key byte格式</param>
+        /// <param name="iv">iv byte格式</param>
+        /// <param name="cipherMode"></param>
+        /// <param name="paddingMode"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"></exception>
         public static byte[] Encrypt(byte[] sourceBytes, byte[] key, byte[] iv, CipherMode cipherMode, PaddingMode paddingMode)
         {
             byte[] result = null;
@@ -155,21 +185,49 @@ namespace DJEncryption
             return result;
         }
 
+        /// <summary>
+        /// 預設解密方式
+        /// </summary>
         public void Decrypt()
         {
             SourceString = Decrypt(EncryptString, Key, IV, CipherMode, PaddingMode);
         }
-
+        /// <summary>
+        /// 按照設定提供Key iv 進行解密
+        /// </summary>
+        /// <param name="encryptString">加密字串</param>
+        /// <param name="key"></param>
+        /// <param name="iv"></param>
+        /// <returns></returns>
         public static string Decrypt(string encryptString, string key, string iv)
         {
             return Decrypt(encryptString, key, iv, DEFAULT_CIPHER_MODE, DEFAULT_PADDING_MODE);
         }
 
+        /// <summary>
+        /// 按照設定提供Key iv 
+        /// 與定義cipherMode、paddingMode 進行解密
+        /// </summary>
+        /// <param name="encryptString">加密字串</param>
+        /// <param name="key"></param>
+        /// <param name="iv"></param>
+        /// <param name="cipherMode"></param>
+        /// <param name="paddingMode"></param>
+        /// <returns></returns>
         public static string Decrypt(string encryptString, string key, string iv, CipherMode cipherMode, PaddingMode paddingMode)
         {
             return Encoding.UTF8.GetString(Decrypt(Convert.FromBase64String(encryptString), Convert.FromBase64String(key), Convert.FromBase64String(iv), cipherMode, paddingMode));
         }
-
+        /// <summary>
+        /// 使用byte[]的方式提供來源進行解密
+        /// </summary>
+        /// <param name="encryptBytes"></param>
+        /// <param name="key"></param>
+        /// <param name="iv"></param>
+        /// <param name="cipherMode"></param>
+        /// <param name="paddingMode"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"></exception>
         public static byte[] Decrypt(byte[] encryptBytes, byte[] key, byte[] iv, CipherMode cipherMode, PaddingMode paddingMode)
         {
             byte[] result = null;

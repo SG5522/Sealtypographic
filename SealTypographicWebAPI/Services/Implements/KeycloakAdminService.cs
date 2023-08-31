@@ -5,6 +5,7 @@ using SealTypographicWebAPI.Config;
 using SealTypographicWebAPI.Consts;
 using SealTypographicWebAPI.Controllers;
 using SealTypographicWebAPI.Models;
+using SealTypographicWebAPI.Models.Keycloak;
 using SealTypographicWebAPI.Models.KeyCloak;
 using SealTypographicWebAPI.Utils;
 using System.Text.Json;
@@ -41,12 +42,12 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <summary>
         /// 取得User資料
         /// </summary>
-        /// <param name="userName"></param>
+        /// <param name="userId"></param>
         /// <returns></returns>
-        public async Task<string> GetUserData(string userName)
+        public async Task<string> GetUserData(string userId)
         {
-            RestRequest request = new(KeycloakAdminUrlConsts.Users, Method.Get);            
-            request.AddParameter("username", userName);
+            RestRequest request = new(KeycloakAdminUrlConsts.Users, Method.Get);
+            request.AddUrlSegment("id", userId);            
             request.AddParameter("exact", true);
             RestResponse response = await client.ExecuteGetAsync(request);
             return response.Content;
@@ -100,7 +101,7 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <returns></returns>
         public async Task<ResponseViewModel> New(KeycloakUserData keycloakUserData)
         {
-            ResponseViewModel response = new();
+            ResponseViewModel response = new();            
             RestRequest request = new(KeycloakAdminUrlConsts.Users, Method.Post);
 
             request.AddHeader("Content-Type", "application/json");            
@@ -117,6 +118,31 @@ namespace SealTypographicWebAPI.Services.Implements
                 response.Message = restResponse.Content;
             }
             return response;            
+        }
+        
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public async Task<ResponseViewModel> ResetPassword (string userId, KeycloakCredentials keycloakCredentials)
+        {
+            ResponseViewModel response = new();
+            RestRequest request = new(KeycloakAdminUrlConsts.ResetPassword, Method.Put);
+            request.AddHeader("Content-Type", "application/json");
+            request.AddUrlSegment("id", userId);
+            request.AddStringBody(JsonSerializer.Serialize(keycloakCredentials), DataFormat.Json);
+            RestResponse restResponse = await client.ExecuteAsync(request);
+
+            if (restResponse.Content == "")
+            {
+                response.Success();
+            }
+            else
+            {
+                response.Error();
+                response.Message = restResponse.Content;
+            }
+            return response;
         }
     }
 }

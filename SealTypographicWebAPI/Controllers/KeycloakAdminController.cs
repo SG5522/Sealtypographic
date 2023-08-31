@@ -7,6 +7,7 @@ using SealTypographicWebAPI.Models;
 using SealTypographicWebAPI.Models.KeyCloak;
 using SealTypographicWebAPI.Services;
 using Serilog;
+using System.Security.Claims;
 
 namespace SealTypographicWebAPI.Controllers
 {
@@ -33,12 +34,12 @@ namespace SealTypographicWebAPI.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        public async Task<string> Get()
+        public async Task<string> UserData()
         {
             string response = string.Empty;
             try
-            {
-                response = await keyCloakAdminService.GetUserData(User.Identity.Name);               
+            {                
+                response = await keyCloakAdminService.GetUserData(User.FindFirstValue(ClaimTypes.NameIdentifier));               
             }
             catch (Exception ex)
             {
@@ -52,7 +53,7 @@ namespace SealTypographicWebAPI.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet("[Action]")]
-        public async Task<KeycloakClientRolesResponse> GetClinetId()
+        public async Task<KeycloakClientRolesResponse> Roles()
         {
             KeycloakClientRolesResponse keyCloakClientRolesResponse = new ();
             try
@@ -74,13 +75,6 @@ namespace SealTypographicWebAPI.Controllers
         [HttpPost]
         public async Task<ResponseViewModel> New([FromBody] KeycloakUserData keyCloakUserData)
         {
-            //RestRequest request = new("users", Method.Post);
-            //request.AddHeader("Content-Type", "application/json");
-            //string userData = JsonSerializer.Serialize(keyCloakUserData);
-            //request.AddStringBody(userData, DataFormat.Json);
-            //RestResponse response = await client.ExecuteAsync(request);
-            //return Ok(response.Content);
-
             ResponseViewModel response = new ();
             try
             {
@@ -94,16 +88,32 @@ namespace SealTypographicWebAPI.Controllers
             return response;
         }
 
-        // PUT api/<ValuesController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        /// <summary>
+        /// 重設密碼
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="keycloakCredentials"></param>
+        [HttpPut("{userId}")]
+        public async Task<ResponseViewModel> ResetPassword(string userId, [FromBody] KeycloakCredentials keycloakCredentials)
         {
+            ResponseViewModel response = new();
+            try
+            {
+                response = await keyCloakAdminService.ResetPassword(userId ,keycloakCredentials);
+            }
+            catch (Exception ex)
+            {
+                response.Error();
+                response.Message = ex.Message;
+            }
+            return response;
         }
 
         // DELETE api/<ValuesController>/5
         [HttpDelete("{id}")]
         public void Delete(int id)
         {
+
         }
     }
 }
