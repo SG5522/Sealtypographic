@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SealTypographicWebAPI.Models;
+using SealTypographicWebAPI.Models.Keycloak;
 using SealTypographicWebAPI.Models.KeyCloak;
 using SealTypographicWebAPI.Services;
 using Serilog;
@@ -34,18 +35,18 @@ namespace SealTypographicWebAPI.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        public async Task<string> UserData()
+        public async Task<KeycloakUserDetailResponse> UserData()
         {
-            string response = string.Empty;
+            KeycloakUserDetailResponse keycloakUserDetailResponse = new ();
             try
             {                
-                response = await keyCloakAdminService.GetUserData(User.FindFirstValue(ClaimTypes.NameIdentifier));               
+                keycloakUserDetailResponse = await keyCloakAdminService.GetUserData(User.FindFirstValue(ClaimTypes.NameIdentifier));               
             }
             catch (Exception ex)
             {
-                response = ex.Message;
+                keycloakUserDetailResponse.Message = ex.Message;
             }
-            return response;   
+            return keycloakUserDetailResponse;   
         }
 
         /// <summary>
@@ -69,11 +70,32 @@ namespace SealTypographicWebAPI.Controllers
         }
 
         /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("[Action]")]
+        public async Task<string> RoleMappings(string groupId)
+        {
+            string result = string.Empty;
+            try
+            {
+                result = await keyCloakAdminService.GroupRoleMappings(groupId);
+            }
+            catch (Exception ex)
+            {
+                //keyCloakClientRolesResponse.Error();
+                //keyCloakClientRolesResponse.Message = ex.Message;
+            }
+            return result;
+        }
+
+
+        /// <summary>
         /// 註冊帳號
         /// </summary>
         /// <param name="keyCloakUserData"></param>        
         [HttpPost]
-        public async Task<ResponseViewModel> New([FromBody] KeycloakUserData keyCloakUserData)
+        public async Task<ResponseViewModel> New([FromBody] KeycloakUserDataForm keyCloakUserData)
         {
             ResponseViewModel response = new ();
             try

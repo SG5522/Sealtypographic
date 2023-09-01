@@ -91,7 +91,7 @@ namespace DJEncryption
         }
 
         /// <summary>
-        /// 預設加密方式
+        /// 加密處理(使用設定自己CLASS設定的參數)
         /// </summary>
         public void Encrypt()
         {
@@ -126,7 +126,7 @@ namespace DJEncryption
         }
 
         /// <summary>
-        /// 使用byte[]的方式提供來源進行加密
+        /// 使用byte[]的方式提供來源進行加密        
         /// </summary>
         /// <param name="sourceBytes">原始資料Bytes格式</param>
         /// <param name="key">key byte格式</param>
@@ -134,7 +134,7 @@ namespace DJEncryption
         /// <param name="cipherMode"></param>
         /// <param name="paddingMode"></param>
         /// <returns></returns>
-        /// <exception cref="ArgumentNullException"></exception>
+        /// <exception cref="ArgumentNullException">Thrown when the input string is null.</exception>
         public static byte[] Encrypt(byte[] sourceBytes, byte[] key, byte[] iv, CipherMode cipherMode, PaddingMode paddingMode)
         {
             byte[] result = null;
@@ -227,7 +227,7 @@ namespace DJEncryption
         /// <param name="cipherMode"></param>
         /// <param name="paddingMode"></param>
         /// <returns></returns>
-        /// <exception cref="ArgumentNullException"></exception>
+        /// <exception cref="ArgumentNullException">Thrown when the input string is null.</exception>
         public static byte[] Decrypt(byte[] encryptBytes, byte[] key, byte[] iv, CipherMode cipherMode, PaddingMode paddingMode)
         {
             byte[] result = null;

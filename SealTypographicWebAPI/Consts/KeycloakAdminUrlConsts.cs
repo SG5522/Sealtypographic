@@ -1,14 +1,26 @@
-﻿namespace SealTypographicWebAPI.Consts
+﻿using System.Data;
+
+namespace SealTypographicWebAPI.Consts
 {
     /// <summary>
-    /// Keycloak取
+    /// Keycloak RestAPI Url
     /// </summary>
     public class KeycloakAdminUrlConsts
     {
         /// <summary>
-        /// Users管理相關
+        /// 從UserID搜尋User資料
         /// </summary>
-        public const string Users = "users/{id}/";
+        public const string UsersQueryWithId = "users/{id}/";
+
+        /// <summary>
+        /// 從UserName搜尋User資料
+        /// </summary>
+        public const string UsersQueryWithUserName = "users";
+
+        /// <summary>
+        /// 從該UserId取得Group資料
+        /// </summary>
+        public const string UserGroup = "users/{id}/groups";
 
         /// <summary>
         /// Users Count數
@@ -16,9 +28,14 @@
         public const string UsersCount = "users/count";
 
         /// <summary>
-        /// Role資料
+        /// 取得Role資料
         /// </summary>        
         public const string Role = "clients/{id}/roles";
+
+        /// <summary>
+        /// 取得GroupRole資料
+        /// </summary>        
+        public const string GroupRoleMapping = "groups/{id}/role-mappings/clients/{client}";
 
         /// <summary>
         /// 重設密碼

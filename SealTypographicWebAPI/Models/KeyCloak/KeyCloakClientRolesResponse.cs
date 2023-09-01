@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Serialization;
+﻿using SealTypographicWebAPI.Models.Keycloak;
+using System.Text.Json.Serialization;
 
 namespace SealTypographicWebAPI.Models.KeyCloak
 {
@@ -10,6 +11,6 @@ namespace SealTypographicWebAPI.Models.KeyCloak
         /// <summary>
         /// 此Client所有的Role內容
         /// </summary>
-        public List<KeycloakClientRole> Roles { get; set; }
+        public List<KeycloakRoleMapping> RoleMappings { get; set; }
     }
 }
