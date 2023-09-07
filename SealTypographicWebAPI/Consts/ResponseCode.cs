@@ -20,6 +20,12 @@ namespace SealTypographicWebAPI.Consts
         KeycloakNoData = 100,
 
         /// <summary>
+        /// Keycloak API抓不到資料
+        /// </summary>
+        [Description("Keycloak API連線失敗")]
+        KeycloakLinkError = 101,
+
+        /// <summary>
         /// DB無資料
         /// </summary>
         [Description("資料庫無資料")]

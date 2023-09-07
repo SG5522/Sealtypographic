@@ -193,9 +193,9 @@ namespace SealTypographicWebAPI.Services.Implements
         /// </summary>
         /// <param name="userName"></param>
         /// <returns></returns>
-        private async Task<List<KeycloakUserDataViewModel>> GetUserDatas(string userName)
+        public async Task<KeycloakUserDataPaginate> GetUserDataPaginate(string userName)
         {
-            List<KeycloakUserDataViewModel> result = new();
+            KeycloakUserDataPaginate result = new();
             try
             {
                 RestRequest request = new(KeycloakAdminUrlConsts.UsersQueryWithUserName, Method.Get);
@@ -208,16 +208,19 @@ namespace SealTypographicWebAPI.Services.Implements
 
                     if (keycloakUserDataViewModel != null)
                     {
-                        result = keycloakUserDataViewModel;
+                        result.UserDatas = keycloakUserDataViewModel;
+                        result.Success();
                         logger.LogInformation("GetUserData Success");
                     }
                     else
-                    {                        
+                    {
+                        result.KeycloakNoData();
                         logger.LogError("GetUserData Nodata");
                     }
                 }
                 else
-                {                    
+                {
+                    result.KeycloakLinkError();
                     logger.LogError("GetUserData keycloak Api errorMessage {message}", response.ErrorMessage);
                 }
             }

@@ -30,6 +30,13 @@ namespace SealTypographicWebAPI.Services
         Task<string> GroupRoleMappings(string groupId);
 
         /// <summary>
+        /// 取得KeycloakUserData分頁
+        /// </summary>
+        /// <param name="userName"></param>
+        /// <returns></returns>
+        Task<KeycloakUserDataPaginate> GetUserDataPaginate(string userName);
+
+        /// <summary>
         /// 新增使用者
         /// </summary>
         /// <param name="keyCloakUserData"></param>
