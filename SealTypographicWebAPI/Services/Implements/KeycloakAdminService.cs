@@ -1,9 +1,7 @@
-﻿using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
+﻿using Microsoft.Extensions.Options;
 using RestSharp;
 using SealTypographicWebAPI.Config;
 using SealTypographicWebAPI.Consts;
-using SealTypographicWebAPI.Controllers;
 using SealTypographicWebAPI.Models;
 using SealTypographicWebAPI.Models.Keycloak;
 using SealTypographicWebAPI.Models.KeyCloak;
@@ -144,7 +142,7 @@ namespace SealTypographicWebAPI.Services.Implements
         public async Task<ResponseViewModel> New(KeycloakUserDataForm keycloakUserData)
         {
             ResponseViewModel response = new();            
-            RestRequest request = new(KeycloakAdminUrlConsts.UsersQueryWithId, Method.Post);
+            RestRequest request = new(KeycloakAdminUrlConsts.Users, Method.Post);
 
             request.AddHeader("Content-Type", "application/json");            
             request.AddStringBody(JsonSerializer.Serialize(keycloakUserData), DataFormat.Json);
@@ -191,15 +189,20 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <summary>
         /// 取得user資料
         /// </summary>
-        /// <param name="userName"></param>
+        /// <param name="keycloakUserSearch">Keycloak User搜尋條件</param>
         /// <returns></returns>
-        public async Task<KeycloakUserDataPaginate> GetUserDataPaginate(string userName)
+        public async Task<KeycloakUserDataPaginate> GetUserDataPaginate(KeycloakUserSearch keycloakUserSearch)
         {
             KeycloakUserDataPaginate result = new();
             try
             {
-                RestRequest request = new(KeycloakAdminUrlConsts.UsersQueryWithUserName, Method.Get);
-                request.AddParameter("username", userName);
+                RestRequest request = new(KeycloakAdminUrlConsts.Users, Method.Get);
+                if(keycloakUserSearch.UserName != null)
+                {
+                    request.AddParameter("username", keycloakUserSearch.UserName);
+                }
+                request.AddParameter("first", keycloakUserSearch.PageNumber);
+                request.AddParameter("max", keycloakUserSearch.PageSize);
                 request.AddParameter("exact", true);
                 RestResponse response = await client.ExecuteGetAsync(request);
                 if (response.IsSuccessful && response.Content != null)
@@ -208,7 +211,13 @@ namespace SealTypographicWebAPI.Services.Implements
 
                     if (keycloakUserDataViewModel != null)
                     {
+                        //user資料 (依條件與分頁限制顯示)
                         result.UserDatas = keycloakUserDataViewModel;
+                        //使用者數量與頁數相關
+                        result.PageNumber = keycloakUserSearch.PageNumber;
+                        result.PageSize = keycloakUserSearch.PageSize;
+                        result.TotalCount = await GetUserCount(keycloakUserSearch);
+                        result.TotalPage = TotalPageUtil.GetTotalPage(result.TotalCount, keycloakUserSearch.PageSize);
                         result.Success();
                         logger.LogInformation("GetUserData Success");
                     }
@@ -230,6 +239,19 @@ namespace SealTypographicWebAPI.Services.Implements
             }
 
             return result;
+        }
+
+        private async Task<int> GetUserCount(KeycloakUserSearch keycloakUserSearch)
+        {
+            RestRequest request = new(KeycloakAdminUrlConsts.UsersCount, Method.Get);
+            if (keycloakUserSearch.UserName != null)
+            {
+                request.AddParameter("username", keycloakUserSearch.UserName);
+            }
+            request.AddParameter("exact", true);
+
+            RestResponse response = await client.ExecuteGetAsync(request);
+            return response.Content != null ? int.Parse(response.Content) : 0 ;
         }
 
         /// <summary>

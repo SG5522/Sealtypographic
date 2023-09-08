@@ -50,11 +50,11 @@ namespace SealTypographicWebAPI.Controllers
         }
 
         /// <summary>
-        /// 
+        /// 取得此Client的Roles
         /// </summary>
         /// <returns></returns>
         [HttpGet("[Action]")]
-        public async Task<KeycloakClientRolesResponse> Roles()
+        public async Task<KeycloakClientRolesResponse> ClientRoles()
         {
             KeycloakClientRolesResponse keyCloakClientRolesResponse = new ();
             try
@@ -67,6 +67,27 @@ namespace SealTypographicWebAPI.Controllers
                 keyCloakClientRolesResponse.Message = ex.Message;
             }
             return keyCloakClientRolesResponse;
+        }
+
+        /// <summary>
+        /// 取得使用者分頁資料
+        /// </summary>
+        /// <param name="keycloakUserSearch">Keycloak User搜尋條件</param>
+        /// <returns></returns>
+        [HttpGet("[Action]")]
+        public async Task<KeycloakUserDataPaginate> UserDataPaginate([FromQuery] KeycloakUserSearch keycloakUserSearch)
+        {
+            KeycloakUserDataPaginate keycloakUserDataPaginate = new();
+            try
+            {
+                keycloakUserDataPaginate = await keyCloakAdminService.GetUserDataPaginate(keycloakUserSearch);
+            }
+            catch (Exception ex)
+            {
+                keycloakUserDataPaginate.Error();
+                keycloakUserDataPaginate.Message = ex.Message;
+            }
+            return keycloakUserDataPaginate;
         }
 
         /// <summary>

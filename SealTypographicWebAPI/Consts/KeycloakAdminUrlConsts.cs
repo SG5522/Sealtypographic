@@ -13,19 +13,21 @@ namespace SealTypographicWebAPI.Consts
         public const string UsersQueryWithId = "users/{id}/";
 
         /// <summary>
-        /// 從UserName搜尋User資料
+        /// Users Api
+        /// get 可用userName 尋找
+        /// post 新增帳號
         /// </summary>
-        public const string UsersQueryWithUserName = "users";
-
-        /// <summary>
-        /// 從該UserId取得Group資料
-        /// </summary>
-        public const string UserGroup = "users/{id}/groups";
+        public const string Users = "users";
 
         /// <summary>
         /// Users Count數
         /// </summary>
         public const string UsersCount = "users/count";
+
+        /// <summary>
+        /// 從該UserId取得Group資料
+        /// </summary>
+        public const string UserGroup = "users/{id}/groups";
 
         /// <summary>
         /// 取得Role資料

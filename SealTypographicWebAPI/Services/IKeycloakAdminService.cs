@@ -32,9 +32,9 @@ namespace SealTypographicWebAPI.Services
         /// <summary>
         /// 取得KeycloakUserData分頁
         /// </summary>
-        /// <param name="userName"></param>
+        /// <param name="keycloakUserSearch ">Keycloak User搜尋條件</param>
         /// <returns></returns>
-        Task<KeycloakUserDataPaginate> GetUserDataPaginate(string userName);
+        Task<KeycloakUserDataPaginate> GetUserDataPaginate(KeycloakUserSearch keycloakUserSearch);
 
         /// <summary>
         /// 新增使用者
