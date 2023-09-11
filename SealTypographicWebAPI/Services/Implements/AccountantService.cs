@@ -65,7 +65,6 @@ namespace SealTypographicWebAPI.Services.Implements
                 accountantQuery = accountantQuery.Where(accountant => accountant.AccountantSignGroups.Any(x => x.ReviewStatus == ReviewStatus.Approval));
             }
 
-
             if (!string.IsNullOrWhiteSpace(accountantSearch.KeyWord))
             {
                 accountantQuery = accountantQuery.Where
@@ -74,7 +73,7 @@ namespace SealTypographicWebAPI.Services.Implements
                     accountant.Code.ToLower().Contains(accountantSearch.KeyWord.ToLower())
                     || accountant.Name.Contains(accountantSearch.KeyWord)
                 );
-            }
+            }            
 
             if (accountantSearch.AccountantGroupNumber != null)
             {

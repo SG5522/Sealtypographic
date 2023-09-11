@@ -107,8 +107,7 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <returns></returns>
         public async Task<ResponseViewModel> New(AccountantSignForms accountantSignForms)
         {
-            ResponseViewModel response = new();
-            List<TypographicResource> typographyResources = new();
+            ResponseViewModel response = new();            
             int userId = 1; //從帳號驗證取得Id
 
             //確認是否有該會計師的資料
@@ -126,9 +125,9 @@ namespace SealTypographicWebAPI.Services.Implements
                 ImageBase64Info imageBase64Info = imageService.SetImageBase64InfoWithSeal(accountantQuery.Code, SealType.Accountant);
                 
                 BaseInputSignGroupJournal(accountantSignGroup, true, userId);
-                await NewTypographyResource(accountantSignForms.SignForms, typographyResources, imageBase64Info, userId);
+                //新增簽印資料(圖檔與DB資源)         
+                accountantSignGroup.TypographicResources = await NewTypographyResource(accountantSignForms.SignForms, imageBase64Info, userId);
 
-                accountantSignGroup.TypographicResources = typographyResources;
                 accountantQuery.AccountantSignGroups.Add(accountantSignGroup);
                 dbContext.SaveChanges();
                 response.Success();
@@ -218,8 +217,8 @@ namespace SealTypographicWebAPI.Services.Implements
                     }
                     BaseInputSignGroupJournal(accountantSignGroup, true, userId);
 
-                    //新增
-                    await NewTypographyResource(accountantSignUpdate.CreateAccountantSigns, accountantSignGroup.TypographicResources, imageBase64Info, userId);                    
+                    //新增簽印資料(圖檔與DB資源)         
+                    accountantSignGroup.TypographicResources = await NewTypographyResource(accountantSignUpdate.CreateAccountantSigns, imageBase64Info, userId);
 
                     //沒有任何回傳訊息(錯誤訊息)就更新資料庫
                     if (!responseViewModels.Any())
@@ -328,13 +327,13 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <summary>
         /// 新增印鑑、簽印、圖片資料
         /// </summary>
-        /// <param name="formSeals">輸入</param>
-        /// <param name="typographyResources">要輸入資料庫的資源</param>
+        /// <param name="formSeals">輸入</param>        
         /// <param name="imageBase64Info">圖檔資訊</param>
         /// <param name="userId">使用者Id</param>
         /// <returns></returns>
-        private async Task NewTypographyResource(List<AccountantSign> formSeals, List<TypographicResource> typographyResources, ImageBase64Info imageBase64Info, int userId)
+        private async Task<List<TypographicResource>> NewTypographyResource(List<AccountantSign> formSeals, ImageBase64Info imageBase64Info, int userId)
         {
+            List<TypographicResource> typographyResources = new();
             foreach (AccountantSign accountantSign in formSeals)
             {
                 TypographicResource typographyResource = new()
@@ -351,6 +350,7 @@ namespace SealTypographicWebAPI.Services.Implements
                 TypographicResourceUtil.BaseInputTypographyResource(typographyResource, true, userId);
                 typographyResources.Add(typographyResource);
             }
+            return typographyResources;
         }
     }
 }

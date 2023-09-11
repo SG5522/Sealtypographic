@@ -64,7 +64,7 @@ namespace SealTypographicWebAPI.Config
                     .ForMember(dst => dst.AccountantNumber, opt => opt.MapFrom(o => o.Code))
                     .ForMember(dst => dst.AccountantSignGroupId, opt => opt.MapFrom
                     (
-                        src => src.AccountantSignGroups.Any() ? src.AccountantSignGroups.First().Id : 0
+                        src => src.AccountantSignGroups.Any() ? src.AccountantSignGroups.First(x => x.ReviewStatus <= ReviewStatus.Reject).Id : 0
                     ));
 
             CreateMap<Accountant, AccountantDetailViewModel>()

@@ -126,8 +126,7 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <returns></returns>
         public async Task<ResponseViewModel> New(CustomerSealForm customerSealForms)
         {
-            ResponseViewModel response = new();            
-            List<TypographicResource> typographyResources = new();
+            ResponseViewModel response = new();                        
             int userId = 1; //以後從帳號驗證取得Id
 
             Customer? customerQuery = dbContext.Customers.Include(customer => customer.CustomerSealGroups)
@@ -154,15 +153,15 @@ namespace SealTypographicWebAPI.Services.Implements
 
                 if (customerSealGroupQuery == null)
                 {
-                    CustomerSealGroup customerSealGroup = new();
-                    //Consts之後要調整到新的Db
+                    CustomerSealGroup customerSealGroup = new();                    
+                    
                     ImageBase64Info imageBase64Info = imageService.SetImageBase64InfoWithSeal(customerQuery.Code, SealType.Customer);
 
                     customerSealGroup.Quarter = quarter;                    
-                    BaseInputQuarterJournal(customerSealGroup, true, userId);                   
-                    await NewTypographyResource(customerSealForms.Seals, typographyResources, imageBase64Info, userId);
-
-                    customerSealGroup.TypographicResources = typographyResources;
+                    BaseInputQuarterJournal(customerSealGroup, true, userId);
+                    //新增印鑑資料(圖檔與DB資源)
+                    customerSealGroup.TypographicResources = await NewTypographyResource(customerSealForms.Seals, imageBase64Info, userId);
+                    
                     customerQuery.CustomerSealGroups.Add(customerSealGroup);                    
                     await dbContext.SaveChangesAsync();
                     response.Success();
@@ -242,8 +241,8 @@ namespace SealTypographicWebAPI.Services.Implements
                     }
                 }
 
-                //新增印鑑     
-                await NewTypographyResource(customerSealUpdate.CreateCustomerSeals, customerSealGroup.TypographicResources, imageBase64Info, userId);
+                //新增印鑑資料(圖檔與DB資源)
+                customerSealGroup.TypographicResources = await NewTypographyResource(customerSealUpdate.CreateCustomerSeals, imageBase64Info, userId);
                            
                 //無任何回傳訊息(錯誤訊息)就更新資料庫
                 if (!responseViewModels.Any())
@@ -308,14 +307,14 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <summary>
         /// 新增印鑑資料
         /// </summary>
-        /// <param name="formseals">輸入</param>
-        /// <param name="typographyResources">要輸入資料庫的資源</param>
+        /// <param name="formSeals">輸入</param>        
         /// <param name="imageBase64Info">圖檔資訊</param>
         /// <param name="userId">使用者Id</param>
         /// <returns></returns>
-        private async Task NewTypographyResource(List<CustomerSeal> formseals, List<TypographicResource> typographyResources, ImageBase64Info imageBase64Info, int userId)
+        private async Task<List<TypographicResource>> NewTypographyResource(List<CustomerSeal> formSeals, ImageBase64Info imageBase64Info, int userId)
         {
-            foreach (CustomerSeal customerSeal in formseals)
+            List<TypographicResource> typographyResources = new();
+            foreach (CustomerSeal customerSeal in formSeals)
             {
                 TypographicResource typographyResource = new()
                 {
@@ -332,6 +331,7 @@ namespace SealTypographicWebAPI.Services.Implements
                 TypographicResourceUtil.BaseInputTypographyResource(typographyResource, true, userId);
                 typographyResources.Add(typographyResource);
             }
+            return typographyResources;
         }
 
         /// <summary>
