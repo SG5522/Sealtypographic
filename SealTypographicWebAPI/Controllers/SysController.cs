@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Keycloak.AuthServices.Authentication;
 using System.Security.Claims;
+using static System.Net.Mime.MediaTypeNames;
+using System.Reflection;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -12,7 +14,7 @@ namespace SealTypographicWebAPI.Controllers
     /// </summary>
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+    //[Authorize]
     public class SysController : ControllerBase
     {
         private readonly ILogger<SysController> logger;
@@ -43,8 +45,11 @@ namespace SealTypographicWebAPI.Controllers
         public string Hello()
         {
             logger.LogDebug("Hello Begin");
-            string result = string.Format("Server Run OK. Ver. {0}", typeof(SysController).Assembly.GetName().Version);
-            IEnumerable<Claim> users = User.Claims;            
+            string result = string.Format(
+                                            "Server Run OK. Ver. {0} ProjectName {1}",
+                                            Assembly.GetExecutingAssembly().GetName().Version?.ToString(), 
+                                            Assembly.GetExecutingAssembly().GetName().Name?.ToString()
+                                         );             
             logger.LogDebug("Hello End");
             return result;
         }

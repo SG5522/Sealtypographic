@@ -23,7 +23,7 @@ namespace DJEncryption
 
             byte[] salt = GenerateRandomSalt();
             //convert password string to byte arrray
-            string password = GenerateRandomPassword(passwordLength);
+            string password = GenerateStringUtil.RandomString(passwordLength);
 
             Setting(rijndaelManaged, salt, password);
             
@@ -95,6 +95,8 @@ namespace DJEncryption
         private static string GenerateRandomPassword(int length) 
         {
             const string validChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"; // 可以使用的字符
+
+            Random randon = new Random();
             byte[] randomBytes = new byte[length];
             using (RNGCryptoServiceProvider rng = new RNGCryptoServiceProvider())
             {
