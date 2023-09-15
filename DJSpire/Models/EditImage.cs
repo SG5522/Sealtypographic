@@ -47,6 +47,12 @@ namespace DJSpire.Models
         public int Height { get; set; }
 
         /// <summary>
+        /// 圖片縮放大小
+        /// 1 inch = 72pt, and when dpi = 300, 1 inch = 300px. So when dpi = 300, 1px = 0.24pt    
+        /// </summary>
+        public float ImageScale {  get; set; }
+
+        /// <summary>
         /// 圖片流
         /// </summary>
         public Stream ImageStream { get; set; }

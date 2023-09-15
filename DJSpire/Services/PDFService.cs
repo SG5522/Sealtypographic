@@ -176,12 +176,11 @@ namespace DJSpire.Services
                         Document.Pages[editPDF.EditPages[pageIndex].PageNumber].Canvas.SetTransparency(1f, 1f, PdfBlendMode.Multiply);                        
                         Document.Pages[editPDF.EditPages[pageIndex].PageNumber].Canvas.DrawImage
                         (
-                            PdfImage.FromStream(editImage.ImageStream),
-                            //1 inch = 72pt, and when dpi = 300, 1 inch = 300px. So when dpi = 300, 1px = 0.24pt                            
-                            editImage.Left * 0.24f,
-                            editImage.Top * 0.24f,
-                            editImage.Width * 0.24f,
-                            editImage.Height * 0.24f
+                            PdfImage.FromStream(editImage.ImageStream),                                                    
+                            editImage.Left * editImage.ImageScale,
+                            editImage.Top * editImage.ImageScale,
+                            editImage.Width * editImage.ImageScale,
+                            editImage.Height * editImage.ImageScale
                         );
                     }
                     if (editPDF.IsBlank & editPDF.EditPages[pageIndex].BlankCheck)//確認是否加入空白頁
