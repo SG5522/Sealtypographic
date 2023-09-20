@@ -1,4 +1,6 @@
 using DBEntities;
+using DJKeycloakLib.Config;
+using DJKeycloakLib.Service;
 using Keycloak.AuthServices.Authentication;
 using Keycloak.AuthServices.Authorization;
 using Keycloak.AuthServices.Sdk.Admin;
@@ -98,7 +100,7 @@ builder.Services.AddScoped<SealMappingConfigService>();
 builder.Services.AddSingleton<TemplateConfigService>();
 builder.Services.AddScoped<ResponseCodeService>();
 builder.Services.AddScoped<ReviewStatusService>();
-builder.Services.AddScoped<IKeycloakAdminService,KeycloakAdminService>();
+builder.Services.AddScoped<IKeycloakAdminService, KeycloakAdminService>();
 builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
 
 

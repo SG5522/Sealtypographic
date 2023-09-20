@@ -7,7 +7,7 @@
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <DocumentationFile></DocumentationFile>
     <IncrementVersionOnBuild>0.0.2.1+</IncrementVersionOnBuild>
-    <Version>0.0.2.1883</Version>
+    <Version>0.0.2.1928</Version>
     <PackageIcon>android-chrome-128x128.png</PackageIcon>
     <Configurations>Debug;Release</Configurations>    
   </PropertyGroup>
@@ -17,6 +17,15 @@
     <Content Remove="logs\**" />
     <EmbeddedResource Remove="logs\**" />
     <None Remove="logs\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="Config\KeycloakAdminOption.cs" />
+    <Compile Remove="Consts\KeycloakAdminUrlConsts.cs" />
+    <Compile Remove="Controllers\KeycloakAdminController.cs" />
+    <Compile Remove="Services\IKeycloakAdminService.cs" />
+    <Compile Remove="Services\Implements\KeycloakAdminService.cs" />
+    <Compile Remove="Utils\KeycloakAuthenticator.cs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -48,6 +57,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\DBEntities\DBEntities.csproj" />
+    <ProjectReference Include="..\DJKeycloakController\DJKeycloakController.csproj" />
     <ProjectReference Include="..\DJSpire\DJSpire.csproj" />
     <ProjectReference Include="..\MySqlMigrations\MySql.csproj" />
     <ProjectReference Include="..\SqliteMigrations\Sqlite.csproj" />

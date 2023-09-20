@@ -1,4 +1,4 @@
-﻿namespace SealTypographicWebAPI.Config
+﻿namespace DJKeycloakLib.Config
 {
     /// <summary>
     /// KeyCloakAdmin的參數

@@ -1,6 +1,5 @@
-﻿using System.Data;
-
-namespace SealTypographicWebAPI.Consts
+﻿
+namespace DJKeycloakLib.Config
 {
     /// <summary>
     /// Keycloak RestAPI Url

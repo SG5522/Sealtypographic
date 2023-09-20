@@ -1,11 +1,11 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace SealTypographicWebAPI.Models.Keycloak
+namespace DJKeycloakLib.Model
 {
     /// <summary>
     /// Keycloak 使用者群組
     /// </summary>
-    public class KeycloakUserGroup
+    public class UserGroup
     {
         /// <summary>
         /// Keycloak GroupId(UUID)

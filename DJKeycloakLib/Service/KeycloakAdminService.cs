@@ -1,14 +1,12 @@
-﻿using Microsoft.Extensions.Options;
+﻿using DJKeycloakLib.Config;
 using RestSharp;
-using SealTypographicWebAPI.Config;
-using SealTypographicWebAPI.Consts;
-using SealTypographicWebAPI.Models;
-using SealTypographicWebAPI.Models.Keycloak;
-using SealTypographicWebAPI.Models.KeyCloak;
-using SealTypographicWebAPI.Utils;
 using System.Text.Json;
+using DJKeycloakLib.Model;
+using DJKeycloakLib.Model.BaseModel;
+using DJKeycloakLib.Util;
+using Microsoft.Extensions.Options;
 
-namespace SealTypographicWebAPI.Services.Implements
+namespace DJKeycloakLib.Service
 {
     /// <summary>
     /// 管理keyCloak內的帳號內容
@@ -17,24 +15,19 @@ namespace SealTypographicWebAPI.Services.Implements
     {
         private readonly RestClient client;
         private readonly KeycloakAdminOption keycloakAdminOption;
-        private readonly ILogger<KeycloakAdminService> logger;
 
         /// <summary>
         /// 建置
         /// </summary>
-        /// <param name="keyCloakAdminOption">讀取appsetting keyCloakAdmin的參數</param>
-        /// <param name="logger">Logger</param>
-        public KeycloakAdminService(IOptionsSnapshot<KeycloakAdminOption> keyCloakAdminOption, ILogger<KeycloakAdminService> logger)
+        /// <param name="keyCloakAdminOption">讀取appsetting keyCloakAdmin的參數</param>        
+        public KeycloakAdminService(IOptionsSnapshot<KeycloakAdminOption> keyCloakAdminOption)
         {
             keycloakAdminOption = keyCloakAdminOption.Value;
-
             RestClientOptions options = new(keycloakAdminOption.ApiBaseUrl)
             {
                 Authenticator = new KeycloakAuthenticator(keyCloakAdminOption.Value)
             };
             client = new(options);
-
-            this.logger = logger;
         }
 
         /// <summary>
@@ -42,9 +35,9 @@ namespace SealTypographicWebAPI.Services.Implements
         /// </summary>
         /// <param name="userId"></param>
         /// <returns></returns>
-        public async Task<KeycloakUserDetailResponse> GetUserData(string userId)
+        public async Task<UserDetailResponse> GetUserData(string userId)
         {
-            KeycloakUserDetailResponse keycloakUserDetailResponse = new();
+            UserDetailResponse keycloakUserDetailResponse = new();
             try
             {
                 RestRequest request = new(KeycloakAdminUrlConsts.UsersQueryWithId, Method.Get);
@@ -53,28 +46,26 @@ namespace SealTypographicWebAPI.Services.Implements
                 RestResponse response = await client.ExecuteGetAsync(request);
                 if (response.IsSuccessful && response.Content != null)
                 {
-                    KeycloakUserDetailViewModel? keycloakUserDetailViewModel = JsonSerializer.Deserialize<KeycloakUserDetailViewModel>(response.Content);
-                    if (keycloakUserDetailViewModel != null)
+                    UserDetailViewModel? KeycloakUserData = JsonSerializer.Deserialize<UserDetailViewModel>(response.Content);
+                    if (KeycloakUserData != null)
                     {
-                        keycloakUserDetailResponse.KeycloakUserDetail = keycloakUserDetailViewModel;
-                        keycloakUserDetailResponse.KeycloakUserDetail.Groups = await GetUserGroupDatas(userId);
-                        logger.LogInformation("GetUserData Success");
+                        keycloakUserDetailResponse.UserDetail = KeycloakUserData;                        
+                        keycloakUserDetailResponse.Success();
                     }
                     else
                     {
-                        keycloakUserDetailResponse.KeycloakNoData();
-                        logger.LogError("GetUserData Nodata");
+                        keycloakUserDetailResponse.NoData();
                     }
                 }
                 else
                 {
-                    keycloakUserDetailResponse.Error();
-                    logger.LogError("GetUserData keycloak Api Get Roles errorMessage {message}", response.ErrorMessage);
+                    keycloakUserDetailResponse.KeycloakAPIError();
+                    keycloakUserDetailResponse.Message = response.ErrorMessage;
                 }
             }
             catch (Exception ex)
             {
-                logger.LogError("GetUserData Api Error {message}", ex.Message);
+                keycloakUserDetailResponse.Message = ex.Message;
             }
             return keycloakUserDetailResponse;
         }
@@ -83,9 +74,9 @@ namespace SealTypographicWebAPI.Services.Implements
         /// 取得client的role資料
         /// </summary>
         /// <returns></returns>
-        public async Task<KeycloakClientRolesResponse> GetRoles()
+        public async Task<ClientRolesResponse> GetRoles()
         {
-            KeycloakClientRolesResponse keycloakClientRolesResponse = new();
+            ClientRolesResponse clientRolesResponse = new();
             try
             {
                 RestRequest request = new(KeycloakAdminUrlConsts.Role, Method.Get);
@@ -93,31 +84,29 @@ namespace SealTypographicWebAPI.Services.Implements
                 RestResponse response = await client.ExecuteGetAsync(request);
                 if (response.IsSuccessful && response.Content != null)
                 {
-                    List<KeycloakRoleMapping>? keycloakRoleMappings = JsonSerializer.Deserialize<List<KeycloakRoleMapping>>(response.Content);
+                    List<RoleMapping>? keycloakRoleMappings = JsonSerializer.Deserialize<List<RoleMapping>>(response.Content);
                     if (keycloakRoleMappings != null)
                     {
-                        keycloakClientRolesResponse.RoleMappings = keycloakRoleMappings;
-                        keycloakClientRolesResponse.Success();
-                        logger.LogInformation("GetRoles Success");
+                        clientRolesResponse.RoleMappings = keycloakRoleMappings;
+                        clientRolesResponse.Success();
                     }
                     else
                     {
-                        keycloakClientRolesResponse.KeycloakNoData();
-                        logger.LogError("GetRoles Nodata");
+                        clientRolesResponse.NoData();
                     }
                 }
                 else
                 {
-                    keycloakClientRolesResponse.Error();
-                    logger.LogError("GetRoles keycloak Api Get Roles errorMessage {message}", response.ErrorMessage);
+                    clientRolesResponse.KeycloakAPIError();
+                    clientRolesResponse.Message = response.ErrorMessage;
                 }
             }
             catch (Exception ex)
             {
-                logger.LogError("GetRoles Api Error {message}", ex.Message);
+                clientRolesResponse.Message = ex.Message;
             }
 
-            return keycloakClientRolesResponse;
+            return clientRolesResponse;
         }
 
         /// <summary>
@@ -139,35 +128,35 @@ namespace SealTypographicWebAPI.Services.Implements
         /// </summary>
         /// <param name="keycloakUserData"></param>
         /// <returns></returns>
-        public async Task<ResponseViewModel> New(KeycloakUserDataForm keycloakUserData)
+        public async Task<ResponseBaseModel> New(UserDataForm keycloakUserData)
         {
-            ResponseViewModel response = new();            
+            ResponseBaseModel response = new();
             RestRequest request = new(KeycloakAdminUrlConsts.Users, Method.Post);
 
-            request.AddHeader("Content-Type", "application/json");            
+            request.AddHeader("Content-Type", "application/json");
             request.AddStringBody(JsonSerializer.Serialize(keycloakUserData), DataFormat.Json);
             RestResponse restResponse = await client.ExecuteAsync(request);
 
-            if(restResponse.Content == "")
+            if (restResponse.Content == "")
             {
                 response.Success();
             }
             else
             {
-                response.Error();
+                response.KeycloakAPIError();
                 response.Message = restResponse.Content;
             }
-            return response;            
+            return response;
         }
-        
+
         /// <summary>
         /// 重設密碼
         /// </summary>
         /// <returns></returns>
-        public async Task<ResponseViewModel> ResetPassword (string userid, KeycloakCredentials keycloakCredentials)
+        public async Task<ResponseBaseModel> ResetPassword(string userid, Credentials keycloakCredentials)
         {
-            ResponseViewModel response = new();
-            
+            ResponseBaseModel response = new();
+
             RestRequest request = new(KeycloakAdminUrlConsts.ResetPassword, Method.Put);
             request.AddHeader("Content-Type", "application/json");
             request.AddUrlSegment("id", userid);
@@ -180,8 +169,8 @@ namespace SealTypographicWebAPI.Services.Implements
             }
             else
             {
-                response.Error();
-                response.Message = restResponse.Content;
+                response.KeycloakAPIError();
+                response.Message = restResponse.ErrorMessage;
             }
             return response;
         }
@@ -191,13 +180,13 @@ namespace SealTypographicWebAPI.Services.Implements
         /// </summary>
         /// <param name="keycloakUserSearch">Keycloak User搜尋條件</param>
         /// <returns></returns>
-        public async Task<KeycloakUserDataPaginate> GetUserDataPaginate(KeycloakUserSearch keycloakUserSearch)
+        public async Task<UserDataPaginate> GetUserDataPaginate(UserSearch keycloakUserSearch)
         {
-            KeycloakUserDataPaginate result = new();
+            UserDataPaginate result = new();
             try
             {
                 RestRequest request = new(KeycloakAdminUrlConsts.Users, Method.Get);
-                if(keycloakUserSearch.UserName != null)
+                if (keycloakUserSearch.UserName != null)
                 {
                     request.AddParameter("username", keycloakUserSearch.UserName);
                 }
@@ -207,7 +196,7 @@ namespace SealTypographicWebAPI.Services.Implements
                 RestResponse response = await client.ExecuteGetAsync(request);
                 if (response.IsSuccessful && response.Content != null)
                 {
-                    List<KeycloakUserDataViewModel>? keycloakUserDataViewModel = JsonSerializer.Deserialize<List<KeycloakUserDataViewModel>>(response.Content);
+                    List<UserDetailViewModel>? keycloakUserDataViewModel = JsonSerializer.Deserialize<List<UserDetailViewModel>>(response.Content);
 
                     if (keycloakUserDataViewModel != null)
                     {
@@ -219,29 +208,28 @@ namespace SealTypographicWebAPI.Services.Implements
                         result.TotalCount = await GetUserCount(keycloakUserSearch);
                         result.TotalPage = TotalPageUtil.GetTotalPage(result.TotalCount, keycloakUserSearch.PageSize);
                         result.Success();
-                        logger.LogInformation("GetUserData Success");
                     }
                     else
                     {
-                        result.KeycloakNoData();
-                        logger.LogError("GetUserData Nodata");
+                        result.NoData();
                     }
                 }
                 else
                 {
-                    result.KeycloakLinkError();
-                    logger.LogError("GetUserData keycloak Api errorMessage {message}", response.ErrorMessage);
+                    result.KeycloakAPIError();
+                    result.Message = response.ErrorMessage;                                        
                 }
             }
             catch (Exception ex)
             {
-                logger.LogError("GetUserData Error {message}", ex.Message);
+                result.SystemError();
+                result.Message = ex.Message;                
             }
 
             return result;
         }
 
-        private async Task<int> GetUserCount(KeycloakUserSearch keycloakUserSearch)
+        private async Task<int> GetUserCount(UserSearch keycloakUserSearch)
         {
             RestRequest request = new(KeycloakAdminUrlConsts.UsersCount, Method.Get);
             if (keycloakUserSearch.UserName != null)
@@ -251,7 +239,7 @@ namespace SealTypographicWebAPI.Services.Implements
             request.AddParameter("exact", true);
 
             RestResponse response = await client.ExecuteGetAsync(request);
-            return response.Content != null ? int.Parse(response.Content) : 0 ;
+            return response.Content != null ? int.Parse(response.Content) : 0;
         }
 
         /// <summary>
@@ -259,36 +247,39 @@ namespace SealTypographicWebAPI.Services.Implements
         /// </summary>
         /// <param name="userid"></param>
         /// <returns></returns>
-        private async Task<List<KeycloakUserGroup>> GetUserGroupDatas(string userid)
+        public async Task<UserGroupsResponse> GetUserGroupDatas(string userid)
         {
-            List<KeycloakUserGroup> result = new();
+            UserGroupsResponse result = new();
+            //List<UserGroup> result = new();
             try
             {
                 RestRequest request = new(KeycloakAdminUrlConsts.UserGroup, Method.Get);
-                request.AddUrlSegment("id", userid);                
+                request.AddUrlSegment("id", userid);
                 RestResponse response = await client.ExecuteGetAsync(request);
                 if (response.IsSuccessful && response.Content != null)
                 {
-                    List<KeycloakUserGroup>? keycloakUserDataViewModel = JsonSerializer.Deserialize<List<KeycloakUserGroup>>(response.Content);
+                    List<UserGroup>? keycloakUserDataViewModel = JsonSerializer.Deserialize<List<UserGroup>>(response.Content);
 
                     if (keycloakUserDataViewModel != null)
                     {
-                        result = keycloakUserDataViewModel;
-                        logger.LogInformation("GetUserGroupDatas Success");
+                        result.UserGroups = keycloakUserDataViewModel;
+                        result.Success();
                     }
                     else
-                    {
-                        logger.LogError("GetUserGroupDatas Nodata");
+                    {           
+                        result.NoData();
                     }
                 }
                 else
                 {
-                    logger.LogError("GetUserGroupDatas keycloak Api errorMessage {message}", response.ErrorMessage);
+                    result.KeycloakAPIError();
+                    result.Message = response.ErrorMessage;                    
                 }
             }
             catch (Exception ex)
             {
-                logger.LogError("GetUserGroupDatas Error {message}", ex.Message);
+                result.SystemError();
+                result.Message = ex.Message;                
             }
 
             return result;

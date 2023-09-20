@@ -1,8 +1,7 @@
-﻿using SealTypographicWebAPI.Models.KeyCloak;
-using SealTypographicWebAPI.Models;
-using SealTypographicWebAPI.Models.Keycloak;
+﻿using DJKeycloakLib.Model;
+using DJKeycloakLib.Model.BaseModel;
 
-namespace SealTypographicWebAPI.Services
+namespace DJKeycloakLib.Service
 {
     /// <summary>
     /// KeyCloak Admin帳號管理
@@ -14,13 +13,13 @@ namespace SealTypographicWebAPI.Services
         /// </summary>
         /// <param name="username"></param>
         /// <returns></returns>
-        Task<KeycloakUserDetailResponse> GetUserData(string username);
+        Task<UserDetailResponse> GetUserData(string username);
 
         /// <summary>
         /// 取得Roles
         /// </summary>        
         /// <returns></returns>
-        Task<KeycloakClientRolesResponse> GetRoles();
+        Task<ClientRolesResponse> GetRoles();
 
         /// <summary>
         /// 取得群組的角色權限關聯
@@ -32,23 +31,23 @@ namespace SealTypographicWebAPI.Services
         /// <summary>
         /// 取得KeycloakUserData分頁
         /// </summary>
-        /// <param name="keycloakUserSearch ">Keycloak User搜尋條件</param>
+        /// <param name="userSearch ">Keycloak User搜尋條件</param>
         /// <returns></returns>
-        Task<KeycloakUserDataPaginate> GetUserDataPaginate(KeycloakUserSearch keycloakUserSearch);
+        Task<UserDataPaginate> GetUserDataPaginate(UserSearch userSearch);
 
         /// <summary>
         /// 新增使用者
         /// </summary>
-        /// <param name="keyCloakUserData"></param>
+        /// <param name="userData"></param>
         /// <returns></returns>
-        Task<ResponseViewModel> New(KeycloakUserDataForm keyCloakUserData);
+        Task<ResponseBaseModel> New(UserDataForm userData);
 
         /// <summary>
         /// 重設密碼
         /// </summary>
         /// <param name="userName">userId</param>
-        /// <param name="keycloakCredentials">密碼資料</param>
+        /// <param name="credentials">密碼資料</param>
         /// <returns></returns>
-        Task<ResponseViewModel> ResetPassword(string userName, KeycloakCredentials keycloakCredentials);
+        Task<ResponseBaseModel> ResetPassword(string userName, Credentials credentials);
     }
 }

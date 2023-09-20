@@ -1,11 +1,11 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace SealTypographicWebAPI.Models.KeyCloak
+namespace DJKeycloakLib.Model
 {
     /// <summary>
-    /// KeyCloak的使用者密碼相關
+    /// 使用者密碼相關
     /// </summary>
-    public class KeycloakCredentials
+    public class Credentials
     {
         /// <summary>
         /// 設定Credential類別

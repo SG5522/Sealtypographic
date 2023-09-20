@@ -14,7 +14,7 @@ namespace DJSpire.Services
 {
     public class PDFService
     {
-        private string pdfpath;
+        private string pdfPath;
         private int pageIndex;
 
         /// <summary>
@@ -32,13 +32,13 @@ namespace DJSpire.Services
         /// </summary>
         public string PDFPath
         {
-            get { return pdfpath; }
+            get { return pdfPath; }
             set
             {
-                pdfpath = value;
-                if (!string.IsNullOrWhiteSpace(pdfpath))
+                pdfPath = value;
+                if (!string.IsNullOrWhiteSpace(pdfPath))
                 {
-                    Document = new PdfDocument(pdfpath);
+                    Document = new PdfDocument(pdfPath);
                 }
             }
         }

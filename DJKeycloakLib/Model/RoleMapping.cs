@@ -1,11 +1,11 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace SealTypographicWebAPI.Models.Keycloak
+namespace DJKeycloakLib.Model
 {
     /// <summary>
     /// 角色權限關聯
     /// </summary>
-    public class KeycloakRoleMapping
+    public class RoleMapping
     {
         /// <summary>
         /// id
@@ -19,11 +19,11 @@ namespace SealTypographicWebAPI.Models.Keycloak
         [JsonPropertyName("name")]
         public string Name { get; set; }
 
-        /// <summary>
-        /// 別名(暫定用Keycloak說明替代)
-        /// </summary>
-        [JsonPropertyName("description")]
-        public string Alias { get; set; }
+        ///// <summary>
+        ///// 別名(暫定用Keycloak說明替代)
+        ///// </summary>
+        //[JsonPropertyName("description")]
+        //public string Alias { get; set; }
 
         /// <summary>
         /// 說明

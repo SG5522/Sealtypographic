@@ -1,11 +1,9 @@
-﻿using SealTypographicWebAPI.Models.KeyCloak;
-
-namespace SealTypographicWebAPI.Models.Keycloak
+﻿namespace DJKeycloakLib.Model
 {
     /// <summary>
     /// 
     /// </summary>
-    public class KeycloakResetPasswordForm : KeycloakCredentials
+    public class ResetPasswordForm : Credentials
     {
         /// <summary>
         /// Keycloak的UserId

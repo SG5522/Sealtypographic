@@ -54,7 +54,7 @@ namespace SealTypographicWebAPI.Utils
                     scale = 0.24f;
                     break;
                 case SubSealType.Letterhead:
-                    scale = 1.0f;
+                    scale = 0.24f;
                     break;
                 case SubSealType.TemporarySeal:
                     scale = 0.24f;

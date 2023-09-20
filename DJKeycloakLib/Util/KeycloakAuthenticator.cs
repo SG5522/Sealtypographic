@@ -1,9 +1,9 @@
-﻿using RestSharp;
+﻿using DJKeycloakLib.Config;
+using RestSharp;
 using RestSharp.Authenticators;
-using SealTypographicWebAPI.Config;
 using System.Text.Json.Serialization;
 
-namespace SealTypographicWebAPI.Utils
+namespace DJKeycloakLib.Util
 {
     record TokenResponse
     {
@@ -49,14 +49,14 @@ namespace SealTypographicWebAPI.Utils
             RestClientOptions options = new(keyCloakAdmin.TokenBaseUrl);
 
             RestClient client = new(options);
-            RestRequest request = new ("protocol/openid-connect/token", Method.Post);
+            RestRequest request = new("protocol/openid-connect/token", Method.Post);
             request.AddHeader("Content-Type", "application/x-www-form-urlencoded");
             request.AddParameter("username", keyCloakAdmin.UserName);
             request.AddParameter("password", keyCloakAdmin.Pwaosrsd);
             request.AddParameter("grant_type", "password");
             request.AddParameter("client_id", keyCloakAdmin.ClientId);
             request.AddParameter("client_Secret", keyCloakAdmin.ClientSecret);
-            TokenResponse? response = await client.PostAsync<TokenResponse>(request);            
+            TokenResponse? response = await client.PostAsync<TokenResponse>(request);
             return $"{response!.TokenType} {response!.AccessToken}";
         }
     }

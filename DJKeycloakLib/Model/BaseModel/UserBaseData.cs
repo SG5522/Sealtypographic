@@ -1,12 +1,11 @@
-﻿using SealTypographicWebAPI.Models.KeyCloak;
-using System.Text.Json.Serialization;
+﻿using System.Text.Json.Serialization;
 
-namespace SealTypographicWebAPI.Models.Keycloak
+namespace DJKeycloakLib.Model.BaseModel
 {
     /// <summary>
     /// KeycloakUser 基本資料
     /// </summary>
-    public abstract class KeycloakUserBaseData
+    public abstract class UserBaseData
     {
         /// <summary>
         /// 是否啟用

@@ -1,11 +1,11 @@
-﻿using SealTypographicWebAPI.Models.BaseModels;
+﻿using DJKeycloakLib.Model.BaseModel;
 
-namespace SealTypographicWebAPI.Models.Keycloak
+namespace DJKeycloakLib.Model
 {
     /// <summary>
     /// Keycloak User搜尋條件
     /// </summary>
-    public class KeycloakUserSearch : PaginateSearch
+    public class UserSearch : PaginateSearch
     {
         /// <summary>
         /// 使用者帳號

@@ -128,7 +128,7 @@ namespace SealTypographicWebAPI.Config
             CreateMap<TypographicPDF, TypographicPDFSettingViewModel>()
                  .ForMember(dst => dst.OriginalFileName, y => y.MapFrom(o => o.OriginFileName))
                  .ForMember(dst => dst.Quarter, y => y.MapFrom(o => new string($"{o.Quarter.TaiwanYear}{o.Quarter.Period}")))
-                 .ForMember(dst => dst.EditPageCount, y => y.MapFrom(o => (o.TypographicPages.Count())))
+                 .ForMember(dst => dst.EditPageCount, y => y.MapFrom(o => (o.TypographicPages.Where(x => x.TypographicResourceLocations.Any()).Count())))
                  .ForMember(dst => dst.BlankPageCount, y => y.MapFrom(o => (o.TypographicPages.Where(x => x.BlankCheck == true).Count())))
                  .ForMember(dst => dst.DefaultPdfFileName, opt => opt.MapFrom(src => new string(PdfOutputUtil.GetName(src.Customer.Code, src.Quarter))));
 
@@ -141,6 +141,7 @@ namespace SealTypographicWebAPI.Config
                 //透通處理
                 //.ForMember(dst => dst.ImageStream, opt => opt.MapFrom(src => OpenCvUtil.TransparentToStream(src.TypographicResource.ImageFullPath, 160)))
                 .ForMember(dst => dst.ImageBase64, opt => opt.MapFrom(src => Convert.ToBase64String(OpenCvUtil.TransparentToBytes(src.TypographicResource.ImageFullPath, 160))))
+                //確認圖像種類決定縮放大小
                 .ForMember(dst => dst.ImageScale, opt => opt.MapFrom(src => PdfOutputUtil.GetImageScale(src.TypographicResource.SubSealType)));
         }
     }

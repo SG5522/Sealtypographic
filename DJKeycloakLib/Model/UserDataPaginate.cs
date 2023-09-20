@@ -1,16 +1,16 @@
-﻿using SealTypographicWebAPI.Models.BaseModels;
+﻿using DJKeycloakLib.Model.BaseModel;
 
-namespace SealTypographicWebAPI.Models.Keycloak
+namespace DJKeycloakLib.Model
 {
     /// <summary>
     /// 顯示KeycloakUser 資料
     /// </summary>
-    public class KeycloakUserDataPaginate : PaginateViewModel
+    public class UserDataPaginate : PaginateViewModel
     {
         /// <summary>
         /// 建置
         /// </summary>
-        public KeycloakUserDataPaginate() 
+        public UserDataPaginate()
         {
             UserDatas = new();
         }
@@ -18,6 +18,6 @@ namespace SealTypographicWebAPI.Models.Keycloak
         /// <summary>
         /// 顯示KeycloakUser 分頁資料
         /// </summary>
-        public List<KeycloakUserDataViewModel> UserDatas { get; set; }
+        public List<UserDetailViewModel> UserDatas { get; set; }
     }
 }

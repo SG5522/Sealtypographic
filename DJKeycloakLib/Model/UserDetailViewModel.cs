@@ -1,11 +1,12 @@
 ﻿using System.Text.Json.Serialization;
+using DJKeycloakLib.Model.BaseModel;
 
-namespace SealTypographicWebAPI.Models.Keycloak
+namespace DJKeycloakLib.Model
 {
     /// <summary>
     /// 顯示KeycloakUser 資料
     /// </summary>
-    public class KeycloakUserDataViewModel : KeycloakUserBaseData
+    public class UserDetailViewModel : UserBaseData
     {
         /// <summary>
         /// Keycloak UserId(UUID)
