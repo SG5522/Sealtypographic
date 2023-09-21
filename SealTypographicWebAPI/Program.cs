@@ -248,8 +248,26 @@ var app = builder.Build();
 if (!app.Environment.IsProduction())
 {
     //app.UseStaticFiles();
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwagger(c =>
+    {
+        c.PreSerializeFilters.Add((swagger, httpReq) =>
+        {
+            if (httpReq.Headers.ContainsKey("X-Forwarded-Proto"))
+            {
+                swagger.Servers = new List<OpenApiServer> { new OpenApiServer {
+                    Url = $"{httpReq.Headers["X-Forwarded-Proto"]}://{httpReq.Headers["X-Forwarded-Host"]}:{httpReq.Headers["X-Forwarded-Port"]}/{httpReq.Headers["X-Forwarded-Prefix"]}"
+                } };                
+            }
+            //else
+            //{
+            //    swagger.Servers = new List<OpenApiServer> { new OpenApiServer { Url = $"{httpReq.Scheme}://{httpReq.Host.Value}/{httpReq.Headers["X-Forwarded-Prefix"]}" } };
+            //}            
+        });
+    });
+    app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("v1/swagger.json", "My API V1");
+    });
 
     app.UseCors(allowAllOrigins);    
 }

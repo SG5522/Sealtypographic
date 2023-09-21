@@ -5,24 +5,24 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
-namespace SealTypographicWebAPI.Controllers
+namespace DJKeycloakWebAPILib.Controllers
 {
     /// <summary>
-    /// 
+    /// Keycloak的WebAPI
     /// </summary>
     [Route("api/[controller]")]
     [ApiController]
     [Authorize]
-    public class KeyCloakAdminController : ControllerBase
-    {                
+    public class KeycloakAdminController : ControllerBase
+    {
         private readonly IKeycloakAdminService keycloakAdminService;
 
         /// <summary>
         /// 建置
         /// </summary>
-        public KeyCloakAdminController(IKeycloakAdminService keyCloakAdminService)
+        public KeycloakAdminController(IKeycloakAdminService keyCloakAdminService)
         {
-            this.keycloakAdminService = keyCloakAdminService;
+            keycloakAdminService = keyCloakAdminService;
         }
 
         /// <summary>
@@ -32,16 +32,16 @@ namespace SealTypographicWebAPI.Controllers
         [HttpGet]
         public async Task<UserDetailResponse> UserData()
         {
-            UserDetailResponse userDetailResponse = new ();
+            UserDetailResponse userDetailResponse = new();
             try
-            {                
-                userDetailResponse = await keycloakAdminService.GetUserData(User.FindFirstValue(ClaimTypes.NameIdentifier));               
+            {
+                userDetailResponse = await keycloakAdminService.GetUserData(User.FindFirstValue(ClaimTypes.NameIdentifier));
             }
             catch (Exception ex)
             {
                 userDetailResponse.Message = ex.Message;
             }
-            return userDetailResponse;   
+            return userDetailResponse;
         }
 
         /// <summary>
@@ -83,7 +83,7 @@ namespace SealTypographicWebAPI.Controllers
         [HttpPost]
         public async Task<ResponseBaseModel> New([FromBody] UserDataForm userData)
         {
-            ResponseBaseModel response = new ();
+            ResponseBaseModel response = new();
             try
             {
                 response = await keycloakAdminService.New(userData);
@@ -107,7 +107,7 @@ namespace SealTypographicWebAPI.Controllers
             ResponseBaseModel response = new();
             try
             {
-                response = await keycloakAdminService.ResetPassword(userId ,credentials);
+                response = await keycloakAdminService.ResetPassword(userId, credentials);
             }
             catch (Exception ex)
             {

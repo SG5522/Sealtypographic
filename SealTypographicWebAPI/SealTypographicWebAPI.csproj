@@ -7,7 +7,7 @@
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <DocumentationFile></DocumentationFile>
     <IncrementVersionOnBuild>0.0.2.1+</IncrementVersionOnBuild>
-    <Version>0.0.2.1928</Version>
+    <Version>0.0.2.1956</Version>
     <PackageIcon>android-chrome-128x128.png</PackageIcon>
     <Configurations>Debug;Release</Configurations>    
   </PropertyGroup>
@@ -57,7 +57,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\DBEntities\DBEntities.csproj" />
-    <ProjectReference Include="..\DJKeycloakController\DJKeycloakController.csproj" />
+    <ProjectReference Include="..\DJKeycloakWebAPILib\DJKeycloakWebAPILib.csproj" />
     <ProjectReference Include="..\DJSpire\DJSpire.csproj" />
     <ProjectReference Include="..\MySqlMigrations\MySql.csproj" />
     <ProjectReference Include="..\SqliteMigrations\Sqlite.csproj" />
