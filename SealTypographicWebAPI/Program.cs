@@ -254,9 +254,11 @@ if (!app.Environment.IsProduction())
         {
             if (httpReq.Headers.ContainsKey("X-Forwarded-Proto"))
             {
-                swagger.Servers = new List<OpenApiServer> { new OpenApiServer {
-                    Url = $"{httpReq.Headers["X-Forwarded-Proto"]}://{httpReq.Headers["X-Forwarded-Host"]}:{httpReq.Headers["X-Forwarded-Port"]}/{httpReq.Headers["X-Forwarded-Prefix"]}"
-                } };                
+                swagger.Servers = new List<OpenApiServer> { 
+                    new OpenApiServer {
+                        Url = $"{httpReq.Headers["X-Forwarded-Proto"]}://{httpReq.Headers["X-Forwarded-Host"]}:{httpReq.Headers["X-Forwarded-Port"]}/{httpReq.Headers["X-Forwarded-Prefix"]}"
+                    } 
+                };                
             }
             //else
             //{
