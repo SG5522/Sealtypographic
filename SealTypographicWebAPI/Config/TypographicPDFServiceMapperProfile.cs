@@ -40,6 +40,7 @@ namespace SealTypographicWebAPI.Config
                     .ForMember(dst => dst.Id, opt => opt.MapFrom(src => src.Id))
                     .ForMember(dst => dst.UploadId, opt => opt.MapFrom(src => src.UploadFile.Id))
                     .ForMember(dst => dst.CustomerId, opt => opt.MapFrom(src => src.Customer.Id))
+                    .ForMember(dst => dst.QuarterId, opt => opt.MapFrom(src => src.Quarter.Id))
                     .ForMember(dst => dst.Pages, opt => opt.MapFrom(src => src.TypographicPages));            
 
             CreateMap<TypographicPage, TypographicPageForm>()

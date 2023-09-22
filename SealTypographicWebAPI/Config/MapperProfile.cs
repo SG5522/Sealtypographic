@@ -36,6 +36,11 @@ namespace SealTypographicWebAPI.Config
                     .ForMember(dst => dst.ReviewStatus, opt => opt.MapFrom(src => src.ReviewStatus))
                     .ForMember(dst => dst.SealViewModels, opt => opt.MapFrom(src => src.TypographicResources.Where(x => x.DeleteStatus == DeleteStatus.No)));
 
+            CreateMap<CustomerSealGroup, CustomerSealGroupResponse>()
+                .ForMember(dst => dst.CustomerSealGroupId, opt => opt.MapFrom(src => src.Id))
+                .ForMember(dst => dst.Quarter, opt => opt.MapFrom(src => QuarterUtil.GetTaiwanYearQuarter(src.Quarter)));
+            //CustomerSealQuarterResponse
+
             CreateMap<TypographicResource, CustomerSealViewModel>()
                     .ForMember(dst => dst.SealMappingConfigId, opt => opt.MapFrom(src => SealMappingConfigUtil.GetCustomerSealType(src.SubSealType)))
                     .ForMember(dst => dst.ImageBase64, opt => opt.MapFrom(src => ImageSharpUtil.PathImageFileToBase64(src.ImageFullPath)));

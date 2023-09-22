@@ -39,18 +39,44 @@ namespace SealTypographicWebAPI.Controllers
             CustomerSealQuarterPaginateViewModel customerSealQuarterPaginateViewModel = new();
             try
             {
-                Log.Information("CustomerSeal get quarterWithTypographic input {@Input}", customerSealQuarterPaginateSearch);
+                Log.Information("CustomerSeal get Quarter input {@Input}", customerSealQuarterPaginateSearch);
                 customerSealQuarterPaginateViewModel = customerSealService.GetQuarter(customerSealQuarterPaginateSearch, false);
-                Log.Information("CustomerSeal get quarterWithTypographic output {@Output}", customerSealQuarterPaginateViewModel);
+                Log.Information("CustomerSeal get Quarter output {@Output}", customerSealQuarterPaginateViewModel);
             }
             catch (Exception ex)
             {
-                Log.Error("CustomerSeal get quarterWithTypographic error {@Error}", ex.Message);
+                Log.Error("CustomerSeal get Quarter error {@Error}", ex.Message);
                 customerSealQuarterPaginateViewModel.Error();
                 customerSealQuarterPaginateViewModel.Message = ex.Message;
             }
             return customerSealQuarterPaginateViewModel;
-        }        
+        }
+
+        /// <summary>
+        /// 取得客戶印鑑群組簡短訊息
+        /// </summary>
+        /// <param name="customerId"></param>
+        /// <param name="quarterId"></param>        
+        /// <returns></returns>
+        [HttpGet("[Action]")]
+        public CustomerSealGroupResponse CustomerSealGroupSummary(int customerId, int quarterId)
+        {
+            CustomerSealGroupResponse customerSealGroupResponse = new();
+            try
+            {
+                Log.Information("CustomerSeal get CustomerSealGroupSummary input {@Input1} {@Input2}", customerId, quarterId);
+                customerSealGroupResponse = customerSealService.GetCustomerSealGroupSummry(customerId, quarterId);
+                Log.Information("CustomerSeal get CustomerSealGroupSummary output {@Output}", customerSealGroupResponse);
+            }
+            catch (Exception ex)
+            {
+                Log.Error("CustomerSeal get CustomerSealGroupSummary error {@Error}", ex.Message);
+                customerSealGroupResponse.Error();
+                customerSealGroupResponse.Message = ex.Message;
+            }
+            return customerSealGroupResponse;
+        }
+
 
         /// <summary>
         /// 取得客戶印鑑季度表

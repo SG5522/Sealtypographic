@@ -82,6 +82,38 @@ namespace SealTypographicWebAPI.Services.Implements
             return customerSealQuarterPaginateViewModel;
         }
 
+        /// <summary>
+        /// 取得印鑑群組簡易資訊
+        /// </summary>
+        /// <param name="customerId"></param>
+        /// <param name="quaterId"></param>
+        /// <returns></returns>
+        public CustomerSealGroupResponse GetCustomerSealGroupSummry(int customerId, int quaterId)
+        {
+            CustomerSealGroupResponse? customerSealQuarterResponse = dbContext.CustomerSealGroups
+                                                                        .Include(customerSealGroups => customerSealGroups.Quarter)
+                                                                        .Where
+                                                                        (
+                                                                            customerSealGroup => customerSealGroup.Customer.Id == customerId
+                                                                            && customerSealGroup.Quarter.Id == quaterId
+                                                                            && customerSealGroup.ReviewStatus == ReviewStatus.Approval
+                                                                            && customerSealGroup.DeleteStatus == DeleteStatus.No
+                                                                        )
+                                                                        .ProjectTo<CustomerSealGroupResponse>(configurationProvider)
+                                                                        .FirstOrDefault();
+
+            if (customerSealQuarterResponse != null)
+            {
+                customerSealQuarterResponse.Success();
+            }
+            else
+            {
+                customerSealQuarterResponse = new();
+                customerSealQuarterResponse.CustomerSealNoData();
+            }
+
+            return customerSealQuarterResponse;
+        }
 
         /// <summary>
         /// 取得客戶印鑑組

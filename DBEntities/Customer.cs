@@ -18,7 +18,7 @@ namespace DBEntities
         public List<TypographicPDF> TypographicPDFs { get; set; }
 
         /// <summary>
-        /// 客戶印鑑季度歷程表
+        /// 客戶印鑑群組歷程表
         /// </summary>
         public List<CustomerSealGroup> CustomerSealGroups { get; set; }
 
