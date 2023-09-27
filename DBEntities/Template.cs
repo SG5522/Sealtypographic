@@ -15,6 +15,6 @@ namespace DBEntities
         /// <summary>
         /// 樣板位置
         /// </summary>
-        public List<TemplateLocation> TemplateLocations { get; set; }
+        public IList<TemplateLocation> TemplateLocations { get; set; }
     }
 }

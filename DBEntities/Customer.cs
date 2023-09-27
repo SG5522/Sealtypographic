@@ -15,14 +15,14 @@ namespace DBEntities
         /// <summary>
         /// PDF排版資訊
         /// </summary>
-        public List<TypographicPDF> TypographicPDFs { get; set; }
+        public IList<TypographicPDF> TypographicPDFs { get; set; }
 
         /// <summary>
         /// 客戶印鑑群組歷程表
         /// </summary>
-        public List<CustomerSealGroup> CustomerSealGroups { get; set; }
+        public IList<CustomerSealGroup> CustomerSealGroups { get; set; }
 
 
-        public List<TemporarySealGroup> TemporarySealGroups { get; set; }
+        public IList<TemporarySealGroup> TemporarySealGroups { get; set; }
     }
 }

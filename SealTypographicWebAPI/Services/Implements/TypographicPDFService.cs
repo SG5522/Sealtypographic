@@ -352,7 +352,7 @@ namespace SealTypographicWebAPI.Services.Implements
                     OriginFileName = pDFInfo.OriginalFileName,
                     FullPath = pDFInfo.FullPath,
                     Quarter = quarter,
-                    TypographicPages = new ()
+                    TypographicPages = new List<TypographicPage>()
                 };
                 BaseInputTypographicPDF(typographicPDF, true, userId);
                 foreach (TypographicPageForm pageInfo in typographicPDFForm.Pages)

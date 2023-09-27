@@ -38,6 +38,12 @@ namespace DBEntities
         public DbSet<AccountantGroup> AccountantGroups { get; set; }
 
         /// <summary>
+        /// 會計師 與會計師群組多對多資料表
+        /// </summary>
+        public DbSet<GroupAccountant> GroupAccountants { get; set; }
+
+
+        /// <summary>
         /// 會計師簽印建立日期歷程表
         /// </summary>
         public DbSet<AccountantSignGroup> AccountantSignGroups { get; set; }
@@ -108,6 +114,11 @@ namespace DBEntities
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<Accountant>()
+                .HasMany(e => e.AccountantGroups)
+                .WithMany(e => e.Accountants)
+                .UsingEntity<GroupAccountant>();
         }
         #endregion
     }

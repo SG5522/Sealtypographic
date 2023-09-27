@@ -38,7 +38,7 @@
         /// <summary>
         /// 各印鑑簽印排版位置
         /// </summary>
-        public List<TypographicResourceLocation> TypographicResourceLocations { get; set; }
+        public IList<TypographicResourceLocation> TypographicResourceLocations { get; set; }
 
 
     }

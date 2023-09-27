@@ -69,7 +69,7 @@ namespace SealTypographicWebAPI.Config
             CreateMap<AccountantSignGroup, AccountantSignGroupReviewViewModel>()
                     .ForMember(dst => dst.Name, opt => opt.MapFrom(src => src.Accountant.Name))
                     .ForMember(dst => dst.Code, opt => opt.MapFrom(src => src.Accountant.Code))
-                    .ForMember(dst => dst.GroupName, opt => opt.MapFrom(src => src.Accountant.AccountantGroup.Name))
+                    .ForMember(dst => dst.GroupName, opt => opt.MapFrom(src => src.Accountant.AccountantGroups.First().Name))
                     .ForMember(dst => dst.ReviewStatus, opt => opt.MapFrom(src => src.ReviewStatus))
                     .ForMember(dst => dst.SignImageInfos, opt => opt.MapFrom(src => src.TypographicResources.Where(x => x.DeleteStatus == DeleteStatus.No)));
 
@@ -83,7 +83,8 @@ namespace SealTypographicWebAPI.Config
                     .ForMember(dst => dst.Id, opt => opt.MapFrom(src => src.Id))
                     .ForMember(dst => dst.Name, opt => opt.MapFrom(src => src.Accountant.Name))
                     .ForMember(dst => dst.Code, opt => opt.MapFrom(src => src.Accountant.Code))
-                    .ForMember(dst => dst.GroupName, opt => opt.MapFrom(src => src.Accountant.AccountantGroup.Name))                    
+                    //.ForMember(dst => dst.GroupName, opt => opt.MapFrom(src => src.Accountant.AccountantGroup.Name))
+                    .ForMember(dst => dst.GroupName, opt => opt.MapFrom(src => src.Accountant.AccountantGroups.First().Name))
                     .ForMember(dst => dst.Signs, opt => opt.MapFrom(src => src.TypographicResources.Where(x => x.DeleteStatus == DeleteStatus.No)));
 
             //會計師簽印審核詳細資料的簽印部份
@@ -94,7 +95,8 @@ namespace SealTypographicWebAPI.Config
             //會計師簽印審核詳細資料
             CreateMap<Accountant, AccountantSignGroupDetailReviewViewModel>()
                      .ForMember(dst => dst.Id, y => y.Ignore())
-                     .ForMember(dst => dst.GroupName, y => y.MapFrom(o => o.AccountantGroup.Name))
+                     //.ForMember(dst => dst.GroupName, y => y.MapFrom(o => o.AccountantGroup.Name))
+                     .ForMember(dst => dst.GroupName, y => y.MapFrom(src => src.AccountantGroups.First().Name))
                      .ReverseMap();
 
         }

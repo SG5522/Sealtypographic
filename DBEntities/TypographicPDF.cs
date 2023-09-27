@@ -35,6 +35,6 @@ namespace DBEntities
         /// <summary>
         /// 排版頁
         /// </summary>
-        public List<TypographicPage> TypographicPages { get; set; }
+        public IList<TypographicPage> TypographicPages { get; set; }
     }
 }

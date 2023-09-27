@@ -304,7 +304,7 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <param name="imageBase64Info">圖檔資訊</param>
         /// <param name="userId">使用者Id</param>
         /// <returns></returns>
-        private async Task NewTypographyResource(List<TemporarySeal> formseals, List<TypographicResource> typographicResources, ImageBase64Info imageBase64Info, int userId)
+        private async Task NewTypographyResource(IList<TemporarySeal> formseals, IList<TypographicResource> typographicResources, ImageBase64Info imageBase64Info, int userId)
         {
             foreach (TemporarySeal temporarySeal in formseals)
             {

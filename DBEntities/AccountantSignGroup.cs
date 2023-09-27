@@ -15,7 +15,7 @@ namespace DBEntities
         /// <summary>
         /// 排版素材
         /// </summary>
-        public List<TypographicResource> TypographicResources { get; set; }
+        public IList<TypographicResource> TypographicResources { get; set; }
 
     }
 }

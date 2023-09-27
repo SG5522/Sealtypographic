@@ -129,7 +129,7 @@ namespace SealTypographicWebAPI.Services.Implements
             ResponseViewModel response = new();
             Letterhead letterhead = new()
             {
-                TypographicResources = new()
+                TypographicResources = new List<TypographicResource>()
             };
 
             int userId = 1; //以後從帳號驗證取得Id
@@ -185,7 +185,8 @@ namespace SealTypographicWebAPI.Services.Implements
                 updateImageQuery.Letterhead.Name = letterheadImageUpdate.LetterheadName;                                
                 BaseInputLetterhead(updateImageQuery.Letterhead, false, userId);
 
-                updateImageQuery.Letterhead.TypographicResources.AddRange(typographyResources);                
+                //updateImageQuery.Letterhead.TypographicResources.AddRange(typographyResources);
+                dbContext.TypographicResources.AddRange(typographyResources);
                 dbContext.SaveChanges();
                 response.Success();                
             }
@@ -205,7 +206,7 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <param name="imageBase64Info">圖檔資訊</param>
         /// <param name="userId">使用者Id</param>
         /// <returns></returns>
-        private async Task NewTypographyResource(string imageBase64, List<TypographicResource> typographyResources, ImageBase64Info imageBase64Info, int userId)
+        private async Task NewTypographyResource(string imageBase64, IList<TypographicResource> typographyResources, ImageBase64Info imageBase64Info, int userId)
         {
             TypographicResource typographicResource = new()
             {

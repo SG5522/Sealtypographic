@@ -6,6 +6,8 @@ using SealTypographicWebAPI.Utils;
 using DBEntities;
 using Microsoft.EntityFrameworkCore;
 using DBEntities.Consts;
+using SkiaSharp;
+using AutoMapper.QueryableExtensions;
 
 namespace SealTypographicWebAPI.Services.Implements
 {
@@ -16,6 +18,7 @@ namespace SealTypographicWebAPI.Services.Implements
     {
         private readonly SealTypographicDbContext dbContext;        
         private readonly IMapper mapper;
+        private readonly AutoMapper.IConfigurationProvider configurationProvider;
 
         /// <summary>
         /// 注入DB、ResponseService
@@ -26,6 +29,7 @@ namespace SealTypographicWebAPI.Services.Implements
         {
             this.dbContext = dbContext;            
             this.mapper = mapper;
+            configurationProvider = mapper.ConfigurationProvider;
         }
 
         ///<inheritdoc />
@@ -79,25 +83,27 @@ namespace SealTypographicWebAPI.Services.Implements
                                         (
                                             accountantGroup =>                                            
                                             accountantGroup.Name.Contains(accountantGroupSearch.GroupName)
-                                            || accountantGroup.AccountantGroupNumber.ToLower().Contains(accountantGroupSearch.GroupName.ToLower())
+                                            || accountantGroup.Code.ToLower().Contains(accountantGroupSearch.GroupName.ToLower())
                                         );
             }
-            accountantGroupsQuery.OrderBy(accountantGroup => accountantGroup.AccountantGroupNumber);
+            accountantGroupsQuery.OrderBy(accountantGroup => accountantGroup.Code);
 
             if (accountantGroupsQuery.Any())
             {
                 //取得該頁            
-                List<AccountantGroup> thisPageAccountantGroups = accountantGroupsQuery
-                                                                .Skip((accountantGroupSearch.PageNumber - 1) * accountantGroupSearch.PageSize)
-                                                                .Take(accountantGroupSearch.PageSize)
-                                                                .ToList();
+                //List<AccountantGroup> thisPageAccountantGroups = 
 
-                accountantGroupResponses.AccountantGroups = mapper.Map<List<AccountantGroupViewModel>>(thisPageAccountantGroups);                
+                accountantGroupResponses.AccountantGroups = accountantGroupsQuery
+                                                            .Skip((accountantGroupSearch.PageNumber - 1) * accountantGroupSearch.PageSize)
+                                                            .Take(accountantGroupSearch.PageSize)
+                                                            .ProjectTo<AccountantGroupViewModel>(configurationProvider)
+                                                            .ToList();
+
                 accountantGroupResponses.PageNumber = accountantGroupSearch.PageNumber;
                 accountantGroupResponses.PageSize = accountantGroupSearch.PageSize;
                 //計算總頁數
                 accountantGroupResponses.TotalPage = TotalPageUtil.GetTotalPage(accountantGroupsQuery.Count(), accountantGroupSearch.PageSize);
-                accountantGroupResponses.TotalCount = accountantGroupsQuery.Count();                
+                accountantGroupResponses.TotalCount = accountantGroupsQuery.Count();      
             }
             accountantGroupResponses.Success();
 
@@ -115,17 +121,17 @@ namespace SealTypographicWebAPI.Services.Implements
                                                 .FirstOrDefault
                                                 (
                                                     accountantGroup => 
-                                                    accountantGroup.AccountantGroupNumber == accountantGroupForm.AccountantGroupNumber
+                                                    accountantGroup.Code == accountantGroupForm.AccountantGroupNumber
                                                     && accountantGroup.DeleteStatus == DeleteStatus.No
                                                     && accountantGroup.Company.Id == companyId
                                                 );                                                
 
             if (accountantGroupQuery == null)
-            {
-                Company company = dbContext.Companys.Include(x => x.AccountantGroups).Single(x => x.Id == companyId);
+            {                
                 AccountantGroup accountantGroup = mapper.Map<AccountantGroup>(accountantGroupForm);
                 accountantGroup.CreateDate = DateTime.Now;
-                company.AccountantGroups.Add(accountantGroup);                
+                accountantGroup.Company = dbContext.Companys.Single(x => x.Id == companyId);
+                dbContext.AccountantGroups.Add(accountantGroup);                
                 dbContext.SaveChanges();
                 response.Success();                
             }
@@ -165,11 +171,13 @@ namespace SealTypographicWebAPI.Services.Implements
             if (accountantGroupQuery != null)
             {
                 accountantGroupQuery.DeleteStatus = DeleteStatus.Yes;
-                dbContext.Accountants.Where
-                (
-                        accountant =>
-                        accountant.AccountantGroupId == accountantGroupId
-                ).BatchUpdate(new Accountant { AccountantGroupId = 1 });                                
+                accountantGroupQuery.Accountants = new List<Accountant>();
+                dbContext.Remove(accountantGroupQuery);
+                //dbContext.Accountants.Where
+                //(
+                //        accountant =>
+                //        accountant.AccountantGroups.Remove == accountantGroupId
+                //).BatchUpdate(new Accountant { AccountantGroupId = 1 });                                
                 dbContext.SaveChanges();
                 response.Success();
             }

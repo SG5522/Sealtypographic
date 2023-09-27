@@ -303,14 +303,14 @@ namespace SealTypographicWebAPI.Services.Implements
         /// </summary>
         /// <param name="customerSealTemplateLocationForms"></param>
         /// <param name="templateLocations"></param>
-        private void NewTemplateLoction(List<CustomerSealTemplateLocationForm> customerSealTemplateLocationForms, List<TemplateLocation> templateLocations)
+        private void NewTemplateLoction(IList<CustomerSealTemplateLocationForm> customerSealTemplateLocationForms, IList<TemplateLocation> templateLocations)
         {
             foreach (CustomerSealTemplateLocationForm customerSealTemplateLocationForm in customerSealTemplateLocationForms)
             {
                 TemplateLocation templateLocation = mapper.Map<TemplateLocation>(customerSealTemplateLocationForm);
                 templateLocation.SealType = SealType.Customer;
                 //之後要調整為不用轉型
-                templateLocation.SubSealType = SealMappingConfigUtil.GetSubSealTypeWithCustomer((CustomerSealType)customerSealTemplateLocationForm.CustomerSealType);
+                templateLocation.SubSealType = SealMappingConfigUtil.GetSubSealTypeWithCustomer(customerSealTemplateLocationForm.CustomerSealType);
                 templateLocations.Add(templateLocation);
             }
         }

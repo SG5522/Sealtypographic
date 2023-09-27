@@ -13,23 +13,25 @@ namespace DBEntities
         public string Code { get; set; }
 
         /// <summary>
-        /// 會計師群組ID
-        /// </summary>                
-        public int AccountantGroupId { get; set; }
-
-        /// <summary>
         /// 會計師事務所
         /// </summary>
         public Company Company { get; set; }
 
+
         /// <summary>
-        /// 會計師群組
+        /// 會計師群組資料表
         /// </summary>
-        public AccountantGroup AccountantGroup { get; set; }
+        public IList<AccountantGroup> AccountantGroups { get; set; }
+
+        /// <summary>
+        /// 會計師與會計師群組多對多資料表
+        /// </summary>
+        public IList<GroupAccountant> GroupAccountants { get; set; }
+
 
         /// <summary>
         /// 會計師印鑑資料(歷程)
         /// </summary>
-        public List<AccountantSignGroup> AccountantSignGroups { get; set; }
+        public IList<AccountantSignGroup> AccountantSignGroups { get; set; }
     }
 }

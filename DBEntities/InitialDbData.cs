@@ -55,7 +55,7 @@ namespace DBEntities
                 {
                     Id = 1,
                     Company = dbContext.Companys.Single(x => x.Id == 1),
-                    AccountantGroupNumber = "Default",
+                    Code = "Default",
                     CreateUserId = 0,
                     UpdateUserId = 0,
                     DeleteStatus = 0,

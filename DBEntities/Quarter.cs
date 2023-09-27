@@ -25,16 +25,16 @@ namespace DBEntities
         /// <summary>
         /// 客戶印鑑季度資料表
         /// </summary>
-        public List<CustomerSealGroup> CustomerSealGroups { get; set; }
+        public IList<CustomerSealGroup> CustomerSealGroups { get; set; }
 
         /// <summary>
         /// 臨時章群組
         /// </summary>
-        public List<TemporarySealGroup> TemporarySealGroups { get; set; }
+        public IList<TemporarySealGroup> TemporarySealGroups { get; set; }
 
         /// <summary>
         /// PDF排版資訊
         /// </summary>
-        public List<TypographicPDF> TypographicPDFs { get; set; }
+        public IList<TypographicPDF> TypographicPDFs { get; set; }
     }
 }

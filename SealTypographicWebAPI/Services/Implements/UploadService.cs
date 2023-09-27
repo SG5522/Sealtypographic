@@ -166,7 +166,7 @@ namespace SealTypographicWebAPI.Services.Implements
         public async Task<ResponseViewModel> SaveFormFile(UploadData uploadData)
         {
             ResponseViewModel response = new();
-            List<UploadFile> uploadfiles = new();
+            List<UploadFile> uploadfiles = new ();
             int userId = 0; //帳號驗證取得ID
             int companyId = 1; //公司Id
 
@@ -212,8 +212,8 @@ namespace SealTypographicWebAPI.Services.Implements
 
                 if (uploadfiles.Any())
                 {                    
-                    companyQuery.UploadFiles.AddRange(uploadfiles);
-                    dbContext.Entry(companyQuery).State = EntityState.Unchanged;
+                    //companyQuery.UploadFiles.AddRange<UploadFile>(uploadfiles);
+                    //dbContext.Entry(companyQuery).State = EntityState.Unchanged;
                     dbContext.UploadFiles.AddRange(uploadfiles);
                     dbContext.SaveChanges();
                     response.Success();

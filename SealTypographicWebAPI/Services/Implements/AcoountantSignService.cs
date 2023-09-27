@@ -170,7 +170,7 @@ namespace SealTypographicWebAPI.Services.Implements
                     //宣告新的簽印
                     AccountantSignGroup accountantSignGroup = new()
                     {
-                        TypographicResources = new()
+                        TypographicResources = new List<TypographicResource>()
                     };
 
                     //之後拔除轉型調整

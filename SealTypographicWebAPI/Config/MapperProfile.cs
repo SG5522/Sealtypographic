@@ -4,12 +4,10 @@ using SealTypographicWebAPI.Models.Accountant;
 using SealTypographicWebAPI.Models.Letterhead;
 using SealTypographicWebAPI.Models.AccountantGroup;
 using SealTypographicWebAPI.Models.TemporarySeal;
-
 using DBEntities;
 using DJLib;
 using SealTypographicWebAPI.Utils;
 using DBEntities.Consts;
-using DJLib.Models;
 
 namespace SealTypographicWebAPI.Config
 {
@@ -46,26 +44,25 @@ namespace SealTypographicWebAPI.Config
                     .ForMember(dst => dst.ImageBase64, opt => opt.MapFrom(src => ImageSharpUtil.PathImageFileToBase64(src.ImageFullPath)));
                     
             CreateMap<CustomerSeal, TypographicResource>()
-                    .ForMember(x => x.ImageFullPath, y => y.Ignore()) // <---ImagePath要額外處理所以要忽略                    
+                    .ForMember(dst => dst.ImageFullPath, opt => opt.Ignore()) // <---ImagePath要額外處理所以要忽略                    
                     .ReverseMap();
 
             CreateMap<CustomerSealViewModel, TypographicResource>()
-                    .ForMember(x => x.ImageFullPath, y => y.Ignore()); // <---ImagePath要額外處理所以要忽略  
+                    .ForMember(dst => dst.ImageFullPath, opt => opt.Ignore()); // <---ImagePath要額外處理所以要忽略  
 
 
             CreateMap<CustomerSealUpdateForm, TypographicResource>()
-                    .ForMember(x => x.ImageFullPath, y => y.Ignore()) // <---ImagePath要額外處理所以要忽略
-                    .ReverseMap();           
-
-            //會計師基本資料
-            CreateMap<Accountant, AccountantViewModel>()                    
-                    .ForMember(x => x.AccountantGroupName, y => y.MapFrom(o => o.AccountantGroup.Name))
-                    .ForMember(x => x.AccountantNumber, y => y.MapFrom(o => o.Code))
+                    .ForMember(dst => dst.ImageFullPath, opt => opt.Ignore()) // <---ImagePath要額外處理所以要忽略
                     .ReverseMap();
+
+            ////會計師基本資料
+            CreateMap<Accountant, AccountantViewModel>()
+                    .ForMember(dst => dst.AccountantGroupName, opt => opt.MapFrom(src => src.GroupAccountants.First().AccountantGroup.Name))
+                    .ForMember(dst => dst.AccountantNumber, opt => opt.MapFrom(src => src.Code));
 
             //會計師分頁顯示Map
             CreateMap<Accountant, AccountantViewModelWithCreateDate>()
-                    .ForMember(dst => dst.AccountantGroupName, opt => opt.MapFrom(o => o.AccountantGroup.Name))
+                    .ForMember(dst => dst.AccountantGroupName, opt => opt.MapFrom(o => o.GroupAccountants.First().AccountantGroup.Name))
                     .ForMember(dst => dst.AccountantNumber, opt => opt.MapFrom(o => o.Code))
                     .ForMember(dst => dst.AccountantSignGroupId, opt => opt.MapFrom
                     (
@@ -73,19 +70,22 @@ namespace SealTypographicWebAPI.Config
                     ));
 
             CreateMap<Accountant, AccountantDetailViewModel>()
-                    .ForMember(x => x.AccountantNumber, y => y.MapFrom(o => o.Code))
+                    .ForMember(dst => dst.AccountantNumber, opt => opt.MapFrom(o => o.Code))
                     .ReverseMap();
 
             CreateMap<AccountantForm, Accountant>()
-                     .ForMember(x => x.Code, y => y.MapFrom(o => o.AccountantNumber))
+                     .ForMember(dst => dst.Code, opt => opt.MapFrom(src => src.AccountantNumber))                     
                      .ReverseMap();
+
             CreateMap<AccountantUpdateForm, Accountant>()
-                     .ForMember(x => x.Code, y => y.MapFrom(o => o.AccountantNumber))
+                     .ForMember(dst => dst.Code, opt => opt.MapFrom(src => src.AccountantNumber))
                      .ReverseMap();                        
 
             //會計師群組
-            CreateMap<AccountantGroup, AccountantGroupViewModel>();            
-            CreateMap<AccountantGroupForm, AccountantGroup>();
+            CreateMap<AccountantGroup, AccountantGroupViewModel>()
+                    .ForMember(dst => dst.AccountantGroupNumber, opt => opt.MapFrom(src => src.Code));
+            CreateMap<AccountantGroupForm, AccountantGroup>()
+                    .ForMember(dst => dst.Code, opt => opt.MapFrom(src => src.AccountantGroupNumber));
             CreateMap<AccountantGroupUpdateForm, AccountantGroup>();
 
             CreateMap<AccountantSignGroup, AccountantSignGroupViewModel>()                    
@@ -93,7 +93,7 @@ namespace SealTypographicWebAPI.Config
 
             //會計師印鑑
             CreateMap<TypographicResource, AccountantSignViewModel>()                    
-                    .ForMember(x => x.ImageBase64, y => y.Ignore()) // <---imagebase64要額外處理所以要忽略
+                    .ForMember(dst => dst.ImageBase64, opt => opt.Ignore()) // <---imagebase64要額外處理所以要忽略
                     .ReverseMap();
             
             CreateMap<AccountantSignGroup, AccountantSignViewModels>()
@@ -107,11 +107,11 @@ namespace SealTypographicWebAPI.Config
                     .ForMember(dst => dst.ImageBase64, opt => opt.MapFrom(src => ImageSharpUtil.PathImageFileToBase64(src.ImageFullPath)));
 
             CreateMap<AccountantSign, TypographicResource>()
-                    .ForMember(x => x.ImageFullPath, y => y.Ignore()); // <---imagebase64要額外處理所以要忽略
+                    .ForMember(dst => dst.ImageFullPath, opt => opt.Ignore()); // <---imagebase64要額外處理所以要忽略
 
 
             CreateMap<AccountantSignUpdateForm, TypographicResource>()
-                    .ForMember(x => x.ImageFullPath, y => y.Ignore()) // <---imagebase64要額外處理所以要忽略
+                    .ForMember(dst => dst.ImageFullPath, opt => opt.Ignore()) // <---imagebase64要額外處理所以要忽略
                     .ReverseMap();
 
             //會計師簽印重複確認

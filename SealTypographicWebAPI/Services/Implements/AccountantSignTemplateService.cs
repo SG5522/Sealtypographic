@@ -333,7 +333,7 @@ namespace SealTypographicWebAPI.Services.Implements
         /// </summary>
         /// <param name="accountantSignTemplateLocationForms"></param>
         /// <param name="templateLocations"></param>
-        private void NewTemplateLoction(List<AccountantSignTemplateLocationForm> accountantSignTemplateLocationForms, List<TemplateLocation> templateLocations)
+        private void NewTemplateLoction(IList<AccountantSignTemplateLocationForm> accountantSignTemplateLocationForms, IList<TemplateLocation> templateLocations)
         {
             foreach (AccountantSignTemplateLocationForm accountantSignTemplateLocationForm in accountantSignTemplateLocationForms)
             {

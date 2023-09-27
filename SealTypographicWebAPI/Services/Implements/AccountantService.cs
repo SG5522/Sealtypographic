@@ -35,7 +35,7 @@ namespace SealTypographicWebAPI.Services.Implements
         {
             AccountantDetailResponse accountantResponse = new();
 
-            Accountant? accountantQuery = dbContext.Accountants.Include(accountant => accountant.AccountantGroup)
+            Accountant? accountantQuery = dbContext.Accountants.Include(accountant => accountant.GroupAccountants)
                                                                .FirstOrDefault(accountant => accountant.Id == accountantId);
 
             if (accountantQuery != null)
@@ -77,7 +77,7 @@ namespace SealTypographicWebAPI.Services.Implements
 
             if (accountantSearch.AccountantGroupNumber != null)
             {
-                accountantQuery = accountantQuery.Where(accountant => accountant.AccountantGroup.AccountantGroupNumber == accountantSearch.AccountantGroupNumber);
+                accountantQuery = accountantQuery.Where(accountant => accountant.GroupAccountants.First().AccountantGroup.Code == accountantSearch.AccountantGroupNumber);
             }
 
             accountantQuery = accountantQuery.OrderBy(accountant => accountant.Id);
@@ -87,7 +87,8 @@ namespace SealTypographicWebAPI.Services.Implements
                 //取得該頁            
                 accountantPaginatesViewModels.ViewModels =  accountantQuery
                                                             .Include(accountant => accountant.AccountantSignGroups)
-                                                            .Include(accountant => accountant.AccountantGroup)
+                                                            .Include(accountant => accountant.GroupAccountants)
+                                                            .ThenInclude(accountant => accountant.AccountantGroup)
                                                             .Skip((accountantSearch.PageNumber - 1) * accountantSearch.PageSize)
                                                             .Take(accountantSearch.PageSize)
                                                             .ProjectTo<AccountantViewModelWithCreateDate>(configurationProvider)
@@ -127,6 +128,7 @@ namespace SealTypographicWebAPI.Services.Implements
                 if (!accountantCodeQuery.Any())
                 {
                     Accountant dbAccountant = mapper.Map<Accountant>(accountantForm);
+                    dbAccountant.AccountantGroups = dbContext.AccountantGroups.Where(x => x.Id == accountantForm.AccountantGroupId).ToList();
                     BaseInputAccountant(dbAccountant, true, userid);
                     companyQuery.Accountants.Add(dbAccountant);
                     dbContext.SaveChanges();
@@ -157,11 +159,23 @@ namespace SealTypographicWebAPI.Services.Implements
         {
             ResponseViewModel response = new();
             int userid = 0;//帳號驗證取得ID
-            Accountant? accountantQuery = dbContext.Accountants.Find(accountantFormUpdate.Id);
+            Accountant? accountantQuery = dbContext.Accountants.Include(x => x.AccountantGroups)
+                                          .FirstOrDefault(x => x.Id == accountantFormUpdate.Id);
 
             if (accountantQuery != null)
             {
                 mapper.Map(accountantFormUpdate, accountantQuery);
+                if(accountantFormUpdate.AccountantGroupId == 1)
+                {
+                    accountantQuery.AccountantGroups = new List<AccountantGroup>
+                    {
+                        dbContext.AccountantGroups.Single(x => x.Id == accountantFormUpdate.AccountantGroupId)
+                    };
+                }
+                else
+                {
+                    accountantQuery.AccountantGroups.Add(dbContext.AccountantGroups.Single(x => x.Id == accountantFormUpdate.AccountantGroupId));
+                }                               
                 BaseInputAccountant(accountantQuery, false, userid);
                 dbContext.SaveChanges();
                 response.Success();
