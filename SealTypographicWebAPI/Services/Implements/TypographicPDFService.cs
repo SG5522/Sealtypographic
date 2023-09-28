@@ -288,10 +288,10 @@ namespace SealTypographicWebAPI.Services.Implements
             TypographicPDFMakeResponse typographicPagePDFResponse = new ();            
             //取得排版的頁面印鑑與座標
             List<EditPage> editPages = dbContext.TypographicPages
-                                            .Include(x => x.TypographicResourceLocations)
-                                            .ThenInclude(x => x.TypographicResource)
-                                            .Where(x => x.TypographicPDF.Id == typographicPDFMakeSetting.TypographicPDFId)
-                                            .ProjectTo<EditPage>(configurationProvider).ToList();
+                                        .Include(x => x.TypographicResourceLocations)
+                                        .ThenInclude(x => x.TypographicResource)
+                                        .Where(x => x.TypographicPDF.Id == typographicPDFMakeSetting.TypographicPDFId)
+                                        .ProjectTo<EditPage>(configurationProvider).ToList();
 
             if (editPages != null)
             {
