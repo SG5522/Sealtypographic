@@ -1,184 +1,28 @@
-取章排版系統
-摘要
-會計師在產出公司財務報表後，會需要會計事務所在最後確認時蓋上印章，這套軟體可以輔助會計事務所的員工，將原紙本或電子檔的公司財務報表做蓋印章處理，並且可以印出來，如同以前的作業，協助在公司財務報表上蓋上印章。
-業務流程
+# 取章排版系統 後端
 
-委託會計師的公司提出公司印章和相關董事長、總經理或會計經理簽名與印章，委託會計事務所製作當季財務報表
-會計事務所認可委託公司的申請 (擷取印章存檔)
-製作財務報表或會計師送來報告書(pdf/A或紙本)
-若是紙本就進行審查，若是PDF/A就在電腦上審查，並審查完印出
-審查完後蓋委託公司印章(套印印章)
-若是紙本就存回成pdf電子檔存檔上傳(套印章後存成電子檔300dpi與600dpi)
-紙本歸檔請委託公司收取或寄送
-結案
+## 技術說明
 
-客戶需求範圍
-取章排版管理系統(C#版本)軟體建置
+---
 
-1.印鑑建檔系統
+* 程式語言：C#
+* 專案架構：.Net 6
+* 使用第三方元件：
+1. Serilog.AspNetCore：7.0.0
+1. Serilog.Formatting.Compact：1.1.0
+1. Serilog.Sinks.Async：1.5.0
+1. RestSharp：110.2.0 (DJKeycloakWebAPILib使用到之後會拆分內部元件)
+1. Keycloak.AuthServices.Authentication：1.5.2
+1. Keycloak.AuthServices.Authorization：1.5.2
+1. AutoMapper.Extensions.Microsoft.DependencyInjection：12.0.1
+1. Microsoft.EntityFrameworkCore.Tools：7.0.10
+1. Microsoft.Extensions.Hosting.WindowsServices：7.0.1
+1. System.Drawing.Common：7.0.0
+1. Spire.Pdf：9.7.0(之後拆分成公司內部元件)
+1. EFCore.BulkExtensions：7.1.6
+1. Microsoft.EntityFrameworkCore：7.0.10
+1. Microsoft.Extensions.Identity.Stores：6.0.21
+1. Microsoft.EntityFrameworkCore.Sqlite：7.0.10
+1. Pomelo.EntityFrameworkCore.MySql：7.0.0
+* 使用公司內部元件：
+1. DJImageLib：1.0.1
 
-- [ ] (1). 印鑑表暨套印授權書掃描功能
-- [ ] (2). 企業印鑑建檔功能
-- [ ] (3). 會計師簽證印鑑4組建檔功能
-- [ ] (4).安侯簽證信頭紙建檔功能(Logo、地址名條，可匯入電子檔)
-- [ ] (5).印鑑自動分離(全彩紅章)
-- [ ] (6).印鑑自動分組功能(全彩紅章)
-- [ ] (7).印鑑自動命名功能(全彩紅章)
-- [ ] (8).人工框選簽名、印鑑功能
-- [ ] (9).印鑑組合式憑管理，每組印鑑不限章數
-- [ ] (10).印鑑品質調校功能
-- [ ] (11).歷史年度與季度印鑑主檔匯入作業
-- [ ] (12).報表系統
-- [ ] (13).印鑑批次轉檔功能，將最近一季印鑑複製到下一季
-- [ ] (14).現有基金客戶名單功能，以利直接選擇基金客戶
-- [ ] (15).印鑑影像飛梭旋轉、去黑邊功能
-- [ ] (16).印鑑變更功能：直接覆蓋指定之舊印
-- [ ] (17).「排章記錄表(彙總)」報表，可依客戶歸納加總總頁數及空白總頁數
-- [ ] (18).「排章記錄表(總頁數)」報表，可加總總頁數及空白總頁數
-- [ ] (19).會計師群組維護、移轉功能，可刪除群組、變更會計師群組
-- [ ] (20).「組合章」功能，可整併多張印鑑表印鑑
-- [ ] (21).印鑑染色功能，可指定印鑑染色
-- [ ] (22).印鑑引用功能，可引用現有印鑑
-- [ ] (23).印鑑註銷功能
-
-2.取章排版系統
-
-- [ ] (1).財務報表掃描整合功能
-- [ ] (2).企業印鑑查詢功能
-- [ ] (3).會計師簽證印鑑查詢功能
-- [ ] (4).安侯信頭紙查詢功能(自動查詢)
-- [ ] (5).智慧印鑑樣版排版功能
-- [ ] (6).印鑑印文與財務報表文字透空重疊套印
-- [ ] (7).安侯信頭紙套疊模組：大頭、小頭
-- [ ] (8).財報PDF管理模組 PDF輸出功能、PDF輸出轉換功能、將編排產出之財報PDF檔上傳至指定主機儲存
-- [ ] (9).插入空白頁計算統計模組
-- [ ] (10).排版印鑑引用功能
-- [ ] (11).原留印鑑臨時替換功能
-- [ ] (12).多章複選編輯功能，可複選多章刪除
-- [ ] (13).多章複選排版功能，可複選多章同步位移、對齊
-- [ ] (14).臨時印鑑掃描套疊功能：可一次性掃描印鑑暫存，供多頁排版使用
-- [ ] (15).段落點設定功能：可一次指定多個段落點
-- [ ] (16).自動插頁功能：可自動依設定之段落點一次插入多頁空白頁
-- [ ] (17).黑白TIF財報影像支援功能
-- [ ] (18).複選多頁財報刪除功能
-- [ ] (19).基金客戶名稱清單功能：可直接點選基金客戶進行查詢
-- [ ] (20).客戶印鑑自動染色功能：可依建檔指定顏色染色，亦可臨時指定染色顏色
-- [ ] (21).會計師簽章染色功能：可指定簽名染色顏色
-- [ ] (22).印鑑濃淡調整功能
-
-3.網路資安版(含網路連線查詢管理系統)-主機端模組(安裝於新竹主機)
-
-- [ ] (1).TCP/IP連線查詢監控
-- [ ] (2).多人使用資源管理
-- [ ] (3).使用者密碼控管
-- [ ] (4).印鑑資料加密、解密、傳送
-- [ ] (5).印鑑審核管理功能
-- [ ] (6).印鑑資料檢核確認功能
-- [ ] (7).印鑑異動作業稽核報表查詢列印功能
-- [ ] (8).網路主機資料備援規劃
-- [ ] (9).系統配合主機資料備援調整
-
-4.功能客製化增修
-
-- [ ] (1).印鑑建檔系統：會計師印鑑授權書可抓取兩頁影像進行印鑑整併
-- [ ] (2).取章排版系統：可選擇套印大頭頁所別與大頭頁以外每頁套疊安侯小頭信頭紙
-
-=====================================================
-
-注意事項
-
-(1). Spire.Pdf.dll .NET Standard 2.0 是使用官網下載的dll
-
-> 因為Nuget上沒有此版本只有.NET 6。
-> 
-> 另外也保留.NET6的環境 專案名稱DJSpireNET6
-
-
-
-(2). 目前天創元件(使用版本3.0)因為無法多人運作以及64位元下執行
-
-需要對天創提出以下需求:
-
-1.需要32位元與64位元版本
-
-2.關於函式
->  
->         public static extern int seal_build
->             (out long milSys, int color, string fileinput, string xmloutput,
->             int dpi, string libprefix, int libindex, int left, int top, int width, int height, int binarize,
->             int rotate, string path, double calx = 1.0, double caly = 1.0);
->
-> 這支我們了解他是指定圖檔並進行印鑑分離，
->
-> 但是使用的過程中我們發現，
-> 
-> 他必須要透這個這支函式從指定圖檔轉成bmp檔後，
-> 
-> 之後在對此bmp進行印鑑分離，
-> 
-> 這樣會產生問題，
-> 
-> 如果使用其他程式呼叫這個DLL，
-> 
-> 會無法掌握他的bmp生成路徑，
-> 
-> 造成抓不到圖檔路徑，
-> 
-> 得強制將該dll放在跟程式一樣的路徑，
-> 
-> 希望這支函式產生的bmp檔能讓我們指定位置，或是放在系統temp資料夾。
-
- 3.分離產生的圖檔要可以存放在指定路徑
-
- 4.由於第2項與第3項的操作
-
-> 都是存成圖檔(而且不能指定存檔位置)，
->  我們目前要做到網頁處理，
-> 
->  一定會需要多人使用，如果依照現在做法，
-> 
->  會有圖檔互相覆蓋的問題，
-> 
->  目前我這邊想到的是存到memory讓多人使用，
-> 
-> 除了這點還有其他做法嗎?
-
-
-
-
- 5.可以指定特定範圍進行分離
-
- 6.產生的分離印鑑要有圖像旋轉功能(圖像自動轉正)。
-
- 7.天創元件內的config問題
-
-> 天創元件內的config資料夾在使用libTC_sealinterface.dll這支前必須得先給他正確的程式路徑，
-> 
-> 而且config一定得放在該資料夾的前一個目錄。
-> 
-> 例: dll 都放在 myapp\include  那我就得放在 myapp\config
-> 
-> 這樣才不會得不到usb key，這段能否改成相對路徑，或是有其他方法能指定?
-> 
-> 以下是我使用該dll指定路徑的方式
-> 
-> [DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
->
->         static extern bool SetDllDirectory(string lpPathName);
-> 
-> 宣告程式路徑 (所有的天創dll都放到指定目錄下的\include)
-> 
-> SetDllDirectory(Directory.GetCurrentDirectory() + @"\include");
-> 
-> 指定使用的dll元件
-> 
-> private const string SealDLL = @"libTC_sealinterface.dll";
->
-> 使用的函式
-> 
-> [DllImport(SealDLL, CallingConvention = CallingConvention.Cdecl)]
->
->         public static extern int seal_build
->             (out long milSys, int color, string fileinput, string xmloutput,
->             int dpi, string libprefix, int libindex, int left, int top, int width, int height, int binarize,
->             int rotate, string path, double calx = 1.0, double caly = 1.0);

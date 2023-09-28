@@ -77,6 +77,7 @@ namespace SealTypographicWebAPI.Services.Implements
                                                                     x => x.DeleteStatus == DeleteStatus.No 
                                                                     && x.Company.Id == companyId
                                                                 );
+
             if (!string.IsNullOrWhiteSpace(accountantGroupSearch.GroupName))
             {
                 accountantGroupsQuery = accountantGroupsQuery.Where
@@ -118,13 +119,13 @@ namespace SealTypographicWebAPI.Services.Implements
 
             //確認編號是否重複
             AccountantGroup? accountantGroupQuery = dbContext.AccountantGroups
-                                                .FirstOrDefault
-                                                (
-                                                    accountantGroup => 
-                                                    accountantGroup.Code == accountantGroupForm.AccountantGroupNumber
-                                                    && accountantGroup.DeleteStatus == DeleteStatus.No
-                                                    && accountantGroup.Company.Id == companyId
-                                                );                                                
+                                                    .FirstOrDefault
+                                                    (
+                                                        accountantGroup => 
+                                                        accountantGroup.Code == accountantGroupForm.AccountantGroupNumber
+                                                        && accountantGroup.DeleteStatus == DeleteStatus.No
+                                                        && accountantGroup.Company.Id == companyId
+                                                    );                                                
 
             if (accountantGroupQuery == null)
             {                
