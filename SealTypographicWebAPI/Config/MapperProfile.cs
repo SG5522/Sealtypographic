@@ -8,6 +8,7 @@ using DBEntities;
 using DJLib;
 using SealTypographicWebAPI.Utils;
 using DBEntities.Consts;
+using SealTypographicWebAPI.Models.AccountantGroupMember;
 
 namespace SealTypographicWebAPI.Config
 {
@@ -55,7 +56,7 @@ namespace SealTypographicWebAPI.Config
                     .ForMember(dst => dst.ImageFullPath, opt => opt.Ignore()) // <---ImagePath要額外處理所以要忽略
                     .ReverseMap();
 
-            ////會計師基本資料
+            //會計師基本資料
             CreateMap<Accountant, AccountantViewModel>()
                     .ForMember(dst => dst.AccountantGroupName, opt => opt.MapFrom(src => src.GroupAccountants.First().AccountantGroup.Name))
                     .ForMember(dst => dst.AccountantNumber, opt => opt.MapFrom(src => src.Code));
@@ -79,7 +80,11 @@ namespace SealTypographicWebAPI.Config
 
             CreateMap<AccountantUpdateForm, Accountant>()
                      .ForMember(dst => dst.Code, opt => opt.MapFrom(src => src.AccountantNumber))
-                     .ReverseMap();                        
+                     .ReverseMap();
+
+            //會計師群組成員
+            CreateMap<Accountant, AccountantGroupMember>()                     
+                     .ForMember(dst => dst.AccountantNumber, opt => opt.MapFrom(src => src.Code));                     
 
             //會計師群組
             CreateMap<AccountantGroup, AccountantGroupViewModel>()

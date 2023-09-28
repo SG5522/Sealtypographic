@@ -35,14 +35,15 @@ namespace SealTypographicWebAPI.Services.Implements
         ///<inheritdoc />
         public AccountantGroupList GetAll()
         {
-            AccountantGroupList accountantGroupList = new();            
+            AccountantGroupList accountantGroupList = new();
 
-            List<AccountantGroup> accountantGroups = dbContext.AccountantGroups
-                                                    .Where(accountantGroup => accountantGroup.DeleteStatus == DeleteStatus.No)
-                                                    .ToList();
-            if (accountantGroups.Any())
+            List<AccountantGroupViewModel> accountantGroupDatas = dbContext.AccountantGroups
+                                                                .Where(accountantGroup => accountantGroup.DeleteStatus == DeleteStatus.No)
+                                                                .ProjectTo<AccountantGroupViewModel>(configurationProvider)
+                                                                .ToList();
+            if (accountantGroupDatas.Any())
             {
-                accountantGroupList.AccountantGroupDatas = mapper.Map<List<AccountantGroupViewModel>>(accountantGroups);
+                accountantGroupList.AccountantGroupDatas = accountantGroupDatas;
             }
             accountantGroupList.Success();
 
@@ -52,14 +53,16 @@ namespace SealTypographicWebAPI.Services.Implements
         ///<inheritdoc />
         public AccountantGroupResponse GetData(int accountantGroupId)
         {
-            AccountantGroupResponse accountantGroupResponse = new();            
+            AccountantGroupResponse accountantGroupResponse = new();
 
-            AccountantGroup? accountantGroupQuery = dbContext.AccountantGroups
-                                                    .FirstOrDefault(accountantGroup => accountantGroup.Id == accountantGroupId);                                                    
+            AccountantGroupViewModel? accountantGroup = dbContext.AccountantGroups
+                                                        .Where(accountantGroup => accountantGroup.Id == accountantGroupId)
+                                                        .ProjectTo<AccountantGroupViewModel>(configurationProvider)
+                                                        .FirstOrDefault(accountantGroup => accountantGroup.Id == accountantGroupId);
 
-            if (accountantGroupQuery != null)
+            if (accountantGroup != null)
             {                
-                accountantGroupResponse.AccountantGroupData = mapper.Map<AccountantGroupViewModel>(accountantGroupQuery);                
+                accountantGroupResponse.AccountantGroupData = accountantGroup;
             }
             accountantGroupResponse.Success();
 
@@ -91,9 +94,7 @@ namespace SealTypographicWebAPI.Services.Implements
 
             if (accountantGroupsQuery.Any())
             {
-                //取得該頁            
-                //List<AccountantGroup> thisPageAccountantGroups = 
-
+                //取得該頁
                 accountantGroupResponses.AccountantGroups = accountantGroupsQuery
                                                             .Skip((accountantGroupSearch.PageNumber - 1) * accountantGroupSearch.PageSize)
                                                             .Take(accountantGroupSearch.PageSize)

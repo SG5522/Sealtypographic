@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using AutoMapper;
 using DBEntities;
 using DBEntities.Consts;
-
+using AutoMapper.QueryableExtensions;
 
 namespace SealTypographicWebAPI.Services.Implements
 {
@@ -18,6 +18,7 @@ namespace SealTypographicWebAPI.Services.Implements
     {
         private readonly SealTypographicDbContext dbContext;
         private readonly IMapper mapper;
+        private readonly AutoMapper.IConfigurationProvider configurationProvider;
 
         /// <summary>
         /// 注入DB、ResponseService
@@ -28,13 +29,14 @@ namespace SealTypographicWebAPI.Services.Implements
         {
             this.dbContext = dbContext;
             this.mapper = mapper;
+            configurationProvider = mapper.ConfigurationProvider;
         }
 
         ///<inheritdoc /> 
         public AccountantGroupMembers GetMembers(AccountantGroupMemberSearch accountantGroupMemberSearch)
         {
             AccountantGroupMembers accountantGroupMembers = new();
-            List<AccountantGroupMember> accountantMembers = new();            
+                    
             IQueryable<Accountant> accountantQuery = dbContext.Accountants
                                                     .Where
                                                     (
@@ -47,21 +49,12 @@ namespace SealTypographicWebAPI.Services.Implements
             if (accountantQuery.Any())
             {
                 //取得該頁            
-                List<Accountant> accountants = accountantQuery
-                                            .Skip((accountantGroupMemberSearch.PageNumber - 1) * accountantGroupMemberSearch.PageSize)
-                                            .Take(accountantGroupMemberSearch.PageSize)
-                                            .ToList();
+                accountantGroupMembers.Members = accountantQuery
+                                                .Skip((accountantGroupMemberSearch.PageNumber - 1) * accountantGroupMemberSearch.PageSize)
+                                                .Take(accountantGroupMemberSearch.PageSize)
+                                                .ProjectTo<AccountantGroupMember>(configurationProvider)
+                                                .ToList();
 
-                foreach (Accountant accountant in accountants)
-                {
-                    accountantMembers.Add(new()
-                    {
-                        Id = accountant.Id,
-                        AccountantNumber = accountant.Code,
-                        Name = accountant.Name,
-                    });
-                }
-                accountantGroupMembers.Members = accountantMembers;
                 accountantGroupMembers.PageNumber = accountantGroupMemberSearch.PageNumber;
                 accountantGroupMembers.PageSize = accountantGroupMemberSearch.PageSize;
                 //計算總頁數                
@@ -97,18 +90,12 @@ namespace SealTypographicWebAPI.Services.Implements
             if (accountantQuery.Any())
             {
                 //取得該頁            
-                List<Accountant> accountants =  accountantQuery
-                                                .Skip((notThisGroupMemberSearch.PageNumber - 1) * notThisGroupMemberSearch.PageSize)
-                                                .Take(notThisGroupMemberSearch.PageSize)
-                                                .ToList();
+                notThisGroupMember.AccountantViewModels = accountantQuery
+                                                        .Skip((notThisGroupMemberSearch.PageNumber - 1) * notThisGroupMemberSearch.PageSize)
+                                                        .Take(notThisGroupMemberSearch.PageSize)
+                                                        .ProjectTo<AccountantViewModel>(configurationProvider)
+                                                        .ToList();
 
-                foreach (Accountant accountant in accountants)
-                {
-                    AccountantViewModel accountantViewModel = mapper.Map<AccountantViewModel>(accountant);
-                    //accountantViewModel.AccountantGroupName = accountant.AccountantGroup.Name;
-                    accountantViewModels.Add(accountantViewModel);
-                }
-                notThisGroupMember.AccountantViewModels = accountantViewModels;
                 notThisGroupMember.PageNumber = notThisGroupMemberSearch.PageNumber;
                 notThisGroupMember.PageSize = notThisGroupMemberSearch.PageSize;
                 //計算總頁數

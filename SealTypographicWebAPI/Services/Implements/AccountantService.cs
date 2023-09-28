@@ -35,12 +35,14 @@ namespace SealTypographicWebAPI.Services.Implements
         {
             AccountantDetailResponse accountantResponse = new();
 
-            Accountant? accountantQuery = dbContext.Accountants.Include(accountant => accountant.GroupAccountants)
-                                                               .FirstOrDefault(accountant => accountant.Id == accountantId);
+            AccountantDetailViewModel? accountantDetailViewModel = dbContext.Accountants.Include(accountant => accountant.GroupAccountants)
+                                                                    .Where(accountant => accountant.Id == accountantId)
+                                                                    .ProjectTo<AccountantDetailViewModel>(configurationProvider)
+                                                                    .FirstOrDefault();
 
-            if (accountantQuery != null)
+            if (accountantDetailViewModel != null)
             {
-                accountantResponse.AccountantDetailViewModel = mapper.Map<AccountantDetailViewModel>(accountantQuery);
+                accountantResponse.AccountantDetailViewModel = accountantDetailViewModel;
             }
             accountantResponse.Success();
 
@@ -93,6 +95,7 @@ namespace SealTypographicWebAPI.Services.Implements
                                                             .Take(accountantSearch.PageSize)
                                                             .ProjectTo<AccountantViewModelWithCreateDate>(configurationProvider)
                                                             .ToList();
+
                 int totalCount = accountantQuery.Count();
                 accountantPaginatesViewModels.PageNumber = accountantSearch.PageNumber;
                 accountantPaginatesViewModels.PageSize = accountantSearch.PageSize;
