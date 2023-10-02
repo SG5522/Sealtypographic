@@ -130,25 +130,26 @@ namespace SealTypographicWebAPI.Controllers
 
 
         /// <summary>
-        /// 變更多個會計師的群組
+        /// 更新會計師群組的成員
         /// </summary>
         /// <param name="accountantGroupMemberForm">會計師群組成員資料</param>       
-        [HttpPut("NotTheGroup")]
-        public ResponseViewModel UpdateNotGroupMembers(AccountantGroupMemberForm accountantGroupMemberForm)
+        [HttpPut("[Action]")]
+        public ResponseViewModel UpdateGroupMembers(AccountantGroupMemberForm accountantGroupMemberForm)
         {
             ResponseViewModel response = new ();
             try
             {
-                Log.Information("AccountantGroupMember UpdateNotGroupMembers input {@Input}", accountantGroupMemberForm);
-                response = accountantGroupMemberService.ChangeNotTheGroupMember(accountantGroupMemberForm);
-                Log.Information("AccountantGroupMember UpdateNotGroupMembers output {@Output}", response);
+                Log.Information("AccountantGroupMember UpdateGroupMembers input {@Input}", accountantGroupMemberForm);
+                response = accountantGroupMemberService.UpdateGroupMembers(accountantGroupMemberForm);
+                Log.Information("AccountantGroupMember UpdateGroupMembers output {@Output}", response);
             }
             catch (Exception ex)
             {
-                Log.Error("AccountantGroupMember UpdateNotGroupMembers error {@Error}", ex.Message); 
+                Log.Error("AccountantGroupMember UpdateGroupMembers error {@Error}", ex.Message); 
                 response.DbError();                
             }
             return response;
         }
+
     }
 }

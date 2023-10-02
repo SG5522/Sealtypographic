@@ -13,6 +13,11 @@
         /// <summary>
         /// 成員Id
         /// </summary>
-        public List<int> AccountantIds { get; set; }
+        public List<int> JoinAccountantIds { get; set; }
+
+        /// <summary>
+        /// 成員Id
+        /// </summary>
+        public List<int> LeaveAccountantIds { get; set; }
     }
 }

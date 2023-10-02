@@ -37,7 +37,9 @@ namespace SealTypographicWebAPI.Services.Implements
         public AccountantSignGroupReviewPaginate GetReviewPaginate(AccountantSignSearchReview accountantSignSearchReview)
         {
             AccountantSignGroupReviewPaginate accountantSignGroupReviewPaginate = new();
-            IQueryable<AccountantSignGroup> accountantSignGroupQuery = dbContext.AccountantSignGroups                                                                                                                                                
+            IQueryable<AccountantSignGroup> accountantSignGroupQuery = dbContext.AccountantSignGroups
+                                                                        .Include(x => x.Accountant)
+                                                                        //.ThenInclude(x => x.AccountantGroup)
                                                                         .Where
                                                                         (
                                                                             x => x.DeleteStatus == DeleteStatus.No
