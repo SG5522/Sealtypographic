@@ -66,6 +66,10 @@ namespace SealTypographicWebAPI.Services.Implements
             {
                 accountantQuery = accountantQuery.Where(accountant => accountant.AccountantSignGroups.Any(x => x.ReviewStatus == ReviewStatus.Approval));
             }
+            else
+            {
+                accountantQuery = accountantQuery.Where(accountant => accountant.AccountantSignGroups.Any(x => x.ReviewStatus <= ReviewStatus.Reject));
+            }
 
             if (!string.IsNullOrWhiteSpace(accountantSearch.KeyWord))
             {
@@ -77,7 +81,7 @@ namespace SealTypographicWebAPI.Services.Implements
                 );
             }            
 
-            if (accountantSearch.AccountantGroupNumber != null)
+            if (!string.IsNullOrWhiteSpace(accountantSearch.AccountantGroupNumber))
             {
                 accountantQuery = accountantQuery.Where(accountant => accountant.GroupAccountants.First().AccountantGroup.Code == accountantSearch.AccountantGroupNumber);
             }
@@ -86,11 +90,18 @@ namespace SealTypographicWebAPI.Services.Implements
             
             if (accountantQuery.Any())
             {
+                var test = accountantQuery
+                            .Include(accountant => accountant.AccountantSignGroups)                            
+                            .Include(accountant => accountant.AccountantGroups)
+                            .Skip((accountantSearch.PageNumber - 1) * accountantSearch.PageSize)
+                            .Take(accountantSearch.PageSize)
+                            .ToList();
+
                 //取得該頁            
                 accountantPaginatesViewModels.ViewModels =  accountantQuery
                                                             .Include(accountant => accountant.AccountantSignGroups)
-                                                            .Include(accountant => accountant.GroupAccountants)
-                                                            .ThenInclude(accountant => accountant.AccountantGroup)
+                                                            //.Include(accountant => accountant.GroupAccountants)
+                                                            .Include(accountant => accountant.AccountantGroups)
                                                             .Skip((accountantSearch.PageNumber - 1) * accountantSearch.PageSize)
                                                             .Take(accountantSearch.PageSize)
                                                             .ProjectTo<AccountantViewModelWithCreateDate>(configurationProvider)

@@ -63,11 +63,11 @@ namespace SealTypographicWebAPI.Config
 
             //會計師分頁顯示Map
             CreateMap<Accountant, AccountantViewModelWithCreateDate>()
-                    .ForMember(dst => dst.AccountantGroupName, opt => opt.MapFrom(o => o.GroupAccountants.First().AccountantGroup.Name))
+                    .ForMember(dst => dst.AccountantGroupName, opt => opt.MapFrom(o => o.AccountantGroups.First().Name))
                     .ForMember(dst => dst.AccountantNumber, opt => opt.MapFrom(o => o.Code))
                     .ForMember(dst => dst.AccountantSignGroupId, opt => opt.MapFrom
                     (
-                        src => src.AccountantSignGroups.Any() ? src.AccountantSignGroups.First(x => x.ReviewStatus <= ReviewStatus.Reject).Id : 0
+                        src => src.AccountantSignGroups.Any() ? src.AccountantSignGroups.First().Id : 0
                     ));
 
             CreateMap<Accountant, AccountantDetailViewModel>()
