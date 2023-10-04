@@ -1,26 +1,27 @@
 ﻿using DBEntities.Base;
+using DBEntities.Consts;
 
 namespace DBEntities
 {
     /// <summary>
-    /// 季度
+    /// 年季度
     /// </summary>
-    public class Quarter : BaseData
+    public class QuarterYear : BaseData
     {
         /// <summary>
         /// 西元年(公曆)
         /// </summary>
-        public string GregorianYear { get; set; }
-
-        /// <summary>
-        /// 民國年
-        /// </summary>
-        public string TaiwanYear { get; set; }
+        public int GregorianYear { get; set; }
 
         /// <summary>
         /// 季度時期(Q1,Q2,Q3,Q4)
         /// </summary>
-        public string Period { get; set; }
+        public string? Period { get; set; }
+
+        /// <summary>
+        /// 年季度類型
+        /// </summary>
+        public QuarterYearType Type { get; set; }
 
         /// <summary>
         /// 客戶印鑑季度資料表

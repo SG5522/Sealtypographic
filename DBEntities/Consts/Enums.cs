@@ -485,4 +485,22 @@ namespace DBEntities.Consts
         [Description("信頭圖片樣板")]
         LetterheadImageTemplate = 3,
     }
+
+    /// <summary>
+    /// 年季度類別
+    /// </summary>
+    public enum QuarterYearType : byte
+    {
+        /// <summary>
+        /// 財務報表(季度)
+        /// </summary>
+        [Description("財務報表")]
+        FinancialReport = 1,
+
+        /// <summary>
+        /// 稅務報表(年度)
+        /// </summary>
+        [Description("稅務報表")]
+        TaxReport = 2,
+    }
 }

@@ -14,7 +14,7 @@ namespace SealTypographicWebAPI.Utils
         /// <param name="code">客戶編號</param>
         /// <param name="quarter">季度</param>
         /// <returns></returns>
-        public static string GetName(string code, Quarter quarter)
+        public static string GetName(string code, QuarterYear quarter)
         {            
             return $"{code}{"A4"}{QuarterUtil.GetTaiwanYearQuarter(quarter)}";
         }

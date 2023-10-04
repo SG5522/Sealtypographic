@@ -15,7 +15,7 @@ namespace SealTypographicWebAPI.Controllers
     [Route("api/[controller]")]
     [ApiController]
     //[Authorize]
-    public class SysController : ControllerBase
+    public class SysController : APIControllerBase
     {
         private readonly ILogger<SysController> logger;
         private readonly IWebHostEnvironment environment;
@@ -77,14 +77,24 @@ namespace SealTypographicWebAPI.Controllers
             return keycloakAuthenticationOptions;
         }
 
-        ///// <summary>
-        ///// 取得Keycloak參數
-        ///// </summary>
-        ///// <returns></returns>
-        //[HttpGet("[Action]")]
-        //public string UserName()
-        //{            
-        //    return claimsPrincipal.Identity.Name;
-        //}
+        /// <summary>
+        /// 取得UserName
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("[Action]")]
+        public string GetUserName()
+        {
+            return UserName;
+        }
+
+        /// <summary>
+        /// 取得UserId
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("[Action]")]
+        public string GetUserId()
+        {
+            return UserId;
+        }
     }
 }

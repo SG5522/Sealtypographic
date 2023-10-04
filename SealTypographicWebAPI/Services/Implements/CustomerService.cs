@@ -131,7 +131,7 @@ namespace SealTypographicWebAPI.Services.Implements
                                 customerViewModel.IsReject = true;
                             }
                         }
-                        customerViewModel.CustomerSealQuarterId = customerSealGroups.OrderByDescending(x => x.Quarter).Select(x => x.Id).FirstOrDefault();                        
+                        customerViewModel.CustomerSealQuarterId = customerSealGroups.OrderByDescending(x => x.QuarterYear).Select(x => x.Id).FirstOrDefault();                        
                     }
                                     
                     customerPaginateViewModel.ViewModels.Add(customerViewModel);                    

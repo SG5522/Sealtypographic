@@ -46,7 +46,7 @@ namespace SealTypographicWebAPI.Services.Implements
             int companyId = 1;
             IQueryable<TypographicPDF> typographicPDFs = dbContext.TypographicPDFs
                                                         .Include(x => x.Customer)
-                                                        .Include(x => x.Quarter)
+                                                        .Include(x => x.QuarterYear)
                                                         .Where
                                                         (
                                                             x => x.Customer.Company.Id == companyId
@@ -62,12 +62,11 @@ namespace SealTypographicWebAPI.Services.Implements
                                 );
             }
 
-            if(!string.IsNullOrEmpty(typographicPDFSearch.Quarter))
-            {                
+            if(typographicPDFSearch.QuarterYearId != null)
+            {
                 typographicPDFs = typographicPDFs.Where
                                 (
-                                    x => x.Quarter.TaiwanYear.Contains(typographicPDFSearch.Quarter.Substring(0, 3))
-                                    || x.Quarter.Period == typographicPDFSearch.Quarter.Substring(3)
+                                    x => x.QuarterYear.Id == typographicPDFSearch.QuarterYearId
                                 );
             }
 
@@ -220,7 +219,7 @@ namespace SealTypographicWebAPI.Services.Implements
         {
             TypographicPDFSettingViewModel? typographicPDFSettingViewModel = dbContext.TypographicPDFs
                                                                             .Include(x => x.UploadFile)
-                                                                            .Include(x => x.Quarter)
+                                                                            .Include(x => x.QuarterYear)
                                                                             .Include(x => x.TypographicPages)
                                                                             .Where(x => x.Id == typographicPDFId)
                                                                             .ProjectTo<TypographicPDFSettingViewModel>(configurationProvider)
@@ -337,12 +336,8 @@ namespace SealTypographicWebAPI.Services.Implements
                 List<TypographicPage> typographicPages = new();
 
                 //之後輸入要從前端提供Id
-                Quarter quarter = dbContext.Quarters
-                                .Single
-                                (
-                                    x => x.TaiwanYear == typographicPDFForm.Quarter.Substring(0, 3)
-                                    && x.Period == typographicPDFForm.Quarter.Substring(3)
-                                );                
+                QuarterYear quarter = dbContext.QuarterYears
+                                .Single(x => x.Id == typographicPDFForm.QuarterYearId);                
 
                 //新增PDF排版
                 TypographicPDF typographicPDF = new()
@@ -351,7 +346,7 @@ namespace SealTypographicWebAPI.Services.Implements
                     UploadFile = pDFInfo,
                     OriginFileName = pDFInfo.OriginalFileName,
                     FullPath = pDFInfo.FullPath,
-                    Quarter = quarter,
+                    QuarterYear = quarter,
                     TypographicPages = new List<TypographicPage>()
                 };
                 BaseInputTypographicPDF(typographicPDF, true, userId);
@@ -390,12 +385,9 @@ namespace SealTypographicWebAPI.Services.Implements
                 typographicPDF.Customer = dbContext.Customers.Single(x => x.Id == typographicPDFSaveForm.CustomerId);
                 typographicPDF.UploadFile = dbContext.UploadFiles.Single(x => x.Id == typographicPDFSaveForm.UploadId);
                 //之後輸入要從前端提供Id
-                typographicPDF.Quarter = dbContext.Quarters
-                                        .Single
-                                        (
-                                            x => x.TaiwanYear == typographicPDFSaveForm.Quarter.Substring(0, 3)
-                                            && x.Period == typographicPDFSaveForm.Quarter.Substring(3)
-                                        );
+                typographicPDF.QuarterYear = dbContext.QuarterYears
+                                        .Single(x => x.Id == typographicPDFSaveForm.QuarterYearId);
+
                 typographicPDF.ReviewStatus = ReviewStatus.Draft;
                 BaseInputTypographicPDF(typographicPDF, false, userId);
                 List<TypographicPage> newPages = new ();                

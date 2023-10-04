@@ -45,14 +45,14 @@ namespace Sqlite.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Quarters",
+                name: "QuarterYears",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    GregorianYear = table.Column<string>(type: "TEXT", nullable: false),
-                    TaiwanYear = table.Column<string>(type: "TEXT", nullable: false),
-                    Period = table.Column<string>(type: "TEXT", nullable: false),
+                    GregorianYear = table.Column<int>(type: "INTEGER", nullable: false),
+                    Period = table.Column<string>(type: "TEXT", nullable: true),
+                    Type = table.Column<byte>(type: "INTEGER", nullable: false),
                     CreateDate = table.Column<DateTime>(type: "TEXT", nullable: false),
                     UpdateDate = table.Column<DateTime>(type: "TEXT", nullable: false),
                     CreateUserId = table.Column<int>(type: "INTEGER", nullable: false),
@@ -61,7 +61,7 @@ namespace Sqlite.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Quarters", x => x.Id);
+                    table.PrimaryKey("PK_QuarterYears", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -70,7 +70,7 @@ namespace Sqlite.Migrations
                 {
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    AccountantGroupNumber = table.Column<string>(type: "TEXT", nullable: false),
+                    Code = table.Column<string>(type: "TEXT", nullable: false),
                     CompanyId = table.Column<int>(type: "INTEGER", nullable: false),
                     CreateDate = table.Column<DateTime>(type: "TEXT", nullable: false),
                     UpdateDate = table.Column<DateTime>(type: "TEXT", nullable: false),
@@ -84,6 +84,32 @@ namespace Sqlite.Migrations
                     table.PrimaryKey("PK_AccountantGroups", x => x.Id);
                     table.ForeignKey(
                         name: "FK_AccountantGroups_Companys_CompanyId",
+                        column: x => x.CompanyId,
+                        principalTable: "Companys",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Accountants",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Code = table.Column<string>(type: "TEXT", nullable: false),
+                    CompanyId = table.Column<int>(type: "INTEGER", nullable: false),
+                    CreateDate = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    UpdateDate = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    CreateUserId = table.Column<int>(type: "INTEGER", nullable: false),
+                    UpdateUserId = table.Column<int>(type: "INTEGER", nullable: false),
+                    DeleteStatus = table.Column<byte>(type: "INTEGER", nullable: false),
+                    Name = table.Column<string>(type: "TEXT", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Accountants", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Accountants_Companys_CompanyId",
                         column: x => x.CompanyId,
                         principalTable: "Companys",
                         principalColumn: "Id",
@@ -221,14 +247,22 @@ namespace Sqlite.Migrations
                 {
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    Account = table.Column<string>(type: "TEXT", nullable: false),
-                    Pwaosrsd = table.Column<string>(type: "TEXT", nullable: false),
+                    KeycloakUserId = table.Column<string>(type: "TEXT", nullable: false),
                     CompanyId = table.Column<int>(type: "INTEGER", nullable: false),
-                    CreateDate = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    UpdateDate = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    CreateUserId = table.Column<int>(type: "INTEGER", nullable: false),
-                    UpdateUserId = table.Column<int>(type: "INTEGER", nullable: false),
-                    DeleteStatus = table.Column<byte>(type: "INTEGER", nullable: false)
+                    UserName = table.Column<string>(type: "TEXT", nullable: true),
+                    NormalizedUserName = table.Column<string>(type: "TEXT", nullable: true),
+                    Email = table.Column<string>(type: "TEXT", nullable: true),
+                    NormalizedEmail = table.Column<string>(type: "TEXT", nullable: true),
+                    EmailConfirmed = table.Column<bool>(type: "INTEGER", nullable: false),
+                    PasswordHash = table.Column<string>(type: "TEXT", nullable: true),
+                    SecurityStamp = table.Column<string>(type: "TEXT", nullable: true),
+                    ConcurrencyStamp = table.Column<string>(type: "TEXT", nullable: true),
+                    PhoneNumber = table.Column<string>(type: "TEXT", nullable: true),
+                    PhoneNumberConfirmed = table.Column<bool>(type: "INTEGER", nullable: false),
+                    TwoFactorEnabled = table.Column<bool>(type: "INTEGER", nullable: false),
+                    LockoutEnd = table.Column<DateTimeOffset>(type: "TEXT", nullable: true),
+                    LockoutEnabled = table.Column<bool>(type: "INTEGER", nullable: false),
+                    AccessFailedCount = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -242,34 +276,54 @@ namespace Sqlite.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Accountants",
+                name: "AccountantSignGroups",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    Code = table.Column<string>(type: "TEXT", nullable: false),
-                    AccountantGroupId = table.Column<int>(type: "INTEGER", nullable: false),
-                    CompanyId = table.Column<int>(type: "INTEGER", nullable: false),
+                    AccountantId = table.Column<int>(type: "INTEGER", nullable: false),
                     CreateDate = table.Column<DateTime>(type: "TEXT", nullable: false),
                     UpdateDate = table.Column<DateTime>(type: "TEXT", nullable: false),
                     CreateUserId = table.Column<int>(type: "INTEGER", nullable: false),
                     UpdateUserId = table.Column<int>(type: "INTEGER", nullable: false),
                     DeleteStatus = table.Column<byte>(type: "INTEGER", nullable: false),
-                    Name = table.Column<string>(type: "TEXT", nullable: false)
+                    ReviewUserId = table.Column<int>(type: "INTEGER", nullable: true),
+                    ReviewDate = table.Column<DateTime>(type: "TEXT", nullable: true),
+                    StartDate = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    EndDate = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    ReviewStatus = table.Column<sbyte>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Accountants", x => x.Id);
+                    table.PrimaryKey("PK_AccountantSignGroups", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Accountants_AccountantGroups_AccountantGroupId",
+                        name: "FK_AccountantSignGroups_Accountants_AccountantId",
+                        column: x => x.AccountantId,
+                        principalTable: "Accountants",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "GroupAccountants",
+                columns: table => new
+                {
+                    AccountantId = table.Column<int>(type: "INTEGER", nullable: false),
+                    AccountantGroupId = table.Column<int>(type: "INTEGER", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_GroupAccountants", x => new { x.AccountantGroupId, x.AccountantId });
+                    table.ForeignKey(
+                        name: "FK_GroupAccountants_AccountantGroups_AccountantGroupId",
                         column: x => x.AccountantGroupId,
                         principalTable: "AccountantGroups",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Accountants_Companys_CompanyId",
-                        column: x => x.CompanyId,
-                        principalTable: "Companys",
+                        name: "FK_GroupAccountants_Accountants_AccountantId",
+                        column: x => x.AccountantId,
+                        principalTable: "Accountants",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -280,7 +334,7 @@ namespace Sqlite.Migrations
                 {
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    QuarterId = table.Column<int>(type: "INTEGER", nullable: false),
+                    QuarterYearId = table.Column<int>(type: "INTEGER", nullable: false),
                     CustomerId = table.Column<int>(type: "INTEGER", nullable: false),
                     CreateDate = table.Column<DateTime>(type: "TEXT", nullable: false),
                     UpdateDate = table.Column<DateTime>(type: "TEXT", nullable: false),
@@ -303,9 +357,9 @@ namespace Sqlite.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_CustomerSealGroups_Quarters_QuarterId",
-                        column: x => x.QuarterId,
-                        principalTable: "Quarters",
+                        name: "FK_CustomerSealGroups_QuarterYears_QuarterYearId",
+                        column: x => x.QuarterYearId,
+                        principalTable: "QuarterYears",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -316,7 +370,7 @@ namespace Sqlite.Migrations
                 {
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    QuarterId = table.Column<int>(type: "INTEGER", nullable: false),
+                    QuarterYearId = table.Column<int>(type: "INTEGER", nullable: false),
                     CustomerId = table.Column<int>(type: "INTEGER", nullable: false),
                     CreateDate = table.Column<DateTime>(type: "TEXT", nullable: false),
                     UpdateDate = table.Column<DateTime>(type: "TEXT", nullable: false),
@@ -334,9 +388,9 @@ namespace Sqlite.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_TemporarySealGroups_Quarters_QuarterId",
-                        column: x => x.QuarterId,
-                        principalTable: "Quarters",
+                        name: "FK_TemporarySealGroups_QuarterYears_QuarterYearId",
+                        column: x => x.QuarterYearId,
+                        principalTable: "QuarterYears",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -374,7 +428,7 @@ namespace Sqlite.Migrations
                         .Annotation("Sqlite:Autoincrement", true),
                     OriginFileName = table.Column<string>(type: "TEXT", nullable: false),
                     FullPath = table.Column<string>(type: "TEXT", nullable: false),
-                    QuarterId = table.Column<int>(type: "INTEGER", nullable: false),
+                    QuarterYearId = table.Column<int>(type: "INTEGER", nullable: false),
                     CustomerId = table.Column<int>(type: "INTEGER", nullable: false),
                     UploadFileId = table.Column<int>(type: "INTEGER", nullable: false),
                     CreateDate = table.Column<DateTime>(type: "TEXT", nullable: false),
@@ -398,9 +452,9 @@ namespace Sqlite.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_TypographicPDFs_Quarters_QuarterId",
-                        column: x => x.QuarterId,
-                        principalTable: "Quarters",
+                        name: "FK_TypographicPDFs_QuarterYears_QuarterYearId",
+                        column: x => x.QuarterYearId,
+                        principalTable: "QuarterYears",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
@@ -409,63 +463,6 @@ namespace Sqlite.Migrations
                         principalTable: "UploadFiles",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "AccountantSignGroups",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    AccountantId = table.Column<int>(type: "INTEGER", nullable: false),
-                    CreateDate = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    UpdateDate = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    CreateUserId = table.Column<int>(type: "INTEGER", nullable: false),
-                    UpdateUserId = table.Column<int>(type: "INTEGER", nullable: false),
-                    DeleteStatus = table.Column<byte>(type: "INTEGER", nullable: false),
-                    ReviewUserId = table.Column<int>(type: "INTEGER", nullable: true),
-                    ReviewDate = table.Column<DateTime>(type: "TEXT", nullable: true),
-                    StartDate = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    EndDate = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    ReviewStatus = table.Column<sbyte>(type: "INTEGER", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_AccountantSignGroups", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_AccountantSignGroups_Accountants_AccountantId",
-                        column: x => x.AccountantId,
-                        principalTable: "Accountants",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "TypographicPages",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    PageNumber = table.Column<int>(type: "INTEGER", nullable: false),
-                    BlankCheck = table.Column<bool>(type: "INTEGER", nullable: false),
-                    DeleteCheck = table.Column<bool>(type: "INTEGER", nullable: false),
-                    UploadFileId = table.Column<int>(type: "INTEGER", nullable: true),
-                    TypographicPDFId = table.Column<int>(type: "INTEGER", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_TypographicPages", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_TypographicPages_TypographicPDFs_TypographicPDFId",
-                        column: x => x.TypographicPDFId,
-                        principalTable: "TypographicPDFs",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_TypographicPages_UploadFiles_UploadFileId",
-                        column: x => x.UploadFileId,
-                        principalTable: "UploadFiles",
-                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -521,6 +518,34 @@ namespace Sqlite.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "TypographicPages",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    PageNumber = table.Column<int>(type: "INTEGER", nullable: false),
+                    BlankCheck = table.Column<bool>(type: "INTEGER", nullable: false),
+                    DeleteCheck = table.Column<bool>(type: "INTEGER", nullable: false),
+                    UploadFileId = table.Column<int>(type: "INTEGER", nullable: true),
+                    TypographicPDFId = table.Column<int>(type: "INTEGER", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_TypographicPages", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_TypographicPages_TypographicPDFs_TypographicPDFId",
+                        column: x => x.TypographicPDFId,
+                        principalTable: "TypographicPDFs",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_TypographicPages_UploadFiles_UploadFileId",
+                        column: x => x.UploadFileId,
+                        principalTable: "UploadFiles",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "TypographicResourceLocations",
                 columns: table => new
                 {
@@ -556,11 +581,6 @@ namespace Sqlite.Migrations
                 column: "CompanyId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Accountants_AccountantGroupId",
-                table: "Accountants",
-                column: "AccountantGroupId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Accountants_CompanyId",
                 table: "Accountants",
                 column: "CompanyId");
@@ -581,9 +601,14 @@ namespace Sqlite.Migrations
                 column: "CustomerId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_CustomerSealGroups_QuarterId",
+                name: "IX_CustomerSealGroups_QuarterYearId",
                 table: "CustomerSealGroups",
-                column: "QuarterId");
+                column: "QuarterYearId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_GroupAccountants_AccountantId",
+                table: "GroupAccountants",
+                column: "AccountantId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Letterheads_CompanyId",
@@ -606,9 +631,9 @@ namespace Sqlite.Migrations
                 column: "CustomerId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_TemporarySealGroups_QuarterId",
+                name: "IX_TemporarySealGroups_QuarterYearId",
                 table: "TemporarySealGroups",
-                column: "QuarterId");
+                column: "QuarterYearId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_TypographicPages_TypographicPDFId",
@@ -626,9 +651,9 @@ namespace Sqlite.Migrations
                 column: "CustomerId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_TypographicPDFs_QuarterId",
+                name: "IX_TypographicPDFs_QuarterYearId",
                 table: "TypographicPDFs",
-                column: "QuarterId");
+                column: "QuarterYearId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_TypographicPDFs_UploadFileId",
@@ -685,6 +710,9 @@ namespace Sqlite.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
+                name: "GroupAccountants");
+
+            migrationBuilder.DropTable(
                 name: "TemplateLocations");
 
             migrationBuilder.DropTable(
@@ -692,6 +720,9 @@ namespace Sqlite.Migrations
 
             migrationBuilder.DropTable(
                 name: "Users");
+
+            migrationBuilder.DropTable(
+                name: "AccountantGroups");
 
             migrationBuilder.DropTable(
                 name: "Templates");
@@ -727,10 +758,7 @@ namespace Sqlite.Migrations
                 name: "Customers");
 
             migrationBuilder.DropTable(
-                name: "Quarters");
-
-            migrationBuilder.DropTable(
-                name: "AccountantGroups");
+                name: "QuarterYears");
 
             migrationBuilder.DropTable(
                 name: "Companys");

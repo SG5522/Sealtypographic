@@ -11,14 +11,14 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Sqlite.Migrations
 {
     [DbContext(typeof(SealTypographicDbContext))]
-    [Migration("20230927061904_AccountantGroupChange")]
-    partial class AccountantGroupChange
+    [Migration("20231004055622_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder.HasAnnotation("ProductVersion", "7.0.10");
+            modelBuilder.HasAnnotation("ProductVersion", "7.0.11");
 
             modelBuilder.Entity("DBEntities.Accountant", b =>
                 {
@@ -322,7 +322,7 @@ namespace Sqlite.Migrations
                     b.Property<DateTime>("EndDate")
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("QuarterId")
+                    b.Property<int>("QuarterYearId")
                         .HasColumnType("INTEGER");
 
                     b.Property<DateTime?>("ReviewDate")
@@ -347,7 +347,7 @@ namespace Sqlite.Migrations
 
                     b.HasIndex("CustomerId");
 
-                    b.HasIndex("QuarterId");
+                    b.HasIndex("QuarterYearId");
 
                     b.ToTable("CustomerSealGroups");
                 });
@@ -405,7 +405,7 @@ namespace Sqlite.Migrations
                     b.ToTable("Letterheads");
                 });
 
-            modelBuilder.Entity("DBEntities.Quarter", b =>
+            modelBuilder.Entity("DBEntities.QuarterYear", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -420,17 +420,14 @@ namespace Sqlite.Migrations
                     b.Property<byte>("DeleteStatus")
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("GregorianYear")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
+                    b.Property<int>("GregorianYear")
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("Period")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("TaiwanYear")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
+                    b.Property<byte>("Type")
+                        .HasColumnType("INTEGER");
 
                     b.Property<DateTime>("UpdateDate")
                         .HasColumnType("TEXT");
@@ -440,7 +437,7 @@ namespace Sqlite.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Quarters");
+                    b.ToTable("QuarterYears");
                 });
 
             modelBuilder.Entity("DBEntities.Template", b =>
@@ -550,7 +547,7 @@ namespace Sqlite.Migrations
                     b.Property<byte>("DeleteStatus")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("QuarterId")
+                    b.Property<int>("QuarterYearId")
                         .HasColumnType("INTEGER");
 
                     b.Property<DateTime>("UpdateDate")
@@ -563,7 +560,7 @@ namespace Sqlite.Migrations
 
                     b.HasIndex("CustomerId");
 
-                    b.HasIndex("QuarterId");
+                    b.HasIndex("QuarterYearId");
 
                     b.ToTable("TemporarySealGroups");
                 });
@@ -597,7 +594,7 @@ namespace Sqlite.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("QuarterId")
+                    b.Property<int>("QuarterYearId")
                         .HasColumnType("INTEGER");
 
                     b.Property<DateTime?>("ReviewDate")
@@ -625,7 +622,7 @@ namespace Sqlite.Migrations
 
                     b.HasIndex("CustomerId");
 
-                    b.HasIndex("QuarterId");
+                    b.HasIndex("QuarterYearId");
 
                     b.HasIndex("UploadFileId");
 
@@ -921,15 +918,15 @@ namespace Sqlite.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("DBEntities.Quarter", "Quarter")
+                    b.HasOne("DBEntities.QuarterYear", "QuarterYear")
                         .WithMany("CustomerSealGroups")
-                        .HasForeignKey("QuarterId")
+                        .HasForeignKey("QuarterYearId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Customer");
 
-                    b.Navigation("Quarter");
+                    b.Navigation("QuarterYear");
                 });
 
             modelBuilder.Entity("DBEntities.GroupAccountant", b =>
@@ -992,15 +989,15 @@ namespace Sqlite.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("DBEntities.Quarter", "Quarter")
+                    b.HasOne("DBEntities.QuarterYear", "QuarterYear")
                         .WithMany("TemporarySealGroups")
-                        .HasForeignKey("QuarterId")
+                        .HasForeignKey("QuarterYearId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Customer");
 
-                    b.Navigation("Quarter");
+                    b.Navigation("QuarterYear");
                 });
 
             modelBuilder.Entity("DBEntities.TypographicPDF", b =>
@@ -1011,9 +1008,9 @@ namespace Sqlite.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("DBEntities.Quarter", "Quarter")
+                    b.HasOne("DBEntities.QuarterYear", "QuarterYear")
                         .WithMany("TypographicPDFs")
-                        .HasForeignKey("QuarterId")
+                        .HasForeignKey("QuarterYearId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -1025,7 +1022,7 @@ namespace Sqlite.Migrations
 
                     b.Navigation("Customer");
 
-                    b.Navigation("Quarter");
+                    b.Navigation("QuarterYear");
 
                     b.Navigation("UploadFile");
                 });
@@ -1174,7 +1171,7 @@ namespace Sqlite.Migrations
                     b.Navigation("TypographicResources");
                 });
 
-            modelBuilder.Entity("DBEntities.Quarter", b =>
+            modelBuilder.Entity("DBEntities.QuarterYear", b =>
                 {
                     b.Navigation("CustomerSealGroups");
 

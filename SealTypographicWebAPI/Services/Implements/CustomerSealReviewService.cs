@@ -38,13 +38,13 @@ namespace SealTypographicWebAPI.Services.Implements
 
             IQueryable<CustomerSealGroup> customerSealQuarterQuery = dbContext.CustomerSealGroups
                                                                     .Include(customerSealGroup => customerSealGroup.Customer)
-                                                                    .Include(x => x.Quarter)
+                                                                    .Include(x => x.QuarterYear)
                                                                     .Where
                                                                     (
                                                                         customerSealGroup => customerSealGroup.DeleteStatus == DeleteStatus.No
                                                                         && customerSealGroup.ReviewStatus < ReviewStatus.Disabled
                                                                         && customerSealGroup.Customer.Company.Id == companyId      
-                                                                    ).OrderByDescending(x => x.Quarter.Id);
+                                                                    ).OrderByDescending(x => x.QuarterYear.Id);
                             
 
             if (!string.IsNullOrWhiteSpace(customerSealSearchReview.KeyWord))
@@ -89,7 +89,7 @@ namespace SealTypographicWebAPI.Services.Implements
             CustomerSealQuarterDetailReviewResponse customerSealReviewDetailResponse = new();
             CustomerSealQuarterDetailReviewViewModel? customerSealGroupQuery = dbContext.CustomerSealGroups
                                                                                 .Include(x => x.Customer)
-                                                                                .Include(x => x.Quarter)
+                                                                                .Include(x => x.QuarterYear)
                                                                                 .Include(x => x.TypographicResources)
                                                                                 .Where(x => x.Id == customerSealQuarterId)
                                                                                 .ProjectTo<CustomerSealQuarterDetailReviewViewModel>(configurationProvider)

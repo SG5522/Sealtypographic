@@ -1,14 +1,12 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using DBEntities.Consts;
+using Microsoft.EntityFrameworkCore;
 
 namespace DBEntities
 {
     public class InitialDbData : DbContext
     {
+        private const int Years = 50;
+
         public static void Initialize(SealTypographicDbContext dbContext)
         {
             if (!dbContext.Companys.Any())
@@ -24,27 +22,37 @@ namespace DBEntities
                 dbContext.SaveChanges();
             }
 
-            if (!dbContext.Quarters.Any())
+            if (!dbContext.QuarterYears.Any())
             {
-                List<Quarter> quarters = new();
-                int nowGregorianYear = 2023;
-                int years = 50;
-                for (int i = 1; i <= years; i++)
+                List<QuarterYear> quarterYears = new();
+                int nowGregorianYear = DateTime.Now.Year;                
+                for (int i = 1; i <= Years; i++)
                 {
-                    string gregorianYear = $"{nowGregorianYear - years + i}";
-                    string taiwanYear = $"{nowGregorianYear - 1911 - years + i}";
+                    int gregorianYear = nowGregorianYear - (Years + i);                    
+
+                    //(財報季度列表)
                     for (int period = 1; period <= 4; period++)
                     {
-                        Quarter quarter = new()
+                        QuarterYear quarter = new()
                         {
                             GregorianYear = gregorianYear,
-                            TaiwanYear = taiwanYear,
-                            Period = $"Q{period}"
+                            Period = $"Q{period}",
+                            Type = QuarterYearType.FinancialReport
                         };
-                        quarters.Add(quarter);
+                        quarterYears.Add(quarter);
                     }
+
+                    //(稅報年度列表)
+                    QuarterYear quarterYear = new()
+                    {
+                        GregorianYear = gregorianYear,
+                        Type = QuarterYearType.TaxReport
+                    };
+                    quarterYears.Add(quarterYear);
                 }
-                dbContext.Quarters.AddRange(quarters);
+                
+
+                dbContext.QuarterYears.AddRange(quarterYears);
                 dbContext.SaveChanges();
             }
 

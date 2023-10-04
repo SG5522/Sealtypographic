@@ -20,7 +20,7 @@ namespace DBEntities
         /// <summary>
         /// 季度
         /// </summary>
-        public Quarter Quarter { get; set; }
+        public QuarterYear QuarterYear { get; set; }
 
         /// <summary>
         /// 客戶

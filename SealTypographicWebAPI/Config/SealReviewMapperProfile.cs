@@ -25,7 +25,7 @@ namespace SealTypographicWebAPI.Config
             CreateMap<CustomerSealGroup, CustomerSealQuarterReviewViewModel>()
                     .ForMember(dst => dst.Name, opt => opt.MapFrom(src => src.Customer.Name))
                     .ForMember(dst => dst.Code, opt => opt.MapFrom(src => src.Customer.Code))
-                    .ForMember(dst => dst.Quarter, opt => opt.MapFrom(src => QuarterUtil.GetTaiwanYearQuarter(src.Quarter)))
+                    .ForMember(dst => dst.Quarter, opt => opt.MapFrom(src => QuarterUtil.GetTaiwanYearQuarter(src.QuarterYear)))
                     .ForMember(dst => dst.SealImageInfos, opt => opt.MapFrom(src => src.TypographicResources.Where(x => x.DeleteStatus == DeleteStatus.No)));
 
             CreateMap<TypographicResource, SealImageInfo>()
@@ -33,7 +33,7 @@ namespace SealTypographicWebAPI.Config
                  .ForMember(dst => dst.SealMappingConfigId, opt => opt.MapFrom(src => SealMappingConfigUtil.GetCustomerSealType(src.SubSealType)));
 
             CreateMap<CustomerSealGroup, CustomerSealQuarterViewModel>()
-                    .ForMember(dst => dst.Quarter, opt => opt.MapFrom(src => QuarterUtil.GetTaiwanYearQuarter(src.Quarter)));
+                    .ForMember(dst => dst.Quarter, opt => opt.MapFrom(src => QuarterUtil.GetTaiwanYearQuarter(src.QuarterYear)));
 
 
             //客戶印鑑審核詳細資料
@@ -56,7 +56,7 @@ namespace SealTypographicWebAPI.Config
                      .ForMember(dst => dst.ContactTelephone, opt => opt.MapFrom(src => src.Customer.ContactTelephone))
                      //印鑑與季度相關
                      .ForMember(dst => dst.Id, opt => opt.MapFrom(src => src.Id))
-                     .ForMember(dst => dst.Quarter, opt => opt.MapFrom(src => QuarterUtil.GetTaiwanYearQuarter(src.Quarter)))
+                     .ForMember(dst => dst.Quarter, opt => opt.MapFrom(src => QuarterUtil.GetTaiwanYearQuarter(src.QuarterYear)))
                      .ForMember(dst => dst.Seals, opt => opt.MapFrom(src => src.TypographicResources.Where(x => x.DeleteStatus == DeleteStatus.No)));
 
             //客戶印鑑審核詳細資料的印鑑部份

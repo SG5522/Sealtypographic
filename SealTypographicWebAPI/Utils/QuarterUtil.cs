@@ -12,7 +12,7 @@ namespace SealTypographicWebAPI.Utils
         /// </summary>
         /// <param name="quarter"></param>
         /// <returns></returns>
-        public static string GetGregorainQuarter(Quarter quarter)
+        public static string GetGregorainQuarter(QuarterYear quarter)
         {                        
             return $"{quarter.GregorianYear}{quarter.Period}";
         }
@@ -22,9 +22,9 @@ namespace SealTypographicWebAPI.Utils
         /// </summary>
         /// <param name="quarter"></param>
         /// <returns></returns>
-        public static string GetTaiwanYearQuarter(Quarter quarter)
+        public static string GetTaiwanYearQuarter(QuarterYear quarter)
         {            
-            return $"{quarter.TaiwanYear}{quarter.Period}";
+            return $"{quarter.GregorianYear - 1911}{quarter.Period}";
         }
     }
 }

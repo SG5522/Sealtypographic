@@ -10,7 +10,7 @@ namespace DBEntities
         /// <summary>
         /// 臨時章季度
         /// </summary>
-        public Quarter Quarter { get; set; }
+        public QuarterYear QuarterYear { get; set; }
 
         /// <summary>
         /// 客戶資料表

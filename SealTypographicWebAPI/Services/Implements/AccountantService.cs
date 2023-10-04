@@ -99,8 +99,7 @@ namespace SealTypographicWebAPI.Services.Implements
 
                 //取得該頁            
                 accountantPaginatesViewModels.ViewModels =  accountantQuery
-                                                            .Include(accountant => accountant.AccountantSignGroups)
-                                                            //.Include(accountant => accountant.GroupAccountants)
+                                                            .Include(accountant => accountant.AccountantSignGroups)                                                            
                                                             .Include(accountant => accountant.AccountantGroups)
                                                             .Skip((accountantSearch.PageNumber - 1) * accountantSearch.PageSize)
                                                             .Take(accountantSearch.PageSize)
@@ -123,7 +122,7 @@ namespace SealTypographicWebAPI.Services.Implements
         ///<inheritdoc />
         public AccountantCreateResponse New(AccountantForm accountantForm)
         {
-            AccountantCreateResponse accountantCreateResponse = new();
+            AccountantCreateResponse accountantCreateResponse = new();            
             int userid = 0;//帳號驗證取得ID
             int companyId = 1;
 

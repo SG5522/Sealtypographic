@@ -5,6 +5,7 @@ using DJSpire.Models;
 using DBEntities.Consts;
 using SealTypographicWebAPI.Utils;
 using DJLib;
+using Microsoft.EntityFrameworkCore.Sqlite.Storage.Internal;
 
 namespace SealTypographicWebAPI.Config
 {
@@ -24,7 +25,7 @@ namespace SealTypographicWebAPI.Config
                  .ForMember(dst => dst.CustomerCode, opt => opt.MapFrom(src => src.Customer.Code))
                  .ForMember(dst => dst.CustomerName, opt => opt.MapFrom(src => src.Customer.Name))
                  .ForMember(dst => dst.OriginFileName, opt => opt.MapFrom(src => src.UploadFile.OriginalFileName))
-                 .ForMember(dst => dst.Quarter, opt => opt.MapFrom(src => new string($"{src.Quarter.TaiwanYear}{src.Quarter.Period}")))
+                 .ForMember(dst => dst.Quarter, opt => opt.MapFrom(src => QuarterUtil.GetTaiwanYearQuarter(src.QuarterYear)))
                  .ForMember(dst => dst.ReviewStatus, opt => opt.MapFrom(src => src.ReviewStatus));
                  
             //PDF排版資訊
@@ -40,7 +41,7 @@ namespace SealTypographicWebAPI.Config
                     .ForMember(dst => dst.Id, opt => opt.MapFrom(src => src.Id))
                     .ForMember(dst => dst.UploadId, opt => opt.MapFrom(src => src.UploadFile.Id))
                     .ForMember(dst => dst.CustomerId, opt => opt.MapFrom(src => src.Customer.Id))
-                    .ForMember(dst => dst.QuarterId, opt => opt.MapFrom(src => src.Quarter.Id))
+                    .ForMember(dst => dst.QuarterId, opt => opt.MapFrom(src => src.QuarterYear.Id))
                     .ForMember(dst => dst.Pages, opt => opt.MapFrom(src => src.TypographicPages));            
 
             CreateMap<TypographicPage, TypographicPageForm>()
@@ -128,10 +129,10 @@ namespace SealTypographicWebAPI.Config
             //讀取PDF概要內容的Map
             CreateMap<TypographicPDF, TypographicPDFSettingViewModel>()
                  .ForMember(dst => dst.OriginalFileName, y => y.MapFrom(o => o.OriginFileName))
-                 .ForMember(dst => dst.Quarter, y => y.MapFrom(o => new string($"{o.Quarter.TaiwanYear}{o.Quarter.Period}")))
-                 .ForMember(dst => dst.EditPageCount, y => y.MapFrom(o => (o.TypographicPages.Where(x => x.TypographicResourceLocations.Any()).Count())))
-                 .ForMember(dst => dst.BlankPageCount, y => y.MapFrom(o => (o.TypographicPages.Where(x => x.BlankCheck == true).Count())))
-                 .ForMember(dst => dst.DefaultPdfFileName, opt => opt.MapFrom(src => new string(PdfOutputUtil.GetName(src.Customer.Code, src.Quarter))));
+                 .ForMember(dst => dst.Quarter, opt => opt.MapFrom(src => QuarterUtil.GetTaiwanYearQuarter(src.QuarterYear)))
+                 .ForMember(dst => dst.EditPageCount, opt => opt.MapFrom(o => (o.TypographicPages.Where(src => src.TypographicResourceLocations.Any()).Count())))
+                 .ForMember(dst => dst.BlankPageCount, opt => opt.MapFrom(o => (o.TypographicPages.Where(src => src.BlankCheck == true).Count())))
+                 .ForMember(dst => dst.DefaultPdfFileName, opt => opt.MapFrom(src => new string(PdfOutputUtil.GetName(src.Customer.Code, src.QuarterYear))));
 
             //PDF該頁的編輯內容的Map
             CreateMap<TypographicPage, EditPage>()
@@ -139,8 +140,7 @@ namespace SealTypographicWebAPI.Config
                  .ForMember(dst => dst.EditImages, y => y.MapFrom(o => o.TypographicResourceLocations));
             // PDF排版圖像與位置的Map
             CreateMap<TypographicResourceLocation, EditImage>()                
-                //透通處理
-                //.ForMember(dst => dst.ImageStream, opt => opt.MapFrom(src => OpenCvUtil.TransparentToStream(src.TypographicResource.ImageFullPath, 160)))
+                //透通處理                
                 .ForMember(dst => dst.ImageBase64, opt => opt.MapFrom(src => Convert.ToBase64String(OpenCvUtil.TransparentToBytes(src.TypographicResource.ImageFullPath, 160))))
                 //確認圖像種類決定縮放大小
                 .ForMember(dst => dst.ImageScale, opt => opt.MapFrom(src => PdfOutputUtil.GetImageScale(src.TypographicResource.SubSealType)));

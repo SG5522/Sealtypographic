@@ -19,6 +19,6 @@ namespace SealTypographicWebAPI.Models.TemporarySeal
         /// </summary>
         /// <example>110Q1</example>
         [Required]
-        public string Quarter { get; set; }
+        public int QuarterYearId { get; set; }
     }
 }

@@ -20,7 +20,7 @@ namespace DBEntities
         /// <summary>
         /// 季度
         /// </summary>
-        public DbSet<Quarter> Quarters { get; set; }
+        public DbSet<QuarterYear> QuarterYears { get; set; }
 
         /// <summary>
         /// 客戶印鑑季度資料表

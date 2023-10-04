@@ -100,7 +100,7 @@ namespace SealTypographicWebAPI.Services.Implements
                 }
             }
             temporarySealGroupQuery = temporarySealGroupQuery.OrderByDescending(temporarySealGroup => temporarySealGroup.Customer.Id)
-                                                             .ThenByDescending(temporarySealGroup => temporarySealGroup.Quarter);
+                                                             .ThenByDescending(temporarySealGroup => temporarySealGroup.QuarterYear);
 
             if(temporarySealGroupQuery.Any())
             {                
@@ -132,10 +132,9 @@ namespace SealTypographicWebAPI.Services.Implements
 
             //取得季度
             //之後輸入要從前端提供Id
-            Quarter? quarter = dbContext.Quarters.FirstOrDefault
+            QuarterYear? quarter = dbContext.QuarterYears.FirstOrDefault
                                 (
-                                    x => x.TaiwanYear == temporarySealForm.Quarter.Substring(0, 3)
-                                    && x.Period == temporarySealForm.Quarter.Substring(3)
+                                    x => x.Id == temporarySealForm.QuarterYearId                                    
                                 );
 
             if (quarter != null)
@@ -150,7 +149,7 @@ namespace SealTypographicWebAPI.Services.Implements
 
                 if (customerQuery != null)
                 {
-                    if (!customerQuery.TemporarySealGroups.Any(x => x.Quarter == quarter))
+                    if (!customerQuery.TemporarySealGroups.Any(x => x.QuarterYear == quarter))
                     {
                         TemporarySealGroup temporarySealGroup = new();
                         List<TypographicResource> typographicResources = new();
@@ -159,7 +158,7 @@ namespace SealTypographicWebAPI.Services.Implements
 
                         BaseInputTemporarySealGroup(temporarySealGroup, true, userId);
                         await NewTypographyResource(temporarySealForm.Seals, typographicResources, imageBase64Info, userId);
-                        temporarySealGroup.Quarter = quarter;
+                        temporarySealGroup.QuarterYear = quarter;
                         temporarySealGroup.TypographicResources = typographicResources;
                         customerQuery.TemporarySealGroups.Add(temporarySealGroup);
                         dbContext.SaveChanges();

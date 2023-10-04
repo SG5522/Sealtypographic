@@ -18,9 +18,8 @@ namespace SealTypographicWebAPI.Models.TypographicPDF
         /// <summary>
         /// 季度
         /// </summary>
-        /// <example>110Q1</example>
-        [MaxLength(5)]        
-        public string? Quarter { get; set; }
+        /// <example>110Q1</example>        
+        public int? QuarterYearId { get; set; }
 
         /// <summary>
         /// 建檔狀態(審核狀態)

@@ -30,7 +30,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DJSpire", "DJSpire\DJSpire.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DJKeycloakLib", "DJKeycloakLib\DJKeycloakLib.csproj", "{B3DADD18-2720-4F23-93BA-19E6F2DDA3C9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DJKeycloakWebAPILib", "DJKeycloakWebAPILib\DJKeycloakWebAPILib.csproj", "{98DEFDF9-34D5-4F4C-B879-58003A11D2E2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DJKeycloakAPI", "DJKeycloakWebAPILib\DJKeycloakAPI.csproj", "{98DEFDF9-34D5-4F4C-B879-58003A11D2E2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

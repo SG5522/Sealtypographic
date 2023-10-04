@@ -31,13 +31,13 @@ namespace SealTypographicWebAPI.Config
             //客戶印鑑
             CreateMap<CustomerSealGroup, CustomerSealViewModels>()
                     .ForMember(dst => dst.CustomerSealQuarterId, opt => opt.MapFrom(src => src.Id))
-                    .ForMember(dst => dst.Quarter, opt => opt.MapFrom(src => new string($"{src.Quarter.TaiwanYear}{src.Quarter.Period}")))
+                    .ForMember(dst => dst.Quarter, opt => opt.MapFrom(src => QuarterUtil.GetTaiwanYearQuarter(src.QuarterYear)))
                     .ForMember(dst => dst.ReviewStatus, opt => opt.MapFrom(src => src.ReviewStatus))
                     .ForMember(dst => dst.SealViewModels, opt => opt.MapFrom(src => src.TypographicResources.Where(x => x.DeleteStatus == DeleteStatus.No)));
 
             CreateMap<CustomerSealGroup, CustomerSealGroupResponse>()
                 .ForMember(dst => dst.CustomerSealGroupId, opt => opt.MapFrom(src => src.Id))
-                .ForMember(dst => dst.Quarter, opt => opt.MapFrom(src => QuarterUtil.GetTaiwanYearQuarter(src.Quarter)));
+                .ForMember(dst => dst.Quarter, opt => opt.MapFrom(src => QuarterUtil.GetTaiwanYearQuarter(src.QuarterYear)));
             //CustomerSealQuarterResponse
 
             CreateMap<TypographicResource, CustomerSealViewModel>()
@@ -149,7 +149,7 @@ namespace SealTypographicWebAPI.Config
             CreateMap<TemporarySealGroup, TemporaryViewModel>()
                     .ForMember(dst => dst.Id, opt => opt.MapFrom(src => src.Id))
                     .ForMember(dst => dst.CustomerName, opt => opt.MapFrom(src => src.Customer.Name))
-                    .ForMember(dst => dst.Quarter, opt => opt.MapFrom(src => QuarterUtil.GetTaiwanYearQuarter(src.Quarter)));
+                    .ForMember(dst => dst.Quarter, opt => opt.MapFrom(src => QuarterUtil.GetTaiwanYearQuarter(src.QuarterYear)));
         }
     }
 }
