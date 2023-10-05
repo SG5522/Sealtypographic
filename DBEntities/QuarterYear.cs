@@ -21,7 +21,7 @@ namespace DBEntities
         /// <summary>
         /// 年季度類型
         /// </summary>
-        public QuarterYearType Type { get; set; }
+        public TypographyType Type { get; set; }
 
         /// <summary>
         /// 客戶印鑑季度資料表

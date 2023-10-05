@@ -37,7 +37,7 @@ namespace DBEntities
                         {
                             GregorianYear = gregorianYear,
                             Period = $"Q{period}",
-                            Type = QuarterYearType.FinancialReport
+                            Type = TypographyType.FinancialReport
                         };
                         quarterYears.Add(quarter);
                     }
@@ -46,7 +46,7 @@ namespace DBEntities
                     QuarterYear quarterYear = new()
                     {
                         GregorianYear = gregorianYear,
-                        Type = QuarterYearType.TaxReport
+                        Type = TypographyType.TaxReport
                     };
                     quarterYears.Add(quarterYear);
                 }

@@ -12,7 +12,6 @@ namespace DBEntities.Consts
     /// 50 : 作廢
     /// 60 : 不受理
     /// </summary>
-    //[JsonConverter(typeof(JsonStringEnumConverter))]
     public enum ReviewStatus : sbyte
     {
         /// <summary>
@@ -62,7 +61,6 @@ namespace DBEntities.Consts
     /// <summary>
     /// 信頭圖片狀態
     /// </summary>
-    //[JsonConverter(typeof(JsonStringEnumConverter))]
     public enum LetterheadImageStatus : sbyte
     {
         /// <summary>
@@ -112,7 +110,6 @@ namespace DBEntities.Consts
     /// <summary>
     /// 啟用日期
     /// </summary>
-    //[JsonConverter(typeof(JsonStringEnumConverter))]
     public enum Available : byte
     {
         /// <summary>
@@ -128,7 +125,6 @@ namespace DBEntities.Consts
     /// <summary>
     /// 印鑑類型
     /// </summary>
-    //[JsonConverter(typeof(JsonStringEnumConverter))]
     public enum SealType : byte
     {
         /// <summary>
@@ -165,7 +161,6 @@ namespace DBEntities.Consts
     /// 5.會計師證明書 
     /// 6.臨時檔
     /// </summary>
-    //[JsonConverter(typeof(JsonStringEnumConverter))]
     public enum UploadType : byte
     {
         /// <summary>
@@ -187,22 +182,28 @@ namespace DBEntities.Consts
         LetterheadImage = 3,
 
         /// <summary>
-        /// PDF檔(報表)
+        /// 財務報表
         /// </summary>
-        [Description("PDF")]
-        PDF = 4,
+        [Description("Financial Report")]
+        FinancialReport = 4,
+
+        /// <summary>
+        /// 稅務報表
+        /// </summary>
+        [Description("Tax Report")]
+        TaxReport = 5,
 
         /// <summary>
         /// 會計師證明書
         /// </summary>
         [Description("Accountant Sign Certificate")]
-        AccountantSignCertificate = 5,
+        AccountantSignCertificate = 6,
 
         /// <summary>
         /// 臨時檔
         /// </summary>
         [Description("Temporary")]
-        Temporary = 6,
+        Temporary = 7,
     }
 
     /// <summary>
@@ -212,8 +213,7 @@ namespace DBEntities.Consts
     /// 3.經理
     /// 4.會計主管    
     /// 5.其他(客戶)
-    /// </summary>
-    //[JsonConverter(typeof(JsonStringEnumConverter))]
+    /// </summary>    
     public enum CustomerSealType
     {
         /// <summary>
@@ -255,7 +255,6 @@ namespace DBEntities.Consts
     /// 4.舊式簽名
     /// 5.其他(會計)  
     /// </summary>
-    //[JsonConverter(typeof(JsonStringEnumConverter))]
     public enum AccountantSignType
     {
         /// <summary>
@@ -366,7 +365,6 @@ namespace DBEntities.Consts
     /// 在使用客戶印鑑、會計師簽印、信頭、PDF檔案
     /// 為了不在重複使用同一份檔案所做的狀態區分
     /// </summary>
-    //[JsonConverter(typeof(JsonStringEnumConverter))]
     public enum FileWorkStatus
     {
         /// <summary>
@@ -386,7 +384,6 @@ namespace DBEntities.Consts
     /// 1.保留
     /// 2.覆蓋
     /// </summary>
-    //[JsonConverter(typeof(JsonStringEnumConverter))]
     public enum DuplicateFileProcessMode
     {
         /// <summary>
@@ -487,9 +484,9 @@ namespace DBEntities.Consts
     }
 
     /// <summary>
-    /// 年季度類別
+    /// 排版類別
     /// </summary>
-    public enum QuarterYearType : byte
+    public enum TypographyType : byte
     {
         /// <summary>
         /// 財務報表(季度)
@@ -502,5 +499,35 @@ namespace DBEntities.Consts
         /// </summary>
         [Description("稅務報表")]
         TaxReport = 2,
+    }
+
+    /// <summary>
+    /// 印鑑染色
+    /// </summary>
+    public enum SealDyeing : byte
+    {
+        /// <summary>
+        /// 原色
+        /// </summary>
+        [Description("原色")]
+        Default = 0,
+
+        /// <summary>
+        /// 紅色
+        /// </summary>
+        [Description("紅色")]
+        Red = 1,
+
+        /// <summary>
+        /// 藍色
+        /// </summary>
+        [Description("藍色")]
+        Bule = 2,
+
+        /// <summary>
+        /// 黑色(可能沒有這顏色)
+        /// </summary>
+        [Description("黑色")]
+        Black = 3,
     }
 }

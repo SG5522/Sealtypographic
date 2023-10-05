@@ -1,4 +1,5 @@
 ﻿using DBEntities.Base;
+using DBEntities.Consts;
 
 namespace DBEntities
 {
@@ -11,6 +12,8 @@ namespace DBEntities
         /// 季度
         /// </summary>
         public QuarterYear QuarterYear { get; set; }
+
+        public TypographyType TypographyType { get; set; }
 
         /// <summary>
         /// 客戶基本資料表

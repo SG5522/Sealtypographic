@@ -1,4 +1,5 @@
 ﻿using DBEntities.Base;
+using DBEntities.Consts;
 
 namespace DBEntities
 {
@@ -18,9 +19,14 @@ namespace DBEntities
         public string FullPath { get; set; }
 
         /// <summary>
-        /// 季度
+        /// 排版類別
         /// </summary>
-        public QuarterYear QuarterYear { get; set; }
+        public TypographyType TypographyType { get; set; }
+
+        /// <summary>
+        /// 年季度
+        /// </summary>
+        public QuarterYear QuarterYear { get; set; }        
 
         /// <summary>
         /// 客戶
