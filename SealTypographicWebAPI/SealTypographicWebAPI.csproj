@@ -7,7 +7,7 @@
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <DocumentationFile></DocumentationFile>
     <IncrementVersionOnBuild>0.0.2.1+</IncrementVersionOnBuild>
-    <Version>0.0.2.2036</Version>
+    <Version>0.0.2.2041</Version>
     <PackageIcon>android-chrome-128x128.png</PackageIcon>
     <Configurations>Debug;Release</Configurations>    
   </PropertyGroup>
@@ -19,14 +19,6 @@
     <None Remove="logs\**" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Compile Remove="Config\KeycloakAdminOption.cs" />
-    <Compile Remove="Consts\KeycloakAdminUrlConsts.cs" />
-    <Compile Remove="Controllers\KeycloakAdminController.cs" />
-    <Compile Remove="Services\IKeycloakAdminService.cs" />
-    <Compile Remove="Services\Implements\KeycloakAdminService.cs" />
-    <Compile Remove="Utils\KeycloakAuthenticator.cs" />
-  </ItemGroup>
 
   <ItemGroup>
     <None Include="..\..\SealTypographicWebAPI\wwwroot\swagger\android-chrome-128x128.png">
@@ -38,6 +30,7 @@
   <ItemGroup>
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
     <PackageReference Include="DJImageLib" Version="1.0.1" />
+    <PackageReference Include="DJKeycloakAPI" Version="0.1.0" />	
     <PackageReference Include="Keycloak.AuthServices.Authentication" Version="1.5.2" />
     <PackageReference Include="Keycloak.AuthServices.Authorization" Version="1.5.2" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.22" />
@@ -47,7 +40,6 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.Extensions.Hosting.WindowsServices" Version="7.0.1" />
-    <PackageReference Include="RestSharp" Version="110.2.0" />
     <PackageReference Include="Serilog.AspNetCore" Version="7.0.0" />
     <PackageReference Include="Serilog.Formatting.Compact" Version="1.1.0" />
     <PackageReference Include="Serilog.Sinks.Async" Version="1.5.0" />
@@ -57,7 +49,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\DBEntities\DBEntities.csproj" />
-    <ProjectReference Include="..\DJKeycloakWebAPILib\DJKeycloakAPI.csproj" />
     <ProjectReference Include="..\DJSpire\DJSpire.csproj" />
     <ProjectReference Include="..\MySqlMigrations\MySql.csproj" />
     <ProjectReference Include="..\SqliteMigrations\Sqlite.csproj" />
