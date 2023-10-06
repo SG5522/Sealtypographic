@@ -1,12 +1,12 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using SealTypographicWebAPI.Models;
-using SealTypographicWebAPI.Models.Customer;
 using SealTypographicWebAPI.Utils;
 using DBEntities;
 using DBEntities.Consts;
 using DJLib.Models;
 using AutoMapper.QueryableExtensions;
+using SealTypographicWebAPI.Models.CustomerSeal;
 
 namespace SealTypographicWebAPI.Services.Implements
 {
@@ -33,6 +33,8 @@ namespace SealTypographicWebAPI.Services.Implements
             configurationProvider = mapper.ConfigurationProvider;
             this.imageService = imageService;                   
         }       
+        
+
 
         /// <summary>
         /// 取得客戶印鑑季度表(分頁)

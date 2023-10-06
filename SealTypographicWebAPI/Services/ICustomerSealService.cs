@@ -1,5 +1,5 @@
 ﻿using SealTypographicWebAPI.Models;
-using SealTypographicWebAPI.Models.Customer;
+using SealTypographicWebAPI.Models.CustomerSeal;
 
 namespace SealTypographicWebAPI.Services
 {
@@ -8,14 +8,6 @@ namespace SealTypographicWebAPI.Services
     /// </summary>
     public interface ICustomerSealService
     {
-        /// <summary>
-        /// 取得客戶印鑑季度表
-        /// </summary>
-        /// <param name="customerId">客戶ID</param>        
-        /// <param name="isTypographic">是否排版使用</param>        
-        /// <returns></returns>
-        //CustomerSealQuarterResponse GetQuarter(int customerId, bool isTypographic);
-
         /// <summary>
         /// 取得客戶印鑑季度表(分頁)
         /// </summary>

@@ -199,7 +199,7 @@ namespace SealTypographicWebAPI.Services.Implements
                                 BaseInput(uploadFile, false, userId);
                             }
                             //新增上傳的檔案
-                            await SaveFile(formFile, uploadData.UploadType, uploadData.DuplicateFileProcessMode, userId, uploadfiles);
+                            await SaveFile(formFile, uploadData.UploadType, userId, uploadfiles);
                             uploadData.FormFiles.Remove(formFile);
                         }
                     }
@@ -207,13 +207,11 @@ namespace SealTypographicWebAPI.Services.Implements
 
                 foreach (IFormFile formFile in uploadData.FormFiles)
                 {
-                    await SaveFile(formFile, uploadData.UploadType, DuplicateFileProcessMode.NoRepeat, userId, uploadfiles);
+                    await SaveFile(formFile, uploadData.UploadType, userId, uploadfiles);
                 }
 
                 if (uploadfiles.Any())
                 {                    
-                    //companyQuery.UploadFiles.AddRange<UploadFile>(uploadfiles);
-                    //dbContext.Entry(companyQuery).State = EntityState.Unchanged;
                     dbContext.UploadFiles.AddRange(uploadfiles);
                     dbContext.SaveChanges();
                     response.Success();
@@ -288,17 +286,16 @@ namespace SealTypographicWebAPI.Services.Implements
 
             return response;
         }
-
+        
         /// <summary>
-        /// 存檔處理
+        /// 存檔處理       
         /// </summary>
         /// <param name="formFile"></param>
-        /// <param name="uploadType">檔案類型</param>
-        /// <param name="processMode">上傳重複檔名處理模式</param>
+        /// <param name="uploadType">檔案類型</param>        
         /// <param name="userid">使用者ID</param>
         /// <param name="uploadfiles">上傳檔案資料表</param>
         /// <returns></returns>
-        private async Task SaveFile(IFormFile formFile, UploadType uploadType, DuplicateFileProcessMode processMode, int userid, List<UploadFile> uploadfiles)
+        private async Task SaveFile(IFormFile formFile, UploadType uploadType, int userid, List<UploadFile> uploadfiles)
         {
             string savePath = GetSavePath(uploadType, userid, formFile.FileName);
             using Stream stream = new FileStream(savePath, FileMode.Create);
@@ -308,8 +305,8 @@ namespace SealTypographicWebAPI.Services.Implements
                 OriginalFileName = formFile.FileName,
                 UploadType = uploadType,
                 FullPath = savePath
-            };
-            //後續在DuplicateFileProcessMode.Reserve模式時客戶要求檔名要區分時在另做調整。
+            };            
+            // TODO: 後續在DuplicateFileProcessMode.Reserve(保留原檔名)模式時客戶要求檔名要區分時在另做調整。
             uploadFile.OriginalFileName = formFile.FileName;
             BaseInput(uploadFile, true, userid);
             uploadfiles.Add(uploadFile);
@@ -338,8 +335,8 @@ namespace SealTypographicWebAPI.Services.Implements
                 case UploadType.LetterheadImage:
                     folder = uploadConfigPath.LetterheadImage;
                     break;
-                case UploadType.PDF:
-                    folder = uploadConfigPath.PDF;
+                case UploadType.FinancialReport:
+                    folder = uploadConfigPath.FinancialReport;
                     break;
                 case UploadType.AccountantSignCertificate:
                     folder = uploadConfigPath.AccountantSignCertificate;

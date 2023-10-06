@@ -46,13 +46,24 @@ namespace SealTypographicWebAPI.Config
         }
 
         /// <summary>
-        /// PDF放置路徑
+        /// 財務報表的PDF倒放置路徑
         /// </summary>
-        public string PDF
+        public string FinancialReport
         {
             get
             {
-                return Path.Combine(UploadRootPath, UploadType.PDF.ToString());
+                return Path.Combine(UploadRootPath, UploadType.FinancialReport.ToString());
+            }
+        }
+        
+        /// <summary>
+        /// 稅務報表的PDF倒放置路徑
+        /// </summary>
+        public string TaxReport
+        {
+            get
+            {
+                return Path.Combine(UploadRootPath, UploadType.TaxReport.ToString());
             }
         }
 

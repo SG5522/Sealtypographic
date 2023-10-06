@@ -1,8 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Keycloak.AuthServices.Authentication;
-using System.Security.Claims;
-using static System.Net.Mime.MediaTypeNames;
 using System.Reflection;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -20,7 +17,6 @@ namespace SealTypographicWebAPI.Controllers
         private readonly ILogger<SysController> logger;
         private readonly IWebHostEnvironment environment;
         private readonly KeycloakAuthenticationOptions keycloakAuthenticationOptions;
-        //private readonly ClaimsPrincipal claimsPrincipal;
 
         /// <summary>
         /// 建構
@@ -33,8 +29,7 @@ namespace SealTypographicWebAPI.Controllers
         {
             this.logger = logger;
             this.environment = environment;
-            this.keycloakAuthenticationOptions = keycloakAuthenticationOptions;
-            //this.claimsPrincipal = claimsPrincipal;
+            this.keycloakAuthenticationOptions = keycloakAuthenticationOptions;            
         }
 
         /// <summary>

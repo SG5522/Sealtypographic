@@ -13,6 +13,9 @@ namespace DBEntities
         /// </summary>
         public QuarterYear QuarterYear { get; set; }
 
+        /// <summary>
+        /// 排版類別
+        /// </summary>
         public TypographyType TypographyType { get; set; }
 
         /// <summary>

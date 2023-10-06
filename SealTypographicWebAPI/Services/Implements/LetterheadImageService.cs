@@ -167,13 +167,13 @@ namespace SealTypographicWebAPI.Services.Implements
 
             TypographicResource? updateImageQuery = dbContext.TypographicResources
                                                     .Include(typographyResource => typographyResource.Letterhead)
-                                                    .ThenInclude(letterhead => letterhead.Company)
-                                                    .FirstOrDefault(typographyResource => typographyResource.Id == letterheadImageUpdate.Id);            
+                                                    .ThenInclude(letterhead => letterhead!.Company)
+                                                    .FirstOrDefault(typographyResource => typographyResource.Id == letterheadImageUpdate.Id);
 
             if (updateImageQuery != null)
             {
                 List<TypographicResource> typographyResources = new();                
-                ImageBase64Info imageBase64Info = imageService.SetImageBase64InfoWithSeal(updateImageQuery.Letterhead.Company.Code, SealType.Letterhead);
+                ImageBase64Info imageBase64Info = imageService.SetImageBase64InfoWithSeal(updateImageQuery.Letterhead!.Company.Code, SealType.Letterhead);
 
                 //原圖片狀態變更停用(刪除)
                 updateImageQuery.DeleteStatus = DeleteStatus.Yes;

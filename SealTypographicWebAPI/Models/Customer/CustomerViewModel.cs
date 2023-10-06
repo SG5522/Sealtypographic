@@ -1,6 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using DBEntities.Consts;
-using SealTypographicWebAPI.Models.BaseModels;
 
 namespace SealTypographicWebAPI.Models.Customer
 {
@@ -9,11 +8,6 @@ namespace SealTypographicWebAPI.Models.Customer
     /// </summary>
     public class CustomerViewModel : CustomerSummary
     {
-        /// <summary>
-        /// 統一編號 (Business administration number)
-        /// </summary>
-        public string BAN { get; set; }
-
         /// <summary>
         /// 顯示最新季度Id
         /// </summary>        

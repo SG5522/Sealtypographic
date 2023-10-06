@@ -33,6 +33,30 @@ namespace SealTypographicWebAPI.Controllers
         /// </summary>
         /// <param name="customerSearch">客戶分頁搜尋</param>        
         /// <returns></returns>
+        [HttpGet("[Action]")]
+        public CustomerPaginateSummary CustomerPaginate([FromQuery] CustomerSearch customerSearch)
+        {
+            CustomerPaginateSummary customerPaginateSummary = new();
+            try
+            {
+                Log.Information("Customer get customer paginate input {@Input}", customerSearch);
+                customerPaginateSummary = customerService.GetCustomerPaginate(customerSearch);
+                Log.Information("Customer get customer paginate output {@Output}", customerPaginateSummary);
+            }
+            catch (Exception ex)
+            {
+                Log.Error("Customer get customer paginate error {@Error}", ex.Message);
+                customerPaginateSummary.DbError();
+            }
+            return customerPaginateSummary;
+        }
+
+
+        /// <summary>
+        /// 取得客戶資料列表(分頁)
+        /// </summary>
+        /// <param name="customerSearch">客戶分頁搜尋</param>        
+        /// <returns></returns>
         [HttpGet]        
         public CustomerPaginateViewModel Paginate([FromQuery]CustomerSearch customerSearch)
         {

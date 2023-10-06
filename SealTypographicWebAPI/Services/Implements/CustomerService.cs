@@ -59,6 +59,59 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <summary>
         /// 取得客戶資料列表(分頁)
         /// </summary>
+        /// <param name="customerSearch">客戶分頁搜尋</param>        
+        /// <returns></returns>
+        public CustomerPaginateSummary GetCustomerPaginate(CustomerSearch customerSearch) 
+        {
+            CustomerPaginateSummary customerPaginateSummary = new();
+            int companyId = 1;
+
+            IQueryable<Customer> customerQuery = dbContext.Customers.Where
+                                                (
+                                                    x => x.Company.Id == companyId
+                                                    && x.DeleteStatus == DeleteStatus.No
+                                                );
+
+            if (!string.IsNullOrWhiteSpace(customerSearch.KeyWord))
+            {
+                customerQuery = customerQuery.Where
+                (
+                    customer =>
+                    customer.Code.ToLower().Contains(customerSearch.KeyWord.ToLower())
+                    || customer.Name.Contains(customerSearch.KeyWord)
+                );
+            }
+            customerQuery = customerQuery.OrderBy(customer => customer.Code);
+
+            if(customerQuery.Any())
+            {
+                //取得該頁
+                customerPaginateSummary.Summarys = customerQuery
+                                                    .Skip((customerSearch.PageNumber - 1) * customerSearch.PageSize)
+                                                    .Take(customerSearch.PageSize)
+                                                    .ProjectTo<CustomerSummary>(configurationProvider)
+                                                    .ToList();
+
+                int totalCount = customerQuery.Count();
+                customerPaginateSummary.PageNumber = customerSearch.PageNumber;
+                customerPaginateSummary.PageSize = customerSearch.PageSize;
+                //計算總頁數
+                customerPaginateSummary.TotalPage = TotalPageUtil.GetTotalPage(totalCount, customerSearch.PageSize);
+                customerPaginateSummary.TotalCount = totalCount;
+                customerPaginateSummary.Success();
+            }
+            else
+            {
+                customerPaginateSummary.CustomeNoData();
+            }
+
+            return customerPaginateSummary;
+        }
+
+
+        /// <summary>
+        /// 取得客戶資料列表(分頁)
+        /// </summary>
         /// <param name="customerSearch">客戶分頁搜尋</param>
         /// <param name="isTypographicUse">是否給排版使用</param>  
         /// <returns></returns>

@@ -21,5 +21,10 @@ namespace SealTypographicWebAPI.Models.Customer
         /// <example>映像公司</example>
         [Required]
         public string Name { get; set; }
+
+        /// <summary>
+        /// 統一編號 (Business administration number)
+        /// </summary>
+        public string BAN { get; set; }
     }
 }

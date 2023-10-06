@@ -20,6 +20,13 @@ namespace SealTypographicWebAPI.Services
         /// 取得客戶資料列表(分頁)
         /// </summary>
         /// <param name="customerSearch">客戶分頁搜尋</param>
+        /// <returns></returns>
+        CustomerPaginateSummary GetCustomerPaginate(CustomerSearch customerSearch);
+
+        /// <summary>
+        /// 取得客戶資料列表(分頁)
+        /// </summary>
+        /// <param name="customerSearch">客戶分頁搜尋</param>
         /// <param name="isTypographicUse">是否給排版使用</param>        
         /// <returns></returns>
         CustomerPaginateViewModel GetPaginate(CustomerSearch customerSearch, bool isTypographicUse);

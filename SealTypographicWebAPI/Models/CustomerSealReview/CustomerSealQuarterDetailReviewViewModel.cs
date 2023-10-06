@@ -1,4 +1,4 @@
-﻿using SealTypographicWebAPI.Models.Customer;
+﻿using SealTypographicWebAPI.Models.CustomerSeal;
 
 namespace SealTypographicWebAPI.Models.CustomerSealReview
 {

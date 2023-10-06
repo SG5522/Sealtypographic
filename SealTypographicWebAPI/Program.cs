@@ -45,13 +45,18 @@ builder.Services.AddCors(options =>
                           .AllowAnyMethod()
                           .AllowAnyOrigin();
                       });
-    options.AddPolicy(name: allowSpecificOrigins,
-                      policy =>
-                      {
-                          policy.WithOrigins(builder.Configuration.GetSection("AllowOrigins").Get<string[]>())
-                          .AllowAnyHeader()
-                          .AllowAnyMethod();                          
-                      });
+    string[]? strings = builder.Configuration.GetSection("AllowOrigins").Get<string[]>();
+    if (strings != null)
+    {
+        options.AddPolicy(name: allowSpecificOrigins,
+                            policy =>
+                            {
+                                policy.WithOrigins(strings)
+                                        .AllowAnyHeader()
+                                        .AllowAnyMethod();
+                            });
+    }
+        
 });
 
 

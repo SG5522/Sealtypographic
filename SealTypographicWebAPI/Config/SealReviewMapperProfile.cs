@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using SealTypographicWebAPI.Models.Customer;
 using SealTypographicWebAPI.Models.CustomerSealReview;
 using SealTypographicWebAPI.Models.AccountantSignReview;
 using DBEntities;
@@ -7,6 +6,7 @@ using DJLib;
 using SealTypographicWebAPI.Utils;
 using DBEntities.Consts;
 using SealTypographicWebAPI.Models.Accountant;
+using SealTypographicWebAPI.Models.CustomerSeal;
 
 namespace SealTypographicWebAPI.Config
 {
