@@ -18,6 +18,6 @@
         /// <summary>
         /// 民國年季度
         /// </summary>
-        public string TaiwanQuarter { get; set; }
+        public string DisplayQuarter { get; set; }
     }
 }

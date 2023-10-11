@@ -1,12 +1,9 @@
 ﻿using AutoMapper;
-using EFCore.BulkExtensions;
 using SealTypographicWebAPI.Models;
 using SealTypographicWebAPI.Models.AccountantGroup;
 using SealTypographicWebAPI.Utils;
 using DBEntities;
-using Microsoft.EntityFrameworkCore;
 using DBEntities.Consts;
-using SkiaSharp;
 using AutoMapper.QueryableExtensions;
 
 namespace SealTypographicWebAPI.Services.Implements

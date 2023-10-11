@@ -21,12 +21,12 @@ namespace SealTypographicWebAPI.Config.MapperProfile
             CreateMap<QuarterYear, QuarterViewModel>()
                     .ForMember(dst => dst.Id, opt => opt.MapFrom(src => src.Id))
                     .ForMember(dst => dst.GregorianQuarter, opt => opt.MapFrom(src => QuarterUtil.GetGregorainQuarter(src)))
-                    .ForMember(dst => dst.TaiwanQuarter, opt => opt.MapFrom(src => QuarterUtil.GetTaiwanYearQuarter(src)));
+                    .ForMember(dst => dst.DisplayQuarter, opt => opt.MapFrom(src => QuarterUtil.GetTaiwanYearQuarter(src)));
 
             CreateMap<QuarterYear, YearViewModel>()
                     .ForMember(dst => dst.Id, opt => opt.MapFrom(src => src.Id))
                     .ForMember(dst => dst.GregorianYear, opt => opt.MapFrom(src => QuarterUtil.GetGregorainYear(src)))
-                    .ForMember(dst => dst.TaiwanYear, opt => opt.MapFrom(src => QuarterUtil.GetTaiwanYear(src)));
+                    .ForMember(dst => dst.DisplayYear, opt => opt.MapFrom(src => QuarterUtil.GetTaiwanYear(src)));
 
         }
     }
