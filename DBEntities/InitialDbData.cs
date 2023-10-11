@@ -26,9 +26,9 @@ namespace DBEntities
             {
                 List<QuarterYear> quarterYears = new();
                 int nowGregorianYear = DateTime.Now.Year;                
-                for (int i = 1; i <= Years; i++)
+                for (int i = 0 ; i <= Years; i++)
                 {
-                    int gregorianYear = nowGregorianYear - (Years + i);                    
+                    int gregorianYear = nowGregorianYear - Years + i;
 
                     //(財報季度列表)
                     for (int period = 1; period <= 4; period++)

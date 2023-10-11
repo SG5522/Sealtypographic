@@ -27,7 +27,7 @@ namespace SealTypographicWebAPI.Controllers
         {
             this.customerSealService = customerSealService;
         }
-
+        
         /// <summary>
         /// 取得客戶印鑑季度表
         /// </summary>

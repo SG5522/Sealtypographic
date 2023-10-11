@@ -149,12 +149,12 @@ namespace SealTypographicWebAPI.Services.Implements
             int userId = 1;//之後會從帳號驗證中取得userid            
 
             AccountantSignGroup? accountantSignGroupQuery = dbContext.AccountantSignGroups
-                                                                    .Include(accountantSignGroup => accountantSignGroup.Accountant)
-                                                                    .Include(accountantSignGroup => accountantSignGroup.TypographicResources.Where(x => x.DeleteStatus == DeleteStatus.No))
-                                                                    .FirstOrDefault
-                                                                    (
-                                                                        accountantSignGroupJournal => accountantSignGroupJournal.Id == accountantSignUpdate.AccountantSignGroupId                                                                                        
-                                                                    );
+                                                            .Include(accountantSignGroup => accountantSignGroup.Accountant)
+                                                            .Include(accountantSignGroup => accountantSignGroup.TypographicResources.Where(x => x.DeleteStatus == DeleteStatus.No))
+                                                            .FirstOrDefault
+                                                            (
+                                                                accountantSignGroupJournal => accountantSignGroupJournal.Id == accountantSignUpdate.AccountantSignGroupId                                                                                        
+                                                            );
             
 
             if (accountantSignGroupQuery != null)
@@ -176,7 +176,7 @@ namespace SealTypographicWebAPI.Services.Implements
                     //之後拔除轉型調整
                     ImageBase64Info imageBase64Info = imageService.SetImageBase64InfoWithSeal(accountant.Code, SealType.Accountant);
 
-                    //修改(更新ID移入DeleteAccountantSignIds，更新的簽印移入新增CreateAccountantSigns，之後下一階段調整輸入時要拔掉此項)
+                    //修改(更新ID移入DeleteAccountantSignIds，更新的簽印移入新增CreateAccountantSigns)
                     foreach (AccountantSignUpdateForm accountantSignFormUpdate in accountantSignUpdate.UpdateAccountantSigns)
                     {
                         TypographicResource? updateSignQuery = accountantSignGroupQuery.TypographicResources.FirstOrDefault(x => x.Id == accountantSignFormUpdate.Id);
@@ -186,7 +186,7 @@ namespace SealTypographicWebAPI.Services.Implements
                             AccountantSign accountantSign = new()
                             {
                                 ImageBase64 = accountantSignFormUpdate.ImageBase64,
-                                SealMappingConfigId = (AccountantSignType)SealMappingConfigUtil.GetAccountantSignType(updateSignQuery.SubSealType),
+                                SealMappingConfigId = SealMappingConfigUtil.GetAccountantSignType(updateSignQuery.SubSealType),
                             };
 
                             //更新ID丟入DeleteAccountantSignIds
@@ -206,7 +206,7 @@ namespace SealTypographicWebAPI.Services.Implements
                     //刪除及更新簽印排除
                     IQueryable<TypographicResource>? deleteSignQuery = accountantSignGroupQuery.TypographicResources.Where
                                                                         (
-                                                                            x => !accountantSignUpdate.DeleteAccountantSignIds.Contains(x.Id)                                                                            
+                                                                            x => !accountantSignUpdate.DeleteAccountantSignIds.Contains(x.Id)
                                                                         ).AsQueryable();
 
                     //複製簽印不含刪除與更新的

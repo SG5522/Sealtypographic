@@ -19,8 +19,6 @@ namespace SealTypographicWebAPI.Controllers
         /// </summary>
         private readonly IAccountantService accountantService;
 
-
-
         /// <summary>
         /// 建構:注入Service
         /// </summary>

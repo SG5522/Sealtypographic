@@ -90,13 +90,6 @@ namespace SealTypographicWebAPI.Services.Implements
             
             if (accountantQuery.Any())
             {
-                var test = accountantQuery
-                            .Include(accountant => accountant.AccountantSignGroups)                            
-                            .Include(accountant => accountant.AccountantGroups)
-                            .Skip((accountantSearch.PageNumber - 1) * accountantSearch.PageSize)
-                            .Take(accountantSearch.PageSize)
-                            .ToList();
-
                 //取得該頁            
                 accountantPaginatesViewModels.ViewModels =  accountantQuery
                                                             .Include(accountant => accountant.AccountantSignGroups)                                                            
@@ -133,10 +126,10 @@ namespace SealTypographicWebAPI.Services.Implements
             {
                 //驗證編號是否重複
                 List<string> accountantCodeQuery = companyQuery.Accountants.Where
-                                                (
-                                                    x => x.Code == accountantForm.AccountantNumber
-                                                    && x.DeleteStatus == DeleteStatus.No
-                                                ).Select(x => x.Code).ToList();
+                                                    (
+                                                        x => x.Code == accountantForm.AccountantNumber
+                                                        && x.DeleteStatus == DeleteStatus.No
+                                                    ).Select(x => x.Code).ToList();
 
                 if (!accountantCodeQuery.Any())
                 {
@@ -162,7 +155,6 @@ namespace SealTypographicWebAPI.Services.Implements
                     accountantCreateResponse.AccountantNumberRepeat();
                 }
             }
-
 
             return accountantCreateResponse;
         }

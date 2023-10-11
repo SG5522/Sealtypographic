@@ -37,13 +37,12 @@ namespace SealTypographicWebAPI.Services.Implements
         {
             AccountantGroupList accountantGroupList = new();
 
-            List<AccountantGroupViewModel> accountantGroupDatas = dbContext.AccountantGroups
-                                                                .Where(accountantGroup => accountantGroup.DeleteStatus == DeleteStatus.No)
-                                                                .ProjectTo<AccountantGroupViewModel>(configurationProvider)
-                                                                .ToList();
+            IQueryable<AccountantGroupViewModel> accountantGroupDatas = dbContext.AccountantGroups
+                                                                        .Where(accountantGroup => accountantGroup.DeleteStatus == DeleteStatus.No)
+                                                                        .ProjectTo<AccountantGroupViewModel>(configurationProvider);
             if (accountantGroupDatas.Any())
             {
-                accountantGroupList.AccountantGroupDatas = accountantGroupDatas;
+                accountantGroupList.AccountantGroupDatas = accountantGroupDatas.ToList();
             }
             accountantGroupList.Success();
 
@@ -116,7 +115,8 @@ namespace SealTypographicWebAPI.Services.Implements
         public ResponseViewModel New(AccountantGroupForm accountantGroupForm)
         {
             ResponseViewModel response = new();
-            int companyId = 1;            
+            int companyId = 1;
+            int userId = 1;
 
             //確認編號是否重複
             AccountantGroup? accountantGroupQuery = dbContext.AccountantGroups
@@ -126,13 +126,14 @@ namespace SealTypographicWebAPI.Services.Implements
                                                         accountantGroup.Code == accountantGroupForm.AccountantGroupNumber
                                                         && accountantGroup.DeleteStatus == DeleteStatus.No
                                                         && accountantGroup.Company.Id == companyId
-                                                    );                                                
+                                                    );
 
             if (accountantGroupQuery == null)
             {                
                 AccountantGroup accountantGroup = mapper.Map<AccountantGroup>(accountantGroupForm);
                 accountantGroup.CreateDate = DateTime.Now;
                 accountantGroup.Company = dbContext.Companys.Single(x => x.Id == companyId);
+                accountantGroup.CreateUserId = userId;
                 dbContext.AccountantGroups.Add(accountantGroup);                
                 dbContext.SaveChanges();
                 response.Success();                
@@ -148,12 +149,15 @@ namespace SealTypographicWebAPI.Services.Implements
         public ResponseViewModel Update(AccountantGroupUpdateForm accountantGroupFormUpdate)
         {
             ResponseViewModel response = new();
+            int userId = 1; 
             AccountantGroup? accountantGroupQuery = dbContext.AccountantGroups.Find(accountantGroupFormUpdate.Id);
 
             if (accountantGroupQuery != null)
             {
                 mapper.Map(accountantGroupFormUpdate, accountantGroupQuery);
                 accountantGroupQuery.UpdateDate = DateTime.Now;
+                accountantGroupQuery.UpdateUserId = userId;
+
                 dbContext.SaveChanges();
                 response.Success();
             }

@@ -120,6 +120,7 @@ builder.Services.AddScoped<IAccountantSignTemplateService, AccountantSignTemplat
 builder.Services.AddScoped<ILetterheadImageTemplateService, LetterheadImageTemplateService>();
 builder.Services.AddScoped<UploadService>();
 builder.Services.AddScoped<ITypographicPDFService, TypographicPDFService>();
+builder.Services.AddScoped<IQuarterYearService, QuarterYearService>();
 
 #endregion
 

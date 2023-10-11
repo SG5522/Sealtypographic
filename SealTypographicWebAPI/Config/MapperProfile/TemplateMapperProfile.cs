@@ -6,18 +6,18 @@ using DBEntities;
 using SealTypographicWebAPI.Utils;
 using DJLib;
 
-namespace SealTypographicWebAPI.Config
+namespace SealTypographicWebAPI.Config.MapperProfile
 {
     /// <summary>
     /// AutoMapper用的LIST
     /// </summary>
-    public class TemplateServiceMapperProfile : Profile
-    {        
+    public class TemplateMapperProfile : Profile
+    {
         /// <summary>
         /// 建置
         /// </summary>
-        public TemplateServiceMapperProfile()
-        {                        
+        public TemplateMapperProfile()
+        {
             //客戶印鑑樣板使用
             CreateMap<CustomerSealTemplateForm, Template>();
             CreateMap<CustomerSealTemplateLocationForm, TemplateLocation>();
@@ -40,8 +40,8 @@ namespace SealTypographicWebAPI.Config
 
             //會計師簽印樣板使用
             CreateMap<AccountantSignTemplateForm, Template>();
-            CreateMap<AccountantSignTemplateLocationForm, TemplateLocation>();         
-            
+            CreateMap<AccountantSignTemplateLocationForm, TemplateLocation>();
+
             //會計師簽印樣板異動使用
             CreateMap<AccountantSignTemplateUpdateForm, Template>();
             CreateMap<AccountantSignTemplateLocationUpdateForm, TemplateLocation>();
@@ -70,13 +70,13 @@ namespace SealTypographicWebAPI.Config
             CreateMap<TemplateLocation, LetterheadImageTemplateLocationViewModel>();
 
 
-            CreateMap <Template, LetterheadImageTemplateViewModel>()
+            CreateMap<Template, LetterheadImageTemplateViewModel>()
                     .ForMember(dst => dst.ImageFullPath, opt => opt.MapFrom(src => src.ThumbnailFullPath))
                     .ForMember(dst => dst.ThumbnailBase64, opt => opt.MapFrom(src => ImageSharpUtil.PathImageFileToBase64(src.ThumbnailFullPath)));
 
             //Log使用
             CreateMap<LetterheadImageTemplateViewModel, LetterheadImageTemplateLogModel>();
-            CreateMap<LetterheadImageTemplatePaginate, LetterheadImageTemplatePaginateLog>();            
+            CreateMap<LetterheadImageTemplatePaginate, LetterheadImageTemplatePaginateLog>();
         }
     }
 }

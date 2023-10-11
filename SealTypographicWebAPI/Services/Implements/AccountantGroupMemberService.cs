@@ -34,7 +34,9 @@ namespace SealTypographicWebAPI.Services.Implements
         public AccountantGroupMembers GetMembers(AccountantGroupMemberSearch accountantGroupMemberSearch)
         {
             AccountantGroupMembers accountantGroupMembers = new();
-            List<AccountantGroupMember> accountantMembers = new();            
+            List<AccountantGroupMember> accountantMembers = new();     
+                        
+            // Todo 調整寫法 
             IQueryable<Accountant> accountantQuery = dbContext.Accountants
                                                     .Where
                                                     (

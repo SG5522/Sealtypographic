@@ -26,5 +26,25 @@ namespace SealTypographicWebAPI.Utils
         {            
             return $"{quarter.GregorianYear - 1911}{quarter.Period}";
         }
+
+        /// <summary>
+        /// 取得台灣用的季度字串
+        /// </summary>
+        /// <param name="quarter"></param>
+        /// <returns></returns>
+        public static string GetGregorainYear(QuarterYear quarter)
+        {
+            return $"{quarter.GregorianYear}";
+        }
+
+        /// <summary>
+        /// 取得台灣用的季度字串
+        /// </summary>
+        /// <param name="quarter"></param>
+        /// <returns></returns>
+        public static string GetTaiwanYear(QuarterYear quarter)
+        {
+            return $"{quarter.GregorianYear - 1911}";
+        }
     }
 }
