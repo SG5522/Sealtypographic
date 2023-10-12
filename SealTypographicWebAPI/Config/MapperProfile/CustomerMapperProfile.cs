@@ -20,7 +20,12 @@ namespace SealTypographicWebAPI.Config.MapperProfile
         {
             //客戶基本資料
             CreateMap<Customer, CustomerDetail>();
-            CreateMap<Customer, CustomerViewModel>();
+            //CreateMap<Customer, CustomerViewModel>()
+            //        .ForMember(dst => dst.IsDraff, opt => opt.MapFrom(src => src.CustomerSealGroups.Any(sealGroup => sealGroup.ReviewStatus == ReviewStatus.Draft)))
+            //        .ForMember(dst => dst.IsPending, opt => opt.MapFrom(src => src.CustomerSealGroups.Any(sealGroup => sealGroup.ReviewStatus == ReviewStatus.Pending)))
+            //        .ForMember(dst => dst.IsReject, opt => opt.MapFrom(src => src.CustomerSealGroups.Any(sealGroup => sealGroup.ReviewStatus == ReviewStatus.Reject)))
+            //        .ForMember(dst => dst.CustomerSealQuarterId, opt => opt.MapFrom(src => src.CustomerSealGroups.OrderByDescending(x => x.QuarterYear.Id).Select(x => x.Id).First()));
+
             CreateMap<Customer, CustomerSummary>();
 
             CreateMap<CustomerForm, Customer>();
@@ -34,9 +39,8 @@ namespace SealTypographicWebAPI.Config.MapperProfile
                     .ForMember(dst => dst.SealViewModels, opt => opt.MapFrom(src => src.TypographicResources.Where(x => x.DeleteStatus == DeleteStatus.No)));
 
             CreateMap<CustomerSealGroup, CustomerSealGroupResponse>()
-                .ForMember(dst => dst.CustomerSealGroupId, opt => opt.MapFrom(src => src.Id))
-                .ForMember(dst => dst.Quarter, opt => opt.MapFrom(src => QuarterUtil.GetTaiwanYearQuarter(src.QuarterYear)));
-            //CustomerSealQuarterResponse
+                    .ForMember(dst => dst.CustomerSealGroupId, opt => opt.MapFrom(src => src.Id))
+                    .ForMember(dst => dst.Quarter, opt => opt.MapFrom(src => QuarterUtil.GetTaiwanYearQuarter(src.QuarterYear)));            
 
             CreateMap<TypographicResource, CustomerSealViewModel>()
                     .ForMember(dst => dst.SealMappingConfigId, opt => opt.MapFrom(src => SealMappingConfigUtil.GetCustomerSealType(src.SubSealType)))

@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using DBEntities.Consts;
+using Microsoft.AspNetCore.Mvc;
 using SealTypographicWebAPI.Models;
+using SealTypographicWebAPI.Models.Customer;
 using SealTypographicWebAPI.Models.CustomerSeal;
 using SealTypographicWebAPI.Services;
 using Serilog;
@@ -17,17 +19,25 @@ namespace SealTypographicWebAPI.Controllers
         /// <summary>
         /// 客戶印鑑管理的service
         /// </summary>
-        private readonly ICustomerSealService customerSealService;
+        private readonly ICustomerSealService customerSealService;        
 
         /// <summary>
         /// 建構:注入客戶印鑑管理的service
         /// </summary>
-        /// <param name="customerSealService">客戶印鑑管理的service</param>        
+        /// <param name="customerSealService">客戶印鑑管理的service</param>       
         public CustomerSealController(ICustomerSealService customerSealService)
         {
             this.customerSealService = customerSealService;
         }
-        
+
+        /// <summary>
+        /// 取得客戶印鑑季度表
+        /// </summary>
+        /// <param name="customerSearch">印鑑季度分頁搜尋</param>
+        /// <returns></returns>
+        [HttpGet("[Action]")]
+        public CustomerPaginateViewModel Paginate([FromQuery] CustomerSearch customerSearch) => customerSealService.GetPaginate(customerSearch, false, TypographyType.FinancialReport); 
+
         /// <summary>
         /// 取得客戶印鑑季度表
         /// </summary>
@@ -138,7 +148,7 @@ namespace SealTypographicWebAPI.Controllers
             try
             {
                 Log.Information("CustomerSeal new input {@Input}", customerSealForms);
-                response = await customerSealService.New(customerSealForms);
+                response = await customerSealService.New(customerSealForms, TypographyType.FinancialReport);
                 Log.Information("CustomerSeal new output {@Output}", response);
 
             }

@@ -1,4 +1,6 @@
-﻿using SealTypographicWebAPI.Models;
+﻿using DBEntities.Consts;
+using SealTypographicWebAPI.Models;
+using SealTypographicWebAPI.Models.Customer;
 using SealTypographicWebAPI.Models.CustomerSeal;
 
 namespace SealTypographicWebAPI.Services
@@ -8,6 +10,17 @@ namespace SealTypographicWebAPI.Services
     /// </summary>
     public interface ICustomerSealService
     {
+        /// <summary>
+        /// 取得客戶列表(分頁)
+        /// 此列表參照是否有印鑑搜尋
+        /// 分為財報印鑑、稅報印鑑
+        /// </summary>
+        /// <param name="customerSearch">客戶分頁搜尋</param>
+        /// <param name="isTypographicUse">是否給排版使用</param>
+        /// <param name="typographyType">排版類別</param>  
+        /// <returns></returns>
+        CustomerPaginateViewModel GetPaginate(CustomerSearch customerSearch, bool isTypographicUse, TypographyType typographyType);
+
         /// <summary>
         /// 取得客戶印鑑季度表(分頁)
         /// </summary>
@@ -36,8 +49,9 @@ namespace SealTypographicWebAPI.Services
         /// 新增客戶印鑑組資料
         /// </summary>
         /// <param name="customerSealForms">客戶印鑑組資料</param>
+        /// <param name="typographyType">排版類別</param>
         /// <returns></returns>
-        Task<ResponseViewModel> New(CustomerSealForm customerSealForms);
+        Task<ResponseViewModel> New(CustomerSealForm customerSealForms, TypographyType typographyType);
 
         /// <summary>
         /// 異動客戶印鑑

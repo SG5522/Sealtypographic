@@ -8,7 +8,7 @@ namespace SealTypographicWebAPI.Models.CustomerSeal
     public class CustomerSealGroupResponse : ResponseViewModel
     {
         /// <summary>
-        /// 印鑑群組Id (原為季度Id)
+        /// 印鑑群組Id
         /// </summary>
         /// <example>1</example>
         public int CustomerSealGroupId { get; set; }
