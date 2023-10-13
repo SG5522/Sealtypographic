@@ -14,7 +14,7 @@ namespace SealTypographicWebAPI.Controllers
     /// </summary>
     [Route("api/[controller]")]
     [ApiController]
-    public class CustomerSealController : ControllerBase
+    public class CustomerSealTaxReportController : ControllerBase
     {
         /// <summary>
         /// 客戶印鑑管理的service
@@ -25,27 +25,43 @@ namespace SealTypographicWebAPI.Controllers
         /// 建構:注入客戶印鑑管理的service
         /// </summary>
         /// <param name="customerSealService">客戶印鑑管理的service</param>       
-        public CustomerSealController(ICustomerSealService customerSealService)
+        public CustomerSealTaxReportController(ICustomerSealService customerSealService)
         {
             this.customerSealService = customerSealService;
         }
 
         /// <summary>
         /// 取得客戶列表
-        /// (含有財報資料才會列出)
+        /// (含有稅報資料才列出)
         /// </summary>
-        /// <param name="customerSearch">客戶分頁搜尋</param>
+        /// <param name="customerSearch">客戶列表搜尋</param>
         /// <returns></returns>
         [HttpGet("[Action]")]
-        public CustomerPaginateViewModel Paginate([FromQuery] CustomerSearch customerSearch) => customerSealService.GetPaginate(customerSearch, TypographyType.FinancialReport); 
+        public CustomerPaginateViewModel Paginate([FromQuery] CustomerSearch customerSearch) => customerSealService.GetPaginate(customerSearch, TypographyType.TaxReport); 
 
         /// <summary>
-        /// 取得客戶印鑑季度表
+        /// 取得客戶印鑑稅報年度表
         /// </summary>
-        /// <param name="customerSealQuarterPaginateSearch">印鑑季度分頁搜尋</param>
+        /// <param name="customerSealQuarterPaginateSearch">印鑑年度分頁搜尋</param>
         /// <returns></returns>
         [HttpGet("[Action]")]
-        public CustomerSealQuarterPaginateViewModel Quarter([FromQuery] CustomerSealQuarterPaginateSearch customerSealQuarterPaginateSearch) => customerSealService.GetQuarterYear(customerSealQuarterPaginateSearch, false, TypographyType.FinancialReport);
+        public CustomerSealQuarterPaginateViewModel Year([FromQuery] CustomerSealQuarterPaginateSearch customerSealQuarterPaginateSearch)
+        {
+            CustomerSealQuarterPaginateViewModel customerSealQuarterPaginateViewModel = new();
+            try
+            {
+                Log.Information("CustomerSeal get Quarter input {@Input}", customerSealQuarterPaginateSearch);
+                customerSealQuarterPaginateViewModel = customerSealService.GetQuarterYear(customerSealQuarterPaginateSearch, false, TypographyType.TaxReport);
+                Log.Information("CustomerSeal get Quarter output {@Output}", customerSealQuarterPaginateViewModel);
+            }
+            catch (Exception ex)
+            {
+                Log.Error("CustomerSeal get Quarter error {@Error}", ex.Message);
+                customerSealQuarterPaginateViewModel.Error();
+                customerSealQuarterPaginateViewModel.Message = ex.Message;
+            }
+            return customerSealQuarterPaginateViewModel;
+        }
 
         /// <summary>
         /// 取得客戶印鑑群組簡短訊息
@@ -85,7 +101,7 @@ namespace SealTypographicWebAPI.Controllers
             try
             {
                 Log.Information("CustomerSeal get quarterWithTypographic input {@Input}", customerSealQuarterPaginateSearch);
-                customerSealQuarterPaginateViewModel = customerSealService.GetQuarterYear(customerSealQuarterPaginateSearch, true, TypographyType.FinancialReport);
+                customerSealQuarterPaginateViewModel = customerSealService.GetQuarterYear(customerSealQuarterPaginateSearch, true, TypographyType.TaxReport);
                 Log.Information("CustomerSeal get quarterWithTypographic output {@Output}", customerSealQuarterPaginateViewModel);
             }
             catch (Exception ex)
@@ -133,7 +149,7 @@ namespace SealTypographicWebAPI.Controllers
             try
             {
                 Log.Information("CustomerSeal new input {@Input}", customerSealForms);
-                response = await customerSealService.New(customerSealForms, TypographyType.FinancialReport);
+                response = await customerSealService.New(customerSealForms, TypographyType.TaxReport);
                 Log.Information("CustomerSeal new output {@Output}", response);
 
             }

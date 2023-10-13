@@ -43,13 +43,12 @@ namespace SealTypographicWebAPI.Services.Implements
         /// 此列表參照是否有印鑑搜尋
         /// 分為財報印鑑、稅報印鑑
         /// </summary>
-        /// <param name="customerSearch">客戶分頁搜尋</param>
-        /// <param name="isTypographicUse">是否給排版使用</param>
+        /// <param name="customerSearch">客戶分頁搜尋</param>        
         /// <param name="typographyType">排版類別</param>  
         /// <returns></returns>
-        public CustomerPaginateViewModel GetPaginate(CustomerSearch customerSearch, bool isTypographicUse, TypographyType typographyType)
+        public CustomerPaginateViewModel GetPaginate(CustomerSearch customerSearch, TypographyType typographyType)
         {
-            logger.LogInformation("GetPaginate input {@Input} isTypographicUse {@IsTypographicUse} typographyType {@TypographyType}", customerSearch, isTypographicUse, typographyType);
+            logger.LogInformation("GetPaginate input {@Input} typographyType {@TypographyType}", customerSearch, typographyType);
 
             CustomerPaginateViewModel customerPaginateViewModel = new();
             int companyId = 1;
@@ -57,20 +56,15 @@ namespace SealTypographicWebAPI.Services.Implements
             try
             {
                 IQueryable<Customer> customerQuery = dbContext.Customers.Where
-                                                (
-                                                    x => x.Company.Id == companyId
-                                                    && x.DeleteStatus == DeleteStatus.No
-                                                    && x.CustomerSealGroups.Any
                                                     (
-                                                        sealGroup => sealGroup.TypographyType == typographyType
-                                                        && sealGroup.DeleteStatus == DeleteStatus.No
-                                                    )
-                                                );
-
-                if (isTypographicUse)
-                {
-                    customerQuery = customerQuery.Where(accountant => accountant.CustomerSealGroups.Any(x => x.ReviewStatus == ReviewStatus.Approval));
-                }
+                                                        x => x.Company.Id == companyId
+                                                        && x.DeleteStatus == DeleteStatus.No
+                                                        && x.CustomerSealGroups.Any
+                                                        (
+                                                            sealGroup => sealGroup.TypographyType == typographyType
+                                                            && sealGroup.DeleteStatus == DeleteStatus.No
+                                                        )
+                                                    );
 
                 if (!string.IsNullOrWhiteSpace(customerSearch.KeyWord))
                 {
@@ -98,9 +92,12 @@ namespace SealTypographicWebAPI.Services.Implements
                     //計算總頁數
                     customerPaginateViewModel.TotalPage = TotalPageUtil.GetTotalPage(customerQuery.Count(), customerSearch.PageSize);
                     customerPaginateViewModel.TotalCount = customerQuery.Count();
+                    customerPaginateViewModel.Success();
                 }
-                customerPaginateViewModel.Success();
-
+                else
+                {
+                    customerPaginateViewModel.CustomeNoData();
+                }                
                 logger.LogInformation("GetPaginate output {@Output}", customerPaginateViewModel);
             }
             catch (Exception ex) 
@@ -118,46 +115,59 @@ namespace SealTypographicWebAPI.Services.Implements
         /// </summary>
         /// <param name="customerSealQuarterPaginateSearch">印鑑季度分頁搜尋</param>
         /// <param name="isTypographic">是否排版使用</param>
+        /// <param name="typographyType">排版類別</param>
         /// <returns></returns>
-        public CustomerSealQuarterPaginateViewModel GetQuarter(CustomerSealQuarterPaginateSearch customerSealQuarterPaginateSearch, bool isTypographic)
+        public CustomerSealQuarterPaginateViewModel GetQuarterYear(CustomerSealQuarterPaginateSearch customerSealQuarterPaginateSearch, bool isTypographic, TypographyType typographyType)
         {
+            logger.LogInformation("GetQuarterYear input {@Input} isTypographicUse {@isTypographic} typographyType {@TypographyType}", customerSealQuarterPaginateSearch, isTypographic, typographyType);
             CustomerSealQuarterPaginateViewModel customerSealQuarterPaginateViewModel = new ();
 
-            IQueryable<CustomerSealGroup> customerSealGroupsQuery = dbContext.CustomerSealGroups
+            try
+            {
+                IQueryable<CustomerSealGroup> customerSealGroupsQuery = dbContext.CustomerSealGroups
                                                                     .Include(customerSealGroups => customerSealGroups.QuarterYear)
                                                                     .Where
                                                                     (
                                                                         customerSealGroup => customerSealGroup.Customer.Id == customerSealQuarterPaginateSearch.CustomerId
-                                                                        && customerSealGroup.DeleteStatus == DeleteStatus.No                                                                                    
-                                                                    );                                         
-            if(isTypographic)
+                                                                        && customerSealGroup.TypographyType == typographyType
+                                                                        && customerSealGroup.DeleteStatus == DeleteStatus.No
+                                                                    );
+                if (isTypographic)
+                {
+                    customerSealGroupsQuery = customerSealGroupsQuery.Where(customerSealGroup => customerSealGroup.ReviewStatus == ReviewStatus.Approval);
+                }
+
+                customerSealGroupsQuery = customerSealGroupsQuery.OrderBy(customerSealGroup => customerSealGroup.QuarterYear.Id);
+
+                if (customerSealGroupsQuery.Any())
+                {
+                    customerSealQuarterPaginateViewModel.CustomerSealQuarters = customerSealGroupsQuery
+                                                                                .Skip((customerSealQuarterPaginateSearch.PageNumber - 1) * customerSealQuarterPaginateSearch.PageSize)
+                                                                                .Take(customerSealQuarterPaginateSearch.PageSize)
+                                                                                .ProjectTo<CustomerSealQuarterViewModel>(configurationProvider)
+                                                                                .ToList();
+
+                    customerSealQuarterPaginateViewModel.TotalCount = customerSealGroupsQuery.Count();
+                    //計算總頁數
+                    customerSealQuarterPaginateViewModel.TotalPage = TotalPageUtil.GetTotalPage(customerSealQuarterPaginateViewModel.TotalCount, customerSealQuarterPaginateSearch.PageSize);
+                    customerSealQuarterPaginateViewModel.PageNumber = customerSealQuarterPaginateSearch.PageNumber;
+                    customerSealQuarterPaginateViewModel.PageSize = customerSealQuarterPaginateSearch.PageSize;
+
+                    customerSealQuarterPaginateViewModel.Success();
+                }
+                else
+                {
+                    customerSealQuarterPaginateViewModel.CustomerSealNoData();
+                }
+                logger.LogInformation("GetQuarterYear output {@Output}", customerSealQuarterPaginateViewModel);
+            }
+            catch (Exception ex)
             {
-                customerSealGroupsQuery = customerSealGroupsQuery.Where(customerSealGroup => customerSealGroup.ReviewStatus == ReviewStatus.Approval);
+                customerSealQuarterPaginateViewModel.Error();
+                customerSealQuarterPaginateViewModel.Message = ex.Message;
+                logger.LogError("GetQuarterYear error {@Error}", ex.Message);
             }
-
-            customerSealGroupsQuery = customerSealGroupsQuery.OrderBy(customerSealGroup => customerSealGroup.QuarterYear.Id);
-
-            if (customerSealGroupsQuery.Any())
-            {                                
-                customerSealQuarterPaginateViewModel.CustomerSealQuarters = customerSealGroupsQuery                                                                                
-                                                                            .Skip((customerSealQuarterPaginateSearch.PageNumber - 1) * customerSealQuarterPaginateSearch.PageSize)
-                                                                            .Take(customerSealQuarterPaginateSearch.PageSize)                                                                            
-                                                                            .ProjectTo<CustomerSealQuarterViewModel>(configurationProvider)
-                                                                            .ToList();
-
-                customerSealQuarterPaginateViewModel.TotalCount = customerSealGroupsQuery.Count();
-                //計算總頁數
-                customerSealQuarterPaginateViewModel.TotalPage = TotalPageUtil.GetTotalPage(customerSealQuarterPaginateViewModel.TotalCount, customerSealQuarterPaginateSearch.PageSize);
-                customerSealQuarterPaginateViewModel.PageNumber = customerSealQuarterPaginateSearch.PageNumber;
-                customerSealQuarterPaginateViewModel.PageSize = customerSealQuarterPaginateSearch.PageSize;                
-                
-                customerSealQuarterPaginateViewModel.Success();
-            }
-            else
-            {
-                customerSealQuarterPaginateViewModel.CustomerSealNoData();
-            }
-
+            
             return customerSealQuarterPaginateViewModel;
         }
 
@@ -299,12 +309,12 @@ namespace SealTypographicWebAPI.Services.Implements
             int userId = 1; //從帳號驗證取得Id          
 
             CustomerSealGroup? customerSealGroup = dbContext.CustomerSealGroups
-                                                .Include(customerSealGroup => customerSealGroup.Customer)
-                                                .Include(customerSealGroup => customerSealGroup.TypographicResources.Where(x => x.DeleteStatus == DeleteStatus.No))
-                                                .FirstOrDefault
-                                                (
-                                                    customerSealGroup => customerSealGroup.Id == customerSealUpdate.CustomerSealQuarterId                                                                                                                                                
-                                                );
+                                                    .Include(customerSealGroup => customerSealGroup.Customer)
+                                                    .Include(customerSealGroup => customerSealGroup.TypographicResources.Where(x => x.DeleteStatus == DeleteStatus.No))
+                                                    .FirstOrDefault
+                                                    (
+                                                        customerSealGroup => customerSealGroup.Id == customerSealUpdate.CustomerSealQuarterId                                                                                                                                                
+                                                    );
 
             if (customerSealGroup != null)
             {

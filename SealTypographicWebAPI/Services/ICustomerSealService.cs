@@ -15,19 +15,19 @@ namespace SealTypographicWebAPI.Services
         /// 此列表參照是否有印鑑搜尋
         /// 分為財報印鑑、稅報印鑑
         /// </summary>
-        /// <param name="customerSearch">客戶分頁搜尋</param>
-        /// <param name="isTypographicUse">是否給排版使用</param>
+        /// <param name="customerSearch">客戶分頁搜尋</param>        
         /// <param name="typographyType">排版類別</param>  
         /// <returns></returns>
-        CustomerPaginateViewModel GetPaginate(CustomerSearch customerSearch, bool isTypographicUse, TypographyType typographyType);
+        CustomerPaginateViewModel GetPaginate(CustomerSearch customerSearch, TypographyType typographyType);
 
         /// <summary>
         /// 取得客戶印鑑季度表(分頁)
         /// </summary>
         /// <param name="customerSealQuarterPaginateSearch">印鑑季度分頁搜尋</param>
         /// <param name="isTypographic">是否排版使用</param>
+        /// <param name="typographyType">排版類別</param>
         /// <returns></returns>
-        CustomerSealQuarterPaginateViewModel GetQuarter(CustomerSealQuarterPaginateSearch customerSealQuarterPaginateSearch, bool isTypographic);
+        CustomerSealQuarterPaginateViewModel GetQuarterYear(CustomerSealQuarterPaginateSearch customerSealQuarterPaginateSearch, bool isTypographic, TypographyType typographyType);
 
         /// <summary>
         /// 取得印鑑群組簡易資訊
