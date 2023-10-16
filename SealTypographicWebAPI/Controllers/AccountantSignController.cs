@@ -1,8 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using DBEntities.Consts;
+using Microsoft.AspNetCore.Mvc;
 using SealTypographicWebAPI.Models;
 using SealTypographicWebAPI.Models.Accountant;
 using SealTypographicWebAPI.Services;
-using Serilog;
 
 
 namespace SealTypographicWebAPI.Controllers
@@ -34,22 +34,7 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="accountantId">會計師ID</param>        
         /// <returns></returns>
         [HttpGet("{accountantId}")]
-        public AccountantSignGroupResponse GetCreateDates(int accountantId)
-        {
-            AccountantSignGroupResponse accountantSignStartDates = new ();
-            try
-            {
-                Log.Information("AccountantSign get GetCreateDates input {@Input}", accountantId);
-                accountantSignStartDates = accountantSignService.GetCreateDates(accountantId);
-                Log.Information("AccountantSign get GetCreateDates output {@Output}", accountantSignStartDates);                        
-            }
-            catch (Exception ex)
-            {             
-                Log.Error("AccountantSign get GetCreateDates error {@Error}", ex.Message); 
-                accountantSignStartDates.DbError();                
-            }
-            return accountantSignStartDates;
-        }
+        public AccountantSignGroupResponse GetCreateDates(int accountantId) => accountantSignService.GetCreateDates(accountantId);
 
         /// <summary>
         /// 取得會計師簽印組
@@ -58,22 +43,7 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="isTransparent" example="false" >是否白底透明化</param>        
         /// <returns></returns>        
         [HttpGet]
-        public AccountantSignViewModels Signs(int accountantSignGroupId, bool isTransparent)
-        {
-            AccountantSignViewModels accountantSignViewModels = new();
-            try
-            {
-                Log.Information("AccountantSign get signViewModels input {@Input}", accountantSignGroupId);
-                accountantSignViewModels = accountantSignService.GetSignViewModels(accountantSignGroupId, isTransparent);
-                Log.Information("AccountantSign get signViewModels output {@Output}", accountantSignViewModels);
-            }
-            catch (Exception ex)
-            {
-                Log.Error("CustomerSeal get signViewModels error {@Error}", ex.Message); 
-                accountantSignViewModels.DbError();                
-            }
-            return accountantSignViewModels;
-        }
+        public AccountantSignViewModels Signs(int accountantSignGroupId, bool isTransparent) => accountantSignService.GetSignViewModels(accountantSignGroupId, isTransparent);
 
         /// <summary>
         /// 新增會計師簽印組
@@ -81,22 +51,7 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="accountantSignForms">會計師簽印組</param>
         /// <returns></returns>
         [HttpPost]
-        public async Task<ResponseViewModel> New(AccountantSignForms accountantSignForms)
-        {
-            ResponseViewModel response = new ();
-            try
-            {
-                Log.Information("AccountantSign new input {@Input}", accountantSignForms);
-                response = await accountantSignService.New(accountantSignForms);
-                Log.Information("AccountantSign new output {@Output}", response);                             
-            }
-            catch (Exception ex)
-            {                
-                Log.Error("AccountantSign new error {@Error}", ex.Message); 
-                response.DbError();
-            }
-            return response;
-        }
+        public async Task<ResponseViewModel> New(AccountantSignForms accountantSignForms) => await accountantSignService.New(accountantSignForms);
 
         /// <summary>
         /// 異動會計師簽印
@@ -104,24 +59,7 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="accountantSignUpdate">需要異動會計師簽印資料</param>
         /// <returns></returns>
         [HttpPut]
-        public async Task<List<ResponseViewModel>> Update(AccountantSignUpdate accountantSignUpdate)
-        {
-            List<ResponseViewModel> responses= new();
-            try
-            {
-                Log.Information("AccountantSign update input {@Input}", accountantSignUpdate);
-                responses = await accountantSignService.Update(accountantSignUpdate);
-                Log.Information("AccountantSign update output {@Output}", responses);
-            }
-            catch (Exception ex)
-            {
-                ResponseViewModel response= new();
-                Log.Error("AccountantSign update error {@Error}", ex.Message); 
-                response.DbError();
-                responses.Add(response);
-            }
-            return responses;
-        }
+        public async Task<List<ResponseViewModel>> Update(AccountantSignUpdate accountantSignUpdate) => await accountantSignService.Update(accountantSignUpdate);
 
         /// <summary>
         /// 將草稿的簽印組狀態變更為待審
@@ -129,22 +67,7 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="accountantSignGroupId">會計師簽印群組Id</param>        
         /// <returns></returns>
         [HttpPut("[Action]")]
-        public ResponseViewModel Pending(int accountantSignGroupId)
-        {
-            ResponseViewModel response = new();
-            try
-            {
-                Log.Information("AccountantSign pending input {@Input}", accountantSignGroupId);
-                response = accountantSignService.Pending(accountantSignGroupId);
-                Log.Information("AccountantSign pending output {@Output}", response);                
-            }
-            catch (Exception ex)
-            {                
-                Log.Error("AccountantSign pending error {@Error}", ex.Message);                 
-                response.DbError();                
-            }
-            return response;
-        }
+        public ResponseViewModel Pending(int accountantSignGroupId) => accountantSignService.ChangeReviewStatus(accountantSignGroupId, ReviewStatus.Pending);
 
         /// <summary>
         /// 將草稿的簽印組狀態變更為作廢
@@ -152,22 +75,7 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="accountantSignGroupId">會計師簽印群組Id</param>
         /// <returns></returns>
         [HttpPut("[Action]")]
-        public ResponseViewModel Invalid(int accountantSignGroupId)
-        {
-            ResponseViewModel response = new();
-            try
-            {
-                Log.Information("AccountantSign invalid input {@Input}", accountantSignGroupId);
-                response = accountantSignService.Invalid(accountantSignGroupId);
-                Log.Information("AccountantSign invalid output {@Ouput}", response);                
-            }
-            catch (Exception ex)
-            {
-                Log.Error("AccountantSign Invalid error {@Error}", ex.Message);                 
-                response.DbError();                  
-            }
-            return response;
-        }
+        public ResponseViewModel Invalid(int accountantSignGroupId) => accountantSignService.ChangeReviewStatus(accountantSignGroupId, ReviewStatus.Invalid);
 
         /// <summary>
         /// 將待審的簽印組狀態變更為草稿
@@ -175,21 +83,6 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="accountantSignGroupId">會計師簽印群組Id</param>
         /// <returns></returns>
         [HttpPut("[Action]")]
-        public ResponseViewModel CancelReview(int accountantSignGroupId)
-        {
-            ResponseViewModel response = new();
-            try
-            {
-                Log.Information("AccountantSign cancelReview input {@Input}", accountantSignGroupId);
-                response = accountantSignService.CancelReview(accountantSignGroupId);
-                Log.Information("AccountantSign cancelReview output {@Ouput}", response);
-            }
-            catch (Exception ex)
-            {
-                Log.Error("AccountantSign CancelReview error {@Error}", ex.Message); 
-                response.DbError();
-            }
-            return response;
-        }
+        public ResponseViewModel CancelReview(int accountantSignGroupId) => accountantSignService.ChangeReviewStatus(accountantSignGroupId, ReviewStatus.Draft);
     }
 }

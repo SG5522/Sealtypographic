@@ -10,14 +10,14 @@ using Serilog;
 namespace SealTypographicWebAPI.Controllers
 {
     /// <summary>
-    /// 客戶印鑑審核(財報)
+    /// 客戶印鑑審核(稅報)
     /// </summary>
     [Route("api/[controller]")]    
     [ApiController]
-    public class CustomerSealReviewController : ControllerBase
+    public class CustomerSealTaxReportReviewController : ControllerBase
     {
         /// <summary>
-        /// 客戶印鑑審核管理的service(財報)
+        /// 客戶印鑑審核管理的service(稅報)
         /// </summary>
         private readonly ICustomerSealReviewService customerSealReviewService;
 
@@ -25,7 +25,7 @@ namespace SealTypographicWebAPI.Controllers
         /// 建構:注入Service
         /// </summary>
         /// <param name="customerSealReviewService">客戶印鑑審核管理</param>
-        public CustomerSealReviewController(ICustomerSealReviewService customerSealReviewService)
+        public CustomerSealTaxReportReviewController(ICustomerSealReviewService customerSealReviewService)
         {
             this.customerSealReviewService = customerSealReviewService;
         }
@@ -35,10 +35,10 @@ namespace SealTypographicWebAPI.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet("[Action]")]
-        public CustomerSealGroupReviewPaginate ReviewPaginate([FromQuery]CustomerSealSearchReview customerSealReviewSearch) => customerSealReviewService.GetReviewList(customerSealReviewSearch, TypographyType.FinancialReport);
+        public CustomerSealGroupReviewPaginate ReviewPaginate([FromQuery]CustomerSealSearchReview customerSealReviewSearch) => customerSealReviewService.GetReviewList(customerSealReviewSearch, TypographyType.TaxReport);
 
         /// <summary>
-        /// 客戶基本資料與該季所有印鑑
+        /// 客戶基本資料與該年所有印鑑
         /// </summary>
         /// <param name="customerSealQuarterId"></param>        
         /// <returns></returns>

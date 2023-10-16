@@ -1,4 +1,5 @@
-﻿using SealTypographicWebAPI.Models;
+﻿using DBEntities.Consts;
+using SealTypographicWebAPI.Models;
 using SealTypographicWebAPI.Models.Customer;
 using SealTypographicWebAPI.Models.CustomerSealReview;
 
@@ -12,35 +13,25 @@ namespace SealTypographicWebAPI.Services
         /// <summary>
         /// 待審清單
         /// </summary>
+        /// <param name="customerSealReviewSearch">客戶印鑑審核狀態分頁搜尋</param>
+        /// <param name="typographyType">排版類別</param>
         /// <returns></returns>
-        CustomerSealQuarterReviewPaginate GetReviewList(CustomerSealSearchReview customerSealReviewSearch);
+        CustomerSealGroupReviewPaginate GetReviewList(CustomerSealSearchReview customerSealReviewSearch, TypographyType typographyType);
 
         /// <summary>
         /// 基本資料與印鑑細項
         /// </summary>
         /// <param name="CustomerSealQuarterId">印鑑季度Id</param>
         /// <returns></returns>
-        CustomerSealQuarterDetailReviewResponse GetReviewDetail(int CustomerSealQuarterId);
+        CustomerSealGroupDetailReviewResponse GetReviewDetail(int CustomerSealQuarterId);
 
         /// <summary>
-        /// 審核通過
+        /// 更換審核狀態
         /// </summary>
-        /// <param name="customerSealQuarterIds">印鑑季度Id</param>
+        /// <param name="customerSealQuarterIds">審核季度Id</param>
+        /// <param name="reviewStatus">審核狀態</param>
+        /// <param name="userId">使用者Id(從keycloak登入中獲得)</param>
         /// <returns></returns>
-        ResponseViewModel Approval(List<int> customerSealQuarterIds);
-
-        /// <summary>
-        /// 審核退件
-        /// </summary>
-        /// <param name="customerSealQuarterIds">印鑑季度Id</param>
-        /// <returns></returns>
-        ResponseViewModel Reject(List<int> customerSealQuarterIds);
-
-        /// <summary>
-        /// 審核不受理
-        /// </summary>
-        /// <param name="customerSealQuarterIds">印鑑季度Id</param>
-        /// <returns></returns>
-        ResponseViewModel Refuse(List<int> customerSealQuarterIds);
+        ResponseViewModel StatusChange(List<int> customerSealQuarterIds, ReviewStatus reviewStatus, int userId);
     }
 }

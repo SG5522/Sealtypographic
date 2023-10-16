@@ -17,7 +17,7 @@ namespace SealTypographicWebAPI.Models.CustomerSeal
         /// <summary>
         /// 印鑑季度
         /// </summary>
-        /// <example>111Q1</example>
+        /// <example>1</example>
         [Required]
         public int QuarterYearId { get; set; }
 

@@ -14,161 +14,186 @@ namespace SealTypographicWebAPI.Services.Implements
     /// </summary>
     public class CustomerSealReviewService : ICustomerSealReviewService
     {
-        private readonly SealTypographicDbContext dbContext;        
-        private readonly IMapper mapper;
+        private readonly SealTypographicDbContext dbContext;               
         private readonly AutoMapper.IConfigurationProvider configurationProvider;
+        private readonly ILogger<CustomerSealReviewService> logger;
 
         /// <summary>
         /// 建構
         /// </summary>
         /// <param name="dbContext"></param>        
-        /// <param name="mapper"></param>        
-        public CustomerSealReviewService(SealTypographicDbContext dbContext, IMapper mapper)
+        /// <param name="mapper"></param>
+        /// <param name="logger"></param>        
+        public CustomerSealReviewService(SealTypographicDbContext dbContext, IMapper mapper, ILogger<CustomerSealReviewService> logger)
         {
-            this.dbContext = dbContext;            
-            this.mapper = mapper;
+            this.dbContext = dbContext;                        
             configurationProvider = mapper.ConfigurationProvider;
+            this.logger = logger;
         }
 
         ///<inheritdoc />
-        public CustomerSealQuarterReviewPaginate GetReviewList(CustomerSealSearchReview customerSealSearchReview)
+        public CustomerSealGroupReviewPaginate GetReviewList(CustomerSealSearchReview customerSealSearchReview, TypographyType typographyType)
         {
-            CustomerSealQuarterReviewPaginate customerSealQuarterResponse = new ();
+            logger.LogInformation("GetReviewList input {@Input} typographyType= {@TypographyType}", customerSealSearchReview, typographyType);
+
+            CustomerSealGroupReviewPaginate customerSealQuarterResponse = new ();
             int companyId = 1;
 
-            IQueryable<CustomerSealGroup> customerSealQuarterQuery = dbContext.CustomerSealGroups
+            try
+            {
+                IQueryable<CustomerSealGroup> customerSealQuarterQuery = dbContext.CustomerSealGroups
                                                                     .Include(customerSealGroup => customerSealGroup.Customer)
                                                                     .Include(x => x.QuarterYear)
                                                                     .Where
                                                                     (
                                                                         customerSealGroup => customerSealGroup.DeleteStatus == DeleteStatus.No
                                                                         && customerSealGroup.ReviewStatus < ReviewStatus.Disabled
-                                                                        && customerSealGroup.Customer.Company.Id == companyId      
+                                                                        && customerSealGroup.TypographyType == typographyType
+                                                                        && customerSealGroup.Customer.Company.Id == companyId
                                                                     ).OrderByDescending(x => x.QuarterYear.Id);
-                            
 
-            if (!string.IsNullOrWhiteSpace(customerSealSearchReview.KeyWord))
-            {
-                customerSealQuarterQuery = customerSealQuarterQuery.Where
-                    (
-                        x => 
-                        x.Customer.Code.ToLower().Contains(customerSealSearchReview.KeyWord.ToLower())
-                        || x.Customer.Name.Contains(customerSealSearchReview.KeyWord)
-                    );
-            }
 
-            if (customerSealSearchReview.ReviewStatus != null)
-            {
-                customerSealQuarterQuery = customerSealQuarterQuery.Where(customerSealJournal => customerSealJournal.ReviewStatus == customerSealSearchReview.ReviewStatus);
-            }
+                if (!string.IsNullOrWhiteSpace(customerSealSearchReview.KeyWord))
+                {
+                    customerSealQuarterQuery = customerSealQuarterQuery.Where
+                        (
+                            x =>
+                            x.Customer.Code.ToLower().Contains(customerSealSearchReview.KeyWord.ToLower())
+                            || x.Customer.Name.Contains(customerSealSearchReview.KeyWord)
+                        );
+                }
 
-            if (customerSealQuarterQuery.Any())
-            {
-                //取得該頁                   
-                customerSealQuarterResponse.ViewModels = customerSealQuarterQuery
-                                                        .Include(x => x.TypographicResources)
-                                                        .Skip((customerSealSearchReview.PageNumber - 1) * customerSealSearchReview.PageSize)
-                                                        .Take(customerSealSearchReview.PageSize)
-                                                        .ProjectTo<CustomerSealQuarterReviewViewModel>(configurationProvider)
-                                                        .ToList();
-                //計算總頁數
-                int totalPage = customerSealQuarterQuery.Count();
-                customerSealQuarterResponse.TotalPage = TotalPageUtil.GetTotalPage(totalPage, customerSealSearchReview.PageSize);
-                customerSealQuarterResponse.TotalCount = totalPage;
-                customerSealQuarterResponse.PageNumber = customerSealSearchReview.PageNumber;
-                customerSealQuarterResponse.PageSize = customerSealSearchReview.PageSize;
+                if (customerSealSearchReview.ReviewStatus != null)
+                {
+                    customerSealQuarterQuery = customerSealQuarterQuery.Where(customerSealJournal => customerSealJournal.ReviewStatus == customerSealSearchReview.ReviewStatus);
+                }
+
+                if (customerSealQuarterQuery.Any())
+                {
+                    //取得該頁                   
+                    customerSealQuarterResponse.ViewModels = customerSealQuarterQuery
+                                                            .Include(x => x.TypographicResources)
+                                                            .Skip((customerSealSearchReview.PageNumber - 1) * customerSealSearchReview.PageSize)
+                                                            .Take(customerSealSearchReview.PageSize)
+                                                            .ProjectTo<CustomerSealGroupReviewViewModel>(configurationProvider)
+                                                            .ToList();
+                    //計算總頁數
+                    int totalPage = customerSealQuarterQuery.Count();
+                    customerSealQuarterResponse.TotalPage = TotalPageUtil.GetTotalPage(totalPage, customerSealSearchReview.PageSize);
+                    customerSealQuarterResponse.TotalCount = totalPage;
+                    customerSealQuarterResponse.PageNumber = customerSealSearchReview.PageNumber;
+                    customerSealQuarterResponse.PageSize = customerSealSearchReview.PageSize;
+                    customerSealQuarterResponse.Success();
+                }
+                else
+                {
+                    customerSealQuarterResponse.DbNoData();
+                }                
+                logger.LogInformation("GetReviewList output {@Output}", customerSealQuarterResponse);
             }
-            customerSealQuarterResponse.Success();
+            catch (Exception ex) 
+            {
+                customerSealQuarterResponse.Error();
+                logger.LogInformation("GetReviewList error {@Error}", ex.Message);
+            }
 
             return customerSealQuarterResponse;
         }
         
         ///<inheritdoc />
-        public CustomerSealQuarterDetailReviewResponse GetReviewDetail(int customerSealQuarterId)
+        public CustomerSealGroupDetailReviewResponse GetReviewDetail(int customerSealQuarterId)
         {
-            CustomerSealQuarterDetailReviewResponse customerSealReviewDetailResponse = new();
-            CustomerSealQuarterDetailReviewViewModel? customerSealGroupQuery = dbContext.CustomerSealGroups
-                                                                                .Include(x => x.Customer)
-                                                                                .Include(x => x.QuarterYear)
-                                                                                .Include(x => x.TypographicResources)
-                                                                                .Where(x => x.Id == customerSealQuarterId)
-                                                                                .ProjectTo<CustomerSealQuarterDetailReviewViewModel>(configurationProvider)
-                                                                                .FirstOrDefault();
+            logger.LogInformation("GetReviewDetail customerSealQuarterId {@CustomerSealQuarterId}", customerSealQuarterId);
 
-            if (customerSealGroupQuery != null)
+            CustomerSealGroupDetailReviewResponse customerSealReviewDetailResponse = new();
+
+            try
             {
-                customerSealReviewDetailResponse.ViewModel = customerSealGroupQuery;
-                customerSealReviewDetailResponse.Success();
-            }            
-        
+                CustomerSealGroupDetailReviewViewModel? customerSealGroupQuery = dbContext.CustomerSealGroups
+                                                                    .Include(x => x.Customer)
+                                                                    .Include(x => x.QuarterYear)
+                                                                    .Include(x => x.TypographicResources)
+                                                                    .Where(x => x.Id == customerSealQuarterId)
+                                                                    .ProjectTo<CustomerSealGroupDetailReviewViewModel>(configurationProvider)
+                                                                    .FirstOrDefault();
+
+                if (customerSealGroupQuery != null)
+                {
+                    customerSealReviewDetailResponse.ViewModel = customerSealGroupQuery;
+                    customerSealReviewDetailResponse.Success();
+                }
+                else
+                {
+                    customerSealReviewDetailResponse.DbNoData();
+                }
+                logger.LogInformation("GetReviewDetail output {@Output}", customerSealReviewDetailResponse);
+            }
+            catch (Exception ex)
+            {
+                customerSealReviewDetailResponse.Error();
+                logger.LogError("GetReviewDetail error {@Error}",ex.Message);
+            }
+
             return customerSealReviewDetailResponse;
-        }
-
-        ///<inheritdoc />
-        public ResponseViewModel Approval(List<int> customerSealQuarterIds)
-        {
-            int userId = 0;//之後要調整從驗證帳號中取得ID
-            return StatusChange(customerSealQuarterIds, ReviewStatus.Approval, userId);
-        }
-
-        ///<inheritdoc />
-        public ResponseViewModel Reject(List<int> customerSealQuarterIds)
-        {
-            int userId = 0;//之後要調整從驗證帳號中取得ID
-            return StatusChange(customerSealQuarterIds, ReviewStatus.Reject, userId);
-        }
-
-        ///<inheritdoc />
-        public ResponseViewModel Refuse(List<int> customerSealQuarterIds)
-        {
-            int userId = 0;//之後要調整從驗證帳號中取得ID
-            return StatusChange(customerSealQuarterIds, ReviewStatus.Refuse, userId);
-        }
+        }        
 
         /// <summary>
         /// 更換審核狀態
         /// </summary>
         /// <param name="customerSealQuarterIds">審核季度Id</param>
         /// <param name="reviewStatus">審核狀態</param>
-        /// <param name="userId">使用者Id</param>
+        /// <param name="userId">使用者Id(從Keycolak取得)</param>
         /// <returns></returns>
-        private ResponseViewModel StatusChange(List<int> customerSealQuarterIds, ReviewStatus reviewStatus, int userId)
+        public ResponseViewModel StatusChange(List<int> customerSealQuarterIds, ReviewStatus reviewStatus, int userId)
         {
+            logger.LogInformation("StatusChange customerSealQuarterIds {@CustomerSealQuarterIds} reviewStatus= {@ReviewStatus} userId= {@UserId}", customerSealQuarterIds, reviewStatus, userId);
+
             ResponseViewModel response = new();
-            foreach (int customerSealQuarterId in customerSealQuarterIds)
+
+            try
             {
-                CustomerSealGroup? customerSealGroup = dbContext.CustomerSealGroups.Find(customerSealQuarterId);
-                if (customerSealGroup != null)
+                foreach (int customerSealQuarterId in customerSealQuarterIds)
                 {
-                    customerSealGroup.ReviewUserId = userId;
-                    customerSealGroup.ReviewStatus = reviewStatus;
-                    customerSealGroup.ReviewDate = DateTime.Now;
-                    if(reviewStatus == ReviewStatus.Approval)
+                    CustomerSealGroup? customerSealGroup = dbContext.CustomerSealGroups.Find(customerSealQuarterId);
+                    if (customerSealGroup != null)
                     {
-                        customerSealGroup.StartDate = DateTime.Now;
-                        customerSealGroup.EndDate = DateTime.Parse("9999/12/31");
+                        customerSealGroup.ReviewUserId = userId;
+                        customerSealGroup.ReviewStatus = reviewStatus;
+                        customerSealGroup.ReviewDate = DateTime.Now;
+                        if (reviewStatus == ReviewStatus.Approval)
+                        {
+                            customerSealGroup.StartDate = DateTime.Now;
+                            customerSealGroup.EndDate = DateTime.Parse("9999/12/31");
+                        }
+                        if (reviewStatus == ReviewStatus.Refuse)
+                        {
+                            customerSealGroup.DeleteStatus = DeleteStatus.Yes;
+                        }
                     }
-                    if(reviewStatus == ReviewStatus.Refuse)
+                    else
                     {
-                        customerSealGroup.DeleteStatus = DeleteStatus.Yes;
+                        response.ErrorItem += $"{customerSealQuarterId},";
                     }
+                }
+
+                if (response.ErrorItem == null)
+                {
+                    dbContext.SaveChanges();
+                    response.Success();
                 }
                 else
                 {
-                    response.ErrorItem += $"{customerSealQuarterId},";                        
+                    response.ErrorItem = response.ErrorItem.Remove(response.ErrorItem.Length - 1, 1);
+                    response.CustomerSealNoData();
                 }
+                logger.LogInformation("StatusChange output {@Output} ", response);
             }
-
-            if(response.ErrorItem == null)
+            catch (Exception ex) 
             {
-                dbContext.SaveChanges();
-                response.Success();
+                response.Error();
+                logger.LogInformation("StatusChange error {@Error} ", ex.Message);
             }
-            else
-            {
-                response.ErrorItem = response.ErrorItem.Remove(response.ErrorItem.Length - 1, 1);
-                response.CustomerSealNoData();
-            }
+            
             return response;
         }
 

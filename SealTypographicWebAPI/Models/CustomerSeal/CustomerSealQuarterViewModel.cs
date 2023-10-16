@@ -14,10 +14,10 @@ namespace SealTypographicWebAPI.Models.CustomerSeal
         public int Id { get; set; }
 
         /// <summary>
-        /// 印鑑季度
+        /// 年季度ID
         /// </summary>
-        /// <example>111Q1</example>
-        public string? Quarter { get; set; }
+        /// <example>1</example>
+        public int QuarterYearId { get; set; }
 
         /// <summary>
         /// 印鑑審查狀態

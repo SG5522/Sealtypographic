@@ -171,14 +171,8 @@ namespace SealTypographicWebAPI.Services.Implements
             int companyId = 1; //公司Id
 
             //尋找公司並與上傳檔案關聯
-            Company? companyQuery = dbContext.Companys.Include(x => x.UploadFiles)
-                                    .Select(x => new Company
-                                    {
-                                        Id = x.Id,
-                                        Code = x.Code,
-                                        UploadFiles = new List<UploadFile>()
-                                    })
-                                    .FirstOrDefault(x => x.Id == companyId);
+            Company? companyQuery = dbContext.Companys.Include(x => x.UploadFiles).FirstOrDefault(x => x.Id == companyId);
+
             if(companyQuery != null) 
             {
                 if (uploadData.DuplicateFileIds != null)
@@ -199,7 +193,7 @@ namespace SealTypographicWebAPI.Services.Implements
                                 BaseInput(uploadFile, false, userId);
                             }
                             //新增上傳的檔案
-                            await SaveFile(formFile, uploadData.UploadType, userId, uploadfiles);
+                            await SaveFile(formFile, uploadData.UploadType, companyQuery, userId, uploadfiles);
                             uploadData.FormFiles.Remove(formFile);
                         }
                     }
@@ -207,12 +201,12 @@ namespace SealTypographicWebAPI.Services.Implements
 
                 foreach (IFormFile formFile in uploadData.FormFiles)
                 {
-                    await SaveFile(formFile, uploadData.UploadType, userId, uploadfiles);
+                    await SaveFile(formFile, uploadData.UploadType, companyQuery, userId, uploadfiles);
                 }
 
                 if (uploadfiles.Any())
                 {                    
-                    dbContext.UploadFiles.AddRange(uploadfiles);
+                    dbContext.UploadFiles.AddRange(uploadfiles);                    
                     dbContext.SaveChanges();
                     response.Success();
                 }
@@ -286,16 +280,17 @@ namespace SealTypographicWebAPI.Services.Implements
 
             return response;
         }
-        
+
         /// <summary>
         /// 存檔處理       
         /// </summary>
         /// <param name="formFile"></param>
-        /// <param name="uploadType">檔案類型</param>        
+        /// <param name="uploadType">檔案類型</param>
+        /// <param name="company">關聯會計師事務所</param>        
         /// <param name="userid">使用者ID</param>
         /// <param name="uploadfiles">上傳檔案資料表</param>
         /// <returns></returns>
-        private async Task SaveFile(IFormFile formFile, UploadType uploadType, int userid, List<UploadFile> uploadfiles)
+        private async Task SaveFile(IFormFile formFile, UploadType uploadType, Company company, int userid, List<UploadFile> uploadfiles)
         {
             string savePath = GetSavePath(uploadType, userid, formFile.FileName);
             using Stream stream = new FileStream(savePath, FileMode.Create);
@@ -304,7 +299,8 @@ namespace SealTypographicWebAPI.Services.Implements
             {
                 OriginalFileName = formFile.FileName,
                 UploadType = uploadType,
-                FullPath = savePath
+                FullPath = savePath,
+                Company = company,
             };            
             // TODO: 後續在DuplicateFileProcessMode.Reserve(保留原檔名)模式時客戶要求檔名要區分時在另做調整。
             uploadFile.OriginalFileName = formFile.FileName;

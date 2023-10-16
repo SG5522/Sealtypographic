@@ -60,24 +60,12 @@ namespace SealTypographicWebAPI.Services
         /// <returns></returns>        
         Task<List<ResponseViewModel>> Update(CustomerSealUpdate customerSealUpdate);
 
-        /// <summary>
-        /// 此季度印鑑從草稿狀態變更為待審
-        /// </summary>
-        /// <param name="customerSealQuarterId">客戶印鑑季度Id</param>
-        /// <returns></returns>
-        ResponseViewModel Pending(int customerSealQuarterId);
 
         /// <summary>
-        /// 此季度印鑑從草稿狀態變更為作廢
+        /// 客戶印鑑群組狀態變更
         /// </summary>
         /// <param name="customerSealQuarterId">客戶印鑑季度Id</param>
-        /// <returns></returns>
-        ResponseViewModel Invalid(int customerSealQuarterId);
-
-        /// <summary>
-        /// 此季度印鑑從待審狀態變更為草稿
-        /// </summary>
-        /// <param name="customerSealQuarterId">客戶印鑑季度Id</param>        
-        ResponseViewModel CancelReview(int customerSealQuarterId);
+        /// <param name="reviewStatus">審查狀態</param>        
+        ResponseViewModel ChangeReviewStatus(int customerSealQuarterId, ReviewStatus reviewStatus);
     }
 }

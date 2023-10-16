@@ -1,4 +1,5 @@
-﻿using SealTypographicWebAPI.Models;
+﻿using DBEntities.Consts;
+using SealTypographicWebAPI.Models;
 using SealTypographicWebAPI.Models.Accountant;
 using SealTypographicWebAPI.Models.Customer;
 
@@ -39,23 +40,10 @@ namespace SealTypographicWebAPI.Services
         Task<List<ResponseViewModel>> Update(AccountantSignUpdate accountantSignUpdate);
 
         /// <summary>
-        /// 將草稿的簽印組狀態變更為待審
+        /// 會計師印鑑待審狀態變更。
         /// </summary>
         /// <param name="accountantSignGroupId">會計師簽印群組Id</param>
-        /// <returns></returns>
-        ResponseViewModel Pending(int accountantSignGroupId);
-
-        /// <summary>
-        /// 將草稿的簽印組狀態變更為作廢
-        /// </summary>
-        /// <param name="accountantSignGroupId">會計師簽印群組Id</param>
-        /// <returns></returns>
-        ResponseViewModel Invalid(int accountantSignGroupId);
-
-        /// <summary>
-        /// 將待審的簽印組狀態變更為草稿
-        /// </summary>
-        /// <param name="accountantSignGroupId">會計師簽印群組Id</param>        
-        ResponseViewModel CancelReview(int accountantSignGroupId);
+        /// <param name="reviewStatus">審查狀態</param>        
+        ResponseViewModel ChangeReviewStatus(int accountantSignGroupId, ReviewStatus reviewStatus);
     }
 }

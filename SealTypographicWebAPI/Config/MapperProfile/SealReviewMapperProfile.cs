@@ -22,7 +22,7 @@ namespace SealTypographicWebAPI.Config.MapperProfile
         {
 
             //客戶印鑑季度審核清單
-            CreateMap<CustomerSealGroup, CustomerSealQuarterReviewViewModel>()
+            CreateMap<CustomerSealGroup, CustomerSealGroupReviewViewModel>()
                     .ForMember(dst => dst.Name, opt => opt.MapFrom(src => src.Customer.Name))
                     .ForMember(dst => dst.Code, opt => opt.MapFrom(src => src.Customer.Code))
                     .ForMember(dst => dst.Quarter, opt => opt.MapFrom(src => QuarterUtil.GetTaiwanYearQuarter(src.QuarterYear)))
@@ -33,30 +33,17 @@ namespace SealTypographicWebAPI.Config.MapperProfile
                  .ForMember(dst => dst.SealMappingConfigId, opt => opt.MapFrom(src => SealMappingConfigUtil.GetCustomerSealType(src.SubSealType)));
 
             CreateMap<CustomerSealGroup, CustomerSealQuarterViewModel>()
-                    .ForMember(dst => dst.Quarter, opt => opt.MapFrom(src => QuarterUtil.GetTaiwanYearQuarter(src.QuarterYear)));
+                    .ForMember(dst => dst.QuarterYearId, opt => opt.MapFrom(src => src.QuarterYear.Id));
 
 
             //客戶印鑑審核詳細資料
-            CreateMap<CustomerSealGroup, CustomerSealQuarterDetailReviewViewModel>()
+            CreateMap<CustomerSealGroup, CustomerSealGroupDetailReviewViewModel>()
                      //客戶基本資料
                      .ForMember(dst => dst.Name, opt => opt.MapFrom(src => src.Customer.Name))
                      .ForMember(dst => dst.Code, opt => opt.MapFrom(src => src.Customer.Code))
-                     .ForMember(dst => dst.BAN, opt => opt.MapFrom(src => src.Customer.BAN))
-                     .ForMember(dst => dst.President, opt => opt.MapFrom(src => src.Customer.President))
-                     .ForMember(dst => dst.StockCode, opt => opt.MapFrom(src => src.Customer.StockCode))
-                     .ForMember(dst => dst.PostalCode, opt => opt.MapFrom(src => src.Customer.PostalCode))
-                     .ForMember(dst => dst.AddressArea, opt => opt.MapFrom(src => src.Customer.AddressArea))
-                     .ForMember(dst => dst.AddressCity, opt => opt.MapFrom(src => src.Customer.AddressCity))
-                     .ForMember(dst => dst.AddressLocate, opt => opt.MapFrom(src => src.Customer.AddressLocate))
-                     .ForMember(dst => dst.AddressStreet, opt => opt.MapFrom(src => src.Customer.AddressStreet))
-                     .ForMember(dst => dst.Telephone, opt => opt.MapFrom(src => src.Customer.Telephone))
-                     .ForMember(dst => dst.Fax, opt => opt.MapFrom(src => src.Customer.Fax))
-                     .ForMember(dst => dst.ContactName, opt => opt.MapFrom(src => src.Customer.ContactName))
-                     .ForMember(dst => dst.ContactTitle, opt => opt.MapFrom(src => src.Customer.ContactTitle))
-                     .ForMember(dst => dst.ContactTelephone, opt => opt.MapFrom(src => src.Customer.ContactTelephone))
                      //印鑑與季度相關
                      .ForMember(dst => dst.Id, opt => opt.MapFrom(src => src.Id))
-                     .ForMember(dst => dst.Quarter, opt => opt.MapFrom(src => QuarterUtil.GetTaiwanYearQuarter(src.QuarterYear)))
+                     .ForMember(dst => dst.QuarterYearId, opt => opt.MapFrom(src => src.QuarterYear.Id))
                      .ForMember(dst => dst.Seals, opt => opt.MapFrom(src => src.TypographicResources.Where(x => x.DeleteStatus == DeleteStatus.No)));
 
             //客戶印鑑審核詳細資料的印鑑部份
