@@ -85,12 +85,7 @@ namespace SealTypographicWebAPI.Services.Implements
                     //取得該頁            
                     customerPaginateViewModel.ViewModels =  customerQuery                                                                   
                                                             .Skip((customerSearch.PageNumber - 1) * customerSearch.PageSize)
-                                                            .Take(customerSearch.PageSize)     
-                                                            .Where(x => x.CustomerSealGroups.Any
-                                                            (
-                                                                customerSealQuery => customerSealQuery.TypographyType == typographyType
-                                                                && customerSealQuery.DeleteStatus == DeleteStatus.No
-                                                            ))
+                                                            .Take(customerSearch.PageSize)
                                                             .ProjectTo<CustomerViewModel>(configurationProvider)
                                                             .ToList();
 
