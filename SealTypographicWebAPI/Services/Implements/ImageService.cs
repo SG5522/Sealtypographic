@@ -44,7 +44,7 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <param name="imageBase64Info">ImageBase64資訊</param>     
         public async Task<string> GetSavedImageFilePath(ImageBase64Info imageBase64Info)
         {
-            string savePath = Path.Combine(imageBase64Info.RootFolder(), imageBase64Info.ReName());
+            string savePath = imageBase64Info.GetImageFilePath();
             return await SaveImageAsync(imageBase64Info.ImageBase64, savePath, false);
         }
 
@@ -56,7 +56,7 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <returns></returns>
         public async Task<string> GetSavedImageThumbnailFilePath(ImageBase64Info imageBase64Info, bool isResize)
         {
-            string savePath = Path.Combine(imageBase64Info.RootFolder(), imageBase64Info.ReNameForThumbnail());
+            string savePath = imageBase64Info.GetImageThumbnailFilePath();
             return await SaveImageAsync(imageBase64Info.ImageBase64, savePath, isResize);            
         }
 

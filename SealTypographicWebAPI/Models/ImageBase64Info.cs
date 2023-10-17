@@ -62,5 +62,23 @@
         {
             return $"{"thumbnail"}{Code}{CreateTime:yyyyMMHHmmssffff}";
         }
+
+        /// <summary>
+        /// 取得圖檔存檔路徑
+        /// </summary>
+        /// <returns></returns>
+        public string GetImageFilePath()
+        {
+            return Path.Combine(RootFolder(), ReName());
+        }
+
+        /// <summary>
+        /// 取得圖檔縮圖存檔路徑
+        /// </summary>
+        /// <returns></returns>
+        public string GetImageThumbnailFilePath()
+        {
+            return Path.Combine(RootFolder(), ReNameForThumbnail());
+        }
     }
 }

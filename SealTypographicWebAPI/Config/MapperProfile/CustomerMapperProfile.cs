@@ -20,11 +20,6 @@ namespace SealTypographicWebAPI.Config.MapperProfile
         {
             //客戶基本資料
             CreateMap<Customer, CustomerDetail>();
-            CreateMap<Customer, CustomerViewModel>()
-                    .ForMember(dst => dst.IsDraff, opt => opt.MapFrom(src => src.CustomerSealGroups.Any(sealGroup => sealGroup.ReviewStatus == ReviewStatus.Draft)))
-                    .ForMember(dst => dst.IsPending, opt => opt.MapFrom(src => src.CustomerSealGroups.Any(sealGroup => sealGroup.ReviewStatus == ReviewStatus.Pending)))
-                    .ForMember(dst => dst.IsReject, opt => opt.MapFrom(src => src.CustomerSealGroups.Any(sealGroup => sealGroup.ReviewStatus == ReviewStatus.Reject)))
-                    .ForMember(dst => dst.CustomerSealQuarterId, opt => opt.MapFrom(src => src.CustomerSealGroups.OrderByDescending(x => x.Id).First().Id));
 
             CreateMap<Customer, CustomerSummary>();
 

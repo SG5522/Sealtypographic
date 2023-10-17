@@ -55,17 +55,17 @@ namespace SealTypographicWebAPI.Services.Implements
             int companyId = 1;
 
             try
-            {
+            {                
                 IQueryable<Customer> customerQuery = dbContext.Customers
-                                                    .Include(x => x.CustomerSealGroups.Where
-                                                    (
-                                                        customerSealQuery => customerSealQuery.TypographyType == typographyType
-                                                        && customerSealQuery.DeleteStatus == DeleteStatus.No
-                                                    ))
                                                     .Where
                                                     (
                                                         x => x.Company.Id == companyId
                                                         && x.DeleteStatus == DeleteStatus.No
+                                                        && x.CustomerSealGroups.Any
+                                                        (
+                                                            customerSealQuery => customerSealQuery.TypographyType == typographyType
+                                                            && customerSealQuery.DeleteStatus == DeleteStatus.No
+                                                        )
                                                     );
 
                 if (!string.IsNullOrWhiteSpace(customerSearch.KeyWord))
@@ -81,12 +81,29 @@ namespace SealTypographicWebAPI.Services.Implements
 
 
                 if (customerQuery.Any())
-                {                    
+                {
                     //取得該頁            
-                    customerPaginateViewModel.ViewModels =  customerQuery                                                                   
+                    customerPaginateViewModel.ViewModels = customerQuery
+                                                            .Include(x => x.CustomerSealGroups)
                                                             .Skip((customerSearch.PageNumber - 1) * customerSearch.PageSize)
                                                             .Take(customerSearch.PageSize)
-                                                            .ProjectTo<CustomerViewModel>(configurationProvider)
+                                                            .Select(customer => new CustomerViewModel()
+                                                            {
+                                                                Id = customer.Id,
+                                                                Name = customer.Name,
+                                                                BAN = customer.BAN!,
+                                                                Code = customer.Code,
+                                                                IsDraff = customer.CustomerSealGroups.Any(x => x.ReviewStatus == ReviewStatus.Draft),
+                                                                IsPending = customer.CustomerSealGroups.Any(x => x.ReviewStatus == ReviewStatus.Pending),
+                                                                IsReject = customer.CustomerSealGroups.Any(x => x.ReviewStatus == ReviewStatus.Refuse),
+                                                                CustomerSealQuarterId = customer.CustomerSealGroups
+                                                                                        .Where(
+                                                                                                sealGroup => sealGroup.TypographyType == typographyType
+                                                                                                && sealGroup.DeleteStatus == DeleteStatus.No
+                                                                                        )
+                                                                                        .OrderByDescending(x => x.Id)
+                                                                                        .First().Id
+                                                            })
                                                             .ToList();
 
                     customerPaginateViewModel.PageNumber = customerSearch.PageNumber;
@@ -311,7 +328,7 @@ namespace SealTypographicWebAPI.Services.Implements
 
                         customerSealGroup.QuarterYear = quarter;
                         customerSealGroup.TypographyType = typographyType;
-                        BaseInputQuarterJournal(customerSealGroup, true, userId);
+                        BaseInput(customerSealGroup, true, userId);
                         //新增印鑑資料(圖檔與DB資源)
                         customerSealGroup.TypographicResources = await NewTypographyResource(customerSealForm.Seals, imageBase64Info, userId);
 
@@ -512,7 +529,7 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <param name="customerSealGroup">Db上的印鑑資料</param>
         /// <param name="isCreate">對Db所做的行動</param>
         /// <param name="userId">userId</param>
-        private static void BaseInputQuarterJournal(CustomerSealGroup customerSealGroup, bool isCreate, int userId)
+        private static void BaseInput(CustomerSealGroup customerSealGroup, bool isCreate, int userId)
         {
             if (isCreate)
             {
