@@ -25,7 +25,7 @@ namespace SealTypographicWebAPI.Config.MapperProfile
             CreateMap<CustomerSealGroup, CustomerSealGroupReviewViewModel>()
                     .ForMember(dst => dst.Name, opt => opt.MapFrom(src => src.Customer.Name))
                     .ForMember(dst => dst.Code, opt => opt.MapFrom(src => src.Customer.Code))
-                    .ForMember(dst => dst.Quarter, opt => opt.MapFrom(src => QuarterUtil.GetTaiwanYearQuarter(src.QuarterYear)))
+                    .ForMember(dst => dst.QuarterYearId, opt => opt.MapFrom(src => src.QuarterYear.Id))
                     .ForMember(dst => dst.SealImageInfos, opt => opt.MapFrom(src => src.TypographicResources.Where(x => x.DeleteStatus == DeleteStatus.No)));
 
             CreateMap<TypographicResource, SealImageInfo>()

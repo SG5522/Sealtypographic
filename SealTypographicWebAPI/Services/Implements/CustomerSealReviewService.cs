@@ -42,16 +42,15 @@ namespace SealTypographicWebAPI.Services.Implements
             try
             {
                 IQueryable<CustomerSealGroup> customerSealQuarterQuery = dbContext.CustomerSealGroups
-                                                                    .Include(customerSealGroup => customerSealGroup.Customer)
-                                                                    .Include(x => x.QuarterYear)
-                                                                    .Where
-                                                                    (
-                                                                        customerSealGroup => customerSealGroup.DeleteStatus == DeleteStatus.No
-                                                                        && customerSealGroup.ReviewStatus < ReviewStatus.Disabled                                                                        
-                                                                        && customerSealGroup.Customer.Company.Id == companyId
-                                                                        && customerSealGroup.TypographyType == typographyType
-                                                                    ).OrderByDescending(x => x.QuarterYear.Id);
-
+                                                                        .Include(customerSealGroup => customerSealGroup.Customer)
+                                                                        .Include(x => x.QuarterYear)
+                                                                        .Where
+                                                                        (
+                                                                            customerSealGroup => customerSealGroup.DeleteStatus == DeleteStatus.No
+                                                                            && customerSealGroup.ReviewStatus < ReviewStatus.Disabled                                                                        
+                                                                            && customerSealGroup.Customer.Company.Id == companyId
+                                                                            && customerSealGroup.TypographyType == typographyType
+                                                                        ).OrderByDescending(x => x.QuarterYear.Id);
 
                 if (!string.IsNullOrWhiteSpace(customerSealSearchReview.KeyWord))
                 {

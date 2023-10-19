@@ -118,7 +118,7 @@ builder.Services.AddScoped<ITemporarySealService, TemporarySealService>();
 builder.Services.AddScoped<ICustomerSealTemplateService, CustomerSealTemplateService>();
 builder.Services.AddScoped<IAccountantSignTemplateService, AccountantSignTemplateService>();
 builder.Services.AddScoped<ILetterheadImageTemplateService, LetterheadImageTemplateService>();
-builder.Services.AddScoped<UploadService>();
+builder.Services.AddScoped<IUploadService, UploadService>();
 builder.Services.AddScoped<ITypographicPDFService, TypographicPDFService>();
 builder.Services.AddScoped<IQuarterYearService, QuarterYearService>();
 

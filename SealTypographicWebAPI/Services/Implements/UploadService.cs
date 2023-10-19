@@ -1,5 +1,4 @@
-﻿using EFCore.BulkExtensions;
-using Microsoft.Extensions.Localization;
+﻿using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Options;
 using SealTypographicWebAPI.Config;
 using DBEntities;
@@ -7,32 +6,34 @@ using SealTypographicWebAPI.Models;
 using SealTypographicWebAPI.Models.Upload;
 using Microsoft.EntityFrameworkCore;
 using DBEntities.Consts;
+using DJLib;
+using DJLib.Models;
 
 namespace SealTypographicWebAPI.Services.Implements
 {
     /// <summary>
-    /// 上傳檔案
+    /// 上傳檔案管理
     /// </summary>
-    public class UploadService
-    {
-        private readonly ImageService imageSharpService;
+    public class UploadService : IUploadService
+    {        
         private readonly IStringLocalizer<UploadService> localizer;
         private readonly UploadPathOption uploadConfigPath;
         private readonly SealTypographicDbContext dbContext;
+        private readonly ILogger<UploadData> logger;
 
         /// <summary>
-        /// 注入ImageSharpService
-        /// </summary>
-        /// <param name="imageSharpService"></param>
-        /// <param name="dbContext"></param>
-        /// <param name="localizer"></param>
-        /// <param name="options"></param>       
-        public UploadService(ImageService imageSharpService, SealTypographicDbContext dbContext,IStringLocalizer<UploadService> localizer, IOptionsSnapshot<UploadPathOption> options)
+        /// 建構
+        /// </summary>        
+        /// <param name="dbContext">注入資料庫</param>
+        /// <param name="localizer">注入多國語系處理</param>
+        /// <param name="options">注入uploadConfigPath</param>
+        /// <param name="logger">注入logger</param>       
+        public UploadService(SealTypographicDbContext dbContext,IStringLocalizer<UploadService> localizer, IOptionsSnapshot<UploadPathOption> options, ILogger<UploadData> logger)
         {
-            this.imageSharpService = imageSharpService;
             this.dbContext = dbContext;
             this.localizer = localizer;
             uploadConfigPath = options.Value;
+            this.logger = logger;
         }
 
         /// <summary>
@@ -41,17 +42,27 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <returns></returns>
         public UploadTypeResponse GetUploadType() 
         {            
-            UploadTypeResponse uploadTypeResponse = new();            
-            foreach (UploadType uploadType in (UploadType[])Enum.GetValues(typeof(UploadType)))
-            {                
-                UploadTypeViewModel uploadTypeViewModel = new()
+            UploadTypeResponse uploadTypeResponse = new();
+            try
+            {
+                foreach (UploadType uploadType in (UploadType[])Enum.GetValues(typeof(UploadType)))
                 {
-                    UploadType = uploadType,
-                    Name = localizer[uploadType.GetDescription()]
-                };
-                uploadTypeResponse.ViewModels.Add(uploadTypeViewModel);
+                    UploadTypeViewModel uploadTypeViewModel = new()
+                    {
+                        UploadType = uploadType,
+                        Name = localizer[uploadType.GetDescription()]
+                    };
+                    uploadTypeResponse.ViewModels.Add(uploadTypeViewModel);
+                }
+                uploadTypeResponse.Success();
+                logger.LogInformation("GetUploadType output {@Output}", uploadTypeResponse);
             }
-            uploadTypeResponse.Success();
+            catch (Exception ex)
+            {
+                uploadTypeResponse.Error();
+                logger.LogError("GetUploadType error {@Error}", ex.Message);
+            }
+
             return uploadTypeResponse;
         }
 
@@ -62,16 +73,26 @@ namespace SealTypographicWebAPI.Services.Implements
         public DuplicateFileProcessModeResponse GetDuplicateFileProcessMode()
         {
             DuplicateFileProcessModeResponse duplicateFileProcessModeResponse = new();
-            foreach (DuplicateFileProcessMode duplicateFileProcessMode in (DuplicateFileProcessMode[])Enum.GetValues(typeof(DuplicateFileProcessMode)))
+            try
             {
-                DuplicateFileProcessModeViewModel duplicateFileProcessModeViewModel = new()
+                foreach (DuplicateFileProcessMode duplicateFileProcessMode in (DuplicateFileProcessMode[])Enum.GetValues(typeof(DuplicateFileProcessMode)))
                 {
-                    DuplicateFileProcessMode = duplicateFileProcessMode,
-                    Name = localizer[duplicateFileProcessMode.GetDescription()]
-                };
-                duplicateFileProcessModeResponse.ViewModels.Add(duplicateFileProcessModeViewModel);
+                    DuplicateFileProcessModeViewModel duplicateFileProcessModeViewModel = new()
+                    {
+                        DuplicateFileProcessMode = duplicateFileProcessMode,
+                        Name = localizer[duplicateFileProcessMode.GetDescription()]
+                    };
+                    duplicateFileProcessModeResponse.ViewModels.Add(duplicateFileProcessModeViewModel);
+                }
+                duplicateFileProcessModeResponse.Success();
+                logger.LogInformation("GetDuplicateFileProcessMode output {@Output}", duplicateFileProcessModeResponse);
             }
-            duplicateFileProcessModeResponse.Success();
+            catch(Exception ex)
+            {
+                duplicateFileProcessModeResponse.Error();
+                logger.LogError("GetUploadType error {@Error}", ex.Message);
+            }
+            
             return duplicateFileProcessModeResponse;
         }
 
@@ -82,9 +103,14 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <returns></returns>
         public UploadFileResponse GetFile(UploadType uploadType)
         {
+            logger.LogInformation("GetFile uploadType {@UploadType}", uploadType);
+
             UploadFileResponse uploadFileResponse = new();
             int companyId = 1;
-            List<UploadFile> uploadFiles = dbContext.UploadFiles
+
+            try
+            {
+                List<UploadFile> uploadFiles = dbContext.UploadFiles
                                             .Where
                                             (
                                                 uploadFile => uploadFile.UploadType == uploadType
@@ -92,20 +118,26 @@ namespace SealTypographicWebAPI.Services.Implements
                                                 && uploadFile.FileWorkStatus == FileWorkStatus.Unprocessed
                                                 && uploadFile.DeleteStatus == DeleteStatus.No
                                             ).ToList();
-            if(uploadFiles.Any())
-            {
-                foreach(UploadFile uploadFile in uploadFiles) 
+                if (uploadFiles.Any())
                 {
-                    uploadFileResponse.ViewModel.Add(new UploadFileViewModel
+                    foreach (UploadFile uploadFile in uploadFiles)
+                    {
+                        uploadFileResponse.ViewModel.Add(new UploadFileViewModel
                         {
                             Id = uploadFile.Id,
                             UploadDate = uploadFile.UpdateDate,
                             FileName = uploadFile.OriginalFileName
-                        }
-                    );
-                }                
+                        });
+                    }
+                }
+                uploadFileResponse.Success();
+                logger.LogInformation("GetFile output {@Output}", uploadFileResponse);
             }
-            uploadFileResponse.Success();
+            catch (Exception ex)
+            {
+                uploadFileResponse.Error();
+                logger.LogError("GetFile error {@Error}", ex.Message);
+            }            
 
             return uploadFileResponse;
         }
@@ -117,13 +149,25 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <returns></returns>
         public UploadFileImageView GetFileImage(int uploadFileId)
         {
+            logger.LogInformation("GetFileImage uploadFileId= {@UploadFileId}", uploadFileId);
+
             UploadFileImageView uploadFileImageView = new();
-            UploadFile? uploadFile = dbContext.UploadFiles.Find(uploadFileId);
-            if(uploadFile != null)
+
+            try
             {
-                uploadFileImageView.ImageBase64 = imageSharpService.GetPathToBase64(uploadFile.FullPath);                
+                UploadFile? uploadFile = dbContext.UploadFiles.Find(uploadFileId);
+                if (uploadFile != null)
+                {
+                    uploadFileImageView.ImageBase64 = ImageSharpUtil.PathImageFileToBase64(uploadFile.FullPath);
+                }
+                uploadFileImageView.Success();
+                logger.LogInformation("GetFileImage output {@Output}", uploadFileImageView);
             }
-            uploadFileImageView.Success();
+            catch(Exception ex)
+            {
+                uploadFileImageView.Error();
+                logger.LogError("GetFileImage error {@Error}", ex.Message);
+            }
 
             return uploadFileImageView;
         }
@@ -136,77 +180,60 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <returns></returns>
         public DuplicateFileResponse CheckDuplicateFileName(UploadType uploadType, List<IFormFile> formFiles)
         {
+            logger.LogInformation("CheckDuplicateFileName uploadType= {@UploadType} formFiles {@FormFiles}", uploadType, formFiles);
+
             DuplicateFileResponse uploadDuplicateFiles = new();
-            foreach (IFormFile formFile in formFiles)
+
+            try
             {
-                UploadFile? uploadFileQuery = dbContext.UploadFiles
-                                             .FirstOrDefault(uploadFile => uploadFile.UploadType == uploadType
-                                             && uploadFile.OriginalFileName == formFile.FileName
-                                             && uploadFile.DeleteStatus == DeleteStatus.No
-                                            && uploadFile.FileWorkStatus == FileWorkStatus.Unprocessed);//檢查重複時連同工作狀態一起檢查(未來製作檔案管理時可能要拔掉這塊)
-
-                List<UploadFile> test = dbContext.UploadFiles.ToList();
-
-                if (uploadFileQuery != null)
+                foreach (IFormFile formFile in formFiles)
                 {
+                    UploadFile? uploadFileQuery = dbContext.UploadFiles
+                                                    .FirstOrDefault(uploadFile => uploadFile.UploadType == uploadType
+                                                    && uploadFile.OriginalFileName == formFile.FileName
+                                                    && uploadFile.DeleteStatus == DeleteStatus.No
+                                                    && uploadFile.FileWorkStatus == FileWorkStatus.Unprocessed);//檢查重複時連同工作狀態一起檢查(未來製作檔案管理時可能要拔掉這塊)                    
 
-                    uploadDuplicateFiles.ViewModel.Add(new DuplicateFileViewModel { Id = uploadFileQuery.Id, FileName = uploadFileQuery.OriginalFileName });
+                    if (uploadFileQuery != null)
+                    {
+                        uploadDuplicateFiles.ViewModel.Add(new DuplicateFileViewModel { Id = uploadFileQuery.Id, FileName = uploadFileQuery.OriginalFileName });
+                    }
                 }
+                uploadDuplicateFiles.Success();
+                logger.LogInformation("CheckDuplicateFileName output {@Output}", uploadDuplicateFiles);
             }
-            uploadDuplicateFiles.Success();
+            catch (Exception ex)
+            {
+                uploadDuplicateFiles.Error();
+                logger.LogError("CheckDuplicateFileName error {@Error}", ex.Message);
+            }            
+            
             return uploadDuplicateFiles;
         }
-
 
         /// <summary>
         /// 上傳圖檔(IFormFile)
         /// </summary>
-        /// <param name="uploadData">上傳檔案內容</param>              
+        /// <param name="uploadBase64Data">上傳檔案內容</param>
+        /// <param name="userId">使用者Id</param>              
         /// <returns></returns>
-        public async Task<ResponseViewModel> SaveFormFile(UploadData uploadData)
+        public async Task<ResponseViewModel> SaveScanFile(UploadScanData uploadBase64Data, int userId = 0)
         {
-            ResponseViewModel response = new();
-            List<UploadFile> uploadfiles = new ();
-            int userId = 0; //帳號驗證取得ID
+            logger.LogInformation("SaveScanFile input {@Input} userId= {@Userid}", uploadBase64Data, userId);
+            ResponseViewModel response = new();            
             int companyId = 1; //公司Id
 
-            //尋找公司並與上傳檔案關聯
-            Company? companyQuery = dbContext.Companys.Include(x => x.UploadFiles).FirstOrDefault(x => x.Id == companyId);
-
-            if(companyQuery != null) 
+            try
             {
-                if (uploadData.DuplicateFileIds != null)
-                {
-                    foreach (int duplicateFileId in uploadData.DuplicateFileIds)
-                    {                        
-                        UploadFile? uploadFile = companyQuery.UploadFiles.FirstOrDefault(x => x.Id == duplicateFileId);
+                //尋找公司並與上傳檔案關聯
+                Company? companyQuery = dbContext.Companys.Include(x => x.UploadFiles).FirstOrDefault(x => x.Id == companyId);
 
-                        if (uploadFile != null)
-                        {
-                            //找出重複的檔案
-                            IFormFile formFile = uploadData.FormFiles.Single(f => f.FileName == uploadFile.OriginalFileName);
-                            //上傳重複檔名處理模式為覆蓋模式則將原來資料標上刪除狀態。
-                            if (uploadData.DuplicateFileProcessMode == DuplicateFileProcessMode.Overlay)
-                            {
-                                //原檔案的刪除狀態變更為Yes
-                                uploadFile.DeleteStatus = DeleteStatus.Yes;
-                                BaseInput(uploadFile, false, userId);
-                            }
-                            //新增上傳的檔案
-                            await SaveFile(formFile, uploadData.UploadType, companyQuery, userId, uploadfiles);
-                            uploadData.FormFiles.Remove(formFile);
-                        }
+                if (companyQuery != null)
+                {
+                    foreach (string imagebase64 in uploadBase64Data.ImageBase64Strings)
+                    {
+                        companyQuery.UploadFiles.Add(await SaveScanFile(imagebase64, uploadBase64Data.UploadType, userId));
                     }
-                }
-
-                foreach (IFormFile formFile in uploadData.FormFiles)
-                {
-                    await SaveFile(formFile, uploadData.UploadType, companyQuery, userId, uploadfiles);
-                }
-
-                if (uploadfiles.Any())
-                {                    
-                    dbContext.UploadFiles.AddRange(uploadfiles);                    
                     dbContext.SaveChanges();
                     response.Success();
                 }
@@ -214,8 +241,90 @@ namespace SealTypographicWebAPI.Services.Implements
                 {
                     response.FileUploadFailed();
                 }
+                logger.LogInformation("SaveScanFile output {@Output}", response);
             }
+            catch (DbUpdateException ex)
+            {
+                response.DbError();
+                logger.LogInformation("SaveScanFile Db error (@DbError)", ex.Message);
+            }
+            catch (Exception ex)
+            {
+                response.Error();
+                logger.LogInformation("SaveScanFile error (@Error)", ex.Message);
+            }            
 
+            return response;
+        }
+
+        /// <summary>
+        /// 上傳圖檔(IFormFile)
+        /// </summary>
+        /// <param name="uploadData">上傳檔案內容</param>
+        /// <param name="userId">帳號驗證取得ID</param>              
+        /// <returns></returns>
+        public async Task<ResponseViewModel> SaveFormFile(UploadData uploadData, int userId = 0)
+        {
+            logger.LogInformation("SaveFormFile input {@Input} userId= {@Userid}", uploadData, userId);
+
+            ResponseViewModel response = new();                     
+            int companyId = 1; //公司Id
+
+            try
+            {
+                //尋找公司並與上傳檔案關聯
+                Company? companyQuery = dbContext.Companys.Include(x => x.UploadFiles).FirstOrDefault(x => x.Id == companyId);
+
+                if (companyQuery != null)
+                {
+                    if (uploadData.DuplicateFileIds != null)
+                    {
+                        foreach (int duplicateFileId in uploadData.DuplicateFileIds)
+                        {
+                            UploadFile? uploadFile = companyQuery.UploadFiles.FirstOrDefault(x => x.Id == duplicateFileId);
+
+                            if (uploadFile != null)
+                            {
+                                //找出重複的檔案
+                                IFormFile formFile = uploadData.FormFiles.Single(f => f.FileName == uploadFile.OriginalFileName);
+                                //上傳重複檔名處理模式為覆蓋模式則將原來資料標上刪除狀態。
+                                if (uploadData.DuplicateFileProcessMode == DuplicateFileProcessMode.Overlay)
+                                {
+                                    //原檔案的刪除狀態變更為Yes
+                                    uploadFile.DeleteStatus = DeleteStatus.Yes;
+                                    BaseInput(uploadFile, false, userId);
+                                }
+                                //新增上傳的檔案
+                                companyQuery.UploadFiles.Add(await SaveFile(formFile, uploadData.UploadType, userId));
+                                uploadData.FormFiles.Remove(formFile);
+                            }
+                        }
+                    }
+
+                    foreach (IFormFile formFile in uploadData.FormFiles)
+                    {
+                        companyQuery.UploadFiles.Add(await SaveFile(formFile, uploadData.UploadType, userId));
+                    }
+                    dbContext.SaveChanges();
+                    response.Success();
+                }
+                else
+                {
+                    response.FileUploadFailed();
+                }
+                logger.LogInformation("SaveFormFile output {@Output}", response);
+            }
+            catch (DbUpdateException ex)
+            {
+                response.DbError();
+                logger.LogInformation("SaveScanFile Db error (@DbError)", ex.Message);
+            }
+            catch (Exception ex)
+            {
+                response.Error();
+                logger.LogInformation("SaveFormFile error (@Error)", ex.Message);
+            }
+            
             return response;
         }
 
@@ -223,22 +332,34 @@ namespace SealTypographicWebAPI.Services.Implements
         /// 變更檔案工作狀態為已處理
         /// </summary>
         /// <param name="uploadFileId">上傳檔案Id</param>
+        /// <param name="userId"></param>
         /// <returns></returns>
-        public ResponseViewModel ChangeFileWorkStatusToDone(int uploadFileId)
+        public ResponseViewModel ChangeFileWorkStatusToDone(int uploadFileId, int userId = 0)
         {
+            logger.LogInformation("ChangeFileWorkStatusToDone uploadFileId= {@uploadFileId} userId= {@Userid}", uploadFileId, userId);
+
             ResponseViewModel response = new();
-            int userid = 0;
-            UploadFile? uploadFile = dbContext.UploadFiles.Find(uploadFileId);
-            if (uploadFile != null)
+            
+            try
             {
-                uploadFile.FileWorkStatus = FileWorkStatus.Done;
-                BaseInput(uploadFile, false, userid);
-                dbContext.SaveChanges();
-                response.Success();
+                UploadFile? uploadFile = dbContext.UploadFiles.Find(uploadFileId);
+                if (uploadFile != null)
+                {
+                    uploadFile.FileWorkStatus = FileWorkStatus.Done;
+                    BaseInput(uploadFile, false, userId);
+                    dbContext.SaveChanges();
+                    response.Success();
+                }
+                else
+                {
+                    response.FileUploadNoData();
+                }
+                logger.LogInformation("ChangeFileWorkStatusToDone output {@Output}", response);
             }
-            else
+            catch (Exception ex)
             {
-                response.FileUploadNoData();
+                response.Error();
+                logger.LogInformation("ChangeFileWorkStatusToDone error {@Error}", ex.Message);
             }
 
             return response;
@@ -248,34 +369,45 @@ namespace SealTypographicWebAPI.Services.Implements
         /// 刪除上傳檔案(隱藏)
         /// </summary>
         /// <param name="uploadFileIds"></param>
+        /// <param name="userId"></param>
         /// <returns></returns>
-        public ResponseViewModel Delete(List<int> uploadFileIds)
+        public ResponseViewModel Delete(List<int> uploadFileIds, int userId = 0)
         {
-            ResponseViewModel response = new();
-            int userid = 0;
+            logger.LogInformation("Delete uploadFileIds {@uploadFileIds} userId= {@Userid}", uploadFileIds, userId);
+
+            ResponseViewModel response = new();            
             
-            foreach(int uploadFileId in uploadFileIds)
+            try
             {
-                UploadFile? uploadFile = dbContext.UploadFiles.Find(uploadFileId);
-                if (uploadFile != null)
+                foreach (int uploadFileId in uploadFileIds)
                 {
-                    uploadFile.DeleteStatus = DeleteStatus.Yes;
-                    BaseInput(uploadFile, false, userid);                    
+                    UploadFile? uploadFile = dbContext.UploadFiles.Find(uploadFileId);
+                    if (uploadFile != null)
+                    {
+                        uploadFile.DeleteStatus = DeleteStatus.Yes;
+                        BaseInput(uploadFile, false, userId);
+                    }
+                    else
+                    {
+                        response.ErrorItem += $"{uploadFileId},";
+                    }
+                }
+                if (response.ErrorItem == null)
+                {
+                    response.Success();
+                    dbContext.SaveChanges();
                 }
                 else
                 {
-                    response.ErrorItem += $"{uploadFileId},";
+                    response.ErrorItem = response.ErrorItem.Remove(response.ErrorItem.Length - 1, 1);
+                    response.FileUploadNoData();
                 }
+                logger.LogInformation("Delete output {@Output}", response);
             }
-            if(response.ErrorItem == null)
+            catch (Exception ex)
             {
-                response.Success();
-                dbContext.SaveChanges();
-            }
-            else
-            {
-                response.ErrorItem = response.ErrorItem.Remove(response.ErrorItem.Length - 1, 1);                
-                response.FileUploadNoData();
+                response.Error();
+                logger.LogInformation("Delete error {@Error}", ex.Message);
             }
 
             return response;
@@ -284,28 +416,53 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <summary>
         /// 存檔處理       
         /// </summary>
-        /// <param name="formFile"></param>
-        /// <param name="uploadType">檔案類型</param>
-        /// <param name="company">關聯會計師事務所</param>        
+        /// <param name="imageBase64"></param>        
+        /// <param name="uploadType">檔案類型</param>   
         /// <param name="userid">使用者ID</param>
-        /// <param name="uploadfiles">上傳檔案資料表</param>
         /// <returns></returns>
-        private async Task SaveFile(IFormFile formFile, UploadType uploadType, Company company, int userid, List<UploadFile> uploadfiles)
+        private async Task<UploadFile> SaveScanFile(string imageBase64, UploadType uploadType, int userid)
+        {
+            ImageInfo imageInfo = ImageInfo.FromImageBase64(imageBase64);
+            string originalFileName = $"{userid}{DateTime.Now:yyyyMMddHHmmssffff}scanFile.{imageInfo.ImageFormat.FileExtensions.First()}";
+            string savePath = GetSavePath(uploadType, userid, originalFileName);
+            await ImageSharpUtil.SaveFileAsync(imageInfo, savePath);
+            return NewUploadFile(savePath, uploadType, userid, originalFileName);
+        }
+
+        /// <summary>
+        /// 存檔處理       
+        /// </summary>
+        /// <param name="formFile"></param>
+        /// <param name="uploadType">檔案類型</param>   
+        /// <param name="userid">使用者ID</param>
+        /// <returns></returns>
+        private async Task<UploadFile> SaveFile(IFormFile formFile, UploadType uploadType, int userid)
         {
             string savePath = GetSavePath(uploadType, userid, formFile.FileName);
             using Stream stream = new FileStream(savePath, FileMode.Create);
             await formFile.CopyToAsync(stream);
+            return NewUploadFile(savePath, uploadType, userid, formFile.FileName);
+        }
+
+        /// <summary>
+        /// 新增上傳檔案
+        /// </summary>
+        /// <param name="savePath">存檔路徑</param>
+        /// <param name="uploadType">上傳檔案類別</param>
+        /// <param name="userid">userId</param>
+        /// <param name="originalFileName">原檔名稱</param>
+        /// <returns></returns>
+        private UploadFile NewUploadFile(string savePath, UploadType uploadType, int userid, string originalFileName)
+        {
+            // TODO: 後續在DuplicateFileProcessMode.Reserve(保留原檔名)模式時客戶要求檔名要區分時在另做調整。
             UploadFile uploadFile = new()
             {
-                OriginalFileName = formFile.FileName,
+                OriginalFileName = originalFileName,
                 UploadType = uploadType,
-                FullPath = savePath,
-                Company = company,
-            };            
-            // TODO: 後續在DuplicateFileProcessMode.Reserve(保留原檔名)模式時客戶要求檔名要區分時在另做調整。
-            uploadFile.OriginalFileName = formFile.FileName;
+                FullPath = savePath,                
+            };
             BaseInput(uploadFile, true, userid);
-            uploadfiles.Add(uploadFile);
+            return uploadFile;
         }
 
         /// <summary>
@@ -313,9 +470,9 @@ namespace SealTypographicWebAPI.Services.Implements
         /// </summary>
         /// <param name="uploadType">印鑑類別</param>
         /// <param name="userid"></param>
-        /// <param name="originalfileName">原始檔名</param>        
+        /// <param name="originalFileName">原始檔名</param>        
         /// <returns></returns>
-        private string GetSavePath(UploadType uploadType,int userid, string originalfileName)
+        private string GetSavePath(UploadType uploadType,int userid, string originalFileName)
         {            
             string folder = string.Empty;            
             DateTime dateTime = DateTime.Now;            
@@ -347,7 +504,7 @@ namespace SealTypographicWebAPI.Services.Implements
                 Directory.CreateDirectory(folder);
             }
             
-            return Path.Combine(folder, $"{userid}{dateTime:yyyyMMddHHmmssffff}{Path.GetExtension(originalfileName)}");
+            return Path.Combine(folder, $"{userid}{dateTime:yyyyMMddHHmmssffff}{Path.GetExtension(originalFileName)}");
         }
 
         /// <summary>

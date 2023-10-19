@@ -79,7 +79,6 @@ namespace SealTypographicWebAPI.Services.Implements
                 }
                 customerQuery = customerQuery.OrderBy(customer => customer.Code);
 
-
                 if (customerQuery.Any())
                 {
                     //取得該頁            
@@ -156,7 +155,7 @@ namespace SealTypographicWebAPI.Services.Implements
                     customerSealGroupsQuery = customerSealGroupsQuery.Where(customerSealGroup => customerSealGroup.ReviewStatus == ReviewStatus.Approval);
                 }
 
-                customerSealGroupsQuery = customerSealGroupsQuery.OrderBy(customerSealGroup => customerSealGroup.QuarterYear.Id);
+                customerSealGroupsQuery = customerSealGroupsQuery.OrderBy(customerSealGroup => customerSealGroup.QuarterYear.Id).ThenBy(x => x.Id);
 
                 if (customerSealGroupsQuery.Any())
                 {
@@ -166,9 +165,10 @@ namespace SealTypographicWebAPI.Services.Implements
                                                                                 .ProjectTo<CustomerSealQuarterViewModel>(configurationProvider)
                                                                                 .ToList();
 
-                    customerSealQuarterPaginateViewModel.TotalCount = customerSealGroupsQuery.Count();
                     //計算總頁數
-                    customerSealQuarterPaginateViewModel.TotalPage = TotalPageUtil.GetTotalPage(customerSealQuarterPaginateViewModel.TotalCount, customerSealQuarterPaginateSearch.PageSize);
+                    int total = customerSealGroupsQuery.Count();
+                    customerSealQuarterPaginateViewModel.TotalCount = total;      
+                    customerSealQuarterPaginateViewModel.TotalPage = TotalPageUtil.GetTotalPage(total, customerSealQuarterPaginateSearch.PageSize);
                     customerSealQuarterPaginateViewModel.PageNumber = customerSealQuarterPaginateSearch.PageNumber;
                     customerSealQuarterPaginateViewModel.PageSize = customerSealQuarterPaginateSearch.PageSize;
 

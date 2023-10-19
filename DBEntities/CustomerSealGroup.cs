@@ -9,7 +9,7 @@ namespace DBEntities
     public class CustomerSealGroup : BaseReviewData
     {
         /// <summary>
-        /// 季度
+        /// 年季度
         /// </summary>
         public QuarterYear QuarterYear { get; set; }
 

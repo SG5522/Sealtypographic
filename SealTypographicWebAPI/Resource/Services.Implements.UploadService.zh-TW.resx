@@ -126,6 +126,9 @@
   <data name="Customer Seal Authorization" xml:space="preserve">
     <value>客戶授權書</value>
   </data>
+  <data name="Financial Report" xml:space="preserve">
+    <value>財務報表</value>
+  </data>
   <data name="Letterhead Image" xml:space="preserve">
     <value>信頭圖片</value>
   </data>
@@ -140,6 +143,9 @@
   </data>
   <data name="Reserve" xml:space="preserve">
     <value>保留</value>
+  </data>
+  <data name="Tax Report" xml:space="preserve">
+    <value>稅務報表</value>
   </data>
   <data name="Temporary" xml:space="preserve">
     <value>臨時檔</value>
