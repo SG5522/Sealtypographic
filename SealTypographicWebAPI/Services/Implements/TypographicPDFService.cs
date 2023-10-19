@@ -92,7 +92,7 @@ namespace SealTypographicWebAPI.Services.Implements
                 typographicPDFPaginateViewModel.PageNumber = typographicPDFSearch.PageNumber;
                 typographicPDFPaginateViewModel.PageSize = typographicPDFSearch.PageSize;
                 typographicPDFPaginateViewModel.TotalCount = totalCount;
-                typographicPDFPaginateViewModel.TotalPage = TotalPageUtil.GetTotalPage(totalCount, typographicPDFSearch.PageSize);
+                typographicPDFPaginateViewModel.TotalPage = PageUtil.GetTotalPage(totalCount, typographicPDFSearch.PageSize);
                 typographicPDFPaginateViewModel.Success();
             }
             else

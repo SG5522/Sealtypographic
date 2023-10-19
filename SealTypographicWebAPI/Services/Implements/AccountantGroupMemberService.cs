@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using AutoMapper;
 using DBEntities;
 using DBEntities.Consts;
-
+using AutoMapper.QueryableExtensions;
 
 namespace SealTypographicWebAPI.Services.Implements
 {
@@ -16,8 +16,8 @@ namespace SealTypographicWebAPI.Services.Implements
     /// </summary>
     public class AccountantGroupMemberServiceExtension : IAccountantGroupMemberService
     {
-        private readonly SealTypographicDbContext dbContext;
-        private readonly IMapper mapper;
+        private readonly SealTypographicDbContext dbContext;        
+        private readonly AutoMapper.IConfigurationProvider configurationProvider;
 
         /// <summary>
         /// 注入DB、ResponseService
@@ -26,101 +26,44 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <param name="mapper"></param>                
         public AccountantGroupMemberServiceExtension(SealTypographicDbContext dbContext, IMapper mapper)
         {
-            this.dbContext = dbContext;
-            this.mapper = mapper;
+            this.dbContext = dbContext;            
+            this.configurationProvider = mapper.ConfigurationProvider;
         }
 
         ///<inheritdoc /> 
-        public AccountantGroupMembers GetMembers(AccountantGroupMemberSearch accountantGroupMemberSearch)
+        public AccountantGroupMembers GetMembers(AccountantGroupMemberSearch accountantGroupMemberSearch, bool isGroup)
         {
             AccountantGroupMembers accountantGroupMembers = new();
-            List<AccountantGroupMember> accountantMembers = new();     
-                        
-            // Todo 調整寫法 
-            IQueryable<Accountant> accountantQuery = dbContext.Accountants
-                                                    .Where
-                                                    (
-                                                        accountant => 
-                                                        accountant.AccountantGroups.First().Id == accountantGroupMemberSearch.AccountantGroupId
-                                                        && accountant.DeleteStatus == DeleteStatus.No                                                        
-                                                    )
-                                                    .OrderBy(accountant => accountant.Id);
+
+            IQueryable<Accountant> accountantQuery = dbContext.Accountants.Where(x => x.DeleteStatus == DeleteStatus.No);
+                                                                     
+            if(isGroup)
+            {
+                accountantQuery = accountantQuery.Where(x => x.AccountantGroups.Any(x => x.Id == accountantGroupMemberSearch.AccountantGroupId));
+            }
+            else
+            {
+                accountantQuery = accountantQuery.Where(x => !x.AccountantGroups.Any(x => x.Id == accountantGroupMemberSearch.AccountantGroupId));
+            }
+
+            accountantQuery = accountantQuery.OrderBy(x => x.Id);
 
             if (accountantQuery.Any())
             {
                 //取得該頁            
-                List<Accountant> accountants = accountantQuery
-                                            .Skip((accountantGroupMemberSearch.PageNumber - 1) * accountantGroupMemberSearch.PageSize)
-                                            .Take(accountantGroupMemberSearch.PageSize)
-                                            .ToList();
+                accountantGroupMembers.Members = accountantQuery                                                
+                                                .Skip((accountantGroupMemberSearch.PageNumber - 1) * accountantGroupMemberSearch.PageSize)
+                                                .Take(accountantGroupMemberSearch.PageSize)
+                                                .ProjectTo<AccountantGroupMember>(configurationProvider)
+                                                .ToList();
 
-                foreach (Accountant accountant in accountants)
-                {
-                    accountantMembers.Add(new()
-                    {
-                        Id = accountant.Id,
-                        AccountantNumber = accountant.Code,
-                        Name = accountant.Name,
-                    });
-                }
-                accountantGroupMembers.Members = accountantMembers;
-                accountantGroupMembers.PageNumber = accountantGroupMemberSearch.PageNumber;
-                accountantGroupMembers.PageSize = accountantGroupMemberSearch.PageSize;
-                //計算總頁數                
-                accountantGroupMembers.TotalPage = TotalPageUtil.GetTotalPage(accountantQuery.Count(), accountantGroupMemberSearch.PageSize);
-                accountantGroupMembers.TotalCount = accountantQuery.Count();
-                                
-            }
-            accountantGroupMembers.Success();
+                PageUtil.GetPageData(accountantGroupMembers, accountantGroupMemberSearch.PageNumber, accountantGroupMemberSearch.PageSize, accountantQuery.Count());
+                accountantGroupMembers.Success();
+            }            
 
             return accountantGroupMembers;
         }
-
-        ///<inheritdoc /> 
-        public NotThisGroupMember GetNotThisGroupMember(NotThisGroupMemberSearch notThisGroupMemberSearch)
-        {
-            NotThisGroupMember notThisGroupMember = new();
-            List<AccountantViewModel> accountantViewModels = new();
-            
-            IQueryable<Accountant>? accountantQuery = dbContext.Accountants                                                        
-                                                        .Where(accountant => accountant.AccountantGroups.Any(x => x.Id != notThisGroupMemberSearch.AccountantGroupId)
-                                                        && accountant.DeleteStatus == DeleteStatus.No);
-                                                
-                                                
-            if(notThisGroupMemberSearch.KeyWord != null)
-            {
-                accountantQuery = accountantQuery.Where
-                                (
-                                    accountant => accountant.Code.Contains(notThisGroupMemberSearch.KeyWord)
-                                    || accountant.Name.Contains(notThisGroupMemberSearch.KeyWord)
-                                );
-            }
-
-            if (accountantQuery.Any())
-            {
-                //取得該頁            
-                List<Accountant> accountants =  accountantQuery
-                                                .Skip((notThisGroupMemberSearch.PageNumber - 1) * notThisGroupMemberSearch.PageSize)
-                                                .Take(notThisGroupMemberSearch.PageSize)
-                                                .ToList();
-
-                foreach (Accountant accountant in accountants)
-                {
-                    AccountantViewModel accountantViewModel = mapper.Map<AccountantViewModel>(accountant);
-                    //accountantViewModel.AccountantGroupName = accountant.AccountantGroup.Name;
-                    accountantViewModels.Add(accountantViewModel);
-                }
-                notThisGroupMember.AccountantViewModels = accountantViewModels;
-                notThisGroupMember.PageNumber = notThisGroupMemberSearch.PageNumber;
-                notThisGroupMember.PageSize = notThisGroupMemberSearch.PageSize;
-                //計算總頁數
-                notThisGroupMember.TotalPage = TotalPageUtil.GetTotalPage(accountantQuery.Count(), notThisGroupMemberSearch.PageSize);
-                notThisGroupMember.TotalCount = accountantQuery.Count();                            
-            }
-            notThisGroupMember.Success();
-
-            return notThisGroupMember;
-        }
+      
 
         ///<inheritdoc />
         public ResponseViewModel UpdateGroup(AccountantGroupChangeForm accountantGroupChangeForm)
@@ -159,18 +102,17 @@ namespace SealTypographicWebAPI.Services.Implements
                                             .Include(x => x.AccountantGroups)
                                             .FirstOrDefault(x => x.Id == accountantId);
                     if (accountant != null)
-                    {
-                        //如果已加入群組則不動作
-                        if(!accountant.AccountantGroups.Contains(accountantGroup))
-                        {
-                            accountant.AccountantGroups.Add(accountantGroup);
-                        }
-                        
+                    {                        
                         //如果此會計師有包含預設群組就移除
                         if (accountant.AccountantGroups.Any(x => x.Id == 1))
                         {
                             accountant.AccountantGroups.Remove(defaultAccountantGroup);
-                        }                                        
+                        }
+                        //如果已加入群組則不動作
+                        if (!accountant.AccountantGroups.Contains(accountantGroup))
+                        {
+                            accountant.AccountantGroups.Add(accountantGroup);
+                        }
                     }
                     else
                     {

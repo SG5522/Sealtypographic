@@ -51,6 +51,12 @@ namespace SealTypographicWebAPI.Config.MapperProfile
             CreateMap<Accountant, AccountantGroupMember>()
                      .ForMember(dst => dst.AccountantNumber, opt => opt.MapFrom(src => src.Code));
 
+            //會計師群組成員
+            CreateMap<GroupAccountant, AccountantGroupMember>()
+                     .ForMember(dst => dst.AccountantNumber, opt => opt.MapFrom(src => src.Accountant.Code))
+                     .ForMember(dst => dst.Id, opt => opt.MapFrom(src => src.Accountant.Id))
+                     .ForMember(dst => dst.Name, opt => opt.MapFrom(src => src.Accountant.Name));
+
             //會計師群組
             CreateMap<AccountantGroup, AccountantGroupViewModel>()
                     .ForMember(dst => dst.AccountantGroupNumber, opt => opt.MapFrom(src => src.Code));

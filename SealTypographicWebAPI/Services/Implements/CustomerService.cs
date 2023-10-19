@@ -17,17 +17,20 @@ namespace SealTypographicWebAPI.Services.Implements
         private readonly SealTypographicDbContext dbContext;        
         private readonly IMapper mapper;
         private readonly AutoMapper.IConfigurationProvider configurationProvider;
+        private readonly ILogger<CustomerService> logger;
 
         /// <summary>
         /// 建構
         /// </summary>
         /// <param name="dbContext"></param>
         /// <param name="mapper"></param>
-        public CustomerService(SealTypographicDbContext dbContext, IMapper mapper)
+        /// <param name="logger"></param>
+        public CustomerService(SealTypographicDbContext dbContext, IMapper mapper, ILogger<CustomerService> logger)
         {
             this.dbContext = dbContext;            
             this.mapper = mapper;
             configurationProvider = mapper.ConfigurationProvider;
+            this.logger = logger;
         }
 
         /// <summary>
@@ -37,22 +40,33 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <returns></returns>
         public CustomerDetailViewModel GetDetail(int customerId)
         {
+            logger.LogInformation("GetDetail input customerId {@input}", customerId);
             CustomerDetailViewModel customerDetailViewModel = new();                                    
 
-            CustomerDetail? customerDetail = dbContext.Customers
-                                            .Where(x => x.Id == customerId)
-                                            .ProjectTo<CustomerDetail>(configurationProvider)
-                                            .FirstOrDefault();
+            try
+            {
+                CustomerDetail? customerDetail = dbContext.Customers
+                                .Where(x => x.Id == customerId)
+                                .ProjectTo<CustomerDetail>(configurationProvider)
+                                .FirstOrDefault();
 
-            if (customerDetail != null)
-            {
-                customerDetailViewModel.CustomerDetail = customerDetail;
-                customerDetailViewModel.Success();
+                if (customerDetail != null)
+                {
+                    customerDetailViewModel.CustomerDetail = customerDetail;
+                    customerDetailViewModel.Success();
+                }
+                else
+                {
+                    customerDetailViewModel.CustomeNoData();
+                }
+                logger.LogInformation("GetDetail output {@output}",customerDetailViewModel);
             }
-            else
+            catch (Exception ex) 
             {
-                customerDetailViewModel.CustomeNoData();
+                customerDetailViewModel.Error();
+                logger.LogError("GetDetail error {@error}", ex.Message);
             }
+
             return customerDetailViewModel;
         }
 
@@ -63,47 +77,53 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <returns></returns>
         public CustomerPaginateSummary GetCustomerPaginate(CustomerSearch customerSearch) 
         {
+            logger.LogInformation("GetCustomerPaginate input {@input}", customerSearch);
+
             CustomerPaginateSummary customerPaginateSummary = new();
             int companyId = 1;
 
-            IQueryable<Customer> customerQuery = dbContext.Customers.Where
+            try
+            {
+                IQueryable<Customer> customerQuery = dbContext.Customers.Where
                                                 (
                                                     x => x.Company.Id == companyId
                                                     && x.DeleteStatus == DeleteStatus.No
                                                 );
 
-            if (!string.IsNullOrWhiteSpace(customerSearch.KeyWord))
-            {
-                customerQuery = customerQuery.Where
-                (
-                    customer =>
-                    customer.Code.ToLower().Contains(customerSearch.KeyWord.ToLower())
-                    || customer.Name.Contains(customerSearch.KeyWord)
-                );
-            }
-            customerQuery = customerQuery.OrderBy(customer => customer.Code);
+                if (!string.IsNullOrWhiteSpace(customerSearch.KeyWord))
+                {
+                    customerQuery = customerQuery.Where
+                    (
+                        customer =>
+                        customer.Code.ToLower().Contains(customerSearch.KeyWord.ToLower())
+                        || customer.Name.Contains(customerSearch.KeyWord)
+                    );
+                }
+                customerQuery = customerQuery.OrderBy(customer => customer.Code);
 
-            if(customerQuery.Any())
-            {
-                //取得該頁
-                customerPaginateSummary.Summarys = customerQuery
-                                                    .Skip((customerSearch.PageNumber - 1) * customerSearch.PageSize)
-                                                    .Take(customerSearch.PageSize)
-                                                    .ProjectTo<CustomerSummary>(configurationProvider)
-                                                    .ToList();
-
-                int totalCount = customerQuery.Count();
-                customerPaginateSummary.PageNumber = customerSearch.PageNumber;
-                customerPaginateSummary.PageSize = customerSearch.PageSize;
-                //計算總頁數
-                customerPaginateSummary.TotalPage = TotalPageUtil.GetTotalPage(totalCount, customerSearch.PageSize);
-                customerPaginateSummary.TotalCount = totalCount;
-                customerPaginateSummary.Success();
+                if (customerQuery.Any())
+                {
+                    //取得該頁
+                    customerPaginateSummary.Summarys = customerQuery
+                                                        .Skip((customerSearch.PageNumber - 1) * customerSearch.PageSize)
+                                                        .Take(customerSearch.PageSize)
+                                                        .ProjectTo<CustomerSummary>(configurationProvider)
+                                                        .ToList();
+                    
+                    PageUtil.GetPageData(customerPaginateSummary, customerSearch.PageNumber, customerSearch.PageSize, customerQuery.Count());
+                    customerPaginateSummary.Success();
+                }
+                else
+                {
+                    customerPaginateSummary.CustomeNoData();
+                }
+                logger.LogInformation("GetCustomerPaginate output {@output}", customerPaginateSummary);
             }
-            else
+            catch (Exception ex)
             {
-                customerPaginateSummary.CustomeNoData();
-            }
+                customerPaginateSummary.Error();
+                logger.LogError("GetCustomerPaginate error {@error}", ex.Message);
+            }            
 
             return customerPaginateSummary;
         }
@@ -116,86 +136,99 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <param name="isTypographicUse">是否給排版使用</param>  
         /// <returns></returns>
         public CustomerPaginateViewModel GetPaginate(CustomerSearch customerSearch, bool isTypographicUse)
-        {            
+        {
+            logger.LogInformation("GetPaginate input {@input} isTypographicUse: {@isTypographicUse}", customerSearch, isTypographicUse);
+
             CustomerPaginateViewModel customerPaginateViewModel = new();
             int companyId = 1;           
             
-            IQueryable<Customer> customerQuery = dbContext.Customers.Where
+            try
+            {
+                IQueryable<Customer> customerQuery = dbContext.Customers.Where
                                                 (
                                                     x => x.Company.Id == companyId
                                                     && x.DeleteStatus == DeleteStatus.No
                                                 );
 
-            if (isTypographicUse)
-            {
-                customerQuery = customerQuery.Where(accountant => accountant.CustomerSealGroups.Any(x => x.ReviewStatus == ReviewStatus.Approval));
-            }
+                if (isTypographicUse)
+                {
+                    customerQuery = customerQuery.Where(accountant => accountant.CustomerSealGroups.Any(x => x.ReviewStatus == ReviewStatus.Approval));
+                }
 
-            if (!string.IsNullOrWhiteSpace(customerSearch.KeyWord))
-            {
-                customerQuery = customerQuery.Where
-                (
-                    customer =>
-                    customer.Code.ToLower().Contains(customerSearch.KeyWord.ToLower())
-                    || customer.Name.Contains(customerSearch.KeyWord)
-                );
-            }
-            customerQuery = customerQuery.OrderBy(customer => customer.Code);
+                if (!string.IsNullOrWhiteSpace(customerSearch.KeyWord))
+                {
+                    customerQuery = customerQuery.Where
+                    (
+                        customer =>
+                        customer.Code.ToLower().Contains(customerSearch.KeyWord.ToLower())
+                        || customer.Name.Contains(customerSearch.KeyWord)
+                    );
+                }
+                customerQuery = customerQuery.OrderBy(customer => customer.Code);
 
 
-            if (customerQuery.Any())
-            {
+                if (customerQuery.Any())
+                {
 
-                //取得該頁            
-                List<CustomerViewModel> thisPageCustomers = customerQuery                                                    
-                                                            .Skip((customerSearch.PageNumber - 1) * customerSearch.PageSize)
-                                                            .Take(customerSearch.PageSize)
-                                                            .ProjectTo<CustomerViewModel>(configurationProvider)
-                                                            .ToList();
+                    //取得該頁            
+                    List<CustomerViewModel> thisPageCustomers = customerQuery
+                                                                .Skip((customerSearch.PageNumber - 1) * customerSearch.PageSize)
+                                                                .Take(customerSearch.PageSize)
+                                                                .ProjectTo<CustomerViewModel>(configurationProvider)
+                                                                .ToList();
 
-                foreach (CustomerViewModel customerViewModel in thisPageCustomers)
-                {                         
-                    IQueryable<CustomerSealGroup> customerSealGroups = dbContext.CustomerSealGroups
-                                                                        .Where(x => x.Customer.Id == customerViewModel.Id
-                                                                        && x.DeleteStatus == DeleteStatus.No
-                                                                        && x.ReviewStatus < ReviewStatus.Disabled );
-
-                    if(customerSealGroups.Any())
+                    foreach (CustomerViewModel customerViewModel in thisPageCustomers)
                     {
-                        //取得狀態
-                        if (!customerSealGroups.Where(x => x.ReviewStatus != ReviewStatus.Approval).Any())
+                        IQueryable<CustomerSealGroup> customerSealGroups = dbContext.CustomerSealGroups
+                                                                            .Where(x => x.Customer.Id == customerViewModel.Id
+                                                                            && x.DeleteStatus == DeleteStatus.No
+                                                                            && x.ReviewStatus < ReviewStatus.Disabled);
+
+                        if (customerSealGroups.Any())
                         {
-                            customerViewModel.IsDraff = false;
-                            customerViewModel.IsPending = false;
-                            customerViewModel.IsReject = false;
+                            //取得狀態
+                            if (!customerSealGroups.Where(x => x.ReviewStatus != ReviewStatus.Approval).Any())
+                            {
+                                customerViewModel.IsDraff = false;
+                                customerViewModel.IsPending = false;
+                                customerViewModel.IsReject = false;
+                            }
+                            else
+                            {
+                                if (customerSealGroups.Where(x => x.ReviewStatus == ReviewStatus.Draft).Any())
+                                {
+                                    customerViewModel.IsDraff = true;
+                                }
+                                if (customerSealGroups.Where(x => x.ReviewStatus == ReviewStatus.Pending).Any())
+                                {
+                                    customerViewModel.IsPending = true;
+                                }
+                                if (customerSealGroups.Where(x => x.ReviewStatus == ReviewStatus.Reject).Any())
+                                {
+                                    customerViewModel.IsReject = true;
+                                }
+                            }
+                            customerViewModel.CustomerSealQuarterId = customerSealGroups.OrderByDescending(x => x.QuarterYear).Select(x => x.Id).FirstOrDefault();
                         }
-                        else
-                        {
-                            if (customerSealGroups.Where(x => x.ReviewStatus == ReviewStatus.Draft).Any())
-                            {
-                                customerViewModel.IsDraff = true;
-                            }
-                            if (customerSealGroups.Where(x => x.ReviewStatus == ReviewStatus.Pending).Any())
-                            {
-                                customerViewModel.IsPending = true;
-                            }
-                            if (customerSealGroups.Where(x => x.ReviewStatus == ReviewStatus.Reject).Any())
-                            {
-                                customerViewModel.IsReject = true;
-                            }
-                        }
-                        customerViewModel.CustomerSealQuarterId = customerSealGroups.OrderByDescending(x => x.QuarterYear).Select(x => x.Id).FirstOrDefault();                        
+
+                        customerPaginateViewModel.ViewModels.Add(customerViewModel);
                     }
-                                    
-                    customerPaginateViewModel.ViewModels.Add(customerViewModel);                    
-                }                
-                customerPaginateViewModel.PageNumber = customerSearch.PageNumber;
-                customerPaginateViewModel.PageSize= customerSearch.PageSize;
-                //計算總頁數
-                customerPaginateViewModel.TotalPage = TotalPageUtil.GetTotalPage(customerQuery.Count(), customerSearch.PageSize);
-                customerPaginateViewModel.TotalCount = customerQuery.Count();                
+                   
+                    PageUtil.GetPageData(customerPaginateViewModel, customerSearch.PageNumber, customerSearch.PageSize, customerQuery.Count());
+                    customerPaginateViewModel.Success();
+                }
+                else
+                {
+                    customerPaginateViewModel.CustomeNoData();
+                }
+
+                
             }
-            customerPaginateViewModel.Success();
+            catch (Exception ex)
+            {
+                customerPaginateViewModel.Error();
+                logger.LogError("GetPaginate error {@error}", ex.Message);
+            }            
 
             return customerPaginateViewModel;
         }                
@@ -224,7 +257,7 @@ namespace SealTypographicWebAPI.Services.Implements
                 if (!customerQuery.Any())
                 {
                     Customer dbCustomer = mapper.Map<Customer>(customerForm);
-                    BaseInputCustomer(dbCustomer, true, userid);
+                    BaseInput(dbCustomer, true, userid);
                     companyQuery.Customers.Add(dbCustomer);
                     dbContext.SaveChanges();
 
@@ -262,7 +295,7 @@ namespace SealTypographicWebAPI.Services.Implements
             if (customerQuery != null)
             {
                 mapper.Map(customerFormUpdate, customerQuery);
-                BaseInputCustomer(customerQuery, false, userId);
+                BaseInput(customerQuery, false, userId);
                 dbContext.SaveChanges();
                 response.Success();
             }
@@ -288,7 +321,7 @@ namespace SealTypographicWebAPI.Services.Implements
             if (customerQuery != null)
             {
                 customerQuery.DeleteStatus = DeleteStatus.Yes;
-                BaseInputCustomer(customerQuery, false, userId);
+                BaseInput(customerQuery, false, userId);
                 dbContext.SaveChanges();
                 response.Success();
             }
@@ -305,7 +338,7 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <param name="customer">DB上的客戶資料</param>
         /// <param name="isCreate">確認是否新增的動作</param>
         /// <param name="userid">使用者ID</param>
-        private static void BaseInputCustomer(Customer customer, bool isCreate, int userid)
+        private static void BaseInput(Customer customer, bool isCreate, int userid)
         {
             if (isCreate)
             {

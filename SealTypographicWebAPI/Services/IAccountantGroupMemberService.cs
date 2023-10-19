@@ -14,14 +14,10 @@ namespace SealTypographicWebAPI.Services
         /// 取得群組成員資料
         /// </summary>
         /// <param name="accountantGroupMemberSearch">群組成員搜尋條件(分頁)</param>
+        /// <param name="isGroup"></param>
         /// <returns></returns>
-        AccountantGroupMembers GetMembers(AccountantGroupMemberSearch accountantGroupMemberSearch);
+        AccountantGroupMembers GetMembers(AccountantGroupMemberSearch accountantGroupMemberSearch, bool isGroup);
 
-        /// <summary>
-        /// 取得非該群組會計師列表
-        /// </summary>
-        /// <param name="notThisGroupMemberSearch">非該群組的會計師搜尋條件</param>
-        NotThisGroupMember GetNotThisGroupMember(NotThisGroupMemberSearch notThisGroupMemberSearch);
 
         /// <summary>
         /// 變更單個會計師的群組

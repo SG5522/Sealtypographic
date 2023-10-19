@@ -108,7 +108,7 @@ namespace SealTypographicWebAPI.Services.Implements
                     customerPaginateViewModel.PageNumber = customerSearch.PageNumber;
                     customerPaginateViewModel.PageSize = customerSearch.PageSize;
                     //計算總頁數
-                    customerPaginateViewModel.TotalPage = TotalPageUtil.GetTotalPage(customerQuery.Count(), customerSearch.PageSize);
+                    customerPaginateViewModel.TotalPage = PageUtil.GetTotalPage(customerQuery.Count(), customerSearch.PageSize);
                     customerPaginateViewModel.TotalCount = customerQuery.Count();
                     customerPaginateViewModel.Success();
                 }
@@ -168,7 +168,7 @@ namespace SealTypographicWebAPI.Services.Implements
                     //計算總頁數
                     int total = customerSealGroupsQuery.Count();
                     customerSealQuarterPaginateViewModel.TotalCount = total;      
-                    customerSealQuarterPaginateViewModel.TotalPage = TotalPageUtil.GetTotalPage(total, customerSealQuarterPaginateSearch.PageSize);
+                    customerSealQuarterPaginateViewModel.TotalPage = PageUtil.GetTotalPage(total, customerSealQuarterPaginateSearch.PageSize);
                     customerSealQuarterPaginateViewModel.PageNumber = customerSealQuarterPaginateSearch.PageNumber;
                     customerSealQuarterPaginateViewModel.PageSize = customerSealQuarterPaginateSearch.PageSize;
 

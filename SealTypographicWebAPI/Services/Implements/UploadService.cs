@@ -85,7 +85,7 @@ namespace SealTypographicWebAPI.Services.Implements
                     duplicateFileProcessModeResponse.ViewModels.Add(duplicateFileProcessModeViewModel);
                 }
                 duplicateFileProcessModeResponse.Success();
-                logger.LogInformation("GetDuplicateFileProcessMode output {@Output}", duplicateFileProcessModeResponse);
+                logger.LogInformation("GetDuplicateFileProcessMode output {@output}", duplicateFileProcessModeResponse);
             }
             catch(Exception ex)
             {
@@ -103,7 +103,7 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <returns></returns>
         public UploadFileResponse GetFile(UploadType uploadType)
         {
-            logger.LogInformation("GetFile uploadType {@UploadType}", uploadType);
+            logger.LogInformation("GetFile input uploadType: {@uploadType}", uploadType);
 
             UploadFileResponse uploadFileResponse = new();
             int companyId = 1;
@@ -131,7 +131,7 @@ namespace SealTypographicWebAPI.Services.Implements
                     }
                 }
                 uploadFileResponse.Success();
-                logger.LogInformation("GetFile output {@Output}", uploadFileResponse);
+                logger.LogInformation("GetFile output {@output}", uploadFileResponse);
             }
             catch (Exception ex)
             {
@@ -149,7 +149,7 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <returns></returns>
         public UploadFileImageView GetFileImage(int uploadFileId)
         {
-            logger.LogInformation("GetFileImage uploadFileId= {@UploadFileId}", uploadFileId);
+            logger.LogInformation("GetFileImage input uploadFileId: {@uploadFileId}", uploadFileId);
 
             UploadFileImageView uploadFileImageView = new();
 
@@ -161,12 +161,12 @@ namespace SealTypographicWebAPI.Services.Implements
                     uploadFileImageView.ImageBase64 = ImageSharpUtil.PathImageFileToBase64(uploadFile.FullPath);
                 }
                 uploadFileImageView.Success();
-                logger.LogInformation("GetFileImage output {@Output}", uploadFileImageView);
+                logger.LogInformation("GetFileImage output {@output}", uploadFileImageView);
             }
             catch(Exception ex)
             {
                 uploadFileImageView.Error();
-                logger.LogError("GetFileImage error {@Error}", ex.Message);
+                logger.LogError("GetFileImage error {@error}", ex.Message);
             }
 
             return uploadFileImageView;
@@ -180,7 +180,7 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <returns></returns>
         public DuplicateFileResponse CheckDuplicateFileName(UploadType uploadType, List<IFormFile> formFiles)
         {
-            logger.LogInformation("CheckDuplicateFileName uploadType= {@UploadType} formFiles {@FormFiles}", uploadType, formFiles);
+            logger.LogInformation("CheckDuplicateFileName input uploadType: {@uploadType} formFiles: {@formFiles}", uploadType, formFiles);
 
             DuplicateFileResponse uploadDuplicateFiles = new();
 
@@ -200,12 +200,12 @@ namespace SealTypographicWebAPI.Services.Implements
                     }
                 }
                 uploadDuplicateFiles.Success();
-                logger.LogInformation("CheckDuplicateFileName output {@Output}", uploadDuplicateFiles);
+                logger.LogInformation("CheckDuplicateFileName output {@output}", uploadDuplicateFiles);
             }
             catch (Exception ex)
             {
                 uploadDuplicateFiles.Error();
-                logger.LogError("CheckDuplicateFileName error {@Error}", ex.Message);
+                logger.LogError("CheckDuplicateFileName error {@error}", ex.Message);
             }            
             
             return uploadDuplicateFiles;
@@ -219,7 +219,7 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <returns></returns>
         public async Task<ResponseViewModel> SaveScanFile(UploadScanData uploadBase64Data, int userId = 0)
         {
-            logger.LogInformation("SaveScanFile input {@Input} userId= {@Userid}", uploadBase64Data, userId);
+            logger.LogInformation("SaveScanFile input {@Input} userId: {@userid}", uploadBase64Data, userId);
             ResponseViewModel response = new();            
             int companyId = 1; //公司Id
 
@@ -241,17 +241,17 @@ namespace SealTypographicWebAPI.Services.Implements
                 {
                     response.FileUploadFailed();
                 }
-                logger.LogInformation("SaveScanFile output {@Output}", response);
+                logger.LogInformation("SaveScanFile output {@output}", response);
             }
             catch (DbUpdateException ex)
             {
                 response.DbError();
-                logger.LogInformation("SaveScanFile Db error (@DbError)", ex.Message);
+                logger.LogInformation("SaveScanFile Db error (@dbError)", ex.Message);
             }
             catch (Exception ex)
             {
                 response.Error();
-                logger.LogInformation("SaveScanFile error (@Error)", ex.Message);
+                logger.LogInformation("SaveScanFile error (@error)", ex.Message);
             }            
 
             return response;
@@ -265,7 +265,7 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <returns></returns>
         public async Task<ResponseViewModel> SaveFormFile(UploadData uploadData, int userId = 0)
         {
-            logger.LogInformation("SaveFormFile input {@Input} userId= {@Userid}", uploadData, userId);
+            logger.LogInformation("SaveFormFile input {@Input} userId: {@userid}", uploadData, userId);
 
             ResponseViewModel response = new();                     
             int companyId = 1; //公司Id
@@ -312,12 +312,12 @@ namespace SealTypographicWebAPI.Services.Implements
                 {
                     response.FileUploadFailed();
                 }
-                logger.LogInformation("SaveFormFile output {@Output}", response);
+                logger.LogInformation("SaveFormFile output {@output}", response);
             }
             catch (DbUpdateException ex)
             {
                 response.DbError();
-                logger.LogInformation("SaveScanFile Db error (@DbError)", ex.Message);
+                logger.LogInformation("SaveScanFile Db error (@dbError)", ex.Message);
             }
             catch (Exception ex)
             {
@@ -336,7 +336,7 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <returns></returns>
         public ResponseViewModel ChangeFileWorkStatusToDone(int uploadFileId, int userId = 0)
         {
-            logger.LogInformation("ChangeFileWorkStatusToDone uploadFileId= {@uploadFileId} userId= {@Userid}", uploadFileId, userId);
+            logger.LogInformation("ChangeFileWorkStatusToDone input uploadFileId: {@uploadFileId} userId: {@userid}", uploadFileId, userId);
 
             ResponseViewModel response = new();
             
@@ -354,12 +354,12 @@ namespace SealTypographicWebAPI.Services.Implements
                 {
                     response.FileUploadNoData();
                 }
-                logger.LogInformation("ChangeFileWorkStatusToDone output {@Output}", response);
+                logger.LogInformation("ChangeFileWorkStatusToDone output {@output}", response);
             }
             catch (Exception ex)
             {
                 response.Error();
-                logger.LogInformation("ChangeFileWorkStatusToDone error {@Error}", ex.Message);
+                logger.LogInformation("ChangeFileWorkStatusToDone error {@error}", ex.Message);
             }
 
             return response;
@@ -373,7 +373,7 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <returns></returns>
         public ResponseViewModel Delete(List<int> uploadFileIds, int userId = 0)
         {
-            logger.LogInformation("Delete uploadFileIds {@uploadFileIds} userId= {@Userid}", uploadFileIds, userId);
+            logger.LogInformation("Delete input uploadFileIds {@uploadFileIds} userId: {@userid}", uploadFileIds, userId);
 
             ResponseViewModel response = new();            
             

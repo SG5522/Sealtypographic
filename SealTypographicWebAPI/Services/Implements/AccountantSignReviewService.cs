@@ -38,8 +38,7 @@ namespace SealTypographicWebAPI.Services.Implements
         {
             AccountantSignGroupReviewPaginate accountantSignGroupReviewPaginate = new();
             IQueryable<AccountantSignGroup> accountantSignGroupQuery = dbContext.AccountantSignGroups
-                                                                        .Include(x => x.Accountant)
-                                                                        //.ThenInclude(x => x.AccountantGroup)
+                                                                        .Include(x => x.Accountant)                                                                        
                                                                         .Where
                                                                         (
                                                                             x => x.DeleteStatus == DeleteStatus.No
@@ -73,14 +72,10 @@ namespace SealTypographicWebAPI.Services.Implements
                                                             .Take(accountantSignSearchReview.PageSize)
                                                             .ProjectTo<AccountantSignGroupReviewViewModel>(configurationProvider)
                                                             .ToList();
-
-                accountantSignGroupReviewPaginate.PageNumber = accountantSignSearchReview.PageNumber;
-                accountantSignGroupReviewPaginate.PageSize = accountantSignSearchReview.PageSize;
-                //計算總頁數
-                accountantSignGroupReviewPaginate.TotalPage = TotalPageUtil.GetTotalPage(accountantSignGroupQuery.Count(), accountantSignSearchReview.PageSize);
-                accountantSignGroupReviewPaginate.TotalCount = accountantSignGroupQuery.Count();                
-            }
-            accountantSignGroupReviewPaginate.Success();
+                
+                PageUtil.GetPageData(accountantSignGroupReviewPaginate, accountantSignSearchReview.PageNumber, accountantSignSearchReview.PageSize, accountantSignGroupQuery.Count());
+                accountantSignGroupReviewPaginate.Success();
+            }            
 
             return accountantSignGroupReviewPaginate;
         }

@@ -98,13 +98,8 @@ namespace SealTypographicWebAPI.Services.Implements
                                                             .Take(accountantSearch.PageSize)
                                                             .ProjectTo<AccountantViewModelWithCreateDate>(configurationProvider)
                                                             .ToList();
-
-                int totalCount = accountantQuery.Count();
-                accountantPaginatesViewModels.PageNumber = accountantSearch.PageNumber;
-                accountantPaginatesViewModels.PageSize = accountantSearch.PageSize;
-                //計算總頁數
-                accountantPaginatesViewModels.TotalPage = TotalPageUtil.GetTotalPage(totalCount, accountantSearch.PageSize);
-                accountantPaginatesViewModels.TotalCount = totalCount;
+                
+                PageUtil.GetPageData(accountantPaginatesViewModels, accountantSearch.PageNumber, accountantSearch.PageSize, accountantQuery.Count());
             }
             accountantPaginatesViewModels.Success();
 

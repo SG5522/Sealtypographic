@@ -111,7 +111,7 @@ namespace SealTypographicWebAPI.Services.Implements
                 customerSealTemplatePaginate.PageNumber = customerSealTemplateSearch.PageNumber;
                 customerSealTemplatePaginate.PageSize = customerSealTemplateSearch.PageSize;
                 //計算總頁數
-                customerSealTemplatePaginate.TotalPage = TotalPageUtil.GetTotalPage(totalPage, customerSealTemplateSearch.PageSize);
+                customerSealTemplatePaginate.TotalPage = PageUtil.GetTotalPage(totalPage, customerSealTemplateSearch.PageSize);
                 customerSealTemplatePaginate.TotalCount = totalPage;
                 customerSealTemplatePaginate.Success();
             }

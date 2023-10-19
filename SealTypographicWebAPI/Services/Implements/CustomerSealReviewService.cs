@@ -78,7 +78,7 @@ namespace SealTypographicWebAPI.Services.Implements
                                                             .ToList();
                     //計算總頁數
                     int totalPage = customerSealQuarterQuery.Count();
-                    customerSealQuarterResponse.TotalPage = TotalPageUtil.GetTotalPage(totalPage, customerSealSearchReview.PageSize);
+                    customerSealQuarterResponse.TotalPage = PageUtil.GetTotalPage(totalPage, customerSealSearchReview.PageSize);
                     customerSealQuarterResponse.TotalCount = totalPage;
                     customerSealQuarterResponse.PageNumber = customerSealSearchReview.PageNumber;
                     customerSealQuarterResponse.PageSize = customerSealSearchReview.PageSize;

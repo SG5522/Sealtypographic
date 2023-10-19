@@ -114,7 +114,7 @@ namespace SealTypographicWebAPI.Services.Implements
                 temporarySealPaginateViewModel.PageNumber = temporarySealSearch.PageNumber;
                 temporarySealPaginateViewModel.PageSize = temporarySealSearch.PageSize;
                 //計算總頁數
-                temporarySealPaginateViewModel.TotalPage = TotalPageUtil.GetTotalPage(temporarySealGroupQuery.Count(), temporarySealSearch.PageSize);
+                temporarySealPaginateViewModel.TotalPage = PageUtil.GetTotalPage(temporarySealGroupQuery.Count(), temporarySealSearch.PageSize);
                 temporarySealPaginateViewModel.TotalCount = temporarySealGroupQuery.Count();
             }
             temporarySealPaginateViewModel.Success();

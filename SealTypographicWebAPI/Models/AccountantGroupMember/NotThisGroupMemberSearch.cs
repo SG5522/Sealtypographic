@@ -9,12 +9,6 @@ namespace SealTypographicWebAPI.Models.AccountantGroupMember
     public class NotThisGroupMemberSearch : PaginateSearch
     {
         /// <summary>
-        /// 會計師編號或名稱
-        /// </summary>
-        /// <example>ACC000 or 王XX</example>
-        public string? KeyWord { get; set; }
-
-        /// <summary>
         /// 群組Id
         /// </summary>        
         [Required]        

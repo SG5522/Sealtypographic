@@ -48,7 +48,7 @@ namespace SealTypographicWebAPI.Controllers
             try
             {
                 Log.Information("AccountantGroupMember members input {@Input}", accountantGroupMemberSearch);
-                accountantGroupMembers = accountantGroupMemberService.GetMembers(accountantGroupMemberSearch);                
+                accountantGroupMembers = accountantGroupMemberService.GetMembers(accountantGroupMemberSearch, true);                
                 Log.Information("AccountantGroupMember members output {@Output}", accountantGroupMembers);                
             }
             catch (Exception ex)
@@ -62,24 +62,24 @@ namespace SealTypographicWebAPI.Controllers
         /// <summary>
         /// 取得非該群組會計師列表
         /// </summary>
-        /// <param name="notThisGroupMemberSearch">群組成員搜尋條件</param>
+        /// <param name="accountantGroupMemberSearch">群組成員搜尋條件</param>
         /// <returns></returns>
         [HttpGet("[Action]")]
-        public NotThisGroupMember NotTheGroup([FromQuery]NotThisGroupMemberSearch notThisGroupMemberSearch)
+        public AccountantGroupMembers NotTheGroup([FromQuery] AccountantGroupMemberSearch accountantGroupMemberSearch)
         {
-            NotThisGroupMember notThisGroupMember = new ();
+            AccountantGroupMembers accountantGroupMembers = new ();
             try
             {                
-                Log.Information("AccountantGroupMember get NotTheGroup input {@Input}", notThisGroupMemberSearch);
-                notThisGroupMember = accountantGroupMemberService.GetNotThisGroupMember(notThisGroupMemberSearch);
-                Log.Information("AccountantGroupMember get NotTheGroup output {@Output}", notThisGroupMember);                
+                Log.Information("AccountantGroupMember get NotTheGroup input {@Input}", accountantGroupMemberSearch);
+                accountantGroupMembers = accountantGroupMemberService.GetMembers(accountantGroupMemberSearch, false);
+                Log.Information("AccountantGroupMember get NotTheGroup output {@Output}", accountantGroupMembers);                
             }
             catch (Exception ex)
             {
                 Log.Error("AccountantGroupMember get NotTheGroup error {@Error}", ex.Message);                 
-                notThisGroupMember.DbError();                
+                accountantGroupMembers.DbError();                
             }
-            return notThisGroupMember;
+            return accountantGroupMembers;
         }
 
         /// <summary>

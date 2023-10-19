@@ -100,7 +100,7 @@ namespace SealTypographicWebAPI.Services.Implements
                 accountantGroupResponses.PageNumber = accountantGroupSearch.PageNumber;
                 accountantGroupResponses.PageSize = accountantGroupSearch.PageSize;
                 //計算總頁數
-                accountantGroupResponses.TotalPage = TotalPageUtil.GetTotalPage(accountantGroupsQuery.Count(), accountantGroupSearch.PageSize);
+                accountantGroupResponses.TotalPage = PageUtil.GetTotalPage(accountantGroupsQuery.Count(), accountantGroupSearch.PageSize);
                 accountantGroupResponses.TotalCount = accountantGroupsQuery.Count();      
             }
             accountantGroupResponses.Success();

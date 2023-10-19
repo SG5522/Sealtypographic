@@ -3,6 +3,7 @@ using DBEntities;
 using DBEntities.Consts;
 using Microsoft.EntityFrameworkCore;
 using SealTypographicWebAPI.Models;
+using SealTypographicWebAPI.Models.AccountantSignReview;
 using SealTypographicWebAPI.Models.AccountantSignTemplate;
 using SealTypographicWebAPI.Models.BaseModels;
 using SealTypographicWebAPI.Models.CustomerSealTemplate;
@@ -109,11 +110,8 @@ namespace SealTypographicWebAPI.Services.Implements
             if (templateQuery.Any())
             {
                 accountantSignTemplatePaginate.ViewModels = LoadPaginatedData(templateQuery, accountantSignTemplateSearch.PageNumber, accountantSignTemplateSearch.PageSize);
-                accountantSignTemplatePaginate.PageNumber = accountantSignTemplateSearch.PageNumber;
-                accountantSignTemplatePaginate.PageSize = accountantSignTemplateSearch.PageSize;
-                //計算總頁數
-                accountantSignTemplatePaginate.TotalPage = TotalPageUtil.GetTotalPage(templateQuery.Count(), accountantSignTemplateSearch.PageSize);
-                accountantSignTemplatePaginate.TotalCount = templateQuery.Count();
+                
+                PageUtil.GetPageData(accountantSignTemplatePaginate, accountantSignTemplateSearch.PageNumber, accountantSignTemplateSearch.PageSize, templateQuery.Count());
                 accountantSignTemplatePaginate.Success();
             }
             SavePaginateLog(accountantSignTemplatePaginate);
@@ -141,7 +139,7 @@ namespace SealTypographicWebAPI.Services.Implements
                 accountantSignTemplatePaginate.PageNumber = paginateSearch.PageNumber;
                 accountantSignTemplatePaginate.PageSize = paginateSearch.PageSize;
                 //計算總頁數
-                accountantSignTemplatePaginate.TotalPage = TotalPageUtil.GetTotalPage(templateQuery.Count(), paginateSearch.PageSize);
+                accountantSignTemplatePaginate.TotalPage = PageUtil.GetTotalPage(templateQuery.Count(), paginateSearch.PageSize);
                 accountantSignTemplatePaginate.TotalCount = templateQuery.Count();
                 accountantSignTemplatePaginate.Success();
             }

@@ -66,7 +66,7 @@ namespace SealTypographicWebAPI.Services.Implements
                 letterheadPaginateViewModel.PageNumber = letterheadSearch.PageNumber;
                 letterheadPaginateViewModel.PageSize = letterheadSearch.PageSize;
                 //計算總頁數
-                letterheadPaginateViewModel.TotalPage = TotalPageUtil.GetTotalPage(letterheadQuery.Count(), letterheadSearch.PageSize);
+                letterheadPaginateViewModel.TotalPage = PageUtil.GetTotalPage(letterheadQuery.Count(), letterheadSearch.PageSize);
                 letterheadPaginateViewModel.TotalCount = letterheadQuery.Count();                
             }
             letterheadPaginateViewModel.Success();

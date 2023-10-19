@@ -123,7 +123,7 @@ namespace SealTypographicWebAPI.Services.Implements
                 letterheadImageTemplatePaginate.PageNumber = letterheadImageTemplateSearch.PageNumber;
                 letterheadImageTemplatePaginate.PageSize = letterheadImageTemplateSearch.PageSize;
                 //計算總頁數
-                letterheadImageTemplatePaginate.TotalPage = TotalPageUtil.GetTotalPage(templateQuery.Count(), letterheadImageTemplateSearch.PageSize);
+                letterheadImageTemplatePaginate.TotalPage = PageUtil.GetTotalPage(templateQuery.Count(), letterheadImageTemplateSearch.PageSize);
                 letterheadImageTemplatePaginate.TotalCount = templateQuery.Count();
                 letterheadImageTemplatePaginate.Success();
             }
