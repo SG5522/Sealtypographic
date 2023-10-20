@@ -1,14 +1,14 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using SealTypographicWebAPI.Models;
-using SealTypographicWebAPI.Models.Accountant;
 using SealTypographicWebAPI.Models.AccountantSignReview;
 using SealTypographicWebAPI.Utils;
 using DBEntities;
 using DBEntities.Consts;
 using AutoMapper.QueryableExtensions;
-using Microsoft.Extensions.Configuration;
-using SealTypographicWebAPI.Models.CustomerSealReview;
+using Serilog;
+using Azure;
+using Keycloak.AuthServices.Sdk.Admin.Models;
 
 namespace SealTypographicWebAPI.Services.Implements
 {
@@ -17,74 +17,97 @@ namespace SealTypographicWebAPI.Services.Implements
     /// </summary>
     public class AccountantSignReviewService : IAccountantSignReviewService
     {
-        private readonly SealTypographicDbContext dbContext;
-        private readonly IMapper mapper;
+        private readonly SealTypographicDbContext dbContext;        
         private readonly AutoMapper.IConfigurationProvider configurationProvider;
+        private readonly ILogger<AccountantSignReviewService> logger;
 
         /// <summary>
         /// 建構
         /// </summary>
         /// <param name="dbContext"></param>        
-        /// <param name="mapper"></param>    
-        public AccountantSignReviewService(SealTypographicDbContext dbContext, IMapper mapper)
+        /// <param name="mapper"></param>
+        /// <param name="logger"></param>    
+        public AccountantSignReviewService(SealTypographicDbContext dbContext, IMapper mapper, ILogger<AccountantSignReviewService> logger)
         {
             this.dbContext = dbContext;
-            this.mapper = mapper;
             configurationProvider = mapper.ConfigurationProvider;
+            this.logger = logger;
         }
 
         ///<inheritdoc />
-        public AccountantSignGroupReviewPaginate GetReviewPaginate(AccountantSignSearchReview accountantSignSearchReview)
+        public AccountantSignGroupReviewPaginate GetReviewPaginate(AccountantSignSearchReview accountantSignSearchReview, int userId = 0)
         {
+            logger.LogInformation("GetReviewPaginate input {@input} userId {@userId}", accountantSignSearchReview, userId);
+
             AccountantSignGroupReviewPaginate accountantSignGroupReviewPaginate = new();
-            IQueryable<AccountantSignGroup> accountantSignGroupQuery = dbContext.AccountantSignGroups
-                                                                        .Include(x => x.Accountant)                                                                        
+
+            try
+            {
+                IQueryable<AccountantSignGroup> accountantSignGroupQuery = dbContext.AccountantSignGroups
+                                                                        .Include(x => x.Accountant)
                                                                         .Where
                                                                         (
                                                                             x => x.DeleteStatus == DeleteStatus.No
                                                                             && x.ReviewStatus < ReviewStatus.Disabled
                                                                         ).OrderByDescending(x => x.Id);
 
-            if (!string.IsNullOrWhiteSpace(accountantSignSearchReview.KeyWord))
-            {
-                accountantSignGroupQuery = accountantSignGroupQuery.Where
-                                        (
-                                            x =>
-                                            x.Accountant.Code.ToLower().Contains(accountantSignSearchReview.KeyWord.ToLower())
-                                            || x.Accountant.Name.Contains(accountantSignSearchReview.KeyWord)
-                                            || x.Accountant.AccountantGroups.Any(x => x.Name.Contains(accountantSignSearchReview.KeyWord))
-                                        );
-            }
+                if (!string.IsNullOrWhiteSpace(accountantSignSearchReview.KeyWord))
+                {
+                    accountantSignGroupQuery = accountantSignGroupQuery.Where
+                                            (
+                                                x =>
+                                                x.Accountant.Code.ToLower().Contains(accountantSignSearchReview.KeyWord.ToLower())
+                                                || x.Accountant.Name.Contains(accountantSignSearchReview.KeyWord)
+                                                || x.Accountant.AccountantGroups.Any(x => x.Name.Contains(accountantSignSearchReview.KeyWord))
+                                            );
+                }
 
-            if (accountantSignSearchReview.ReviewStatus != null)
-            {
-                accountantSignGroupQuery = accountantSignGroupQuery.Where(x => x.ReviewStatus == accountantSignSearchReview.ReviewStatus);
-            }
+                if (accountantSignSearchReview.ReviewStatus != null)
+                {
+                    accountantSignGroupQuery = accountantSignGroupQuery.Where(x => x.ReviewStatus == accountantSignSearchReview.ReviewStatus);
+                }
 
-            if (accountantSignGroupQuery.Any())
+                if (accountantSignGroupQuery.Any())
+                {
+                    //取得該頁                            
+                    accountantSignGroupReviewPaginate.ViewModels = accountantSignGroupQuery
+                                                                .Include(x => x.TypographicResources)
+                                                                .Include(x => x.Accountant)
+                                                                .ThenInclude(x => x.AccountantGroups)
+                                                                .Skip((accountantSignSearchReview.PageNumber - 1) * accountantSignSearchReview.PageSize)
+                                                                .Take(accountantSignSearchReview.PageSize)
+                                                                .ProjectTo<AccountantSignGroupReviewViewModel>(configurationProvider)
+                                                                .ToList();
+
+                    PageUtil.SetPageData(accountantSignGroupReviewPaginate, accountantSignSearchReview.PageNumber, accountantSignSearchReview.PageSize, accountantSignGroupQuery.Count());
+                    accountantSignGroupReviewPaginate.Success();
+                }
+                else
+                {
+                    accountantSignGroupReviewPaginate.DbNoData();
+                }
+
+                logger.LogInformation("GetReviewPaginate output {@output}", accountantSignGroupReviewPaginate);
+            }
+            catch (Exception ex)
             {
-                //取得該頁                            
-                accountantSignGroupReviewPaginate.ViewModels = accountantSignGroupQuery
-                                                            .Include(x => x.TypographicResources)
-                                                            .Include(x => x.Accountant)
-                                                            .ThenInclude(x => x.AccountantGroups)                                                            
-                                                            .Skip((accountantSignSearchReview.PageNumber - 1) * accountantSignSearchReview.PageSize)
-                                                            .Take(accountantSignSearchReview.PageSize)
-                                                            .ProjectTo<AccountantSignGroupReviewViewModel>(configurationProvider)
-                                                            .ToList();
-                
-                PageUtil.GetPageData(accountantSignGroupReviewPaginate, accountantSignSearchReview.PageNumber, accountantSignSearchReview.PageSize, accountantSignGroupQuery.Count());
-                accountantSignGroupReviewPaginate.Success();
+                accountantSignGroupReviewPaginate.Error();
+                logger.LogInformation("GetReviewPaginate error {@error}", ex.Message);
             }            
 
             return accountantSignGroupReviewPaginate;
         }
 
         ///<inheritdoc />
-        public AccountantSignGroupDetailReviewResponse GetReviewDetail(int accountantSignGroupId)
-        {            
+        public AccountantSignGroupDetailReviewResponse GetReviewDetail(int accountantSignGroupId, int userId = 0)
+        {
+            logger.LogInformation("GetReviewDetail accountantSignGroupId {@accountantSignGroupId} userId {@userId}", accountantSignGroupId, userId);
+
             AccountantSignGroupDetailReviewResponse accountantSignGroupDetailReviewResponse = new();
-            AccountantSignGroupDetailReviewViewModel? accountantSignGroupQuery = dbContext.AccountantSignGroups
+
+            try
+            {
+                AccountantSignGroupDetailReviewViewModel? accountantSignGroupQuery = dbContext.AccountantSignGroups
                                                                                 .Include(x => x.Accountant)
                                                                                 .ThenInclude(x => x.AccountantGroups)
                                                                                 .Include(x => x.TypographicResources)
@@ -92,34 +115,24 @@ namespace SealTypographicWebAPI.Services.Implements
                                                                                 .ProjectTo<AccountantSignGroupDetailReviewViewModel>(configurationProvider)
                                                                                 .FirstOrDefault();
 
-            if (accountantSignGroupQuery != null)
-            {                
-                accountantSignGroupDetailReviewResponse.ViewModel = accountantSignGroupQuery;
-                accountantSignGroupDetailReviewResponse.Success();
+                if (accountantSignGroupQuery != null)
+                {
+                    accountantSignGroupDetailReviewResponse.ViewModel = accountantSignGroupQuery;
+                    accountantSignGroupDetailReviewResponse.Success();
+                }
+                else 
+                {
+                    accountantSignGroupDetailReviewResponse.DbNoData();
+                }
+                logger.LogInformation("GetReviewDetail output {@output}", accountantSignGroupDetailReviewResponse);
             }
+            catch (Exception ex)
+            {
+                accountantSignGroupDetailReviewResponse.Error();
+                logger.LogInformation("GetReviewDetail error {@error}", ex.Message);
+            }            
             
             return accountantSignGroupDetailReviewResponse;            
-        }
-
-        ///<inheritdoc />
-        public ResponseViewModel Approval(List<int> accountantSignGroupIds)
-        {            
-            int userId = 0;//之後要調整從驗證帳號中取得ID
-            return StatusChange(accountantSignGroupIds, ReviewStatus.Approval, userId);
-        }
-
-        ///<inheritdoc />
-        public ResponseViewModel Reject(List<int> accountantSignGroupIds)
-        {
-            int userId = 0;//之後要調整從驗證帳號中取得ID
-            return StatusChange(accountantSignGroupIds, ReviewStatus.Reject, userId);
-        }
-
-        ///<inheritdoc />
-        public ResponseViewModel Refuse(List<int> accountantSignGroupIds)
-        {
-            int userId = 0;//之後要調整從驗證帳號中取得ID
-            return StatusChange(accountantSignGroupIds, ReviewStatus.Refuse, userId);
         }
 
         /// <summary>
@@ -127,66 +140,81 @@ namespace SealTypographicWebAPI.Services.Implements
         /// </summary>
         /// <param name="accountantSignGroupIds">會計師簽印群組Id</param>
         /// <param name="reviewStatus">審核狀態</param>
-        /// <param name="userId">使用者Id</param>
+        /// <param name="userId">從Keycloak驗證取得</param>
         /// <returns></returns>
-        private ResponseViewModel StatusChange(List<int> accountantSignGroupIds, ReviewStatus reviewStatus, int userId)
+        public ResponseViewModel StatusChange(List<int> accountantSignGroupIds, ReviewStatus reviewStatus, int userId = 0)
         {
+            logger.LogInformation("StatusChange accountantSignGroupIds: {@accountantSignGroupIds}, reviewStatus: {@reviewStatus}, userId: {@userId} "
+                                    , accountantSignGroupIds, reviewStatus, userId);
+
             ResponseViewModel response = new();
-            foreach (int accountantSignGroupId in accountantSignGroupIds)
+
+            try
             {
-                AccountantSignGroup? accountantSignGroupJournal = dbContext.AccountantSignGroups.Include(x => x.Accountant)
-                                                                                                .FirstOrDefault(x => x.Id == accountantSignGroupId);
-                if (accountantSignGroupJournal != null)
+                
+                foreach (int accountantSignGroupId in accountantSignGroupIds)
                 {
-                    accountantSignGroupJournal.ReviewUserId = userId;
-                    accountantSignGroupJournal.ReviewStatus = reviewStatus;
-                    accountantSignGroupJournal.ReviewDate = DateTime.Now;                    
-                    switch (reviewStatus)
+                    AccountantSignGroup? accountantSignGroupJournal = dbContext.AccountantSignGroups.Include(x => x.Accountant)
+                                                                                                    .FirstOrDefault(x => x.Id == accountantSignGroupId);
+                    if (accountantSignGroupJournal != null)
                     {
-                        case ReviewStatus.Approval:
-                            //變更啟用與結束日期
-                            accountantSignGroupJournal.StartDate = DateTime.Now;
-                            accountantSignGroupJournal.EndDate = DateTime.Parse("9999/12/31");
-                            //找出審核通過的簽印組
-                            IQueryable<AccountantSignGroup>? accountantSignGroups = dbContext.AccountantSignGroups
-                                                                                   .Where
-                                                                                   (
-                                                                                       x => x.Accountant.Id == accountantSignGroupJournal.Accountant.Id
-                                                                                       && x.Id != accountantSignGroupId
-                                                                                       && x.ReviewStatus == ReviewStatus.Approval
-                                                                                   );
-                            //如有審核通過的簽印組則停用
-                            if(accountantSignGroups != null)
-                            {                                
-                                foreach(AccountantSignGroup accountantSignGroup in accountantSignGroups)
+                        accountantSignGroupJournal.ReviewUserId = userId;
+                        accountantSignGroupJournal.ReviewStatus = reviewStatus;
+                        accountantSignGroupJournal.ReviewDate = DateTime.Now;
+                        switch (reviewStatus)
+                        {
+                            case ReviewStatus.Approval:
+                                //變更啟用與結束日期
+                                accountantSignGroupJournal.StartDate = DateTime.Now;
+                                accountantSignGroupJournal.EndDate = DateTime.Parse("9999/12/31");
+                                //找出審核通過的簽印組
+                                IQueryable<AccountantSignGroup>? accountantSignGroups = dbContext.AccountantSignGroups
+                                                                                       .Where
+                                                                                       (
+                                                                                           x => x.Accountant.Id == accountantSignGroupJournal.Accountant.Id
+                                                                                           && x.Id != accountantSignGroupId
+                                                                                           && x.ReviewStatus == ReviewStatus.Approval
+                                                                                       );
+                                //如有審核通過的簽印組則停用
+                                if (accountantSignGroups != null)
                                 {
-                                    accountantSignGroup.ReviewStatus = ReviewStatus.Disabled;
-                                    accountantSignGroup.EndDate = DateTime.Now;
-                                }                                
-                            }
-                            
-                            break;
-                        case ReviewStatus.Refuse:
-                            accountantSignGroupJournal.DeleteStatus = DeleteStatus.Yes;
-                            break;
-                    }                    
+                                    foreach (AccountantSignGroup accountantSignGroup in accountantSignGroups)
+                                    {
+                                        accountantSignGroup.ReviewStatus = ReviewStatus.Disabled;
+                                        accountantSignGroup.EndDate = DateTime.Now;
+                                    }
+                                }
+
+                                break;
+                            case ReviewStatus.Refuse:
+                                accountantSignGroupJournal.DeleteStatus = DeleteStatus.Yes;
+                                break;
+                        }
+                    }
+                    else
+                    {
+                        response.ErrorItem += $"{accountantSignGroupId},";
+                    }
+                }
+
+                if (response.ErrorItem == null)
+                {
+                    dbContext.SaveChanges();
+                    response.Success();
                 }
                 else
                 {
-                    response.ErrorItem += $"{accountantSignGroupId},";
+                    response.ErrorItem = response.ErrorItem.Remove(response.ErrorItem.Length - 1, 1);
+                    response.CustomerSealNoData();
                 }
+                logger.LogInformation("StatusChange output: {@output}", response);
             }
-
-            if (response.ErrorItem == null)
+            catch (Exception ex) 
             {
-                dbContext.SaveChanges();
-                response.Success();
+                response.Error();
+                logger.LogInformation("StatusChange error: {@error}", ex.Message);
             }
-            else
-            {
-                response.ErrorItem = response.ErrorItem.Remove(response.ErrorItem.Length - 1, 1);
-                response.CustomerSealNoData();
-            }
+            
             return response;
         }        
     }

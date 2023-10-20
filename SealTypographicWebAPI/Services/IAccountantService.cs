@@ -14,29 +14,33 @@ namespace SealTypographicWebAPI.Services
         /// 取得資料
         /// </summary>
         /// <param name="accountantId">會計師Id</param>
+        /// <param name="userId">登入的使用者Id</param>
         /// <returns></returns>
-        AccountantDetailResponse GetDetail(int accountantId);
+        AccountantDetailResponse GetDetail(int accountantId, int userId = 0);
 
         /// <summary>
         /// 依搜尋條件獲得資料列表
         /// </summary>
         /// <param name="accountantSearch">搜尋條件</param>
-        /// <param name="isTypographicUse">是否給排版使用</param>  
+        /// <param name="isTypographicUse">是否給排版使用</param>
+        /// <param name="userId">登入的使用者Id</param>  
         /// <returns></returns>
-        AccountantPaginateViewModel GetPaginate(AccountantSearch accountantSearch, bool isTypographicUse);
+        AccountantPaginateViewModel GetPaginate(AccountantSearch accountantSearch, bool isTypographicUse, int userId = 0);
 
         /// <summary>
         /// 新增資料
         /// </summary>
-        /// <param name="accountantForm">會計師資料</param>        
-        AccountantCreateResponse New(AccountantForm accountantForm);
+        /// <param name="accountantForm">會計師資料</param>
+        /// <param name="userId">登入的使用者Id</param>        
+        AccountantCreateResponse New(AccountantForm accountantForm, int userId = 0);
 
 
         /// <summary>
         /// 更新資料
         /// </summary>
         /// <param name="accountantBaseData">會計師資料(含Id)</param>
-        ResponseViewModel Update(AccountantUpdateForm accountantBaseData);
+        /// <param name="userId">登入的使用者Id</param>
+        ResponseViewModel Update(AccountantUpdateForm accountantBaseData, int userId = 0);
 
         /// <summary>
         /// 刪除資料，
@@ -44,7 +48,8 @@ namespace SealTypographicWebAPI.Services
         /// 而不是真正的刪除。
         /// </summary>
         /// <param name="accountantId">會計師ID</param>
-        ResponseViewModel Delete(int accountantId);
+        /// <param name="userId">登入的使用者Id</param>
+        ResponseViewModel Delete(int accountantId, int userId = 0);
     }
 
 }

@@ -6,6 +6,7 @@ using AutoMapper;
 using DBEntities;
 using DBEntities.Consts;
 using AutoMapper.QueryableExtensions;
+using Azure;
 
 namespace SealTypographicWebAPI.Services.Implements
 {
@@ -17,187 +18,271 @@ namespace SealTypographicWebAPI.Services.Implements
         private readonly SealTypographicDbContext dbContext;
         private readonly IMapper mapper;
         private readonly AutoMapper.IConfigurationProvider configurationProvider;
+        private readonly ILogger<AccountantService> logger;
 
         /// <summary>
         /// 注入DB與Mapper
         /// </summary>
         /// <param name="dbContext"></param>
         /// <param name="mapper"></param>
-        public AccountantService(SealTypographicDbContext dbContext, IMapper mapper)
+        /// <param name="logger"></param>
+        public AccountantService(SealTypographicDbContext dbContext, IMapper mapper, ILogger<AccountantService> logger)
         {
             this.dbContext = dbContext;
             this.mapper = mapper;
             configurationProvider = mapper.ConfigurationProvider;
+            this.logger = logger;
         }
 
         ///<inheritdoc />
-        public AccountantDetailResponse GetDetail(int accountantId)
+        public AccountantDetailResponse GetDetail(int accountantId, int userId = 0)
         {
+            logger.LogInformation("GetDetail input accountantId: {@accountantId} userId {@userId}", accountantId, userId);
+
             AccountantDetailResponse accountantResponse = new();
 
-            AccountantDetailViewModel? accountantDetailViewModel = dbContext.Accountants.Include(accountant => accountant.GroupAccountants)
-                                                                    .Where(accountant => accountant.Id == accountantId)
-                                                                    .ProjectTo<AccountantDetailViewModel>(configurationProvider)
-                                                                    .FirstOrDefault();
-
-            if (accountantDetailViewModel != null)
+            try
             {
-                accountantResponse.AccountantDetailViewModel = accountantDetailViewModel;
+                AccountantDetailViewModel? accountantDetailViewModel = dbContext.Accountants.Include(accountant => accountant.GroupAccountants)
+                                                        .Where(accountant => accountant.Id == accountantId)
+                                                        .ProjectTo<AccountantDetailViewModel>(configurationProvider)
+                                                        .FirstOrDefault();
+
+                if (accountantDetailViewModel != null)
+                {
+                    accountantResponse.AccountantDetailViewModel = accountantDetailViewModel;
+                    accountantResponse.Success();
+                }
+                else
+                {
+                    accountantResponse.DbNoData();
+                }
+
+                logger.LogInformation("GetDetail output {@output}", accountantResponse);
             }
-            accountantResponse.Success();
+            catch (Exception ex) 
+            {
+                accountantResponse.Error();
+                logger.LogInformation("GetDetail error {@error}", ex.Message);
+            }
 
             return accountantResponse;
         }
 
         ///<inheritdoc />
-        public AccountantPaginateViewModel GetPaginate(AccountantSearch accountantSearch, bool isTypographicUse)
+        public AccountantPaginateViewModel GetPaginate(AccountantSearch accountantSearch, bool isTypographicUse, int userId = 0)
         {
+            logger.LogInformation("GetPaginate input {@accountantSearch} isTypographicUse: {@isTypographicUse} userId {@userId}"
+                ,accountantSearch, isTypographicUse, userId);
+
             AccountantPaginateViewModel accountantPaginatesViewModels = new();
             int companyId = 1;
 
-            IQueryable<Accountant> accountantQuery = dbContext.Accountants                                                 
+            try
+            {
+                IQueryable<Accountant> accountantQuery = dbContext.Accountants
                                                     .Where
-                                                    (                                                        
+                                                    (
                                                         accountant => accountant.Company.Id == companyId
-                                                        && accountant.DeleteStatus == DeleteStatus.No                                                       
+                                                        && accountant.DeleteStatus == DeleteStatus.No
                                                     );
 
-            if(isTypographicUse)
-            {
-                accountantQuery = accountantQuery.Where(accountant => accountant.AccountantSignGroups.Any(x => x.ReviewStatus == ReviewStatus.Approval));
-            }
-            else
-            {
-                accountantQuery = accountantQuery.Where(accountant => accountant.AccountantSignGroups.Any(x => x.ReviewStatus <= ReviewStatus.Reject));
-            }
+                if (isTypographicUse)
+                {
+                    accountantQuery = accountantQuery.Where(accountant => accountant.AccountantSignGroups.Any(x => x.ReviewStatus == ReviewStatus.Approval));
+                }
+                else
+                {
+                    accountantQuery = accountantQuery.Where(accountant => accountant.AccountantSignGroups.Any(x => x.ReviewStatus <= ReviewStatus.Reject));
+                }
 
-            if (!string.IsNullOrWhiteSpace(accountantSearch.KeyWord))
+                if (!string.IsNullOrWhiteSpace(accountantSearch.KeyWord))
+                {
+                    accountantQuery = accountantQuery.Where
+                    (
+                        accountant =>
+                        accountant.Code.ToLower().Contains(accountantSearch.KeyWord.ToLower())
+                        || accountant.Name.Contains(accountantSearch.KeyWord)
+                    );
+                }
+
+                if (!string.IsNullOrWhiteSpace(accountantSearch.AccountantGroupNumber))
+                {
+                    accountantQuery = accountantQuery.Where(accountant => accountant.GroupAccountants.First().AccountantGroup.Code == accountantSearch.AccountantGroupNumber);
+                }
+
+                accountantQuery = accountantQuery.OrderBy(accountant => accountant.Id);
+
+                if (accountantQuery.Any())
+                {
+                    //取得該頁            
+                    accountantPaginatesViewModels.ViewModels = accountantQuery
+                                                                .Include(accountant => accountant.AccountantSignGroups)
+                                                                .Include(accountant => accountant.AccountantGroups)
+                                                                .Skip((accountantSearch.PageNumber - 1) * accountantSearch.PageSize)
+                                                                .Take(accountantSearch.PageSize)
+                                                                .ProjectTo<AccountantViewModelWithCreateDate>(configurationProvider)
+                                                                .ToList();
+
+                    PageUtil.SetPageData(accountantPaginatesViewModels, accountantSearch.PageNumber, accountantSearch.PageSize, accountantQuery.Count());
+                    accountantPaginatesViewModels.Success();
+                }
+                else
+                {
+                    accountantPaginatesViewModels.DbNoData();
+                }
+                logger.LogInformation("GetPaginate output {@output}", accountantPaginatesViewModels);
+            }
+            catch (Exception ex) 
             {
-                accountantQuery = accountantQuery.Where
-                (
-                    accountant =>
-                    accountant.Code.ToLower().Contains(accountantSearch.KeyWord.ToLower())
-                    || accountant.Name.Contains(accountantSearch.KeyWord)
-                );
+                accountantPaginatesViewModels.Error();
+                logger.LogInformation("GetPaginate error {@error}", ex.Message);
             }            
-
-            if (!string.IsNullOrWhiteSpace(accountantSearch.AccountantGroupNumber))
-            {
-                accountantQuery = accountantQuery.Where(accountant => accountant.GroupAccountants.First().AccountantGroup.Code == accountantSearch.AccountantGroupNumber);
-            }
-
-            accountantQuery = accountantQuery.OrderBy(accountant => accountant.Id);
-            
-            if (accountantQuery.Any())
-            {
-                //取得該頁            
-                accountantPaginatesViewModels.ViewModels =  accountantQuery
-                                                            .Include(accountant => accountant.AccountantSignGroups)                                                            
-                                                            .Include(accountant => accountant.AccountantGroups)
-                                                            .Skip((accountantSearch.PageNumber - 1) * accountantSearch.PageSize)
-                                                            .Take(accountantSearch.PageSize)
-                                                            .ProjectTo<AccountantViewModelWithCreateDate>(configurationProvider)
-                                                            .ToList();
-                
-                PageUtil.GetPageData(accountantPaginatesViewModels, accountantSearch.PageNumber, accountantSearch.PageSize, accountantQuery.Count());
-            }
-            accountantPaginatesViewModels.Success();
 
             return accountantPaginatesViewModels;            
         }
 
 
         ///<inheritdoc />
-        public AccountantCreateResponse New(AccountantForm accountantForm)
+        public AccountantCreateResponse New(AccountantForm accountantForm, int userId = 0)
         {
+            logger.LogInformation("New input {@accountantForm} userId: {@userId}", accountantForm, userId);
+
             AccountantCreateResponse accountantCreateResponse = new();            
-            int userid = 0;//帳號驗證取得ID
             int companyId = 1;
 
-            //尋找公司並與會計師關聯
-            Company? companyQuery = dbContext.Companys.Include(x => x.Accountants).FirstOrDefault(x => x.Id == companyId);
-
-            if (companyQuery != null)
+            try
             {
-                //驗證編號是否重複
-                List<string> accountantCodeQuery = companyQuery.Accountants.Where
-                                                    (
-                                                        x => x.Code == accountantForm.AccountantNumber
-                                                        && x.DeleteStatus == DeleteStatus.No
-                                                    ).Select(x => x.Code).ToList();
+                //尋找公司並與會計師關聯
+                Company? companyQuery = dbContext.Companys.Include(x => x.Accountants).FirstOrDefault(x => x.Id == companyId);
 
-                if (!accountantCodeQuery.Any())
+                if (companyQuery != null)
                 {
-                    Accountant dbAccountant = mapper.Map<Accountant>(accountantForm);
-                    dbAccountant.AccountantGroups = dbContext.AccountantGroups.Where(x => x.Id == accountantForm.AccountantGroupId).ToList();
-                    BaseInputAccountant(dbAccountant, true, userid);
-                    companyQuery.Accountants.Add(dbAccountant);
-                    dbContext.SaveChanges();
+                    //驗證編號是否重複
+                    List<string> accountantCodeQuery = companyQuery.Accountants.Where
+                                                        (
+                                                            x => x.Code == accountantForm.AccountantNumber
+                                                            && x.DeleteStatus == DeleteStatus.No
+                                                        ).Select(x => x.Code).ToList();
 
-                    if (dbAccountant != null)
+                    if (!accountantCodeQuery.Any())
                     {
-                        //回傳剛建立的會計師基本資料 使建立會計師簽印找到該ID
-                        accountantCreateResponse.AccountantId = dbAccountant.Id;
-                        accountantCreateResponse.Success();
+                        Accountant dbAccountant = mapper.Map<Accountant>(accountantForm);
+                        dbAccountant.AccountantGroups = dbContext.AccountantGroups.Where(x => x.Id == accountantForm.AccountantGroupId).ToList();
+                        BaseInputAccountant(dbAccountant, true, userId);
+                        companyQuery.Accountants.Add(dbAccountant);
+                        dbContext.SaveChanges();
+
+                        if (dbAccountant != null)
+                        {
+                            //回傳剛建立的會計師基本資料 使建立會計師簽印找到該ID
+                            accountantCreateResponse.AccountantId = dbAccountant.Id;
+                            accountantCreateResponse.Success();
+                        }
+                        else
+                        {
+                            accountantCreateResponse.CreateAccountantFailed();
+                        }
                     }
                     else
                     {
-                        accountantCreateResponse.CreateAccountantFailed();
+                        accountantCreateResponse.AccountantNumberRepeat();
                     }
                 }
-                else
-                {
-                    accountantCreateResponse.AccountantNumberRepeat();
-                }
+                logger.LogInformation("New output {@output}", accountantCreateResponse);
             }
+            catch (DbUpdateException ex)
+            {
+                accountantCreateResponse.DbError();
+                logger.LogInformation("New dbError {@dbError}", ex.Message);
+            }
+            catch (Exception ex)
+            {
+                accountantCreateResponse.Error();
+                logger.LogInformation("New error {@error}", ex.Message);
+            }            
 
             return accountantCreateResponse;
         }
 
         ///<inheritdoc />      
-        public ResponseViewModel Update(AccountantUpdateForm accountantFormUpdate)
+        public ResponseViewModel Update(AccountantUpdateForm accountantFormUpdate, int userId = 0)
         {
+            logger.LogInformation("Update input {@accountantFormUpdate} userId {@userId}", accountantFormUpdate, userId);
+
             ResponseViewModel response = new();
-            int userid = 0;//帳號驗證取得ID
-            Accountant? accountantQuery = dbContext.Accountants.Include(x => x.AccountantGroups)
+            
+            try
+            {
+                Accountant? accountantQuery = dbContext.Accountants.Include(x => x.AccountantGroups)
                                           .FirstOrDefault(x => x.Id == accountantFormUpdate.Id);
 
-            if (accountantQuery != null)
-            {
-                mapper.Map(accountantFormUpdate, accountantQuery);
-                if(accountantFormUpdate.AccountantGroupId == 1)
+                if (accountantQuery != null)
                 {
-                    accountantQuery.AccountantGroups = new List<AccountantGroup>
+                    mapper.Map(accountantFormUpdate, accountantQuery);
+                    if (accountantFormUpdate.AccountantGroupId == 1)
+                    {
+                        accountantQuery.AccountantGroups = new List<AccountantGroup>
                     {
                         dbContext.AccountantGroups.Single(x => x.Id == accountantFormUpdate.AccountantGroupId)
                     };
+                    }
+                    else
+                    {
+                        accountantQuery.AccountantGroups.Add(dbContext.AccountantGroups.Single(x => x.Id == accountantFormUpdate.AccountantGroupId));
+                    }
+                    BaseInputAccountant(accountantQuery, false, userId);
+                    dbContext.SaveChanges();
+                    response.Success();
                 }
                 else
                 {
-                    accountantQuery.AccountantGroups.Add(dbContext.AccountantGroups.Single(x => x.Id == accountantFormUpdate.AccountantGroupId));
-                }                               
-                BaseInputAccountant(accountantQuery, false, userid);
-                dbContext.SaveChanges();
-                response.Success();
+                    response.UpdateAccountantNoData();
+                }
+                logger.LogInformation("Update output {@output}", response);
             }
-            else
+            catch (DbUpdateException ex)
             {
-                response.UpdateAccountantNoData();
+                response.DbError();
+                logger.LogInformation("Update dbError {@dbError}", ex.Message);
             }
+            catch (Exception ex) 
+            {
+                response.Error();
+                logger.LogInformation("Update error {@error}", ex.Message);
+            }
+            
             return response;
         }
 
         ///<inheritdoc />     
-        public ResponseViewModel Delete(int accountantId)
+        public ResponseViewModel Delete(int accountantId, int userId = 0)
         {
+            logger.LogInformation("Delete input accountantId: {@accountantId} userId {@userId}", accountantId, userId);
+
             ResponseViewModel response = new();
-            int userid = 0;//帳號驗證取得ID
+            
+            try
+            {
+                logger.LogInformation("Delete output {@output}", response);
+            }
+            catch (DbUpdateException ex)
+            {
+                response.DbError();
+                logger.LogInformation("GetPaginate dbError {@dbError}", ex.Message);
+            }
+            catch (Exception ex)
+            {
+                response.Error();
+                logger.LogInformation("GetPaginate error {@error}", ex.Message);
+            }
+
             Accountant? accountantQuery = dbContext.Accountants.Find(accountantId);
 
             if (accountantQuery != null)
             {
                 accountantQuery.DeleteStatus = DeleteStatus.Yes;
-                BaseInputAccountant(accountantQuery, false, userid);
+                BaseInputAccountant(accountantQuery, false, userId);
                 dbContext.SaveChanges();
                 response.Success();
             }

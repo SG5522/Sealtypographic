@@ -1,4 +1,5 @@
-﻿using SealTypographicWebAPI.Models;
+﻿using DBEntities.Consts;
+using SealTypographicWebAPI.Models;
 using SealTypographicWebAPI.Models.AccountantSignReview;
 
 namespace SealTypographicWebAPI.Services
@@ -12,36 +13,25 @@ namespace SealTypographicWebAPI.Services
         /// 待審清單
         /// </summary>
         /// <param name="accountantSignSearchReview">會計師簽印審核狀態分頁搜尋</param>
+        /// <param name="userId">從Keycloak驗證取得</param>
         /// <returns></returns>
-        AccountantSignGroupReviewPaginate GetReviewPaginate(AccountantSignSearchReview accountantSignSearchReview);
+        AccountantSignGroupReviewPaginate GetReviewPaginate(AccountantSignSearchReview accountantSignSearchReview, int userId = 0);
 
         /// <summary>
         /// 基本資料與簽印組
         /// </summary>
         /// <param name="accountantSignGroupId">會計師簽印組Id</param>
+        /// <param name="userId">從Keycloak驗證取得</param>
         /// <returns></returns>
-        AccountantSignGroupDetailReviewResponse GetReviewDetail(int accountantSignGroupId);
+        AccountantSignGroupDetailReviewResponse GetReviewDetail(int accountantSignGroupId,int userId = 0);
 
         /// <summary>
-        /// 審核通過
+        /// 更換審核狀態
         /// </summary>
-        /// <param name="accountantSignGroupIds">需要更新的ID</param>
+        /// <param name="accountantSignGroupIds">會計師簽印群組Id</param>
+        /// <param name="reviewStatus">審核狀態</param>
+        /// <param name="userId">從Keycloak驗證取得</param>
         /// <returns></returns>
-        ResponseViewModel Approval(List<int> accountantSignGroupIds);
-
-        /// <summary>
-        /// 審核退件
-        /// </summary>
-        /// <param name="accountantSignGroupIds"></param>
-        /// <returns></returns>
-        ResponseViewModel Reject(List<int> accountantSignGroupIds);
-
-        /// <summary>
-        /// 審核不受理
-        /// </summary>
-        /// <param name="accountantSignGroupIds"></param>
-        /// <returns></returns>
-        ResponseViewModel Refuse(List<int> accountantSignGroupIds);
-
+        ResponseViewModel StatusChange(List<int> accountantSignGroupIds, ReviewStatus reviewStatus, int userId = 0);
     }
 }

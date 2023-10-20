@@ -1,4 +1,5 @@
-﻿using SealTypographicWebAPI.Consts;
+﻿using SealTypographicWebAPI.Config;
+using SealTypographicWebAPI.Consts;
 
 namespace SealTypographicWebAPI.Models
 {
@@ -15,7 +16,7 @@ namespace SealTypographicWebAPI.Models
         /// <summary>
         /// 狀態號碼
         /// </summary>
-        public int Code { get; set; }
+        public ResponseCode Code { get; set; }
         /// <summary>
         /// 回傳訊息
         /// </summary>
@@ -26,7 +27,7 @@ namespace SealTypographicWebAPI.Models
         /// </summary>
         public void Success()
         {            
-            Code = (int)ResponseCode.Success;
+            Code = ResponseCode.Success;
             Message = "Success";
         }
 
@@ -35,7 +36,7 @@ namespace SealTypographicWebAPI.Models
         /// </summary>
         public void DbError()
         {
-            Code = (int)ResponseCode.DbError;
+            Code = ResponseCode.DbError;
             Message = "DataBase Error";
         }
 
@@ -44,8 +45,8 @@ namespace SealTypographicWebAPI.Models
         /// </summary>
         public void KeycloakNoData()
         {
-            Code = (int)ResponseCode.KeycloakNoData;
-            //Message = "Keycloak API抓不到資料";
+            Code = ResponseCode.KeycloakNoData;
+            Message = ResponseCode.KeycloakNoData.GetDescription();
         }
 
         /// <summary>
@@ -53,8 +54,8 @@ namespace SealTypographicWebAPI.Models
         /// </summary>
         public void KeycloakLinkError()
         {
-            Code = (int)ResponseCode.KeycloakLinkError;
-            //Message = "Keycloak API抓不到資料";
+            Code = ResponseCode.KeycloakLinkError;
+            Message = ResponseCode.KeycloakLinkError.GetDescription();
         }
 
         /// <summary>
@@ -62,7 +63,7 @@ namespace SealTypographicWebAPI.Models
         /// </summary>
         public void DbNoData()
         {
-            Code = (int)ResponseCode.DbNoData;
+            Code = ResponseCode.DbNoData;
             Message = "Database NoData";
         }
 
@@ -71,7 +72,7 @@ namespace SealTypographicWebAPI.Models
         /// </summary>
         public void CustomeNoData()
         {
-            Code = (int)ResponseCode.CustomeNoData;
+            Code = ResponseCode.CustomeNoData;
             Message = "Other no data";
         }
 
@@ -80,7 +81,7 @@ namespace SealTypographicWebAPI.Models
         /// </summary>
         public void CreateCustomerFailed()
         {
-            Code = (int)ResponseCode.CreateCustomerFailed;
+            Code = ResponseCode.CreateCustomerFailed;
             Message = "New Other failed";
         }
 
@@ -89,7 +90,7 @@ namespace SealTypographicWebAPI.Models
         /// </summary>
         public void CreateCustomerNumberRepeat()
         {
-            Code = (int)ResponseCode.CreateCustomerNumberRepeat;
+            Code =  ResponseCode.CreateCustomerNumberRepeat;
             Message = "New Other number repeat";
         }
 
@@ -98,7 +99,7 @@ namespace SealTypographicWebAPI.Models
         /// </summary>
         public void UpdateCustomerNoData()
         {
-            Code = (int)ResponseCode.UpdateCustomerNoData;
+            Code = ResponseCode.UpdateCustomerNoData;
             Message = "Update customer no data";
         }
 
@@ -107,7 +108,7 @@ namespace SealTypographicWebAPI.Models
         /// </summary>
         public void DeleteCustomerNoData()
         {
-            Code = (int)ResponseCode.DeleteCustomerNoData;
+            Code = ResponseCode.DeleteCustomerNoData;
             Message = "Delete customer noData";
         }
 
@@ -116,7 +117,7 @@ namespace SealTypographicWebAPI.Models
         /// </summary>
         public void CustomerSealSequenceRepeat()
         {
-            Code = (int)ResponseCode.CustomerSealSequenceRepeat;
+            Code = ResponseCode.CustomerSealSequenceRepeat;
             Message = "Customer seal Sequence Repeat";
         }
 
@@ -125,7 +126,7 @@ namespace SealTypographicWebAPI.Models
         /// </summary>
         public void CustomerSealNoData()
         {
-            Code = (int)ResponseCode.CustomerSealNoData;
+            Code = ResponseCode.CustomerSealNoData;
             Message = "Customer seal no data";
         }
 
@@ -134,7 +135,7 @@ namespace SealTypographicWebAPI.Models
         /// </summary>
         public void CreateCustomerSealSequenceRepeat()
         {
-            Code = (int)ResponseCode.CreateCustomerSealSequenceRepeat;
+            Code = ResponseCode.CreateCustomerSealSequenceRepeat;
             Message = "Create customer seal sequence repeat";
         }
         //CreateCustomerSealQuarterRepeat
@@ -144,7 +145,7 @@ namespace SealTypographicWebAPI.Models
         /// </summary>
         public void CreateCustomerSealQuarterRepeat()
         {
-            Code = (int)ResponseCode.CreateCustomerSealQuarterRepeat;
+            Code = ResponseCode.CreateCustomerSealQuarterRepeat;
             Message = "Create customer seal quarter repeat";
         }
 
@@ -153,7 +154,7 @@ namespace SealTypographicWebAPI.Models
         /// </summary>
         public void UpdateCustomerSealSequenceRepeat()
         {
-            Code = (int)ResponseCode.UpdateCustomerSealSequenceRepeat;
+            Code = ResponseCode.UpdateCustomerSealSequenceRepeat;
             Message = "Update customer seal sequence repeat";
         }
 
@@ -162,7 +163,7 @@ namespace SealTypographicWebAPI.Models
         /// </summary>
         public void UpdateCustomerSealNoData()
         {
-            Code = (int)ResponseCode.UpdateCustomerSealNoData;
+            Code = ResponseCode.UpdateCustomerSealNoData;
             Message = "Update customer seal no data";
         }
 
@@ -171,7 +172,7 @@ namespace SealTypographicWebAPI.Models
         /// </summary>
         public void DeleteCustomerSealNoData()
         {
-            Code = (int)ResponseCode.DeleteCustomerSealNoData;
+            Code = ResponseCode.DeleteCustomerSealNoData;
             Message = "Other seal delete no data";
         }
 
@@ -180,7 +181,7 @@ namespace SealTypographicWebAPI.Models
         /// </summary>
         public void AccountantNoData()
         {
-            Code = (int)ResponseCode.AccountantNoData;
+            Code = ResponseCode.AccountantNoData;
             Message = "Accountant no data";
         }
 
@@ -189,7 +190,7 @@ namespace SealTypographicWebAPI.Models
         /// </summary>
         public void AccountantNumberRepeat()
         {
-            Code = (int)ResponseCode.AccountantNumberRepeat;
+            Code = ResponseCode.AccountantNumberRepeat;
             Message = "Accountant number repeat";
         }
 
@@ -198,7 +199,7 @@ namespace SealTypographicWebAPI.Models
         /// </summary>
         public void CreateAccountantFailed()
         {
-            Code = (int)ResponseCode.CreateAccountantFailed;
+            Code = ResponseCode.CreateAccountantFailed;
             Message = "New accountant failed";
         }
 
@@ -207,7 +208,7 @@ namespace SealTypographicWebAPI.Models
         /// </summary>
         public void CreateAccountantNumberRepeat()
         {
-            Code = (int)ResponseCode.CreateAccountantNumberRepeat;
+            Code = ResponseCode.CreateAccountantNumberRepeat;
             Message = "New accountant number repeat";
         }
 
@@ -216,7 +217,7 @@ namespace SealTypographicWebAPI.Models
         /// </summary>
         public void UpdateAccountantNoData()
         {
-            Code = (int)ResponseCode.UpdateAccountantNoData;
+            Code = ResponseCode.UpdateAccountantNoData;
             Message = "Update accountant no data";
         }
 
@@ -225,7 +226,7 @@ namespace SealTypographicWebAPI.Models
         /// </summary>
         public void DeleteAccountantNoData()
         {
-            Code = (int)ResponseCode.DeleteAccountantNoData;
+            Code = ResponseCode.DeleteAccountantNoData;
             Message = "Delete accountant no data";
         }
 
@@ -234,7 +235,7 @@ namespace SealTypographicWebAPI.Models
         /// </summary>
         public void AccountantSignNoData()
         {
-            Code = (int)ResponseCode.AccountantSignNoData;
+            Code = ResponseCode.AccountantSignNoData;
             Message = "AccountantSign no data";
         }
 
@@ -243,7 +244,7 @@ namespace SealTypographicWebAPI.Models
         /// </summary>
         public void CreateAccountantSignRepeat()
         {
-            Code = (int)ResponseCode.CreateAccountantSignRepeat;
+            Code = ResponseCode.CreateAccountantSignRepeat;
             Message = "New accountant sign repeat";
         }
 
@@ -252,7 +253,7 @@ namespace SealTypographicWebAPI.Models
         /// </summary>
         public void UpdateAccountantSignRepeat()
         {
-            Code = (int)ResponseCode.UpdateAccountantSignRepeat;
+            Code = ResponseCode.UpdateAccountantSignRepeat;
             Message = "Update accountant sign repeat";
         }
 
@@ -261,7 +262,7 @@ namespace SealTypographicWebAPI.Models
         /// </summary>
         public void UpdateAccountantSignNoData()
         {
-            Code = (int)ResponseCode.UpdateAccountantSignNoData;
+            Code = ResponseCode.UpdateAccountantSignNoData;
             Message = "Update accountant sign no data";
         }
 
@@ -270,7 +271,7 @@ namespace SealTypographicWebAPI.Models
         /// </summary>
         public void DeleteAccountantSignNoData()
         {
-            Code = (int)ResponseCode.DeleteAccountantSignNoData;
+            Code = ResponseCode.DeleteAccountantSignNoData;
             Message = "Delete accountant sign no data";
         }
 
@@ -279,7 +280,7 @@ namespace SealTypographicWebAPI.Models
         /// </summary>
         public void AccountantGroupNoData()
         {
-            Code = (int)ResponseCode.AccountantGroupNoData;
+            Code = ResponseCode.AccountantGroupNoData;
             Message = "AccountantSignAuthorization group no data";
         }
 
@@ -288,7 +289,7 @@ namespace SealTypographicWebAPI.Models
         /// </summary>
         public void CreateAccountantGroupNumberRepeat()
         {
-            Code = (int)ResponseCode.CreateAccountantGroupNumberRepeat;
+            Code = ResponseCode.CreateAccountantGroupNumberRepeat;
             Message = "New accountant group number repeat";
         }
 
@@ -297,7 +298,7 @@ namespace SealTypographicWebAPI.Models
         /// </summary>
         public void UpdateAccountantGroupNoData()
         {
-            Code = (int)ResponseCode.UpdateAccountantGroupNoData;
+            Code = ResponseCode.UpdateAccountantGroupNoData;
             Message = "Update accountant group no data";
         }
 
@@ -306,7 +307,7 @@ namespace SealTypographicWebAPI.Models
         /// </summary>
         public void DeleteAccountantGroupNoData()
         {
-            Code = (int)ResponseCode.DeleteAccountantGroupNoData;
+            Code = ResponseCode.DeleteAccountantGroupNoData;
             Message = "Delete accountant group no data";
         }
 
@@ -315,7 +316,7 @@ namespace SealTypographicWebAPI.Models
         /// </summary>
         public void CreateLetterheadNoData()
         {
-            Code = (int)ResponseCode.CreateLetterheadNoData;
+            Code = ResponseCode.CreateLetterheadNoData;
             Message = "New letterhead no data";
         } 
 
@@ -324,7 +325,7 @@ namespace SealTypographicWebAPI.Models
         /// </summary>
         public void UpdateLetterheadNoData()
         {
-            Code = (int)ResponseCode.UpdateLetterheadNoData;
+            Code = ResponseCode.UpdateLetterheadNoData;
             Message = "Update letterhead no data";
         }
 
@@ -333,7 +334,7 @@ namespace SealTypographicWebAPI.Models
         /// </summary>
         public void DeleteLetterheadNoData()
         {
-            Code = (int)ResponseCode.DeleteLetterheadNoData;
+            Code = ResponseCode.DeleteLetterheadNoData;
             Message = "Delete letterhead no data";
         }
 
@@ -342,7 +343,7 @@ namespace SealTypographicWebAPI.Models
         /// </summary>
         public void LetterheadImageNoData()
         {
-            Code = (int)ResponseCode.LetterheadImageNoData;
+            Code = ResponseCode.LetterheadImageNoData;
             Message = "LetterheadImage image no Data";
         }
 
@@ -351,7 +352,7 @@ namespace SealTypographicWebAPI.Models
         /// </summary>
         public void UpdateLetterheadImageNoData()
         {
-            Code = (int)ResponseCode.UpdateLetterheadImageNoData;
+            Code = ResponseCode.UpdateLetterheadImageNoData;
             Message = "Update letterhead image no data";
         }
 
@@ -360,7 +361,7 @@ namespace SealTypographicWebAPI.Models
         /// </summary>
         public void DeleteLetterheadImageNoData()
         {
-            Code = (int)ResponseCode.DeleteLetterheadImageNoData;
+            Code = ResponseCode.DeleteLetterheadImageNoData;
             Message = "Delete letterhead image no data";
         }
 
@@ -369,7 +370,7 @@ namespace SealTypographicWebAPI.Models
         /// </summary>
         public void FileUploadFailed()
         {
-            Code = (int)ResponseCode.FileUploadFailed;
+            Code = ResponseCode.FileUploadFailed;
             Message = "File Upload failed";
         }
 
@@ -378,7 +379,7 @@ namespace SealTypographicWebAPI.Models
         /// </summary>
         public void FileUploadNoData()
         {
-            Code = (int)ResponseCode.FileUploadNoData;
+            Code = ResponseCode.FileUploadNoData;
             Message = "File upload no data";
         }
 
@@ -387,7 +388,7 @@ namespace SealTypographicWebAPI.Models
         /// </summary>
         public void TemporarySealNoData()
         {
-            Code = (int)ResponseCode.TemporarySealNoData;
+            Code = ResponseCode.TemporarySealNoData;
             Message = "Temporary seal no data";
         }
 
@@ -396,7 +397,7 @@ namespace SealTypographicWebAPI.Models
         /// </summary>
         public void TemporarySealQuarterRepeat()
         {
-            Code = (int)ResponseCode.TemporarySealQuarterRepeat;
+            Code = ResponseCode.TemporarySealQuarterRepeat;
             Message = "Temporary seal quarter Repeat";
         }
 
@@ -405,7 +406,7 @@ namespace SealTypographicWebAPI.Models
         /// </summary>
         public void UpdateTemporarySealNoData()
         {
-            Code = (int)ResponseCode.UpdateTemporarySealNoData;
+            Code = ResponseCode.UpdateTemporarySealNoData;
             Message = "Update temporary seal no data";
         }
 
@@ -414,7 +415,7 @@ namespace SealTypographicWebAPI.Models
         /// </summary>
         public void DeleteTemporarySealNoData()
         {
-            Code = (int)ResponseCode.DeleteTemporarySealNoData;
+            Code = ResponseCode.DeleteTemporarySealNoData;
             Message = "Delete temporary seal no data";
         }
 
@@ -423,7 +424,7 @@ namespace SealTypographicWebAPI.Models
         /// </summary>
         public void DeleteCustomerSealTemplateNoData()
         {
-            Code = (int)ResponseCode.DeleteCustomerSealTemplateNoData;
+            Code = ResponseCode.DeleteCustomerSealTemplateNoData;
             Message = "Delete customerSeal template no data";
         }
 
@@ -432,7 +433,7 @@ namespace SealTypographicWebAPI.Models
         /// </summary>
         public void DeleteAccountantSignTemplateNoData()
         {
-            Code = (int)ResponseCode.DeleteAccountantSignTemplateNoData;
+            Code = ResponseCode.DeleteAccountantSignTemplateNoData;
             Message = "Delete accountantSign template no Data";
         }
 
@@ -441,7 +442,7 @@ namespace SealTypographicWebAPI.Models
         /// </summary>
         public void DeleteLetterImageTemplateNoData()
         {
-            Code = (int)ResponseCode.DeleteLetterImageTemplateNoData;
+            Code = ResponseCode.DeleteLetterImageTemplateNoData;
             Message = "Delete letterImage template no data";
         }
 
@@ -450,7 +451,7 @@ namespace SealTypographicWebAPI.Models
         /// </summary>
         public void QuarterOutOfRange()
         {
-            Code = (int)ResponseCode.QuarterOutOfRange;
+            Code = ResponseCode.QuarterOutOfRange;
             Message = "Quarter out of range";
         }
 
@@ -459,7 +460,7 @@ namespace SealTypographicWebAPI.Models
         /// </summary>
         public void Error()
         {
-            Code = (int)ResponseCode.DbError;
+            Code = ResponseCode.Error;
             Message = "Error";
         }
     }

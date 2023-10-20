@@ -11,9 +11,10 @@ namespace SealTypographicWebAPI.Services
         /// <summary>
         /// 取得信頭資料列表(分頁)
         /// </summary>
-        /// <param name="letterheadSearch">信頭分頁搜尋</param>         
+        /// <param name="letterheadSearch">信頭分頁搜尋</param>
+        /// <param name="userId">登入的使用者Id</param>         
         /// <returns></returns>
-        LetterheadPaginateViewModel GetPaginate(LetterheadSearch letterheadSearch);
+        LetterheadPaginateViewModel GetPaginate(LetterheadSearch letterheadSearch, int userId = 0);
 
 
         /// <summary>        
@@ -21,6 +22,7 @@ namespace SealTypographicWebAPI.Services
         /// 而不是真正的刪除。
         /// </summary>
         /// <param name="Id">信頭Id</param>
-        ResponseViewModel Delete(int Id);
+        /// <param name="userId">登入的使用者Id</param>
+        ResponseViewModel Delete(int Id, int userId = 0);
     }
 }

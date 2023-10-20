@@ -13,37 +13,42 @@ namespace SealTypographicWebAPI.Services
         /// <summary>
         /// 取得會計師簽印建立日期列表
         /// </summary>
-        /// <param name="accountantId">會計師ID</param>        
+        /// <param name="accountantId">會計師ID</param>
+        /// <param name="userId">登入的使用者ID</param>        
         /// <returns></returns>
-        AccountantSignGroupResponse GetCreateDates(int accountantId);
+        AccountantSignGroupResponse GetCreateDates(int accountantId, int userId = 0);
 
         /// <summary>
         /// 取得會計師簽印組
         /// </summary>
         /// <param name="accountantSignGroupId">會計師簽印群組Id</param>
         /// <param name="isTransparent">是否白底透明化</param>
+        /// <param name="userId">登入的使用者ID</param>
         /// <returns></returns>
-        AccountantSignViewModels GetSignViewModels(int accountantSignGroupId, bool isTransparent);
+        AccountantSignViewModels GetSignViewModels(int accountantSignGroupId, bool isTransparent,int userId = 0);
 
         /// <summary>
         /// 新增會計師簽印組
         /// </summary>
         /// <param name="accountantSignForms">會計師簽印組</param>
+        /// <param name="userId">登入的使用者ID</param>
         /// <returns></returns>
-        Task<ResponseViewModel> New(AccountantSignForms accountantSignForms);
+        Task<ResponseViewModel> New(AccountantSignForms accountantSignForms, int userId = 0);
 
         /// <summary>
         /// 異動會計師簽印
         /// </summary>
         /// <param name="accountantSignUpdate">需要異動會計師簽印資料</param>
+        /// <param name="userId">登入的使用者ID</param>
         /// <returns></returns>
-        Task<List<ResponseViewModel>> Update(AccountantSignUpdate accountantSignUpdate);
+        Task<List<ResponseViewModel>> Update(AccountantSignUpdate accountantSignUpdate, int userId = 0);
 
         /// <summary>
         /// 會計師印鑑待審狀態變更。
         /// </summary>
         /// <param name="accountantSignGroupId">會計師簽印群組Id</param>
-        /// <param name="reviewStatus">審查狀態</param>        
-        ResponseViewModel ChangeReviewStatus(int accountantSignGroupId, ReviewStatus reviewStatus);
+        /// <param name="reviewStatus">審查狀態</param>
+        /// <param name="userId">登入的使用者ID</param>        
+        ResponseViewModel ChangeReviewStatus(int accountantSignGroupId, ReviewStatus reviewStatus, int userId = 0);
     }
 }

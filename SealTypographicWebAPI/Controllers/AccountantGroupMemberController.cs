@@ -1,8 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SealTypographicWebAPI.Models;
 using SealTypographicWebAPI.Services;
-using Serilog;
-using SealTypographicWebAPI.Models.Accountant;
 using SealTypographicWebAPI.Models.AccountantGroupMember;
 
 
@@ -21,19 +19,12 @@ namespace SealTypographicWebAPI.Controllers
         private readonly IAccountantGroupMemberService accountantGroupMemberService;
 
         /// <summary>
-        /// 管理會計師資料的Service
-        /// </summary>
-        private readonly IAccountantService accountantService;
-
-        /// <summary>
         /// 建構：注入Service
         /// </summary>
         /// <param name="accountantGroupMemberService">管理會計師群組成員的Service</param>   
-        /// <param name="accountantService">管理會計師資料的Service</param>
-        public AccountantGroupMemberController(IAccountantGroupMemberService accountantGroupMemberService, IAccountantService accountantService)
+        public AccountantGroupMemberController(IAccountantGroupMemberService accountantGroupMemberService)
         {
             this.accountantGroupMemberService = accountantGroupMemberService;
-            this.accountantService = accountantService;
         }
 
         /// <summary>
@@ -42,22 +33,8 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="accountantGroupMemberSearch">群組成員搜尋條件</param>
         /// <returns></returns>
         [HttpGet]
-        public AccountantGroupMembers Members([FromQuery] AccountantGroupMemberSearch accountantGroupMemberSearch)
-        {
-            AccountantGroupMembers accountantGroupMembers = new ();
-            try
-            {
-                Log.Information("AccountantGroupMember members input {@Input}", accountantGroupMemberSearch);
-                accountantGroupMembers = accountantGroupMemberService.GetMembers(accountantGroupMemberSearch, true);                
-                Log.Information("AccountantGroupMember members output {@Output}", accountantGroupMembers);                
-            }
-            catch (Exception ex)
-            {
-                Log.Error("AccountantGroupMember FromQuery error {@Error}", ex.Message); 
-                accountantGroupMembers.DbError();
-            }
-            return accountantGroupMembers;
-        }
+        public AccountantGroupMembers Members([FromQuery] AccountantGroupMemberSearch accountantGroupMemberSearch) 
+            => accountantGroupMemberService.GetMembers(accountantGroupMemberSearch, true);    
 
         /// <summary>
         /// 取得非該群組會計師列表
@@ -65,68 +42,8 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="accountantGroupMemberSearch">群組成員搜尋條件</param>
         /// <returns></returns>
         [HttpGet("[Action]")]
-        public AccountantGroupMembers NotTheGroup([FromQuery] AccountantGroupMemberSearch accountantGroupMemberSearch)
-        {
-            AccountantGroupMembers accountantGroupMembers = new ();
-            try
-            {                
-                Log.Information("AccountantGroupMember get NotTheGroup input {@Input}", accountantGroupMemberSearch);
-                accountantGroupMembers = accountantGroupMemberService.GetMembers(accountantGroupMemberSearch, false);
-                Log.Information("AccountantGroupMember get NotTheGroup output {@Output}", accountantGroupMembers);                
-            }
-            catch (Exception ex)
-            {
-                Log.Error("AccountantGroupMember get NotTheGroup error {@Error}", ex.Message);                 
-                accountantGroupMembers.DbError();                
-            }
-            return accountantGroupMembers;
-        }
-
-        /// <summary>
-        /// 取得單筆會計師資料
-        /// </summary>
-        /// <param name="accountantId">會計師ID</param>
-        /// <returns></returns>
-        [HttpGet("{accountantId}")]
-        public AccountantDetailResponse GetAccountantViewModel(int accountantId)
-        {
-            AccountantDetailResponse accountantResponse = new();
-            try
-            {
-                Log.Information("AccountantGroupMember get{accountantId} input {@Input}", accountantId);
-                accountantResponse = accountantService.GetDetail(accountantId);
-                Log.Information("AccountantGroupMember get{accountantId} output {@Output}", accountantResponse);
-            }
-            catch (Exception ex)
-            {
-                Log.Error("AccountantGroupMember get{accountantId} error {@Error}", ex.Message);                 
-                accountantResponse.DbError();                
-            }
-            return accountantResponse;
-        }
-
-        /// <summary>
-        /// 變更單個會計師的群組
-        /// </summary>
-        /// <param name="accountantGroupChangeForm">會計師群組資料</param>  
-        /// <returns></returns>
-        [HttpPut]
-        public ResponseViewModel UpdateGroup(AccountantGroupChangeForm accountantGroupChangeForm)
-        {
-            ResponseViewModel response = new();
-            try
-            {
-                Log.Information("AccountantGroupMember put input {@Input}", accountantGroupChangeForm);
-                response = accountantGroupMemberService.UpdateGroup(accountantGroupChangeForm);
-                Log.Information("AccountantGroupMember put output {@Output}", response);                
-            }
-            catch (Exception ex)
-            {
-                Log.Error("AccountantGroupMember put error {@Error}", ex.Message); 
-                response.DbError();                
-            }
-            return response;
-        }
+        public AccountantGroupMembers NotTheGroup([FromQuery] AccountantGroupMemberSearch accountantGroupMemberSearch) 
+            => accountantGroupMemberService.GetMembers(accountantGroupMemberSearch, false);
 
 
         /// <summary>
@@ -134,22 +51,8 @@ namespace SealTypographicWebAPI.Controllers
         /// </summary>
         /// <param name="accountantGroupMemberForm">會計師群組成員資料</param>       
         [HttpPut("[Action]")]
-        public ResponseViewModel UpdateGroupMembers(AccountantGroupMemberForm accountantGroupMemberForm)
-        {
-            ResponseViewModel response = new ();
-            try
-            {
-                Log.Information("AccountantGroupMember UpdateGroupMembers input {@Input}", accountantGroupMemberForm);
-                response = accountantGroupMemberService.UpdateGroupMembers(accountantGroupMemberForm);
-                Log.Information("AccountantGroupMember UpdateGroupMembers output {@Output}", response);
-            }
-            catch (Exception ex)
-            {
-                Log.Error("AccountantGroupMember UpdateGroupMembers error {@Error}", ex.Message); 
-                response.DbError();                
-            }
-            return response;
-        }
+        public ResponseViewModel UpdateGroupMembers(AccountantGroupMemberForm accountantGroupMemberForm) 
+            => accountantGroupMemberService.UpdateGroupMembers(accountantGroupMemberForm);
 
     }
 }

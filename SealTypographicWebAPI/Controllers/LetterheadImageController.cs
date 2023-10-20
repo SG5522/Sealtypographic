@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using DBEntities;
 using SealTypographicWebAPI.Models;
 using SealTypographicWebAPI.Models.Letterhead;
 using SealTypographicWebAPI.Services;
@@ -34,21 +33,7 @@ namespace SealTypographicWebAPI.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet("[Action]")]
-        public LetterheadImageStatusResponse StatusList()
-        {
-            LetterheadImageStatusResponse letterheadImageStatusResponse = new();
-            try
-            {                
-                letterheadImageStatusResponse = letterheadImageService.GetStatus();
-                Log.Information("LetterheadImage StatusList output {@Output}", letterheadImageStatusResponse);
-            }
-            catch (Exception ex)
-            {
-                Log.Error("LetterheadImage StatusList error {@Error}", ex.Message); 
-                letterheadImageStatusResponse.DbError();
-            }
-            return letterheadImageStatusResponse;
-        }
+        public LetterheadImageStatusResponse StatusList() => letterheadImageService.GetStatus();
 
         /// <summary>
         /// 取得信頭名稱與圖片建立日期
@@ -56,22 +41,7 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="letterheadId">信頭Id</param>
         /// <returns></returns>
         [HttpGet("{letterheadId}")]
-        public LetterheadImageCreateDateViews NameAndCreateDate(int letterheadId)
-        {
-            LetterheadImageCreateDateViews letterheadGroupCreateDateViews = new();
-            try
-            {
-                Log.Information("LetterheadImage get createDates input {@Input}", letterheadId);
-                letterheadGroupCreateDateViews = letterheadImageService.GetNameAndCreateDate(letterheadId);
-                Log.Information("LetterheadImage get createDates output {@Output}", letterheadGroupCreateDateViews);
-            }
-            catch (Exception ex)
-            {
-                Log.Error("LetterheadImage get createDates error {@Error}", ex.Message); 
-                letterheadGroupCreateDateViews.DbError();
-            }
-            return letterheadGroupCreateDateViews;
-        }
+        public LetterheadImageCreateDateViews NameAndCreateDate(int letterheadId) => letterheadImageService.GetNameAndCreateDate(letterheadId);
 
         /// <summary>
         /// 取得信頭圖片
@@ -80,22 +50,7 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="isTransparent">是否白底透明化</param>
         /// <returns></returns>
         [HttpGet]
-        public LetterheadImageViewModel ImageViewModel(int id, bool isTransparent)
-        {
-            LetterheadImageViewModel letterheadImageViewModel = new();
-            try
-            {
-                Log.Information("LetterheadImage get imageViewModel input {@Input}", id);
-                letterheadImageViewModel = letterheadImageService.GetImageViewModel(id, isTransparent);
-                Log.Information("LetterheadImage get imageViewModel output {@Output}", letterheadImageViewModel);
-            }
-            catch (Exception ex)
-            {
-                Log.Error("LetterheadImage get imageViewModel error {@Error}", ex.Message);
-                letterheadImageViewModel.DbError();
-            }
-            return letterheadImageViewModel;
-        }
+        public LetterheadImageViewModel ImageViewModel(int id, bool isTransparent) => letterheadImageService.GetImageViewModel(id, isTransparent);
 
         /// <summary>
         /// 新增信頭圖片
@@ -103,22 +58,7 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="letterheadImageForm">信頭圖片</param>
         /// <returns></returns>
         [HttpPost]
-        public async Task<ResponseViewModel> New(LetterheadImageForm letterheadImageForm)
-        {
-            ResponseViewModel responseViewModel = new();
-            try
-            {
-                Log.Information("LetterheadImage new input {@Input}", letterheadImageForm);
-                responseViewModel = await letterheadImageService.New(letterheadImageForm);
-                Log.Information("LetterheadImage new output {@Output}", responseViewModel);
-            }
-            catch (Exception ex)
-            {
-                Log.Error("LetterheadImage new error {@Error}", ex.Message);
-                responseViewModel.DbError();
-            }
-            return responseViewModel;
-        }
+        public async Task<ResponseViewModel> New(LetterheadImageForm letterheadImageForm) => await letterheadImageService.New(letterheadImageForm);
 
         /// <summary>
         /// 異動信頭圖片
@@ -126,21 +66,6 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="letterheadImageUpdate">異動信頭圖片資料</param>
         /// <returns></returns>
         [HttpPut]
-        public async Task<ResponseViewModel> Update(LetterheadImageUpdate letterheadImageUpdate)
-        {
-            ResponseViewModel response = new();
-            try
-            {
-                Log.Information("LetterheadImage put input {@Input}", letterheadImageUpdate);
-                response = await letterheadImageService.Update(letterheadImageUpdate);
-                Log.Information("LetterheadImage put output {@Output}", response);
-            }            
-            catch (Exception ex)
-            {
-                Log.Error("LetterheadImage put error {@Error}", ex.Message);
-                response.DbError();
-            }
-            return response;
-        }        
+        public async Task<ResponseViewModel> Update(LetterheadImageUpdate letterheadImageUpdate) => await letterheadImageService.Update(letterheadImageUpdate);      
     }
 }

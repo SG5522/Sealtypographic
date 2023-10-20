@@ -21,9 +21,9 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <summary>
         /// 建構
         /// </summary>
-        /// <param name="dbContext"></param>        
+        /// <param name="dbContext"></param>
         /// <param name="mapper"></param>
-        /// <param name="logger"></param>        
+        /// <param name="logger"></param>
         public CustomerSealReviewService(SealTypographicDbContext dbContext, IMapper mapper, ILogger<CustomerSealReviewService> logger)
         {
             this.dbContext = dbContext;                        
@@ -32,9 +32,10 @@ namespace SealTypographicWebAPI.Services.Implements
         }
 
         ///<inheritdoc />
-        public CustomerSealGroupReviewPaginate GetReviewList(CustomerSealSearchReview customerSealSearchReview, TypographyType typographyType)
+        public CustomerSealGroupReviewPaginate GetReviewList(CustomerSealSearchReview customerSealSearchReview, TypographyType typographyType, int userId = 0)
         {
-            logger.LogInformation("GetReviewList input {@Input} typographyType= {@TypographyType}", customerSealSearchReview, typographyType);
+            logger.LogInformation("GetReviewList input {@customerSealSearchReview} typographyType: {@TypographyType} userId : {@userId}"
+                , customerSealSearchReview, typographyType, userId);
 
             CustomerSealGroupReviewPaginate customerSealQuarterResponse = new ();
             int companyId = 1;
@@ -76,12 +77,8 @@ namespace SealTypographicWebAPI.Services.Implements
                                                             .Take(customerSealSearchReview.PageSize)
                                                             .ProjectTo<CustomerSealGroupReviewViewModel>(configurationProvider)
                                                             .ToList();
-                    //計算總頁數
-                    int totalPage = customerSealQuarterQuery.Count();
-                    customerSealQuarterResponse.TotalPage = PageUtil.GetTotalPage(totalPage, customerSealSearchReview.PageSize);
-                    customerSealQuarterResponse.TotalCount = totalPage;
-                    customerSealQuarterResponse.PageNumber = customerSealSearchReview.PageNumber;
-                    customerSealQuarterResponse.PageSize = customerSealSearchReview.PageSize;
+
+                    PageUtil.SetPageData(customerSealQuarterResponse, customerSealSearchReview.PageNumber, customerSealSearchReview.PageSize, customerSealQuarterQuery.Count());
                     customerSealQuarterResponse.Success();
                 }
                 else
@@ -100,21 +97,21 @@ namespace SealTypographicWebAPI.Services.Implements
         }
         
         ///<inheritdoc />
-        public CustomerSealGroupDetailReviewResponse GetReviewDetail(int customerSealQuarterId)
+        public CustomerSealGroupDetailReviewResponse GetReviewDetail(int customerSealQuarterId, int userId = 0)
         {
-            logger.LogInformation("GetReviewDetail customerSealQuarterId {@CustomerSealQuarterId}", customerSealQuarterId);
+            logger.LogInformation("GetReviewDetail input customerSealQuarterId: {@customerSealQuarterId} userId: {@userId}", customerSealQuarterId, userId);
 
             CustomerSealGroupDetailReviewResponse customerSealReviewDetailResponse = new();
 
             try
             {
                 CustomerSealGroupDetailReviewViewModel? customerSealGroupQuery = dbContext.CustomerSealGroups
-                                                                    .Include(x => x.Customer)
-                                                                    .Include(x => x.QuarterYear)
-                                                                    .Include(x => x.TypographicResources)
-                                                                    .Where(x => x.Id == customerSealQuarterId)
-                                                                    .ProjectTo<CustomerSealGroupDetailReviewViewModel>(configurationProvider)
-                                                                    .FirstOrDefault();
+                                                                                .Include(x => x.Customer)
+                                                                                .Include(x => x.QuarterYear)
+                                                                                .Include(x => x.TypographicResources)
+                                                                                .Where(x => x.Id == customerSealQuarterId)
+                                                                                .ProjectTo<CustomerSealGroupDetailReviewViewModel>(configurationProvider)
+                                                                                .FirstOrDefault();
 
                 if (customerSealGroupQuery != null)
                 {
@@ -134,18 +131,13 @@ namespace SealTypographicWebAPI.Services.Implements
             }
 
             return customerSealReviewDetailResponse;
-        }        
+        }
 
-        /// <summary>
-        /// 更換審核狀態
-        /// </summary>
-        /// <param name="customerSealQuarterIds">審核季度Id</param>
-        /// <param name="reviewStatus">審核狀態</param>
-        /// <param name="userId">使用者Id(從Keycolak取得)</param>
-        /// <returns></returns>
+        ///<inheritdoc />
         public ResponseViewModel StatusChange(List<int> customerSealQuarterIds, ReviewStatus reviewStatus, int userId)
         {
-            logger.LogInformation("StatusChange customerSealQuarterIds {@CustomerSealQuarterIds} reviewStatus= {@ReviewStatus} userId= {@UserId}", customerSealQuarterIds, reviewStatus, userId);
+            logger.LogInformation("StatusChange input customerSealQuarterIds {@customerSealQuarterIds} reviewStatus: {@reviewStatus} userId: {@userId}"
+                , customerSealQuarterIds, reviewStatus, userId);
 
             ResponseViewModel response = new();
 
@@ -185,7 +177,7 @@ namespace SealTypographicWebAPI.Services.Implements
                     response.ErrorItem = response.ErrorItem.Remove(response.ErrorItem.Length - 1, 1);
                     response.CustomerSealNoData();
                 }
-                logger.LogInformation("StatusChange output {@Output} ", response);
+                logger.LogInformation("StatusChange output {@output} ", response);
             }
             catch (Exception ex) 
             {

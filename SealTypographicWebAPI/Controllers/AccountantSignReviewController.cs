@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using DBEntities.Consts;
+using Microsoft.AspNetCore.Mvc;
 using SealTypographicWebAPI.Models;
 using SealTypographicWebAPI.Models.AccountantSignReview;
 using SealTypographicWebAPI.Services;
@@ -33,23 +34,8 @@ namespace SealTypographicWebAPI.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet("[Action]")]
-        public AccountantSignGroupReviewPaginate ReviewPaginate([FromQuery]AccountantSignSearchReview accountantSignSearchReview)
-        {
-            AccountantSignGroupReviewPaginate AccountantSignReviewPaginate = new();
-            try
-            {
-                Log.Information("AccountantSignReview ReviewPaginate input {@Input}", accountantSignSearchReview);
-                AccountantSignReviewPaginate = accountSignReviewService.GetReviewPaginate(accountantSignSearchReview);
-                Log.Information("AccountantSignReview ReviewPaginate output {@Output}", AccountantSignReviewPaginate);
-                return AccountantSignReviewPaginate;
-            }
-            catch (Exception ex) 
-            {
-                Log.Error("AccountantSignReview ReviewPaginate error {@Error}", ex.Message); 
-                AccountantSignReviewPaginate.DbError();
-                return AccountantSignReviewPaginate;
-            }
-        }
+        public AccountantSignGroupReviewPaginate ReviewPaginate([FromQuery]AccountantSignSearchReview accountantSignSearchReview) 
+           => accountSignReviewService.GetReviewPaginate(accountantSignSearchReview);
 
         /// <summary>
         /// 會計師基本資料與簽印組
@@ -58,90 +44,30 @@ namespace SealTypographicWebAPI.Controllers
         /// <returns></returns>
         [HttpGet("{accountantSignGroupId}")]
         public AccountantSignGroupDetailReviewResponse ReviewDetail(int accountantSignGroupId)
-        {
-            AccountantSignGroupDetailReviewResponse accountantSignReviewDetailResponse = new();
-            try
-            {
-                Log.Information("AccountantSignReview ReviewDetail input {@Input}", accountantSignGroupId);
-                accountantSignReviewDetailResponse = accountSignReviewService.GetReviewDetail(accountantSignGroupId);
-                Log.Information("AccountantSignReview ReviewDetail output {@Output}", accountantSignReviewDetailResponse);
-                return accountantSignReviewDetailResponse;
-            }
-            catch (Exception ex)
-            {
-                Log.Error("AccountantSignReview ReviewDetail error {@Error}", ex.Message); 
-                accountantSignReviewDetailResponse.DbError();
-                return accountantSignReviewDetailResponse;
-            }
-        }
+             => accountSignReviewService.GetReviewDetail(accountantSignGroupId);
 
         /// <summary>
         /// 審核通過
         /// </summary>
         /// <param name="accountantSignGroupIds"></param>
         [HttpPut("[Action]")]
-        public ResponseViewModel Approval(List<int> accountantSignGroupIds)
-        {
-            ResponseViewModel response = new();
-            try
-            {
-                Log.Information("AccountantSignReview Approval input {@Input}", accountantSignGroupIds);
-                response = accountSignReviewService.Approval(accountantSignGroupIds);
-                Log.Information("AccountantSignReview Approval output {@Output}", response);
-                return response;
-            }
-            catch (Exception ex)
-            {
-                Log.Error("AccountantSignReview Approval error {@Error}", ex.Message); 
-                response.DbError();
-                return response;
-            }
-        }
+        public ResponseViewModel Approval(List<int> accountantSignGroupIds) 
+            => accountSignReviewService.StatusChange(accountantSignGroupIds, ReviewStatus.Approval);
 
         /// <summary>
         /// 審核退件
         /// </summary>
         /// <param name="accountantSignGroupIds"></param>
         [HttpPut("[Action]")]
-        public ResponseViewModel Reject(List<int> accountantSignGroupIds)
-        {
-            ResponseViewModel response = new();
-            try
-            {
-                Log.Information("AccountantSignReview Reject input {@Input}", accountantSignGroupIds);
-                response = accountSignReviewService.Reject(accountantSignGroupIds);
-                Log.Information("AccountantSignReview Reject output {@Output}", response);
-                return response;
-            }
-            catch (Exception ex)
-            {
-                Log.Error("AccountantSignReview Reject error {@Error}", ex.Message); 
-                response.DbError();
-                return response;
-            }
-        }
+        public ResponseViewModel Reject(List<int> accountantSignGroupIds) 
+            => accountSignReviewService.StatusChange(accountantSignGroupIds, ReviewStatus.Reject);
 
         /// <summary>
         /// 審核不受理
         /// </summary>
         /// <param name="accountantSignGroupIds"></param>
         [HttpPut("[Action]")]
-        public ResponseViewModel Refuse(List<int> accountantSignGroupIds)
-        {
-            ResponseViewModel response = new();
-            try
-            {
-                Log.Information("AccountantSignReview Refuse input {@Input}", accountantSignGroupIds);
-                response = accountSignReviewService.Refuse(accountantSignGroupIds);
-                Log.Information("AccountantSignReview Refuse output {@Output}", response);
-                return response;
-            }
-            catch (Exception ex)
-            {
-                Log.Error("AccountantSignReview Refuse error {@Error}", ex.Message); 
-                response.DbError();
-                return response;
-            }
-        }
+        public ResponseViewModel Refuse(List<int> accountantSignGroupIds) 
+            => accountSignReviewService.StatusChange(accountantSignGroupIds, ReviewStatus.Refuse);
     }
 }

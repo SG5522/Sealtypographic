@@ -2,7 +2,6 @@
 using SealTypographicWebAPI.Models;
 using SealTypographicWebAPI.Models.Letterhead;
 using SealTypographicWebAPI.Services;
-using Serilog;
 
 
 namespace SealTypographicWebAPI.Controllers
@@ -34,22 +33,7 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="letterheadSearch">信頭分頁搜尋</param>
         /// <returns></returns>
         [HttpGet]
-        public LetterheadPaginateViewModel Paginate([FromQuery] LetterheadSearch letterheadSearch)
-        {
-            LetterheadPaginateViewModel letterheadPaginateViewModel = new();
-            try
-            {
-                Log.Information("LetterheadImage get paginate input {@Input}", letterheadSearch);
-                letterheadPaginateViewModel = letterheadService.GetPaginate(letterheadSearch);
-                Log.Information("LetterheadImage get paginate output {@Output}", letterheadPaginateViewModel);                
-            }
-            catch (Exception ex)
-            {
-                Log.Error("LetterheadImage get paginate error {@Error}", ex.Message);
-                letterheadPaginateViewModel.DbError();                
-            }
-            return letterheadPaginateViewModel;
-        }
+        public LetterheadPaginateViewModel Paginate([FromQuery] LetterheadSearch letterheadSearch) => letterheadService.GetPaginate(letterheadSearch);
 
         /// <summary>       
         /// 此刪除為更動狀態使其一般使用者看不到資料，
@@ -58,21 +42,6 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpDelete("{id}")]
-        public ResponseViewModel Delete(int id)
-        {
-            ResponseViewModel responseViewModel = new();
-            try
-            {
-                Log.Information("LetterheadImage delete(hide) input {@Input}", id);
-                responseViewModel = letterheadService.Delete(id);
-                Log.Information("LetterheadImage delete(hide) output {@Output}", responseViewModel);                
-            }
-            catch (Exception ex)
-            {
-                Log.Error("LetterheadImage delete(hide) error {@Error}", ex.Message);
-                responseViewModel.DbError();                
-            }
-            return responseViewModel;
-        }
+        public ResponseViewModel Delete(int id) => letterheadService.Delete(id);
     }
 }

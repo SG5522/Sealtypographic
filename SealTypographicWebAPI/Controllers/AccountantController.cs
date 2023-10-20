@@ -29,27 +29,21 @@ namespace SealTypographicWebAPI.Controllers
         }
 
         /// <summary>
+        /// 取得資料
+        /// </summary>
+        /// <param name="accountantId">會計師ID</param>        
+        /// <returns></returns>
+        [HttpGet("{accountantId}")]
+        public AccountantDetailResponse Detail(int accountantId) => accountantService.GetDetail(accountantId);
+
+        /// <summary>
         /// 依搜尋條件獲得資料列表(分頁)
         /// </summary>
         /// <param name="accountantSearch">搜尋條件</param>
         /// <returns></returns>
         [HttpGet]
-        public AccountantPaginateViewModel Paginate([FromQuery]AccountantSearch accountantSearch)
-        {
-            AccountantPaginateViewModel accountantPaginatesViewModel = new();
-            try
-            {
-                Log.Information("Accountant paginate input {@Input}", accountantSearch);
-                accountantPaginatesViewModel = accountantService.GetPaginate(accountantSearch, false);
-                Log.Information("Accountant paginate output {@Output}", accountantPaginatesViewModel);                
-            }
-            catch (Exception ex) 
-            {
-                Log.Error("Accountant paginate error {@Error}", ex.Message); 
-                accountantPaginatesViewModel.DbError();                                
-            }
-            return accountantPaginatesViewModel;
-        }
+        public AccountantPaginateViewModel Paginate([FromQuery]AccountantSearch accountantSearch) 
+            => accountantService.GetPaginate(accountantSearch, false);
 
         /// <summary>
         /// 依搜尋條件獲得資料列表(排版使用)
@@ -57,110 +51,28 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="accountantSearch">搜尋條件</param>
         /// <returns></returns>
         [HttpGet("[Action]")]
-        public AccountantPaginateViewModel PaginateWithTypographic([FromQuery] AccountantSearch accountantSearch)
-        {
-            AccountantPaginateViewModel accountantPaginatesViewModel = new();
-            try
-            {
-                Log.Information("Accountant paginateWithTypographic input {@Input}", accountantSearch);
-                accountantPaginatesViewModel = accountantService.GetPaginate(accountantSearch, true);
-                Log.Information("Accountant paginateWithTypographic output {@Output}", accountantPaginatesViewModel);
-            }
-            catch (Exception ex)
-            {
-                Log.Error("Accountant paginateWithTypographic error {@Error}", ex.Message);
-                accountantPaginatesViewModel.DbError();
-            }
-            return accountantPaginatesViewModel;
-        }
-
-        /// <summary>
-        /// 取得資料
-        /// </summary>
-        /// <param name="accountantId">會計師ID</param>        
-        /// <returns></returns>
-        [HttpGet("{accountantId}")]
-        public AccountantDetailResponse Detail(int accountantId)
-        {
-            AccountantDetailResponse accountantResponse = new();
-            try
-            {
-                Log.Information("Accountant detail input {@Input}", accountantId);
-                accountantResponse = accountantService.GetDetail(accountantId);
-                Log.Information("Accountant detail output {@Output}", accountantResponse);                
-            }
-            catch (Exception ex)
-            {
-                Log.Error("Accountant detail error {@Error}", ex.Message); 
-                accountantResponse.DbError();                                
-            }
-            return accountantResponse;
-        }
+        public AccountantPaginateViewModel PaginateWithTypographic([FromQuery] AccountantSearch accountantSearch) 
+            => accountantService.GetPaginate(accountantSearch, true);
 
         /// <summary>
         /// 新增資料
         /// </summary>
         /// <param name="accountantForm">會計師資料</param>
         [HttpPost]
-        public AccountantCreateResponse New(AccountantForm accountantForm)
-        {
-            AccountantCreateResponse accountantCreateResponse = new();
-            try
-            {
-                Log.Information("Accountant new input {@Input}", accountantForm);
-                accountantCreateResponse = accountantService.New(accountantForm);
-                Log.Information("Accountant new output {@Output}", accountantCreateResponse);                       
-            }
-            catch (Exception ex)
-            {
-                Log.Error("Accountant new error {@Error}", ex.Message); 
-                accountantCreateResponse.DbError();                
-            }
-            return accountantCreateResponse;
-        }
+        public AccountantCreateResponse New(AccountantForm accountantForm) => accountantService.New(accountantForm);
 
         /// <summary>
         /// 更新資料
         /// </summary>
         /// <param name="accountantFormUpdate">會計師資料(Id為查詢用)</param>        
         [HttpPut]
-        public ResponseViewModel Update(AccountantUpdateForm accountantFormUpdate)
-        {
-            ResponseViewModel response = new();
-            try
-            {
-                Log.Information("Accountant update input {@Input}", accountantFormUpdate);
-                response = accountantService.Update(accountantFormUpdate);
-                Log.Information("Accountant update output {@Output}", response);                
-            }
-            catch (Exception ex)
-            {
-                Log.Error("Accountant put update error {@Error}", ex.Message); 
-                response.DbError();                
-            }
-            return response;
-        }
+        public ResponseViewModel Update(AccountantUpdateForm accountantFormUpdate) => accountantService.Update(accountantFormUpdate);
 
         /// <summary>
         /// 刪除資料
         /// </summary>
         /// <param name="accountantId">會計師ID</param>        
         [HttpDelete("{accountantId}")]
-        public ResponseViewModel Delete(int accountantId)
-        {
-            ResponseViewModel response = new();
-            try
-            {
-                Log.Information("Accountant delete(hide) input {@Input}", accountantId);
-                response = accountantService.Delete(accountantId);
-                Log.Information("Accountant delete(hide) output {@Output}", response);
-            }
-            catch (Exception ex)
-            { 
-                Log.Error("Accountant delete(hide) error {@Error}", ex.Message); 
-                response.DbError();                
-            }
-            return response;
-        }
+        public ResponseViewModel Delete(int accountantId) => accountantService.Delete(accountantId);
     }
 }

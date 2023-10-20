@@ -6,6 +6,9 @@ using SealTypographicWebAPI.Utils;
 using DBEntities;
 using DBEntities.Consts;
 using AutoMapper.QueryableExtensions;
+using Keycloak.AuthServices.Sdk.Admin.Models;
+using SealTypographicWebAPI.Models.Accountant;
+using Microsoft.Extensions.Logging;
 
 namespace SealTypographicWebAPI.Services.Implements
 {
@@ -14,98 +17,115 @@ namespace SealTypographicWebAPI.Services.Implements
     /// </summary>
     public class LetterheadService : ILetterheadService
     {
-        private readonly SealTypographicDbContext dbContext;
-        private readonly IMapper mapper;
+        private readonly SealTypographicDbContext dbContext;        
         private readonly AutoMapper.IConfigurationProvider configurationProvider;
+        private readonly ILogger<LetterheadService> logger;
 
         /// <summary>
         /// 取得DB與ResponseService
         /// </summary>
         /// <param name="dbContext"></param>
         /// <param name="mapper"></param>
-        public LetterheadService(SealTypographicDbContext dbContext, IMapper mapper)
+        /// <param name="logger"></param>
+        public LetterheadService(SealTypographicDbContext dbContext, IMapper mapper, ILogger<LetterheadService> logger)
         {
-            this.dbContext = dbContext;
-            this.mapper = mapper;
+            this.dbContext = dbContext;            
             configurationProvider = mapper.ConfigurationProvider;
+            this.logger = logger;
         }
 
-        /// <summary>
-        /// 取得信頭資料列表(分頁)
-        /// </summary>
-        /// <param name="letterheadSearch">信頭分頁搜尋</param>
-        /// <returns></returns>
-        public LetterheadPaginateViewModel GetPaginate(LetterheadSearch letterheadSearch)
+        ///<inheritdoc />
+        public LetterheadPaginateViewModel GetPaginate(LetterheadSearch letterheadSearch, int userId = 0)
         {
-            LetterheadPaginateViewModel letterheadPaginateViewModel = new ();
-            List<LetterheadViewModel> letterheadViewModels = new();
-            ResponseViewModel response = new();
+            logger.LogInformation("GetPaginate input {@letterheadSearch} userId: {@userId}", letterheadSearch, userId);
 
-            IQueryable<Letterhead> letterheadQuery = dbContext.Letterheads.Where(letterhead => letterhead.DeleteStatus == DeleteStatus.No)
-                                                    .Include(letterhead => letterhead.TypographicResources);
+            LetterheadPaginateViewModel letterheadPaginateViewModel = new ();            
 
-            if (!string.IsNullOrWhiteSpace(letterheadSearch.Name))
+            try
             {
-                letterheadQuery = letterheadQuery.Where
-                                (
-                                    letterhead => letterhead.Name.Contains(letterheadSearch.Name)
-                                );
+                IQueryable<Letterhead> letterheadQuery = dbContext.Letterheads.Where(letterhead => letterhead.DeleteStatus == DeleteStatus.No)
+                                    .Include(letterhead => letterhead.TypographicResources);
+
+                if (!string.IsNullOrWhiteSpace(letterheadSearch.Name))
+                {
+                    letterheadQuery = letterheadQuery.Where
+                                    (
+                                        letterhead => letterhead.Name.Contains(letterheadSearch.Name)
+                                    );
+                }
+
+                letterheadQuery = letterheadQuery.OrderBy(letterhead => letterhead.Id);
+
+                if (letterheadQuery.Any())
+                {
+                    //取得該頁  
+                    letterheadPaginateViewModel.ViewModels = letterheadQuery
+                                                              .Skip((letterheadSearch.PageNumber - 1) * letterheadSearch.PageSize)
+                                                              .Take(letterheadSearch.PageSize)
+                                                              .ProjectTo<LetterheadViewModel>(configurationProvider)
+                                                              .ToList();
+
+                    PageUtil.SetPageData(letterheadPaginateViewModel, letterheadSearch.PageNumber, letterheadSearch.PageSize, letterheadQuery.Count());
+                    letterheadPaginateViewModel.Success();
+                }
+                else
+                {
+                    letterheadPaginateViewModel.DbNoData();
+                }
+                logger.LogInformation("GetPaginate output {@output}", letterheadPaginateViewModel);
             }
-
-            letterheadQuery = letterheadQuery.OrderBy(letterhead => letterhead.Id);
-
-            if (letterheadQuery.Any())
+            catch (Exception ex) 
             {
-                //取得該頁  
-                letterheadPaginateViewModel.ViewModels = letterheadQuery
-                                                          .Skip((letterheadSearch.PageNumber - 1) * letterheadSearch.PageSize)
-                                                          .Take(letterheadSearch.PageSize)
-                                                          .ProjectTo<LetterheadViewModel>(configurationProvider)
-                                                          .ToList();
-
-                letterheadPaginateViewModel.PageNumber = letterheadSearch.PageNumber;
-                letterheadPaginateViewModel.PageSize = letterheadSearch.PageSize;
-                //計算總頁數
-                letterheadPaginateViewModel.TotalPage = PageUtil.GetTotalPage(letterheadQuery.Count(), letterheadSearch.PageSize);
-                letterheadPaginateViewModel.TotalCount = letterheadQuery.Count();                
-            }
-            letterheadPaginateViewModel.Success();
+                letterheadPaginateViewModel.Error();
+                logger.LogInformation("GetPaginate error {@error}", ex.Message);
+            }            
 
             return letterheadPaginateViewModel;
         }
 
-
-        /// <summary>
-        /// 此刪除為更動狀態使其一般使用者看不到資料，
-        /// 而不是真正的刪除。
-        /// 另外連同關聯的信頭圖片標記刪除(只是標記刪除不是真正刪除)
-        /// </summary>
-        /// <param name="id">信頭Id</param>
-        public ResponseViewModel Delete(int id)
+        ///<inheritdoc />
+        public ResponseViewModel Delete(int id, int userId = 0)
         {
-            ResponseViewModel response = new();
-            int userId = 0;//帳號驗證取得Id
-            Letterhead? letterheadQuery = dbContext.Letterheads.Include(x => x.TypographicResources)
+            logger.LogInformation("Delete input id: {@id} userId: {userId}", id, userId);
+
+            ResponseViewModel response = new();       
+            
+            try
+            {
+                Letterhead? letterheadQuery = dbContext.Letterheads.Include(x => x.TypographicResources)
                                           .FirstOrDefault(x => x.Id == id);
 
-            if (letterheadQuery != null)
-            {
-                letterheadQuery.DeleteStatus = DeleteStatus.Yes;
-                letterheadQuery.Status = LetterheadImageStatus.Disabled; //應該用不到之後移除或是未來需要審查時在來調整。
-                BaseInputLetterhead(letterheadQuery, false, userId);
-
-                foreach(TypographicResource typographicResource in letterheadQuery.TypographicResources)
+                if (letterheadQuery != null)
                 {
-                    typographicResource.DeleteStatus = DeleteStatus.Yes;                    
+                    letterheadQuery.DeleteStatus = DeleteStatus.Yes;
+                    letterheadQuery.Status = LetterheadImageStatus.Disabled; //應該用不到之後移除或是未來需要審查時在來調整。
+                    BaseInputLetterhead(letterheadQuery, false, userId);
+
+                    foreach (TypographicResource typographicResource in letterheadQuery.TypographicResources)
+                    {
+                        typographicResource.DeleteStatus = DeleteStatus.Yes;
+                    }
+
+                    dbContext.SaveChanges();
+                    response.Success();
                 }
-                
-                dbContext.SaveChanges();
-                response.Success();
+                else
+                {
+                    response.DbNoData();
+                }
+                logger.LogInformation("Delete output {@output}", response);
             }
-            else
+            catch (DbUpdateException ex)
             {
-                response.DbNoData();
+                response.DbError();
+                logger.LogInformation("GetPaginate dberror {@dberror}", ex.Message);
             }
+            catch (Exception ex) 
+            {
+                response.Error();
+                logger.LogInformation("GetPaginate error {@error}", ex.Message);
+            }
+            
             return response;            
         }
 

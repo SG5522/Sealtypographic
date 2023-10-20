@@ -37,14 +37,10 @@ namespace SealTypographicWebAPI.Services.Implements
             this.logger = logger;
         }
 
-        /// <summary>
-        /// 取得會計師簽印建立日期列表
-        /// </summary>
-        /// <param name="accountantId">會計師Id</param>
-        /// <returns></returns>
-        public AccountantSignGroupResponse GetCreateDates(int accountantId)
+        ///<inheritdoc />
+        public AccountantSignGroupResponse GetCreateDates(int accountantId, int userId = 0)
         {
-            logger.LogInformation("GetCreateDates accountantId= {@AccountantId}", accountantId);
+            logger.LogInformation("GetCreateDates input accountantId: {@accountantId} userId: {@userId}", accountantId, userId);
 
             AccountantSignGroupResponse accountantSignStartDates = new();
 
@@ -79,15 +75,11 @@ namespace SealTypographicWebAPI.Services.Implements
             return accountantSignStartDates;
         }
 
-        /// <summary>
-        /// 取得會計師簽印組
-        /// </summary>
-        /// <param name="accountantSignGroupId"></param>
-        /// <param name="isTransparent">是否白底透明化</param>
-        /// <returns></returns>
-        public AccountantSignViewModels GetSignViewModels(int accountantSignGroupId, bool isTransparent)
+        ///<inheritdoc />
+        public AccountantSignViewModels GetSignViewModels(int accountantSignGroupId, bool isTransparent, int userId = 0)
         {
-            logger.LogInformation("GetSignViewModels accountantSignGroupId= {@accountantSignGroupId} isTransparent= {@isTransparent}", accountantSignGroupId, isTransparent);
+            logger.LogInformation("GetSignViewModels input accountantSignGroupId: {@accountantSignGroupId} isTransparent: {@isTransparent} userId: {@userId}"
+                , accountantSignGroupId, isTransparent, userId);
 
             AccountantSignViewModels? accountantSignViewModels;
 
@@ -127,17 +119,12 @@ namespace SealTypographicWebAPI.Services.Implements
             return accountantSignViewModels;
         }
 
-        /// <summary>
-        /// 新增會計師簽印組
-        /// </summary>
-        /// <param name="accountantSignForms">會計師簽印組</param>
-        /// <returns></returns>
-        public async Task<ResponseViewModel> New(AccountantSignForms accountantSignForms)
+        ///<inheritdoc />
+        public async Task<ResponseViewModel> New(AccountantSignForms accountantSignForms, int userId = 0)
         {
-            logger.LogInformation("New input {@Input}", accountantSignForms);
+            logger.LogInformation("New input {@accountantSignForms} userId: {@userId}", accountantSignForms, userId);
 
             ResponseViewModel response = new();            
-            int userId = 1; //從帳號驗證取得Id
 
             try
             {
@@ -177,17 +164,13 @@ namespace SealTypographicWebAPI.Services.Implements
             
             return response;
         }
-        /// <summary>
-        /// 異動會計師簽印
-        /// </summary>
-        /// <param name="accountantSignUpdate">需要異動會計師簽印資料</param>
-        /// <returns></returns>
-        public async Task<List<ResponseViewModel>> Update(AccountantSignUpdate accountantSignUpdate)
-        {
-            logger.LogInformation("Update input {@Input}", accountantSignUpdate);
 
-            List<ResponseViewModel> responseViewModels = new();            
-            int userId = 1;//之後會從帳號驗證中取得userid            
+        ///<inheritdoc />
+        public async Task<List<ResponseViewModel>> Update(AccountantSignUpdate accountantSignUpdate, int userId = 0)
+        {
+            logger.LogInformation("Update input {@Input} userId: {@userId}", accountantSignUpdate, userId);
+
+            List<ResponseViewModel> responseViewModels = new();                        
 
             try
             {
@@ -298,17 +281,13 @@ namespace SealTypographicWebAPI.Services.Implements
             return responseViewModels;
         }
 
-        /// <summary>
-        /// 會計師印鑑待審狀態變更。
-        /// </summary>
-        /// <param name="accountantSignGroupId">會計師簽印群組Id</param>
-        /// <param name="reviewStatus">審查狀態</param>        
-        public ResponseViewModel ChangeReviewStatus(int accountantSignGroupId, ReviewStatus reviewStatus)
+        ///<inheritdoc />    
+        public ResponseViewModel ChangeReviewStatus(int accountantSignGroupId, ReviewStatus reviewStatus, int userId = 0)
         {
-            logger.LogInformation("ChangeReviewStatus accountantSignGroupId= {@AccountantSignGroupId} reviewStatus= {@ReviewStatus}", accountantSignGroupId, reviewStatus);
+            logger.LogInformation("ChangeReviewStatus input accountantSignGroupId: {@accountantSignGroupId} reviewStatus: {@reviewStatus} userId: {@userId}"
+                , accountantSignGroupId, reviewStatus, userId);
 
-            ResponseViewModel response = new();
-            int userid = 0; //從帳號驗證取得Id
+            ResponseViewModel response = new();            
             
             try
             {
@@ -317,7 +296,7 @@ namespace SealTypographicWebAPI.Services.Implements
                 if (accountantSignGroupQuery != null)
                 {
                     accountantSignGroupQuery.ReviewStatus = reviewStatus;
-                    accountantSignGroupQuery.UpdateUserId = userid;
+                    accountantSignGroupQuery.UpdateUserId = userId;
                     accountantSignGroupQuery.UpdateDate = DateTime.Now;
                     if (reviewStatus == ReviewStatus.Invalid)
                     {
@@ -352,7 +331,7 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <param name="accountantSignGroup">會計師簽印建立日期歷程</param>
         /// <param name="isCreate">對Db所做的行動</param>
         /// <param name="userId">userId</param>
-        private static void BaseInputSignGroupJournal(AccountantSignGroup accountantSignGroup, bool isCreate, int userId)
+        private static void BaseInputSignGroupJournal(AccountantSignGroup accountantSignGroup, bool isCreate, int userId = 0)
         {
             if (isCreate)
             {
@@ -381,7 +360,7 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <param name="imageBase64Info">圖檔資訊</param>
         /// <param name="userId">使用者Id</param>
         /// <returns></returns>
-        private async Task<List<TypographicResource>> NewTypographyResource(List<AccountantSign> formSeals, ImageBase64Info imageBase64Info, int userId)
+        private async Task<List<TypographicResource>> NewTypographyResource(List<AccountantSign> formSeals, ImageBase64Info imageBase64Info, int userId = 0)
         {
             List<TypographicResource> typographyResources = new();
             foreach (AccountantSign accountantSign in formSeals)

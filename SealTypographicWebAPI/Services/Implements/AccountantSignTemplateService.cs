@@ -111,7 +111,7 @@ namespace SealTypographicWebAPI.Services.Implements
             {
                 accountantSignTemplatePaginate.ViewModels = LoadPaginatedData(templateQuery, accountantSignTemplateSearch.PageNumber, accountantSignTemplateSearch.PageSize);
                 
-                PageUtil.GetPageData(accountantSignTemplatePaginate, accountantSignTemplateSearch.PageNumber, accountantSignTemplateSearch.PageSize, templateQuery.Count());
+                PageUtil.SetPageData(accountantSignTemplatePaginate, accountantSignTemplateSearch.PageNumber, accountantSignTemplateSearch.PageSize, templateQuery.Count());
                 accountantSignTemplatePaginate.Success();
             }
             SavePaginateLog(accountantSignTemplatePaginate);

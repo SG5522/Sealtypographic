@@ -1,5 +1,6 @@
 ﻿using DBEntities;
 using DBEntities.Consts;
+using Keycloak.AuthServices.Sdk.Admin.Models;
 
 namespace SealTypographicWebAPI.Utils
 {
@@ -8,6 +9,18 @@ namespace SealTypographicWebAPI.Utils
     /// </summary>
     public static class PdfOutputUtil
     {
+        private const float CompanyScale = 0.24f;
+        private const float PresidentScale = 0.24f;
+        private const float ManagerScale = 0.24f;
+        private const float AccountingDirectorScale = 0.24f;
+        private const float SealScale = 0.24f;
+        private const float CHSignScale = 0.24f;
+        private const float ENSignScale = 0.24f;
+        private const float OldSignScale = 0.24f;
+        private const float LetterheadScale = 0.24f;
+        private const float TemporarySealScale = 0.24f;
+        private const float OtherScale = 0.24f;
+
         /// <summary>
         /// 取得輸出PDF預設之檔名 (目前依勤業為主)
         /// </summary>
@@ -30,37 +43,37 @@ namespace SealTypographicWebAPI.Utils
             switch(subSealType)
             {
                 case SubSealType.Company:
-                    scale = 0.24f;
+                    scale = CompanyScale;
                     break;
                 case SubSealType.President:
-                    scale = 0.24f;
+                    scale = PresidentScale;
                     break;
                 case SubSealType.Manager:
-                    scale = 0.24f;
+                    scale = ManagerScale;
                     break;
                 case SubSealType.AccountingDirector:
-                    scale = 0.24f;
+                    scale = AccountingDirectorScale;
                     break;
                 case SubSealType.Seal:
-                    scale = 0.24f;
+                    scale = SealScale;
                     break;
                 case SubSealType.CHSign:
-                    scale = 0.24f;
+                    scale = CHSignScale;
                     break;
                 case SubSealType.ENSign:
-                    scale = 0.24f;
+                    scale = ENSignScale;
                     break;
                 case SubSealType.OldSign:
-                    scale = 0.24f;
+                    scale = OldSignScale;
                     break;
                 case SubSealType.Letterhead:
-                    scale = 0.24f;
+                    scale = LetterheadScale;
                     break;
                 case SubSealType.TemporarySeal:
-                    scale = 0.24f;
+                    scale = TemporarySealScale;
                     break;
                 case SubSealType.Other:
-                    scale = 0.24f;
+                    scale = OtherScale;
                     break;
             }
             return scale;

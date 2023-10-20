@@ -24,7 +24,7 @@ namespace SealTypographicWebAPI.Utils
         /// <param name="pageNumber"></param>
         /// <param name="pageSize"></param>
         /// <param name="totalCount"></param>
-        public static void GetPageData<T> (T t, int pageNumber, int pageSize, int totalCount) where T : PaginateViewModel
+        public static void SetPageData<T> (T t, int pageNumber, int pageSize, int totalCount) where T : PaginateViewModel
         {
             t.PageNumber = pageNumber;
             t.PageSize = pageSize;

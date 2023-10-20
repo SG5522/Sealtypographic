@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using DBEntities;
 using DBEntities.Consts;
 using AutoMapper.QueryableExtensions;
+using SealTypographicWebAPI.Models.Accountant;
 
 namespace SealTypographicWebAPI.Services.Implements
 {
@@ -33,14 +34,10 @@ namespace SealTypographicWebAPI.Services.Implements
             this.logger = logger;
         }
 
-        /// <summary>
-        /// 取得客戶詳細基本資料
-        /// </summary>
-        /// <param name="customerId">客戶ID</param>
-        /// <returns></returns>
-        public CustomerDetailViewModel GetDetail(int customerId)
+        ///<inheritdoc />
+        public CustomerDetailViewModel GetDetail(int customerId, int userId = 0)
         {
-            logger.LogInformation("GetDetail input customerId {@input}", customerId);
+            logger.LogInformation("GetDetail input customerId: {@customerId} userId: {@userId}", customerId, userId);
             CustomerDetailViewModel customerDetailViewModel = new();                                    
 
             try
@@ -70,14 +67,10 @@ namespace SealTypographicWebAPI.Services.Implements
             return customerDetailViewModel;
         }
 
-        /// <summary>
-        /// 取得客戶資料列表(分頁)
-        /// </summary>
-        /// <param name="customerSearch">客戶分頁搜尋</param>        
-        /// <returns></returns>
-        public CustomerPaginateSummary GetCustomerPaginate(CustomerSearch customerSearch) 
+        ///<inheritdoc />
+        public CustomerPaginateSummary GetPaginate(CustomerSearch customerSearch, int userId = 0) 
         {
-            logger.LogInformation("GetCustomerPaginate input {@input}", customerSearch);
+            logger.LogInformation("GetCustomerPaginate input {@customerSearch} userId: {@userId}", customerSearch, userId);
 
             CustomerPaginateSummary customerPaginateSummary = new();
             int companyId = 1;
@@ -110,7 +103,7 @@ namespace SealTypographicWebAPI.Services.Implements
                                                         .ProjectTo<CustomerSummary>(configurationProvider)
                                                         .ToList();
                     
-                    PageUtil.GetPageData(customerPaginateSummary, customerSearch.PageNumber, customerSearch.PageSize, customerQuery.Count());
+                    PageUtil.SetPageData(customerPaginateSummary, customerSearch.PageNumber, customerSearch.PageSize, customerQuery.Count());
                     customerPaginateSummary.Success();
                 }
                 else
@@ -126,209 +119,145 @@ namespace SealTypographicWebAPI.Services.Implements
             }            
 
             return customerPaginateSummary;
-        }
+        }        
 
-
-        /// <summary>
-        /// 取得客戶資料列表(分頁)
-        /// </summary>
-        /// <param name="customerSearch">客戶分頁搜尋</param>
-        /// <param name="isTypographicUse">是否給排版使用</param>  
-        /// <returns></returns>
-        public CustomerPaginateViewModel GetPaginate(CustomerSearch customerSearch, bool isTypographicUse)
+        ///<inheritdoc />
+        public CreateCustomerResponse New(CustomerForm customerForm, int userId = 0)
         {
-            logger.LogInformation("GetPaginate input {@input} isTypographicUse: {@isTypographicUse}", customerSearch, isTypographicUse);
+            logger.LogInformation("New input {@customerForm} userId: {@userId}", customerForm, userId);
 
-            CustomerPaginateViewModel customerPaginateViewModel = new();
-            int companyId = 1;           
+            CreateCustomerResponse createCustomerResponse = new();            
+            int companyId = 1;
             
             try
             {
-                IQueryable<Customer> customerQuery = dbContext.Customers.Where
+                //尋找公司並與客戶關聯
+                Company? companyQuery = dbContext.Companys.Include(x => x.Customers).FirstOrDefault(x => x.Id == companyId);
+
+                if (companyQuery != null)
+                {
+                    //驗證編號是否重複
+                    List<string> customerQuery = companyQuery.Customers.Where
                                                 (
-                                                    x => x.Company.Id == companyId
+                                                    x => x.Code == customerForm.Code
                                                     && x.DeleteStatus == DeleteStatus.No
-                                                );
-
-                if (isTypographicUse)
-                {
-                    customerQuery = customerQuery.Where(accountant => accountant.CustomerSealGroups.Any(x => x.ReviewStatus == ReviewStatus.Approval));
-                }
-
-                if (!string.IsNullOrWhiteSpace(customerSearch.KeyWord))
-                {
-                    customerQuery = customerQuery.Where
-                    (
-                        customer =>
-                        customer.Code.ToLower().Contains(customerSearch.KeyWord.ToLower())
-                        || customer.Name.Contains(customerSearch.KeyWord)
-                    );
-                }
-                customerQuery = customerQuery.OrderBy(customer => customer.Code);
-
-
-                if (customerQuery.Any())
-                {
-
-                    //取得該頁            
-                    List<CustomerViewModel> thisPageCustomers = customerQuery
-                                                                .Skip((customerSearch.PageNumber - 1) * customerSearch.PageSize)
-                                                                .Take(customerSearch.PageSize)
-                                                                .ProjectTo<CustomerViewModel>(configurationProvider)
-                                                                .ToList();
-
-                    foreach (CustomerViewModel customerViewModel in thisPageCustomers)
+                                                ).Select(x => x.Code).ToList();
+                    if (!customerQuery.Any())
                     {
-                        IQueryable<CustomerSealGroup> customerSealGroups = dbContext.CustomerSealGroups
-                                                                            .Where(x => x.Customer.Id == customerViewModel.Id
-                                                                            && x.DeleteStatus == DeleteStatus.No
-                                                                            && x.ReviewStatus < ReviewStatus.Disabled);
+                        Customer dbCustomer = mapper.Map<Customer>(customerForm);
+                        BaseInput(dbCustomer, true, userId);
+                        companyQuery.Customers.Add(dbCustomer);
+                        dbContext.SaveChanges();
 
-                        if (customerSealGroups.Any())
+                        if (dbCustomer != null)
                         {
-                            //取得狀態
-                            if (!customerSealGroups.Where(x => x.ReviewStatus != ReviewStatus.Approval).Any())
-                            {
-                                customerViewModel.IsDraff = false;
-                                customerViewModel.IsPending = false;
-                                customerViewModel.IsReject = false;
-                            }
-                            else
-                            {
-                                if (customerSealGroups.Where(x => x.ReviewStatus == ReviewStatus.Draft).Any())
-                                {
-                                    customerViewModel.IsDraff = true;
-                                }
-                                if (customerSealGroups.Where(x => x.ReviewStatus == ReviewStatus.Pending).Any())
-                                {
-                                    customerViewModel.IsPending = true;
-                                }
-                                if (customerSealGroups.Where(x => x.ReviewStatus == ReviewStatus.Reject).Any())
-                                {
-                                    customerViewModel.IsReject = true;
-                                }
-                            }
-                            customerViewModel.CustomerSealQuarterId = customerSealGroups.OrderByDescending(x => x.QuarterYear).Select(x => x.Id).FirstOrDefault();
+                            //回傳剛建立的客戶基本資料 使建立客戶印鑑找到該ID   
+                            createCustomerResponse.CustomerId = dbCustomer.Id;
+                            createCustomerResponse.Success();
                         }
-
-                        customerPaginateViewModel.ViewModels.Add(customerViewModel);
-                    }
-                   
-                    PageUtil.GetPageData(customerPaginateViewModel, customerSearch.PageNumber, customerSearch.PageSize, customerQuery.Count());
-                    customerPaginateViewModel.Success();
-                }
-                else
-                {
-                    customerPaginateViewModel.CustomeNoData();
-                }
-
-                
-            }
-            catch (Exception ex)
-            {
-                customerPaginateViewModel.Error();
-                logger.LogError("GetPaginate error {@error}", ex.Message);
-            }            
-
-            return customerPaginateViewModel;
-        }                
-
-        /// <summary>
-        /// 新增客戶基本資料
-        /// </summary>
-        /// <param name="customerForm">基本資料</param>
-        public CreateCustomerResponse New(CustomerForm customerForm)
-        {
-            CreateCustomerResponse createCustomerResponse = new();
-            int userid = 0; //帳號驗證取得ID
-            int companyId = 1;
-            
-            //尋找公司並與客戶關聯
-            Company? companyQuery = dbContext.Companys.Include(x => x.Customers).FirstOrDefault(x => x.Id == companyId);
-
-            if(companyQuery != null)
-            {
-                //驗證編號是否重複
-                List<string> customerQuery = companyQuery.Customers.Where
-                                            (                                                
-                                                x => x.Code == customerForm.Code
-                                                && x.DeleteStatus == DeleteStatus.No
-                                            ).Select(x => x.Code).ToList();
-                if (!customerQuery.Any())
-                {
-                    Customer dbCustomer = mapper.Map<Customer>(customerForm);
-                    BaseInput(dbCustomer, true, userid);
-                    companyQuery.Customers.Add(dbCustomer);
-                    dbContext.SaveChanges();
-
-                    if (dbCustomer != null)
-                    {
-                        //回傳剛建立的客戶基本資料 使建立客戶印鑑找到該ID   
-                        createCustomerResponse.CustomerId = dbCustomer.Id;
-                        createCustomerResponse.Success();
+                        else
+                        {
+                            createCustomerResponse.CreateCustomerFailed();
+                        }
                     }
                     else
                     {
-                        createCustomerResponse.CreateCustomerFailed();
-                    }
+                        createCustomerResponse.CreateCustomerNumberRepeat();
+                    }                    
                 }
                 else
                 {
-                    createCustomerResponse.CreateCustomerNumberRepeat();
+                    createCustomerResponse.DbNoData();
                 }
-            }                                  
+                logger.LogInformation("New output {@output}", createCustomerResponse);
+            }
+            catch (DbUpdateException ex)
+            {
+                createCustomerResponse.DbError();
+                logger.LogInformation("New dbError {@dbError}", ex.Message);
+            }
+            catch (Exception ex)
+            {
+                createCustomerResponse.Error();
+                logger.LogInformation("New error {@error}", ex.Message);
+            }                                
             
             return createCustomerResponse;
         }
 
-        /// <summary>
-        /// 更新基本資料
-        /// </summary>
-        /// <param name="customerFormUpdate">基本資料</param>
-        /// <returns></returns>
-        public ResponseViewModel Update(CustomerUpdateForm customerFormUpdate)
+        ///<inheritdoc />
+        public ResponseViewModel Update(CustomerUpdateForm customerFormUpdate, int userId = 0)
         {
-            ResponseViewModel response = new();
-            int userId = 0;//帳號驗證取得ID
-            Customer? customerQuery = dbContext.Customers.Find(customerFormUpdate.Id);
+            logger.LogInformation("Update input {@customerFormUpdate} userId: {@userId}", customerFormUpdate, userId);
 
-            if (customerQuery != null)
+            ResponseViewModel response = new();            
+
+            try
             {
-                mapper.Map(customerFormUpdate, customerQuery);
-                BaseInput(customerQuery, false, userId);
-                dbContext.SaveChanges();
-                response.Success();
+                Customer? customerQuery = dbContext.Customers.Find(customerFormUpdate.Id);
+
+                if (customerQuery != null)
+                {
+                    mapper.Map(customerFormUpdate, customerQuery);
+                    BaseInput(customerQuery, false, userId);
+                    dbContext.SaveChanges();
+                    response.Success();
+                }
+                else
+                {
+                    response.UpdateCustomerNoData();
+                }
+                logger.LogInformation("Update output {@output}", response);
             }
-            else
+            catch (DbUpdateException ex)
             {
-                response.UpdateCustomerNoData();
+                response.DbError();
+                logger.LogInformation("Update dbError {@dbError}", ex.Message);
             }
+            catch (Exception ex)
+            {
+                response.Error();
+                logger.LogInformation("Update error {@error}", ex.Message);
+            }
+            
             return response;
         }
 
-        /// <summary>
-        /// 刪除基本資料，
-        /// 此刪除為更動狀態使其一般使用者看不到資料，
-        /// 而不是真正的刪除。。
-        /// </summary>
-        /// <param name="customerId">客戶ID</param>        
-        public ResponseViewModel Delete(int customerId)
+        ///<inheritdoc /> 
+        public ResponseViewModel Delete(int customerId, int userId = 0)
         {
-            ResponseViewModel response = new();
-            int userId = 0;//帳號驗證取得ID
-            Customer? customerQuery = dbContext.Customers.Find(customerId);            
+            logger.LogInformation("Delete input customerId: {@customerId} userId: {@userId}", customerId, userId);
+            
+            ResponseViewModel response = new();            
 
-            if (customerQuery != null)
+            try
             {
-                customerQuery.DeleteStatus = DeleteStatus.Yes;
-                BaseInput(customerQuery, false, userId);
-                dbContext.SaveChanges();
-                response.Success();
+                Customer? customerQuery = dbContext.Customers.Find(customerId);
+
+                if (customerQuery != null)
+                {
+                    customerQuery.DeleteStatus = DeleteStatus.Yes;
+                    BaseInput(customerQuery, false, userId);
+                    dbContext.SaveChanges();
+                    response.Success();
+                }
+                else
+                {
+                    response.DeleteCustomerNoData();
+                }
+                logger.LogInformation("Update output {@output}", response);
             }
-            else
+            catch (DbUpdateException ex)
             {
-                response.DeleteCustomerNoData();
+                response.DbError();
+                logger.LogInformation("Delete dbError {@dbError}", ex.Message);
             }
+            catch (Exception ex)
+            {
+                response.Error();
+                logger.LogInformation("Delete error {@error}", ex.Message);
+            }
+
             return response;
         }
 
@@ -351,34 +280,6 @@ namespace SealTypographicWebAPI.Services.Implements
                 customer.UpdateUserId = userid;
                 customer.UpdateDate = DateTime.Now;
             }
-        }
-
-        /// <summary>
-        /// 取得關鍵字模糊搜尋時獲得的內容
-        /// </summary>
-        /// <param name="companyId"></param>
-        /// <param name="keyWord"></param>
-        /// <returns></returns>
-        private IQueryable<Customer> GetCustomers (int companyId, string? keyWord)
-        {
-            IQueryable<Customer> customerQuery = dbContext.Customers.Where
-                                                (
-                                                    x => x.Company.Id == companyId
-                                                    && x.DeleteStatus == DeleteStatus.No
-                                                );
-
-            if (!string.IsNullOrWhiteSpace(keyWord))
-            {
-                customerQuery = customerQuery.Where
-                    (
-                        customer =>
-                        customer.Code.ToLower().Contains(keyWord.ToLower())
-                        || customer.Name.Contains(keyWord)
-                    );
-            }
-            customerQuery = customerQuery.OrderBy(customer => customer.Code);
-
-            return customerQuery;
         }
     }
 }

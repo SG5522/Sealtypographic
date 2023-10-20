@@ -97,11 +97,7 @@ namespace SealTypographicWebAPI.Services.Implements
                                                             .ProjectTo<AccountantGroupViewModel>(configurationProvider)
                                                             .ToList();
 
-                accountantGroupResponses.PageNumber = accountantGroupSearch.PageNumber;
-                accountantGroupResponses.PageSize = accountantGroupSearch.PageSize;
-                //計算總頁數
-                accountantGroupResponses.TotalPage = PageUtil.GetTotalPage(accountantGroupsQuery.Count(), accountantGroupSearch.PageSize);
-                accountantGroupResponses.TotalCount = accountantGroupsQuery.Count();      
+                PageUtil.SetPageData(accountantGroupResponses, accountantGroupSearch.PageNumber, accountantGroupSearch.PageSize, accountantGroupsQuery.Count());
             }
             accountantGroupResponses.Success();
 
@@ -175,12 +171,7 @@ namespace SealTypographicWebAPI.Services.Implements
             {
                 accountantGroupQuery.DeleteStatus = DeleteStatus.Yes;
                 accountantGroupQuery.Accountants = new List<Accountant>();
-                dbContext.Remove(accountantGroupQuery);
-                //dbContext.Accountants.Where
-                //(
-                //        accountant =>
-                //        accountant.AccountantGroups.Remove == accountantGroupId
-                //).BatchUpdate(new Accountant { AccountantGroupId = 1 });                                
+                dbContext.Remove(accountantGroupQuery);                      
                 dbContext.SaveChanges();
                 response.Success();
             }

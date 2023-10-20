@@ -44,7 +44,17 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="customerSealQuarterPaginateSearch">印鑑年度分頁搜尋</param>
         /// <returns></returns>
         [HttpGet("[Action]")]
-        public CustomerSealQuarterPaginateViewModel Year([FromQuery] CustomerSealQuarterPaginateSearch customerSealQuarterPaginateSearch) => customerSealService.GetQuarterYear(customerSealQuarterPaginateSearch, false, TypographyType.TaxReport);
+        public CustomerSealQuarterPaginateViewModel Year([FromQuery] CustomerSealQuarterPaginateSearch customerSealQuarterPaginateSearch) 
+            => customerSealService.GetQuarterYear(customerSealQuarterPaginateSearch, false, TypographyType.TaxReport);
+
+        /// <summary>
+        /// 取得客戶印鑑稅報年度表(排版使用)
+        /// </summary>
+        /// <param name="customerSealQuarterPaginateSearch">印鑑季度分頁搜尋</param>
+        /// <returns></returns>
+        [HttpGet("[Action]")]
+        public CustomerSealQuarterPaginateViewModel YearWithTypographic([FromQuery] CustomerSealQuarterPaginateSearch customerSealQuarterPaginateSearch)
+            => customerSealService.GetQuarterYear(customerSealQuarterPaginateSearch, true, TypographyType.TaxReport);
 
         /// <summary>
         /// 取得客戶印鑑群組簡短訊息
@@ -54,15 +64,6 @@ namespace SealTypographicWebAPI.Controllers
         /// <returns></returns>
         [HttpGet("[Action]")]
         public CustomerSealGroupResponse CustomerSealGroupSummary(int customerId, int quarterId) => customerSealService.GetCustomerSealGroupSummry(customerId, quarterId);
-
-
-        /// <summary>
-        /// 取得客戶印鑑季度表
-        /// </summary>
-        /// <param name="customerSealQuarterPaginateSearch">印鑑季度分頁搜尋</param>
-        /// <returns></returns>
-        [HttpGet("[Action]")]
-        public CustomerSealQuarterPaginateViewModel YearWithTypographic([FromQuery] CustomerSealQuarterPaginateSearch customerSealQuarterPaginateSearch) => customerSealService.GetQuarterYear(customerSealQuarterPaginateSearch, true, TypographyType.TaxReport);
 
         /// <summary>
         /// 取得客戶印鑑組

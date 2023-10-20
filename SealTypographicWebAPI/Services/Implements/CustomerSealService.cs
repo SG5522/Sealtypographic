@@ -9,6 +9,7 @@ using AutoMapper.QueryableExtensions;
 using SealTypographicWebAPI.Models.CustomerSeal;
 using SealTypographicWebAPI.Models.Customer;
 using System.Linq;
+using Keycloak.AuthServices.Sdk.Admin.Models;
 
 namespace SealTypographicWebAPI.Services.Implements
 {
@@ -18,8 +19,7 @@ namespace SealTypographicWebAPI.Services.Implements
     public class CustomerSealService : ICustomerSealService
     {
         private readonly SealTypographicDbContext dbContext;
-        private readonly ImageService imageService;
-        private readonly IMapper mapper;
+        private readonly ImageService imageService;        
         private readonly AutoMapper.IConfigurationProvider configurationProvider;
         private readonly ILogger<CustomerSealService> logger;
 
@@ -32,24 +32,17 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <param name="logger"></param>
         public CustomerSealService(SealTypographicDbContext dbContext, IMapper mapper, ImageService imageService, ILogger<CustomerSealService> logger)
         {
-            this.dbContext = dbContext;
-            this.mapper = mapper;            
+            this.dbContext = dbContext;                 
             this.imageService = imageService;                   
             this.logger = logger;
             configurationProvider = mapper.ConfigurationProvider;
         }
 
-        /// <summary>
-        /// 取得客戶列表(分頁)
-        /// 此列表參照是否有印鑑搜尋
-        /// 分為財報印鑑、稅報印鑑
-        /// </summary>
-        /// <param name="customerSearch">客戶分頁搜尋</param>        
-        /// <param name="typographyType">排版類別</param>  
-        /// <returns></returns>
-        public CustomerPaginateViewModel GetPaginate(CustomerSearch customerSearch, TypographyType typographyType)
+        ///<inheritdoc />
+        public CustomerPaginateViewModel GetPaginate(CustomerSearch customerSearch, TypographyType typographyType, int userId = 0)
         {
-            logger.LogInformation("GetPaginate input {@Input} typographyType= {@TypographyType}", customerSearch, typographyType);
+            logger.LogInformation("GetPaginate input {@customerSearch} typographyType: {@TypographyType} userId: {userId}"
+                , customerSearch, typographyType, userId);
 
             CustomerPaginateViewModel customerPaginateViewModel = new();
             int companyId = 1;
@@ -105,11 +98,7 @@ namespace SealTypographicWebAPI.Services.Implements
                                                             })
                                                             .ToList();
 
-                    customerPaginateViewModel.PageNumber = customerSearch.PageNumber;
-                    customerPaginateViewModel.PageSize = customerSearch.PageSize;
-                    //計算總頁數
-                    customerPaginateViewModel.TotalPage = PageUtil.GetTotalPage(customerQuery.Count(), customerSearch.PageSize);
-                    customerPaginateViewModel.TotalCount = customerQuery.Count();
+                    PageUtil.SetPageData(customerPaginateViewModel, customerSearch.PageNumber, customerSearch.PageSize, customerQuery.Count());
                     customerPaginateViewModel.Success();
                 }
                 else
@@ -128,16 +117,13 @@ namespace SealTypographicWebAPI.Services.Implements
             return customerPaginateViewModel;
         }
 
-        /// <summary>
-        /// 取得客戶印鑑季度表(分頁)
-        /// </summary>
-        /// <param name="customerSealQuarterPaginateSearch">印鑑季度分頁搜尋</param>
-        /// <param name="isTypographic">是否排版使用</param>
-        /// <param name="typographyType">排版類別</param>
-        /// <returns></returns>
-        public CustomerSealQuarterPaginateViewModel GetQuarterYear(CustomerSealQuarterPaginateSearch customerSealQuarterPaginateSearch, bool isTypographic, TypographyType typographyType)
+        ///<inheritdoc />
+        public CustomerSealQuarterPaginateViewModel GetQuarterYear(CustomerSealQuarterPaginateSearch customerSealQuarterPaginateSearch, 
+            bool isTypographic, TypographyType typographyType, int userId = 0)
         {
-            logger.LogInformation("GetQuarterYear input {@Input} isTypographicUse= {@isTypographic} typographyType= {@TypographyType}", customerSealQuarterPaginateSearch, isTypographic, typographyType);
+            logger.LogInformation("GetQuarterYear input {@customerSealQuarterPaginateSearch} isTypographicUse: {@isTypographic} typographyType: {@TypographyType} userId: {@userId}"
+                , customerSealQuarterPaginateSearch, isTypographic, typographyType, userId);
+
             CustomerSealQuarterPaginateViewModel customerSealQuarterPaginateViewModel = new ();
 
             try
@@ -165,13 +151,8 @@ namespace SealTypographicWebAPI.Services.Implements
                                                                                 .ProjectTo<CustomerSealQuarterViewModel>(configurationProvider)
                                                                                 .ToList();
 
-                    //計算總頁數
-                    int total = customerSealGroupsQuery.Count();
-                    customerSealQuarterPaginateViewModel.TotalCount = total;      
-                    customerSealQuarterPaginateViewModel.TotalPage = PageUtil.GetTotalPage(total, customerSealQuarterPaginateSearch.PageSize);
-                    customerSealQuarterPaginateViewModel.PageNumber = customerSealQuarterPaginateSearch.PageNumber;
-                    customerSealQuarterPaginateViewModel.PageSize = customerSealQuarterPaginateSearch.PageSize;
-
+                    PageUtil.SetPageData(customerSealQuarterPaginateViewModel, customerSealQuarterPaginateSearch.PageNumber
+                        , customerSealQuarterPaginateSearch.PageSize, customerSealGroupsQuery.Count());
                     customerSealQuarterPaginateViewModel.Success();
                 }
                 else
@@ -190,17 +171,12 @@ namespace SealTypographicWebAPI.Services.Implements
             return customerSealQuarterPaginateViewModel;
         }
 
-        /// <summary>
-        /// 取得印鑑群組簡易資訊
-        /// </summary>
-        /// <param name="customerId"></param>
-        /// <param name="quaterId"></param>
-        /// <returns></returns>
-        public CustomerSealGroupResponse GetCustomerSealGroupSummry(int customerId, int quaterId)
+        ///<inheritdoc />
+        public CustomerSealGroupResponse GetCustomerSealGroupSummry(int customerId, int quaterId, int userId)
         {
-            CustomerSealGroupResponse? customerSealGroupResponse;
+            logger.LogInformation("GetCustomerSealGroupSummry input customerId: {@customerId} quaterId: {@quaterId} userId: {@userId}", customerId, quaterId, userId);
 
-            logger.LogInformation("GetCustomerSealGroupSummry customerId= {@Input1} quaterId= {@Input2}", customerId, quaterId);
+            CustomerSealGroupResponse? customerSealGroupResponse;            
 
             try
             {
@@ -225,28 +201,25 @@ namespace SealTypographicWebAPI.Services.Implements
                     customerSealGroupResponse = new();
                     customerSealGroupResponse.CustomerSealNoData();
                 }
-                logger.LogInformation("GetCustomerSealGroupSummry output {@Output}", customerSealGroupResponse);
+                logger.LogInformation("GetCustomerSealGroupSummry output {@output}", customerSealGroupResponse);
             }
             catch (Exception ex)
             {
                 customerSealGroupResponse = new();
                 customerSealGroupResponse.Error();
                 customerSealGroupResponse.Message = ex.Message;
-                logger.LogInformation("GetCustomerSealGroupSummry error {@Error}", ex.Message);
+                logger.LogInformation("GetCustomerSealGroupSummry error {@error}", ex.Message);
             }
 
             return customerSealGroupResponse;
         }
 
-        /// <summary>
-        /// 取得客戶印鑑組
-        /// </summary>
-        /// <param name="customerSealQuarterId">客戶印鑑季度Id</param>
-        /// <param name="isTransparent">是否白底透明化</param>
-        /// <returns></returns>
-        public CustomerSealViewModels GetSeals(int customerSealQuarterId, bool isTransparent)
+        ///<inheritdoc />
+        public CustomerSealViewModels GetSeals(int customerSealQuarterId, bool isTransparent, int userId = 0)
         {
-            logger.LogInformation("GetSeals customerSealQuarterId= {@CustomerSealQuarterId} isTransparent= {@IsTransparent}", customerSealQuarterId, isTransparent);
+            logger.LogInformation("GetSeals input customerSealQuarterId: {@customerSealQuarterId} isTransparent= {@isTransparent} userId: {@userId}"
+                , customerSealQuarterId, isTransparent, userId);
+
             CustomerSealViewModels? customerSealViewModels;
 
             try
@@ -287,18 +260,12 @@ namespace SealTypographicWebAPI.Services.Implements
             return customerSealViewModels;
         }
 
-        /// <summary>
-        /// 新增客戶印鑑組資料
-        /// </summary>
-        /// <param name="customerSealForm">客戶印鑑組資料</param>
-        /// <param name="typographyType">排版類別</param>
-        /// <returns></returns>
-        public async Task<ResponseViewModel> New(CustomerSealForm customerSealForm, TypographyType typographyType)
+        ///<inheritdoc />
+        public async Task<ResponseViewModel> New(CustomerSealForm customerSealForm, TypographyType typographyType, int userId = 0)
         {
-            logger.LogInformation("New input {@Input}", customerSealForm);    
+            logger.LogInformation("New input {@customerSealForm} typographyType: {@typographyType} userId: {@userId}", customerSealForm, typographyType, userId);    
             
-            ResponseViewModel response = new();
-            int userId = 1; //以後從帳號驗證取得Id
+            ResponseViewModel response = new();            
 
             try
             {                
@@ -349,31 +316,24 @@ namespace SealTypographicWebAPI.Services.Implements
             }
             catch (DbUpdateException ex)
             {
-                response.DbError();
-                response.Message = ex.Message;
+                response.DbError();                
                 logger.LogError("New dbError {@DbError}", ex.Message);
             }
             catch (Exception ex) 
             {
-                response.Error();
-                response.Message = ex.Message;
+                response.Error();                
                 logger.LogError("New error {@Error}", ex.Message);
             }
             
             return response;
         }
 
-        /// <summary>
-        /// 異動客戶印鑑
-        /// </summary>
-        /// <param name="customerSealUpdate">需要異動客戶印鑑資料</param>
-        /// <returns></returns>
-        public async Task<List<ResponseViewModel>> Update(CustomerSealUpdate customerSealUpdate)
+        ///<inheritdoc />
+        public async Task<List<ResponseViewModel>> Update(CustomerSealUpdate customerSealUpdate, int userId = 0)
         {
-            logger.LogInformation("Update input {@Input}", customerSealUpdate);
+            logger.LogInformation("Update input {@customerSealUpdate} userId: {@userId}", customerSealUpdate, userId);
 
-            List<ResponseViewModel> responseViewModels = new();            
-            int userId = 1; //從帳號驗證取得Id          
+            List<ResponseViewModel> responseViewModels = new();                        
 
             try
             {
@@ -468,18 +428,14 @@ namespace SealTypographicWebAPI.Services.Implements
             
             return responseViewModels;
         }
-       
-        /// <summary>
-        /// 客戶印鑑群組狀態變更。
-        /// </summary>
-        /// <param name="customerSealQuarterId">客戶印鑑季度Id</param>
-        /// <param name="reviewStatus">審查狀態</param>        
-        public ResponseViewModel ChangeReviewStatus(int customerSealQuarterId, ReviewStatus reviewStatus)
-        {
-            logger.LogInformation("ChangeReviewStatus customerSealQuarterId= {@CustomerSealQuarterId} reviewStatus= {ReviewStatus} ", customerSealQuarterId, reviewStatus);
 
-            ResponseViewModel response = new();
-            int userId = 0;//從帳號驗證取得
+        ///<inheritdoc />  
+        public ResponseViewModel ChangeReviewStatus(int customerSealQuarterId, ReviewStatus reviewStatus,int userId = 0)
+        {
+            logger.LogInformation("ChangeReviewStatus input customerSealQuarterId: {@CustomerSealQuarterId} reviewStatus: {ReviewStatus} userId {@userId}"
+                , customerSealQuarterId, reviewStatus, userId);
+
+            ResponseViewModel response = new();            
 
             try
             {
@@ -509,14 +465,12 @@ namespace SealTypographicWebAPI.Services.Implements
             }
             catch (DbUpdateException ex)
             {
-                response.DbError();
-                response.Message = ex.Message;
+                response.DbError();                
                 logger.LogError("ChangeReviewStatus dbError {@DbError}", ex.Message);
             }
             catch (Exception ex) 
             {
-                response.Error();
-                response.Message = ex.Message;
+                response.Error();                
                 logger.LogError("ChangeReviewStatus error {@Error}", ex.Message);
             }
             

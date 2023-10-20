@@ -1,7 +1,5 @@
 ﻿using SealTypographicWebAPI.Models;
 using SealTypographicWebAPI.Models.AccountantGroupMember;
-using SealTypographicWebAPI.Models.Accountant;
-using SealTypographicWebAPI.Consts;
 using SealTypographicWebAPI.Utils;
 using Microsoft.EntityFrameworkCore;
 using AutoMapper;
@@ -14,185 +12,163 @@ namespace SealTypographicWebAPI.Services.Implements
     /// <summary>
     /// 會計師群組成員管理
     /// </summary>
-    public class AccountantGroupMemberServiceExtension : IAccountantGroupMemberService
+    public class AccountantGroupMemberService : IAccountantGroupMemberService
     {
         private readonly SealTypographicDbContext dbContext;        
         private readonly AutoMapper.IConfigurationProvider configurationProvider;
+        private readonly ILogger<AccountantGroupMemberService> logger;
 
         /// <summary>
         /// 注入DB、ResponseService
         /// </summary>
         /// <param name="dbContext"></param>
-        /// <param name="mapper"></param>                
-        public AccountantGroupMemberServiceExtension(SealTypographicDbContext dbContext, IMapper mapper)
+        /// <param name="mapper"></param>
+        /// <param name="logger"></param>                
+        public AccountantGroupMemberService(SealTypographicDbContext dbContext, IMapper mapper, ILogger<AccountantGroupMemberService> logger)
         {
             this.dbContext = dbContext;            
             this.configurationProvider = mapper.ConfigurationProvider;
+            this.logger = logger;
         }
 
         ///<inheritdoc /> 
-        public AccountantGroupMembers GetMembers(AccountantGroupMemberSearch accountantGroupMemberSearch, bool isGroup)
+        public AccountantGroupMembers GetMembers(AccountantGroupMemberSearch accountantGroupMemberSearch, bool isGroupMember, int userId = 0)
         {
+            logger.LogInformation("GetMembers input {@accountantGroupMemberSearch} isGroupMember: {@isGroupMember} userId: {@userId}", accountantGroupMemberSearch, isGroupMember, userId);
+
             AccountantGroupMembers accountantGroupMembers = new();
 
-            IQueryable<Accountant> accountantQuery = dbContext.Accountants.Where(x => x.DeleteStatus == DeleteStatus.No);
-                                                                     
-            if(isGroup)
+            try
             {
-                accountantQuery = accountantQuery.Where(x => x.AccountantGroups.Any(x => x.Id == accountantGroupMemberSearch.AccountantGroupId));
+                IQueryable<Accountant> accountantQuery = dbContext.Accountants.Where(x => x.DeleteStatus == DeleteStatus.No);
+
+                if (isGroupMember)
+                {
+                    accountantQuery = accountantQuery.Where(x => x.AccountantGroups.Any(x => x.Id == accountantGroupMemberSearch.AccountantGroupId));
+                }
+                else
+                {
+                    accountantQuery = accountantQuery.Where(x => !x.AccountantGroups.Any(x => x.Id == accountantGroupMemberSearch.AccountantGroupId));
+                }
+
+                accountantQuery = accountantQuery.OrderBy(x => x.Id);
+
+                if (accountantQuery.Any())
+                {
+                    //取得該頁            
+                    accountantGroupMembers.Members = accountantQuery
+                                                    .Skip((accountantGroupMemberSearch.PageNumber - 1) * accountantGroupMemberSearch.PageSize)
+                                                    .Take(accountantGroupMemberSearch.PageSize)
+                                                    .ProjectTo<AccountantGroupMember>(configurationProvider)
+                                                    .ToList();
+
+                    PageUtil.SetPageData(accountantGroupMembers, accountantGroupMemberSearch.PageNumber, accountantGroupMemberSearch.PageSize, accountantQuery.Count());
+                    accountantGroupMembers.Success();
+                }
+                else
+                {
+                    accountantGroupMembers.DbNoData();
+                }
+                logger.LogInformation("GetMembers output {@output}", accountantGroupMembers);
             }
-            else
+            catch (Exception ex) 
             {
-                accountantQuery = accountantQuery.Where(x => !x.AccountantGroups.Any(x => x.Id == accountantGroupMemberSearch.AccountantGroupId));
-            }
-
-            accountantQuery = accountantQuery.OrderBy(x => x.Id);
-
-            if (accountantQuery.Any())
-            {
-                //取得該頁            
-                accountantGroupMembers.Members = accountantQuery                                                
-                                                .Skip((accountantGroupMemberSearch.PageNumber - 1) * accountantGroupMemberSearch.PageSize)
-                                                .Take(accountantGroupMemberSearch.PageSize)
-                                                .ProjectTo<AccountantGroupMember>(configurationProvider)
-                                                .ToList();
-
-                PageUtil.GetPageData(accountantGroupMembers, accountantGroupMemberSearch.PageNumber, accountantGroupMemberSearch.PageSize, accountantQuery.Count());
-                accountantGroupMembers.Success();
+                accountantGroupMembers.Error();
+                logger.LogInformation("GetMembers error {@error}", ex.Message);
             }            
 
             return accountantGroupMembers;
         }
       
 
-        ///<inheritdoc />
-        public ResponseViewModel UpdateGroup(AccountantGroupChangeForm accountantGroupChangeForm)
-        {
-            ResponseViewModel response = new();
-
-            if(ChangeGroupMember(accountantGroupChangeForm.Id, accountantGroupChangeForm.AccountantGroupId))    
-            {
-                dbContext.SaveChanges();
-                response.Success();
-            }
-            else
-            {                
-                response.UpdateAccountantNoData();
-            }
-            
-            return response;
-        }
-
         ///<inheritdoc /> 
-        public ResponseViewModel UpdateGroupMembers(AccountantGroupMemberForm accountantGroupMemberForm)
+        public ResponseViewModel UpdateGroupMembers(AccountantGroupMemberForm accountantGroupMemberForm, int userId = 0)
         {
-            ResponseViewModel response = new();
-            
+            logger.LogInformation("UpdateGroupMembers input {@accountantGroupMemberForm} userId {@userId}", accountantGroupMemberForm, userId);
+
+            ResponseViewModel response = new();            
             List<int> noDataAccountantIds = new();
-            AccountantGroup? accountantGroup = dbContext.AccountantGroups                                                
-                                                .FirstOrDefault(x => x.Id == accountantGroupMemberForm.AccountantGroupId);
 
-            AccountantGroup defaultAccountantGroup = dbContext.AccountantGroups.Single(x => x.Id == 1);
-                    
-            if (accountantGroup != null)
-            {                
-                foreach (int accountantId in accountantGroupMemberForm.JoinAccountantIds)
+            try
+            {
+                AccountantGroup? accountantGroup = dbContext.AccountantGroups
+                                               .FirstOrDefault(x => x.Id == accountantGroupMemberForm.AccountantGroupId);
+
+                AccountantGroup defaultAccountantGroup = dbContext.AccountantGroups.Single(x => x.Id == 1);
+
+                if (accountantGroup != null)
                 {
-                    Accountant? accountant = dbContext.Accountants
-                                            .Include(x => x.AccountantGroups)
-                                            .FirstOrDefault(x => x.Id == accountantId);
-                    if (accountant != null)
-                    {                        
-                        //如果此會計師有包含預設群組就移除
-                        if (accountant.AccountantGroups.Any(x => x.Id == 1))
+                    //加入群組的成員的處理
+                    foreach (int accountantId in accountantGroupMemberForm.JoinAccountantIds)
+                    {
+                        Accountant? accountant = dbContext.Accountants
+                                                .Include(x => x.AccountantGroups)
+                                                .FirstOrDefault(x => x.Id == accountantId);
+                        if (accountant != null)
                         {
-                            accountant.AccountantGroups.Remove(defaultAccountantGroup);
+                            //如果此會計師有包含預設群組就移除
+                            if (accountant.AccountantGroups.Any(x => x.Id == 1))
+                            {
+                                accountant.AccountantGroups.Remove(defaultAccountantGroup);
+                            }
+                            //如果已加入群組則不動作
+                            if (!accountant.AccountantGroups.Contains(accountantGroup))
+                            {
+                                accountant.AccountantGroups.Add(accountantGroup);
+                            }
                         }
-                        //如果已加入群組則不動作
-                        if (!accountant.AccountantGroups.Contains(accountantGroup))
+                        else
                         {
-                            accountant.AccountantGroups.Add(accountantGroup);
+                            noDataAccountantIds.Add(accountantId);
                         }
+                    }
+
+                    //離開群組的成員處理
+                    foreach (int accountantId in accountantGroupMemberForm.LeaveAccountantIds)
+                    {
+                        Accountant? accountant = dbContext.Accountants
+                                                .Include(x => x.AccountantGroups)
+                                                .FirstOrDefault(x => x.Id == accountantId);
+                        if (accountant != null)
+                        {
+                            accountant.AccountantGroups.Remove(accountantGroup);
+
+                            //如果此會計師沒有任何群組則加入預設群組
+                            if (!accountant.AccountantGroups.Any())
+                            {
+                                accountant.AccountantGroups.Add(defaultAccountantGroup);
+                            }
+                        }
+                        else
+                        {
+                            noDataAccountantIds.Add(accountantId);
+                        }
+                    }
+
+                    if (noDataAccountantIds.Count == 0)
+                    {
+                        dbContext.SaveChanges();
+                        response.Success();
                     }
                     else
                     {
-                        noDataAccountantIds.Add(accountantId);
+                        response.AccountantNoData();
+                        response.Message = string.Format($"Accountant no data Ids: {string.Join(", ",noDataAccountantIds)}");
                     }
-                }
-
-                foreach (int accountantId in accountantGroupMemberForm.LeaveAccountantIds)
-                {                    
-                    Accountant? accountant = dbContext.Accountants
-                                            .Include(x => x.AccountantGroups)
-                                            .FirstOrDefault(x => x.Id == accountantId);
-                    if (accountant != null)
-                    {                        
-                        accountant.AccountantGroups.Remove(accountantGroup);
-
-                        //如果此會計師沒有任何群組則加入預設群組
-                        if (!accountant.AccountantGroups.Any())
-                        {
-                            accountant.AccountantGroups.Add(defaultAccountantGroup);
-                        }                        
-                    }
-                    else
-                    {
-                        noDataAccountantIds.Add(accountantId);
-                    }
-                }
-
-                if (noDataAccountantIds.Count == 0)
-                {
-                    dbContext.SaveChanges();
-                    response.Success();
                 }
                 else
                 {
-                    string errorMessage = string.Format($"Accountant no data Ids: ");
-                    foreach (int noDataAccountantId in noDataAccountantIds)
-                    {
-                        errorMessage += $"{noDataAccountantId},";
-                    }
-                    response.AccountantNoData();
-                    response.Message = errorMessage;
+                    response.AccountantGroupNoData();
                 }
+                logger.LogInformation("UpdateGroupMembers output {@output}", response);
             }
-            else
+            catch (Exception ex)
             {
-                response.AccountantGroupNoData();
-            }            
+                response.Error();
+                logger.LogInformation("UpdateGroupMembers error {@error}", ex.Message);
+            }               
 
             return response;
         }        
-
-        private bool ChangeGroupMember(int accountantId, int accountantGroupId)
-        {
-            bool result;
-            Accountant? accountant = dbContext.Accountants.Include(x => x.AccountantGroups)
-                                    .FirstOrDefault(x => x.Id  == accountantId);
-            if (accountant != null)
-            {
-                //如果有包含預設群組就拿掉
-                if(accountant.AccountantGroups.Any(x => x.Id == 1))
-                {
-                    accountant.AccountantGroups.Remove(dbContext.AccountantGroups.Single(x => x.Id == 1));
-                }
-
-                if(!accountant.AccountantGroups.Any(x => x.Id == accountantGroupId))
-                {
-                    accountant.AccountantGroups.Add(dbContext.AccountantGroups.Single(x => x.Id == accountantGroupId));
-                    result = true;
-                }
-                else
-                {
-                    result = false;
-                }
-            }
-            else
-            {
-                result = false;
-            }
-            return result;
-        }
     }
 }
