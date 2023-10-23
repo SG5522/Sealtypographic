@@ -1,4 +1,5 @@
 ﻿using DBEntities;
+using DBEntities.Consts;
 using Microsoft.AspNetCore.Mvc;
 using SealTypographicWebAPI.Models;
 using SealTypographicWebAPI.Models.TypographicPDF;
@@ -32,22 +33,7 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="id">TypographicPDFId</param>        
         /// <returns></returns>        
         [HttpGet("{id}")]
-        public TypographicPagesResponse EditPages(int id)
-        {
-            TypographicPagesResponse typographicPageResponse = new();
-            try
-            {
-                Log.Information("TypographicPDF PDFView input {@Input}", id);
-                typographicPageResponse = typographicPDFService.GetEditPages(id);
-                //Log.Information("TypographicPDF PDFView output {@Output}", typographicPageResponse);
-            }
-            catch (Exception ex)
-            {
-                Log.Error("TypographicPDF PDFView error {@Error}", ex.Message);
-                typographicPageResponse.DbError();
-            }
-            return typographicPageResponse;
-        }
+        public TypographicPagesResponse EditPages(int id) => typographicPDFService.GetEditPages(id);
 
         /// <summary>
         /// 取得PDF
@@ -56,21 +42,7 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="pageNumber" example="1">pdf頁次</param>        
         /// <returns></returns>        
         [HttpGet("[Action]")]
-        public PDFViewModel PDFView(int uploadId, int pageNumber)
-        {
-            PDFViewModel pDFViewModel = new();
-            try
-            {
-                Log.Information("TypographicPDF PDFView input {@Input}", uploadId, pageNumber);
-                pDFViewModel = typographicPDFService.GetPDFView(uploadId, pageNumber);                
-            }
-            catch (Exception ex)
-            {
-                Log.Error("TypographicPDF PDFView error {@Error}", ex.Message);
-                pDFViewModel.DbError();
-            }            
-            return pDFViewModel;
-        }
+        public PDFViewModel PDFView(int uploadId, int pageNumber) => typographicPDFService.GetPDFView(uploadId, pageNumber);
 
         /// <summary>
         /// 取得單頁PDF圖像與排版編輯資訊
@@ -78,22 +50,7 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="typographicPDFPageSearch">排板PDFPage搜尋</param> 
         /// <returns></returns>
         [HttpGet("[Action]")]
-        public TypographicPageViewModel PageViewModel([FromQuery] TypographicPDFPageSearch typographicPDFPageSearch)
-        {            
-            TypographicPageViewModel typographicPageViewModel = new();
-            try
-            {
-                Log.Information("TypographicPDF PageViewModel input {@Input}", typographicPDFPageSearch);
-                typographicPageViewModel = typographicPDFService.GetPageView(typographicPDFPageSearch);
-                //Log.Information("TypographicPDF PageViewModel output {@Output}", typographicPageViewModel);
-            }
-            catch (Exception ex)
-            {
-                Log.Error("TypographicPDF PDFView error {@Error}", ex.Message);
-                typographicPageViewModel.DbError();
-            }
-            return typographicPageViewModel;
-        }
+        public TypographicPageViewModel PageViewModel([FromQuery] TypographicPDFPageSearch typographicPDFPageSearch) => typographicPDFService.GetPageView(typographicPDFPageSearch);
 
         /// <summary>
         /// 讀取輸出排版PDF的資訊
@@ -130,7 +87,7 @@ namespace SealTypographicWebAPI.Controllers
             try
             {
                 Log.Information("TypographicPDF paginate input {@Input}", typographicPDFSearch);
-                typographicPDFPaginateViewModel = typographicPDFService.GetPaginate(typographicPDFSearch);
+                typographicPDFPaginateViewModel = typographicPDFService.GetPaginate(typographicPDFSearch, TypographyType.FinancialReport);
                 Log.Information("TypographicPDF paginate output {@Output}", typographicPDFPaginateViewModel);
             }
             catch (Exception ex)

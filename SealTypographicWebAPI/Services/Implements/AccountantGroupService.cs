@@ -5,6 +5,9 @@ using SealTypographicWebAPI.Utils;
 using DBEntities;
 using DBEntities.Consts;
 using AutoMapper.QueryableExtensions;
+using Serilog;
+using Keycloak.AuthServices.Sdk.Admin.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace SealTypographicWebAPI.Services.Implements
 {
@@ -16,17 +19,20 @@ namespace SealTypographicWebAPI.Services.Implements
         private readonly SealTypographicDbContext dbContext;        
         private readonly IMapper mapper;
         private readonly AutoMapper.IConfigurationProvider configurationProvider;
+        private readonly ILogger<AccountantGroupService> logger;
 
         /// <summary>
         /// 注入DB、ResponseService
         /// </summary>
         /// <param name="dbContext"></param>
-        /// <param name="mapper"></param>        
-        public AccountantGroupService(SealTypographicDbContext dbContext,IMapper mapper)
+        /// <param name="mapper"></param>
+        /// <param name="logger"></param>        
+        public AccountantGroupService(SealTypographicDbContext dbContext,IMapper mapper, ILogger<AccountantGroupService> logger)
         {
             this.dbContext = dbContext;            
             this.mapper = mapper;
             configurationProvider = mapper.ConfigurationProvider;
+            this.logger = logger;
         }
 
         ///<inheritdoc />
@@ -34,151 +40,233 @@ namespace SealTypographicWebAPI.Services.Implements
         {
             AccountantGroupList accountantGroupList = new();
 
-            IQueryable<AccountantGroupViewModel> accountantGroupDatas = dbContext.AccountantGroups
-                                                                        .Where(accountantGroup => accountantGroup.DeleteStatus == DeleteStatus.No)
-                                                                        .ProjectTo<AccountantGroupViewModel>(configurationProvider);
-            if (accountantGroupDatas.Any())
+            try
             {
-                accountantGroupList.AccountantGroupDatas = accountantGroupDatas.ToList();
+                IQueryable<AccountantGroupViewModel> accountantGroupDatas = dbContext.AccountantGroups
+                                                                            .Where(accountantGroup => accountantGroup.DeleteStatus == DeleteStatus.No)
+                                                                            .ProjectTo<AccountantGroupViewModel>(configurationProvider);
+
+                if (accountantGroupDatas.Any())
+                {
+                    accountantGroupList.AccountantGroupDatas = accountantGroupDatas.ToList();
+                    accountantGroupList.Success();
+                }
+                else
+                {
+                    accountantGroupList.AccountantGroupNoData();
+                }
+                logger.LogInformation("GetAll output {@output}", accountantGroupList);
             }
-            accountantGroupList.Success();
+            catch (Exception ex) 
+            {
+                accountantGroupList.Error();
+                logger.LogInformation("GetAll error {@error}", ex.Message);
+            }
 
             return accountantGroupList;
         }
 
         ///<inheritdoc />
-        public AccountantGroupResponse GetData(int accountantGroupId)
+        public AccountantGroupResponse GetData(int accountantGroupId, int userId = 0)
         {
+            logger.LogInformation("GetData input accountantGroupId: {@accountantGroupId} userId: {@userId}", accountantGroupId, userId);
+
             AccountantGroupResponse accountantGroupResponse = new();
 
-            AccountantGroupViewModel? accountantGroup = dbContext.AccountantGroups
-                                                        .Where(accountantGroup => accountantGroup.Id == accountantGroupId)
-                                                        .ProjectTo<AccountantGroupViewModel>(configurationProvider)
-                                                        .FirstOrDefault(accountantGroup => accountantGroup.Id == accountantGroupId);
+            try
+            {
+                AccountantGroupViewModel? accountantGroup = dbContext.AccountantGroups
+                                                            .Where(accountantGroup => accountantGroup.Id == accountantGroupId)
+                                                            .ProjectTo<AccountantGroupViewModel>(configurationProvider)
+                                                            .FirstOrDefault(accountantGroup => accountantGroup.Id == accountantGroupId);
 
-            if (accountantGroup != null)
-            {                
-                accountantGroupResponse.AccountantGroupData = accountantGroup;
+                if (accountantGroup != null)
+                {
+                    accountantGroupResponse.AccountantGroupData = accountantGroup;
+                    accountantGroupResponse.Success();
+                }
+                else
+                {
+                    accountantGroupResponse.AccountantGroupNoData();
+                }
+                logger.LogInformation("GetAll output {@output}", accountantGroupResponse);
+
             }
-            accountantGroupResponse.Success();
+            catch (Exception ex)
+            {
+                accountantGroupResponse.Error();
+                logger.LogInformation("GetData error {@error}", ex.Message);
+            }            
 
             return accountantGroupResponse;
         }
 
         ///<inheritdoc />
-        public AccountantGroupPaginateViewModel GetPaginate(AccountantGroupSearch accountantGroupSearch)
+        public AccountantGroupPaginateViewModel GetPaginate(AccountantGroupSearch accountantGroupSearch, int userId = 0)
         {
+            logger.LogInformation("GetPaginate input {@accountantGroupSearch} userId: {@userId}", accountantGroupSearch, userId);
+
             AccountantGroupPaginateViewModel accountantGroupResponses = new();
             int companyId = 1;
 
-            IQueryable<AccountantGroup> accountantGroupsQuery = dbContext.AccountantGroups.Where
+            try
+            {
+                IQueryable<AccountantGroup> accountantGroupsQuery = dbContext.AccountantGroups.Where
                                                                 (
-                                                                    x => x.DeleteStatus == DeleteStatus.No 
+                                                                    x => x.DeleteStatus == DeleteStatus.No
                                                                     && x.Company.Id == companyId
                                                                 );
 
-            if (!string.IsNullOrWhiteSpace(accountantGroupSearch.GroupName))
-            {
-                accountantGroupsQuery = accountantGroupsQuery.Where
-                                        (
-                                            accountantGroup =>                                            
-                                            accountantGroup.Name.Contains(accountantGroupSearch.GroupName)
-                                            || accountantGroup.Code.ToLower().Contains(accountantGroupSearch.GroupName.ToLower())
-                                        );
-            }
-            accountantGroupsQuery.OrderBy(accountantGroup => accountantGroup.Code);
+                if (!string.IsNullOrWhiteSpace(accountantGroupSearch.GroupName))
+                {
+                    accountantGroupsQuery = accountantGroupsQuery.Where
+                                            (
+                                                accountantGroup =>
+                                                accountantGroup.Name.Contains(accountantGroupSearch.GroupName)
+                                                || accountantGroup.Code.ToLower().Contains(accountantGroupSearch.GroupName.ToLower())
+                                            );
+                }
+                accountantGroupsQuery.OrderBy(accountantGroup => accountantGroup.Code);
 
-            if (accountantGroupsQuery.Any())
-            {
-                //取得該頁
-                accountantGroupResponses.AccountantGroups = accountantGroupsQuery
-                                                            .Skip((accountantGroupSearch.PageNumber - 1) * accountantGroupSearch.PageSize)
-                                                            .Take(accountantGroupSearch.PageSize)
-                                                            .ProjectTo<AccountantGroupViewModel>(configurationProvider)
-                                                            .ToList();
+                if (accountantGroupsQuery.Any())
+                {
+                    //取得該頁
+                    accountantGroupResponses.AccountantGroups = accountantGroupsQuery
+                                                                .Skip((accountantGroupSearch.PageNumber - 1) * accountantGroupSearch.PageSize)
+                                                                .Take(accountantGroupSearch.PageSize)
+                                                                .ProjectTo<AccountantGroupViewModel>(configurationProvider)
+                                                                .ToList();
 
-                PageUtil.SetPageData(accountantGroupResponses, accountantGroupSearch.PageNumber, accountantGroupSearch.PageSize, accountantGroupsQuery.Count());
+                    PageUtil.SetPageData(accountantGroupResponses, accountantGroupSearch.PageNumber, accountantGroupSearch.PageSize, accountantGroupsQuery.Count());
+                    accountantGroupResponses.Success();
+                }
+                else
+                {
+                    accountantGroupResponses.AccountantGroupNoData();
+                }
+                logger.LogInformation("GetPaginate output {@output}", accountantGroupResponses);
             }
-            accountantGroupResponses.Success();
+            catch (Exception ex)
+            {
+                accountantGroupResponses.Error();
+                logger.LogInformation("GetPaginate error {@error}", ex.Message);
+            }            
 
             return accountantGroupResponses;
         }
 
         ///<inheritdoc />
-        public ResponseViewModel New(AccountantGroupForm accountantGroupForm)
+        public ResponseViewModel New(AccountantGroupForm accountantGroupForm, int userId = 0)
         {
+            logger.LogInformation("New input {@accountantGroupForm} userId: {@userId}", accountantGroupForm, userId);
+
             ResponseViewModel response = new();
-            int companyId = 1;
-            int userId = 1;
+            int companyId = 1;            
 
-            //確認編號是否重複
-            AccountantGroup? accountantGroupQuery = dbContext.AccountantGroups
-                                                    .FirstOrDefault
-                                                    (
-                                                        accountantGroup => 
-                                                        accountantGroup.Code == accountantGroupForm.AccountantGroupNumber
-                                                        && accountantGroup.DeleteStatus == DeleteStatus.No
-                                                        && accountantGroup.Company.Id == companyId
-                                                    );
-
-            if (accountantGroupQuery == null)
-            {                
-                AccountantGroup accountantGroup = mapper.Map<AccountantGroup>(accountantGroupForm);
-                accountantGroup.CreateDate = DateTime.Now;
-                accountantGroup.Company = dbContext.Companys.Single(x => x.Id == companyId);
-                accountantGroup.CreateUserId = userId;
-                dbContext.AccountantGroups.Add(accountantGroup);                
-                dbContext.SaveChanges();
-                response.Success();                
-            }
-            else
+            try
             {
-                response.CreateAccountantGroupNumberRepeat();
+                //確認編號是否重複
+                AccountantGroup? accountantGroupQuery = dbContext.AccountantGroups
+                                                        .FirstOrDefault
+                                                        (
+                                                            accountantGroup =>
+                                                            accountantGroup.Code == accountantGroupForm.AccountantGroupNumber
+                                                            && accountantGroup.DeleteStatus == DeleteStatus.No
+                                                            && accountantGroup.Company.Id == companyId
+                                                        );
+
+                if (accountantGroupQuery == null)
+                {
+                    AccountantGroup accountantGroup = mapper.Map<AccountantGroup>(accountantGroupForm);
+                    accountantGroup.CreateDate = DateTime.Now;
+                    accountantGroup.Company = dbContext.Companys.Single(x => x.Id == companyId);
+                    accountantGroup.CreateUserId = userId;
+                    dbContext.AccountantGroups.Add(accountantGroup);                    
+                    dbContext.SaveChanges();
+                    response.Success();
+                }
+                else
+                {
+                    response.CreateAccountantGroupNumberRepeat();
+                }
+                logger.LogInformation("New output {@output}", response);
             }
+            catch (Exception ex)
+            {
+                response.Error();
+                logger.LogInformation("New error {@error}", ex.Message);
+            }
+            
             return response;
         }
 
         ///<inheritdoc />
-        public ResponseViewModel Update(AccountantGroupUpdateForm accountantGroupFormUpdate)
+        public ResponseViewModel Update(AccountantGroupUpdateForm accountantGroupFormUpdate, int userId = 0)
         {
+            logger.LogInformation("Update input {@accountantGroupFormUpdate} userId: {@userId}", accountantGroupFormUpdate, userId);
+
             ResponseViewModel response = new();
-            int userId = 1; 
-            AccountantGroup? accountantGroupQuery = dbContext.AccountantGroups.Find(accountantGroupFormUpdate.Id);
-
-            if (accountantGroupQuery != null)
+            
+            try
             {
-                mapper.Map(accountantGroupFormUpdate, accountantGroupQuery);
-                accountantGroupQuery.UpdateDate = DateTime.Now;
-                accountantGroupQuery.UpdateUserId = userId;
+                AccountantGroup? accountantGroupQuery = dbContext.AccountantGroups.Find(accountantGroupFormUpdate.Id);
 
-                dbContext.SaveChanges();
-                response.Success();
+                if (accountantGroupQuery != null)
+                {
+                    mapper.Map(accountantGroupFormUpdate, accountantGroupQuery);
+                    accountantGroupQuery.UpdateDate = DateTime.Now;
+                    accountantGroupQuery.UpdateUserId = userId;
+
+                    dbContext.SaveChanges();
+                    response.Success();
+                }
+                else
+                {
+                    response.UpdateAccountantGroupNoData();
+                }
+                logger.LogInformation("Update output {@output}", response);
             }
-            else
+            catch (Exception ex)
             {
-                response.UpdateAccountantGroupNoData();
+                response.Error();
+                logger.LogInformation("Update error {@error}", ex.Message);
             }
+
+            
             return response;
         }
 
         ///<inheritdoc />       
-        public ResponseViewModel Delete(int accountantGroupId)
+        public ResponseViewModel Delete(int accountantGroupId, int userId = 0)
         {
-            ResponseViewModel response = new();
-            AccountantGroup? accountantGroupQuery = dbContext.AccountantGroups.Find(accountantGroupId);
+            logger.LogInformation("Delete input accountantGroupId: {@accountantGroupId} userId: {@userId}", accountantGroupId, userId);
 
-            if (accountantGroupQuery != null)
+            ResponseViewModel response = new();
+
+            try
             {
-                accountantGroupQuery.DeleteStatus = DeleteStatus.Yes;
-                accountantGroupQuery.Accountants = new List<Accountant>();
-                dbContext.Remove(accountantGroupQuery);                      
-                dbContext.SaveChanges();
-                response.Success();
+                AccountantGroup? accountantGroupQuery = dbContext.AccountantGroups.Find(accountantGroupId);
+
+                if (accountantGroupQuery != null)
+                {
+                    accountantGroupQuery.DeleteStatus = DeleteStatus.Yes;
+                    accountantGroupQuery.Accountants = new List<Accountant>();
+                    dbContext.Remove(accountantGroupQuery);
+                    dbContext.SaveChanges();
+                    response.Success();
+                }
+                else
+                {
+                    response.DeleteAccountantGroupNoData();
+                }
+                logger.LogInformation("Delete output {@output}", response);
             }
-            else
+            catch (Exception ex)
             {
-                response.DeleteAccountantGroupNoData();
+                response.Error();
+                logger.LogInformation("Delete error {@error}", ex.Message);
             }
+            
             return response;
         }
     }

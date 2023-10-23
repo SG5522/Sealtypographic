@@ -1,4 +1,6 @@
-﻿namespace SealTypographicWebAPI.Models.TypographicPDF
+﻿using System.Text.Json.Serialization;
+
+namespace SealTypographicWebAPI.Models.TypographicPDF
 {
     /// <summary>
     /// 單頁排板資訊
@@ -40,6 +42,12 @@
         /// PDF單頁圖片
         /// </summary>
         public string PDFImageBase64 { get; set; }
+
+        /// <summary>
+        /// PDF圖片路徑
+        /// </summary>
+        [JsonIgnore]
+        public string PDFFullPath { get; set; }
 
         /// <summary>
         /// 客戶印鑑位置

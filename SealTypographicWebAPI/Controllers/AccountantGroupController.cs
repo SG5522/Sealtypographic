@@ -55,23 +55,7 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="accountantGroupSearch">群組搜尋條件(分頁)</param>
         /// <returns></returns>
         [HttpGet]
-        public AccountantGroupPaginateViewModel Paginate([FromQuery]AccountantGroupSearch accountantGroupSearch)
-        {
-            AccountantGroupPaginateViewModel accountantGroupResponses = new();
-            try
-            {
-                Log.Information("AccountantGroups paginate input {@Input}", accountantGroupSearch);
-                accountantGroupResponses = accountantGroupService.GetPaginate(accountantGroupSearch);
-                Log.Information("AccountantGroups paginate output {@Output}", accountantGroupResponses);                
-                
-            }
-            catch (Exception ex)
-            {
-                Log.Error("AccountantGroups paginate error {@Error}", ex.Message);                
-                accountantGroupResponses.DbError();                
-            }
-            return accountantGroupResponses;
-        }
+        public AccountantGroupPaginateViewModel Paginate([FromQuery]AccountantGroupSearch accountantGroupSearch) => accountantGroupService.GetPaginate(accountantGroupSearch);
 
         /// <summary>
         /// 取得群組資料(單筆)
@@ -79,22 +63,7 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="accountantGroupId">群組ID</param>
         /// <returns></returns>
         [HttpGet("{accountantGroupId}")]        
-        public AccountantGroupResponse Data(int accountantGroupId)
-        {
-            AccountantGroupResponse accountantGroupResponse = new ();
-            try
-            {
-                Log.Information("AccountantGroups get data input {@Input}", accountantGroupId);
-                accountantGroupResponse = accountantGroupService.GetData(accountantGroupId);
-                Log.Information("AccountantGroups get data output {@Output}", accountantGroupResponse);                
-            }
-            catch (Exception ex)
-            {
-                Log.Error("AccountantGroups get data error {@Error}", ex.Message);                
-                accountantGroupResponse.DbError();                
-            }
-            return accountantGroupResponse;
-        }
+        public AccountantGroupResponse Data(int accountantGroupId) => accountantGroupService.GetData(accountantGroupId);
 
         /// <summary>
         /// 新增群組
@@ -102,22 +71,7 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="accountantGroupForm">群組資料</param>
         /// <returns></returns>
         [HttpPost]
-        public ResponseViewModel New(AccountantGroupForm accountantGroupForm)
-        {
-            ResponseViewModel response = new ();
-            try
-            {
-                Log.Information("AccountantGroups new input {@Input}", accountantGroupForm);
-                response = accountantGroupService.New(accountantGroupForm);
-                Log.Information("AccountantGroups new output {@Output}", response);                
-            }
-            catch (Exception ex)
-            {
-                Log.Error("AccountantGroups new error {@Error}", ex.Message);
-                response.DbError();                
-            }
-            return response;
-        }
+        public ResponseViewModel New(AccountantGroupForm accountantGroupForm) => accountantGroupService.New(accountantGroupForm);
 
         /// <summary>
         /// 更新群組資料
@@ -125,22 +79,7 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="accountantGroupFormUpdate">群組資料(含Id)</param>       
         /// <returns></returns>
         [HttpPut]
-        public ResponseViewModel Update(AccountantGroupUpdateForm accountantGroupFormUpdate)
-        {
-            ResponseViewModel response = new ();
-            try
-            {
-                Log.Information("AccountantGroups update input {@Input}", accountantGroupFormUpdate);
-                response = accountantGroupService.Update(accountantGroupFormUpdate);
-                Log.Information("AccountantGroups update output {@Output}", response);
-            }
-            catch (Exception ex)
-            {
-                Log.Error("AccountantGroups update error {@Error}", ex.Message);
-                response.DbError();                
-            }
-            return response;
-        }
+        public ResponseViewModel Update(AccountantGroupUpdateForm accountantGroupFormUpdate) => accountantGroupService.Update(accountantGroupFormUpdate);
 
         /// <summary>
         /// 刪除群組
@@ -148,21 +87,6 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="accountantGroupDataId">群組Id</param>
         /// <returns></returns>
         [HttpDelete("{accountantGroupDataId}")]
-        public ResponseViewModel Delete(int accountantGroupDataId)
-        {
-            ResponseViewModel response = new ();
-            try
-            {
-                Log.Information("AccountantGroups delete input {@Input}", accountantGroupDataId);
-                response = accountantGroupService.Delete(accountantGroupDataId);
-                Log.Information("AccountantGroups delete output {@Output}", response);                
-            }
-            catch (Exception ex)
-            {
-                Log.Error("AccountantGroups delete error {@Error}", ex.Message);
-                response.DbError();                
-            }
-            return response;
-        }
+        public ResponseViewModel Delete(int accountantGroupDataId) => accountantGroupService.Delete(accountantGroupDataId);
     }
 }
