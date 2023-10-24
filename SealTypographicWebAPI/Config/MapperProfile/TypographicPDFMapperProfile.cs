@@ -41,7 +41,7 @@ namespace SealTypographicWebAPI.Config.MapperProfile
                     .ForMember(dst => dst.Id, opt => opt.MapFrom(src => src.Id))
                     .ForMember(dst => dst.UploadId, opt => opt.MapFrom(src => src.UploadFile.Id))
                     .ForMember(dst => dst.CustomerId, opt => opt.MapFrom(src => src.Customer.Id))
-                    .ForMember(dst => dst.QuarterId, opt => opt.MapFrom(src => src.QuarterYear.Id))
+                    .ForMember(dst => dst.QuarterYearId, opt => opt.MapFrom(src => src.QuarterYear.Id))
                     .ForMember(dst => dst.Pages, opt => opt.MapFrom(src => src.TypographicPages));
 
             CreateMap<TypographicPage, TypographicPageForm>()
@@ -153,7 +153,7 @@ namespace SealTypographicWebAPI.Config.MapperProfile
             //讀取PDF概要內容的Map
             CreateMap<TypographicPDF, TypographicPDFSettingViewModel>()
                  .ForMember(dst => dst.OriginalFileName, y => y.MapFrom(o => o.OriginFileName))
-                 .ForMember(dst => dst.Quarter, opt => opt.MapFrom(src => QuarterUtil.GetTaiwanYearQuarter(src.QuarterYear)))
+                 .ForMember(dst => dst.QuarterYearId, opt => opt.MapFrom(src => src.QuarterYear.Id))
                  .ForMember(dst => dst.EditPageCount, opt => opt.MapFrom(o => o.TypographicPages.Where(src => src.TypographicResourceLocations.Any()).Count()))
                  .ForMember(dst => dst.BlankPageCount, opt => opt.MapFrom(o => o.TypographicPages.Where(src => src.BlankCheck == true).Count()))
                  .ForMember(dst => dst.DefaultPdfFileName, opt => opt.MapFrom(src => new string(PdfOutputUtil.GetName(src.Customer.Code, src.QuarterYear))));
@@ -168,6 +168,14 @@ namespace SealTypographicWebAPI.Config.MapperProfile
                 .ForMember(dst => dst.ImageBase64, opt => opt.MapFrom(src => Convert.ToBase64String(OpenCvUtil.TransparentToBytes(src.TypographicResource.ImageFullPath, 160))))
                 //確認圖像種類決定縮放大小
                 .ForMember(dst => dst.ImageScale, opt => opt.MapFrom(src => PdfOutputUtil.GetImageScale(src.TypographicResource.SubSealType)));
+
+            // PDF排版圖像紀錄處理
+            CreateMap<TypographicPDFEditViewResponse, TypographicPDFEditViewResponse>()                
+                .ForMember(dst => dst.PDFBase64, opt => opt.Ignore());
+            
+            // PDF排版圖像紀錄處理
+            CreateMap<TypographicPDFMakeResponse, TypographicPDFMakeResponse>()
+                .ForMember(dst => dst.PDFBase64, opt => opt.Ignore());
         }
     }
 }

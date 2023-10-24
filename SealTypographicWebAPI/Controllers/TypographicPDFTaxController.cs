@@ -1,28 +1,26 @@
-﻿using DBEntities;
-using DBEntities.Consts;
+﻿using DBEntities.Consts;
 using Microsoft.AspNetCore.Mvc;
 using SealTypographicWebAPI.Models;
 using SealTypographicWebAPI.Models.TypographicPDF;
 using SealTypographicWebAPI.Services;
-using Serilog;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace SealTypographicWebAPI.Controllers
 {
     /// <summary>
-    /// 排版管理(財報)
+    /// 排版管理(稅報)
     /// </summary>
     [Route("api/[controller]")]
     [ApiController]
-    public class TypographicPDFController : ControllerBase
+    public class TypographicPDFTaxController : ControllerBase
     {
         private readonly ITypographicPDFService typographicPDFService;
 
         /// <summary>
         /// 注入Service
         /// </summary>
-        public TypographicPDFController(ITypographicPDFService typographicPDFService)
+        public TypographicPDFTaxController(ITypographicPDFService typographicPDFService)
         {
             this.typographicPDFService = typographicPDFService;
         }
@@ -67,7 +65,7 @@ namespace SealTypographicWebAPI.Controllers
         /// <returns></returns>
         [HttpGet]
         public TypographicPDFPaginateViewModel Paginate([FromQuery] TypographicPDFSearch typographicPDFSearch) 
-            => typographicPDFService.GetPaginate(typographicPDFSearch, TypographyType.FinancialReport);
+            => typographicPDFService.GetPaginate(typographicPDFSearch, TypographyType.TaxReport);
 
         /// <summary>
         /// 取得排版後的PDFBase64
@@ -84,7 +82,7 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="typographicPDFForm">排版資訊(新增使用)</param>
         /// <returns></returns>
         [HttpPost]
-        public TypographicPDFNewResronse New(TypographicPDFForm typographicPDFForm) => typographicPDFService.New(typographicPDFForm, TypographyType.FinancialReport);
+        public TypographicPDFNewResronse New(TypographicPDFForm typographicPDFForm) => typographicPDFService.New(typographicPDFForm, TypographyType.TaxReport);
 
         /// <summary>
         /// 更新PDF排版

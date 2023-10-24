@@ -269,188 +269,269 @@ namespace SealTypographicWebAPI.Services.Implements
                 typographicPDFSettingViewModel = new();
                 typographicPDFSettingViewModel.Error();
                 logger.LogInformation("GetTypographicPDFSummary error {@error}", ex.Message);
-            }
-
-            
-
+            }            
             return typographicPDFSettingViewModel;
         }
 
         ///<inheritdoc />
         public TypographicPDFEditViewResponse GetEditPDFView(int typographicPDFId, int userId = 0)
         {
+            logger.LogInformation("GetEditPDFView input typographicPDFId: {@typographicPDFId} userId: {@userId}", typographicPDFId, userId);
+
             TypographicPDFEditViewResponse typographicPDFEditViewResponse = new();
 
-            List<EditPage> editPages = dbContext.TypographicPages
+            try
+            {
+                List<EditPage> editPages = dbContext.TypographicPages
                                         .Include(x => x.TypographicResourceLocations)
                                         .ThenInclude(x => x.TypographicResource)
                                         .Where(x => x.TypographicPDF.Id == typographicPDFId)
                                         .ProjectTo<EditPage>(configurationProvider).ToList();
 
-            if (editPages != null)
-            {
-                EditPDF editPDF = new()
+                if (editPages != null)
                 {
-                    PDFColor = PDFColor.Original,
-                    IsBlank = false,
-                    EditPages = editPages
-                };
-                string? pdfPath = dbContext.UploadFiles
-                                .Where(x => x.TypographicPDFs.Any(x => x.Id == typographicPDFId))
-                                .Select(x => x.FullPath)
-                                .FirstOrDefault();
-                
-                PDFService pDFService = new() { PDFPath = pdfPath };
-                typographicPDFEditViewResponse.PDFBase64 = pDFService.GetEditPDFBase64(editPDF);
-                typographicPDFEditViewResponse.Success();
-            }
-            else
-            {
-                typographicPDFEditViewResponse.DbNoData();
-            }
+                    EditPDF editPDF = new()
+                    {
+                        PDFColor = PDFColor.Original,
+                        IsBlank = false,
+                        EditPages = editPages
+                    };
+                    string? pdfPath = dbContext.UploadFiles
+                                    .Where(x => x.TypographicPDFs.Any(x => x.Id == typographicPDFId))
+                                    .Select(x => x.FullPath)
+                                    .FirstOrDefault();
 
+                    PDFService pDFService = new() { PDFPath = pdfPath };
+                    typographicPDFEditViewResponse.PDFBase64 = pDFService.GetEditPDFBase64(editPDF);
+                    typographicPDFEditViewResponse.Success();
+                }
+                else
+                {
+                    typographicPDFEditViewResponse.DbNoData();
+                }
+                logger.LogInformation("GetEditPDFView output {@output}", mapper.Map<TypographicPDFEditViewResponse>(typographicPDFEditViewResponse));
+            }
+            catch (Exception ex)
+            {
+                typographicPDFEditViewResponse.Error();
+                logger.LogError("GetEditPDFView error {@error}", ex.Message);
+            }
             return typographicPDFEditViewResponse;
         }
 
         ///<inheritdoc />
         public TypographicPDFMakeResponse MakeTyporaphicPDF(TypographicPDFMakeSetting typographicPDFMakeSetting, int userId = 0)
         {
-            TypographicPDFMakeResponse typographicPagePDFResponse = new ();            
-            //取得排版的頁面印鑑與座標
-            List<EditPage> editPages = dbContext.TypographicPages
-                                        .Include(x => x.TypographicResourceLocations)
-                                        .ThenInclude(x => x.TypographicResource)
-                                        .Where(x => x.TypographicPDF.Id == typographicPDFMakeSetting.TypographicPDFId)
-                                        .ProjectTo<EditPage>(configurationProvider).ToList();
+            logger.LogInformation("MakeTyporaphicPDF input {@typographicPDFMakeSetting} userId: {@userId}", typographicPDFMakeSetting, userId);
 
-            if (editPages != null)
+            TypographicPDFMakeResponse typographicPagePDFResponse = new ();  
+            
+            try
             {
-           
-                EditPDF editPDF = new()
-                {
-                    PDFColor = typographicPDFMakeSetting.PDFColor,
-                    IsBlank = typographicPDFMakeSetting.IsBlank,
-                    EditPages = editPages
-                };
-                string? pdfPath = dbContext.UploadFiles
-                                .Where(x => x.TypographicPDFs.Any(x => x.Id == typographicPDFMakeSetting.TypographicPDFId))
-                                .Select(x => x.FullPath)
-                                .FirstOrDefault();                
+                //取得排版的頁面印鑑與座標
+                List<EditPage> editPages = dbContext.TypographicPages
+                                            .Include(x => x.TypographicResourceLocations)
+                                            .ThenInclude(x => x.TypographicResource)
+                                            .Where(x => x.TypographicPDF.Id == typographicPDFMakeSetting.TypographicPDFId)
+                                            .ProjectTo<EditPage>(configurationProvider).ToList();
 
-                PDFService pDFService = new() { PDFPath = pdfPath };                
-                typographicPagePDFResponse.PDFBase64 = pDFService.GetEditPDFBase64(editPDF);
-                typographicPagePDFResponse.Success();
+                if (editPages != null)
+                {
+
+                    EditPDF editPDF = new()
+                    {
+                        PDFColor = typographicPDFMakeSetting.PDFColor,
+                        IsBlank = typographicPDFMakeSetting.IsBlank,
+                        EditPages = editPages
+                    };
+                    string? pdfPath = dbContext.UploadFiles
+                                        .Where(x => x.TypographicPDFs.Any(x => x.Id == typographicPDFMakeSetting.TypographicPDFId))
+                                        .Select(x => x.FullPath)
+                                        .FirstOrDefault();
+
+                    PDFService pDFService = new() { PDFPath = pdfPath };
+                    typographicPagePDFResponse.PDFBase64 = pDFService.GetEditPDFBase64(editPDF);
+                    typographicPagePDFResponse.Success();
+                }
+                else
+                {
+                    typographicPagePDFResponse.DbNoData();
+                }
+                logger.LogInformation("MakeTyporaphicPDF output {@output}", mapper.Map<TypographicPDFMakeResponse>(typographicPagePDFResponse));
             }
-            else
+            catch (Exception ex)
             {
                 typographicPagePDFResponse.Error();
-            }
-            Log.Information("TypographicPDF makePDF output {@Output}", typographicPagePDFResponse.Message);
+                logger.LogError("MakeTyporaphicPDF error {@error}", ex.Message);
+            }            
             return typographicPagePDFResponse;
         }
 
         ///<inheritdoc />
-        public TypographicPDFNewResronse New(TypographicPDFForm typographicPDFForm, int userId = 0)
+        public TypographicPDFNewResronse New(TypographicPDFForm typographicPDFForm, TypographyType typographyType, int userId = 0)
         {
+            logger.LogInformation("New input {@Input} typographyType: {@typographyType} userId: {@userId}", typographicPDFForm, typographyType, userId);
+
             TypographicPDFNewResronse typographicPDFNewResronse = new();            
             
-            UploadFile? pDFInfo = dbContext.UploadFiles.Find(typographicPDFForm.UploadId);
-            Customer? customer = dbContext.Customers.Find(typographicPDFForm.CustomerId);
-
-            if (pDFInfo != null && customer != null)
+            try
             {
-                List<TypographicPage> typographicPages = new();
-
-                //之後輸入要從前端提供Id
-                QuarterYear quarter = dbContext.QuarterYears.Single(x => x.Id == typographicPDFForm.QuarterYearId);                
-
-                //新增PDF排版
-                TypographicPDF typographicPDF = new()
+                UploadFile? pDFInfo = dbContext.UploadFiles.Find(typographicPDFForm.UploadId);
+                Customer? customer = dbContext.Customers.Find(typographicPDFForm.CustomerId);
+                if (pDFInfo != null && customer != null)
                 {
-                    Customer = customer,
-                    UploadFile = pDFInfo,
-                    OriginFileName = pDFInfo.OriginalFileName,
-                    FullPath = pDFInfo.FullPath,
-                    QuarterYear = quarter,
-                    TypographyType = TypographyType.FinancialReport,
-                    TypographicPages = new List<TypographicPage>()
-                };
-                BaseInputTypographicPDF(typographicPDF, true, userId);
-                foreach (TypographicPageForm pageInfo in typographicPDFForm.Pages)
-                {
-                    typographicPDF.TypographicPages.Add(PageSave(pageInfo));
+                    List<TypographicPage> typographicPages = new();
+
+                    //之後輸入要從前端提供Id
+                    QuarterYear quarter = dbContext.QuarterYears.Single(x => x.Id == typographicPDFForm.QuarterYearId);
+
+                    //新增PDF排版
+                    TypographicPDF typographicPDF = new()
+                    {
+                        Customer = customer,
+                        UploadFile = pDFInfo,
+                        OriginFileName = pDFInfo.OriginalFileName,
+                        FullPath = pDFInfo.FullPath,
+                        QuarterYear = quarter,
+                        TypographyType = typographyType,
+                        TypographicPages = new List<TypographicPage>()
+                    };
+                    BaseInputTypographicPDF(typographicPDF, true, userId);
+                    foreach (TypographicPageForm pageInfo in typographicPDFForm.Pages)
+                    {
+                        typographicPDF.TypographicPages.Add(PageSave(pageInfo));
+                    }
+
+                    dbContext.TypographicPDFs.Add(typographicPDF);
+                    dbContext.SaveChanges();
+                    typographicPDFNewResronse.TypographicPDFId = typographicPDF.Id;
+                    typographicPDFNewResronse.Success();
                 }
-                
-                dbContext.TypographicPDFs.Add(typographicPDF);                   
-                dbContext.SaveChanges();
-                typographicPDFNewResronse.TypographicPDFId = typographicPDF.Id;
-                typographicPDFNewResronse.Success();
+                else
+                {
+                    typographicPDFNewResronse.DbNoData();
+                }
+                logger.LogInformation("New output {@output}", typographicPDFNewResronse);
             }
-            else
+            catch (Exception ex)
             {
-                typographicPDFNewResronse.DbNoData();
-            }
+                typographicPDFNewResronse.Error();
+                logger.LogError("New error {@error}", ex.Message);
+            }            
             return typographicPDFNewResronse;
         }
 
         ///<inheritdoc />
         public ResponseViewModel Save(TypographicPDFSaveForm typographicPDFSaveForm, int userId = 0)
         {
+            logger.LogInformation("New input {@typographicPDFSaveForm} userId: {@userId}", typographicPDFSaveForm, userId);
+
             ResponseViewModel response = new();
             
-            TypographicPDF? typographicPDF = dbContext.TypographicPDFs
-                                            .Include(x => x.TypographicPages)
-                                            .FirstOrDefault(x => x.Id == typographicPDFSaveForm.TypographicPDFId);                                            
-
-            if (typographicPDF != null)
+            try
             {
-                typographicPDF.Customer = dbContext.Customers.Single(x => x.Id == typographicPDFSaveForm.CustomerId);
-                typographicPDF.UploadFile = dbContext.UploadFiles.Single(x => x.Id == typographicPDFSaveForm.UploadId);
-                //之後輸入要從前端提供Id
-                typographicPDF.QuarterYear = dbContext.QuarterYears
-                                        .Single(x => x.Id == typographicPDFSaveForm.QuarterYearId);
+                TypographicPDF? typographicPDF = dbContext.TypographicPDFs
+                                                .Include(x => x.TypographicPages)
+                                                .FirstOrDefault(x => x.Id == typographicPDFSaveForm.TypographicPDFId);
 
-                typographicPDF.ReviewStatus = ReviewStatus.Draft;
-                BaseInputTypographicPDF(typographicPDF, false, userId);
-                List<TypographicPage> newPages = new ();                
-
-                foreach (TypographicPageForm typographicPageForm in typographicPDFSaveForm.Pages)
+                if (typographicPDF != null)
                 {
-                    newPages.Add(PageSave(typographicPageForm));                    
+                    typographicPDF.Customer = dbContext.Customers.Single(x => x.Id == typographicPDFSaveForm.CustomerId);
+                    typographicPDF.UploadFile = dbContext.UploadFiles.Single(x => x.Id == typographicPDFSaveForm.UploadId);
+                    //之後輸入要從前端提供Id
+                    typographicPDF.QuarterYear = dbContext.QuarterYears
+                                            .Single(x => x.Id == typographicPDFSaveForm.QuarterYearId);
+
+                    typographicPDF.ReviewStatus = ReviewStatus.Draft;
+                    BaseInputTypographicPDF(typographicPDF, false, userId);
+                    List<TypographicPage> newPages = new();
+
+                    foreach (TypographicPageForm typographicPageForm in typographicPDFSaveForm.Pages)
+                    {
+                        newPages.Add(PageSave(typographicPageForm));
+                    }
+                    //由於Include(Pages)所以更換成newPages後會將舊的資料刪除
+                    typographicPDF.TypographicPages = newPages;
+                    dbContext.SaveChanges();
+                    response.Success();
                 }
-                //由於Include(Pages)所以更換成newPages後會將舊的資料刪除
-                typographicPDF.TypographicPages = newPages;
-                dbContext.SaveChanges();
-                response.Success();
-            }            
+                else
+                {
+                    response.DbNoData();
+                }
+                logger.LogInformation("New output {@output}", response);
+            }
+            catch (Exception ex)
+            {
+                response.Error();
+                logger.LogError("New error {@error}", ex.Message);
+            }
             return response;
         }
 
         ///<inheritdoc />
-        public ResponseViewModel Approval(int typographicPDFId, int userId = 0)
-        {            
-            return ChangeReviewStatus(typographicPDFId, ReviewStatus.Approval);
+        public ResponseViewModel ChangeReviewStatus(int typographicPDFId, ReviewStatus reviewStatus, int userId = 0)
+        {
+            logger.LogInformation("ChangeReviewStatus input typographicPDFId: {@typographicPDFId} reviewStatus: {@reviewStatus} userId: {@userId}"
+                , typographicPDFId, reviewStatus, userId);
+
+            ResponseViewModel response = new();
+
+            try
+            {
+                TypographicPDF? typographicPDF = dbContext.TypographicPDFs.Find(typographicPDFId);
+                if (typographicPDF != null)
+                {
+                    typographicPDF.ReviewStatus = reviewStatus;
+                    BaseInputTypographicPDF(typographicPDF, false, userId);
+                    dbContext.SaveChanges();
+                    response.Success();
+                }
+                else
+                {
+                    response.DbNoData();
+                }
+                logger.LogInformation("ChangeReviewStatus output {@output}", response);
+            }
+            catch (Exception ex)
+            {
+                response.Error();
+                logger.LogError("ChangeReviewStatus error {@error}", ex.Message);
+            }
+            return response;
         }
 
         ///<inheritdoc />
         public ResponseViewModel Delete(int typographicPDFId, int userId = 0)
         {
+            logger.LogInformation("Delete input typographicPDFId: {@typographicPDFId} userId: {@userId}"
+                , typographicPDFId, userId);
+
             ResponseViewModel response = new();
-            TypographicPDF? typographicPDF = dbContext.TypographicPDFs.Find(typographicPDFId);
-            
-            if(typographicPDF != null)
+
+            try
             {
-                typographicPDF.DeleteStatus = DeleteStatus.Yes;
-                typographicPDF.ReviewStatus = ReviewStatus.Disabled;
-                BaseInputTypographicPDF(typographicPDF, false, userId);
-                dbContext.SaveChanges();
-                response.Success();
+                TypographicPDF? typographicPDF = dbContext.TypographicPDFs.Find(typographicPDFId);
+
+                if (typographicPDF != null)
+                {
+                    typographicPDF.DeleteStatus = DeleteStatus.Yes;
+                    typographicPDF.ReviewStatus = ReviewStatus.Disabled;
+                    BaseInputTypographicPDF(typographicPDF, false, userId);
+                    dbContext.SaveChanges();
+                    response.Success();
+                }
+                else
+                {
+                    response.DbNoData();
+                }
+                logger.LogInformation("Delete output {@output}", response);                
             }
-            else
+            catch (Exception ex)
             {
-                response.DbNoData();
-            }
-            
+                response.Error();
+                logger.LogError("Delete error {@error}", ex.Message);
+            }            
             return response;
         }
 
@@ -474,27 +555,6 @@ namespace SealTypographicWebAPI.Services.Implements
                 typographicPDF.UpdateUserId = userid;
                 typographicPDF.UpdateDate = DateTime.Now;                
             }
-        }
-
-        /// <summary>
-        /// 變更PDF狀態
-        /// </summary>
-        /// <param name="typographicPDFId">PDFID</param>
-        /// <param name="reviewStatus">狀態</param>
-        /// <returns></returns>
-        private ResponseViewModel ChangeReviewStatus(int typographicPDFId, ReviewStatus reviewStatus)
-        {
-            ResponseViewModel response = new();
-            int userId = 1;
-            TypographicPDF? typographicPDF = dbContext.TypographicPDFs.Find(typographicPDFId);
-            if (typographicPDF != null)
-            {
-                typographicPDF.ReviewStatus = reviewStatus;
-                BaseInputTypographicPDF(typographicPDF, false, userId);                
-                dbContext.SaveChanges();
-                response.Success();
-            }
-            return response;
         }
 
         /// <summary>

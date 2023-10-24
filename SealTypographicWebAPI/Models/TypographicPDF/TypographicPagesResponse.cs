@@ -31,7 +31,7 @@
         /// <summary>
         /// 客戶印鑑季度Id (之後會改成群組id)
         /// </summary>
-        public int QuarterId { get; set; }
+        public int QuarterYearId { get; set; }
 
         /// <summary>
         /// 排版頁面資訊

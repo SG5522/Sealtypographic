@@ -13,9 +13,9 @@ namespace SealTypographicWebAPI.Models.TypographicPDF
         public string OriginalFileName { get; set; }
 
         /// <summary>
-        /// 季度
+        /// 年季度Id
         /// </summary>
-        public string Quarter { get; set; }
+        public int QuarterYearId { get; set; }
 
         /// <summary>
         /// 排版頁數

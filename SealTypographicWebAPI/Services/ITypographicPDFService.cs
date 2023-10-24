@@ -62,6 +62,7 @@ namespace SealTypographicWebAPI.Services
         /// 取得排版後的PDFBase64
         /// </summary>
         /// <param name="typographicPDFId">PDF排版ID</param>
+        /// <param name="userId">登入的使用者Id</param>
         /// <returns></returns>
         TypographicPDFEditViewResponse GetEditPDFView(int typographicPDFId, int userId = 0);
 
@@ -69,9 +70,10 @@ namespace SealTypographicWebAPI.Services
         /// 建立PDF排版資訊
         /// </summary>
         /// <param name="typographicPDFForm">排版資訊(新增使用)</param>
+        /// <param name="typographyType">排版類別</param>
         /// <param name="userId">登入的使用者Id</param>
         /// <returns></returns>
-        TypographicPDFNewResronse New(TypographicPDFForm typographicPDFForm, int userId = 0);
+        TypographicPDFNewResronse New(TypographicPDFForm typographicPDFForm, TypographyType typographyType, int userId = 0);
 
         /// <summary>
         /// 儲存PDF排版資訊(更新資料)
@@ -85,9 +87,10 @@ namespace SealTypographicWebAPI.Services
         /// 變更PDF排版建檔狀態(未來會變更為審核狀態)
         /// </summary>
         /// <param name="typographicPDFId">PDF排版ID</param>
+        /// <param name="reviewStatus">更換審核狀態</param>
         /// <param name="userId">登入的使用者Id</param>
         /// <returns></returns>
-        ResponseViewModel Approval(int typographicPDFId, int userId = 0);
+        ResponseViewModel ChangeReviewStatus(int typographicPDFId, ReviewStatus reviewStatus, int userId = 0);
 
         /// <summary>
         /// 刪除排版PDF(標記刪除)
