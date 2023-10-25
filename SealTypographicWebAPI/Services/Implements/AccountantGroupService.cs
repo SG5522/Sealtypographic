@@ -245,12 +245,25 @@ namespace SealTypographicWebAPI.Services.Implements
 
             try
             {
-                AccountantGroup? accountantGroupQuery = dbContext.AccountantGroups.Find(accountantGroupId);
+                //AccountantGroup? accountantGroupQuery = dbContext.AccountantGroups.Find(accountantGroupId);
+                AccountantGroup? accountantGroupQuery = dbContext.AccountantGroups.Include(x => x.Accountants)
+                                                    .FirstOrDefault(x => x.Id == accountantGroupId);
+
+
+                AccountantGroup defaultAccountantGroup = dbContext.AccountantGroups.Single(x => x.Id == DefaultConsts.AccountantGroupId);
 
                 if (accountantGroupQuery != null)
                 {
-                    accountantGroupQuery.DeleteStatus = DeleteStatus.Yes;
-                    accountantGroupQuery.Accountants = new List<Accountant>();
+                    var test = accountantGroupQuery.Accountants.Where(x => x.AccountantGroups.Count == 1);
+
+                    foreach (Accountant accountant in test)
+                    {
+                        accountant.AccountantGroups.Add(defaultAccountantGroup);
+                    }
+
+                    //accountantGroupQuery.DeleteStatus = DeleteStatus.Yes;
+                    //accountantGroupQuery.Accountants = new List<Accountant>();
+                    
                     dbContext.Remove(accountantGroupQuery);
                     dbContext.SaveChanges();
                     response.Success();
@@ -260,6 +273,11 @@ namespace SealTypographicWebAPI.Services.Implements
                     response.DeleteAccountantGroupNoData();
                 }
                 logger.LogInformation("Delete output {@output}", response);
+            }
+            catch (DbUpdateException ex)
+            {
+                response.DbNoData();
+                logger.LogInformation("Delete dberror {@dberror}", ex.Message);
             }
             catch (Exception ex)
             {

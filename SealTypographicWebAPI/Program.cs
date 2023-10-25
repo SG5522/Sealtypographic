@@ -102,7 +102,6 @@ builder.Services.AddScoped<ReviewStatusService>();
 builder.Services.AddScoped<IKeycloakAdminService, KeycloakAdminService>();
 builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
 
-
 //DB Process
 builder.Services.AddScoped<ICustomerService, CustomerService>();
 builder.Services.AddScoped<ICustomerSealService, CustomerSealService>();

@@ -8,8 +8,6 @@ using DJLib.Models;
 using AutoMapper.QueryableExtensions;
 using SealTypographicWebAPI.Models.CustomerSeal;
 using SealTypographicWebAPI.Models.Customer;
-using System.Linq;
-using Keycloak.AuthServices.Sdk.Admin.Models;
 
 namespace SealTypographicWebAPI.Services.Implements
 {
@@ -49,7 +47,7 @@ namespace SealTypographicWebAPI.Services.Implements
 
             try
             {                
-                IQueryable<Customer> customerQuery = dbContext.Customers
+                IQueryable<Customer> customerQuery = dbContext.Customers                                                    
                                                     .Where
                                                     (
                                                         x => x.Company.Id == companyId
@@ -60,6 +58,7 @@ namespace SealTypographicWebAPI.Services.Implements
                                                             && customerSealQuery.DeleteStatus == DeleteStatus.No
                                                         )
                                                     );
+                
 
                 if (!string.IsNullOrWhiteSpace(customerSearch.KeyWord))
                 {
@@ -70,7 +69,7 @@ namespace SealTypographicWebAPI.Services.Implements
                         || customer.Name.Contains(customerSearch.KeyWord)
                     );
                 }
-                customerQuery = customerQuery.OrderBy(customer => customer.Code);
+                customerQuery = customerQuery.OrderBy(customer => customer.Code);                
 
                 if (customerQuery.Any())
                 {

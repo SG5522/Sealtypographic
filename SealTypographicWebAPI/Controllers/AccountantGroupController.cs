@@ -33,21 +33,7 @@ namespace SealTypographicWebAPI.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet("[Action]")]
-        public AccountantGroupList List()
-        {
-            AccountantGroupList accountantGroupList = new ();            
-            try
-            {                
-                accountantGroupList = accountantGroupService.GetAll();
-                Log.Information("AccountantGroups List output {@Output}", accountantGroupList);                
-            }
-            catch (Exception ex)
-            {
-                Log.Error("AccountantGroups List error {@Error}", ex.Message);
-                accountantGroupList.DbError();                
-            }
-            return accountantGroupList;
-        }
+        public AccountantGroupList List() => accountantGroupService.GetAll();
 
         /// <summary>
         /// 依搜尋條件取得群組列表(分頁)

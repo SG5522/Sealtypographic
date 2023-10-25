@@ -46,7 +46,6 @@ namespace SealTypographicWebAPI.Config.MapperProfile
 
             CreateMap<TypographicPage, TypographicPageForm>()
                     .ForMember(dst => dst.AccountantCertificateId, opt => opt.MapFrom(src => src.UploadFile != null ? src.UploadFile.Id : 0))
-
                     .ForMember(dst => dst.CustomerSealLocations, opt =>
                         opt.MapFrom(src => src.TypographicResourceLocations.Where(x => x.TypographicResource.SealType == SealType.Customer)))
                     .ForMember(dst => dst.AccountantSignLocations, opt =>

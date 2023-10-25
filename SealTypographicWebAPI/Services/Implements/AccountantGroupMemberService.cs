@@ -94,7 +94,7 @@ namespace SealTypographicWebAPI.Services.Implements
                 AccountantGroup? accountantGroup = dbContext.AccountantGroups
                                                .FirstOrDefault(x => x.Id == accountantGroupMemberForm.AccountantGroupId);
 
-                AccountantGroup defaultAccountantGroup = dbContext.AccountantGroups.Single(x => x.Id == 1);
+                AccountantGroup defaultAccountantGroup = dbContext.AccountantGroups.Single(x => x.Id == DefaultConsts.AccountantGroupId);
 
                 if (accountantGroup != null)
                 {
