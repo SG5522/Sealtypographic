@@ -5,8 +5,6 @@ using SealTypographicWebAPI.Utils;
 using DBEntities;
 using DBEntities.Consts;
 using AutoMapper.QueryableExtensions;
-using Serilog;
-using Keycloak.AuthServices.Sdk.Admin.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace SealTypographicWebAPI.Services.Implements
@@ -231,7 +229,6 @@ namespace SealTypographicWebAPI.Services.Implements
                 response.Error();
                 logger.LogInformation("Update error {@error}", ex.Message);
             }
-
             
             return response;
         }
@@ -244,26 +241,12 @@ namespace SealTypographicWebAPI.Services.Implements
             ResponseViewModel response = new();
 
             try
-            {
-                //AccountantGroup? accountantGroupQuery = dbContext.AccountantGroups.Find(accountantGroupId);
-                AccountantGroup? accountantGroupQuery = dbContext.AccountantGroups.Include(x => x.Accountants)
-                                                    .FirstOrDefault(x => x.Id == accountantGroupId);
-
-
-                AccountantGroup defaultAccountantGroup = dbContext.AccountantGroups.Single(x => x.Id == DefaultConsts.AccountantGroupId);
+            {                
+                AccountantGroup? accountantGroupQuery = dbContext.AccountantGroups
+                                                        .FirstOrDefault(x => x.Id == accountantGroupId);                
 
                 if (accountantGroupQuery != null)
-                {
-                    var test = accountantGroupQuery.Accountants.Where(x => x.AccountantGroups.Count == 1);
-
-                    foreach (Accountant accountant in test)
-                    {
-                        accountant.AccountantGroups.Add(defaultAccountantGroup);
-                    }
-
-                    //accountantGroupQuery.DeleteStatus = DeleteStatus.Yes;
-                    //accountantGroupQuery.Accountants = new List<Accountant>();
-                    
+                {                    
                     dbContext.Remove(accountantGroupQuery);
                     dbContext.SaveChanges();
                     response.Success();
