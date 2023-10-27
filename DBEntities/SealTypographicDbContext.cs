@@ -94,9 +94,19 @@ namespace DBEntities
         public DbSet<UploadFile> UploadFiles { get; set; }
 
         /// <summary>
-        /// 使用者
+        /// 使用者資料表
         /// </summary>
         public DbSet<User> Users { get; set; }
+
+        /// <summary>
+        /// 圖片截取設定資料表
+        /// </summary>
+        public DbSet<ImageCaptureSetting> ImageCaptureSettings {get; set;}
+
+        /// <summary>
+        /// 圖片截取範圍設定資料表
+        /// </summary>
+        public DbSet<ImageCaptureLocation> ImageCaptureLocations { get; set; }
 
         /// <summary>
         /// 

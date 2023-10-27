@@ -242,12 +242,11 @@ namespace SealTypographicWebAPI.Services.Implements
 
             try
             {                
-                AccountantGroup? accountantGroupQuery = dbContext.AccountantGroups
-                                                        .FirstOrDefault(x => x.Id == accountantGroupId);                
+                AccountantGroup? accountantGroup = dbContext.AccountantGroups.FirstOrDefault(x => x.Id == accountantGroupId);                
 
-                if (accountantGroupQuery != null)
+                if (accountantGroup != null)
                 {                    
-                    dbContext.Remove(accountantGroupQuery);
+                    dbContext.Remove(accountantGroup);
                     dbContext.SaveChanges();
                     response.Success();
                 }

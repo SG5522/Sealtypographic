@@ -7,7 +7,7 @@ namespace SealTypographicWebAPI.Models.TypographicPDF
     /// <summary>
     /// 客戶印鑑排版位置
     /// </summary>
-    public class CustomerSealLocationViewModel : BaseSealLocationViewModel
+    public class CustomerSealLocationViewModel : BaseSealLocation
     {
         /// <summary>
         /// 印鑑序號

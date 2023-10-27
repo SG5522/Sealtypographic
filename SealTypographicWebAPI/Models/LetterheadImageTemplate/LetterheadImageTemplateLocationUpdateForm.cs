@@ -8,7 +8,7 @@ namespace SealTypographicWebAPI.Models.LetterheadImageTemplate
     /// <summary>
     /// 信頭樣板位置
     /// </summary>     
-    public class LetterheadImageTemplateLocationUpdateForm : BaseLocationModel
+    public class LetterheadImageTemplateLocationUpdateForm : BaseLocation
     {
     }
 }

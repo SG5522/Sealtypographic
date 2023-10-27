@@ -5,17 +5,12 @@ namespace DBEntities.Base
     /// <summary>
     /// 各項樣版基本資料
     /// </summary>
-    public abstract class BaseTemplate : BaseNameData
+    public abstract class BaseTemplate : BaseSettimg
     {
         /// <summary>
-        /// 文件格式
+        /// 名稱
         /// </summary>
-        public PageSize PageSize { get; set; }
-
-        /// <summary>
-        /// 頁面方向
-        /// </summary>
-        public PapeOrientation PaperOrientation { get; set; }
+        public string Name { get; set; }
 
         /// <summary>
         /// 樣板疊放方式

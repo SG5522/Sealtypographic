@@ -8,6 +8,12 @@ namespace SealTypographicWebAPI.Models.BaseModels
     public abstract class BaseTemplateWithFile : BaseTemplate
     {
         /// <summary>
+        /// 樣板名稱
+        /// </summary>
+        /// <example>預設樣板</example>
+        public string Name { get; set; }
+
+        /// <summary>
         /// 背景圖片
         /// </summary>
         /// <example>image/...</example>

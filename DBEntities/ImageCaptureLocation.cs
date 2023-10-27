@@ -4,9 +4,9 @@ using DBEntities.Consts;
 namespace DBEntities
 {
     /// <summary>
-    /// 樣板位置
+    /// 圖片截取範圍設定
     /// </summary>
-    public class TemplateLocation : BaseLocation
+    public class ImageCaptureLocation : BaseLocation
     {
         /// <summary>
         /// Id
@@ -26,6 +26,6 @@ namespace DBEntities
         /// <summary>
         /// 樣板
         /// </summary>
-        public Template Template { get; set; }
+        public ImageCaptureSetting ImageCaptureSetting { get; set; }        
     }
 }

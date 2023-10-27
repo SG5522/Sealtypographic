@@ -3,7 +3,7 @@
     /// <summary>
     /// 位置
     /// </summary>
-    public abstract class BaseLocationModel
+    public abstract class BaseLocation
     {
         /// <summary>
         /// 各印鑑、簽印Id

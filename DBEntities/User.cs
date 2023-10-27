@@ -21,5 +21,10 @@ namespace DBEntities
         /// 會計師事務所(公司)
         /// </summary>
         public Company Company { get; set; }
+
+        /// <summary>
+        /// 圖片截取範圍設定
+        /// </summary>
+        public IList<ImageCaptureSetting>? ImageCaptureSettings { get; set; }
     }
 }

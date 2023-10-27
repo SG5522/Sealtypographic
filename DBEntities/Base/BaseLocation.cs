@@ -6,11 +6,6 @@
     public abstract class BaseLocation
     {
         /// <summary>
-        /// Id
-        /// </summary>
-        public int Id { get; set; }
-
-        /// <summary>
         /// 最左邊位置
         /// </summary>
         public float Left { get; set; }

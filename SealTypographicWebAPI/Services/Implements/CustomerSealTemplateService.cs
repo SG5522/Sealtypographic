@@ -3,6 +3,7 @@ using DBEntities;
 using DBEntities.Consts;
 using Microsoft.EntityFrameworkCore;
 using SealTypographicWebAPI.Models;
+using SealTypographicWebAPI.Models.AccountantSignTemplate;
 using SealTypographicWebAPI.Models.CustomerSealTemplate;
 using SealTypographicWebAPI.Utils;
 using Serilog;
@@ -105,19 +106,15 @@ namespace SealTypographicWebAPI.Services.Implements
             templateQuery = templateQuery.OrderBy(temporarySealGroup => temporarySealGroup.Id);
 
             if (templateQuery.Any())
-            {
-                int totalPage = templateQuery.Count();
+            {                
                 customerSealTemplatePaginate.ViewModels = LoadPaginatedData(templateQuery, customerSealTemplateSearch.PageNumber, customerSealTemplateSearch.PageSize);
-                customerSealTemplatePaginate.PageNumber = customerSealTemplateSearch.PageNumber;
-                customerSealTemplatePaginate.PageSize = customerSealTemplateSearch.PageSize;
-                //計算總頁數
-                customerSealTemplatePaginate.TotalPage = PageUtil.GetTotalPage(totalPage, customerSealTemplateSearch.PageSize);
-                customerSealTemplatePaginate.TotalCount = totalPage;
+
+                PageUtil.SetPageData(customerSealTemplatePaginate, customerSealTemplatePaginate.PageNumber, customerSealTemplatePaginate.PageSize, templateQuery.Count());
                 customerSealTemplatePaginate.Success();
             }
             SavePaginateLog(customerSealTemplatePaginate);
             return customerSealTemplatePaginate;
-        }        
+        }
 
         /// <summary>
         /// 新增客戶印鑑樣板
