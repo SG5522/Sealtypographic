@@ -5,11 +5,11 @@ namespace SealTypographicWebAPI.Models.SealCaptureRange
     /// <summary>
     /// 客戶印鑑截取設定
     /// </summary>
-    public class CustomerSealSetting : BaseTemplate
+    public class CustomerSealCaptureSetting : BaseTemplate
     {
         /// <summary>
-        /// 客戶印鑑截取設定
+        /// 客戶印鑑截取範圍設定
         /// </summary>
-        public IList<CustomerSealLocationSetting> CustomerSealLocationSettings { get; set; }
+        public IList<CustomerSealCaptureLocation> CustomerSealCaptureLocations { get; set; }
     }
 }

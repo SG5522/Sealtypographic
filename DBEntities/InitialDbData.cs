@@ -18,8 +18,7 @@ namespace DBEntities
                     BAN = "12345678",
                     Name = "映像有限公司"
                 };
-                dbContext.Companys.Add(company);
-                dbContext.SaveChanges();
+                dbContext.Companys.Add(company);                
             }
 
             if (!dbContext.QuarterYears.Any())
@@ -49,11 +48,8 @@ namespace DBEntities
                         Type = TypographyType.TaxReport
                     };
                     quarterYears.Add(quarterYear);
-                }
-                
-
-                dbContext.QuarterYears.AddRange(quarterYears);
-                dbContext.SaveChanges();
+                }                
+                dbContext.QuarterYears.AddRange(quarterYears);                
             }
 
             if (!dbContext.AccountantGroups.Any())
@@ -69,9 +65,21 @@ namespace DBEntities
                     DeleteStatus = 0,
                     Name = "預設群組"
                 };
-                dbContext.AccountantGroups.Add(accountantGroup);
-                dbContext.SaveChanges();
+                dbContext.AccountantGroups.Add(accountantGroup);                
             }
+
+            if(!dbContext.Users.Any())
+            {
+                User user = new()
+                {
+                    Id = 1,
+                    Company = dbContext.Companys.Single(x => x.Id == 1),
+                    UserName = "Admin",
+                    KeycloakUserId = "00001"
+                };
+                dbContext.Users.Add(user);
+            }
+            dbContext.SaveChanges();
         }
     }
 }

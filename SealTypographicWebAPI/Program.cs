@@ -120,6 +120,7 @@ builder.Services.AddScoped<ILetterheadImageTemplateService, LetterheadImageTempl
 builder.Services.AddScoped<IUploadService, UploadService>();
 builder.Services.AddScoped<ITypographicPDFService, TypographicPDFService>();
 builder.Services.AddScoped<IQuarterYearService, QuarterYearService>();
+builder.Services.AddScoped<IImageCaptureSettingService, ImageCaptureSettingService>();
 
 #endregion
 

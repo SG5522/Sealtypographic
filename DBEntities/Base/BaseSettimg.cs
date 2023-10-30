@@ -2,9 +2,6 @@
 
 namespace DBEntities.Base
 {
-    /// <summary>
-    /// 各項樣版基本資料
-    /// </summary>
     public abstract class BaseSettimg : BaseData
     {
         /// <summary>
@@ -16,6 +13,5 @@ namespace DBEntities.Base
         /// 頁面方向
         /// </summary>
         public PapeOrientation PaperOrientation { get; set; }
-
     }
 }

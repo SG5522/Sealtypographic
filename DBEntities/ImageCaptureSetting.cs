@@ -1,5 +1,4 @@
 ﻿using DBEntities.Base;
-using DBEntities.Consts;
 
 namespace DBEntities
 {
