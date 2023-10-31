@@ -12,7 +12,7 @@ namespace SealTypographicWebAPI.Models.SealCaptureRange
         /// <summary>
         /// Id
         /// </summary>        
-        public int? Id { get; private set; }
+        public int Id { get; set; }
 
         /// <summary>
         /// 客戶印鑑類別

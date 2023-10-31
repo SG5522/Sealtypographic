@@ -56,5 +56,21 @@ namespace SealTypographicWebAPI.Controllers
         [HttpPost("[Action]")]
         public ResponseViewModel NewAccountantSignCapture(AccountantSignCaptureSetting accountantSignCaptureSetting) => imageCaptureSettingService.New(accountantSignCaptureSetting);
 
+        /// <summary>
+        /// 更新客戶印鑑截取設定
+        /// </summary>
+        /// <param name="customerSealCaptureSetting"></param>
+        /// <returns></returns>
+        [HttpPut("[Action]")]
+        public ResponseViewModel UpdateCustomerSealCapture(CustomerSealCaptureSetting customerSealCaptureSetting) => imageCaptureSettingService.Update(customerSealCaptureSetting, SealType.Customer);
+
+        /// <summary>
+        /// 更新會計師簽印分離截取設定
+        /// </summary>
+        /// <param name="accountantSignCaptureSetting"></param>
+        /// <returns></returns>
+        [HttpPut("[Action]")]
+        public ResponseViewModel UpdateAccountantSignCapture(AccountantSignCaptureSetting accountantSignCaptureSetting) => imageCaptureSettingService.Update(accountantSignCaptureSetting, SealType.Accountant);
+
     }
 }

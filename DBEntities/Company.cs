@@ -47,5 +47,10 @@ namespace DBEntities
         /// </summary>
         public IList<User> Users { get; set; }
 
+        /// <summary>
+        /// 圖片截取範圍設定
+        /// </summary>
+        public IList<ImageCaptureSetting>? ImageCaptureSettings { get; set; }
+
     }
 }

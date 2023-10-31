@@ -194,9 +194,9 @@ namespace Sqlite.Migrations
                     CreateUserId = table.Column<int>(type: "INTEGER", nullable: false),
                     UpdateUserId = table.Column<int>(type: "INTEGER", nullable: false),
                     DeleteStatus = table.Column<byte>(type: "INTEGER", nullable: false),
-                    Name = table.Column<string>(type: "TEXT", nullable: false),
                     PageSize = table.Column<int>(type: "INTEGER", nullable: false),
                     PaperOrientation = table.Column<int>(type: "INTEGER", nullable: false),
+                    Name = table.Column<string>(type: "TEXT", nullable: false),
                     StackMode = table.Column<int>(type: "INTEGER", nullable: true),
                     StackShift = table.Column<int>(type: "INTEGER", nullable: true),
                     ImageViewFullPath = table.Column<string>(type: "TEXT", nullable: false),
@@ -468,6 +468,37 @@ namespace Sqlite.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "ImageCaptureSettings",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    UserId = table.Column<int>(type: "INTEGER", nullable: true),
+                    CompanyId = table.Column<int>(type: "INTEGER", nullable: true),
+                    CreateDate = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    UpdateDate = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    CreateUserId = table.Column<int>(type: "INTEGER", nullable: false),
+                    UpdateUserId = table.Column<int>(type: "INTEGER", nullable: false),
+                    DeleteStatus = table.Column<byte>(type: "INTEGER", nullable: false),
+                    PageSize = table.Column<int>(type: "INTEGER", nullable: false),
+                    PaperOrientation = table.Column<int>(type: "INTEGER", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ImageCaptureSettings", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ImageCaptureSettings_Companys_CompanyId",
+                        column: x => x.CompanyId,
+                        principalTable: "Companys",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_ImageCaptureSettings_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "TypographicResources",
                 columns: table => new
                 {
@@ -548,6 +579,31 @@ namespace Sqlite.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "ImageCaptureLocations",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    SealType = table.Column<byte>(type: "INTEGER", nullable: false),
+                    SubSealType = table.Column<int>(type: "INTEGER", nullable: false),
+                    ImageCaptureSettingId = table.Column<int>(type: "INTEGER", nullable: false),
+                    Left = table.Column<float>(type: "REAL", nullable: false),
+                    Top = table.Column<float>(type: "REAL", nullable: false),
+                    Width = table.Column<int>(type: "INTEGER", nullable: false),
+                    Height = table.Column<int>(type: "INTEGER", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ImageCaptureLocations", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ImageCaptureLocations_ImageCaptureSettings_ImageCaptureSettingId",
+                        column: x => x.ImageCaptureSettingId,
+                        principalTable: "ImageCaptureSettings",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "TypographicResourceLocations",
                 columns: table => new
                 {
@@ -614,6 +670,21 @@ namespace Sqlite.Migrations
                 name: "IX_GroupAccountants_AccountantId",
                 table: "GroupAccountants",
                 column: "AccountantId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ImageCaptureLocations_ImageCaptureSettingId",
+                table: "ImageCaptureLocations",
+                column: "ImageCaptureSettingId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ImageCaptureSettings_CompanyId",
+                table: "ImageCaptureSettings",
+                column: "CompanyId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ImageCaptureSettings_UserId",
+                table: "ImageCaptureSettings",
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Letterheads_CompanyId",
@@ -718,16 +789,19 @@ namespace Sqlite.Migrations
                 name: "GroupAccountants");
 
             migrationBuilder.DropTable(
+                name: "ImageCaptureLocations");
+
+            migrationBuilder.DropTable(
                 name: "TemplateLocations");
 
             migrationBuilder.DropTable(
                 name: "TypographicResourceLocations");
 
             migrationBuilder.DropTable(
-                name: "Users");
+                name: "AccountantGroups");
 
             migrationBuilder.DropTable(
-                name: "AccountantGroups");
+                name: "ImageCaptureSettings");
 
             migrationBuilder.DropTable(
                 name: "Templates");
@@ -737,6 +811,9 @@ namespace Sqlite.Migrations
 
             migrationBuilder.DropTable(
                 name: "TypographicResources");
+
+            migrationBuilder.DropTable(
+                name: "Users");
 
             migrationBuilder.DropTable(
                 name: "TypographicPDFs");

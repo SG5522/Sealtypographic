@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using AutoMapper.QueryableExtensions;
-using Azure;
 using DBEntities;
 using DBEntities.Consts;
 using Microsoft.EntityFrameworkCore;
@@ -32,19 +31,19 @@ namespace SealTypographicWebAPI.Services.Implements
         }
 
         ///<inheritdoc />
-        public CustomerSealCaptureResponse GetCustomerSealCapture(int userId = 1)
+        public CustomerSealCaptureResponse GetCustomerSealCapture(int companyId = 1)
         {
-            logger.LogInformation("GetCustomerSealCapture input userId: {@userId}", userId);
+            logger.LogInformation("GetCustomerSealCapture input userId: {@userId}", companyId);
 
             CustomerSealCaptureResponse result = new ();
 
             try
             {
                 CustomerSealCaptureSetting? ImageCaptureSetting = dbContext.ImageCaptureSettings
-                                                            .Include(x => x.ImageCaptureLocations)
-                                                            .Where(x => x.User.Id == userId && x.ImageCaptureLocations.Any(location => location.SealType == SealType.Customer))
-                                                            .ProjectTo<CustomerSealCaptureSetting>(configurationProvider)
-                                                            .FirstOrDefault();
+                                                                .Include(x => x.ImageCaptureLocations)
+                                                                .Where(x => x.Company.Id == companyId && x.ImageCaptureLocations.Any(location => location.SealType == SealType.Customer))
+                                                                .ProjectTo<CustomerSealCaptureSetting>(configurationProvider)
+                                                                .FirstOrDefault();
 
                 if (ImageCaptureSetting != null) 
                 {
@@ -63,9 +62,9 @@ namespace SealTypographicWebAPI.Services.Implements
         }
 
         ///<inheritdoc />
-        public AccountantSignCaptureResponse GetAccountantSignCapture(int userId = 1)
+        public AccountantSignCaptureResponse GetAccountantSignCapture(int companyId = 1)
         {
-            logger.LogInformation("GetAccountantSignCapturee input userId: {@userId}", userId);
+            logger.LogInformation("GetAccountantSignCapturee input companyId: {@companyId}", companyId);
 
             AccountantSignCaptureResponse result = new();
 
@@ -73,7 +72,7 @@ namespace SealTypographicWebAPI.Services.Implements
             {
                 AccountantSignCaptureSetting? ImageCaptureSetting = dbContext.ImageCaptureSettings
                                                                     .Include(x => x.ImageCaptureLocations)
-                                                                    .Where(x => x.User.Id == userId && x.ImageCaptureLocations.Any(location => location.SealType == SealType.Customer))
+                                                                    .Where(x => x.User.Id == companyId && x.ImageCaptureLocations.Any(location => location.SealType == SealType.Accountant))
                                                                     .ProjectTo<AccountantSignCaptureSetting>(configurationProvider)
                                                                     .FirstOrDefault();
 
@@ -94,17 +93,17 @@ namespace SealTypographicWebAPI.Services.Implements
         }
 
         ///<inheritdoc />
-        public ResponseViewModel New<T>(T captureSetting, int userId = 1)
+        public ResponseViewModel New<T>(T captureSetting, int companyId = 1)
         {
-            logger.LogInformation("New input {@captureSetting} userId: {@userId}", captureSetting, userId);
+            logger.LogInformation("New input {@captureSetting} companyId: {@companyId}", captureSetting, companyId);
 
             ResponseViewModel response = new ();
 
             try
             {                
                 ImageCaptureSetting imageCaptureSetting = mapper.Map<ImageCaptureSetting>(captureSetting);
-                imageCaptureSetting.User = dbContext.Users.Single(x => x.Id == userId);
-                InputUtil.Base(imageCaptureSetting, true, userId);
+                imageCaptureSetting.Company = dbContext.Companys.Single(x => x.Id == companyId);
+                InputUtil.Base(imageCaptureSetting, true, companyId);
                 dbContext.ImageCaptureSettings.Add(imageCaptureSetting);
                 dbContext.SaveChanges();
                 logger.LogInformation("New output {@output}", response);
@@ -118,6 +117,37 @@ namespace SealTypographicWebAPI.Services.Implements
             {
                 response.Error();
                 logger.LogError("New error {@error}", ex.Message);
+            }
+            return response;
+        }
+
+        ///<inheritdoc />
+        public ResponseViewModel Update<T>(T captureSetting, SealType sealType, int companyId = 1)
+        {
+            logger.LogInformation("Update input {@captureSetting} userId: {@userId}", captureSetting, companyId);
+
+            ResponseViewModel response = new();
+
+            try
+            {
+                ImageCaptureSetting? imageCaptureSetting = dbContext.ImageCaptureSettings
+                                                                    .Include(x => x.ImageCaptureLocations)
+                                                                    .Where(
+                                                                        x => x.Company.Id == companyId
+                                                                        && x.ImageCaptureLocations.Any(g => g.SealType == sealType)
+                                                                    ).FirstOrDefault();
+                if (imageCaptureSetting != null)
+                {
+                    mapper.Map(captureSetting, imageCaptureSetting);
+                    InputUtil.Base(imageCaptureSetting, false, companyId);                    
+                    dbContext.SaveChanges();
+                    logger.LogInformation("Update output {@output}", response);
+                }
+            }
+            catch (Exception ex)
+            {
+                response.Error();
+                logger.LogError("Update error {@error}", ex.Message);
             }
             return response;
         }

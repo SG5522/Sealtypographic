@@ -407,6 +407,9 @@ namespace Sqlite.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<int?>("CompanyId")
+                        .HasColumnType("INTEGER");
+
                     b.Property<DateTime>("CreateDate")
                         .HasColumnType("TEXT");
 
@@ -428,10 +431,12 @@ namespace Sqlite.Migrations
                     b.Property<int>("UpdateUserId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("UserId")
+                    b.Property<int?>("UserId")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CompanyId");
 
                     b.HasIndex("UserId");
 
@@ -1044,11 +1049,15 @@ namespace Sqlite.Migrations
 
             modelBuilder.Entity("DBEntities.ImageCaptureSetting", b =>
                 {
+                    b.HasOne("DBEntities.Company", "Company")
+                        .WithMany("ImageCaptureSettings")
+                        .HasForeignKey("CompanyId");
+
                     b.HasOne("DBEntities.User", "User")
                         .WithMany("ImageCaptureSettings")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("Company");
 
                     b.Navigation("User");
                 });
@@ -1247,6 +1256,8 @@ namespace Sqlite.Migrations
                     b.Navigation("Accountants");
 
                     b.Navigation("Customers");
+
+                    b.Navigation("ImageCaptureSettings");
 
                     b.Navigation("Letterheads");
 
