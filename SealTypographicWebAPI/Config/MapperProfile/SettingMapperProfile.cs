@@ -2,7 +2,7 @@
 using DBEntities;
 using DBEntities.Consts;
 using SealTypographicWebAPI.Utils;
-using SealTypographicWebAPI.Models.SealCaptureRange;
+using SealTypographicWebAPI.Models.ImageRangeSetting;
 
 namespace SealTypographicWebAPI.Config.MapperProfile
 {
@@ -17,40 +17,40 @@ namespace SealTypographicWebAPI.Config.MapperProfile
         public SettingMapperProfile()
         {
             //客戶印鑑截取設定
-            CreateMap<CustomerSealCaptureSetting, ImageCaptureSetting>()                 
-                    .ForMember(dst => dst.ImageCaptureLocations, opt => opt.MapFrom(src => src.CustomerSealCaptureLocations));
+            CreateMap<CustomerSealRangeSetting, ImageRangeSetting>()                 
+                    .ForMember(dst => dst.ImageRangeLocations, opt => opt.MapFrom(src => src.CustomerSealRangeLocations));
 
             //客戶印鑑截取範圍設定
-            CreateMap<CustomerSealCaptureLocation, ImageCaptureLocation>()
+            CreateMap<CustomerSealRangeLocation, ImageRangeLocation>()
                     .ForMember(dst => dst.SealType, opt => opt.MapFrom(src => SealType.Customer))
                     .ForMember(dst => dst.SubSealType, opt => opt.MapFrom(src => SealMappingConfigUtil.GetSubSealTypeWithCustomer(src.CustomerSealType)));
 
 
             //客戶印鑑截取設定
-            CreateMap<ImageCaptureSetting, CustomerSealCaptureSetting>()                    
-                    .ForMember(dst => dst.CustomerSealCaptureLocations, opt => opt.MapFrom(src => src.ImageCaptureLocations));
+            CreateMap<ImageRangeSetting, CustomerSealRangeSetting>()                    
+                    .ForMember(dst => dst.CustomerSealRangeLocations, opt => opt.MapFrom(src => src.ImageRangeLocations));
 
             //客戶印鑑截取範圍設定
-            CreateMap<ImageCaptureLocation, CustomerSealCaptureLocation>()
+            CreateMap<ImageRangeLocation, CustomerSealRangeLocation>()
                     .ForMember(dst => dst.CustomerSealType, opt => opt.MapFrom(src => SealMappingConfigUtil.GetCustomerSealType(src.SubSealType)));
 
 
             //會計師簽印截取設定
-            CreateMap<AccountantSignCaptureSetting, ImageCaptureSetting>()
-                    .ForMember(dst => dst.ImageCaptureLocations, opt => opt.MapFrom(src => src.AccountantSignCaptureLocations));
+            CreateMap<AccountantSignRangeSetting, ImageRangeSetting>()
+                    .ForMember(dst => dst.ImageRangeLocations, opt => opt.MapFrom(src => src.AccountantSignRangeLocations));
 
             //會計師簽印截取範圍設定
-            CreateMap<AccountantSignCaptureLocation, ImageCaptureLocation>()
+            CreateMap<AccountantSignRangeLocation, ImageRangeLocation>()
                     .ForMember(dst => dst.SealType, opt => opt.MapFrom(src => SealType.Accountant))
                     .ForMember(dst => dst.SubSealType, opt => opt.MapFrom(src => SealMappingConfigUtil.GetSubSealTypeWithAccountant(src.AccountantSignType)));
 
 
             //會計師簽印截取設定
-            CreateMap<ImageCaptureSetting, AccountantSignCaptureSetting>()
-                    .ForMember(dst => dst.AccountantSignCaptureLocations, opt => opt.MapFrom(src => src.ImageCaptureLocations));
+            CreateMap<ImageRangeSetting, AccountantSignRangeSetting>()
+                    .ForMember(dst => dst.AccountantSignRangeLocations, opt => opt.MapFrom(src => src.ImageRangeLocations));
 
             //會計師簽印截取範圍設定
-            CreateMap<ImageCaptureLocation, AccountantSignCaptureLocation>()
+            CreateMap<ImageRangeLocation, AccountantSignRangeLocation>()
                     .ForMember(dst => dst.AccountantSignType, opt => opt.MapFrom(src => SealMappingConfigUtil.GetAccountantSignType(src.SubSealType)));
         }
     }

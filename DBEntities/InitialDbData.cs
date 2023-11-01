@@ -1,4 +1,5 @@
 ﻿using DBEntities.Consts;
+using DBEntities.Utils;
 using Microsoft.EntityFrameworkCore;
 
 namespace DBEntities
@@ -9,77 +10,194 @@ namespace DBEntities
 
         public static void Initialize(SealTypographicDbContext dbContext)
         {
-            if (!dbContext.Companys.Any())
+            try
             {
-                Company company = new()
+                if (!dbContext.Companys.Any())
                 {
-                    Id = 1,
-                    Code = "AAA001",
-                    BAN = "12345678",
-                    Name = "映像有限公司"
-                };
-                dbContext.Companys.Add(company);                
-            }
-
-            if (!dbContext.QuarterYears.Any())
-            {
-                List<QuarterYear> quarterYears = new();
-                int nowGregorianYear = DateTime.Now.Year;                
-                for (int i = 0 ; i <= Years; i++)
-                {
-                    int gregorianYear = nowGregorianYear - Years + i;
-
-                    //(財報季度列表)
-                    for (int period = 1; period <= 4; period++)
+                    //公司基本資料
+                    Company company = new()
                     {
-                        QuarterYear quarter = new()
+                        Id = 1,
+                        Code = "AAA001",
+                        BAN = "12345678",
+                        Name = "映像有限公司",                        
+                        AccountantGroups = new List<AccountantGroup>(),
+                        Users = new List<User>(),
+                        ImageCaptureSettings = new List<ImageRangeSetting>()
+                    };
+                    //建立User資料
+                    User user = new()
+                    {
+                        Id = 1,
+                        UserName = "Admin",
+                        KeycloakUserId = "00001"
+                    };
+                    //建立DB前先建置AccountantGroup無群組資料
+                    AccountantGroup accountantGroup = new()
+                    {
+                        Id = 1,
+                        Code = "Default",
+                        Name = "預設群組"
+                    };
+                    //客戶印鑑截取設定
+                    ImageRangeSetting imageCaptureWithCustomer = new()
+                    {
+                        PageSize = PageSize.A4,
+                        PaperOrientation = PapeOrientation.Portrait,
+                        ImageRangeLocations = new List<ImageRangeLocation>()
+                        {
+                            new ()
+                            {
+                                Left = 0,
+                                Top = 0,
+                                Width = 400,
+                                Height = 400,
+                                SealType = SealType.Customer,
+                                SubSealType = SubSealType.Company
+                            },
+                            new ()
+                            {
+                                Left = 0,
+                                Top = 400,
+                                Width = 400,
+                                Height = 400,
+                                SealType = SealType.Customer,
+                                SubSealType = SubSealType.President
+                            },
+                            new ()
+                            {
+                                Left = 0,
+                                Top = 400,
+                                Width = 400,
+                                Height = 400,
+                                SealType = SealType.Customer,
+                                SubSealType = SubSealType.Manager
+                            },
+                            new ()
+                            {
+                                Left = 400,
+                                Top = 400,
+                                Width = 400,
+                                Height = 400,
+                                SealType = SealType.Customer,
+                                SubSealType = SubSealType.AccountingDirector
+                            },
+                            new ()
+                            {
+                                Left = 0,
+                                Top = 0,
+                                Width = 0,
+                                Height = 0,
+                                SealType = SealType.Customer,
+                                SubSealType = SubSealType.Other
+                            }
+                        }
+                    };
+                    //會計師簽印截取設定
+                    ImageRangeSetting imageCaptureWithAccountant = new()
+                    {
+                        PageSize = PageSize.A4,
+                        PaperOrientation = PapeOrientation.Portrait,
+                        ImageRangeLocations = new List<ImageRangeLocation>()
+                        {
+                            new ()
+                            {
+                                Left = 0,
+                                Top = 0,
+                                Width = 400,
+                                Height = 400,
+                                SealType = SealType.Accountant,
+                                SubSealType = SubSealType.Seal
+                            },
+                            new ()
+                            {
+                                Left = 0,
+                                Top = 400,
+                                Width = 400,
+                                Height = 400,
+                                SealType = SealType.Accountant,
+                                SubSealType = SubSealType.CHSign
+                            },
+                            new ()
+                            {
+                                Left = 0,
+                                Top = 400,
+                                Width = 400,
+                                Height = 400,
+                                SealType = SealType.Accountant,
+                                SubSealType = SubSealType.ENSign
+                            },
+                            new ()
+                            {
+                                Left = 400,
+                                Top = 400,
+                                Width = 400,
+                                Height = 400,
+                                SealType = SealType.Accountant,
+                                SubSealType = SubSealType.OldSign
+                            },
+                            new ()
+                            {
+                                Left = 0,
+                                Top = 0,
+                                Width = 0,
+                                Height = 0,
+                                SealType = SealType.Accountant,
+                                SubSealType = SubSealType.Other
+                            }
+                        }
+                    };
+                    InputUtil.Base(company, true, 1);
+                    InputUtil.Base(imageCaptureWithCustomer, true, 1);
+                    InputUtil.Base(imageCaptureWithAccountant, true, 1);
+                    InputUtil.Base(accountantGroup, true, 1);
+
+                    company.AccountantGroups.Add(accountantGroup);
+                    company.Users.Add(user);
+                    company.ImageCaptureSettings!.Add(imageCaptureWithCustomer);
+                    company.ImageCaptureSettings!.Add(imageCaptureWithAccountant);
+                    
+
+                    dbContext.Companys.Add(company);
+                }
+
+                if (!dbContext.QuarterYears.Any())
+                {
+                    List<QuarterYear> quarterYears = new();
+                    int nowGregorianYear = DateTime.Now.Year;
+                    for (int i = 0; i <= Years; i++)
+                    {
+                        int gregorianYear = nowGregorianYear - Years + i;
+
+                        //(財報季度列表)
+                        for (int period = 1; period <= 4; period++)
+                        {
+                            QuarterYear quarter = new()
+                            {
+                                GregorianYear = gregorianYear,
+                                Period = $"Q{period}",
+                                Type = TypographyType.FinancialReport
+                            };
+                            quarterYears.Add(quarter);
+                        }
+
+                        //(稅報年度列表)
+                        QuarterYear quarterYear = new()
                         {
                             GregorianYear = gregorianYear,
-                            Period = $"Q{period}",
-                            Type = TypographyType.FinancialReport
+                            Type = TypographyType.TaxReport
                         };
-                        quarterYears.Add(quarter);
+                        quarterYears.Add(quarterYear);
                     }
+                    dbContext.QuarterYears.AddRange(quarterYears);
+                }
 
-                    //(稅報年度列表)
-                    QuarterYear quarterYear = new()
-                    {
-                        GregorianYear = gregorianYear,
-                        Type = TypographyType.TaxReport
-                    };
-                    quarterYears.Add(quarterYear);
-                }                
-                dbContext.QuarterYears.AddRange(quarterYears);                
+                dbContext.SaveChanges();
             }
-
-            if (!dbContext.AccountantGroups.Any())
+            catch (Exception ex)
             {
-                //建立DB前先建置AccountantGroup無群組資料
-                AccountantGroup accountantGroup = new()
-                {
-                    Id = 1,
-                    Company = dbContext.Companys.Single(x => x.Id == 1),
-                    Code = "Default",
-                    CreateUserId = 0,
-                    UpdateUserId = 0,
-                    DeleteStatus = 0,
-                    Name = "預設群組"
-                };
-                dbContext.AccountantGroups.Add(accountantGroup);                
-            }
-
-            if(!dbContext.Users.Any())
-            {
-                User user = new()
-                {
-                    Id = 1,
-                    Company = dbContext.Companys.Single(x => x.Id == 1),
-                    UserName = "Admin",
-                    KeycloakUserId = "00001"
-                };
-                dbContext.Users.Add(user);
-            }
-            dbContext.SaveChanges();
+                Console.WriteLine(ex.ToString());
+            }            
         }
     }
 }

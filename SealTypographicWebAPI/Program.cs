@@ -120,8 +120,9 @@ builder.Services.AddScoped<ILetterheadImageTemplateService, LetterheadImageTempl
 builder.Services.AddScoped<IUploadService, UploadService>();
 builder.Services.AddScoped<ITypographicPDFService, TypographicPDFService>();
 builder.Services.AddScoped<IQuarterYearService, QuarterYearService>();
-builder.Services.AddScoped<IImageCaptureSettingService, ImageCaptureSettingService>();
+builder.Services.AddScoped<IImageRangeSettingService, ImageRangeSettingService>();
 
+builder.Services.AddHealthChecks();
 #endregion
 
 builder.Services.AddLocalization(option => option.ResourcesPath = "Resource");
@@ -292,6 +293,8 @@ using (IServiceScope scope = app.Services.CreateScope())
         Console.WriteLine(ex.ToString());
     }
 }
+
+app.MapHealthChecks("/healthz");
 
 //app.UseHttpsRedirection();
 app.UseAuthentication();

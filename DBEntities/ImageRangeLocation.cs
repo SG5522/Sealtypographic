@@ -6,7 +6,7 @@ namespace DBEntities
     /// <summary>
     /// 圖片截取範圍設定
     /// </summary>
-    public class ImageCaptureLocation : BaseLocation
+    public class ImageRangeLocation : BaseLocation
     {
         /// <summary>
         /// Id
@@ -26,6 +26,6 @@ namespace DBEntities
         /// <summary>
         /// 樣板
         /// </summary>
-        public ImageCaptureSetting ImageCaptureSetting { get; set; }        
+        public ImageRangeSetting ImageRangeSetting { get; set; }        
     }
 }

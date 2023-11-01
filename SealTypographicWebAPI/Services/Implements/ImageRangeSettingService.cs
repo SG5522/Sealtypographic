@@ -2,27 +2,28 @@
 using AutoMapper.QueryableExtensions;
 using DBEntities;
 using DBEntities.Consts;
+using DBEntities.Utils;
 using Microsoft.EntityFrameworkCore;
 using SealTypographicWebAPI.Models;
-using SealTypographicWebAPI.Models.SealCaptureRange;
-using SealTypographicWebAPI.Utils;
+using SealTypographicWebAPI.Models.BaseModels;
+using SealTypographicWebAPI.Models.ImageRangeSetting;
 
 namespace SealTypographicWebAPI.Services.Implements
 {
     /// <summary>
     /// 印鑑截取範圍設定
     /// </summary>
-    public class ImageCaptureSettingService : IImageCaptureSettingService
+    public class ImageRangeSettingService : IImageRangeSettingService
     {
         private readonly SealTypographicDbContext dbContext;
         private readonly IMapper mapper;
         private readonly AutoMapper.IConfigurationProvider configurationProvider;
-        private readonly ILogger<ImageCaptureSettingService> logger;
+        private readonly ILogger<ImageRangeSettingService> logger;
 
         /// <summary>
         /// 建置
         /// </summary>
-        public ImageCaptureSettingService(SealTypographicDbContext dbContext, IMapper mapper, ILogger<ImageCaptureSettingService> logger)
+        public ImageRangeSettingService(SealTypographicDbContext dbContext, IMapper mapper, ILogger<ImageRangeSettingService> logger)
         {
             this.dbContext = dbContext;
             this.mapper = mapper;
@@ -31,23 +32,23 @@ namespace SealTypographicWebAPI.Services.Implements
         }
 
         ///<inheritdoc />
-        public CustomerSealCaptureResponse GetCustomerSealCapture(int companyId = 1)
+        public CustomerSealRangeSettingResponse GetCustomerSealRangeSetting(int companyId = 1)
         {
             logger.LogInformation("GetCustomerSealCapture input userId: {@userId}", companyId);
 
-            CustomerSealCaptureResponse result = new ();
+            CustomerSealRangeSettingResponse result = new ();
 
             try
             {
-                CustomerSealCaptureSetting? ImageCaptureSetting = dbContext.ImageCaptureSettings
-                                                                .Include(x => x.ImageCaptureLocations)
-                                                                .Where(x => x.Company.Id == companyId && x.ImageCaptureLocations.Any(location => location.SealType == SealType.Customer))
-                                                                .ProjectTo<CustomerSealCaptureSetting>(configurationProvider)
+                CustomerSealRangeSetting? ImageCaptureSetting = dbContext.ImageRangeSettings
+                                                                .Include(x => x.ImageRangeLocations)
+                                                                .Where(x => x.Company!.Id == companyId && x.ImageRangeLocations.Any(location => location.SealType == SealType.Customer))
+                                                                .ProjectTo<CustomerSealRangeSetting>(configurationProvider)
                                                                 .FirstOrDefault();
 
                 if (ImageCaptureSetting != null) 
                 {
-                    result.CustomerSealCaptureSetting = ImageCaptureSetting;
+                    result.CustomerSealRangeSetting = ImageCaptureSetting;
                     result.Success();
                 }
 
@@ -62,23 +63,23 @@ namespace SealTypographicWebAPI.Services.Implements
         }
 
         ///<inheritdoc />
-        public AccountantSignCaptureResponse GetAccountantSignCapture(int companyId = 1)
+        public AccountantSignRangeSettingResponse GetAccountantSignRangeSetting(int companyId = 1)
         {
             logger.LogInformation("GetAccountantSignCapturee input companyId: {@companyId}", companyId);
 
-            AccountantSignCaptureResponse result = new();
+            AccountantSignRangeSettingResponse result = new();
 
             try
             {
-                AccountantSignCaptureSetting? ImageCaptureSetting = dbContext.ImageCaptureSettings
-                                                                    .Include(x => x.ImageCaptureLocations)
-                                                                    .Where(x => x.User.Id == companyId && x.ImageCaptureLocations.Any(location => location.SealType == SealType.Accountant))
-                                                                    .ProjectTo<AccountantSignCaptureSetting>(configurationProvider)
+                AccountantSignRangeSetting? ImageCaptureSetting = dbContext.ImageRangeSettings
+                                                                    .Include(x => x.ImageRangeLocations)
+                                                                    .Where(x => x.Company!.Id == companyId && x.ImageRangeLocations.Any(location => location.SealType == SealType.Accountant))
+                                                                    .ProjectTo<AccountantSignRangeSetting>(configurationProvider)
                                                                     .FirstOrDefault();
 
                 if (ImageCaptureSetting != null)
                 {
-                    result.AccountantSignCaptureSetting = ImageCaptureSetting;
+                    result.AccountantSignRangeSetting = ImageCaptureSetting;
                     result.Success();
                 }
 
@@ -101,10 +102,10 @@ namespace SealTypographicWebAPI.Services.Implements
 
             try
             {                
-                ImageCaptureSetting imageCaptureSetting = mapper.Map<ImageCaptureSetting>(captureSetting);
+                ImageRangeSetting imageCaptureSetting = mapper.Map<ImageRangeSetting>(captureSetting);
                 imageCaptureSetting.Company = dbContext.Companys.Single(x => x.Id == companyId);
                 InputUtil.Base(imageCaptureSetting, true, companyId);
-                dbContext.ImageCaptureSettings.Add(imageCaptureSetting);
+                dbContext.ImageRangeSettings.Add(imageCaptureSetting);
                 dbContext.SaveChanges();
                 logger.LogInformation("New output {@output}", response);
             }
@@ -122,24 +123,22 @@ namespace SealTypographicWebAPI.Services.Implements
         }
 
         ///<inheritdoc />
-        public ResponseViewModel Update<T>(T captureSetting, SealType sealType, int companyId = 1)
+        public ResponseViewModel Update<T>(int id, T captureSetting, SealType sealType, int userId = 1) where T : BaseLocation
         {
-            logger.LogInformation("Update input {@captureSetting} userId: {@userId}", captureSetting, companyId);
+            logger.LogInformation("Update input {@captureSetting} sealType: {@sealType} userId: {@userId}", captureSetting, sealType, userId);
 
             ResponseViewModel response = new();
 
             try
             {
-                ImageCaptureSetting? imageCaptureSetting = dbContext.ImageCaptureSettings
-                                                                    .Include(x => x.ImageCaptureLocations)
-                                                                    .Where(
-                                                                        x => x.Company.Id == companyId
-                                                                        && x.ImageCaptureLocations.Any(g => g.SealType == sealType)
-                                                                    ).FirstOrDefault();
+                ImageRangeSetting? imageCaptureSetting = dbContext.ImageRangeSettings
+                                                                    .Include(x => x.ImageRangeLocations)
+                                                                    .Where(x => x.Id == id)                                                                        
+                                                                    .FirstOrDefault();
                 if (imageCaptureSetting != null)
                 {
                     mapper.Map(captureSetting, imageCaptureSetting);
-                    InputUtil.Base(imageCaptureSetting, false, companyId);                    
+                    InputUtil.Base(imageCaptureSetting, false, userId);                    
                     dbContext.SaveChanges();
                     logger.LogInformation("Update output {@output}", response);
                 }

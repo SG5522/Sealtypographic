@@ -1,13 +1,12 @@
 ﻿using DBEntities.Base;
 using DBEntities.Consts;
-using System.Text.Json.Serialization;
 
-namespace SealTypographicWebAPI.Models.SealCaptureRange
+namespace SealTypographicWebAPI.Models.ImageRangeSetting
 {
     /// <summary>
     /// 客戶印鑑截取範圍設定
     /// </summary>
-    public class CustomerSealCaptureLocation : BaseLocation
+    public class CustomerSealRangeLocation : BaseLocation
     {
         /// <summary>
         /// Id

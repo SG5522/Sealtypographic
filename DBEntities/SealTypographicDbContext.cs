@@ -101,12 +101,12 @@ namespace DBEntities
         /// <summary>
         /// 圖片截取設定資料表
         /// </summary>
-        public DbSet<ImageCaptureSetting> ImageCaptureSettings {get; set;}
+        public DbSet<ImageRangeSetting> ImageRangeSettings {get; set;}
 
         /// <summary>
         /// 圖片截取範圍設定資料表
         /// </summary>
-        public DbSet<ImageCaptureLocation> ImageCaptureLocations { get; set; }
+        public DbSet<ImageRangeLocation> ImageRangeLocations { get; set; }
 
         /// <summary>
         /// 

@@ -5,7 +5,7 @@ namespace DBEntities
     /// <summary>
     /// 圖片截取範圍設定
     /// </summary>
-    public class ImageCaptureSetting : BaseSettimg
+    public class ImageRangeSetting : BaseSettimg
     {
         /// <summary>
         /// 使用者
@@ -20,6 +20,6 @@ namespace DBEntities
         /// <summary>
         /// 圖片截取範圍設定
         /// </summary>
-        public IList<ImageCaptureLocation> ImageCaptureLocations { get; set; }
+        public IList<ImageRangeLocation> ImageRangeLocations { get; set; }
     }
 }

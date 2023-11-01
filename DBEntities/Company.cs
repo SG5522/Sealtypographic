@@ -1,9 +1,4 @@
 ﻿using DBEntities.Base;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DBEntities
 {
@@ -50,7 +45,7 @@ namespace DBEntities
         /// <summary>
         /// 圖片截取範圍設定
         /// </summary>
-        public IList<ImageCaptureSetting>? ImageCaptureSettings { get; set; }
+        public IList<ImageRangeSetting>? ImageCaptureSettings { get; set; }
 
     }
 }
