@@ -468,7 +468,7 @@ namespace Sqlite.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "ImageCaptureSettings",
+                name: "ImageRangeSettings",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
@@ -485,14 +485,14 @@ namespace Sqlite.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ImageCaptureSettings", x => x.Id);
+                    table.PrimaryKey("PK_ImageRangeSettings", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_ImageCaptureSettings_Companys_CompanyId",
+                        name: "FK_ImageRangeSettings_Companys_CompanyId",
                         column: x => x.CompanyId,
                         principalTable: "Companys",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_ImageCaptureSettings_Users_UserId",
+                        name: "FK_ImageRangeSettings_Users_UserId",
                         column: x => x.UserId,
                         principalTable: "Users",
                         principalColumn: "Id");
@@ -579,14 +579,14 @@ namespace Sqlite.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "ImageCaptureLocations",
+                name: "ImageRangeLocations",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     SealType = table.Column<byte>(type: "INTEGER", nullable: false),
                     SubSealType = table.Column<int>(type: "INTEGER", nullable: false),
-                    ImageCaptureSettingId = table.Column<int>(type: "INTEGER", nullable: false),
+                    ImageRangeSettingId = table.Column<int>(type: "INTEGER", nullable: false),
                     Left = table.Column<float>(type: "REAL", nullable: false),
                     Top = table.Column<float>(type: "REAL", nullable: false),
                     Width = table.Column<int>(type: "INTEGER", nullable: false),
@@ -594,11 +594,11 @@ namespace Sqlite.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ImageCaptureLocations", x => x.Id);
+                    table.PrimaryKey("PK_ImageRangeLocations", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_ImageCaptureLocations_ImageCaptureSettings_ImageCaptureSettingId",
-                        column: x => x.ImageCaptureSettingId,
-                        principalTable: "ImageCaptureSettings",
+                        name: "FK_ImageRangeLocations_ImageRangeSettings_ImageRangeSettingId",
+                        column: x => x.ImageRangeSettingId,
+                        principalTable: "ImageRangeSettings",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -672,18 +672,18 @@ namespace Sqlite.Migrations
                 column: "AccountantId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ImageCaptureLocations_ImageCaptureSettingId",
-                table: "ImageCaptureLocations",
-                column: "ImageCaptureSettingId");
+                name: "IX_ImageRangeLocations_ImageRangeSettingId",
+                table: "ImageRangeLocations",
+                column: "ImageRangeSettingId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ImageCaptureSettings_CompanyId",
-                table: "ImageCaptureSettings",
+                name: "IX_ImageRangeSettings_CompanyId",
+                table: "ImageRangeSettings",
                 column: "CompanyId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ImageCaptureSettings_UserId",
-                table: "ImageCaptureSettings",
+                name: "IX_ImageRangeSettings_UserId",
+                table: "ImageRangeSettings",
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
@@ -789,7 +789,7 @@ namespace Sqlite.Migrations
                 name: "GroupAccountants");
 
             migrationBuilder.DropTable(
-                name: "ImageCaptureLocations");
+                name: "ImageRangeLocations");
 
             migrationBuilder.DropTable(
                 name: "TemplateLocations");
@@ -801,7 +801,7 @@ namespace Sqlite.Migrations
                 name: "AccountantGroups");
 
             migrationBuilder.DropTable(
-                name: "ImageCaptureSettings");
+                name: "ImageRangeSettings");
 
             migrationBuilder.DropTable(
                 name: "Templates");

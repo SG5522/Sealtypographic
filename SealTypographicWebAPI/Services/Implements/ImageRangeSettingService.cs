@@ -123,30 +123,79 @@ namespace SealTypographicWebAPI.Services.Implements
         }
 
         ///<inheritdoc />
-        public ResponseViewModel Update<T>(int id, T captureSetting, SealType sealType, int userId = 1) where T : BaseLocation
+        public ResponseViewModel UpdateCustomerSealRangeSetting(CustomerSealRangeSetting customerSealRangeSetting, int userId = 1)
         {
-            logger.LogInformation("Update input {@captureSetting} sealType: {@sealType} userId: {@userId}", captureSetting, sealType, userId);
+            logger.LogInformation("UpdateCustomerSealRangeSetting input {@customerSealRangeSetting} userId: {@userId}", customerSealRangeSetting, userId);
 
             ResponseViewModel response = new();
 
             try
             {
-                ImageRangeSetting? imageCaptureSetting = dbContext.ImageRangeSettings
-                                                                    .Include(x => x.ImageRangeLocations)
-                                                                    .Where(x => x.Id == id)                                                                        
-                                                                    .FirstOrDefault();
-                if (imageCaptureSetting != null)
+                ImageRangeSetting? imageRangeSetting = dbContext.ImageRangeSettings
+                                                                .Include(x => x.ImageRangeLocations)
+                                                                .Where(x => x.Id == customerSealRangeSetting.Id)                                                                        
+                                                                .FirstOrDefault();
+                if (imageRangeSetting != null)
                 {
-                    mapper.Map(captureSetting, imageCaptureSetting);
-                    InputUtil.Base(imageCaptureSetting, false, userId);                    
+                    imageRangeSetting.PageSize = customerSealRangeSetting.PageSize;
+                    imageRangeSetting.PaperOrientation = customerSealRangeSetting.PaperOrientation;
+                    foreach (CustomerSealRangeLocation customerSealRangeLocation in customerSealRangeSetting.CustomerSealRangeLocations)
+                    {
+                        ImageRangeLocation imageRangeLocation = imageRangeSetting.ImageRangeLocations.Single(x => x.Id == customerSealRangeLocation.Id);                       
+                        mapper.Map(customerSealRangeLocation, imageRangeLocation);                        
+                    }
+                    InputUtil.Base(imageRangeSetting, false, userId);                    
                     dbContext.SaveChanges();
-                    logger.LogInformation("Update output {@output}", response);
+                    response.Success();
                 }
+                else
+                {
+                    response.DbNoData();
+                }
+                logger.LogInformation("UpdateCustomerSealRangeSetting output {@output}", response);
             }
             catch (Exception ex)
             {
                 response.Error();
-                logger.LogError("Update error {@error}", ex.Message);
+                logger.LogError("UpdateCustomerSealRangeSetting error {@error}", ex.Message);
+            }
+            return response;
+        }
+
+        ///<inheritdoc />
+        public ResponseViewModel UpdateAccountantSignRangeSetting(AccountantSignRangeSetting accountantSignRangeSetting, int userId = 1)
+        {
+            logger.LogInformation("UpdateAccountantSignRangeSetting input {@accountantSignRangeSetting} userId: {@userId}", accountantSignRangeSetting, userId);
+
+            ResponseViewModel response = new();
+
+            try
+            {
+                ImageRangeSetting? imageRangeSetting = dbContext.ImageRangeSettings
+                                                                .Include(x => x.ImageRangeLocations)
+                                                                .Where(x => x.Id == accountantSignRangeSetting.Id)
+                                                                .FirstOrDefault();
+                if (imageRangeSetting != null)
+                {
+                    foreach (AccountantSignRangeLocation accountantSignRangeLocation in accountantSignRangeSetting.AccountantSignRangeLocations)
+                    {
+                        ImageRangeLocation imageRangeLocation = imageRangeSetting.ImageRangeLocations.Single(x => x.Id == accountantSignRangeLocation.Id);
+                        mapper.Map(accountantSignRangeLocation, imageRangeLocation);                        
+                    }                    
+                    InputUtil.Base(imageRangeSetting, false, userId);
+                    dbContext.SaveChanges();
+                    response.Success();
+                }
+                else
+                {
+                    response.DbNoData();
+                }
+                logger.LogInformation("UpdateAccountantSignRangeSetting output {@output}", response);
+            }
+            catch (Exception ex)
+            {
+                response.Error();
+                logger.LogError("UpdateAccountantSignRangeSetting error {@error}", ex.Message);
             }
             return response;
         }

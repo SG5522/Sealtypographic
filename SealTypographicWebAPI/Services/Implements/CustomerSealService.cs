@@ -97,7 +97,7 @@ namespace SealTypographicWebAPI.Services.Implements
                                                             })
                                                             .ToList();
 
-                    PageUtil.SetPageData(customerPaginateViewModel, customerSearch.PageNumber, customerSearch.PageSize, customerQuery.Count());
+                    PageUtil.SetPaginate(customerPaginateViewModel, customerSearch.PageNumber, customerSearch.PageSize, customerQuery.Count());
                     customerPaginateViewModel.Success();
                 }
                 else
@@ -150,7 +150,7 @@ namespace SealTypographicWebAPI.Services.Implements
                                                                                 .ProjectTo<CustomerSealQuarterViewModel>(configurationProvider)
                                                                                 .ToList();
 
-                    PageUtil.SetPageData(customerSealQuarterPaginateViewModel, customerSealQuarterPaginateSearch.PageNumber
+                    PageUtil.SetPaginate(customerSealQuarterPaginateViewModel, customerSealQuarterPaginateSearch.PageNumber
                         , customerSealQuarterPaginateSearch.PageSize, customerSealGroupsQuery.Count());
                     customerSealQuarterPaginateViewModel.Success();
                 }

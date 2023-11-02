@@ -37,12 +37,17 @@ namespace SealTypographicWebAPI.Services
         /// <summary>
         /// 修改
         /// </summary>
-        /// <typeparam name="T">CustomerSealRangeSetting AccountantSignRangeSetting</typeparam>
-        /// <param name="id"></param>
-        /// <param name="rangeSetting">範圍參數設定</param>
-        /// <param name="sealType">印鑑類別</param>
+        /// <param name="customerSealRangeSetting">範圍參數設定</param>        
         /// <param name="userId">登入使用者Id</param>
         /// <returns></returns>
-        ResponseViewModel Update<T>(int id, T rangeSetting, SealType sealType, int userId = 1) where T : BaseLocation;
+        ResponseViewModel UpdateCustomerSealRangeSetting(CustomerSealRangeSetting customerSealRangeSetting, int userId = 1);
+
+        /// <summary>
+        /// 修改
+        /// </summary>
+        /// <param name="accountantSignRangeSetting">範圍參數設定</param>        
+        /// <param name="userId">登入使用者Id</param>
+        /// <returns></returns>
+        ResponseViewModel UpdateAccountantSignRangeSetting(AccountantSignRangeSetting accountantSignRangeSetting, int userId = 1);
     }
 }

@@ -1,13 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SealTypographicWebAPI.Models;
-using DBEntities.Consts;
 using SealTypographicWebAPI.Services;
 using SealTypographicWebAPI.Models.ImageRangeSetting;
 
 namespace SealTypographicWebAPI.Controllers
 {
     /// <summary>
-    /// 上傳
+    /// 圖片範圍設定
     /// </summary>
     [Route("api/[controller]")]
     [ApiController]
@@ -25,54 +24,36 @@ namespace SealTypographicWebAPI.Controllers
         }
 
         /// <summary>
-        /// 取得客戶印鑑分離截取設定
+        /// 取得客戶印鑑圖片範圍設定
         /// </summary>
         /// <returns></returns>
         [HttpGet("[Action]")]
         public CustomerSealRangeSettingResponse CustomerSealRange() => imageRangeSettingService.GetCustomerSealRangeSetting();
 
         /// <summary>
-        /// 取得客戶印鑑分離截取設定
+        /// 取得會計師簽印範圍設定
         /// </summary>
         /// <returns></returns>
         [HttpGet("[Action]")]
         public AccountantSignRangeSettingResponse AccountantSignRange() => imageRangeSettingService.GetAccountantSignRangeSetting();
 
         /// <summary>
-        /// 新增客戶印鑑分離截取設定
+        /// 更新客戶印鑑範圍設定
         /// </summary>        
-        /// <param name="customerSealRangeSetting">客戶印鑑截取設定</param>
-        /// <returns></returns>
-        [HttpPost("[Action]")]
-        public ResponseViewModel NewCustomerSealRange(CustomerSealRangeSetting customerSealRangeSetting) => imageRangeSettingService.New(customerSealRangeSetting);
-
-        /// <summary>
-        /// 新增客戶印鑑分離截取設定
-        /// </summary>        
-        /// <param name="accountantSignRangeSetting">客戶印鑑截取設定</param>
-        /// <returns></returns>
-        [HttpPost("[Action]")]
-        public ResponseViewModel NewAccountantSignRange(AccountantSignRangeSetting accountantSignRangeSetting) => imageRangeSettingService.New(accountantSignRangeSetting);
-
-        /// <summary>
-        /// 更新客戶印鑑截取設定
-        /// </summary>
-        /// <param name="id"></param>
         /// <param name="customerSealRangeSetting"></param>
         /// <returns></returns>
         [HttpPut("[Action]")]
-        public ResponseViewModel UpdateCustomerSealRange(int id, CustomerSealRangeSetting customerSealRangeSetting)
-            => imageRangeSettingService.Update(id, customerSealRangeSetting, SealType.Customer);
+        public ResponseViewModel UpdateCustomerSealRange(CustomerSealRangeSetting customerSealRangeSetting)
+            => imageRangeSettingService.UpdateCustomerSealRangeSetting(customerSealRangeSetting);
 
         /// <summary>
-        /// 更新會計師簽印分離截取設定
-        /// </summary>
-        /// <param name="id"></param>
+        /// 更新會計師簽印範圍設定
+        /// </summary>        
         /// <param name="accountantSignRangeSetting"></param>
         /// <returns></returns>
         [HttpPut("[Action]")]
-        public ResponseViewModel UpdateAccountantSignRange(int id, AccountantSignRangeSetting accountantSignRangeSetting) 
-            => imageRangeSettingService.Update(id, accountantSignRangeSetting, SealType.Accountant);
+        public ResponseViewModel UpdateAccountantSignRange(AccountantSignRangeSetting accountantSignRangeSetting) 
+            => imageRangeSettingService.UpdateAccountantSignRangeSetting(accountantSignRangeSetting);
 
     }
 }

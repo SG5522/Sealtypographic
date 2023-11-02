@@ -135,7 +135,7 @@ namespace SealTypographicWebAPI.Services.Implements
                                                                 .ProjectTo<AccountantGroupViewModel>(configurationProvider)
                                                                 .ToList();
 
-                    PageUtil.SetPageData(accountantGroupResponses, accountantGroupSearch.PageNumber, accountantGroupSearch.PageSize, accountantGroupsQuery.Count());
+                    PageUtil.SetPaginate(accountantGroupResponses, accountantGroupSearch.PageNumber, accountantGroupSearch.PageSize, accountantGroupsQuery.Count());
                     accountantGroupResponses.Success();
                 }
                 else

@@ -62,7 +62,7 @@ namespace SealTypographicWebAPI.Services.Implements
                                                     .ProjectTo<AccountantGroupMember>(configurationProvider)
                                                     .ToList();
 
-                    PageUtil.SetPageData(accountantGroupMembers, accountantGroupMemberSearch.PageNumber, accountantGroupMemberSearch.PageSize, accountantQuery.Count());
+                    PageUtil.SetPaginate(accountantGroupMembers, accountantGroupMemberSearch.PageNumber, accountantGroupMemberSearch.PageSize, accountantQuery.Count());
                     accountantGroupMembers.Success();
                 }
                 else

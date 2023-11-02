@@ -65,7 +65,7 @@ namespace SealTypographicWebAPI.Services.Implements
                                                               .ProjectTo<LetterheadViewModel>(configurationProvider)
                                                               .ToList();
 
-                    PageUtil.SetPageData(letterheadPaginateViewModel, letterheadSearch.PageNumber, letterheadSearch.PageSize, letterheadQuery.Count());
+                    PageUtil.SetPaginate(letterheadPaginateViewModel, letterheadSearch.PageNumber, letterheadSearch.PageSize, letterheadQuery.Count());
                     letterheadPaginateViewModel.Success();
                 }
                 else

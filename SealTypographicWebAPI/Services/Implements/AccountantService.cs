@@ -91,10 +91,6 @@ namespace SealTypographicWebAPI.Services.Implements
                 {
                     accountantQuery = accountantQuery.Where(accountant => accountant.AccountantSignGroups.Any(x => x.ReviewStatus == ReviewStatus.Approval));
                 }
-                else
-                {
-                    accountantQuery = accountantQuery.Where(accountant => accountant.AccountantSignGroups.Any(x => x.ReviewStatus <= ReviewStatus.Reject));
-                }
 
                 if (!string.IsNullOrWhiteSpace(accountantSearch.KeyWord))
                 {
@@ -124,7 +120,7 @@ namespace SealTypographicWebAPI.Services.Implements
                                                                 .ProjectTo<AccountantViewModelWithCreateDate>(configurationProvider)
                                                                 .ToList();
 
-                    PageUtil.SetPageData(accountantPaginatesViewModels, accountantSearch.PageNumber, accountantSearch.PageSize, accountantQuery.Count());
+                    PageUtil.SetPaginate(accountantPaginatesViewModels, accountantSearch.PageNumber, accountantSearch.PageSize, accountantQuery.Count());
                     accountantPaginatesViewModels.Success();
                 }
                 else

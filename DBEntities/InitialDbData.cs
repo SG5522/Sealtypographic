@@ -23,7 +23,7 @@ namespace DBEntities
                         Name = "映像有限公司",                        
                         AccountantGroups = new List<AccountantGroup>(),
                         Users = new List<User>(),
-                        ImageCaptureSettings = new List<ImageRangeSetting>()
+                        ImageRangeSettings = new List<ImageRangeSetting>()
                     };
                     //建立User資料
                     User user = new()
@@ -154,8 +154,8 @@ namespace DBEntities
 
                     company.AccountantGroups.Add(accountantGroup);
                     company.Users.Add(user);
-                    company.ImageCaptureSettings!.Add(imageCaptureWithCustomer);
-                    company.ImageCaptureSettings!.Add(imageCaptureWithAccountant);
+                    company.ImageRangeSettings!.Add(imageCaptureWithCustomer);
+                    company.ImageRangeSettings!.Add(imageCaptureWithAccountant);
                     
 
                     dbContext.Companys.Add(company);

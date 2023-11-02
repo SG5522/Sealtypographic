@@ -472,7 +472,7 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <param name="userid"></param>
         /// <param name="originalFileName">原始檔名</param>        
         /// <returns></returns>
-        private string GetSavePath(UploadType uploadType,int userid, string originalFileName)
+        private string GetSavePath(UploadType uploadType, int userid, string originalFileName)
         {            
             string folder = string.Empty;            
             DateTime dateTime = DateTime.Now;            
@@ -490,6 +490,9 @@ namespace SealTypographicWebAPI.Services.Implements
                     break;
                 case UploadType.FinancialReport:
                     folder = uploadConfigPath.FinancialReport;
+                    break;
+                case UploadType.TaxReport:
+                    folder = uploadConfigPath.TaxReport;
                     break;
                 case UploadType.AccountantSignCertificate:
                     folder = uploadConfigPath.AccountantSignCertificate;

@@ -3,7 +3,7 @@
 namespace SealTypographicWebAPI.Models.ImageRangeSetting
 {
     /// <summary>
-    /// 客戶印鑑截取設定
+    /// 會計師簽印範圍設定
     /// </summary>
     public class AccountantSignRangeSetting : BaseTemplate
     {
@@ -13,7 +13,7 @@ namespace SealTypographicWebAPI.Models.ImageRangeSetting
         public int Id { get; set; }
 
         /// <summary>
-        /// 客戶印鑑截取範圍設定
+        /// 會計師簽印範圍設定
         /// </summary>
         public IList<AccountantSignRangeLocation> AccountantSignRangeLocations { get; set; }
     }

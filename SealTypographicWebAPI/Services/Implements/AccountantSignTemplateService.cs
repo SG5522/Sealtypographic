@@ -111,7 +111,7 @@ namespace SealTypographicWebAPI.Services.Implements
             {
                 accountantSignTemplatePaginate.ViewModels = LoadPaginatedData(templateQuery, accountantSignTemplateSearch.PageNumber, accountantSignTemplateSearch.PageSize);
                 
-                PageUtil.SetPageData(accountantSignTemplatePaginate, accountantSignTemplateSearch.PageNumber, accountantSignTemplateSearch.PageSize, templateQuery.Count());
+                PageUtil.SetPaginate(accountantSignTemplatePaginate, accountantSignTemplateSearch.PageNumber, accountantSignTemplateSearch.PageSize, templateQuery.Count());
                 accountantSignTemplatePaginate.Success();
             }
             SavePaginateLog(accountantSignTemplatePaginate);
@@ -139,7 +139,7 @@ namespace SealTypographicWebAPI.Services.Implements
                 accountantSignTemplatePaginate.PageNumber = paginateSearch.PageNumber;
                 accountantSignTemplatePaginate.PageSize = paginateSearch.PageSize;
                 //計算總頁數
-                accountantSignTemplatePaginate.TotalPage = PageUtil.GetTotalPage(templateQuery.Count(), paginateSearch.PageSize);
+                //accountantSignTemplatePaginate.TotalPage = PageUtil.GetTotalPage(templateQuery.Count(), paginateSearch.PageSize);
                 accountantSignTemplatePaginate.TotalCount = templateQuery.Count();
                 accountantSignTemplatePaginate.Success();
             }

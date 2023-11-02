@@ -78,7 +78,7 @@ namespace SealTypographicWebAPI.Services.Implements
                                                             .ProjectTo<CustomerSealGroupReviewViewModel>(configurationProvider)
                                                             .ToList();
 
-                    PageUtil.SetPageData(customerSealQuarterResponse, customerSealSearchReview.PageNumber, customerSealSearchReview.PageSize, customerSealQuarterQuery.Count());
+                    PageUtil.SetPaginate(customerSealQuarterResponse, customerSealSearchReview.PageNumber, customerSealSearchReview.PageSize, customerSealQuarterQuery.Count());
                     customerSealQuarterResponse.Success();
                 }
                 else

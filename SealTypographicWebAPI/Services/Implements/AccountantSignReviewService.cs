@@ -79,7 +79,7 @@ namespace SealTypographicWebAPI.Services.Implements
                                                                 .ProjectTo<AccountantSignGroupReviewViewModel>(configurationProvider)
                                                                 .ToList();
 
-                    PageUtil.SetPageData(accountantSignGroupReviewPaginate, accountantSignSearchReview.PageNumber, accountantSignSearchReview.PageSize, accountantSignGroupQuery.Count());
+                    PageUtil.SetPaginate(accountantSignGroupReviewPaginate, accountantSignSearchReview.PageNumber, accountantSignSearchReview.PageSize, accountantSignGroupQuery.Count());
                     accountantSignGroupReviewPaginate.Success();
                 }
                 else

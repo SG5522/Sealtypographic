@@ -3,7 +3,7 @@
 namespace SealTypographicWebAPI.Models.ImageRangeSetting
 {
     /// <summary>
-    /// 客戶印鑑截取設定
+    /// 客戶印鑑範圍設定
     /// </summary>
     public class CustomerSealRangeSetting : BaseTemplate
     {
@@ -13,7 +13,7 @@ namespace SealTypographicWebAPI.Models.ImageRangeSetting
         public int Id { get; set; }
 
         /// <summary>
-        /// 客戶印鑑截取範圍設定
+        /// 客戶印鑑範圍設定
         /// </summary>
         public IList<CustomerSealRangeLocation> CustomerSealRangeLocations { get; set; }
     }

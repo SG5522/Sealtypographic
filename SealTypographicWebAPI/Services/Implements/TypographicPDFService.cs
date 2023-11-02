@@ -88,7 +88,7 @@ namespace SealTypographicWebAPI.Services.Implements
                                                                 .ProjectTo<TypographicPDFViewModel>(configurationProvider)
                                                                 .ToList();
 
-                    PageUtil.SetPageData(typographicPDFPaginateViewModel, typographicPDFSearch.PageNumber, typographicPDFSearch.PageSize, typographicPDFs.Count());
+                    PageUtil.SetPaginate(typographicPDFPaginateViewModel, typographicPDFSearch.PageNumber, typographicPDFSearch.PageSize, typographicPDFs.Count());
                     typographicPDFPaginateViewModel.Success();
                 }
                 else

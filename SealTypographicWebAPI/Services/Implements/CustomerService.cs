@@ -103,7 +103,7 @@ namespace SealTypographicWebAPI.Services.Implements
                                                         .ProjectTo<CustomerSummary>(configurationProvider)
                                                         .ToList();
                     
-                    PageUtil.SetPageData(customerPaginateSummary, customerSearch.PageNumber, customerSearch.PageSize, customerQuery.Count());
+                    PageUtil.SetPaginate(customerPaginateSummary, customerSearch.PageNumber, customerSearch.PageSize, customerQuery.Count());
                     customerPaginateSummary.Success();
                 }
                 else

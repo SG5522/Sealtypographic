@@ -109,7 +109,7 @@ namespace SealTypographicWebAPI.Services.Implements
             {                
                 customerSealTemplatePaginate.ViewModels = LoadPaginatedData(templateQuery, customerSealTemplateSearch.PageNumber, customerSealTemplateSearch.PageSize);
 
-                PageUtil.SetPageData(customerSealTemplatePaginate, customerSealTemplatePaginate.PageNumber, customerSealTemplatePaginate.PageSize, templateQuery.Count());
+                PageUtil.SetPaginate(customerSealTemplatePaginate, customerSealTemplatePaginate.PageNumber, customerSealTemplatePaginate.PageSize, templateQuery.Count());
                 customerSealTemplatePaginate.Success();
             }
             SavePaginateLog(customerSealTemplatePaginate);

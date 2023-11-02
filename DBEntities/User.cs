@@ -25,6 +25,6 @@ namespace DBEntities
         /// <summary>
         /// 圖片截取範圍設定
         /// </summary>
-        public IList<ImageRangeSetting>? ImageCaptureSettings { get; set; }
+        public IList<ImageRangeSetting>? ImageRangeSettings { get; set; }
     }
 }

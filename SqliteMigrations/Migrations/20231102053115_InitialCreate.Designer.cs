@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Sqlite.Migrations
 {
     [DbContext(typeof(SealTypographicDbContext))]
-    [Migration("20231031095756_InitialCreate")]
+    [Migration("20231102053115_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -370,7 +370,7 @@ namespace Sqlite.Migrations
                     b.ToTable("GroupAccountants");
                 });
 
-            modelBuilder.Entity("DBEntities.ImageCaptureLocation", b =>
+            modelBuilder.Entity("DBEntities.ImageRangeLocation", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -379,7 +379,7 @@ namespace Sqlite.Migrations
                     b.Property<int>("Height")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("ImageCaptureSettingId")
+                    b.Property<int>("ImageRangeSettingId")
                         .HasColumnType("INTEGER");
 
                     b.Property<float>("Left")
@@ -399,12 +399,12 @@ namespace Sqlite.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ImageCaptureSettingId");
+                    b.HasIndex("ImageRangeSettingId");
 
-                    b.ToTable("ImageCaptureLocations");
+                    b.ToTable("ImageRangeLocations");
                 });
 
-            modelBuilder.Entity("DBEntities.ImageCaptureSetting", b =>
+            modelBuilder.Entity("DBEntities.ImageRangeSetting", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -443,7 +443,7 @@ namespace Sqlite.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("ImageCaptureSettings");
+                    b.ToTable("ImageRangeSettings");
                 });
 
             modelBuilder.Entity("DBEntities.Letterhead", b =>
@@ -1039,25 +1039,25 @@ namespace Sqlite.Migrations
                     b.Navigation("AccountantGroup");
                 });
 
-            modelBuilder.Entity("DBEntities.ImageCaptureLocation", b =>
+            modelBuilder.Entity("DBEntities.ImageRangeLocation", b =>
                 {
-                    b.HasOne("DBEntities.ImageCaptureSetting", "ImageCaptureSetting")
-                        .WithMany("ImageCaptureLocations")
-                        .HasForeignKey("ImageCaptureSettingId")
+                    b.HasOne("DBEntities.ImageRangeSetting", "ImageRangeSetting")
+                        .WithMany("ImageRangeLocations")
+                        .HasForeignKey("ImageRangeSettingId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("ImageCaptureSetting");
+                    b.Navigation("ImageRangeSetting");
                 });
 
-            modelBuilder.Entity("DBEntities.ImageCaptureSetting", b =>
+            modelBuilder.Entity("DBEntities.ImageRangeSetting", b =>
                 {
                     b.HasOne("DBEntities.Company", "Company")
-                        .WithMany("ImageCaptureSettings")
+                        .WithMany("ImageRangeSettings")
                         .HasForeignKey("CompanyId");
 
                     b.HasOne("DBEntities.User", "User")
-                        .WithMany("ImageCaptureSettings")
+                        .WithMany("ImageRangeSettings")
                         .HasForeignKey("UserId");
 
                     b.Navigation("Company");
@@ -1260,7 +1260,7 @@ namespace Sqlite.Migrations
 
                     b.Navigation("Customers");
 
-                    b.Navigation("ImageCaptureSettings");
+                    b.Navigation("ImageRangeSettings");
 
                     b.Navigation("Letterheads");
 
@@ -1285,9 +1285,9 @@ namespace Sqlite.Migrations
                     b.Navigation("TypographicResources");
                 });
 
-            modelBuilder.Entity("DBEntities.ImageCaptureSetting", b =>
+            modelBuilder.Entity("DBEntities.ImageRangeSetting", b =>
                 {
-                    b.Navigation("ImageCaptureLocations");
+                    b.Navigation("ImageRangeLocations");
                 });
 
             modelBuilder.Entity("DBEntities.Letterhead", b =>
@@ -1338,7 +1338,7 @@ namespace Sqlite.Migrations
 
             modelBuilder.Entity("DBEntities.User", b =>
                 {
-                    b.Navigation("ImageCaptureSettings");
+                    b.Navigation("ImageRangeSettings");
                 });
 #pragma warning restore 612, 618
         }

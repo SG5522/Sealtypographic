@@ -8,15 +8,6 @@ namespace SealTypographicWebAPI.Utils
     public class PageUtil
     {
         /// <summary>
-        /// 取得總頁數
-        /// </summary>
-        /// <returns></returns>
-        public static int GetTotalPage(int count,int pageSize)
-        {
-            return count / pageSize + (count % pageSize == 0 ? 0 : 1);
-        }
-
-        /// <summary>
         /// 分頁頁次處理
         /// </summary>
         /// <typeparam name="T"></typeparam>
@@ -24,11 +15,10 @@ namespace SealTypographicWebAPI.Utils
         /// <param name="pageNumber"></param>
         /// <param name="pageSize"></param>
         /// <param name="totalCount"></param>
-        public static void SetPageData<T> (T t, int pageNumber, int pageSize, int totalCount) where T : PaginateViewModel
+        public static void SetPaginate<T> (T t, int pageNumber, int pageSize, int totalCount) where T : PaginateViewModel
         {
             t.PageNumber = pageNumber;
-            t.PageSize = pageSize;
-            t.TotalPage = GetTotalPage(totalCount, pageSize);
+            t.PageSize = pageSize;            
             t.TotalCount = totalCount;
         }
     }
