@@ -7,9 +7,7 @@ namespace SealTypographicWebAPI.Models.BaseModels
     /// 各種分頁回傳結果
     /// </summary>
     public abstract class PaginateViewModel : ResponseViewModel
-    {
-        private int totalPage;
-
+    {        
         /// <summary>
         /// 目前頁碼
         /// </summary>

@@ -97,6 +97,27 @@ namespace SealTypographicWebAPI.Services.Implements
         }
 
         /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+
+        public UploadPaginateViewModel GetUploadPaginate()
+        {
+            UploadPaginateViewModel uploadPaginateViewModel = new();
+            try
+            {
+
+            }
+            catch (Exception  ex)
+            {
+
+            }
+
+            return uploadPaginateViewModel;
+        }
+
+
+        /// <summary>
         /// 取得檔案名稱
         /// </summary>
         /// <param name="uploadType"></param>
@@ -141,6 +162,8 @@ namespace SealTypographicWebAPI.Services.Implements
 
             return uploadFileResponse;
         }
+
+        
 
         /// <summary>
         /// 取得上傳檔案圖片

@@ -6,16 +6,16 @@ namespace SealTypographicWebAPI.Models.Upload
     /// <summary>
     /// 上傳檔案
     /// </summary>
-    public class UploadFileViewModel : BaseData
+    public class UploadViewModel : UploadFileViewModel
     {        
         /// <summary>
-        /// 上傳時間
+        /// 上傳檔案類別
         /// </summary>
-        public DateTime UploadDate { get; set; }
+        public UploadType UploadType { get; set; }
 
         /// <summary>
-        /// 檔名
+        /// 檔案工作狀態
         /// </summary>
-        public string FileName { get; set; }
+        public FileWorkStatus FileWorkStatus { get; set; }
     }    
 }

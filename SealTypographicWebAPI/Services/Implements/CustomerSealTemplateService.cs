@@ -171,8 +171,8 @@ namespace SealTypographicWebAPI.Services.Implements
             if (template != null)
             {
                 //刪除原圖與縮圖
-                FileUtil.DeleteImage(template.ImageViewFullPath);
-                FileUtil.DeleteImage(template.ThumbnailFullPath);
+                FileUtil.DeleteFile(template.ImageViewFullPath);
+                FileUtil.DeleteFile(template.ThumbnailFullPath);
                 //儲存圖片(原圖)                
                 ImageBase64Info imageBase64Info = imageService.SetImageBase64InfoWithTemplate(template.Company.Code, SealType.Customer);                                
                 imageBase64Info.ImageBase64 = customerSealTemplateUpdateForm.ImageBase64;

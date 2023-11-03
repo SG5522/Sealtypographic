@@ -1,4 +1,8 @@
 ﻿
+using Microsoft.AspNetCore.Http;
+using System;
+using System.Text.RegularExpressions;
+
 namespace SealTypographicWebAPI.Utils
 {
     /// <summary>
@@ -7,27 +11,24 @@ namespace SealTypographicWebAPI.Utils
     public class FileUtil
     {
         /// <summary>
-        /// 透過IFromFile存檔並回傳存檔位置
+        /// 取得依系統時間組成另外組成檔案路徑及檔案名稱
         /// </summary>
-        /// <param name="formFile">IFormFile</param>
-        /// <param name="code">公司編號</param>
-        /// <param name="rootFolder">存檔路徑</param>
+        /// <param name="rootFolder">存檔根目錄</param>
+        /// <param name="fileName">檔名</param>
         /// <returns></returns>
-        public static async Task<string> UploadFileReturnPath(IFormFile formFile, string code, string rootFolder)
+        public static string GetSaveFullPathWithDateTime(string rootFolder, string fileName = "")
         {
-            DateTime dateTime = DateTime.Now;
-            string fileName = $"{code}{dateTime:yyyyMMHHmmssffff}{Path.GetExtension(formFile.FileName)}";            
+            DateTime dateTime = DateTime.Now;            
             string dateFolder = Path.Combine
                                 (
                                     dateTime.Year.ToString(),
                                     dateTime.Month.ToString(),
                                     dateTime.Day.ToString()
-                                );
-            string savePath = Path.Combine(rootFolder, dateFolder, fileName);
-            CheckDirectory(Path.Combine(rootFolder, dateFolder));            
-            await SaveUpdata(formFile, savePath);
+                                );            
+            fileName = $"{Path.GetFileNameWithoutExtension(fileName)}{dateTime:yyyyMMHHmmssffff}{Path.GetExtension(fileName)}";
+            CheckDirectory(Path.Combine(rootFolder, dateFolder));
 
-            return savePath;
+            return Path.Combine(rootFolder, dateFolder, fileName); ;
         }
 
         /// <summary>
@@ -43,22 +44,11 @@ namespace SealTypographicWebAPI.Utils
         }
 
         /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="formFile"></param>
-        /// <param name="savePath"></param>
-        public static async Task SaveUpdata(IFormFile formFile, string savePath)
-        {
-            using Stream stream = new FileStream(savePath, FileMode.Create);
-            await formFile.CopyToAsync(stream);
-        }
-
-        /// <summary>
         /// 確認是否有圖檔，如有就刪除
         /// </summary>
         /// <param name="savePath"></param>
         /// <returns></returns>
-        public static void DeleteImage(string savePath)
+        public static void DeleteFile(string savePath)
         {
             if(File.Exists(savePath))
             {
