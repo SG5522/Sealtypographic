@@ -6,9 +6,6 @@ using SealTypographicWebAPI.Utils;
 using DBEntities;
 using DBEntities.Consts;
 using AutoMapper.QueryableExtensions;
-using Keycloak.AuthServices.Sdk.Admin.Models;
-using SealTypographicWebAPI.Models.Accountant;
-using Microsoft.Extensions.Logging;
 
 namespace SealTypographicWebAPI.Services.Implements
 {

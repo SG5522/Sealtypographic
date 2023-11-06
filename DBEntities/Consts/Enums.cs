@@ -157,9 +157,10 @@ namespace DBEntities.Consts
     /// 1.客戶印鑑授權書 
     /// 2.會計印鑑簽名授權書 
     /// 3.信頭 
-    /// 4.PDF 
-    /// 5.會計師證明書 
-    /// 6.臨時檔
+    /// 4.財務報表
+    /// 5.稅務報表 
+    /// 6.會計師證明書 
+    /// 7.臨時檔
     /// </summary>
     public enum UploadType : byte
     {

@@ -1,5 +1,4 @@
-﻿using DBEntities.Consts;
-using SealTypographicWebAPI.Models.BaseModels;
+﻿using SealTypographicWebAPI.Models.BaseModels;
 
 namespace SealTypographicWebAPI.Models.Upload
 {

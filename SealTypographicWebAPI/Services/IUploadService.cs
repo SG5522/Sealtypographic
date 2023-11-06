@@ -22,6 +22,14 @@ namespace SealTypographicWebAPI.Services
         DuplicateFileProcessModeResponse GetDuplicateFileProcessMode();
 
         /// <summary>
+        /// 依關鑑字與搜尋條件取得上傳檔案列表
+        /// </summary>
+        /// <param name="uploadSearch">搜尋條件</param>
+        /// <param name="companyId">公司Id</param>
+        /// <returns></returns>
+        UploadPaginateViewModel GetUploadPaginate(UploadSearch uploadSearch, int companyId = 1);
+
+        /// <summary>
         /// 取得檔案名稱
         /// </summary>
         /// <param name="uploadType"></param>

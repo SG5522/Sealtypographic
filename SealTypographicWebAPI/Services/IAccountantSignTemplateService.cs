@@ -31,13 +31,6 @@ namespace SealTypographicWebAPI.Services
         AccountantSignTemplatePaginate GetPaginate(AccountantSignTemplateSearch accountantSignTemplateSearch);
 
         /// <summary>
-        /// 取得樣板分頁(排板使用)
-        /// </summary>
-        /// <param name="paginateSearch"></param>
-        /// <returns></returns>
-        AccountantSignTemplatePaginate GetPaginateWithTypographic(PaginateSearch paginateSearch);
-
-        /// <summary>
         /// 新增會計師簽印樣板
         /// </summary>
         /// <param name="accountantSignTemplateForm">會計師簽印樣板</param>

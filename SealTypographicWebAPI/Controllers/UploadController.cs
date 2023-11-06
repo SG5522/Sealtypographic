@@ -40,6 +40,13 @@ namespace SealTypographicWebAPI.Controllers
         public DuplicateFileProcessModeResponse DuplicateFileProcessMode() => uploadService.GetDuplicateFileProcessMode();
 
         /// <summary>
+        /// 依搜尋條件取得檔案列表
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("[Action]")]
+        public UploadPaginateViewModel UploadPaginate([FromQuery] UploadSearch uploadSearch) => uploadService.GetUploadPaginate(uploadSearch);
+
+        /// <summary>
         /// 取得檔案列表
         /// </summary>
         /// <returns></returns>

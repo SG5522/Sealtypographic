@@ -1,9 +1,10 @@
 ﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using DBEntities;
 using DBEntities.Consts;
+using DBEntities.Utils;
 using Microsoft.EntityFrameworkCore;
 using SealTypographicWebAPI.Models;
-using SealTypographicWebAPI.Models.AccountantSignTemplate;
 using SealTypographicWebAPI.Models.CustomerSealTemplate;
 using SealTypographicWebAPI.Utils;
 using Serilog;
@@ -18,6 +19,7 @@ namespace SealTypographicWebAPI.Services.Implements
         private readonly SealTypographicDbContext dbContext;
         private readonly ImageService imageService;       
         private readonly IMapper mapper;
+        private readonly AutoMapper.IConfigurationProvider configurationProvider;
 
         /// <summary>
         /// 建構
@@ -29,7 +31,8 @@ namespace SealTypographicWebAPI.Services.Implements
         {
             this.dbContext = dbContext;
             this.mapper = mapper;
-            this.imageService = imageService;            
+            this.imageService = imageService;
+            configurationProvider = mapper.ConfigurationProvider;
         }
 
         /// <summary>
@@ -38,12 +41,11 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <returns></returns>
         public CustomerSealTemplateDetailViewModel GetDetail(int Id)
         {
-            CustomerSealTemplateDetailViewModel customerSealTemplateDetailViewModel = mapper.Map<CustomerSealTemplateDetailViewModel>
-                                                                                        (
-                                                                                            dbContext.Templates
-                                                                                            .Include(x => x.TemplateLocations)
-                                                                                            .FirstOrDefault(x => x.Id == Id)
-                                                                                        );
+            CustomerSealTemplateDetailViewModel? customerSealTemplateDetailViewModel = dbContext.Templates
+                                                                                        .Include(x => x.TemplateLocations)
+                                                                                        .Where(x => x.Id == Id)
+                                                                                        .ProjectTo<CustomerSealTemplateDetailViewModel>(configurationProvider)
+                                                                                        .FirstOrDefault();
             
             if(customerSealTemplateDetailViewModel != null)
             {
@@ -106,10 +108,14 @@ namespace SealTypographicWebAPI.Services.Implements
             templateQuery = templateQuery.OrderBy(temporarySealGroup => temporarySealGroup.Id);
 
             if (templateQuery.Any())
-            {                
-                customerSealTemplatePaginate.ViewModels = LoadPaginatedData(templateQuery, customerSealTemplateSearch.PageNumber, customerSealTemplateSearch.PageSize);
+            {
+                customerSealTemplatePaginate.ViewModels = templateQuery
+                                                        .Skip((customerSealTemplateSearch.PageNumber - 1) * customerSealTemplateSearch.PageSize)
+                                                        .Take(customerSealTemplateSearch.PageSize)
+                                                        .ProjectTo<CustomerSealTemplateViewModel>(configurationProvider)
+                                                        .ToList();
 
-                PageUtil.SetPaginate(customerSealTemplatePaginate, customerSealTemplatePaginate.PageNumber, customerSealTemplatePaginate.PageSize, templateQuery.Count());
+                PageUtil.SetPaginate(customerSealTemplatePaginate, customerSealTemplateSearch.PageNumber, customerSealTemplateSearch.PageSize, templateQuery.Count());
                 customerSealTemplatePaginate.Success();
             }
             SavePaginateLog(customerSealTemplatePaginate);
@@ -144,8 +150,8 @@ namespace SealTypographicWebAPI.Services.Implements
                 imageBase64Info.ImageBase64 = customerSealTemplateForm.ImageBase64Thumbnail;
                 template.ThumbnailFullPath = await imageService.GetSavedImageThumbnailFilePath(imageBase64Info, false);
                 
-                NewTemplateLoction(customerSealTemplateForm.CustomerSealTemplateLocationForms, templateLocations);
-                BaseInputCustomerSealTemplate(template, true, userid);
+                NewTemplateLoction(customerSealTemplateForm.CustomerSealTemplateLocationForms, templateLocations);                
+                InputUtil.Base(template, true, userid);
                 template.TemplateLocations = templateLocations;                                
                 template.Company = companyQuery;
                 dbContext.Templates.Add(template);
@@ -181,8 +187,8 @@ namespace SealTypographicWebAPI.Services.Implements
                 imageBase64Info.ImageBase64 = customerSealTemplateUpdateForm.ImageBase64Thumbnail;
                 template.ThumbnailFullPath = await imageService.GetSavedImageThumbnailFilePath(imageBase64Info, false);
                 
-                mapper.Map(customerSealTemplateUpdateForm, template);
-                BaseInputCustomerSealTemplate(template, false, userid);
+                mapper.Map(customerSealTemplateUpdateForm, template);                
+                InputUtil.Base(template, false, userid);
                 
                 //刪除樣本座標
                 foreach(int deleteLocationId in customerSealTemplateUpdateForm.DeleteLocationIds)
@@ -229,8 +235,8 @@ namespace SealTypographicWebAPI.Services.Implements
 
             if(templateQuery != null) 
             {
-                templateQuery.DeleteStatus = DeleteStatus.Yes;
-                BaseInputCustomerSealTemplate(templateQuery, false, userId);
+                templateQuery.DeleteStatus = DeleteStatus.Yes;                
+                InputUtil.Base(templateQuery, false, userId);
                 dbContext.SaveChanges();
                 response.Success();
             }
@@ -240,27 +246,6 @@ namespace SealTypographicWebAPI.Services.Implements
             }
 
             return response;
-        }
-
-        /// <summary>
-        /// 讀取分頁資料
-        /// </summary>        
-        /// <param name="templateQuery">樣板</param>
-        /// <param name="pageNumber">頁次</param>
-        /// <param name="pageSize">頁面大小</param>        
-        private List<CustomerSealTemplateViewModel> LoadPaginatedData(IQueryable<Template> templateQuery,int pageNumber, int pageSize)
-        {
-            return 
-                templateQuery
-                .Skip((pageNumber - 1) * pageSize)
-                .Take(pageSize)
-                .Select(customerSealTemplate => new CustomerSealTemplateViewModel()
-                {
-                    Id = customerSealTemplate.Id,
-                    Name = customerSealTemplate.Name,
-                    ImageFullPath = customerSealTemplate.ThumbnailFullPath,
-                    ThumbnailBase64 = imageService.GetPathToBase64(customerSealTemplate.ThumbnailFullPath)
-                }).ToList();
         }
 
         /// <summary>
@@ -274,26 +259,6 @@ namespace SealTypographicWebAPI.Services.Implements
             Log.Information("CustomerSealTemplate paginate output {@Output}", customerSealTemplatePaginateLog);
         }
 
-        /// <summary>
-        /// 資料新增修改時基本資料輸入
-        /// </summary>
-        /// <param name="template">DB上的樣板資料</param>
-        /// <param name="isCreate">確認是否新增還是更新的動作</param>
-        /// <param name="userid">使用者ID</param>
-        private static void BaseInputCustomerSealTemplate(Template template, bool isCreate, int userid)
-        {
-            if (isCreate)
-            {
-                template.CreateUserId = userid;
-                template.CreateDate = DateTime.Now;
-                template.DeleteStatus = DeleteStatus.No;
-            }
-            else
-            {
-                template.UpdateUserId = userid;
-                template.UpdateDate = DateTime.Now;
-            }
-        }      
         
         /// <summary>
         /// 新增樣版位置

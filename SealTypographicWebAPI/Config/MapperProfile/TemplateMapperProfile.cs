@@ -33,6 +33,10 @@ namespace SealTypographicWebAPI.Config.MapperProfile
             CreateMap<TemplateLocation, CustomerSealTemplateLocationViewModel>()
                     .ForMember(dst => dst.CustomerSealType, opt => opt.MapFrom(src => SealMappingConfigUtil.GetCustomerSealType(src.SubSealType)));
 
+            //客戶印鑑樣版分頁查詢使用
+            CreateMap<Template, CustomerSealTemplateViewModel>()
+                    .ForMember(dst => dst.ThumbnailBase64, opt => opt.MapFrom(src => ImageSharpUtil.PathImageFileToBase64(src.ThumbnailFullPath)));
+
             //Log使用
             CreateMap<CustomerSealTemplateViewModel, CustomerSealTemplateLogModel>();
             CreateMap<CustomerSealTemplatePaginate, CustomerSealTemplatePaginateLog>();
@@ -51,6 +55,10 @@ namespace SealTypographicWebAPI.Config.MapperProfile
                     .ForMember(dst => dst.LocaltionViewModels, opt => opt.MapFrom(src => src.TemplateLocations));
             CreateMap<TemplateLocation, AccountantSignTemplateLocationViewModel>()
                     .ForMember(dst => dst.AccountantSignType, opt => opt.MapFrom(src => SealMappingConfigUtil.GetAccountantSignType(src.SubSealType)));
+
+            //會計師簽印樣版分頁查詢使用
+            CreateMap<Template, AccountantSignTemplateViewModel>()
+                    .ForMember(dst => dst.ThumbnailBase64, opt => opt.MapFrom(src => ImageSharpUtil.PathImageFileToBase64(src.ThumbnailFullPath)));
 
             CreateMap<TemplateLocation, TemplateLocation>();
             //Log使用

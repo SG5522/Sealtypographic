@@ -8,6 +8,9 @@ using Microsoft.EntityFrameworkCore;
 using DBEntities.Consts;
 using DJLib;
 using DJLib.Models;
+using AutoMapper;
+using AutoMapper.QueryableExtensions;
+using SealTypographicWebAPI.Utils;
 
 namespace SealTypographicWebAPI.Services.Implements
 {
@@ -20,6 +23,8 @@ namespace SealTypographicWebAPI.Services.Implements
         private readonly UploadPathOption uploadConfigPath;
         private readonly SealTypographicDbContext dbContext;
         private readonly ILogger<UploadData> logger;
+        private readonly IMapper mapper;
+        private readonly AutoMapper.IConfigurationProvider configurationProvider;
 
         /// <summary>
         /// 建構
@@ -27,13 +32,20 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <param name="dbContext">注入資料庫</param>
         /// <param name="localizer">注入多國語系處理</param>
         /// <param name="options">注入uploadConfigPath</param>
-        /// <param name="logger">注入logger</param>       
-        public UploadService(SealTypographicDbContext dbContext,IStringLocalizer<UploadService> localizer, IOptionsSnapshot<UploadPathOption> options, ILogger<UploadData> logger)
+        /// <param name="logger">注入logger</param>
+        /// <param name="mapper"></param>       
+        public UploadService(SealTypographicDbContext dbContext
+            ,IStringLocalizer<UploadService> localizer
+            , IOptionsSnapshot<UploadPathOption> options
+            , ILogger<UploadData> logger
+            , IMapper mapper)
         {
             this.dbContext = dbContext;
             this.localizer = localizer;
             uploadConfigPath = options.Value;
             this.logger = logger;
+            this.mapper = mapper;
+            configurationProvider = mapper.ConfigurationProvider;
         }
 
         /// <summary>
@@ -95,24 +107,70 @@ namespace SealTypographicWebAPI.Services.Implements
             
             return duplicateFileProcessModeResponse;
         }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
-
-        public UploadPaginateViewModel GetUploadPaginate()
+        
+        /// <inheritdoc/>     
+        public UploadPaginateViewModel GetUploadPaginate(UploadSearch uploadSearch, int companyId = 1)
         {
-            UploadPaginateViewModel uploadPaginateViewModel = new();
+            logger.LogInformation("GetUploadPaginate input uploadSearch: {@uploadSearch} companyId: {@companyId}", uploadSearch, companyId);
+
+            UploadPaginateViewModel uploadPaginateViewModel = new();            
+
             try
             {
+                IQueryable<UploadFile> uploadFilesQuery = dbContext.UploadFiles.Where
+                                                        (
+                                                            x => x.Company.Id == companyId                                                            
+                                                            && x.DeleteStatus == DeleteStatus.No
+                                                        );
 
+                if(!string.IsNullOrEmpty(uploadSearch.KeyWord))
+                {
+                    uploadFilesQuery = uploadFilesQuery.Where
+                                        (
+                                            x => x.OriginalFileName.Contains(uploadSearch.KeyWord)
+                                        );
+                }
+
+                if(uploadSearch.UploadType != null)
+                {
+                    uploadFilesQuery = uploadFilesQuery.Where
+                                       (
+                                           x => x.UploadType == uploadSearch.UploadType
+                                       );
+                }
+
+                if(uploadSearch.FileWorkStatus != null)
+                {
+                    uploadFilesQuery = uploadFilesQuery.Where
+                                       (
+                                           x => x.FileWorkStatus == uploadSearch.FileWorkStatus
+                                       );
+                }
+
+                uploadFilesQuery = uploadFilesQuery.OrderBy(uploadFile => uploadFile.Id);
+
+                if(uploadFilesQuery.Any())
+                {
+                    uploadPaginateViewModel.ViewModels = uploadFilesQuery
+                                                        .Skip((uploadSearch.PageNumber - 1) * uploadSearch.PageSize)
+                                                        .Take(uploadSearch.PageSize)
+                                                        .ProjectTo<UploadViewModel>(configurationProvider)
+                                                        .ToList();
+
+                    PageUtil.SetPaginate(uploadPaginateViewModel, uploadSearch.PageNumber, uploadSearch.PageSize, uploadFilesQuery.Count());
+                    uploadPaginateViewModel.Success();
+                }
+                else
+                {
+                    uploadPaginateViewModel.DbNoData();
+                }    
+                logger.LogInformation("GetUploadPaginate output {@Output}", uploadPaginateViewModel);
             }
             catch (Exception  ex)
             {
-
+                uploadPaginateViewModel.Error();
+                logger.LogError("GetUploadPaginate error {@Error}", ex.Message);
             }
-
             return uploadPaginateViewModel;
         }
 
@@ -131,27 +189,22 @@ namespace SealTypographicWebAPI.Services.Implements
 
             try
             {
-                List<UploadFile> uploadFiles = dbContext.UploadFiles
-                                            .Where
-                                            (
-                                                uploadFile => uploadFile.UploadType == uploadType
-                                                && uploadFile.Company.Id == companyId
-                                                && uploadFile.FileWorkStatus == FileWorkStatus.Unprocessed
-                                                && uploadFile.DeleteStatus == DeleteStatus.No
-                                            ).ToList();
-                if (uploadFiles.Any())
+                IQueryable<UploadFileViewModel> uploadFileQuery = dbContext.UploadFiles.Where
+                                                                (
+                                                                    uploadFile => uploadFile.UploadType == uploadType
+                                                                    && uploadFile.Company.Id == companyId
+                                                                    && uploadFile.FileWorkStatus == FileWorkStatus.Unprocessed
+                                                                    && uploadFile.DeleteStatus == DeleteStatus.No
+                                                                ).ProjectTo<UploadFileViewModel>(configurationProvider);
+                if (uploadFileQuery.Any())
                 {
-                    foreach (UploadFile uploadFile in uploadFiles)
-                    {
-                        uploadFileResponse.ViewModel.Add(new UploadFileViewModel
-                        {
-                            Id = uploadFile.Id,
-                            UploadDate = uploadFile.UpdateDate,
-                            FileName = uploadFile.OriginalFileName
-                        });
-                    }
+                    uploadFileResponse.ViewModel = uploadFileQuery.ToList();
+                    uploadFileResponse.Success();
                 }
-                uploadFileResponse.Success();
+                else 
+                {
+                    uploadFileResponse.DbNoData();
+                }                
                 logger.LogInformation("GetFile output {@output}", uploadFileResponse);
             }
             catch (Exception ex)

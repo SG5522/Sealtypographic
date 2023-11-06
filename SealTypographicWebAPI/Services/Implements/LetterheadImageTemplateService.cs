@@ -2,6 +2,8 @@
 using AutoMapper.QueryableExtensions;
 using DBEntities;
 using DBEntities.Consts;
+using DBEntities.Utils;
+using Keycloak.AuthServices.Sdk.Admin.Models;
 using Microsoft.EntityFrameworkCore;
 using SealTypographicWebAPI.Models;
 using SealTypographicWebAPI.Models.BaseModels;
@@ -120,11 +122,7 @@ namespace SealTypographicWebAPI.Services.Implements
                                                             .ProjectTo<LetterheadImageTemplateViewModel>(configurationProvider)
                                                             .ToList();
 
-                letterheadImageTemplatePaginate.PageNumber = letterheadImageTemplateSearch.PageNumber;
-                letterheadImageTemplatePaginate.PageSize = letterheadImageTemplateSearch.PageSize;
-                //計算總頁數
-                //letterheadImageTemplatePaginate.TotalPage = PageUtil.GetTotalPage(templateQuery.Count(), letterheadImageTemplateSearch.PageSize);
-                letterheadImageTemplatePaginate.TotalCount = templateQuery.Count();
+                PageUtil.SetPaginate(letterheadImageTemplatePaginate, letterheadImageTemplateSearch.PageNumber, letterheadImageTemplateSearch.PageSize, templateQuery.Count());
                 letterheadImageTemplatePaginate.Success();
             }
             SavePaginateLog(letterheadImageTemplatePaginate);
@@ -160,8 +158,8 @@ namespace SealTypographicWebAPI.Services.Implements
                 imageBase64Info.ImageBase64 = letterheadImageTemplateForm.ImageBase64Thumbnail;
                 template.ThumbnailFullPath = await imageService.GetSavedImageThumbnailFilePath(imageBase64Info, false);
 
-                NewTemplateLoction(letterheadImageTemplateForm.LetterheadTemplateLocationForm, templateLocations);                                     
-                BaseInputLetterheadImageTemplate(template, true, userid);
+                NewTemplateLoction(letterheadImageTemplateForm.LetterheadTemplateLocationForm, templateLocations);                                                     
+                InputUtil.Base(template, true, userid);
                 template.TemplateLocations = templateLocations;
                 template.Company = companyQuery;
                 dbContext.Templates.Add(template);                      
@@ -197,8 +195,8 @@ namespace SealTypographicWebAPI.Services.Implements
                 imageBase64Info.ImageBase64 = letterheadImageTemplateUpdateForm.ImageBase64Thumbnail;
                 template.ThumbnailFullPath = await imageService.GetSavedImageThumbnailFilePath(imageBase64Info, false);
 
-                mapper.Map(letterheadImageTemplateUpdateForm, template);
-                BaseInputLetterheadImageTemplate(template, false, userid);
+                mapper.Map(letterheadImageTemplateUpdateForm, template);                
+                InputUtil.Base(template, false, userid);
 
                 TemplateLocation? templateLocation = template.TemplateLocations.FirstOrDefault(x => x.Id == letterheadImageTemplateUpdateForm.LocationUpdateForm.Id);
                 if (templateLocation != null)
@@ -226,8 +224,8 @@ namespace SealTypographicWebAPI.Services.Implements
 
             if(templateQuery != null) 
             {
-                templateQuery.DeleteStatus = DeleteStatus.Yes;
-                BaseInputLetterheadImageTemplate(templateQuery, false, userId);
+                templateQuery.DeleteStatus = DeleteStatus.Yes;                
+                InputUtil.Base(templateQuery, false, userId);
                 dbContext.SaveChanges();
                 response.Success();
             }
@@ -248,27 +246,6 @@ namespace SealTypographicWebAPI.Services.Implements
             LetterheadImageTemplatePaginateLog letterheadImageTemplatePaginateLog = mapper.Map<LetterheadImageTemplatePaginateLog>(letterheadImageTemplatePaginate);
             letterheadImageTemplatePaginateLog.LogModels = mapper.Map<List<LetterheadImageTemplateLogModel>>(letterheadImageTemplatePaginate.ViewModels);
             Log.Information("LetterheadImageTemplate paginate output {@Output}", letterheadImageTemplatePaginateLog);            
-        }
-
-        /// <summary>
-        /// 資料新增修改時基本資料輸入
-        /// </summary>
-        /// <param name="template">DB上的樣板資料</param>
-        /// <param name="isCreate">確認是否新增還是更新的動作</param>
-        /// <param name="userid">使用者ID</param>
-        private static void BaseInputLetterheadImageTemplate(Template template, bool isCreate, int userid)
-        {
-            if (isCreate)
-            {
-                template.CreateUserId = userid;
-                template.CreateDate = DateTime.Now;
-                template.DeleteStatus = DeleteStatus.No;
-            }
-            else
-            {
-                template.UpdateUserId = userid;
-                template.UpdateDate = DateTime.Now;
-            }
         }
 
         /// <summary>
