@@ -11,6 +11,11 @@ using DJLib.Models;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using SealTypographicWebAPI.Utils;
+using Keycloak.AuthServices.Sdk.Admin.Models;
+using DBEntities.Utils;
+using DJSpire.Services;
+using SealTypographicWebAPI.Consts;
+using DJSpire.Models;
 
 namespace SealTypographicWebAPI.Services.Implements
 {
@@ -113,7 +118,7 @@ namespace SealTypographicWebAPI.Services.Implements
         {
             logger.LogInformation("GetUploadPaginate input uploadSearch: {@uploadSearch} companyId: {@companyId}", uploadSearch, companyId);
 
-            UploadPaginateViewModel uploadPaginateViewModel = new();            
+            UploadPaginateViewModel uploadPaginateViewModel = new();
 
             try
             {
@@ -234,9 +239,24 @@ namespace SealTypographicWebAPI.Services.Implements
                 UploadFile? uploadFile = dbContext.UploadFiles.Find(uploadFileId);
                 if (uploadFile != null)
                 {
-                    uploadFileImageView.ImageBase64 = ImageSharpUtil.PathImageFileToBase64(uploadFile.FullPath);
+                    if(uploadFile.UploadType == UploadType.FinancialReport || uploadFile.UploadType == UploadType.TaxReport)
+                    {
+                        //取得單頁PDF圖檔
+                        PDFService pDFService = new() { PDFPath = uploadFile.FullPath, PageIndex = 1 };
+                        PDFImageInfo pDFImageInfo = pDFService.GetPageImageInfo();
+                        uploadFileImageView.ImageBase64 = pDFImageInfo.ImageBase64;                        
+                    }
+                    else
+                    {
+                        uploadFileImageView.ImageBase64 = ImageSharpUtil.PathImageFileToBase64(uploadFile.FullPath);
+                    }
+                    uploadFileImageView.Success();
                 }
-                uploadFileImageView.Success();
+                else
+                {
+                    uploadFileImageView.DbNoData();
+                }
+                
                 logger.LogInformation("GetFileImage output {@output}", uploadFileImageView);
             }
             catch(Exception ex)
@@ -308,7 +328,11 @@ namespace SealTypographicWebAPI.Services.Implements
                 {
                     foreach (string imagebase64 in uploadBase64Data.ImageBase64Strings)
                     {
-                        companyQuery.UploadFiles.Add(await SaveScanFile(imagebase64, uploadBase64Data.UploadType, userId));
+                        ImageInfo imageInfo = ImageInfo.FromImageBase64(imagebase64);
+                        string originalFileName = $"{userId}{DateTime.Now:yyyyMMddHHmmssffff}scanFile.{imageInfo.ImageFormat.FileExtensions.First()}";
+                        string savePath = GetSavePath(uploadBase64Data.UploadType, userId, originalFileName);
+                        await ImageSharpUtil.SaveFileAsync(imageInfo, savePath);
+                        companyQuery.UploadFiles.Add(NewUploadFile(savePath, uploadBase64Data.UploadType, userId, originalFileName));
                     }
                     dbContext.SaveChanges();
                     response.Success();
@@ -492,22 +516,6 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <summary>
         /// 存檔處理       
         /// </summary>
-        /// <param name="imageBase64"></param>        
-        /// <param name="uploadType">檔案類型</param>   
-        /// <param name="userid">使用者ID</param>
-        /// <returns></returns>
-        private async Task<UploadFile> SaveScanFile(string imageBase64, UploadType uploadType, int userid)
-        {
-            ImageInfo imageInfo = ImageInfo.FromImageBase64(imageBase64);
-            string originalFileName = $"{userid}{DateTime.Now:yyyyMMddHHmmssffff}scanFile.{imageInfo.ImageFormat.FileExtensions.First()}";
-            string savePath = GetSavePath(uploadType, userid, originalFileName);
-            await ImageSharpUtil.SaveFileAsync(imageInfo, savePath);
-            return NewUploadFile(savePath, uploadType, userid, originalFileName);
-        }
-
-        /// <summary>
-        /// 存檔處理       
-        /// </summary>
         /// <param name="formFile"></param>
         /// <param name="uploadType">檔案類型</param>   
         /// <param name="userid">使用者ID</param>
@@ -536,7 +544,7 @@ namespace SealTypographicWebAPI.Services.Implements
                 OriginalFileName = originalFileName,
                 UploadType = uploadType,
                 FullPath = savePath,                
-            };
+            };            
             BaseInput(uploadFile, true, userid);
             return uploadFile;
         }

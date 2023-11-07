@@ -89,7 +89,7 @@ namespace DJSpire.Services
             return stream;
         }
 
-        public PDFImageInfo GetPageImageInfo(double scale, ImageType imageType = ImageType.Png)
+        public PDFImageInfo GetPageImageInfo(double scale = 1, ImageType imageType = ImageType.Png)
         {            
             Image image = Image.Load(GetPageImageStream(imageType), out IImageFormat format);            
             if (scale != 1.0)
