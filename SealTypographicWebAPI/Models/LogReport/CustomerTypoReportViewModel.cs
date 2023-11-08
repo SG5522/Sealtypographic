@@ -1,0 +1,50 @@
+﻿namespace SealTypographicWebAPI.Models.LogReport
+{
+    /// <summary>
+    /// 客戶財稅報排版紀錄
+    /// </summary>
+    public class CustomerTypoReportViewModel
+    {
+        /// <summary>
+        /// 建立排版的使用者Id
+        /// </summary>
+        /// <example>admin</example>
+        public string CreateUserId { get; set; }
+
+        /// <summary>
+        /// 建立排版的使用者名稱
+        /// </summary>
+        /// <example>管理者</example>
+        public string CreateUserName { get; set; }
+
+        /// <summary>
+        /// 客戶編碼
+        /// </summary>
+        public string CustomerCode { get; set; }
+
+        /// <summary>
+        /// 客戶名稱
+        /// </summary>
+        public string CustomerName { get; set; }
+
+        /// <summary>
+        /// 紀錄日期
+        /// </summary>
+        public DateTime RecordDate { get; set; }
+
+        /// <summary>
+        /// 檔案名稱
+        /// </summary>
+        public string FileName { get; set; }
+
+        /// <summary>
+        /// 排版頁數
+        /// </summary>
+        public int TypoPageCount { get; set; }
+
+        /// <summary>
+        /// 空白頁數
+        /// </summary>
+        public int? BlankPageCount { get; set; }
+    }
+}

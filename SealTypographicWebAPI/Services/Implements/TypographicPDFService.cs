@@ -7,11 +7,9 @@ using DBEntities.Consts;
 using SealTypographicWebAPI.Utils;
 using DJSpire.Services;
 using DJSpire.Models;
-using Serilog;
 using AutoMapper.QueryableExtensions;
 using DJSpire.Consts;
 using SealTypographicWebAPI.Consts;
-using SealTypographicWebAPI.Models.Accountant;
 
 namespace SealTypographicWebAPI.Services.Implements
 {
@@ -29,14 +27,14 @@ namespace SealTypographicWebAPI.Services.Implements
         /// 取得DB與Automapper
         /// </summary>
         /// <param name="dbContext"></param>
+        /// <param name="logger"></param>
         /// <param name="mapper"></param>
-        /// <param name="logger"></param>        
-        public TypographicPDFService(SealTypographicDbContext dbContext, IMapper mapper, ILogger<TypographicPDFService> logger)
+        public TypographicPDFService(SealTypographicDbContext dbContext, ILogger<TypographicPDFService> logger, IMapper mapper)
         {
             this.dbContext = dbContext;
-            this.mapper = mapper;            
-            configurationProvider = mapper.ConfigurationProvider;
             this.logger = logger;
+            this.mapper = mapper;            
+            configurationProvider = mapper.ConfigurationProvider;            
         }
 
         ///<inheritdoc />
@@ -541,7 +539,7 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <param name="typographicPDF">DB上的排板PDF資料</param>        
         /// <param name="isCreate">確認是否新增還是更新的動作</param>
         /// <param name="userid">使用者ID</param>
-        private void BaseInputTypographicPDF(TypographicPDF typographicPDF, bool isCreate, int userid)
+        private static void BaseInputTypographicPDF(TypographicPDF typographicPDF, bool isCreate, int userid)
         {
             if (isCreate)
             {                

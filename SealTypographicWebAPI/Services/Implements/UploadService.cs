@@ -11,10 +11,7 @@ using DJLib.Models;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using SealTypographicWebAPI.Utils;
-using Keycloak.AuthServices.Sdk.Admin.Models;
-using DBEntities.Utils;
 using DJSpire.Services;
-using SealTypographicWebAPI.Consts;
 using DJSpire.Models;
 
 namespace SealTypographicWebAPI.Services.Implements
@@ -533,10 +530,10 @@ namespace SealTypographicWebAPI.Services.Implements
         /// </summary>
         /// <param name="savePath">存檔路徑</param>
         /// <param name="uploadType">上傳檔案類別</param>
-        /// <param name="userid">userId</param>
+        /// <param name="userId">userId</param>
         /// <param name="originalFileName">原檔名稱</param>
         /// <returns></returns>
-        private UploadFile NewUploadFile(string savePath, UploadType uploadType, int userid, string originalFileName)
+        private static UploadFile NewUploadFile(string savePath, UploadType uploadType, int userId, string originalFileName)
         {
             // TODO: 後續在DuplicateFileProcessMode.Reserve(保留原檔名)模式時客戶要求檔名要區分時在另做調整。
             UploadFile uploadFile = new()
@@ -545,7 +542,7 @@ namespace SealTypographicWebAPI.Services.Implements
                 UploadType = uploadType,
                 FullPath = savePath,                
             };            
-            BaseInput(uploadFile, true, userid);
+            BaseInput(uploadFile, true, userId);
             return uploadFile;
         }
 
