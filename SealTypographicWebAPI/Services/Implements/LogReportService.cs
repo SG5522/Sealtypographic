@@ -32,7 +32,7 @@ namespace SealTypographicWebAPI.Services.Implements
         /// 
         /// </summary>
         /// <returns></returns>
-        public CustomerTypoReportPaginate GetCustomerTypoReport ()
+        public CustomerTypoReportPaginate GetCustomerTypoReport (CustomerTypoReportSearch customerTypoReportSearch)
         {
             CustomerTypoReportPaginate customerTypoReportPaginate = new ();
             try
