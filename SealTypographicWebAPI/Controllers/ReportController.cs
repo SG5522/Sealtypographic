@@ -6,7 +6,7 @@ using SealTypographicWebAPI.Models.LogReport;
 namespace SealTypographicWebAPI.Controllers
 {
     /// <summary>
-    /// 
+    ///  
     /// </summary>
     [Route("api/[controller]")]
     [ApiController]
