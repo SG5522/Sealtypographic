@@ -1,6 +1,6 @@
 using DBEntities;
-using DJKeycloakLib.Config;
-using DJKeycloakLib.Service;
+using DJKeycloakLib.Configs;
+using DJKeycloakLib.Services;
 using Keycloak.AuthServices.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc.Razor;
@@ -32,7 +32,7 @@ builder.Services.Configure<SealPathOption>(
 builder.Services.Configure<TemplateImagePathOption>(
     builder.Configuration.GetSection("TemplateImagePath"));
 
-builder.Services.Configure<KeycloakAdminOption>(
+builder.Services.Configure<KeycloakOptions>(
     builder.Configuration.GetSection("KeycloakAdmin"));
 
 //addCors
@@ -98,7 +98,7 @@ builder.Services.AddScoped<SealMappingConfigService>();
 builder.Services.AddSingleton<TemplateConfigService>();
 builder.Services.AddScoped<ResponseCodeService>();
 builder.Services.AddScoped<ReviewStatusService>();
-builder.Services.AddScoped<IKeycloakAdminService, KeycloakAdminService>();
+builder.Services.AddScoped<IAdminService, KeycloakAdminService>();
 builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
 
 //DB Process
@@ -120,6 +120,7 @@ builder.Services.AddScoped<IUploadService, UploadService>();
 builder.Services.AddScoped<ITypographicPDFService, TypographicPDFService>();
 builder.Services.AddScoped<IQuarterYearService, QuarterYearService>();
 builder.Services.AddScoped<IImageRangeSettingService, ImageRangeSettingService>();
+builder.Services.AddScoped<ILogReportService, LogReportService>();
 
 builder.Services.AddHealthChecks();
 #endregion

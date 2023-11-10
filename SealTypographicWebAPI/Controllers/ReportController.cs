@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using DBEntities.Consts;
+using Microsoft.AspNetCore.Mvc;
 using SealTypographicWebAPI.Models.LogReport;
+using SealTypographicWebAPI.Services;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -12,6 +14,17 @@ namespace SealTypographicWebAPI.Controllers
     [ApiController]
     public class ReportController : ControllerBase
     {
+        private readonly ILogReportService logReportService;
+
+        /// <summary>
+        /// 建置
+        /// </summary>
+        public ReportController(ILogReportService logReportService) 
+        {
+            this.logReportService = logReportService;
+        }
+
+
         /// <summary>
         /// 
         /// </summary>
@@ -19,10 +32,7 @@ namespace SealTypographicWebAPI.Controllers
         /// <returns></returns>
         [HttpGet]
         public CustomerTypoReportPaginate Get([FromQuery] CustomerTypoReportSearch customerTypoReportSearch)
-        {
-            CustomerTypoReportPaginate customerTypoReportPaginate = new ();
-            return customerTypoReportPaginate;
-        }
+            => logReportService.GetCustomerTypoReport(customerTypoReportSearch, TypographyType.FinancialReport);
 
         // GET api/<ReportController>/5
         [HttpGet("{id}")]

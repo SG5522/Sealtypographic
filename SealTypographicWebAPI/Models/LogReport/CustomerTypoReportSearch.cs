@@ -8,8 +8,15 @@ namespace SealTypographicWebAPI.Models.LogReport
     public class CustomerTypoReportSearch : PaginateWithDateSearch
     {
         /// <summary>
-        /// 關鍵字
+        /// 使用者名稱
+        /// (排版此檔的使用者)
         /// </summary>
-        public string? Key { get; set; }
+        public string? UserKeyWord { get; set; }
+
+        /// <summary>
+        /// 使用者名稱
+        /// (排版此檔的使用者)
+        /// </summary>
+        public string? CustomerKeyWord { get; set; }
     }
 }

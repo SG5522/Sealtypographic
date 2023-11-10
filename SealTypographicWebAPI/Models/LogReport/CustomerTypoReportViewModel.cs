@@ -40,7 +40,7 @@
         /// <summary>
         /// 排版頁數
         /// </summary>
-        public int TypoPageCount { get; set; }
+        public int EditPageCount { get; set; }
 
         /// <summary>
         /// 空白頁數

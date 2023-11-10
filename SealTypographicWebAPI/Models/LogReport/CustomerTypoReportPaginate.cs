@@ -8,7 +8,7 @@ namespace SealTypographicWebAPI.Models.LogReport
     public class CustomerTypoReportPaginate : PaginateViewModel
     {
         /// <summary>
-        /// 
+        /// 客戶財稅報排版紀錄
         /// </summary>
         public List<CustomerTypoReportViewModel> ViewModels { get; set; }
     }

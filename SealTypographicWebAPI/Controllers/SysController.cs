@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Keycloak.AuthServices.Authentication;
 using System.Reflection;
+using SealTypographicWebAPI.Models;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -41,24 +42,15 @@ namespace SealTypographicWebAPI.Controllers
         {
             logger.LogDebug("Hello Begin");
             string result = string.Format(
-                                            "Server Run OK. Ver. {0} ProjectName {1}",
+                                            "Server Run OK. \n" +
+                                            "Ver. {0} \n" +
+                                            "ProjectName: {1} \n" +
+                                            "ENVIRONMENT: {2}",
                                             Assembly.GetExecutingAssembly().GetName().Version?.ToString(), 
-                                            Assembly.GetExecutingAssembly().GetName().Name?.ToString()
+                                            Assembly.GetExecutingAssembly().GetName().Name?.ToString(),
+                                            environment.EnvironmentName
                                          );             
             logger.LogDebug("Hello End");
-            return result;
-        }
-
-        /// <summary>
-        /// 取得ENVIRONMENT的環境變數
-        /// </summary>
-        /// <returns></returns>
-        [HttpGet("[Action]")]
-        public string EnvironmentName()
-        {
-            logger.LogDebug("Check EnvironmentName");
-            string result = $"{"ENVIRONMENT :"}{environment.EnvironmentName}";            
-            logger.LogDebug("Check EnvironmentName End");
             return result;
         }
 
@@ -73,23 +65,13 @@ namespace SealTypographicWebAPI.Controllers
         }
 
         /// <summary>
-        /// 取得UserName
-        /// </summary>
-        /// <returns></returns>
-        [HttpGet("[Action]")]
-        public string GetUserName()
-        {
-            return UserName;
-        }
-
-        /// <summary>
         /// 取得UserId
         /// </summary>
         /// <returns></returns>
         [HttpGet("[Action]")]
-        public string GetUserId()
+        public UserInfo GetUserInfo()
         {
-            return UserId;
+            return UserInfo;
         }
     }
 }

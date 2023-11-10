@@ -535,7 +535,7 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <returns></returns>
         private static UploadFile NewUploadFile(string savePath, UploadType uploadType, int userId, string originalFileName)
         {
-            // TODO: 後續在DuplicateFileProcessMode.Reserve(保留原檔名)模式時客戶要求檔名要區分時在另做調整。
+            // TODO:後續在DuplicateFileProcessMode.Reserve(保留原檔名)模式時客戶要求檔名要區分時在另做調整。
             UploadFile uploadFile = new()
             {
                 OriginalFileName = originalFileName,

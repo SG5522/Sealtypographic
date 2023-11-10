@@ -42,7 +42,7 @@ namespace SealTypographicWebAPI.Models.BaseModels
             }
             set
             {
-                endDate = value.Date;
+                endDate = value.Date.AddDays(1);
             }
         }
 
