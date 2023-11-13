@@ -3,7 +3,7 @@
     /// <summary>
     /// 客戶財稅報排版紀錄
     /// </summary>
-    public class CustomerTypoReportViewModel
+    public class TypographicReportViewModel
     {
         /// <summary>
         /// 建立排版的使用者Id
@@ -35,7 +35,7 @@
         /// <summary>
         /// 檔案名稱
         /// </summary>
-        public string FileName { get; set; }
+        public string EditFileName { get; set; }
 
         /// <summary>
         /// 排版頁數

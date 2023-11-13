@@ -3,7 +3,6 @@ using AutoMapper.QueryableExtensions;
 using DBEntities;
 using DBEntities.Consts;
 using DBEntities.Utils;
-using DJKeycloakLib.Model.BaseModel;
 using Keycloak.AuthServices.Sdk.Admin.Models;
 using Microsoft.EntityFrameworkCore;
 using SealTypographicWebAPI.Models;
@@ -32,12 +31,12 @@ namespace SealTypographicWebAPI.Services.Implements
         /// </summary>
         /// <param name="dbContext">EF Core SealTypographic DbContext</param>        
         /// <param name="mapper">AutoMapper</param>
-        /// <param name="ImageService">取得圖像資料</param>        
-        public AccountantSignTemplateService(SealTypographicDbContext dbContext, IMapper mapper, ImageService ImageService)
+        /// <param name="imageService">取得圖像資料</param>        
+        public AccountantSignTemplateService(SealTypographicDbContext dbContext, IMapper mapper, ImageService imageService)
         {
             this.dbContext = dbContext;
             this.mapper = mapper;
-            this.imageService = ImageService;
+            this.imageService = imageService;
             configurationProvider = mapper.ConfigurationProvider;
         }
 

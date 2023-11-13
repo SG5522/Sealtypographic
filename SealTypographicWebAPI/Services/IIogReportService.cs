@@ -15,6 +15,6 @@ namespace SealTypographicWebAPI.Services
         /// <param name="customerTypoReportSearch"></param>
         /// <param name="typographyType"></param>
         /// <returns></returns>
-        CustomerTypoReportPaginate GetCustomerTypoReport(CustomerTypoReportSearch customerTypoReportSearch, TypographyType typographyType, int userId = 0);
+        TypographicReportPaginate GetTypographicReport(TypographicReportSearch customerTypoReportSearch, TypographyType typographyType, int userId = 0);
     }
 }

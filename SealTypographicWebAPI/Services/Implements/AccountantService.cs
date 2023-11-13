@@ -43,7 +43,10 @@ namespace SealTypographicWebAPI.Services.Implements
 
             try
             {
-                AccountantDetailViewModel? accountantDetailViewModel = dbContext.Accountants.Include(accountant => accountant.GroupAccountants)
+                AccountantDetailViewModel? accountantDetailViewModel = dbContext.Accountants
+                                                        .Include(accountant => accountant.GroupAccountants)
+                                                        .ThenInclude(groupAccountant => groupAccountant.AccountantGroup)                                                     
+                                                        .Include(accountant => accountant.AccountantSignGroups)
                                                         .Where(accountant => accountant.Id == accountantId)
                                                         .ProjectTo<AccountantDetailViewModel>(configurationProvider)
                                                         .FirstOrDefault();
@@ -113,8 +116,6 @@ namespace SealTypographicWebAPI.Services.Implements
                 {
                     //取得該頁            
                     accountantPaginatesViewModels.ViewModels = accountantQuery
-                                                                .Include(accountant => accountant.AccountantSignGroups)
-                                                                .Include(accountant => accountant.AccountantGroups)
                                                                 .Skip((accountantSearch.PageNumber - 1) * accountantSearch.PageSize)
                                                                 .Take(accountantSearch.PageSize)
                                                                 .ProjectTo<AccountantViewModelWithCreateDate>(configurationProvider)

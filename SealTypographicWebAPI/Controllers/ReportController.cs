@@ -26,13 +26,22 @@ namespace SealTypographicWebAPI.Controllers
 
 
         /// <summary>
-        /// 
+        /// 取得財報排版紀錄
         /// </summary>
         /// <param name="customerTypoReportSearch"></param>
         /// <returns></returns>
-        [HttpGet]
-        public CustomerTypoReportPaginate Get([FromQuery] CustomerTypoReportSearch customerTypoReportSearch)
-            => logReportService.GetCustomerTypoReport(customerTypoReportSearch, TypographyType.FinancialReport);
+        [HttpGet("[Action]")]
+        public TypographicReportPaginate FinancialReport([FromQuery] TypographicReportSearch customerTypoReportSearch)
+            => logReportService.GetTypographicReport(customerTypoReportSearch, TypographyType.FinancialReport);
+
+        /// <summary>
+        /// 取得稅報排版紀錄
+        /// </summary>
+        /// <param name="customerTypoReportSearch"></param>
+        /// <returns></returns>
+        [HttpGet("[Action]")]
+        public TypographicReportPaginate TaxReport([FromQuery] TypographicReportSearch customerTypoReportSearch)
+            => logReportService.GetTypographicReport(customerTypoReportSearch, TypographyType.TaxReport);
 
         // GET api/<ReportController>/5
         [HttpGet("{id}")]

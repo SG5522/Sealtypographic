@@ -3,7 +3,7 @@
     /// <summary>
     /// 紀錄使用TypographicPDF Service時所讀取與新增的資料
     /// </summary>
-    public class LogBase
+    public class ReportBase
     {
         /// <summary>
         /// 使用者Id

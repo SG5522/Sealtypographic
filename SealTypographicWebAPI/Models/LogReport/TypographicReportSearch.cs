@@ -5,7 +5,7 @@ namespace SealTypographicWebAPI.Models.LogReport
     /// <summary>
     /// 
     /// </summary>
-    public class CustomerTypoReportSearch : PaginateWithDateSearch
+    public class TypographicReportSearch : PaginateWithDateSearch
     {
         /// <summary>
         /// 使用者名稱

@@ -58,8 +58,7 @@ namespace SealTypographicWebAPI.Services.Implements
                                                             && customerSealQuery.DeleteStatus == DeleteStatus.No
                                                         )
                                                     );
-                
-
+                                
                 if (!string.IsNullOrWhiteSpace(customerSearch.KeyWord))
                 {
                     customerQuery = customerQuery.Where
@@ -74,10 +73,9 @@ namespace SealTypographicWebAPI.Services.Implements
                 if (customerQuery.Any())
                 {
                     //取得該頁            
-                    customerPaginateViewModel.ViewModels = customerQuery
-                                                            .Include(x => x.CustomerSealGroups)
+                    customerPaginateViewModel.ViewModels = customerQuery                                                            
                                                             .Skip((customerSearch.PageNumber - 1) * customerSearch.PageSize)
-                                                            .Take(customerSearch.PageSize)
+                                                            .Take(customerSearch.PageSize)                                                            
                                                             .Select(customer => new CustomerViewModel()
                                                             {
                                                                 Id = customer.Id,
