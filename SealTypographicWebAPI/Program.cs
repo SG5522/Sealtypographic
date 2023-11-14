@@ -1,4 +1,7 @@
 using DBEntities;
+using DJKeycloakAPI.Configs;
+using DJKeycloakLib.Configs;
+using DJKeycloakLib.Services;
 using Keycloak.AuthServices.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc.Razor;
@@ -30,8 +33,8 @@ builder.Services.Configure<SealPathOption>(
 builder.Services.Configure<TemplateImagePathOption>(
     builder.Configuration.GetSection("TemplateImagePath"));
 
-//builder.Services.Configure<KeycloakOptions>(
-//    builder.Configuration.GetSection("KeycloakAdmin"));
+builder.Services.Configure<KeycloakOptions>(
+    builder.Configuration.GetSection("KeycloakAdmin"));
 
 //addCors
 builder.Services.AddCors(options =>
@@ -96,8 +99,9 @@ builder.Services.AddScoped<SealMappingConfigService>();
 builder.Services.AddSingleton<TemplateConfigService>();
 builder.Services.AddScoped<ResponseCodeService>();
 builder.Services.AddScoped<ReviewStatusService>();
-//builder.Services.AddScoped<IAdminService, KeycloakAdminService>();
+builder.Services.AddScoped<IAdminService, KeycloakAdminService>();
 builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
+builder.Services.AddAutoMapper(Assembly.GetAssembly(typeof(UserMapperProfile)));
 
 //DB Process
 builder.Services.AddScoped<ICustomerService, CustomerService>();

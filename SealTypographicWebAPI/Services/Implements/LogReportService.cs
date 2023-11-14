@@ -2,6 +2,7 @@
 using DBEntities;
 using DBEntities.Consts;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Identity.Client;
 using SealTypographicWebAPI.Models.LogReport;
 using SealTypographicWebAPI.Utils;
 
@@ -42,7 +43,7 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <returns></returns>
         public TypographicReportPaginate GetTypographicReport(TypographicReportSearch customerTypoReportSearch, TypographyType typographyType, int userId = 0)
         {
-            logger.LogInformation("GetCustomerTypoReport input customerTypoReportSearch: {@customerTypoReportSearch} typographyType: {@typographyType} userId: {@userId}"
+            logger.LogInformation("GetTypographicReport input customerTypoReportSearch: {@customerTypoReportSearch} typographyType: {@typographyType} userId: {@userId}"
                 , customerTypoReportSearch, typographyType, userId);
 
             TypographicReportPaginate customerTypoReportPaginate = new ();
@@ -94,13 +95,15 @@ namespace SealTypographicWebAPI.Services.Implements
                     customerTypoReportPaginate.DbNoData();
                 }                
 
-                logger.LogInformation("GetCustomerTypoReport output {@customerTypoReportPaginate}", customerTypoReportPaginate);
+                logger.LogInformation("GetTypographicReport output {@customerTypoReportPaginate}", customerTypoReportPaginate);
             }
             catch (Exception ex) 
             {                
-                logger.LogError("GetCustomerTypoReport error", ex.Message);
+                logger.LogError("GetTypographicReport error", ex.Message);
             }
             return customerTypoReportPaginate;
         }
+
+        
     }
 }

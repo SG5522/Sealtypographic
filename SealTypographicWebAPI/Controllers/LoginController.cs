@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using DJKeycloakLib.Configs;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 using System.Text.Json;
 
 namespace SealTypographicWebAPI.Controllers
@@ -11,6 +13,16 @@ namespace SealTypographicWebAPI.Controllers
     [ApiController]
     public class LoginController : ControllerBase
     {
+        private readonly KeycloakOptions keycloakOptions;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public LoginController(IOptionsMonitor<KeycloakOptions> keyCloakOptionsMonitor) 
+        {
+            keycloakOptions = keyCloakOptionsMonitor.CurrentValue;
+        }
+
         /// <summary>
         /// 登入並獲得驗證
         /// </summary>
@@ -26,6 +38,16 @@ namespace SealTypographicWebAPI.Controllers
                 password,
             };
             return JsonSerializer.Serialize(json);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("[Action]")]
+        public KeycloakOptions AuthUrl()
+        {
+            return keycloakOptions;
         }
     }
 }
