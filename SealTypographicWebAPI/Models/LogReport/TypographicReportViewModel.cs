@@ -1,4 +1,6 @@
-﻿namespace SealTypographicWebAPI.Models.LogReport
+﻿using System.Text.Json.Serialization;
+
+namespace SealTypographicWebAPI.Models.LogReport
 {
     /// <summary>
     /// 客戶財稅報排版紀錄
@@ -6,16 +8,22 @@
     public class TypographicReportViewModel
     {
         /// <summary>
-        /// 建立排版的使用者Id
+        /// 使用者Id
+        /// </summary>
+        [JsonIgnore]
+        public int UserId { get; set; }
+
+        /// <summary>
+        /// 排版的使用者Id
         /// </summary>
         /// <example>admin</example>
-        public string CreateUserId { get; set; }
+        public string UserName { get; set; }
 
         /// <summary>
         /// 建立排版的使用者名稱
         /// </summary>
         /// <example>管理者</example>
-        public string CreateUserName { get; set; }
+        public string UserNickName { get; set; }
 
         /// <summary>
         /// 客戶編碼

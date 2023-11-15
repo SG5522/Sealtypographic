@@ -16,6 +16,11 @@
         public string? UserName { get; set; }
 
         /// <summary>
+        /// 使用者暱稱
+        /// </summary>
+        public string? NickName { get; set; }
+
+        /// <summary>
         /// 使用者KeycloakId
         /// </summary>
         public string? KeycloakId { get; set; }

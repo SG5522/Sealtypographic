@@ -42,7 +42,6 @@ namespace DBEntities
         /// </summary>
         public DbSet<GroupAccountant> GroupAccountants { get; set; }
 
-
         /// <summary>
         /// 會計師簽印建立日期歷程表
         /// </summary>
