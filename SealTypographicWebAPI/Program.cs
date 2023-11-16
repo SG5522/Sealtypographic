@@ -124,7 +124,7 @@ builder.Services.AddScoped<IQuarterYearService, QuarterYearService>();
 builder.Services.AddScoped<IImageRangeSettingService, ImageRangeSettingService>();
 builder.Services.AddScoped<ILogReportService, LogReportService>();
 
-builder.Services.AddHealthChecks();
+//builder.Services.AddHealthChecksUI().AddInMemoryStorage();
 #endregion
 
 builder.Services.AddLocalization(option => option.ResourcesPath = "Resource");
@@ -225,7 +225,7 @@ builder.Services.AddSwaggerGen(c =>
     //            new string[] {}
     //        }
     //    });
-    //c.SchemaFilter<EnumSchemaFilter>();
+    //c.SchemaFilter<EnumSchemaFilter>();   
 });
 
 #region -- Authentication --
@@ -296,7 +296,8 @@ using (IServiceScope scope = app.Services.CreateScope())
     }
 }
 
-app.MapHealthChecks("/healthz");
+//app.MapHealthChecks("/healthz");
+//app.UseHealthChecksUI();
 
 //app.UseHttpsRedirection();
 app.UseAuthentication();

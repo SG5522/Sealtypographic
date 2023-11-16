@@ -126,8 +126,18 @@ namespace DBEntities
 
             modelBuilder.Entity<Accountant>()
                 .HasMany(e => e.AccountantGroups)
-                .WithMany(e => e.Accountants)
+                .WithMany(e => e.Accountants)                
                 .UsingEntity<GroupAccountant>();
+
+            modelBuilder.Entity<Accountant>()
+                .HasOne(e => e.CreateUser)                
+                .WithMany(e => e.AccountantsCreateUser)
+                .HasForeignKey(e => e.CreateUserId);
+
+            modelBuilder.Entity<Accountant>()
+                .HasOne(e => e.UpdateUser)
+                .WithMany(e => e.AccountantsUpdateUser)
+                .HasForeignKey(e => e.UpdateUserId);            
         }
         #endregion
     }

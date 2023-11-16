@@ -30,7 +30,12 @@ namespace DBEntities
         /// <summary>
         /// 會計師資料表
         /// </summary>
-        public IList<Accountant> Accountants { get; set; }
+        public IList<Accountant> AccountantsCreateUser { get; set; }
+
+        /// <summary>
+        /// 會計師資料表
+        /// </summary>
+        public IList<Accountant> AccountantsUpdateUser { get; set; }
 
         /// <summary>
         /// 會計師群組
