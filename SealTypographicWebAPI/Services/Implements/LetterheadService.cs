@@ -32,7 +32,7 @@ namespace SealTypographicWebAPI.Services.Implements
         }
 
         ///<inheritdoc />
-        public LetterheadPaginateViewModel GetPaginate(LetterheadSearch letterheadSearch, int userId = 0)
+        public LetterheadPaginateViewModel GetPaginate(LetterheadSearch letterheadSearch, int userId = 1)
         {
             logger.LogInformation("GetPaginate input {@letterheadSearch} userId: {@userId}", letterheadSearch, userId);
 
@@ -81,7 +81,7 @@ namespace SealTypographicWebAPI.Services.Implements
         }
 
         ///<inheritdoc />
-        public ResponseViewModel Delete(int id, int userId = 0)
+        public ResponseViewModel Delete(int id, int userId = 1)
         {
             logger.LogInformation("Delete input id: {@id} userId: {userId}", id, userId);
 

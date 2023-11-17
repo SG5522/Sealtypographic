@@ -15,7 +15,7 @@ namespace SealTypographicWebAPI.Services
         /// <param name="accountantSignSearchReview">會計師簽印審核狀態分頁搜尋</param>
         /// <param name="userId">從Keycloak驗證取得</param>
         /// <returns></returns>
-        AccountantSignGroupReviewPaginate GetReviewPaginate(AccountantSignSearchReview accountantSignSearchReview, int userId = 0);
+        AccountantSignGroupReviewPaginate GetReviewPaginate(AccountantSignSearchReview accountantSignSearchReview, int userId = 1);
 
         /// <summary>
         /// 基本資料與簽印組
@@ -23,7 +23,7 @@ namespace SealTypographicWebAPI.Services
         /// <param name="accountantSignGroupId">會計師簽印組Id</param>
         /// <param name="userId">從Keycloak驗證取得</param>
         /// <returns></returns>
-        AccountantSignGroupDetailReviewResponse GetReviewDetail(int accountantSignGroupId,int userId = 0);
+        AccountantSignGroupDetailReviewResponse GetReviewDetail(int accountantSignGroupId,int userId = 1);
 
         /// <summary>
         /// 更換審核狀態
@@ -32,6 +32,6 @@ namespace SealTypographicWebAPI.Services
         /// <param name="reviewStatus">審核狀態</param>
         /// <param name="userId">從Keycloak驗證取得</param>
         /// <returns></returns>
-        ResponseViewModel StatusChange(List<int> accountantSignGroupIds, ReviewStatus reviewStatus, int userId = 0);
+        ResponseViewModel StatusChange(List<int> accountantSignGroupIds, ReviewStatus reviewStatus, int userId = 1);
     }
 }

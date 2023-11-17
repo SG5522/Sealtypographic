@@ -38,7 +38,7 @@ namespace SealTypographicWebAPI.Services.Implements
         }
 
         ///<inheritdoc />
-        public AccountantSignGroupResponse GetCreateDates(int accountantId, int userId = 0)
+        public AccountantSignGroupResponse GetCreateDates(int accountantId, int userId = 1)
         {
             logger.LogInformation("GetCreateDates input accountantId: {@accountantId} userId: {@userId}", accountantId, userId);
 
@@ -76,7 +76,7 @@ namespace SealTypographicWebAPI.Services.Implements
         }
 
         ///<inheritdoc />
-        public AccountantSignViewModels GetSignViewModels(int accountantSignGroupId, bool isTransparent, int userId = 0)
+        public AccountantSignViewModels GetSignViewModels(int accountantSignGroupId, bool isTransparent, int userId = 1)
         {
             logger.LogInformation("GetSignViewModels input accountantSignGroupId: {@accountantSignGroupId} isTransparent: {@isTransparent} userId: {@userId}"
                 , accountantSignGroupId, isTransparent, userId);
@@ -120,7 +120,7 @@ namespace SealTypographicWebAPI.Services.Implements
         }
 
         ///<inheritdoc />
-        public async Task<ResponseViewModel> New(AccountantSignForms accountantSignForms, int userId = 0)
+        public async Task<ResponseViewModel> New(AccountantSignForms accountantSignForms, int userId = 1)
         {
             logger.LogInformation("New input {@accountantSignForms} userId: {@userId}", accountantSignForms, userId);
 
@@ -166,7 +166,7 @@ namespace SealTypographicWebAPI.Services.Implements
         }
 
         ///<inheritdoc />
-        public async Task<List<ResponseViewModel>> Update(AccountantSignUpdate accountantSignUpdate, int userId = 0)
+        public async Task<List<ResponseViewModel>> Update(AccountantSignUpdate accountantSignUpdate, int userId = 1)
         {
             logger.LogInformation("Update input {@Input} userId: {@userId}", accountantSignUpdate, userId);
 
@@ -282,7 +282,7 @@ namespace SealTypographicWebAPI.Services.Implements
         }
 
         ///<inheritdoc />    
-        public ResponseViewModel ChangeReviewStatus(int accountantSignGroupId, ReviewStatus reviewStatus, int userId = 0)
+        public ResponseViewModel ChangeReviewStatus(int accountantSignGroupId, ReviewStatus reviewStatus, int userId = 1)
         {
             logger.LogInformation("ChangeReviewStatus input accountantSignGroupId: {@accountantSignGroupId} reviewStatus: {@reviewStatus} userId: {@userId}"
                 , accountantSignGroupId, reviewStatus, userId);
@@ -331,7 +331,7 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <param name="accountantSignGroup">會計師簽印建立日期歷程</param>
         /// <param name="isCreate">對Db所做的行動</param>
         /// <param name="userId">userId</param>
-        private static void BaseInputSignGroupJournal(AccountantSignGroup accountantSignGroup, bool isCreate, int userId = 0)
+        private static void BaseInputSignGroupJournal(AccountantSignGroup accountantSignGroup, bool isCreate, int userId = 1)
         {
             if (isCreate)
             {
@@ -360,7 +360,7 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <param name="imageBase64Info">圖檔資訊</param>
         /// <param name="userId">使用者Id</param>
         /// <returns></returns>
-        private async Task<List<TypographicResource>> NewTypographyResource(List<AccountantSign> formSeals, ImageBase64Info imageBase64Info, int userId = 0)
+        private async Task<List<TypographicResource>> NewTypographyResource(List<AccountantSign> formSeals, ImageBase64Info imageBase64Info, int userId = 1)
         {
             List<TypographicResource> typographyResources = new();
             foreach (AccountantSign accountantSign in formSeals)

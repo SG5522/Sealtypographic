@@ -310,7 +310,7 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <param name="uploadBase64Data">上傳檔案內容</param>
         /// <param name="userId">使用者Id</param>              
         /// <returns></returns>
-        public async Task<ResponseViewModel> SaveScanFile(UploadScanData uploadBase64Data, int userId = 0)
+        public async Task<ResponseViewModel> SaveScanFile(UploadScanData uploadBase64Data, int userId = 1)
         {
             logger.LogInformation("SaveScanFile input {@Input} userId: {@userid}", uploadBase64Data, userId);
             ResponseViewModel response = new();            
@@ -360,7 +360,7 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <param name="uploadData">上傳檔案內容</param>
         /// <param name="userId">帳號驗證取得ID</param>              
         /// <returns></returns>
-        public async Task<ResponseViewModel> SaveFormFile(UploadData uploadData, int userId = 0)
+        public async Task<ResponseViewModel> SaveFormFile(UploadData uploadData, int userId = 1)
         {
             logger.LogInformation("SaveFormFile input {@Input} userId: {@userid}", uploadData, userId);
 
@@ -431,7 +431,7 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <param name="uploadFileId">上傳檔案Id</param>
         /// <param name="userId"></param>
         /// <returns></returns>
-        public ResponseViewModel ChangeFileWorkStatusToDone(int uploadFileId, int userId = 0)
+        public ResponseViewModel ChangeFileWorkStatusToDone(int uploadFileId, int userId = 1)
         {
             logger.LogInformation("ChangeFileWorkStatusToDone input uploadFileId: {@uploadFileId} userId: {@userid}", uploadFileId, userId);
 
@@ -468,7 +468,7 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <param name="uploadFileIds"></param>
         /// <param name="userId"></param>
         /// <returns></returns>
-        public ResponseViewModel Delete(List<int> uploadFileIds, int userId = 0)
+        public ResponseViewModel Delete(List<int> uploadFileIds, int userId = 1)
         {
             logger.LogInformation("Delete input uploadFileIds {@uploadFileIds} userId: {@userid}", uploadFileIds, userId);
 

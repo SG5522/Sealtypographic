@@ -32,7 +32,7 @@ namespace SealTypographicWebAPI.Services.Implements
         }
 
         ///<inheritdoc />
-        public CustomerSealGroupReviewPaginate GetReviewList(CustomerSealSearchReview customerSealSearchReview, TypographyType typographyType, int userId = 0)
+        public CustomerSealGroupReviewPaginate GetReviewList(CustomerSealSearchReview customerSealSearchReview, TypographyType typographyType, int userId = 1)
         {
             logger.LogInformation("GetReviewList input {@customerSealSearchReview} typographyType: {@TypographyType} userId : {@userId}"
                 , customerSealSearchReview, typographyType, userId);
@@ -97,7 +97,7 @@ namespace SealTypographicWebAPI.Services.Implements
         }
         
         ///<inheritdoc />
-        public CustomerSealGroupDetailReviewResponse GetReviewDetail(int customerSealQuarterId, int userId = 0)
+        public CustomerSealGroupDetailReviewResponse GetReviewDetail(int customerSealQuarterId, int userId = 1)
         {
             logger.LogInformation("GetReviewDetail input customerSealQuarterId: {@customerSealQuarterId} userId: {@userId}", customerSealQuarterId, userId);
 

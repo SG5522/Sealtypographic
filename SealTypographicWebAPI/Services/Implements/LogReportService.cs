@@ -42,7 +42,7 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <param name="typographyType"></param>
         /// <param name="userId"></param>
         /// <returns></returns>
-        public TypographicReportPaginate GetTypographicReport(TypographicReportSearch customerTypoReportSearch, TypographyType typographyType, int userId = 0)
+        public TypographicReportPaginate GetTypographicReport(TypographicReportSearch customerTypoReportSearch, TypographyType typographyType, int userId = 1)
         {
             logger.LogInformation("GetTypographicReport input customerTypoReportSearch: {@customerTypoReportSearch} typographyType: {@typographyType} userId: {@userId}"
                 , customerTypoReportSearch, typographyType, userId);
@@ -52,6 +52,7 @@ namespace SealTypographicWebAPI.Services.Implements
             {
                 IQueryable<TypographicPDF> typographicPDFQuery = dbContext.TypographicPDFs
                                                                 .Include(x => x.Customer)
+                                                                .Include(x => x.UpdateUser)
                                                                 .Where(
                                                                             x => x.DeleteStatus == DeleteStatus.No
                                                                             && x.TypographyType == typographyType
@@ -62,21 +63,10 @@ namespace SealTypographicWebAPI.Services.Implements
 
                 if(!string.IsNullOrEmpty(customerTypoReportSearch.UserKeyWord))
                 {
-                    //TODO:這邊之後先用Keycloak 模糊搜尋找到User                    
-                    //List<int> userIds = new()
-                    //{
-                    //    0,1,2,3,4,5
-                    //};
-
-                    List<int> userIds = dbContext.Users
-                                        .Where(x => x.UserName.Contains(customerTypoReportSearch.UserKeyWord))
-                                        .Select(x => x.Id).ToList();
-
                     //adminService.GetUser
                     //TODO:或是所有的登入資料要先放到資料表user中在過濾出來。
-                    //List<int> userIds = dbContext.Users.Where(x => x.UserName.Contains(customerTypoReportSearch.UserKeyWord)).Select(x => x.Id).ToList();                    
-                    //adminService.FindUsers(username: customerTypoReportSearch.UserKeyWord);
-                    typographicPDFQuery = typographicPDFQuery.Where(x => userIds.Contains(x.UpdateUserId));
+                    typographicPDFQuery = typographicPDFQuery.Where(x => x.UpdateUser!.NickName!.Contains(customerTypoReportSearch.UserKeyWord)
+                                                                    || x.UpdateUser!.UserName!.Contains(customerTypoReportSearch.UserKeyWord));
                 }
 
                 if(!string.IsNullOrEmpty(customerTypoReportSearch.CustomerKeyWord))
@@ -93,21 +83,6 @@ namespace SealTypographicWebAPI.Services.Implements
                     List<TypographicReportViewModel> typographicReportViewModels = PageUtil.SetPaginateViewModel<TypographicPDF, TypographicReportViewModel>
                                                                                     (typographicPDFQuery, customerTypoReportSearch.PageNumber, customerTypoReportSearch.PageSize, configurationProvider);
 
-                    foreach(TypographicReportViewModel typographicReportViewModel in typographicReportViewModels)
-                    {
-                        UserInfo userInfo = dbContext.Users.Where(x => x.Id == typographicReportViewModel.UserId)
-                                                        .Select(x => new UserInfo
-                                                        {
-                                                            UserId = x.Id,
-                                                            UserName = x.UserName,
-                                                            NickName = x.NormalizedUserName,
-                                                            KeycloakId = x.KeycloakUserId,                                                            
-                                                        })
-                                                        .Single();
-
-                        typographicReportViewModel.UserName  = userInfo.UserName!;
-                        typographicReportViewModel.UserNickName = userInfo.NickName!;
-                    }
 
                     customerTypoReportPaginate.ViewModels = PageUtil.SetPaginateViewModel<TypographicPDF, TypographicReportViewModel>
                                                             (typographicPDFQuery, customerTypoReportSearch.PageNumber, customerTypoReportSearch.PageSize, configurationProvider);

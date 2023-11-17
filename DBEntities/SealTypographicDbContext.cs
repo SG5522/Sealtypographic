@@ -137,7 +137,127 @@ namespace DBEntities
             modelBuilder.Entity<Accountant>()
                 .HasOne(e => e.UpdateUser)
                 .WithMany(e => e.AccountantsUpdateUser)
-                .HasForeignKey(e => e.UpdateUserId);            
+                .HasForeignKey(e => e.UpdateUserId);
+
+            modelBuilder.Entity<AccountantGroup>()
+                .HasOne(e => e.CreateUser)
+                .WithMany(e => e.AccountantGroupsCreateUser)
+                .HasForeignKey(e => e.CreateUserId);
+
+            modelBuilder.Entity<AccountantGroup>()
+                .HasOne(e => e.UpdateUser)
+                .WithMany(e => e.AccountantGroupsUpdateUser)
+                .HasForeignKey(e => e.UpdateUserId);
+
+            modelBuilder.Entity<AccountantSignGroup>()
+                .HasOne(e => e.CreateUser)
+                .WithMany(e => e.AccountantSignGroupsCreateUser)
+                .HasForeignKey(e => e.CreateUserId);
+
+            modelBuilder.Entity<AccountantSignGroup>()
+                .HasOne(e => e.UpdateUser)
+                .WithMany(e => e.AccountantSignGroupsUpdateUser)
+                .HasForeignKey(e => e.UpdateUserId);
+
+            modelBuilder.Entity<Customer>()
+                .HasOne(e => e.CreateUser)
+                .WithMany(e => e.CustomersCreateUser)
+                .HasForeignKey(e => e.CreateUserId);
+
+            modelBuilder.Entity<Customer>()
+                .HasOne(e => e.UpdateUser)
+                .WithMany(e => e.CustomersUpdateUser)
+                .HasForeignKey(e => e.UpdateUserId);
+
+            modelBuilder.Entity<CustomerSealGroup>()
+                .HasOne(e => e.CreateUser)
+                .WithMany(e => e.CustomerSealGroupsCreateUser)
+                .HasForeignKey(e => e.CreateUserId);
+
+            modelBuilder.Entity<CustomerSealGroup>()
+                .HasOne(e => e.UpdateUser)
+                .WithMany(e => e.CustomerSealGroupsUpdateUser)
+                .HasForeignKey(e => e.UpdateUserId);
+
+            modelBuilder.Entity<Letterhead>()
+                .HasOne(e => e.CreateUser)
+                .WithMany(e => e.LetterheadsCreateUser)
+                .HasForeignKey(e => e.CreateUserId);
+
+            modelBuilder.Entity<Letterhead>()
+                .HasOne(e => e.UpdateUser)
+                .WithMany(e => e.LetterheadsUpdateUser)
+                .HasForeignKey(e => e.UpdateUserId);
+
+            modelBuilder.Entity<TemporarySealGroup>()
+                .HasOne(e => e.CreateUser)
+                .WithMany(e => e.TemporarySealGroupsCreateUser)
+                .HasForeignKey(e => e.CreateUserId);
+
+            modelBuilder.Entity<TemporarySealGroup>()
+                .HasOne(e => e.UpdateUser)
+                .WithMany(e => e.TemporarySealGroupsUpdateUser)
+                .HasForeignKey(e => e.UpdateUserId);
+
+            modelBuilder.Entity<TypographicResource>()
+                .HasOne(e => e.CreateUser)
+                .WithMany(e => e.TypographicResourcesCreateUser)
+                .HasForeignKey(e => e.CreateUserId);
+
+            modelBuilder.Entity<TypographicResource>()
+                .HasOne(e => e.UpdateUser)
+                .WithMany(e => e.TypographicResourcesUpdateUser)
+                .HasForeignKey(e => e.UpdateUserId);
+
+            modelBuilder.Entity<UploadFile>()
+                .HasOne(e => e.CreateUser)
+                .WithMany(e => e.UploadFilesCreateUser)
+                .HasForeignKey(e => e.CreateUserId);
+
+            modelBuilder.Entity<UploadFile>()
+                .HasOne(e => e.UpdateUser)
+                .WithMany(e => e.UploadFilessUpdateUser)
+                .HasForeignKey(e => e.UpdateUserId);
+
+            modelBuilder.Entity<TypographicPDF>()
+                .HasOne(e => e.CreateUser)
+                .WithMany(e => e.TypographicPDFsCreateUser)
+                .HasForeignKey(e => e.CreateUserId);
+
+            modelBuilder.Entity<TypographicPDF>()
+                .HasOne(e => e.UpdateUser)
+                .WithMany(e => e.TypographicPDFsUpdateUser)
+                .HasForeignKey(e => e.UpdateUserId);
+
+            modelBuilder.Entity<Template>()
+                .HasOne(e => e.CreateUser)
+                .WithMany(e => e.TemplatesCreateUser)
+                .HasForeignKey(e => e.CreateUserId);
+
+            modelBuilder.Entity<Template>()
+                .HasOne(e => e.UpdateUser)
+                .WithMany(e => e.TemplatesUpdateUser)
+                .HasForeignKey(e => e.UpdateUserId);
+
+            modelBuilder.Entity<Company>()
+                .HasOne(e => e.CreateUser)
+                .WithMany(e => e.CompanysCreateUser)
+                .HasForeignKey(e => e.CreateUserId);
+
+            modelBuilder.Entity<Company>()
+                .HasOne(e => e.UpdateUser)
+                .WithMany(e => e.CompanysUpdateUser)
+                .HasForeignKey(e => e.UpdateUserId);
+
+            modelBuilder.Entity<ImageRangeSetting>()
+                .HasOne(e => e.CreateUser)
+                .WithMany(e => e.ImageRangeSettingsCreateUser)
+                .HasForeignKey(e => e.CreateUserId);
+
+            modelBuilder.Entity<ImageRangeSetting>()
+                .HasOne(e => e.UpdateUser)
+                .WithMany(e => e.ImageRangeSettingsUpdateUser)
+                .HasForeignKey(e => e.UpdateUserId);
         }
         #endregion
     }

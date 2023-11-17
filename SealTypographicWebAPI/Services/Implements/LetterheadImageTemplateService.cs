@@ -137,7 +137,7 @@ namespace SealTypographicWebAPI.Services.Implements
         public async Task<ResponseViewModel> New(LetterheadImageTemplateForm letterheadImageTemplateForm)
         {
             ResponseViewModel response = new();            
-            int userid = 0; //帳號驗證取得ID
+            int userId = 1; //帳號驗證取得ID
             int companyId = 1; //公司ID
 
             //尋找公司並與會計師簽印關聯
@@ -218,7 +218,7 @@ namespace SealTypographicWebAPI.Services.Implements
         public ResponseViewModel Delete (int Id)
         {
             ResponseViewModel response = new();
-            int userId = 0;
+            int userId = 1;
 
             Template? templateQuery = dbContext.Templates.Find(Id);
 

@@ -153,7 +153,7 @@ namespace SealTypographicWebAPI.Services.Implements
         }
 
         ///<inheritdoc />
-        public async Task<ResponseViewModel> New(LetterheadImageForm letterheadImageForm, int userId = 0)
+        public async Task<ResponseViewModel> New(LetterheadImageForm letterheadImageForm, int userId = 1)
         {
             logger.LogInformation("New input {@letterheadImageForm} userId: {@userId}", letterheadImageForm, userId);
 
@@ -204,7 +204,7 @@ namespace SealTypographicWebAPI.Services.Implements
         }
 
         ///<inheritdoc />
-        public async Task<ResponseViewModel> Update(LetterheadImageUpdate letterheadImageUpdate, int userId = 0)
+        public async Task<ResponseViewModel> Update(LetterheadImageUpdate letterheadImageUpdate, int userId = 1)
         {
             logger.LogInformation("Update output {@letterheadImageUpdate} userId: {@userId}", letterheadImageUpdate, userId);
 

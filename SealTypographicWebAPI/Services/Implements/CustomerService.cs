@@ -35,7 +35,7 @@ namespace SealTypographicWebAPI.Services.Implements
         }
 
         ///<inheritdoc />
-        public CustomerDetailViewModel GetDetail(int customerId, int userId = 0)
+        public CustomerDetailViewModel GetDetail(int customerId, int userId = 1)
         {
             logger.LogInformation("GetDetail input customerId: {@customerId} userId: {@userId}", customerId, userId);
             CustomerDetailViewModel customerDetailViewModel = new();                                    
@@ -68,7 +68,7 @@ namespace SealTypographicWebAPI.Services.Implements
         }
 
         ///<inheritdoc />
-        public CustomerPaginateSummary GetPaginate(CustomerSearch customerSearch, int userId = 0) 
+        public CustomerPaginateSummary GetPaginate(CustomerSearch customerSearch, int userId = 1) 
         {
             logger.LogInformation("GetCustomerPaginate input {@customerSearch} userId: {@userId}", customerSearch, userId);
 
@@ -122,7 +122,7 @@ namespace SealTypographicWebAPI.Services.Implements
         }        
 
         ///<inheritdoc />
-        public CreateCustomerResponse New(CustomerForm customerForm, int userId = 0)
+        public CreateCustomerResponse New(CustomerForm customerForm, int userId = 1)
         {
             logger.LogInformation("New input {@customerForm} userId: {@userId}", customerForm, userId);
 
@@ -186,7 +186,7 @@ namespace SealTypographicWebAPI.Services.Implements
         }
 
         ///<inheritdoc />
-        public ResponseViewModel Update(CustomerUpdateForm customerFormUpdate, int userId = 0)
+        public ResponseViewModel Update(CustomerUpdateForm customerFormUpdate, int userId = 1)
         {
             logger.LogInformation("Update input {@customerFormUpdate} userId: {@userId}", customerFormUpdate, userId);
 
@@ -224,7 +224,7 @@ namespace SealTypographicWebAPI.Services.Implements
         }
 
         ///<inheritdoc /> 
-        public ResponseViewModel Delete(int customerId, int userId = 0)
+        public ResponseViewModel Delete(int customerId, int userId = 1)
         {
             logger.LogInformation("Delete input customerId: {@customerId} userId: {@userId}", customerId, userId);
             

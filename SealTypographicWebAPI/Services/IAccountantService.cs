@@ -16,7 +16,7 @@ namespace SealTypographicWebAPI.Services
         /// <param name="accountantId">會計師Id</param>
         /// <param name="userId">登入的使用者Id</param>
         /// <returns></returns>
-        AccountantDetailResponse GetDetail(int accountantId, int userId = 0);
+        AccountantDetailResponse GetDetail(int accountantId, int userId = 1);
 
         /// <summary>
         /// 依搜尋條件獲得資料列表
@@ -25,14 +25,14 @@ namespace SealTypographicWebAPI.Services
         /// <param name="isTypographicUse">是否給排版使用</param>
         /// <param name="userId">登入的使用者Id</param>  
         /// <returns></returns>
-        AccountantPaginateViewModel GetPaginate(AccountantSearch accountantSearch, bool isTypographicUse, int userId = 0);
+        AccountantPaginateViewModel GetPaginate(AccountantSearch accountantSearch, bool isTypographicUse, int userId = 1);
 
         /// <summary>
         /// 新增資料
         /// </summary>
         /// <param name="accountantForm">會計師資料</param>
         /// <param name="userId">登入的使用者Id</param>        
-        AccountantCreateResponse New(AccountantForm accountantForm, int userId = 0);
+        AccountantCreateResponse New(AccountantForm accountantForm, int userId = 1);
 
 
         /// <summary>
@@ -40,7 +40,7 @@ namespace SealTypographicWebAPI.Services
         /// </summary>
         /// <param name="accountantBaseData">會計師資料(含Id)</param>
         /// <param name="userId">登入的使用者Id</param>
-        ResponseViewModel Update(AccountantUpdateForm accountantBaseData, int userId = 0);
+        ResponseViewModel Update(AccountantUpdateForm accountantBaseData, int userId = 1);
 
         /// <summary>
         /// 刪除資料，
@@ -49,7 +49,6 @@ namespace SealTypographicWebAPI.Services
         /// </summary>
         /// <param name="accountantId">會計師ID</param>
         /// <param name="userId">登入的使用者Id</param>
-        ResponseViewModel Delete(int accountantId, int userId = 0);
+        ResponseViewModel Delete(int accountantId, int userId = 1);
     }
-
 }

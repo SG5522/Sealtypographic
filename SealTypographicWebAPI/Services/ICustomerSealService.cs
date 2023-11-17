@@ -19,7 +19,7 @@ namespace SealTypographicWebAPI.Services
         /// <param name="typographyType">排版類別</param>
         /// <param name="userId">登入的使用者Id</param>  
         /// <returns></returns>
-        CustomerPaginateViewModel GetPaginate(CustomerSearch customerSearch, TypographyType typographyType, int userId = 0);
+        CustomerPaginateViewModel GetPaginate(CustomerSearch customerSearch, TypographyType typographyType, int userId = 1);
 
         /// <summary>
         /// 取得客戶印鑑季度表(分頁)
@@ -30,7 +30,7 @@ namespace SealTypographicWebAPI.Services
         /// <param name="userId">登入的使用者Id</param>
         /// <returns></returns>
         CustomerSealQuarterPaginateViewModel GetQuarterYear(CustomerSealQuarterPaginateSearch customerSealQuarterPaginateSearch
-            , bool isTypographic, TypographyType typographyType, int userId = 0);
+            , bool isTypographic, TypographyType typographyType, int userId = 1);
 
         /// <summary>
         /// 取得印鑑群組簡易資訊
@@ -39,7 +39,7 @@ namespace SealTypographicWebAPI.Services
         /// <param name="quaterId">年季度Id</param>
         /// <param name="userId">登入的使用者Id</param>
         /// <returns></returns>
-        CustomerSealGroupResponse GetCustomerSealGroupSummry(int customerId, int quaterId, int userId = 0);
+        CustomerSealGroupResponse GetCustomerSealGroupSummry(int customerId, int quaterId, int userId = 1);
 
         /// <summary>
         /// 取得客戶印鑑組
@@ -48,7 +48,7 @@ namespace SealTypographicWebAPI.Services
         /// <param name="isTransparent">是否白底透明化</param>
         /// <param name="userId">登入的使用者Id</param>
         /// <returns></returns>
-        CustomerSealViewModels GetSeals(int customerSealQuarterId, bool isTransparent, int userId = 0);
+        CustomerSealViewModels GetSeals(int customerSealQuarterId, bool isTransparent, int userId = 1);
 
         /// <summary>
         /// 新增客戶印鑑組資料
@@ -57,7 +57,7 @@ namespace SealTypographicWebAPI.Services
         /// <param name="typographyType">排版類別</param>
         /// <param name="userId">登入的使用者Id</param>
         /// <returns></returns>
-        Task<ResponseViewModel> New(CustomerSealForm customerSealForms, TypographyType typographyType, int userId = 0);
+        Task<ResponseViewModel> New(CustomerSealForm customerSealForms, TypographyType typographyType, int userId = 1);
 
         /// <summary>
         /// 異動客戶印鑑
@@ -65,7 +65,7 @@ namespace SealTypographicWebAPI.Services
         /// <param name="customerSealUpdate">需要異動客戶印鑑資料</param>
         /// <param name="userId">登入的使用者Id</param>
         /// <returns></returns>        
-        Task<List<ResponseViewModel>> Update(CustomerSealUpdate customerSealUpdate, int userId = 0);
+        Task<List<ResponseViewModel>> Update(CustomerSealUpdate customerSealUpdate, int userId = 1);
 
 
         /// <summary>
@@ -74,6 +74,6 @@ namespace SealTypographicWebAPI.Services
         /// <param name="customerSealQuarterId">客戶印鑑季度Id</param>
         /// <param name="reviewStatus">審查狀態</param>
         /// <param name="userId">登入的使用者Id</param>        
-        ResponseViewModel ChangeReviewStatus(int customerSealQuarterId, ReviewStatus reviewStatus, int userId = 0);
+        ResponseViewModel ChangeReviewStatus(int customerSealQuarterId, ReviewStatus reviewStatus, int userId = 1);
     }
 }

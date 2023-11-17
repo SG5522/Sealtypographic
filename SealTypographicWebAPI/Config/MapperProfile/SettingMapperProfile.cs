@@ -25,7 +25,6 @@ namespace SealTypographicWebAPI.Config.MapperProfile
                     .ForMember(dst => dst.SealType, opt => opt.MapFrom(src => SealType.Customer))
                     .ForMember(dst => dst.SubSealType, opt => opt.MapFrom(src => SealMappingConfigUtil.GetSubSealTypeWithCustomer(src.CustomerSealType)));
 
-
             //客戶印鑑截取設定
             CreateMap<ImageRangeSetting, CustomerSealRangeSetting>()                    
                     .ForMember(dst => dst.CustomerSealRangeLocations, opt => opt.MapFrom(src => src.ImageRangeLocations));

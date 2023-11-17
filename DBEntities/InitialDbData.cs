@@ -12,8 +12,24 @@ namespace DBEntities
         {
             try
             {
+                if(!dbContext.Users.Any())
+                {
+                    //建立User資料
+                    User user = new()
+                    {
+                        Id = 1,
+                        UserName = "Admin",
+                        KeycloakUserId = "00001",
+                        CreateDate = DateTime.Now
+                    };
+                    dbContext.Users.Add(user);
+                    dbContext.SaveChanges();
+                }
+
                 if (!dbContext.Companys.Any())
                 {
+
+
                     //公司基本資料
                     Company company = new()
                     {
@@ -25,13 +41,15 @@ namespace DBEntities
                         Users = new List<User>(),
                         ImageRangeSettings = new List<ImageRangeSetting>()
                     };
+
                     //建立User資料
                     User user = new()
                     {
-                        Id = 1,
-                        UserName = "Admin",
-                        KeycloakUserId = "00001"
+                        UserName = "ImageAdmin",
+                        KeycloakUserId = "002",
+                        CreateDate = DateTime.Now
                     };
+
                     //建立DB前先建置AccountantGroup無群組資料
                     AccountantGroup accountantGroup = new()
                     {
@@ -147,7 +165,7 @@ namespace DBEntities
                             }
                         }
                     };
-                    InputUtil.Base(company, true, 1);
+                    InputUtil.Base(company, true, 1);                    
                     InputUtil.Base(imageCaptureWithCustomer, true, 1);
                     InputUtil.Base(imageCaptureWithAccountant, true, 1);
                     InputUtil.Base(accountantGroup, true, 1);

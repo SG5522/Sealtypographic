@@ -37,7 +37,7 @@ namespace SealTypographicWebAPI.Services.Implements
         }
 
         ///<inheritdoc />
-        public CustomerPaginateViewModel GetPaginate(CustomerSearch customerSearch, TypographyType typographyType, int userId = 0)
+        public CustomerPaginateViewModel GetPaginate(CustomerSearch customerSearch, TypographyType typographyType, int userId = 1)
         {
             logger.LogInformation("GetPaginate input {@customerSearch} typographyType: {@TypographyType} userId: {userId}"
                 , customerSearch, typographyType, userId);
@@ -116,7 +116,7 @@ namespace SealTypographicWebAPI.Services.Implements
 
         ///<inheritdoc />
         public CustomerSealQuarterPaginateViewModel GetQuarterYear(CustomerSealQuarterPaginateSearch customerSealQuarterPaginateSearch, 
-            bool isTypographic, TypographyType typographyType, int userId = 0)
+            bool isTypographic, TypographyType typographyType, int userId = 1)
         {
             logger.LogInformation("GetQuarterYear input {@customerSealQuarterPaginateSearch} isTypographicUse: {@isTypographic} typographyType: {@TypographyType} userId: {@userId}"
                 , customerSealQuarterPaginateSearch, isTypographic, typographyType, userId);
@@ -212,7 +212,7 @@ namespace SealTypographicWebAPI.Services.Implements
         }
 
         ///<inheritdoc />
-        public CustomerSealViewModels GetSeals(int customerSealQuarterId, bool isTransparent, int userId = 0)
+        public CustomerSealViewModels GetSeals(int customerSealQuarterId, bool isTransparent, int userId = 1)
         {
             logger.LogInformation("GetSeals input customerSealQuarterId: {@customerSealQuarterId} isTransparent= {@isTransparent} userId: {@userId}"
                 , customerSealQuarterId, isTransparent, userId);
@@ -258,7 +258,7 @@ namespace SealTypographicWebAPI.Services.Implements
         }
 
         ///<inheritdoc />
-        public async Task<ResponseViewModel> New(CustomerSealForm customerSealForm, TypographyType typographyType, int userId = 0)
+        public async Task<ResponseViewModel> New(CustomerSealForm customerSealForm, TypographyType typographyType, int userId = 1)
         {
             logger.LogInformation("New input {@customerSealForm} typographyType: {@typographyType} userId: {@userId}", customerSealForm, typographyType, userId);    
             
@@ -326,7 +326,7 @@ namespace SealTypographicWebAPI.Services.Implements
         }
 
         ///<inheritdoc />
-        public async Task<List<ResponseViewModel>> Update(CustomerSealUpdate customerSealUpdate, int userId = 0)
+        public async Task<List<ResponseViewModel>> Update(CustomerSealUpdate customerSealUpdate, int userId = 1)
         {
             logger.LogInformation("Update input {@customerSealUpdate} userId: {@userId}", customerSealUpdate, userId);
 
@@ -427,7 +427,7 @@ namespace SealTypographicWebAPI.Services.Implements
         }
 
         ///<inheritdoc />  
-        public ResponseViewModel ChangeReviewStatus(int customerSealQuarterId, ReviewStatus reviewStatus,int userId = 0)
+        public ResponseViewModel ChangeReviewStatus(int customerSealQuarterId, ReviewStatus reviewStatus,int userId = 1)
         {
             logger.LogInformation("ChangeReviewStatus input customerSealQuarterId: {@CustomerSealQuarterId} reviewStatus: {ReviewStatus} userId {@userId}"
                 , customerSealQuarterId, reviewStatus, userId);

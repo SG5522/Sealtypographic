@@ -16,7 +16,7 @@ namespace SealTypographicWebAPI.Services
         /// <param name="accountantId">會計師ID</param>
         /// <param name="userId">登入的使用者ID</param>        
         /// <returns></returns>
-        AccountantSignGroupResponse GetCreateDates(int accountantId, int userId = 0);
+        AccountantSignGroupResponse GetCreateDates(int accountantId, int userId = 1);
 
         /// <summary>
         /// 取得會計師簽印組
@@ -25,7 +25,7 @@ namespace SealTypographicWebAPI.Services
         /// <param name="isTransparent">是否白底透明化</param>
         /// <param name="userId">登入的使用者ID</param>
         /// <returns></returns>
-        AccountantSignViewModels GetSignViewModels(int accountantSignGroupId, bool isTransparent,int userId = 0);
+        AccountantSignViewModels GetSignViewModels(int accountantSignGroupId, bool isTransparent,int userId = 1);
 
         /// <summary>
         /// 新增會計師簽印組
@@ -33,7 +33,7 @@ namespace SealTypographicWebAPI.Services
         /// <param name="accountantSignForms">會計師簽印組</param>
         /// <param name="userId">登入的使用者ID</param>
         /// <returns></returns>
-        Task<ResponseViewModel> New(AccountantSignForms accountantSignForms, int userId = 0);
+        Task<ResponseViewModel> New(AccountantSignForms accountantSignForms, int userId = 1);
 
         /// <summary>
         /// 異動會計師簽印
@@ -41,7 +41,7 @@ namespace SealTypographicWebAPI.Services
         /// <param name="accountantSignUpdate">需要異動會計師簽印資料</param>
         /// <param name="userId">登入的使用者ID</param>
         /// <returns></returns>
-        Task<List<ResponseViewModel>> Update(AccountantSignUpdate accountantSignUpdate, int userId = 0);
+        Task<List<ResponseViewModel>> Update(AccountantSignUpdate accountantSignUpdate, int userId = 1);
 
         /// <summary>
         /// 會計師印鑑待審狀態變更。
@@ -49,6 +49,6 @@ namespace SealTypographicWebAPI.Services
         /// <param name="accountantSignGroupId">會計師簽印群組Id</param>
         /// <param name="reviewStatus">審查狀態</param>
         /// <param name="userId">登入的使用者ID</param>        
-        ResponseViewModel ChangeReviewStatus(int accountantSignGroupId, ReviewStatus reviewStatus, int userId = 0);
+        ResponseViewModel ChangeReviewStatus(int accountantSignGroupId, ReviewStatus reviewStatus, int userId = 1);
     }
 }

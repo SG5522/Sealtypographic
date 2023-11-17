@@ -10,7 +10,7 @@ namespace DBEntities
         /// <summary>
         /// 使用者
         /// </summary>
-        public User? User { get; set; }
+        //public User? User { get; set; }
 
         /// <summary>
         /// 會計師事務所(公司)

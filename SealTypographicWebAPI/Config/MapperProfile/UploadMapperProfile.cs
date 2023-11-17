@@ -9,12 +9,12 @@ namespace SealTypographicWebAPI.Config.MapperProfile
     /// <summary>
     /// AutoMapper用的LIST
     /// </summary>
-    public class UploadrMapperProfile : Profile
+    public class UploadMapperProfile : Profile
     {
         /// <summary>
         /// 建置
         /// </summary>
-        public UploadrMapperProfile()
+        public UploadMapperProfile()
         {
             CreateMap<UploadFile, UploadViewModel>()                    
                     .ForMember(dst => dst.FileName, opt => opt.MapFrom(src => src.OriginalFileName))

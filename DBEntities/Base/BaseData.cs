@@ -25,22 +25,22 @@ namespace DBEntities.Base
         /// <summary>
         /// 建立此筆資料的User
         /// </summary>
-        public int CreateUserId { get; set; }
+        public int? CreateUserId { get; set; }
 
         /// <summary>
         /// 建立User
         /// </summary>
-        public User CreateUser { get; set; }
+        public User? CreateUser { get; set; }
 
         /// <summary>
         /// 更新此筆資料的User
         /// </summary>
-        public int UpdateUserId { get; set; }
+        public int? UpdateUserId { get; set; }
 
         /// <summary>
         /// 建立User
         /// </summary>
-        public User UpdateUser { get; set; }
+        public User? UpdateUser { get; set; }
 
         /// <summary>
         /// 刪除狀態

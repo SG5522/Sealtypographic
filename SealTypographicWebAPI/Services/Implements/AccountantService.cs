@@ -35,7 +35,7 @@ namespace SealTypographicWebAPI.Services.Implements
         }
 
         ///<inheritdoc />
-        public AccountantDetailResponse GetDetail(int accountantId, int userId = 0)
+        public AccountantDetailResponse GetDetail(int accountantId, int userId = 1)
         {
             logger.LogInformation("GetDetail input accountantId: {@accountantId} userId {@userId}", accountantId, userId);
 
@@ -73,7 +73,7 @@ namespace SealTypographicWebAPI.Services.Implements
         }
 
         ///<inheritdoc />
-        public AccountantPaginateViewModel GetPaginate(AccountantSearch accountantSearch, bool isTypographicUse, int userId = 0)
+        public AccountantPaginateViewModel GetPaginate(AccountantSearch accountantSearch, bool isTypographicUse, int userId = 1)
         {
             logger.LogInformation("GetPaginate input {@accountantSearch} isTypographicUse: {@isTypographicUse} userId {@userId}"
                 ,accountantSearch, isTypographicUse, userId);
@@ -141,7 +141,7 @@ namespace SealTypographicWebAPI.Services.Implements
 
 
         ///<inheritdoc />
-        public AccountantCreateResponse New(AccountantForm accountantForm, int userId = 0)
+        public AccountantCreateResponse New(AccountantForm accountantForm, int userId = 1)
         {
             logger.LogInformation("New input {@accountantForm} userId: {@userId}", accountantForm, userId);
 
@@ -203,7 +203,7 @@ namespace SealTypographicWebAPI.Services.Implements
         }
 
         ///<inheritdoc />      
-        public ResponseViewModel Update(AccountantUpdateForm accountantFormUpdate, int userId = 0)
+        public ResponseViewModel Update(AccountantUpdateForm accountantFormUpdate, int userId = 1)
         {
             logger.LogInformation("Update input {@accountantFormUpdate} userId {@userId}", accountantFormUpdate, userId);
 
@@ -253,7 +253,7 @@ namespace SealTypographicWebAPI.Services.Implements
         }
 
         ///<inheritdoc />     
-        public ResponseViewModel Delete(int accountantId, int userId = 0)
+        public ResponseViewModel Delete(int accountantId, int userId = 1)
         {
             logger.LogInformation("Delete input accountantId: {@accountantId} userId {@userId}", accountantId, userId);
 

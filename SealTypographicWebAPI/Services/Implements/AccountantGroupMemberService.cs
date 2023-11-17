@@ -32,7 +32,7 @@ namespace SealTypographicWebAPI.Services.Implements
         }
 
         ///<inheritdoc /> 
-        public AccountantGroupMembers GetMembers(AccountantGroupMemberSearch accountantGroupMemberSearch, bool isGroupMember, int userId = 0)
+        public AccountantGroupMembers GetMembers(AccountantGroupMemberSearch accountantGroupMemberSearch, bool isGroupMember, int userId = 1)
         {
             logger.LogInformation("GetMembers input {@accountantGroupMemberSearch} isGroupMember: {@isGroupMember} userId: {@userId}", accountantGroupMemberSearch, isGroupMember, userId);
 
@@ -82,7 +82,7 @@ namespace SealTypographicWebAPI.Services.Implements
       
 
         ///<inheritdoc /> 
-        public ResponseViewModel UpdateGroupMembers(AccountantGroupMemberForm accountantGroupMemberForm, int userId = 0)
+        public ResponseViewModel UpdateGroupMembers(AccountantGroupMemberForm accountantGroupMemberForm, int userId = 1)
         {
             logger.LogInformation("UpdateGroupMembers input {@accountantGroupMemberForm} userId {@userId}", accountantGroupMemberForm, userId);
 

@@ -57,7 +57,7 @@ namespace SealTypographicWebAPI.Services
         /// <param name="uploadBase64Data">上傳檔案內容</param>
         /// <param name="userId">使用者Id</param>              
         /// <returns></returns>
-        Task<ResponseViewModel> SaveScanFile(UploadScanData uploadBase64Data, int userId = 0);
+        Task<ResponseViewModel> SaveScanFile(UploadScanData uploadBase64Data, int userId = 1);
 
         /// <summary>
         /// 上傳圖檔(IFormFile)
@@ -65,7 +65,7 @@ namespace SealTypographicWebAPI.Services
         /// <param name="uploadData">上傳檔案內容</param>
         /// <param name="userId"></param>              
         /// <returns></returns>
-        Task<ResponseViewModel> SaveFormFile(UploadData uploadData, int userId = 0);
+        Task<ResponseViewModel> SaveFormFile(UploadData uploadData, int userId = 1);
 
         /// <summary>
         /// 變更檔案工作狀態為已處理
@@ -73,7 +73,7 @@ namespace SealTypographicWebAPI.Services
         /// <param name="uploadFileId">上傳檔案Id</param>
         /// <param name="userId"></param>
         /// <returns></returns>
-        ResponseViewModel ChangeFileWorkStatusToDone(int uploadFileId, int userId = 0);
+        ResponseViewModel ChangeFileWorkStatusToDone(int uploadFileId, int userId = 1);
 
         /// <summary>
         /// 刪除上傳檔案(隱藏)
@@ -81,6 +81,6 @@ namespace SealTypographicWebAPI.Services
         /// <param name="uploadFileIds"></param>
         /// <param name="userId"></param>
         /// <returns></returns>
-        ResponseViewModel Delete(List<int> uploadFileIds, int userId = 0);
+        ResponseViewModel Delete(List<int> uploadFileIds, int userId = 1);
     }
 }

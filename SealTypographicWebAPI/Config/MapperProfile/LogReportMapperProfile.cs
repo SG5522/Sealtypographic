@@ -21,7 +21,8 @@ namespace SealTypographicWebAPI.Config.MapperProfile
                     //.ForMember(dst => dst.CreateUserId, opt => opt.MapFrom(src => src.CreateUserId))
                     ////TODO:透過keycloak取得使用者名稱
                     //.ForMember(dst => dst.CreateUserName, opt => opt.MapFrom(src => src.CreateUserId.ToString()))
-                    .ForMember(dst => dst.UserId, opt => opt.MapFrom(src => src.UpdateUserId))
+                    .ForMember(dst => dst.UserName, opt => opt.MapFrom(src => src.UpdateUser!.UserName))
+                    .ForMember(dst => dst.UserNickName, opt => opt.MapFrom(src => src.UpdateUser!.NickName))
                     .ForMember(dst => dst.CustomerCode, opt => opt.MapFrom(src => src.Customer.Code))
                     .ForMember(dst => dst.CustomerName, opt => opt.MapFrom(src => src.Customer.Name))
                     .ForMember(dst => dst.RecordDate, opt => opt.MapFrom(src => src.UpdateDate))

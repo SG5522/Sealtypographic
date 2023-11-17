@@ -16,7 +16,7 @@ namespace SealTypographicWebAPI.Services
         /// <param name="typographyType">排版類別</param>
         /// <param name="userId">登入的使用者Id</param>
         /// <returns></returns>
-        CustomerSealGroupReviewPaginate GetReviewList(CustomerSealSearchReview customerSealReviewSearch, TypographyType typographyType, int userId = 0);
+        CustomerSealGroupReviewPaginate GetReviewList(CustomerSealSearchReview customerSealReviewSearch, TypographyType typographyType, int userId = 1);
 
         /// <summary>
         /// 基本資料與印鑑細項
@@ -24,7 +24,7 @@ namespace SealTypographicWebAPI.Services
         /// <param name="CustomerSealQuarterId">印鑑季度Id</param>
         /// <param name="userId">登入的使用者Id</param>
         /// <returns></returns>
-        CustomerSealGroupDetailReviewResponse GetReviewDetail(int CustomerSealQuarterId, int userId = 0);
+        CustomerSealGroupDetailReviewResponse GetReviewDetail(int CustomerSealQuarterId, int userId = 1);
 
         /// <summary>
         /// 更換審核狀態
@@ -33,6 +33,6 @@ namespace SealTypographicWebAPI.Services
         /// <param name="reviewStatus">審核狀態</param>
         /// <param name="userId">登入的使用者Id</param>
         /// <returns></returns>
-        ResponseViewModel StatusChange(List<int> customerSealQuarterIds, ReviewStatus reviewStatus, int userId = 0);
+        ResponseViewModel StatusChange(List<int> customerSealQuarterIds, ReviewStatus reviewStatus, int userId = 1);
     }
 }

@@ -154,7 +154,7 @@ namespace SealTypographicWebAPI.Services.Implements
                         TemporarySealGroup temporarySealGroup = new();
                         List<TypographicResource> typographicResources = new();
                         ImageBase64Info imageBase64Info = imageService.SetImageBase64InfoWithSeal(customerQuery.Code, SealType.TemporarySeal);
-                        int userId = 0;
+                        int userId = 1;
 
                         BaseInputTemporarySealGroup(temporarySealGroup, true, userId);
                         await NewTypographyResource(temporarySealForm.Seals, typographicResources, imageBase64Info, userId);
@@ -189,7 +189,7 @@ namespace SealTypographicWebAPI.Services.Implements
         public async Task<ResponseViewModel> Update(TemporarySealUpdateForm temporarySealUpdateForm)
         {
             ResponseViewModel response = new();
-            int userId = 0;
+            int userId = 1;
             TemporarySealGroup? temporarySealGroup = dbContext.TemporarySealGroups
                                                             .Include(temporarySealQuarterJournal => temporarySealQuarterJournal.Customer)
                                                             .Include(temporarySealQuarterJournal => temporarySealQuarterJournal.TypographicResources)
@@ -258,7 +258,7 @@ namespace SealTypographicWebAPI.Services.Implements
         public ResponseViewModel Delete(int Id)
         {
             ResponseViewModel response = new();
-            int userId = 0;
+            int userId = 1;
             TemporarySealGroup? temporarySealGroup = dbContext.TemporarySealGroups.Find(Id);
             if(temporarySealGroup != null)
             {

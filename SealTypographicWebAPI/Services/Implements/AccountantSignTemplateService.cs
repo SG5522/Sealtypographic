@@ -124,17 +124,17 @@ namespace SealTypographicWebAPI.Services.Implements
             }
             SavePaginateLog(accountantSignTemplatePaginate);
             return accountantSignTemplatePaginate;
-        }        
+        }
 
         /// <summary>
         /// 新增會計師簽印樣板
         /// </summary>
         /// <param name="accountantSignTemplateForm">會計師簽印樣板</param>
+        /// <param name="userId"></param>
         /// <returns></returns>
-        public async Task<ResponseViewModel> New(AccountantSignTemplateForm accountantSignTemplateForm)
+        public async Task<ResponseViewModel> New(AccountantSignTemplateForm accountantSignTemplateForm, int userId = 1)
         {
-            ResponseViewModel response = new();            
-            int userid = 0; //帳號驗證取得ID
+            ResponseViewModel response = new();                        
             int companyId = 1; //公司ID
 
             //尋找公司並與會計師簽印關聯
@@ -155,7 +155,7 @@ namespace SealTypographicWebAPI.Services.Implements
                 template.ThumbnailFullPath = await imageService.GetSavedImageThumbnailFilePath(imageBase64Info, false);
                 
                 NewTemplateLoction(accountantSignTemplateForm.AccountantSignTemplateLocationForms, templateLocations);                
-                InputUtil.Base(template, true, userid);
+                InputUtil.Base(template, true, userId);
                 template.TemplateLocations = templateLocations;
                 template.Company = companyQuery;
                 dbContext.Templates.Add(template);                
@@ -233,7 +233,7 @@ namespace SealTypographicWebAPI.Services.Implements
         public ResponseViewModel Delete (int Id)
         {
             ResponseViewModel response = new();
-            int userId = 0;
+            int userId = 1;
 
             Template? templateQuery = dbContext.Templates.Find(Id);
 

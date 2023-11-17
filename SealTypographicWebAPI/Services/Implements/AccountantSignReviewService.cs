@@ -35,7 +35,7 @@ namespace SealTypographicWebAPI.Services.Implements
         }
 
         ///<inheritdoc />
-        public AccountantSignGroupReviewPaginate GetReviewPaginate(AccountantSignSearchReview accountantSignSearchReview, int userId = 0)
+        public AccountantSignGroupReviewPaginate GetReviewPaginate(AccountantSignSearchReview accountantSignSearchReview, int userId = 1)
         {
             logger.LogInformation("GetReviewPaginate input {@input} userId {@userId}", accountantSignSearchReview, userId);
 
@@ -99,7 +99,7 @@ namespace SealTypographicWebAPI.Services.Implements
         }
 
         ///<inheritdoc />
-        public AccountantSignGroupDetailReviewResponse GetReviewDetail(int accountantSignGroupId, int userId = 0)
+        public AccountantSignGroupDetailReviewResponse GetReviewDetail(int accountantSignGroupId, int userId = 1)
         {
             logger.LogInformation("GetReviewDetail accountantSignGroupId {@accountantSignGroupId} userId {@userId}", accountantSignGroupId, userId);
 
@@ -142,7 +142,7 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <param name="reviewStatus">審核狀態</param>
         /// <param name="userId">從Keycloak驗證取得</param>
         /// <returns></returns>
-        public ResponseViewModel StatusChange(List<int> accountantSignGroupIds, ReviewStatus reviewStatus, int userId = 0)
+        public ResponseViewModel StatusChange(List<int> accountantSignGroupIds, ReviewStatus reviewStatus, int userId = 1)
         {
             logger.LogInformation("StatusChange accountantSignGroupIds: {@accountantSignGroupIds}, reviewStatus: {@reviewStatus}, userId: {@userId} "
                                     , accountantSignGroupIds, reviewStatus, userId);

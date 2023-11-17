@@ -17,7 +17,7 @@ namespace SealTypographicWebAPI.Services
         /// <param name="isGroupMember">是否為該群組成員</param>
         /// <param name="userId">登入使用者Id</param>
         /// <returns></returns>
-        AccountantGroupMembers GetMembers(AccountantGroupMemberSearch accountantGroupMemberSearch, bool isGroupMember, int userId = 0);
+        AccountantGroupMembers GetMembers(AccountantGroupMemberSearch accountantGroupMemberSearch, bool isGroupMember, int userId = 1);
 
         /// <summary>
         /// 更新會計師群組的成員
@@ -25,7 +25,7 @@ namespace SealTypographicWebAPI.Services
         /// <param name="accountantGroupMemberForm">會計師群組成員資料</param>
         /// <param name="userId">登入使用者Id</param>
         /// <returns></returns>
-        ResponseViewModel UpdateGroupMembers(AccountantGroupMemberForm accountantGroupMemberForm, int userId = 0);
+        ResponseViewModel UpdateGroupMembers(AccountantGroupMemberForm accountantGroupMemberForm, int userId = 1);
 
     }
 }

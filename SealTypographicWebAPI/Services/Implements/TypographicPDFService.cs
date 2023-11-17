@@ -38,7 +38,7 @@ namespace SealTypographicWebAPI.Services.Implements
         }
 
         ///<inheritdoc />
-        public TypographicPDFPaginateViewModel GetPaginate(TypographicPDFSearch typographicPDFSearch, TypographyType typographyType, int userId = 0)
+        public TypographicPDFPaginateViewModel GetPaginate(TypographicPDFSearch typographicPDFSearch, TypographyType typographyType, int userId = 1)
         {
             logger.LogInformation("GetPaginate input {@typographicPDFSearch} typographyType: {@typographyType} userId: {@userId}", typographicPDFSearch, typographyType, userId);
 
@@ -105,7 +105,7 @@ namespace SealTypographicWebAPI.Services.Implements
         }
 
         ///<inheritdoc />
-        public TypographicPagesResponse GetEditPages(int id, int userId = 0)
+        public TypographicPagesResponse GetEditPages(int id, int userId = 1)
         {
             logger.LogInformation("GetPaginate input id: {@id} userId: {@userId}", id, userId);
 
@@ -142,7 +142,7 @@ namespace SealTypographicWebAPI.Services.Implements
         }
 
         ///<inheritdoc />
-        public PDFViewModel GetPDFView(int uploadFileid, int pageNumber, int userId = 0)
+        public PDFViewModel GetPDFView(int uploadFileid, int pageNumber, int userId = 1)
         {
             logger.LogInformation("GetPDFView input uploadFileid: {@uploadFileid} pageNumber: {@pageNumber} userId: {@userId}"
                                     , uploadFileid, pageNumber, userId);
@@ -184,7 +184,7 @@ namespace SealTypographicWebAPI.Services.Implements
         }
 
         ///<inheritdoc />
-        public TypographicPageViewModel GetPageView(TypographicPDFPageSearch typographicPDFPageSearch, int userId = 0)
+        public TypographicPageViewModel GetPageView(TypographicPDFPageSearch typographicPDFPageSearch, int userId = 1)
         {
             logger.LogInformation("GetPageView input {@typographicPDFPageSearch} userId: {@userId}", typographicPDFPageSearch, userId);
 
@@ -234,7 +234,7 @@ namespace SealTypographicWebAPI.Services.Implements
         }
 
         ///<inheritdoc />
-        public TypographicPDFSettingViewModel GetTypographicPDFSummary(int typographicPDFId, int userId = 0)
+        public TypographicPDFSettingViewModel GetTypographicPDFSummary(int typographicPDFId, int userId = 1)
         {
             logger.LogInformation("GetTypographicPDFSummary typographicPDFId: {@typographicPDFId} userId: {@userId}}"
                                 , typographicPDFId, userId);
@@ -272,7 +272,7 @@ namespace SealTypographicWebAPI.Services.Implements
         }
 
         ///<inheritdoc />
-        public TypographicPDFEditViewResponse GetEditPDFView(int typographicPDFId, int userId = 0)
+        public TypographicPDFEditViewResponse GetEditPDFView(int typographicPDFId, int userId = 1)
         {
             logger.LogInformation("GetEditPDFView input typographicPDFId: {@typographicPDFId} userId: {@userId}", typographicPDFId, userId);
 
@@ -318,7 +318,7 @@ namespace SealTypographicWebAPI.Services.Implements
         }
 
         ///<inheritdoc />
-        public TypographicPDFMakeResponse MakeTyporaphicPDF(TypographicPDFMakeSetting typographicPDFMakeSetting, int userId = 0)
+        public TypographicPDFMakeResponse MakeTyporaphicPDF(TypographicPDFMakeSetting typographicPDFMakeSetting, int userId = 1)
         {
             logger.LogInformation("MakeTyporaphicPDF input {@typographicPDFMakeSetting} userId: {@userId}", typographicPDFMakeSetting, userId);
 
@@ -366,7 +366,7 @@ namespace SealTypographicWebAPI.Services.Implements
         }
 
         ///<inheritdoc />
-        public TypographicPDFNewResronse New(TypographicPDFForm typographicPDFForm, TypographyType typographyType, int userId = 0)
+        public TypographicPDFNewResronse New(TypographicPDFForm typographicPDFForm, TypographyType typographyType, int userId = 1)
         {
             logger.LogInformation("New input {@Input} typographyType: {@typographyType} userId: {@userId}", typographicPDFForm, typographyType, userId);
 
@@ -420,7 +420,7 @@ namespace SealTypographicWebAPI.Services.Implements
         }
 
         ///<inheritdoc />
-        public ResponseViewModel Save(TypographicPDFSaveForm typographicPDFSaveForm, int userId = 0)
+        public ResponseViewModel Save(TypographicPDFSaveForm typographicPDFSaveForm, int userId = 1)
         {
             logger.LogInformation("New input {@typographicPDFSaveForm} userId: {@userId}", typographicPDFSaveForm, userId);
 
@@ -468,7 +468,7 @@ namespace SealTypographicWebAPI.Services.Implements
         }
 
         ///<inheritdoc />
-        public ResponseViewModel ChangeReviewStatus(int typographicPDFId, ReviewStatus reviewStatus, int userId = 0)
+        public ResponseViewModel ChangeReviewStatus(int typographicPDFId, ReviewStatus reviewStatus, int userId = 1)
         {
             logger.LogInformation("ChangeReviewStatus input typographicPDFId: {@typographicPDFId} reviewStatus: {@reviewStatus} userId: {@userId}"
                 , typographicPDFId, reviewStatus, userId);
@@ -500,7 +500,7 @@ namespace SealTypographicWebAPI.Services.Implements
         }
 
         ///<inheritdoc />
-        public ResponseViewModel Delete(int typographicPDFId, int userId = 0)
+        public ResponseViewModel Delete(int typographicPDFId, int userId = 1)
         {
             logger.LogInformation("Delete input typographicPDFId: {@typographicPDFId} userId: {@userId}"
                 , typographicPDFId, userId);
