@@ -21,10 +21,10 @@ namespace SealTypographicWebAPI.Controllers
         /// <summary>
         /// 建置
         /// </summary>
-        public APIControllerBase(SealTypographicDbContext dbContext) 
-        {
-            this.dbContext = dbContext;
-        }
+        //public APIControllerBase(SealTypographicDbContext dbContext) 
+        //{
+        //    this.dbContext = dbContext;
+        //}
 
         /// <summary>
         /// 取得UserName

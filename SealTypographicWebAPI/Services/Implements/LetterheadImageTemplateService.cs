@@ -159,7 +159,7 @@ namespace SealTypographicWebAPI.Services.Implements
                 template.ThumbnailFullPath = await imageService.GetSavedImageThumbnailFilePath(imageBase64Info, false);
 
                 NewTemplateLoction(letterheadImageTemplateForm.LetterheadTemplateLocationForm, templateLocations);                                                     
-                InputUtil.Base(template, true, userid);
+                InputUtil.Base(template, true, userId);
                 template.TemplateLocations = templateLocations;
                 template.Company = companyQuery;
                 dbContext.Templates.Add(template);                      

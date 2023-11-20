@@ -25,8 +25,7 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="logger"></param>
         /// <param name="environment"></param>
         /// <param name="keycloakAuthenticationOptions"></param>   
-        public SysController(ILogger<SysController> logger, IWebHostEnvironment environment, KeycloakAuthenticationOptions keycloakAuthenticationOptions)
-        //    ClaimsPrincipal claimsPrincipal)
+        public SysController(ILogger<SysController> logger, IWebHostEnvironment environment, KeycloakAuthenticationOptions keycloakAuthenticationOptions)        
         {
             this.logger = logger;
             this.environment = environment;

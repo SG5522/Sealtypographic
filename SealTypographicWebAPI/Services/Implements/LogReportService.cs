@@ -2,8 +2,6 @@
 using DBEntities;
 using DBEntities.Consts;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Identity.Client;
-using SealTypographicWebAPI.Models;
 using SealTypographicWebAPI.Models.LogReport;
 using SealTypographicWebAPI.Utils;
 
@@ -72,14 +70,13 @@ namespace SealTypographicWebAPI.Services.Implements
                 if(!string.IsNullOrEmpty(customerTypoReportSearch.CustomerKeyWord))
                 {
                     typographicPDFQuery = typographicPDFQuery.Where(x => x.Customer.Name.Contains(customerTypoReportSearch.CustomerKeyWord)
-                                                                    || x.Customer.Code.Contains(customerTypoReportSearch.CustomerKeyWord));                    
+                                                                    || x.Customer.Code.Contains(customerTypoReportSearch.CustomerKeyWord));                 
                 }
 
                 typographicPDFQuery = typographicPDFQuery.OrderBy(x => x.Id);
 
                 if (typographicPDFQuery.Any())
                 {
-
                     List<TypographicReportViewModel> typographicReportViewModels = PageUtil.SetPaginateViewModel<TypographicPDF, TypographicReportViewModel>
                                                                                     (typographicPDFQuery, customerTypoReportSearch.PageNumber, customerTypoReportSearch.PageSize, configurationProvider);
 
@@ -89,7 +86,6 @@ namespace SealTypographicWebAPI.Services.Implements
                     
 
                     PageUtil.SetPaginate(customerTypoReportPaginate, customerTypoReportSearch.PageNumber, customerTypoReportSearch.PageSize, typographicPDFQuery.Count());
-
                 }
                 else
                 {
@@ -100,7 +96,7 @@ namespace SealTypographicWebAPI.Services.Implements
             }
             catch (Exception ex) 
             {                
-                logger.LogError("GetTypographicReport error", ex.Message);
+                logger.LogError("GetTypographicReport error {@error}", ex.Message);
             }
             return customerTypoReportPaginate;
         }
