@@ -11,14 +11,14 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Sqlite.Migrations
 {
     [DbContext(typeof(SealTypographicDbContext))]
-    [Migration("20231102053115_InitialCreate")]
+    [Migration("20231121093200_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder.HasAnnotation("ProductVersion", "7.0.12");
+            modelBuilder.HasAnnotation("ProductVersion", "7.0.13");
 
             modelBuilder.Entity("DBEntities.Accountant", b =>
                 {
@@ -36,7 +36,7 @@ namespace Sqlite.Migrations
                     b.Property<DateTime>("CreateDate")
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("CreateUserId")
+                    b.Property<int?>("CreateUserId")
                         .HasColumnType("INTEGER");
 
                     b.Property<byte>("DeleteStatus")
@@ -49,12 +49,16 @@ namespace Sqlite.Migrations
                     b.Property<DateTime>("UpdateDate")
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("UpdateUserId")
+                    b.Property<int?>("UpdateUserId")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
 
                     b.HasIndex("CompanyId");
+
+                    b.HasIndex("CreateUserId");
+
+                    b.HasIndex("UpdateUserId");
 
                     b.ToTable("Accountants");
                 });
@@ -75,7 +79,7 @@ namespace Sqlite.Migrations
                     b.Property<DateTime>("CreateDate")
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("CreateUserId")
+                    b.Property<int?>("CreateUserId")
                         .HasColumnType("INTEGER");
 
                     b.Property<byte>("DeleteStatus")
@@ -88,12 +92,16 @@ namespace Sqlite.Migrations
                     b.Property<DateTime>("UpdateDate")
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("UpdateUserId")
+                    b.Property<int?>("UpdateUserId")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
 
                     b.HasIndex("CompanyId");
+
+                    b.HasIndex("CreateUserId");
+
+                    b.HasIndex("UpdateUserId");
 
                     b.ToTable("AccountantGroups");
                 });
@@ -110,7 +118,7 @@ namespace Sqlite.Migrations
                     b.Property<DateTime>("CreateDate")
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("CreateUserId")
+                    b.Property<int?>("CreateUserId")
                         .HasColumnType("INTEGER");
 
                     b.Property<byte>("DeleteStatus")
@@ -134,12 +142,16 @@ namespace Sqlite.Migrations
                     b.Property<DateTime>("UpdateDate")
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("UpdateUserId")
+                    b.Property<int?>("UpdateUserId")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
 
                     b.HasIndex("AccountantId");
+
+                    b.HasIndex("CreateUserId");
+
+                    b.HasIndex("UpdateUserId");
 
                     b.ToTable("AccountantSignGroups");
                 });
@@ -181,7 +193,7 @@ namespace Sqlite.Migrations
                     b.Property<DateTime>("CreateDate")
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("CreateUserId")
+                    b.Property<int?>("CreateUserId")
                         .HasColumnType("INTEGER");
 
                     b.Property<byte>("DeleteStatus")
@@ -212,10 +224,14 @@ namespace Sqlite.Migrations
                     b.Property<DateTime>("UpdateDate")
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("UpdateUserId")
+                    b.Property<int?>("UpdateUserId")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CreateUserId");
+
+                    b.HasIndex("UpdateUserId");
 
                     b.ToTable("Companys");
                 });
@@ -260,7 +276,7 @@ namespace Sqlite.Migrations
                     b.Property<DateTime>("CreateDate")
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("CreateUserId")
+                    b.Property<int?>("CreateUserId")
                         .HasColumnType("INTEGER");
 
                     b.Property<byte>("DeleteStatus")
@@ -291,12 +307,16 @@ namespace Sqlite.Migrations
                     b.Property<DateTime>("UpdateDate")
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("UpdateUserId")
+                    b.Property<int?>("UpdateUserId")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
 
                     b.HasIndex("CompanyId");
+
+                    b.HasIndex("CreateUserId");
+
+                    b.HasIndex("UpdateUserId");
 
                     b.ToTable("Customers");
                 });
@@ -310,7 +330,7 @@ namespace Sqlite.Migrations
                     b.Property<DateTime>("CreateDate")
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("CreateUserId")
+                    b.Property<int?>("CreateUserId")
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("CustomerId")
@@ -343,14 +363,18 @@ namespace Sqlite.Migrations
                     b.Property<DateTime>("UpdateDate")
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("UpdateUserId")
+                    b.Property<int?>("UpdateUserId")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
 
+                    b.HasIndex("CreateUserId");
+
                     b.HasIndex("CustomerId");
 
                     b.HasIndex("QuarterYearId");
+
+                    b.HasIndex("UpdateUserId");
 
                     b.ToTable("CustomerSealGroups");
                 });
@@ -416,7 +440,7 @@ namespace Sqlite.Migrations
                     b.Property<DateTime>("CreateDate")
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("CreateUserId")
+                    b.Property<int?>("CreateUserId")
                         .HasColumnType("INTEGER");
 
                     b.Property<byte>("DeleteStatus")
@@ -431,17 +455,16 @@ namespace Sqlite.Migrations
                     b.Property<DateTime>("UpdateDate")
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("UpdateUserId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int?>("UserId")
+                    b.Property<int?>("UpdateUserId")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
 
                     b.HasIndex("CompanyId");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("CreateUserId");
+
+                    b.HasIndex("UpdateUserId");
 
                     b.ToTable("ImageRangeSettings");
                 });
@@ -458,7 +481,7 @@ namespace Sqlite.Migrations
                     b.Property<DateTime>("CreateDate")
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("CreateUserId")
+                    b.Property<int?>("CreateUserId")
                         .HasColumnType("INTEGER");
 
                     b.Property<byte>("DeleteStatus")
@@ -474,12 +497,16 @@ namespace Sqlite.Migrations
                     b.Property<DateTime>("UpdateDate")
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("UpdateUserId")
+                    b.Property<int?>("UpdateUserId")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
 
                     b.HasIndex("CompanyId");
+
+                    b.HasIndex("CreateUserId");
+
+                    b.HasIndex("UpdateUserId");
 
                     b.ToTable("Letterheads");
                 });
@@ -493,7 +520,7 @@ namespace Sqlite.Migrations
                     b.Property<DateTime>("CreateDate")
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("CreateUserId")
+                    b.Property<int?>("CreateUserId")
                         .HasColumnType("INTEGER");
 
                     b.Property<byte>("DeleteStatus")
@@ -511,10 +538,14 @@ namespace Sqlite.Migrations
                     b.Property<DateTime>("UpdateDate")
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("UpdateUserId")
+                    b.Property<int?>("UpdateUserId")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CreateUserId");
+
+                    b.HasIndex("UpdateUserId");
 
                     b.ToTable("QuarterYears");
                 });
@@ -531,7 +562,7 @@ namespace Sqlite.Migrations
                     b.Property<DateTime>("CreateDate")
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("CreateUserId")
+                    b.Property<int?>("CreateUserId")
                         .HasColumnType("INTEGER");
 
                     b.Property<byte>("DeleteStatus")
@@ -564,12 +595,16 @@ namespace Sqlite.Migrations
                     b.Property<DateTime>("UpdateDate")
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("UpdateUserId")
+                    b.Property<int?>("UpdateUserId")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
 
                     b.HasIndex("CompanyId");
+
+                    b.HasIndex("CreateUserId");
+
+                    b.HasIndex("UpdateUserId");
 
                     b.ToTable("Templates");
                 });
@@ -617,7 +652,7 @@ namespace Sqlite.Migrations
                     b.Property<DateTime>("CreateDate")
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("CreateUserId")
+                    b.Property<int?>("CreateUserId")
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("CustomerId")
@@ -632,14 +667,18 @@ namespace Sqlite.Migrations
                     b.Property<DateTime>("UpdateDate")
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("UpdateUserId")
+                    b.Property<int?>("UpdateUserId")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
 
+                    b.HasIndex("CreateUserId");
+
                     b.HasIndex("CustomerId");
 
                     b.HasIndex("QuarterYearId");
+
+                    b.HasIndex("UpdateUserId");
 
                     b.ToTable("TemporarySealGroups");
                 });
@@ -653,7 +692,7 @@ namespace Sqlite.Migrations
                     b.Property<DateTime>("CreateDate")
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("CreateUserId")
+                    b.Property<int?>("CreateUserId")
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("CustomerId")
@@ -694,7 +733,7 @@ namespace Sqlite.Migrations
                     b.Property<DateTime>("UpdateDate")
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("UpdateUserId")
+                    b.Property<int?>("UpdateUserId")
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("UploadFileId")
@@ -702,9 +741,13 @@ namespace Sqlite.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("CreateUserId");
+
                     b.HasIndex("CustomerId");
 
                     b.HasIndex("QuarterYearId");
+
+                    b.HasIndex("UpdateUserId");
 
                     b.HasIndex("UploadFileId");
 
@@ -753,7 +796,7 @@ namespace Sqlite.Migrations
                     b.Property<DateTime>("CreateDate")
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("CreateUserId")
+                    b.Property<int?>("CreateUserId")
                         .HasColumnType("INTEGER");
 
                     b.Property<int?>("CustomerSealGroupId")
@@ -787,7 +830,7 @@ namespace Sqlite.Migrations
                     b.Property<DateTime>("UpdateDate")
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("UpdateUserId")
+                    b.Property<int?>("UpdateUserId")
                         .HasColumnType("INTEGER");
 
                     b.Property<int?>("UploadFileId")
@@ -797,11 +840,15 @@ namespace Sqlite.Migrations
 
                     b.HasIndex("AccountantSignGroupId");
 
+                    b.HasIndex("CreateUserId");
+
                     b.HasIndex("CustomerSealGroupId");
 
                     b.HasIndex("LetterheadId");
 
                     b.HasIndex("TemporarySealGroupId");
+
+                    b.HasIndex("UpdateUserId");
 
                     b.HasIndex("UploadFileId");
 
@@ -862,7 +909,7 @@ namespace Sqlite.Migrations
                     b.Property<DateTime>("CreateDate")
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("CreateUserId")
+                    b.Property<int?>("CreateUserId")
                         .HasColumnType("INTEGER");
 
                     b.Property<byte>("DeleteStatus")
@@ -882,7 +929,7 @@ namespace Sqlite.Migrations
                     b.Property<DateTime>("UpdateDate")
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("UpdateUserId")
+                    b.Property<int?>("UpdateUserId")
                         .HasColumnType("INTEGER");
 
                     b.Property<byte>("UploadType")
@@ -891,6 +938,10 @@ namespace Sqlite.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("CompanyId");
+
+                    b.HasIndex("CreateUserId");
+
+                    b.HasIndex("UpdateUserId");
 
                     b.ToTable("UploadFiles");
                 });
@@ -904,10 +955,13 @@ namespace Sqlite.Migrations
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("CompanyId")
+                    b.Property<int?>("CompanyId")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("ConcurrencyStamp")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("CreateDate")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Email")
@@ -924,6 +978,9 @@ namespace Sqlite.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<DateTimeOffset?>("LockoutEnd")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("NickName")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("NormalizedEmail")
@@ -947,6 +1004,9 @@ namespace Sqlite.Migrations
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("INTEGER");
 
+                    b.Property<DateTime>("UpdateDate")
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("UserName")
                         .HasColumnType("TEXT");
 
@@ -965,7 +1025,19 @@ namespace Sqlite.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("DBEntities.User", "CreateUser")
+                        .WithMany("AccountantsCreateUser")
+                        .HasForeignKey("CreateUserId");
+
+                    b.HasOne("DBEntities.User", "UpdateUser")
+                        .WithMany("AccountantsUpdateUser")
+                        .HasForeignKey("UpdateUserId");
+
                     b.Navigation("Company");
+
+                    b.Navigation("CreateUser");
+
+                    b.Navigation("UpdateUser");
                 });
 
             modelBuilder.Entity("DBEntities.AccountantGroup", b =>
@@ -976,7 +1048,19 @@ namespace Sqlite.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("DBEntities.User", "CreateUser")
+                        .WithMany("AccountantGroupsCreateUser")
+                        .HasForeignKey("CreateUserId");
+
+                    b.HasOne("DBEntities.User", "UpdateUser")
+                        .WithMany("AccountantGroupsUpdateUser")
+                        .HasForeignKey("UpdateUserId");
+
                     b.Navigation("Company");
+
+                    b.Navigation("CreateUser");
+
+                    b.Navigation("UpdateUser");
                 });
 
             modelBuilder.Entity("DBEntities.AccountantSignGroup", b =>
@@ -987,7 +1071,34 @@ namespace Sqlite.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("DBEntities.User", "CreateUser")
+                        .WithMany("AccountantSignGroupsCreateUser")
+                        .HasForeignKey("CreateUserId");
+
+                    b.HasOne("DBEntities.User", "UpdateUser")
+                        .WithMany("AccountantSignGroupsUpdateUser")
+                        .HasForeignKey("UpdateUserId");
+
                     b.Navigation("Accountant");
+
+                    b.Navigation("CreateUser");
+
+                    b.Navigation("UpdateUser");
+                });
+
+            modelBuilder.Entity("DBEntities.Company", b =>
+                {
+                    b.HasOne("DBEntities.User", "CreateUser")
+                        .WithMany("CompanysCreateUser")
+                        .HasForeignKey("CreateUserId");
+
+                    b.HasOne("DBEntities.User", "UpdateUser")
+                        .WithMany("CompanysUpdateUser")
+                        .HasForeignKey("UpdateUserId");
+
+                    b.Navigation("CreateUser");
+
+                    b.Navigation("UpdateUser");
                 });
 
             modelBuilder.Entity("DBEntities.Customer", b =>
@@ -998,11 +1109,27 @@ namespace Sqlite.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("DBEntities.User", "CreateUser")
+                        .WithMany("CustomersCreateUser")
+                        .HasForeignKey("CreateUserId");
+
+                    b.HasOne("DBEntities.User", "UpdateUser")
+                        .WithMany("CustomersUpdateUser")
+                        .HasForeignKey("UpdateUserId");
+
                     b.Navigation("Company");
+
+                    b.Navigation("CreateUser");
+
+                    b.Navigation("UpdateUser");
                 });
 
             modelBuilder.Entity("DBEntities.CustomerSealGroup", b =>
                 {
+                    b.HasOne("DBEntities.User", "CreateUser")
+                        .WithMany("CustomerSealGroupsCreateUser")
+                        .HasForeignKey("CreateUserId");
+
                     b.HasOne("DBEntities.Customer", "Customer")
                         .WithMany("CustomerSealGroups")
                         .HasForeignKey("CustomerId")
@@ -1015,9 +1142,17 @@ namespace Sqlite.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("DBEntities.User", "UpdateUser")
+                        .WithMany("CustomerSealGroupsUpdateUser")
+                        .HasForeignKey("UpdateUserId");
+
+                    b.Navigation("CreateUser");
+
                     b.Navigation("Customer");
 
                     b.Navigation("QuarterYear");
+
+                    b.Navigation("UpdateUser");
                 });
 
             modelBuilder.Entity("DBEntities.GroupAccountant", b =>
@@ -1056,13 +1191,19 @@ namespace Sqlite.Migrations
                         .WithMany("ImageRangeSettings")
                         .HasForeignKey("CompanyId");
 
-                    b.HasOne("DBEntities.User", "User")
-                        .WithMany("ImageRangeSettings")
-                        .HasForeignKey("UserId");
+                    b.HasOne("DBEntities.User", "CreateUser")
+                        .WithMany("ImageRangeSettingsCreateUser")
+                        .HasForeignKey("CreateUserId");
+
+                    b.HasOne("DBEntities.User", "UpdateUser")
+                        .WithMany("ImageRangeSettingsUpdateUser")
+                        .HasForeignKey("UpdateUserId");
 
                     b.Navigation("Company");
 
-                    b.Navigation("User");
+                    b.Navigation("CreateUser");
+
+                    b.Navigation("UpdateUser");
                 });
 
             modelBuilder.Entity("DBEntities.Letterhead", b =>
@@ -1073,7 +1214,34 @@ namespace Sqlite.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("DBEntities.User", "CreateUser")
+                        .WithMany("LetterheadsCreateUser")
+                        .HasForeignKey("CreateUserId");
+
+                    b.HasOne("DBEntities.User", "UpdateUser")
+                        .WithMany("LetterheadsUpdateUser")
+                        .HasForeignKey("UpdateUserId");
+
                     b.Navigation("Company");
+
+                    b.Navigation("CreateUser");
+
+                    b.Navigation("UpdateUser");
+                });
+
+            modelBuilder.Entity("DBEntities.QuarterYear", b =>
+                {
+                    b.HasOne("DBEntities.User", "CreateUser")
+                        .WithMany()
+                        .HasForeignKey("CreateUserId");
+
+                    b.HasOne("DBEntities.User", "UpdateUser")
+                        .WithMany()
+                        .HasForeignKey("UpdateUserId");
+
+                    b.Navigation("CreateUser");
+
+                    b.Navigation("UpdateUser");
                 });
 
             modelBuilder.Entity("DBEntities.Template", b =>
@@ -1084,7 +1252,19 @@ namespace Sqlite.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("DBEntities.User", "CreateUser")
+                        .WithMany("TemplatesCreateUser")
+                        .HasForeignKey("CreateUserId");
+
+                    b.HasOne("DBEntities.User", "UpdateUser")
+                        .WithMany("TemplatesUpdateUser")
+                        .HasForeignKey("UpdateUserId");
+
                     b.Navigation("Company");
+
+                    b.Navigation("CreateUser");
+
+                    b.Navigation("UpdateUser");
                 });
 
             modelBuilder.Entity("DBEntities.TemplateLocation", b =>
@@ -1100,6 +1280,10 @@ namespace Sqlite.Migrations
 
             modelBuilder.Entity("DBEntities.TemporarySealGroup", b =>
                 {
+                    b.HasOne("DBEntities.User", "CreateUser")
+                        .WithMany("TemporarySealGroupsCreateUser")
+                        .HasForeignKey("CreateUserId");
+
                     b.HasOne("DBEntities.Customer", "Customer")
                         .WithMany("TemporarySealGroups")
                         .HasForeignKey("CustomerId")
@@ -1111,14 +1295,26 @@ namespace Sqlite.Migrations
                         .HasForeignKey("QuarterYearId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("DBEntities.User", "UpdateUser")
+                        .WithMany("TemporarySealGroupsUpdateUser")
+                        .HasForeignKey("UpdateUserId");
+
+                    b.Navigation("CreateUser");
 
                     b.Navigation("Customer");
 
                     b.Navigation("QuarterYear");
+
+                    b.Navigation("UpdateUser");
                 });
 
             modelBuilder.Entity("DBEntities.TypographicPDF", b =>
                 {
+                    b.HasOne("DBEntities.User", "CreateUser")
+                        .WithMany("TypographicPDFsCreateUser")
+                        .HasForeignKey("CreateUserId");
+
                     b.HasOne("DBEntities.Customer", "Customer")
                         .WithMany("TypographicPDFs")
                         .HasForeignKey("CustomerId")
@@ -1130,6 +1326,10 @@ namespace Sqlite.Migrations
                         .HasForeignKey("QuarterYearId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("DBEntities.User", "UpdateUser")
+                        .WithMany("TypographicPDFsUpdateUser")
+                        .HasForeignKey("UpdateUserId");
 
                     b.HasOne("DBEntities.UploadFile", "UploadFile")
                         .WithMany("TypographicPDFs")
@@ -1137,9 +1337,13 @@ namespace Sqlite.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.Navigation("CreateUser");
+
                     b.Navigation("Customer");
 
                     b.Navigation("QuarterYear");
+
+                    b.Navigation("UpdateUser");
 
                     b.Navigation("UploadFile");
                 });
@@ -1167,6 +1371,10 @@ namespace Sqlite.Migrations
                         .WithMany("TypographicResources")
                         .HasForeignKey("AccountantSignGroupId");
 
+                    b.HasOne("DBEntities.User", "CreateUser")
+                        .WithMany("TypographicResourcesCreateUser")
+                        .HasForeignKey("CreateUserId");
+
                     b.HasOne("DBEntities.CustomerSealGroup", "CustomerSealGroup")
                         .WithMany("TypographicResources")
                         .HasForeignKey("CustomerSealGroupId");
@@ -1179,17 +1387,25 @@ namespace Sqlite.Migrations
                         .WithMany("TypographicResources")
                         .HasForeignKey("TemporarySealGroupId");
 
+                    b.HasOne("DBEntities.User", "UpdateUser")
+                        .WithMany("TypographicResourcesUpdateUser")
+                        .HasForeignKey("UpdateUserId");
+
                     b.HasOne("DBEntities.UploadFile", "UploadFile")
                         .WithMany("TypographicResources")
                         .HasForeignKey("UploadFileId");
 
                     b.Navigation("AccountantSignGroup");
 
+                    b.Navigation("CreateUser");
+
                     b.Navigation("CustomerSealGroup");
 
                     b.Navigation("Letterhead");
 
                     b.Navigation("TemporarySealGroup");
+
+                    b.Navigation("UpdateUser");
 
                     b.Navigation("UploadFile");
                 });
@@ -1221,16 +1437,26 @@ namespace Sqlite.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("DBEntities.User", "CreateUser")
+                        .WithMany("UploadFilesCreateUser")
+                        .HasForeignKey("CreateUserId");
+
+                    b.HasOne("DBEntities.User", "UpdateUser")
+                        .WithMany("UploadFilessUpdateUser")
+                        .HasForeignKey("UpdateUserId");
+
                     b.Navigation("Company");
+
+                    b.Navigation("CreateUser");
+
+                    b.Navigation("UpdateUser");
                 });
 
             modelBuilder.Entity("DBEntities.User", b =>
                 {
                     b.HasOne("DBEntities.Company", "Company")
                         .WithMany("Users")
-                        .HasForeignKey("CompanyId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("CompanyId");
 
                     b.Navigation("Company");
                 });
@@ -1338,7 +1564,57 @@ namespace Sqlite.Migrations
 
             modelBuilder.Entity("DBEntities.User", b =>
                 {
-                    b.Navigation("ImageRangeSettings");
+                    b.Navigation("AccountantGroupsCreateUser");
+
+                    b.Navigation("AccountantGroupsUpdateUser");
+
+                    b.Navigation("AccountantSignGroupsCreateUser");
+
+                    b.Navigation("AccountantSignGroupsUpdateUser");
+
+                    b.Navigation("AccountantsCreateUser");
+
+                    b.Navigation("AccountantsUpdateUser");
+
+                    b.Navigation("CompanysCreateUser");
+
+                    b.Navigation("CompanysUpdateUser");
+
+                    b.Navigation("CustomerSealGroupsCreateUser");
+
+                    b.Navigation("CustomerSealGroupsUpdateUser");
+
+                    b.Navigation("CustomersCreateUser");
+
+                    b.Navigation("CustomersUpdateUser");
+
+                    b.Navigation("ImageRangeSettingsCreateUser");
+
+                    b.Navigation("ImageRangeSettingsUpdateUser");
+
+                    b.Navigation("LetterheadsCreateUser");
+
+                    b.Navigation("LetterheadsUpdateUser");
+
+                    b.Navigation("TemplatesCreateUser");
+
+                    b.Navigation("TemplatesUpdateUser");
+
+                    b.Navigation("TemporarySealGroupsCreateUser");
+
+                    b.Navigation("TemporarySealGroupsUpdateUser");
+
+                    b.Navigation("TypographicPDFsCreateUser");
+
+                    b.Navigation("TypographicPDFsUpdateUser");
+
+                    b.Navigation("TypographicResourcesCreateUser");
+
+                    b.Navigation("TypographicResourcesUpdateUser");
+
+                    b.Navigation("UploadFilesCreateUser");
+
+                    b.Navigation("UploadFilessUpdateUser");
                 });
 #pragma warning restore 612, 618
         }

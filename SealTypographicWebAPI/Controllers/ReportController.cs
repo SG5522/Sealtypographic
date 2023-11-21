@@ -8,7 +8,7 @@ using SealTypographicWebAPI.Services;
 namespace SealTypographicWebAPI.Controllers
 {
     /// <summary>
-    ///  
+    ///  各項報表管理
     /// </summary>
     [Route("api/[controller]")]
     [ApiController]
@@ -42,30 +42,5 @@ namespace SealTypographicWebAPI.Controllers
         [HttpGet("[Action]")]
         public TypographicReportPaginate TaxReport([FromQuery] TypographicReportSearch customerTypoReportSearch)
             => logReportService.GetTypographicReport(customerTypoReportSearch, TypographyType.TaxReport);
-
-        // GET api/<ReportController>/5
-        [HttpGet("{id}")]
-        public string Get(int id)
-        {
-            return "value";
-        }
-
-        // POST api/<ReportController>
-        [HttpPost]
-        public void Post([FromBody] string value)
-        {
-        }
-
-        // PUT api/<ReportController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
-        {
-        }
-
-        // DELETE api/<ReportController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
-        }
     }
 }

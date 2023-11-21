@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SealTypographicWebAPI.Models;
 using SealTypographicWebAPI.Models.Upload;
-using Serilog;
 using DBEntities.Consts;
 using SealTypographicWebAPI.Services;
 
@@ -83,7 +82,7 @@ namespace SealTypographicWebAPI.Controllers
         /// </summary>
         /// <param name="upladData">檔案資料</param>              
         /// <returns></returns>
-        [HttpPost]        
+        [HttpPost]
         public async Task<ResponseViewModel> New([FromForm]UploadData upladData) => await uploadService.SaveFormFile(upladData);
 
         /// <summary>

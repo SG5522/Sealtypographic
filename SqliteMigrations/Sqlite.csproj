@@ -14,4 +14,8 @@
     <ProjectReference Include="..\DBEntities\DBEntities.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Migrations\" />
+  </ItemGroup>
+
 </Project>
