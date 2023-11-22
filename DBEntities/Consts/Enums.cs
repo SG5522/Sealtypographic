@@ -531,4 +531,17 @@ namespace DBEntities.Consts
         [Description("黑色")]
         Black = 3,
     }
+
+    /// <summary>
+    /// 設定選項
+    /// </summary>
+    public enum SettingOption : byte
+    {
+        /// <summary>
+        /// Keycloak登入Url
+        /// </summary>
+        [Description("Keycloak登入Url")]
+        AuthorizationEndpoint = 1
+        
+    }
 }
