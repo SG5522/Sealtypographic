@@ -26,7 +26,7 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="dbContext"></param>
         public UserController(IMapper mapper, IAdminService adminService, SealTypographicDbContext dbContext) : base(mapper, adminService)
         {            
-            this.dbContext = dbContext;            
+            this.dbContext = dbContext;
         }
 
         /// <summary>

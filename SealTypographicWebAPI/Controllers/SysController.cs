@@ -54,13 +54,18 @@ namespace SealTypographicWebAPI.Controllers
         }
 
         /// <summary>
-        /// 取得Keycloak參數
+        /// 取得Keycloak登入配置        
         /// </summary>
         /// <returns></returns>
         [HttpGet("[Action]")]
-        public KeycloakAuthenticationOptions Keycloak()
+        public LoginConfig KeycloakConfig()
         {
-            return keycloakAuthenticationOptions;
+            return new LoginConfig()
+            {
+                Url = keycloakAuthenticationOptions.AuthServerUrl,
+                Realm = keycloakAuthenticationOptions.Realm,
+                ClientId = keycloakAuthenticationOptions.Resource
+            };                
         }
 
         /// <summary>
