@@ -1,7 +1,5 @@
 ﻿using AutoMapper;
 using DBEntities;
-using SealTypographicWebAPI.Utils;
-using SealTypographicWebAPI.Models.QuarterYear;
 using SealTypographicWebAPI.Models.Upload;
 
 namespace SealTypographicWebAPI.Config.MapperProfile

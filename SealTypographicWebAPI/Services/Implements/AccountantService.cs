@@ -6,7 +6,6 @@ using AutoMapper;
 using DBEntities;
 using DBEntities.Consts;
 using AutoMapper.QueryableExtensions;
-using Azure;
 
 namespace SealTypographicWebAPI.Services.Implements
 {
@@ -43,13 +42,11 @@ namespace SealTypographicWebAPI.Services.Implements
 
             try
             {
-                AccountantDetailViewModel? accountantDetailViewModel = dbContext.Accountants
-                                                        .Include(accountant => accountant.GroupAccountants)
-                                                        .ThenInclude(groupAccountant => groupAccountant.AccountantGroup)                                                     
-                                                        .Include(accountant => accountant.AccountantSignGroups)
-                                                        .Where(accountant => accountant.Id == accountantId)
-                                                        .ProjectTo<AccountantDetailViewModel>(configurationProvider)
-                                                        .FirstOrDefault();
+                AccountantViewModel? accountantDetailViewModel = dbContext.Accountants
+                                                                .Include(accountant => accountant.AccountantGroups)                                                                                                                                                                                   
+                                                                .Where(accountant => accountant.Id == accountantId)
+                                                                .ProjectTo<AccountantViewModel>(configurationProvider)
+                                                                .FirstOrDefault();
 
                 if (accountantDetailViewModel != null)
                 {
@@ -212,22 +209,17 @@ namespace SealTypographicWebAPI.Services.Implements
             try
             {
                 Accountant? accountantQuery = dbContext.Accountants.Include(x => x.AccountantGroups)
-                                          .FirstOrDefault(x => x.Id == accountantFormUpdate.Id);
+                                                .FirstOrDefault(x => x.Id == accountantFormUpdate.Id);
 
                 if (accountantQuery != null)
                 {
                     mapper.Map(accountantFormUpdate, accountantQuery);
-                    if (accountantFormUpdate.AccountantGroupId == 1)
-                    {
-                        accountantQuery.AccountantGroups = new List<AccountantGroup>
-                    {
-                        dbContext.AccountantGroups.Single(x => x.Id == accountantFormUpdate.AccountantGroupId)
-                    };
-                    }
-                    else
-                    {
+                    //TODO 更新群組功能之後可能要拔掉
+                    if(!accountantQuery.AccountantGroups.Any(x => x.Id == accountantFormUpdate.AccountantGroupId))
+                    {                        
                         accountantQuery.AccountantGroups.Add(dbContext.AccountantGroups.Single(x => x.Id == accountantFormUpdate.AccountantGroupId));
                     }
+
                     BaseInputAccountant(accountantQuery, false, userId);
                     dbContext.SaveChanges();
                     response.Success();

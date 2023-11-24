@@ -5,8 +5,20 @@ namespace SealTypographicWebAPI.Models.Accountant
     /// <summary>
     /// 會計師包含啟用時間列表
     /// </summary>
-    public class AccountantViewModelWithCreateDate : AccountantViewModel
+    public class AccountantViewModelWithCreateDate : BaseName
     {
+        /// <summary>
+        /// 會計師編號
+        /// </summary>
+        /// <example>ACC001</example>
+        public string AccountantNumber { get; set; }
+
+        /// <summary>
+        /// 會計師群組名稱
+        /// </summary>
+        /// <example>台北群組</example>
+        public string AccountantGroupName { get; set; }
+
         /// <summary>
         /// 啟用時間
         /// </summary>

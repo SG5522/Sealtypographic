@@ -343,12 +343,12 @@ namespace SealTypographicWebAPI.Services.Implements
             catch (DbUpdateException ex)
             {
                 response.DbError();
-                logger.LogInformation("SaveScanFile Db error (@dbError)", ex.Message);
+                logger.LogInformation("SaveScanFile Db error {@dbError}", ex.Message);
             }
             catch (Exception ex)
             {
                 response.Error();
-                logger.LogInformation("SaveScanFile error (@error)", ex.Message);
+                logger.LogInformation("SaveScanFile error {@error}", ex.Message);
             }            
 
             return response;
@@ -414,12 +414,12 @@ namespace SealTypographicWebAPI.Services.Implements
             catch (DbUpdateException ex)
             {
                 response.DbError();
-                logger.LogInformation("SaveScanFile Db error (@dbError)", ex.Message);
+                logger.LogInformation("SaveScanFile Db error {@dbError}", ex.Message);
             }
             catch (Exception ex)
             {
                 response.Error();
-                logger.LogInformation("SaveFormFile error (@Error)", ex.Message);
+                logger.LogInformation("SaveFormFile error {@Error}", ex.Message);
             }
             
             return response;

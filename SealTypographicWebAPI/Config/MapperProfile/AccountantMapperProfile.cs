@@ -23,8 +23,12 @@ namespace SealTypographicWebAPI.Config.MapperProfile
         {
             //會計師基本資料
             CreateMap<Accountant, AccountantViewModel>()
-                    .ForMember(dst => dst.AccountantGroupName, opt => opt.MapFrom(src => src.GroupAccountants.First().AccountantGroup.Name))
-                    .ForMember(dst => dst.AccountantNumber, opt => opt.MapFrom(src => src.Code));
+                    .ForMember(dst => dst.AccountantNumber, opt => opt.MapFrom(src => src.Code))
+                    .ForMember(dst => dst.AccountantGroupInfos, opt => opt.MapFrom(src => src.AccountantGroups));
+
+            CreateMap<AccountantGroup, AccountantGroupInfo>()
+                    .ForMember(dst => dst.AccountantGroupId, opt => opt.MapFrom(src => src.Id))
+                    .ForMember(dst => dst.AccountantGroupName, opt => opt.MapFrom(src => src.Name));
 
             //會計師分頁顯示Map
             CreateMap<Accountant, AccountantViewModelWithCreateDate>()
@@ -34,10 +38,6 @@ namespace SealTypographicWebAPI.Config.MapperProfile
                     (
                         src => src.AccountantSignGroups.Any() ? src.AccountantSignGroups.First().Id : 0
                     ));
-
-            CreateMap<Accountant, AccountantDetailViewModel>()
-                    .ForMember(dst => dst.AccountantNumber, opt => opt.MapFrom(o => o.Code))
-                    .ReverseMap();
 
             CreateMap<AccountantForm, Accountant>()
                      .ForMember(dst => dst.Code, opt => opt.MapFrom(src => src.AccountantNumber))

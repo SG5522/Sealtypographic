@@ -24,18 +24,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Reference Include="Spire.License">
-      <HintPath>Library\Spire.License.dll</HintPath>
-    </Reference>
     <Reference Include="Spire.Pdf">
       <HintPath>Library\Spire.Pdf.dll</HintPath>
     </Reference>
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="Library\Spire.License.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
     <None Update="Library\Spire.Pdf.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

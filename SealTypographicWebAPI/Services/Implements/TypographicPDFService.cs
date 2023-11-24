@@ -10,6 +10,8 @@ using DJSpire.Models;
 using AutoMapper.QueryableExtensions;
 using DJSpire.Consts;
 using SealTypographicWebAPI.Consts;
+using System.Text.Json;
+using System.Text;
 
 namespace SealTypographicWebAPI.Services.Implements
 {
@@ -346,7 +348,7 @@ namespace SealTypographicWebAPI.Services.Implements
                                         .Where(x => x.TypographicPDFs.Any(x => x.Id == typographicPDFMakeSetting.TypographicPDFId))
                                         .Select(x => x.FullPath)
                                         .FirstOrDefault();
-
+                    
                     PDFService pDFService = new() { PDFPath = pdfPath };
                     typographicPagePDFResponse.PDFBase64 = pDFService.GetEditPDFBase64(editPDF);
                     typographicPagePDFResponse.Success();

@@ -7,22 +7,20 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Library\**" />
-    <EmbeddedResource Remove="Library\**" />
-    <None Remove="Library\**" />
+    <None Remove="license.elic.xml" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Spire.PDF" Version="9.5.4" />
+    <EmbeddedResource Include="license.elic.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="license.elic.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="license.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
+    <PackageReference Include="DJImageLib" Version="1.0.1" />
+    <PackageReference Include="Spire.Office" Version="8.11.0" />
+    <PackageReference Include="Spire.PDF" Version="9.11.4" />
+    <PackageReference Include="Spire.XLS" Version="13.10.1" />
   </ItemGroup>
 
 </Project>
