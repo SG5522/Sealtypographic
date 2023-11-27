@@ -16,6 +16,7 @@ namespace DJSpire.Services
     {
         private string pdfPath;
         private int pageIndex;
+        private const string DATA_URL = "data:application/pdf;base64,";
 
         /// <summary>
         /// 原PDF檔
@@ -59,7 +60,6 @@ namespace DJSpire.Services
                 }
             }
         }
-
 
         /// <summary>
         /// 圖片轉為Stream
@@ -109,6 +109,23 @@ namespace DJSpire.Services
                 ImageBase64 = image.ToBase64String(format)
             };
         }
+        public byte[] GetPDFBytes(PDFColor pdfColor)
+        {
+            MemoryStream stream = new MemoryStream();
+            Document.SaveToStream(stream);
+            if (pdfColor == PDFColor.GrayScale)
+            {
+                MemoryStream grayStream = new MemoryStream();
+                PdfGrayConverter pdfGrayConverter = new PdfGrayConverter(stream);
+                pdfGrayConverter.ToGrayPdf(grayStream);
+
+                return grayStream.ToArray();
+            }
+            else
+            {
+                return stream.ToArray();
+            }
+        }
 
         /// <summary>
         /// PDF檔案轉Base64
@@ -116,20 +133,29 @@ namespace DJSpire.Services
         /// <returns></returns>
         public string GetPDFBase64(PDFColor pdfColor)
         {
-            MemoryStream stream = new MemoryStream();            
-            Document.SaveToStream(stream);
-            if (pdfColor == PDFColor.GrayScale)
-            {
-                MemoryStream grayStream = new MemoryStream();
-                PdfGrayConverter pdfGrayConverter = new PdfGrayConverter(stream);
-                pdfGrayConverter.ToGrayPdf(grayStream);                
-                return GetMemoryStreamToBase64(grayStream);
-            }
-            else
-            {                
-                return GetMemoryStreamToBase64(stream);
-            }                                      
+            return $"{DATA_URL}{Convert.ToBase64String(GetPDFBytes(pdfColor))}";
         }
+
+        /// <summary>
+        /// PDF檔案轉Base64
+        /// </summary>
+        /// <returns></returns>
+        //public string GetPDFBase64(PDFColor pdfColor)
+        //{
+        //    MemoryStream stream = new MemoryStream();            
+        //    Document.SaveToStream(stream);
+        //    if (pdfColor == PDFColor.GrayScale)
+        //    {
+        //        MemoryStream grayStream = new MemoryStream();
+        //        PdfGrayConverter pdfGrayConverter = new PdfGrayConverter(stream);
+        //        pdfGrayConverter.ToGrayPdf(grayStream);                
+        //        return GetMemoryStreamToBase64(grayStream);
+        //    }
+        //    else
+        //    {                
+        //        return GetMemoryStreamToBase64(stream);
+        //    }                                      
+        //}
 
         public string GetPDFPageBase64()
         {
@@ -137,6 +163,8 @@ namespace DJSpire.Services
             IndexDocument.SaveToStream(stream);
             return GetMemoryStreamToBase64(stream);
         }
+
+
 
         /// <summary>
         /// 回傳PDF總頁數
@@ -154,8 +182,18 @@ namespace DJSpire.Services
         /// <returns></returns>
         public string GetEditPDFBase64(EditPDF editPDF)
         {            
-            EditInsert(editPDF);                          
-            return GetPDFBase64(editPDF.PDFColor);
+            return $"{DATA_URL}{Convert.ToBase64String(GetEditPDFBytes(editPDF))}";
+        }
+
+        /// <summary>
+        /// 取得包含編輯內容的PDFBase64
+        /// </summary>
+        /// <param name="editPDF"></param>
+        /// <returns></returns>
+        public byte[] GetEditPDFBytes(EditPDF editPDF)
+        {
+            EditInsert(editPDF);
+            return GetPDFBytes(editPDF.PDFColor);
         }
 
         /// <summary>
@@ -230,7 +268,7 @@ namespace DJSpire.Services
         private string GetMemoryStreamToBase64(MemoryStream memoryStream)
         {
             byte[] pdfBytes = memoryStream.ToArray();
-            return $"{"data:application/pdf;base64,"}{Convert.ToBase64String(pdfBytes)}";
+            return $"{DATA_URL}{Convert.ToBase64String(pdfBytes)}";
         }        
     }
 }

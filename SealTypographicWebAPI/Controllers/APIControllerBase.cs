@@ -17,26 +17,33 @@ namespace SealTypographicWebAPI.Controllers
     {
 
         private readonly SealTypographicDbContext dbContext;
+        private string UserName;
+        private readonly int UserId;        
 
         /// <summary>
         /// 建置
         /// </summary>
-        //public APIControllerBase(SealTypographicDbContext dbContext) 
-        //{
-        //    this.dbContext = dbContext;
-        //}
+        public APIControllerBase(SealTypographicDbContext dbContext)
+        {
+            this.dbContext = dbContext;
+            UserName = User.Identity?.Name?.ToString() ?? $"You are not logged in";
+            if(!string.IsNullOrWhiteSpace(UserName))
+            {
+                UserId = dbContext.Users.FirstOrDefault(x => x.UserName == UserName)!.Id;
+            }                    
+        }
 
         /// <summary>
         /// 取得UserName
         /// </summary>
-        protected string UserName => User.Identity?.Name?.ToString() ?? $"You are not logged in";
+        //protected string UserName => User.Identity?.Name?.ToString() ?? $"You are not logged in";
 
         /// <summary>
         /// 使用者資訊
         /// </summary>
         protected UserInfo UserInfo => new()
         {
-            UserId = dbContext.Users.Single(x => x.UserName == UserName).Id,
+            UserId = UserId,
             UserName = UserName,            
             KeycloakId = User.FindFirstValue(ClaimTypes.NameIdentifier) ?? $"You are not logged in"
         };

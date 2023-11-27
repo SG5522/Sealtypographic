@@ -2,6 +2,7 @@
 using Keycloak.AuthServices.Authentication;
 using System.Reflection;
 using SealTypographicWebAPI.Models;
+using DBEntities;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -24,8 +25,12 @@ namespace SealTypographicWebAPI.Controllers
         /// </summary>
         /// <param name="logger"></param>
         /// <param name="environment"></param>
-        /// <param name="keycloakAuthenticationOptions"></param>   
-        public SysController(ILogger<SysController> logger, IWebHostEnvironment environment, KeycloakAuthenticationOptions keycloakAuthenticationOptions)        
+        /// <param name="keycloakAuthenticationOptions"></param>
+        /// <param name="dbContext"></param>   
+        public SysController(ILogger<SysController> logger, 
+            IWebHostEnvironment environment, 
+            KeycloakAuthenticationOptions keycloakAuthenticationOptions,
+            SealTypographicDbContext dbContext) : base(dbContext)
         {
             this.logger = logger;
             this.environment = environment;
@@ -44,10 +49,12 @@ namespace SealTypographicWebAPI.Controllers
                                             "Server Run OK. \n" +
                                             "Ver. {0} \n" +
                                             "ProjectName: {1} \n" +
-                                            "ENVIRONMENT: {2}",
+                                            "ENVIRONMENT: {2} \n" +
+                                            "UserId: {3}",
                                             Assembly.GetExecutingAssembly().GetName().Version?.ToString(), 
                                             Assembly.GetExecutingAssembly().GetName().Name?.ToString(),
-                                            environment.EnvironmentName
+                                            environment.EnvironmentName,
+                                            UserInfo.UserId
                                          );             
             logger.LogDebug("Hello End");
             return result;
