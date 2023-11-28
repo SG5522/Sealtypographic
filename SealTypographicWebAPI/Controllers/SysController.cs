@@ -45,6 +45,8 @@ namespace SealTypographicWebAPI.Controllers
         public string Hello()
         {
             logger.LogDebug("Hello Begin");
+            UserInfo userInfo = GetUserInfo();
+            int userId = userInfo != null ? userInfo.UserId : 0;
             string result = string.Format(
                                             "Server Run OK. \n" +
                                             "Ver. {0} \n" +
@@ -54,7 +56,7 @@ namespace SealTypographicWebAPI.Controllers
                                             Assembly.GetExecutingAssembly().GetName().Version?.ToString(), 
                                             Assembly.GetExecutingAssembly().GetName().Name?.ToString(),
                                             environment.EnvironmentName,
-                                            UserInfo.UserId
+                                            userId
                                          );             
             logger.LogDebug("Hello End");
             return result;
@@ -73,16 +75,6 @@ namespace SealTypographicWebAPI.Controllers
                 Realm = keycloakAuthenticationOptions.Realm,
                 ClientId = keycloakAuthenticationOptions.Resource
             };                
-        }
-
-        /// <summary>
-        /// 取得UserId
-        /// </summary>
-        /// <returns></returns>
-        [HttpGet("[Action]")]
-        public UserInfo GetUserInfo()
-        {
-            return UserInfo;
         }
     }
 }

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using SealTypographicWebAPI.Models;
 using SealTypographicWebAPI.Services;
 using System.Security.Claims;
+using System.Text.Json.Serialization;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -16,9 +17,7 @@ namespace SealTypographicWebAPI.Controllers
     public abstract class APIControllerBase : ControllerBase
     {
 
-        private readonly SealTypographicDbContext dbContext;
-        private string UserName;
-        private readonly int UserId;        
+        private readonly SealTypographicDbContext dbContext; 
 
         /// <summary>
         /// 建置
@@ -26,26 +25,27 @@ namespace SealTypographicWebAPI.Controllers
         public APIControllerBase(SealTypographicDbContext dbContext)
         {
             this.dbContext = dbContext;
-            UserName = User.Identity?.Name?.ToString() ?? $"You are not logged in";
-            if(!string.IsNullOrWhiteSpace(UserName))
-            {
-                UserId = dbContext.Users.FirstOrDefault(x => x.UserName == UserName)!.Id;
-            }                    
         }
 
         /// <summary>
-        /// 取得UserName
+        /// 取得User資料
         /// </summary>
-        //protected string UserName => User.Identity?.Name?.ToString() ?? $"You are not logged in";
-
-        /// <summary>
-        /// 使用者資訊
-        /// </summary>
-        protected UserInfo UserInfo => new()
+        /// <returns></returns>
+        [NonAction]
+        public virtual UserInfo GetUserInfo()
         {
-            UserId = UserId,
-            UserName = UserName,            
-            KeycloakId = User.FindFirstValue(ClaimTypes.NameIdentifier) ?? $"You are not logged in"
-        };
+            UserInfo userInfo = new();
+            string userName = User.Identity?.Name?.ToString() ?? string.Empty;
+            if (!string.IsNullOrEmpty(userName))
+            {
+                userInfo = new()
+                {
+                    UserId = dbContext.Users.FirstOrDefault(x => x.UserName == userName)!.Id,
+                    UserName = userName,
+                    KeycloakId = User.FindFirstValue(ClaimTypes.NameIdentifier) ?? $"You are not logged in"
+                };
+            }
+            return userInfo;
+        }
     }
 }

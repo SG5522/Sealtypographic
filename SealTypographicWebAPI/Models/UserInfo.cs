@@ -8,7 +8,7 @@
         /// <summary>
         /// 使用者Id
         /// </summary>
-        public int? UserId { get; set; }
+        public int UserId { get; set; }
 
         /// <summary>
         /// 使用者名稱(帳號)
