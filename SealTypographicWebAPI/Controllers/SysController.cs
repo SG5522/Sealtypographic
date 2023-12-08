@@ -62,6 +62,7 @@ namespace SealTypographicWebAPI.Controllers
             return result;
         }
 
+        //TODO: 之後需要刪除
         /// <summary>
         /// 取得Keycloak登入配置        
         /// </summary>
