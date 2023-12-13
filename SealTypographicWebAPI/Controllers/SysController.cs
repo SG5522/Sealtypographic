@@ -45,18 +45,14 @@ namespace SealTypographicWebAPI.Controllers
         public string Hello()
         {
             logger.LogDebug("Hello Begin");
-            UserInfo userInfo = GetUserInfo();
-            int userId = userInfo != null ? userInfo.UserId : 0;
             string result = string.Format(
                                             "Server Run OK. \n" +
                                             "Ver. {0} \n" +
                                             "ProjectName: {1} \n" +
-                                            "ENVIRONMENT: {2} \n" +
-                                            "UserId: {3}",
+                                            "ENVIRONMENT: {2} \n" ,                                            
                                             Assembly.GetExecutingAssembly().GetName().Version?.ToString(), 
                                             Assembly.GetExecutingAssembly().GetName().Name?.ToString(),
-                                            environment.EnvironmentName,
-                                            userId
+                                            environment.EnvironmentName                                            
                                          );             
             logger.LogDebug("Hello End");
             return result;
