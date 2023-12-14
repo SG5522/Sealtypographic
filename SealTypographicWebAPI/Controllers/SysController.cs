@@ -3,6 +3,7 @@ using Keycloak.AuthServices.Authentication;
 using System.Reflection;
 using SealTypographicWebAPI.Models;
 using DBEntities;
+using Microsoft.AspNetCore.Authorization;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -14,6 +15,7 @@ namespace SealTypographicWebAPI.Controllers
     [Route("api/[controller]")]
     [ApiController]
     //[Authorize]
+    [AllowAnonymous]
     public class SysController : APIControllerBase
     {
         private readonly ILogger<SysController> logger;

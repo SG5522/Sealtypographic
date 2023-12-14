@@ -3,8 +3,11 @@ using DJKeycloakAPI.Configs;
 using DJKeycloakLib.Configs;
 using DJKeycloakLib.Services;
 using Keycloak.AuthServices.Authentication;
+using Microsoft.AspNetCore.Authentication.Certificate;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc.Razor;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
+using Microsoft.AspNetCore.Server.Kestrel.Https;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using SealTypographicWebAPI.Config;
@@ -35,6 +38,15 @@ builder.Services.Configure<TemplateImagePathOption>(
 
 builder.Services.Configure<KeycloakOptions>(
     builder.Configuration.GetSection("KeycloakAdmin"));
+
+//builder.Services.Configure<KestrelServerOptions>(options =>
+//{
+//    options.ConfigureHttpsDefaults(options =>
+//    {
+//        options.ClientCertificateMode = ClientCertificateMode.NoCertificate;
+//        options.AllowAnyClientCertificate();
+//    });
+//});
 
 //addCors
 builder.Services.AddCors(options =>
@@ -234,17 +246,24 @@ builder.Services.AddKeycloakAuthentication(keycloakAuthenticationOptions, option
     options.RequireHttpsMetadata = false;
     options.Audience = "account";
 });
-//builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-//            .AddJwtBearer(o =>
-//            {
-//                o.RequireHttpsMetadata = false;
-//                //o.MetadataAddress = builder.Configuration["Jwt:MetadataAddress"];
-//                o.Authority = builder.Configuration["Jwt:Authority"];
-//                o.Audience = builder.Configuration["Jwt:Audience"];
-//            });
-#endregion
+builder.Services.AddAuthentication(
+        CertificateAuthenticationDefaults.AuthenticationScheme)
+    .AddCertificate(options =>
+    {
+        options.AllowedCertificateTypes = CertificateTypes.SelfSigned;
+    });
 
-builder.Host.UseWindowsService();
+    //builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    //            .AddJwtBearer(o =>
+    //            {
+    //                o.RequireHttpsMetadata = false;
+    //                //o.MetadataAddress = builder.Configuration["Jwt:MetadataAddress"];
+    //                o.Authority = builder.Configuration["Jwt:Authority"];
+    //                o.Audience = builder.Configuration["Jwt:Audience"];
+    //            });
+    #endregion
+
+    builder.Host.UseWindowsService();
 
 var app = builder.Build();
 
@@ -299,7 +318,7 @@ using (IServiceScope scope = app.Services.CreateScope())
 //app.MapHealthChecks("/healthz");
 //app.UseHealthChecksUI();
 
-//app.UseHttpsRedirection();
+app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 //app.UseSerilogRequestLogging(); // <-SeriLog 

@@ -10,7 +10,6 @@ namespace SealTypographicWebAPI.Models.Accountant
         /// <summary>
         /// 關鍵字搜尋 (排版時不含群組名稱)
         /// </summary>        
-        /// <example>ACC001 or 王XX or 台北群組</example>
         public string? KeyWord { get; set; }   
         
         /// <summary>
