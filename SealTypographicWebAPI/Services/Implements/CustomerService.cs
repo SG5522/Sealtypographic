@@ -3,10 +3,12 @@ using SealTypographicWebAPI.Models.Customer;
 using AutoMapper;
 using SealTypographicWebAPI.Utils;
 using Microsoft.EntityFrameworkCore;
-using DBEntities;
 using DBEntities.Consts;
 using AutoMapper.QueryableExtensions;
 using SealTypographicWebAPI.Models.Accountant;
+using DBEntities.Entities;
+using DBEntities;
+using DBEntities.Entities.CustomerModels;
 
 namespace SealTypographicWebAPI.Services.Implements
 {

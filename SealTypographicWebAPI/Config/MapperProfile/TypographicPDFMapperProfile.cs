@@ -1,10 +1,10 @@
 ﻿using AutoMapper;
 using SealTypographicWebAPI.Models.TypographicPDF;
-using DBEntities;
 using DJSpire.Models;
 using DBEntities.Consts;
 using SealTypographicWebAPI.Utils;
 using DJLib;
+using DBEntities.Entities.TypographicModels;
 
 namespace SealTypographicWebAPI.Config.MapperProfile
 {

@@ -2,6 +2,7 @@
 using AutoMapper.QueryableExtensions;
 using DBEntities;
 using DBEntities.Consts;
+using DBEntities.Entities.ImageRangeModels;
 using DBEntities.Utils;
 using Microsoft.EntityFrameworkCore;
 using SealTypographicWebAPI.Models;
@@ -104,7 +105,7 @@ namespace SealTypographicWebAPI.Services.Implements
             {                
                 ImageRangeSetting imageCaptureSetting = mapper.Map<ImageRangeSetting>(captureSetting);
                 imageCaptureSetting.Company = dbContext.Companys.Single(x => x.Id == companyId);
-                InputUtil.Base(imageCaptureSetting, true, companyId);
+                InputUtil.Set(imageCaptureSetting, true, companyId);
                 dbContext.ImageRangeSettings.Add(imageCaptureSetting);
                 dbContext.SaveChanges();
                 logger.LogInformation("New output {@output}", response);
@@ -144,7 +145,7 @@ namespace SealTypographicWebAPI.Services.Implements
                         ImageRangeLocation imageRangeLocation = imageRangeSetting.ImageRangeLocations.Single(x => x.Id == customerSealRangeLocation.Id);                       
                         mapper.Map(customerSealRangeLocation, imageRangeLocation);                        
                     }
-                    InputUtil.Base(imageRangeSetting, false, userId);                    
+                    InputUtil.Set(imageRangeSetting, false, userId);                    
                     dbContext.SaveChanges();
                     response.Success();
                 }
@@ -182,7 +183,7 @@ namespace SealTypographicWebAPI.Services.Implements
                         ImageRangeLocation imageRangeLocation = imageRangeSetting.ImageRangeLocations.Single(x => x.Id == accountantSignRangeLocation.Id);
                         mapper.Map(accountantSignRangeLocation, imageRangeLocation);                        
                     }                    
-                    InputUtil.Base(imageRangeSetting, false, userId);
+                    InputUtil.Set(imageRangeSetting, false, userId);
                     dbContext.SaveChanges();
                     response.Success();
                 }

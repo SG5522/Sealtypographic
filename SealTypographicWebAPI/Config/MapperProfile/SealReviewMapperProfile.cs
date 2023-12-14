@@ -1,12 +1,14 @@
 ﻿using AutoMapper;
 using SealTypographicWebAPI.Models.CustomerSealReview;
 using SealTypographicWebAPI.Models.AccountantSignReview;
-using DBEntities;
 using DJLib;
 using SealTypographicWebAPI.Utils;
 using DBEntities.Consts;
 using SealTypographicWebAPI.Models.Accountant;
 using SealTypographicWebAPI.Models.CustomerSeal;
+using DBEntities.Entities.TypographicModels;
+using DBEntities.Entities.CustomerModels;
+using DBEntities.Entities.AccountantModels;
 
 namespace SealTypographicWebAPI.Config.MapperProfile
 {

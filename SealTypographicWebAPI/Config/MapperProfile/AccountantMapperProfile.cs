@@ -3,11 +3,14 @@ using SealTypographicWebAPI.Models.Accountant;
 using SealTypographicWebAPI.Models.Letterhead;
 using SealTypographicWebAPI.Models.AccountantGroup;
 using SealTypographicWebAPI.Models.TemporarySeal;
-using DBEntities;
 using DJLib;
 using SealTypographicWebAPI.Utils;
 using DBEntities.Consts;
 using SealTypographicWebAPI.Models.AccountantGroupMember;
+using DBEntities.Entities;
+using DBEntities.Entities.TypographicModels;
+using DBEntities.Entities.TemplateModels;
+using DBEntities.Entities.AccountantModels;
 
 namespace SealTypographicWebAPI.Config.MapperProfile
 {

@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using DBEntities;
+using DBEntities.Entities.TypographicModels;
 using SealTypographicWebAPI.Models.LogReport;
 using System.Linq;
 

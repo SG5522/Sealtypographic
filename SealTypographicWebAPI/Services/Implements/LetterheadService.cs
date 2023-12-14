@@ -3,9 +3,11 @@ using Microsoft.EntityFrameworkCore;
 using SealTypographicWebAPI.Models;
 using SealTypographicWebAPI.Models.Letterhead;
 using SealTypographicWebAPI.Utils;
-using DBEntities;
 using DBEntities.Consts;
 using AutoMapper.QueryableExtensions;
+using DBEntities.Entities;
+using DBEntities;
+using DBEntities.Entities.TypographicModels;
 
 namespace SealTypographicWebAPI.Services.Implements
 {

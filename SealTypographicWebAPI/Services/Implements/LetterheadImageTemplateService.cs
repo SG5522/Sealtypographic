@@ -2,6 +2,8 @@
 using AutoMapper.QueryableExtensions;
 using DBEntities;
 using DBEntities.Consts;
+using DBEntities.Entities;
+using DBEntities.Entities.TemplateModels;
 using DBEntities.Utils;
 using Keycloak.AuthServices.Sdk.Admin.Models;
 using Microsoft.EntityFrameworkCore;
@@ -159,7 +161,7 @@ namespace SealTypographicWebAPI.Services.Implements
                 template.ThumbnailFullPath = await imageService.GetSavedImageThumbnailFilePath(imageBase64Info, false);
 
                 NewTemplateLoction(letterheadImageTemplateForm.LetterheadTemplateLocationForm, templateLocations);                                                     
-                InputUtil.Base(template, true, userId);
+                InputUtil.Set(template, true, userId);
                 template.TemplateLocations = templateLocations;
                 template.Company = companyQuery;
                 dbContext.Templates.Add(template);                      
@@ -196,7 +198,7 @@ namespace SealTypographicWebAPI.Services.Implements
                 template.ThumbnailFullPath = await imageService.GetSavedImageThumbnailFilePath(imageBase64Info, false);
 
                 mapper.Map(letterheadImageTemplateUpdateForm, template);                
-                InputUtil.Base(template, false, userid);
+                InputUtil.Set(template, false, userid);
 
                 TemplateLocation? templateLocation = template.TemplateLocations.FirstOrDefault(x => x.Id == letterheadImageTemplateUpdateForm.LocationUpdateForm.Id);
                 if (templateLocation != null)
@@ -225,7 +227,7 @@ namespace SealTypographicWebAPI.Services.Implements
             if(templateQuery != null) 
             {
                 templateQuery.DeleteStatus = DeleteStatus.Yes;                
-                InputUtil.Base(templateQuery, false, userId);
+                InputUtil.Set(templateQuery, false, userId);
                 dbContext.SaveChanges();
                 response.Success();
             }

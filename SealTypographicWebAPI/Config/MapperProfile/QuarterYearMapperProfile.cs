@@ -1,10 +1,7 @@
 ﻿using AutoMapper;
-using SealTypographicWebAPI.Models.TemporarySeal;
-using DBEntities;
-using DJLib;
 using SealTypographicWebAPI.Utils;
-using DBEntities.Consts;
 using SealTypographicWebAPI.Models.QuarterYear;
+using DBEntities.Entities;
 
 namespace SealTypographicWebAPI.Config.MapperProfile
 {

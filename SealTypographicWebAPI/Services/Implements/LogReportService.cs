@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using DBEntities;
 using DBEntities.Consts;
+using DBEntities.Entities.TypographicModels;
 using Microsoft.EntityFrameworkCore;
 using SealTypographicWebAPI.Models.LogReport;
 using SealTypographicWebAPI.Utils;

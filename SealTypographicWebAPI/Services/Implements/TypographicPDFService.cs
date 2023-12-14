@@ -2,7 +2,6 @@
 using SealTypographicWebAPI.Models.TypographicPDF;
 using SealTypographicWebAPI.Models;
 using Microsoft.EntityFrameworkCore;
-using DBEntities;
 using DBEntities.Consts;
 using SealTypographicWebAPI.Utils;
 using DJSpire.Services;
@@ -12,6 +11,10 @@ using DJSpire.Consts;
 using SealTypographicWebAPI.Consts;
 using System.Text.Json;
 using System.Text;
+using DBEntities.Entities;
+using DBEntities;
+using DBEntities.Entities.TypographicModels;
+using DBEntities.Entities.CustomerModels;
 
 namespace SealTypographicWebAPI.Services.Implements
 {

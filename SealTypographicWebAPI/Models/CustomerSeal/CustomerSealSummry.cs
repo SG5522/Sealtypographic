@@ -1,6 +1,4 @@
-﻿using DBEntities.Base;
-using DBEntities.Consts;
-using SealTypographicWebAPI.Models.Customer;
+﻿using SealTypographicWebAPI.Models.Customer;
 
 namespace SealTypographicWebAPI.Models.CustomerSeal
 {

@@ -1,4 +1,4 @@
-﻿using DBEntities;
+﻿using DBEntities.Entities;
 
 namespace SealTypographicWebAPI.Utils
 {

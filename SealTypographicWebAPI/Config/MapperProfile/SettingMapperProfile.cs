@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
-using DBEntities;
 using DBEntities.Consts;
 using SealTypographicWebAPI.Utils;
 using SealTypographicWebAPI.Models.ImageRangeSetting;
+using DBEntities.Entities.ImageRangeModels;
 
 namespace SealTypographicWebAPI.Config.MapperProfile
 {

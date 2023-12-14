@@ -1,15 +1,15 @@
-﻿using AutoMapper;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
 using SealTypographicWebAPI.Config;
 using SealTypographicWebAPI.Models;
 using SealTypographicWebAPI.Models.Letterhead;
 using SealTypographicWebAPI.Utils;
-using DBEntities;
 using DBEntities.Consts;
 using DJLib.Models;
-using SealTypographicWebAPI.Models.Accountant;
 using DJLib;
+using DBEntities.Entities;
+using DBEntities;
+using DBEntities.Entities.TypographicModels;
 
 namespace SealTypographicWebAPI.Services.Implements
 {

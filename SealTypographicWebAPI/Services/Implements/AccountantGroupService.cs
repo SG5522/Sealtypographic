@@ -2,10 +2,11 @@
 using SealTypographicWebAPI.Models;
 using SealTypographicWebAPI.Models.AccountantGroup;
 using SealTypographicWebAPI.Utils;
-using DBEntities;
 using DBEntities.Consts;
 using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
+using DBEntities;
+using DBEntities.Entities.AccountantModels;
 
 namespace SealTypographicWebAPI.Services.Implements
 {

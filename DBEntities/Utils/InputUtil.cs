@@ -1,5 +1,5 @@
-﻿using DBEntities.Base;
-using DBEntities.Consts;
+﻿using DBEntities.Consts;
+using DBEntities.Entities.Base;
 
 namespace DBEntities.Utils
 {
@@ -15,7 +15,7 @@ namespace DBEntities.Utils
         /// <param name="input">輸入class</param>
         /// <param name="isCreate">是否為建立新表</param>
         /// <param name="userId">使用者Id</param>
-        public static void Base<T>(T input, bool isCreate, int userId) where T : BaseData
+        public static void Set<T>(T input, bool isCreate, int userId) where T : BaseData
         {
             if (isCreate)
             {

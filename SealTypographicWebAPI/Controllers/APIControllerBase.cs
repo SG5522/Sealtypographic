@@ -8,7 +8,7 @@ using System.Text.Json.Serialization;
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace SealTypographicWebAPI.Controllers
-{   
+{
     /// <summary>
     /// 載入
     /// </summary>
@@ -36,15 +36,15 @@ namespace SealTypographicWebAPI.Controllers
         {
             UserInfo userInfo = new();
             string userName = User.Identity?.Name?.ToString() ?? string.Empty;
-            if (!string.IsNullOrEmpty(userName))
+            if (!string.IsNullOrWhiteSpace(userName))
             {
                 userInfo = new()
                 {
-                    UserId = dbContext.Users.FirstOrDefault(x => x.UserName == userName)!.Id,
+                    UserId = dbContext.ApplicationUsers.FirstOrDefault(x => x.UserName == userName)!.Id,
                     UserName = userName,
-                    KeycloakId = User.FindFirstValue(ClaimTypes.NameIdentifier) ?? $"You are not logged in"
+                    KeycloakId = User.FindFirstValue(ClaimTypes.NameIdentifier) ?? string.Empty
                 };
-            }
+            }            
             return userInfo;
         }
     }

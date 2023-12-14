@@ -1,7 +1,6 @@
 ﻿using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Options;
 using SealTypographicWebAPI.Config;
-using DBEntities;
 using SealTypographicWebAPI.Models;
 using SealTypographicWebAPI.Models.Upload;
 using Microsoft.EntityFrameworkCore;
@@ -13,6 +12,8 @@ using AutoMapper.QueryableExtensions;
 using SealTypographicWebAPI.Utils;
 using DJSpire.Services;
 using DJSpire.Models;
+using DBEntities.Entities;
+using DBEntities;
 
 namespace SealTypographicWebAPI.Services.Implements
 {

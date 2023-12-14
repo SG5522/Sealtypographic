@@ -1,5 +1,5 @@
-﻿using DBEntities.Base;
-using DBEntities.Consts;
+﻿using DBEntities.Consts;
+using DBEntities.Entities.Base;
 
 namespace SealTypographicWebAPI.Models.ImageRangeSetting
 {

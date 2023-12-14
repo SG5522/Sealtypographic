@@ -2,6 +2,10 @@
 using AutoMapper.QueryableExtensions;
 using DBEntities;
 using DBEntities.Consts;
+using DBEntities.Entities;
+using DBEntities.Entities.CustomerModels;
+using DBEntities.Entities.TemplateModels;
+using DBEntities.Entities.TypographicModels;
 using DJLib.Models;
 using Microsoft.EntityFrameworkCore;
 using SealTypographicWebAPI.Models;

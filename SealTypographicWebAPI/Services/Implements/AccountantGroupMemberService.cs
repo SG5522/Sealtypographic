@@ -3,9 +3,10 @@ using SealTypographicWebAPI.Models.AccountantGroupMember;
 using SealTypographicWebAPI.Utils;
 using Microsoft.EntityFrameworkCore;
 using AutoMapper;
-using DBEntities;
 using DBEntities.Consts;
 using AutoMapper.QueryableExtensions;
+using DBEntities;
+using DBEntities.Entities.AccountantModels;
 
 namespace SealTypographicWebAPI.Services.Implements
 {

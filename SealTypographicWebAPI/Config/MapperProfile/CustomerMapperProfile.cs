@@ -1,10 +1,11 @@
 ﻿using AutoMapper;
 using DJLib;
-using DBEntities;
 using DBEntities.Consts;
 using SealTypographicWebAPI.Utils;
 using SealTypographicWebAPI.Models.Customer;
 using SealTypographicWebAPI.Models.CustomerSeal;
+using DBEntities.Entities.TypographicModels;
+using DBEntities.Entities.CustomerModels;
 
 namespace SealTypographicWebAPI.Config.MapperProfile
 {

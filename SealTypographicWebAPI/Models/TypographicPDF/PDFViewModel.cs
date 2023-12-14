@@ -1,5 +1,4 @@
-﻿using DBEntities.Base;
-using System.Text.Json.Serialization;
+﻿using System.Text.Json.Serialization;
 
 namespace SealTypographicWebAPI.Models.TypographicPDF
 {

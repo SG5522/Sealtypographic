@@ -2,12 +2,15 @@
 using Microsoft.EntityFrameworkCore;
 using SealTypographicWebAPI.Models;
 using SealTypographicWebAPI.Utils;
-using DBEntities;
 using DBEntities.Consts;
 using DJLib.Models;
 using AutoMapper.QueryableExtensions;
 using SealTypographicWebAPI.Models.CustomerSeal;
 using SealTypographicWebAPI.Models.Customer;
+using DBEntities.Entities;
+using DBEntities;
+using DBEntities.Entities.TypographicModels;
+using DBEntities.Entities.CustomerModels;
 
 namespace SealTypographicWebAPI.Services.Implements
 {

@@ -2,8 +2,8 @@
 using Keycloak.AuthServices.Authentication;
 using System.Reflection;
 using SealTypographicWebAPI.Models;
-using DBEntities;
 using Microsoft.AspNetCore.Authorization;
+using DBEntities;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -55,7 +55,8 @@ namespace SealTypographicWebAPI.Controllers
                                             Assembly.GetExecutingAssembly().GetName().Version?.ToString(), 
                                             Assembly.GetExecutingAssembly().GetName().Name?.ToString(),
                                             environment.EnvironmentName                                            
-                                         );             
+                                         );      
+            UserInfo userInfo = GetUserInfo();
             logger.LogDebug("Hello End");
             return result;
         }

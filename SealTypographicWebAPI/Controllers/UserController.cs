@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using DBEntities;
+using DBEntities.Entities;
 using DJKeycloakAPI.Models.Users;
 using DJKeycloakLib.Models.BaseModel;
 using DJKeycloakLib.Services;
@@ -34,6 +35,7 @@ namespace SealTypographicWebAPI.Controllers
         /// </summary>
         /// <param name="newUserForm"></param>
         /// <returns></returns>
+        [HttpPost("[Action]")]
         public override async Task<ResponseModel> Post(NewUserForm newUserForm)
         {
             ResponseModel responseModel = await base.Post(newUserForm);
@@ -54,14 +56,14 @@ namespace SealTypographicWebAPI.Controllers
                     //Company company = dbContext.Companys.First(x => x.Users.Any(x => x.KeycloakUserId == User.FindFirstValue(ClaimTypes.NameIdentifier)));
                     Company company = dbContext.Companys.First(x => x.Id == 1);         
 
-                    User user = new() 
+                    ApplicationUser user = new() 
                     {
                         UserName = userViewModel.Username,
                         KeycloakUserId = userViewModel.Id!,
                         Company = company
                     };
 
-                    dbContext.Users.Add(user);
+                    dbContext.ApplicationUsers.Add(user);
                     dbContext.SaveChanges();
                 }
             }

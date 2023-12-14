@@ -2,9 +2,9 @@
 using SealTypographicWebAPI.Models.CustomerSealTemplate;
 using SealTypographicWebAPI.Models.AccountantSignTemplate;
 using SealTypographicWebAPI.Models.LetterheadImageTemplate;
-using DBEntities;
 using SealTypographicWebAPI.Utils;
 using DJLib;
+using DBEntities.Entities.TemplateModels;
 
 namespace SealTypographicWebAPI.Config.MapperProfile
 {

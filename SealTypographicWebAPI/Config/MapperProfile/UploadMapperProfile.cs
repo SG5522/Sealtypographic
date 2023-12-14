@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using DBEntities;
+using DBEntities.Entities;
 using SealTypographicWebAPI.Models.Upload;
 
 namespace SealTypographicWebAPI.Config.MapperProfile

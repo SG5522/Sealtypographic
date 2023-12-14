@@ -1,4 +1,5 @@
 using DBEntities;
+using DBEntities.Utils;
 using DJKeycloakAPI.Configs;
 using DJKeycloakLib.Configs;
 using DJKeycloakLib.Services;

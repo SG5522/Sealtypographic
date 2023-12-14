@@ -3,12 +3,10 @@ using Microsoft.EntityFrameworkCore;
 using SealTypographicWebAPI.Models;
 using SealTypographicWebAPI.Models.AccountantSignReview;
 using SealTypographicWebAPI.Utils;
-using DBEntities;
 using DBEntities.Consts;
 using AutoMapper.QueryableExtensions;
-using Serilog;
-using Azure;
-using Keycloak.AuthServices.Sdk.Admin.Models;
+using DBEntities;
+using DBEntities.Entities.AccountantModels;
 
 namespace SealTypographicWebAPI.Services.Implements
 {
