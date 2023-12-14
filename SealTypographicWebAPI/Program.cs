@@ -3,11 +3,8 @@ using DJKeycloakAPI.Configs;
 using DJKeycloakLib.Configs;
 using DJKeycloakLib.Services;
 using Keycloak.AuthServices.Authentication;
-using Microsoft.AspNetCore.Authentication.Certificate;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc.Razor;
-using Microsoft.AspNetCore.Server.Kestrel.Core;
-using Microsoft.AspNetCore.Server.Kestrel.Https;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using SealTypographicWebAPI.Config;
@@ -39,14 +36,6 @@ builder.Services.Configure<TemplateImagePathOption>(
 builder.Services.Configure<KeycloakOptions>(
     builder.Configuration.GetSection("KeycloakAdmin"));
 
-//builder.Services.Configure<KestrelServerOptions>(options =>
-//{
-//    options.ConfigureHttpsDefaults(options =>
-//    {
-//        options.ClientCertificateMode = ClientCertificateMode.NoCertificate;
-//        options.AllowAnyClientCertificate();
-//    });
-//});
 
 //addCors
 builder.Services.AddCors(options =>
@@ -241,29 +230,28 @@ builder.Services.AddSwaggerGen(c =>
 });
 
 #region -- Authentication --
+
 builder.Services.AddKeycloakAuthentication(keycloakAuthenticationOptions, options =>
 {
-    options.RequireHttpsMetadata = false;
+    options.RequireHttpsMetadata = true;
     options.Audience = "account";
-});
-builder.Services.AddAuthentication(
-        CertificateAuthenticationDefaults.AuthenticationScheme)
-    .AddCertificate(options =>
+    options.BackchannelHttpHandler = new HttpClientHandler
     {
-        options.AllowedCertificateTypes = CertificateTypes.SelfSigned;
-    });
+        ServerCertificateCustomValidationCallback = delegate { return true; }
+    };
+});
 
-    //builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    //            .AddJwtBearer(o =>
-    //            {
-    //                o.RequireHttpsMetadata = false;
-    //                //o.MetadataAddress = builder.Configuration["Jwt:MetadataAddress"];
-    //                o.Authority = builder.Configuration["Jwt:Authority"];
-    //                o.Audience = builder.Configuration["Jwt:Audience"];
-    //            });
-    #endregion
+//builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+//            .AddJwtBearer(o =>
+//            {
+//                o.RequireHttpsMetadata = false;
+//                //o.MetadataAddress = builder.Configuration["Jwt:MetadataAddress"];
+//                o.Authority = builder.Configuration["Jwt:Authority"];
+//                o.Audience = builder.Configuration["Jwt:Audience"];
+//            });
+#endregion
 
-    builder.Host.UseWindowsService();
+builder.Host.UseWindowsService();
 
 var app = builder.Build();
 
