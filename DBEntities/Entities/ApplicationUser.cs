@@ -18,14 +18,14 @@ namespace DBEntities.Entities
         }
 
         /// <summary>
-        /// Keycloak上的UserId
+        /// 使用者姓氏
         /// </summary>
-        public string KeycloakUserId { get; set; }
+        public string? FirstName { get; set; }
 
         /// <summary>
-        /// 使用者匿稱
+        /// 使用者名稱
         /// </summary>
-        public string? NickName { get; set; }
+        public string? LastName { get; set; }
 
         /// <summary>
         /// 建立日期
@@ -35,12 +35,42 @@ namespace DBEntities.Entities
         /// <summary>
         /// 更新日期
         /// </summary>
-        public DateTime UpdateDate { get; set; }
+        public DateTime? UpdateDate { get; set; }
+
+        /// <summary>
+        /// 建立此筆資料的User
+        /// </summary>        
+        public int? CreateUserId { get; set; }
+
+        /// <summary>
+        /// 建立的關聯User表
+        /// </summary>        
+        public ApplicationUser? CreateUser { get; set; }
+
+        /// <summary>
+        /// 更新此筆資料的User
+        /// </summary>        
+        public int? UpdateUserId { get; set; }
+
+        /// <summary>
+        /// 更新的關聯User表
+        /// </summary>       
+        public ApplicationUser? UpdateUser { get; set; }
 
         /// <summary>
         /// 會計師事務所(公司)
         /// </summary>
         public Company? Company { get; set; }
+
+        /// <summary>
+        /// 使用者資料表(Create)
+        /// </summary>
+        public IList<ApplicationUser> CreateUsers { get; set; }
+
+        /// <summary>
+        /// 使用者資料表(Update)
+        /// </summary>
+        public IList<ApplicationUser> UpdateUsers { get; set; }
 
         /// <summary>
         /// 客戶資料表

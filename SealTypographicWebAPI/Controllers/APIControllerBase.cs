@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using SealTypographicWebAPI.Models;
 using SealTypographicWebAPI.Services;
+using SealTypographicWebAPI.Services.Implements;
 using System.Security.Claims;
 using System.Text.Json.Serialization;
 
@@ -17,14 +18,14 @@ namespace SealTypographicWebAPI.Controllers
     public abstract class APIControllerBase : ControllerBase
     {
 
-        private readonly SealTypographicDbContext dbContext; 
+        private readonly IApplicationUserService applicationUserService; 
 
         /// <summary>
         /// 建置
         /// </summary>
-        public APIControllerBase(SealTypographicDbContext dbContext)
+        public APIControllerBase(IApplicationUserService applicationUserService)
         {
-            this.dbContext = dbContext;
+            this.applicationUserService = applicationUserService;
         }
 
         /// <summary>
@@ -33,19 +34,8 @@ namespace SealTypographicWebAPI.Controllers
         /// <returns></returns>
         [NonAction]
         public virtual UserInfo GetUserInfo()
-        {
-            UserInfo userInfo = new();
-            string userName = User.Identity?.Name?.ToString() ?? string.Empty;
-            if (!string.IsNullOrWhiteSpace(userName))
-            {
-                userInfo = new()
-                {
-                    UserId = dbContext.ApplicationUsers.FirstOrDefault(x => x.UserName == userName)!.Id,
-                    UserName = userName,
-                    KeycloakId = User.FindFirstValue(ClaimTypes.NameIdentifier) ?? string.Empty
-                };
-            }            
-            return userInfo;
+        {                        
+            return applicationUserService.GetUserInfo(User);
         }
     }
 }

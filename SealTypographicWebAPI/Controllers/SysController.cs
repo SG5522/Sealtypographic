@@ -4,6 +4,7 @@ using System.Reflection;
 using SealTypographicWebAPI.Models;
 using Microsoft.AspNetCore.Authorization;
 using DBEntities;
+using SealTypographicWebAPI.Services;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -28,11 +29,11 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="logger"></param>
         /// <param name="environment"></param>
         /// <param name="keycloakAuthenticationOptions"></param>
-        /// <param name="dbContext"></param>   
+        /// <param name="applicationUserService"></param>        
         public SysController(ILogger<SysController> logger, 
             IWebHostEnvironment environment, 
             KeycloakAuthenticationOptions keycloakAuthenticationOptions,
-            SealTypographicDbContext dbContext) : base(dbContext)
+            IApplicationUserService applicationUserService) : base(applicationUserService)
         {
             this.logger = logger;
             this.environment = environment;

@@ -8,7 +8,7 @@
         /// <summary>
         /// 使用者Id
         /// </summary>
-        public int UserId { get; set; }
+        public int ApplicationUserId { get; set; }
 
         /// <summary>
         /// 使用者名稱(帳號)
@@ -18,11 +18,12 @@
         /// <summary>
         /// 使用者暱稱
         /// </summary>
-        public string? NickName { get; set; }
+        public string? FirstName { get; set; }
 
         /// <summary>
-        /// 使用者KeycloakId
+        /// 使用者暱稱
         /// </summary>
-        public string? KeycloakId { get; set; }
+        public string? LastName { get; set; }
+
     }
 }

@@ -124,9 +124,9 @@ builder.Services.AddScoped<IUploadService, UploadService>();
 builder.Services.AddScoped<ITypographicPDFService, TypographicPDFService>();
 builder.Services.AddScoped<IQuarterYearService, QuarterYearService>();
 builder.Services.AddScoped<IImageRangeSettingService, ImageRangeSettingService>();
+builder.Services.AddScoped<IApplicationUserService, ApplicationUserService>();
 builder.Services.AddScoped<ILogReportService, LogReportService>();
 
-//builder.Services.AddHealthChecksUI().AddInMemoryStorage();
 #endregion
 
 builder.Services.AddLocalization(option => option.ResourcesPath = "Resource");
@@ -140,9 +140,9 @@ builder.Services.AddMvc()
     .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix)
     .AddDataAnnotationsLocalization();
 
-
 // Add services to the container.
 builder.Services.AddControllers();
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 
@@ -161,19 +161,8 @@ builder.Services.AddSwaggerGen(c =>
         Version = Assembly.GetExecutingAssembly().GetName().Version?.ToString(),
         Title = "SealTypographicWebAPI",
         Description = "取章排版ServerAPI",
-        //TermsOfService = new Uri("https://example.com/terms"),
-        //Contact = new OpenApiContact
-        //{
-        //    Name = "Shayne Boyer",
-        //    Email = string.Empty,
-        //    Url = new Uri("https://twitter.com/spboyer"),
-        //},
-        //License = new OpenApiLicense
-        //{
-        //    Name = "Use under LICX",
-        //    Url = new Uri("https://example.com/license"),
-        //}
     });
+
     //@解決部份宣告不為nullable 但還是nullable:true 的問題
     c.SupportNonNullableReferenceTypes();
 

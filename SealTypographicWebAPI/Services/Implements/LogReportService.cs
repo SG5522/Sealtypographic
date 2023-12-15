@@ -64,7 +64,7 @@ namespace SealTypographicWebAPI.Services.Implements
                 {
                     //adminService.GetUser
                     //TODO:或是所有的登入資料要先放到資料表user中在過濾出來。
-                    typographicPDFQuery = typographicPDFQuery.Where(x => x.UpdateUser!.NickName!.Contains(customerTypoReportSearch.UserKeyWord)
+                    typographicPDFQuery = typographicPDFQuery.Where(x => x.UpdateUser!.LastName!.Contains(customerTypoReportSearch.UserKeyWord)
                                                                     || x.UpdateUser!.UserName!.Contains(customerTypoReportSearch.UserKeyWord));
                 }
 

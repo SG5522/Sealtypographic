@@ -9,6 +9,7 @@ using SealTypographicWebAPI.Models.Accountant;
 using DBEntities.Entities;
 using DBEntities;
 using DBEntities.Entities.CustomerModels;
+using DBEntities.Utils;
 
 namespace SealTypographicWebAPI.Services.Implements
 {
@@ -146,8 +147,8 @@ namespace SealTypographicWebAPI.Services.Implements
                                                 ).Select(x => x.Code).ToList();
                     if (!customerQuery.Any())
                     {
-                        Customer dbCustomer = mapper.Map<Customer>(customerForm);
-                        BaseInput(dbCustomer, true, userId);
+                        Customer dbCustomer = mapper.Map<Customer>(customerForm);                        
+                        InputUtil.Set(dbCustomer, true, userId);
                         companyQuery.Customers.Add(dbCustomer);
                         dbContext.SaveChanges();
 
@@ -200,8 +201,8 @@ namespace SealTypographicWebAPI.Services.Implements
 
                 if (customerQuery != null)
                 {
-                    mapper.Map(customerFormUpdate, customerQuery);
-                    BaseInput(customerQuery, false, userId);
+                    mapper.Map(customerFormUpdate, customerQuery);                    
+                    InputUtil.Set(customerQuery, false, userId);
                     dbContext.SaveChanges();
                     response.Success();
                 }
@@ -238,8 +239,8 @@ namespace SealTypographicWebAPI.Services.Implements
 
                 if (customerQuery != null)
                 {
-                    customerQuery.DeleteStatus = DeleteStatus.Yes;
-                    BaseInput(customerQuery, false, userId);
+                    customerQuery.DeleteStatus = DeleteStatus.Yes;                   
+                    InputUtil.Set(customerQuery, false, userId);
                     dbContext.SaveChanges();
                     response.Success();
                 }
@@ -261,27 +262,6 @@ namespace SealTypographicWebAPI.Services.Implements
             }
 
             return response;
-        }
-
-        /// <summary>
-        /// 資料新增修改時基本資料輸入
-        /// </summary>
-        /// <param name="customer">DB上的客戶資料</param>
-        /// <param name="isCreate">確認是否新增的動作</param>
-        /// <param name="userid">使用者ID</param>
-        private static void BaseInput(Customer customer, bool isCreate, int userid)
-        {
-            if (isCreate)
-            {
-                customer.CreateUserId = userid;
-                customer.CreateDate = DateTime.Now;
-                customer.DeleteStatus = DeleteStatus.No;
-            }
-            else
-            {
-                customer.UpdateUserId = userid;
-                customer.UpdateDate = DateTime.Now;
-            }
         }
     }
 }

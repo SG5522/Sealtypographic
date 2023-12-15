@@ -24,22 +24,22 @@ namespace DBEntities.Entities.Base
 
         /// <summary>
         /// 建立此筆資料的User
-        /// </summary>
+        /// </summary>        
         public int? CreateUserId { get; set; }
 
         /// <summary>
-        /// 建立User
-        /// </summary>
+        /// 建立的關聯User表
+        /// </summary>        
         public ApplicationUser? CreateUser { get; set; }
 
         /// <summary>
         /// 更新此筆資料的User
-        /// </summary>
+        /// </summary>        
         public int? UpdateUserId { get; set; }
 
         /// <summary>
-        /// 建立User
-        /// </summary>
+        /// 更新的關聯User表
+        /// </summary>       
         public ApplicationUser? UpdateUser { get; set; }
 
         /// <summary>

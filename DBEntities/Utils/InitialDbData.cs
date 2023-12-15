@@ -19,8 +19,7 @@ namespace DBEntities.Utils
                     ApplicationUser user = new()
                     {
                         Id = 1,
-                        UserName = "Admin",
-                        KeycloakUserId = "00001",
+                        UserName = "admin",                        
                         CreateDate = DateTime.Now
                     };
                     dbContext.ApplicationUsers.Add(user);
@@ -29,8 +28,6 @@ namespace DBEntities.Utils
 
                 if (!dbContext.Companys.Any())
                 {
-
-
                     //公司基本資料
                     Company company = new()
                     {
@@ -39,15 +36,14 @@ namespace DBEntities.Utils
                         BAN = "12345678",
                         Name = "映像有限公司",
                         AccountantGroups = new List<AccountantGroup>(),
-                        Users = new List<ApplicationUser>(),
+                        ApplicationUsers = new List<ApplicationUser>(),
                         ImageRangeSettings = new List<ImageRangeSetting>()
                     };
 
                     //建立User資料
                     ApplicationUser user = new()
                     {
-                        UserName = "ImageAdmin",
-                        KeycloakUserId = "002",
+                        UserName = "ImageAdmin",                        
                         CreateDate = DateTime.Now
                     };
 
@@ -172,7 +168,7 @@ namespace DBEntities.Utils
                     InputUtil.Set(accountantGroup, true, 1);
 
                     company.AccountantGroups.Add(accountantGroup);
-                    company.Users.Add(user);
+                    company.ApplicationUsers.Add(user);
                     company.ImageRangeSettings!.Add(imageCaptureWithCustomer);
                     company.ImageRangeSettings!.Add(imageCaptureWithAccountant);
 

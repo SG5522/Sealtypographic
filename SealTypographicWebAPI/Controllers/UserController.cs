@@ -58,8 +58,7 @@ namespace SealTypographicWebAPI.Controllers
 
                     ApplicationUser user = new() 
                     {
-                        UserName = userViewModel.Username,
-                        KeycloakUserId = userViewModel.Id!,
+                        UserName = userViewModel.Username,                        
                         Company = company
                     };
 

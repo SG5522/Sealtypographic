@@ -11,6 +11,7 @@ using DBEntities.Entities;
 using DBEntities;
 using DBEntities.Entities.TypographicModels;
 using DBEntities.Entities.CustomerModels;
+using DBEntities.Utils;
 
 namespace SealTypographicWebAPI.Services.Implements
 {
@@ -295,7 +296,7 @@ namespace SealTypographicWebAPI.Services.Implements
 
                         customerSealGroup.QuarterYear = quarter;
                         customerSealGroup.TypographyType = typographyType;
-                        BaseInput(customerSealGroup, true, userId);
+                        BaseInput(customerSealGroup, true, userId);              
                         //新增印鑑資料(圖檔與DB資源)
                         customerSealGroup.TypographicResources = await NewTypographyResource(customerSealForm.Seals, imageBase64Info, userId);
 
@@ -317,7 +318,7 @@ namespace SealTypographicWebAPI.Services.Implements
             catch (DbUpdateException ex)
             {
                 response.DbError();                
-                logger.LogError("New dbError {@DbError}", ex.Message);
+                logger.LogError("New dbError {@DbError}", ex.InnerException!.Message);
             }
             catch (Exception ex) 
             {
@@ -485,17 +486,7 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <param name="userId">userId</param>
         private static void BaseInput(CustomerSealGroup customerSealGroup, bool isCreate, int userId)
         {
-            if (isCreate)
-            {
-                customerSealGroup.CreateUserId = userId;
-                customerSealGroup.CreateDate = DateTime.Now;
-                customerSealGroup.DeleteStatus = DeleteStatus.No;
-            }
-            else
-            {
-                customerSealGroup.UpdateUserId = userId;
-                customerSealGroup.UpdateDate = DateTime.Now;
-            }
+            InputUtil.Set(customerSealGroup, isCreate, userId);
             customerSealGroup.StartDate = DateUtil.NotActivated();
             customerSealGroup.EndDate = DateUtil.NotActivated();
             customerSealGroup.ReviewStatus = ReviewStatus.Draft;
@@ -524,7 +515,8 @@ namespace SealTypographicWebAPI.Services.Implements
                 typographyResource.ImageFullPath = await imageService.GetSavedImageFilePath(imageBase64Info);
                 typographyResource.ThumbnailFullPath = await imageService.GetSavedImageThumbnailFilePath(imageBase64Info, true);
 
-                TypographicResourceUtil.BaseInputTypographyResource(typographyResource, true, userId);
+                //TypographicResourceUtil.BaseInputTypographyResource(typographyResource, true, userId);
+                InputUtil.Set(typographyResource, true, userId);
                 typographyResources.Add(typographyResource);
             }
             return typographyResources;

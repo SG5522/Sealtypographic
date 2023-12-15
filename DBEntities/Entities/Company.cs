@@ -44,7 +44,7 @@ namespace DBEntities.Entities
         /// <summary>
         /// 使用者資料表
         /// </summary>
-        public IList<ApplicationUser> Users { get; set; }
+        public IList<ApplicationUser> ApplicationUsers { get; set; }
 
         /// <summary>
         /// 圖片截取範圍設定

@@ -19,7 +19,7 @@ namespace DBEntities.Utils
         {
             if (isCreate)
             {
-                input.CreateUserId = userId;
+                input.CreateUserId = userId;                
                 input.CreateDate = DateTime.Now;
                 input.DeleteStatus = DeleteStatus.No;
             }
