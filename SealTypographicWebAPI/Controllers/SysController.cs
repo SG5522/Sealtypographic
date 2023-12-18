@@ -56,13 +56,11 @@ namespace SealTypographicWebAPI.Controllers
                                             Assembly.GetExecutingAssembly().GetName().Version?.ToString(), 
                                             Assembly.GetExecutingAssembly().GetName().Name?.ToString(),
                                             environment.EnvironmentName                                            
-                                         );      
-            UserInfo userInfo = GetUserInfo();
+                                         );                  
             logger.LogDebug("Hello End");
             return result;
         }
-
-        //TODO: 之後需要刪除
+        
         /// <summary>
         /// 取得Keycloak登入配置        
         /// </summary>

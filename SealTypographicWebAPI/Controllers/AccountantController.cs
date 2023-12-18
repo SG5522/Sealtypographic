@@ -12,8 +12,7 @@ namespace SealTypographicWebAPI.Controllers
     /// 管理會計師基本資料
     /// </summary>
     [Route("api/[controller]")]    
-    [ApiController]
-    [Authorize]
+    [ApiController]    
     public class AccountantController : ControllerBase
     {
         /// <summary>
