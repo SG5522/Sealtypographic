@@ -47,10 +47,12 @@ namespace SealTypographicWebAPI.Services.Implements
         }
 
         /// <summary>
-        /// 取得上傳類別
+        /// 
         /// </summary>
+        /// <param name="newUserForm"></param>
+        /// <param name="userName"></param>
         /// <returns></returns>
-        public async Task<ResponseModel> AddUser(NewUserForm newUserForm, string username = "admin")
+        public async Task<ResponseModel> AddUser(NewUserForm newUserForm, string userName = "admin")
         {
             ResponseModel response = new();
 

@@ -7,6 +7,7 @@ using Keycloak.AuthServices.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
 using SealTypographicWebAPI.Config;
 using SealTypographicWebAPI.Services;
@@ -37,6 +38,13 @@ builder.Services.Configure<TemplateImagePathOption>(
 builder.Services.Configure<KeycloakOptions>(
     builder.Configuration.GetSection("KeycloakAdmin"));
 
+KeycloakAuthenticationOptions keycloakAuthenticationOptions = new();
+
+builder.Configuration
+    .GetSection(KeycloakAuthenticationOptions.Section)
+    .Bind(keycloakAuthenticationOptions, opt => opt.BindNonPublicProperties = true);
+
+builder.Services.Configure<KeycloakAuthenticationOptions>(builder.Configuration.GetSection(KeycloakAuthenticationOptions.Section));
 
 //addCors
 builder.Services.AddCors(options =>
@@ -145,14 +153,6 @@ builder.Services.AddControllers();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-
-KeycloakAuthenticationOptions keycloakAuthenticationOptions = new();
-
-builder.Configuration
-    .GetSection(KeycloakAuthenticationOptions.Section)
-    .Bind(keycloakAuthenticationOptions, opt => opt.BindNonPublicProperties = true);
-
-builder.Services.AddSingleton(keycloakAuthenticationOptions);
 
 builder.Services.AddSwaggerGen(c =>
 {

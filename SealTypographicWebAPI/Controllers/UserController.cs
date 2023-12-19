@@ -1,10 +1,13 @@
 ﻿using AutoMapper;
 using DBEntities;
 using DBEntities.Entities;
+using DJKeycloakAPI.Controllers;
 using DJKeycloakAPI.Models.Users;
 using DJKeycloakLib.Models.BaseModel;
 using DJKeycloakLib.Services;
 using Microsoft.AspNetCore.Mvc;
+using SealTypographicWebAPI.Services;
+using SealTypographicWebAPI.Services.Implements;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -15,19 +18,19 @@ namespace SealTypographicWebAPI.Controllers
     /// </summary>
     [Route("api/[controller]")]
     [ApiController]
-    public class UserController : DJKeycloakAPI.Controllers.AdminUserController
-    {
-        private readonly SealTypographicDbContext dbContext;        
+    public class UserController : AdminUserController
+    {           
+        private readonly IApplicationUserService applicationUserService;
 
         /// <summary>
         /// 建置
         /// </summary>
         /// <param name="mapper"></param>
         /// <param name="adminService"></param>
-        /// <param name="dbContext"></param>
-        public UserController(IMapper mapper, IAdminService adminService, SealTypographicDbContext dbContext) : base(mapper, adminService)
-        {            
-            this.dbContext = dbContext;
+        /// <param name="applicationUserService"></param>
+        public UserController(IMapper mapper, IAdminService adminService, IApplicationUserService applicationUserService) : base(mapper, adminService)
+        {
+            this.applicationUserService = applicationUserService;
         }
 
         /// <summary>
@@ -47,23 +50,12 @@ namespace SealTypographicWebAPI.Controllers
                     Username = newUserForm.Username,
                     Exact = true
                 };
-
+                
                 ResponseModel<IList<UserViewModel>> userViewModels = await base.Get(userQuery);
                 UserViewModel? userViewModel = userViewModels.Data!.FirstOrDefault();
                 if (userViewModel != null)
                 {
-                    //TODO:之後公司資料表由Keycloak取得帳號資料在反找公司。
-                    //Company company = dbContext.Companys.First(x => x.Users.Any(x => x.KeycloakUserId == User.FindFirstValue(ClaimTypes.NameIdentifier)));
-                    Company company = dbContext.Companys.First(x => x.Id == 1);         
-
-                    ApplicationUser user = new() 
-                    {
-                        UserName = userViewModel.Username,                        
-                        Company = company
-                    };
-
-                    dbContext.ApplicationUsers.Add(user);
-                    dbContext.SaveChanges();
+                    responseModel =  await applicationUserService.AddUser(newUserForm);
                 }
             }
             return responseModel;
