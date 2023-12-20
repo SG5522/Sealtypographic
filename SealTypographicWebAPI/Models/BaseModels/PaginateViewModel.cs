@@ -28,7 +28,5 @@ namespace SealTypographicWebAPI.Models.BaseModels
         /// 總頁數
         /// </summary>
         public int TotalPage => (TotalCount == 0 && PageSize == 0) ? 0 : TotalCount / PageSize + (TotalCount % PageSize == 0 ? 0 : 1);
-
-
     }
 }

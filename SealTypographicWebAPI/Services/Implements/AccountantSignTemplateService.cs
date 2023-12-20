@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using AutoMapper.QueryableExtensions;
+using CommonLib.Utils;
 using DBEntities;
 using DBEntities.Consts;
 using DBEntities.Entities;
@@ -215,7 +216,7 @@ namespace SealTypographicWebAPI.Services.Implements
                         mapper.Map(locationUpdateForm, templateLocation);
                         templateLocation.SealType = SealType.Accountant;
                         //之後要調整為不用轉型
-                        templateLocation.SubSealType = SealMappingConfigUtil.GetSubSealTypeWithAccountant((AccountantSignType)locationUpdateForm.AccountantSignType);
+                        templateLocation.SubSealType = SealMappingConfigUtil.GetSubSealTypeWithAccountant(locationUpdateForm.AccountantSignType);
                     }
                 }
                 //新增樣本座標
