@@ -1,13 +1,13 @@
 using DBEntities;
 using DBEntities.Utils;
 using DJKeycloakAPI.Configs;
+using DJKeycloakAPI.Models.Users;
 using DJKeycloakLib.Configs;
 using DJKeycloakLib.Services;
 using Keycloak.AuthServices.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
 using SealTypographicWebAPI.Config;
 using SealTypographicWebAPI.Services;
@@ -25,6 +25,9 @@ WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 Log.Logger = new LoggerConfiguration()
                 .ReadFrom.Configuration(builder.Configuration)
                 .CreateLogger();
+
+builder.Services.Configure<SystemConfigOption>(
+    builder.Configuration.GetSection("SystemConfig"));
 
 builder.Services.Configure<UploadPathOption>(
     builder.Configuration.GetSection("UploadPath"));
@@ -68,7 +71,6 @@ builder.Services.AddCors(options =>
                             });
     }        
 });
-
 
 builder.Host.UseSerilog();// <-SeriLog 
 
@@ -166,7 +168,10 @@ builder.Services.AddSwaggerGen(c =>
     //@解決部份宣告不為nullable 但還是nullable:true 的問題
     c.SupportNonNullableReferenceTypes();
 
-    c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, $"{Assembly.GetExecutingAssembly().GetName().Name}.xml"), true);
+    c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, $"{Assembly.GetExecutingAssembly().GetName().Name}.xml"), true);    
+    c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, $"{typeof(NewUserForm).Assembly.GetName().Name}.xml"), true);
+    c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, $"{typeof(DJKeycloakLib.Models.BaseModel.ResponseModel).Assembly.GetName().Name}.xml"), true);
+
     OpenApiSecurityScheme securityScheme = new()
     {
         Name = "Auth",
@@ -191,32 +196,6 @@ builder.Services.AddSwaggerGen(c =>
     {
         {securityScheme, Array.Empty<string>()}
     });
-    // 取得TOKEN
-    //c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
-    //{
-    //    Name = "Authorization",
-    //    In = ParameterLocation.Header,
-    //    Type = SecuritySchemeType.ApiKey,
-    //    Scheme = "Bearer",
-    //    BearerFormat = "JWT",
-    //    Description = "JWT Authorization header using the Bearer scheme."
-    //});
-
-    //c.AddSecurityRequirement(new OpenApiSecurityRequirement
-    //    {
-    //        {
-    //            new OpenApiSecurityScheme
-    //            {
-    //                Reference = new OpenApiReference
-    //                {
-    //                    Type = ReferenceType.SecurityScheme,
-    //                    Id = "Bearer"
-    //                }
-    //            },
-    //            new string[] {}
-    //        }
-    //    });
-    //c.SchemaFilter<EnumSchemaFilter>();   
 });
 
 #region -- Authentication --
@@ -246,8 +225,7 @@ builder.Host.UseWindowsService();
 var app = builder.Build();
 
 if (!app.Environment.IsProduction())
-{
-    //app.UseStaticFiles();
+{    
     app.UseSwagger(c =>
     {
         c.PreSerializeFilters.Add((swagger, httpReq) =>

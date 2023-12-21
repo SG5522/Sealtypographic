@@ -51,8 +51,8 @@ namespace SealTypographicWebAPI.Controllers
                     Exact = true
                 };
                 
-                ResponseModel<IList<UserViewModel>> userViewModels = await base.Get(userQuery);
-                UserViewModel? userViewModel = userViewModels.Data!.FirstOrDefault();
+                ResponseModel<UserViewModelPaginate> userViewModels = await base.Get(userQuery);
+                UserViewModel? userViewModel = userViewModels.Data!.Users!.FirstOrDefault();
                 if (userViewModel != null)
                 {
                     responseModel =  await applicationUserService.AddUser(newUserForm);

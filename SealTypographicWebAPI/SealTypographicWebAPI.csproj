@@ -7,19 +7,19 @@
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <DocumentationFile></DocumentationFile>
     <IncrementVersionOnBuild>0.0.3.1+</IncrementVersionOnBuild>
-    <Version>0.0.3.758</Version>
+    <Version>0.0.3.786</Version>
     <PackageIcon>android-chrome-128x128.png</PackageIcon>
     <Configurations>Debug;Release</Configurations>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>    
+	  
   </PropertyGroup>
 
-  <ItemGroup>
+	<ItemGroup>
     <Compile Remove="logs\**" />
     <Content Remove="logs\**" />
     <EmbeddedResource Remove="logs\**" />
     <None Remove="logs\**" />
   </ItemGroup>
-
 
   <ItemGroup>
     <None Include="..\..\SealTypographicWebAPI\wwwroot\swagger\android-chrome-128x128.png">
@@ -33,8 +33,9 @@
     <PackageReference Include="AspNetCore.HealthChecks.UI.InMemory.Storage" Version="7.0.0" />
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
     <PackageReference Include="DJCommonLib" Version="6.0.4" />
-    <PackageReference Include="DJImageLib" Version="1.0.1" />
-    <PackageReference Include="DJKeycloakAPI" Version="6.0.7" />	
+    <PackageReference Include="DJImageLib" Version="1.0.1" />	  
+	<PackageReference Include="DJKeycloakAPI" Version="6.0.8" CopyDirectory="lib\net6.0\**\*.*" />	  
+	<PackageReference Include="DJKeycloakLib" Version="6.0.6" CopyDirectory="lib\net6.0\**\*.*" />	  
     <PackageReference Include="Keycloak.AuthServices.Authentication" Version="1.6.0" />
     <PackageReference Include="Keycloak.AuthServices.Authorization" Version="1.6.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Certificate" Version="6.0.25" />
@@ -74,4 +75,22 @@
     </Content>
   </ItemGroup>
 
+    <Target Name="CopyOtherForBuild" AfterTargets="Build">
+	    <ItemGroup>
+		    <PackageCopyFiles Condition="%(PackageReference.CopyDirectory) != ''" Include="$(NugetPackageRoot)\%(PackageReference.FileName)\%(PackageReference.Version)\%(PackageReference.CopyDirectory)" />
+		    <PackageContentFiles Condition="%(PackageReference.CopyContentFiles) != ''" Include="$(NugetPackageRoot)\%(PackageReference.FileName)\%(PackageReference.Version)\%(PackageReference.CopyContentFiles)" />
+	    </ItemGroup>
+	    <Copy SourceFiles="@(PackageCopyFiles)" DestinationFolder="$(OutDir)\%(RecursiveDir)" />
+	    <Copy SourceFiles="@(PackageContentFiles)" DestinationFolder="$(OutDir)\%(RecursiveDir)" />
+    </Target>
+
+    <Target Name="CopyOtherForPublish" BeforeTargets="Publish">
+	    <ItemGroup>
+		    <PackageCopyFiles Condition="%(PackageReference.CopyDirectory) != ''" Include="$(NugetPackageRoot)\%(PackageReference.FileName)\%(PackageReference.Version)\%(PackageReference.CopyDirectory)" />
+		    <PackageContentFiles Condition="%(PackageReference.CopyContentFiles) != ''" Include="$(NugetPackageRoot)\%(PackageReference.FileName)\%(PackageReference.Version)\%(PackageReference.CopyContentFiles)" />
+	    </ItemGroup>
+	    <Copy SourceFiles="@(PackageCopyFiles)" DestinationFolder="$(PublishDir)\%(RecursiveDir)" />
+	    <Copy SourceFiles="@(PackageContentFiles)" DestinationFolder="$(PublishDir)\%(RecursiveDir)" />
+    </Target>
+	
 </Project>
