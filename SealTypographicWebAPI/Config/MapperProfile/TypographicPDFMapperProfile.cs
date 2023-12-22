@@ -3,7 +3,6 @@ using SealTypographicWebAPI.Models.TypographicPDF;
 using DJSpire.Models;
 using DBEntities.Consts;
 using SealTypographicWebAPI.Utils;
-using DJLib;
 using DBEntities.Entities.TypographicModels;
 
 namespace SealTypographicWebAPI.Config.MapperProfile
@@ -93,9 +92,9 @@ namespace SealTypographicWebAPI.Config.MapperProfile
             //客戶印鑑
             CreateMap<TypographicResourceLocation, CustomerSealLocationViewModel>()
                     .ForMember(dst => dst.Id, opt => opt.MapFrom(src => src.TypographicResource.Id))
-                    .ForMember(dst => dst.Sequence, y => y.MapFrom(o => o.TypographicResource.Sequence))
-                    .ForMember(dst => dst.CustomerSealType, y => y.MapFrom(o => SealMappingConfigUtil.GetCustomerSealType(o.TypographicResource.SubSealType)))
-                    .ForMember(dst => dst.ImageBase64, y => y.MapFrom(o => ImageSharpUtil.TransparentToImageBase64(o.TypographicResource.ImageFullPath)));
+                    .ForMember(dst => dst.Sequence, opt => opt.MapFrom(src => src.TypographicResource.Sequence))
+                    .ForMember(dst => dst.CustomerSealType, opt => opt.MapFrom(src => SealMappingConfigUtil.GetCustomerSealType(src.TypographicResource.SubSealType)))                    
+                    .ForMember(dst => dst.ImageBase64, opt => opt.MapFrom(src => ImageTransparentUtil.FromPath(src.TypographicResource.ImageFullPath)));
 
             //客戶印鑑(log)
             CreateMap<CustomerSealLocationViewModel, CustomerSealLocationViewModel>()
@@ -109,8 +108,8 @@ namespace SealTypographicWebAPI.Config.MapperProfile
                         src => src.TypographicResource.AccountantSignGroup != null ?
                         src.TypographicResource.AccountantSignGroup.Accountant.Name : null
                     ))
-                    .ForMember(dst => dst.AccountantSignType, y => y.MapFrom(o => SealMappingConfigUtil.GetAccountantSignType(o.TypographicResource.SubSealType)))
-                    .ForMember(dst => dst.ImageBase64, y => y.MapFrom(o => ImageSharpUtil.TransparentToImageBase64(o.TypographicResource.ImageFullPath)));
+                    .ForMember(dst => dst.AccountantSignType, opt => opt.MapFrom(src => SealMappingConfigUtil.GetAccountantSignType(src.TypographicResource.SubSealType)))
+                    .ForMember(dst => dst.ImageBase64, opt => opt.MapFrom(src => ImageTransparentUtil.FromPath(src.TypographicResource.ImageFullPath)));
 
             //會計師簽印(log)
             CreateMap<AccountantSignLocationViewModel, AccountantSignLocationViewModel>()
@@ -119,7 +118,7 @@ namespace SealTypographicWebAPI.Config.MapperProfile
             //信頭圖
             CreateMap<TypographicResourceLocation, LetterheadImageLocationViewModel>()
                     .ForMember(dst => dst.Id, opt => opt.MapFrom(src => src.TypographicResource.Id))
-                    .ForMember(dst => dst.ImageBase64, opt => opt.MapFrom(src => ImageSharpUtil.TransparentToImageBase64(src.TypographicResource.ImageFullPath)))
+                    .ForMember(dst => dst.ImageBase64, opt => opt.MapFrom(src => ImageTransparentUtil.FromPath(src.TypographicResource.ImageFullPath)))
                     .ForMember(dst => dst.LetterheadName, opt => opt.MapFrom
                     (
                         src => src.TypographicResource.Letterhead != null ?
@@ -134,7 +133,7 @@ namespace SealTypographicWebAPI.Config.MapperProfile
             CreateMap<TypographicResourceLocation, TemporarySealLocationViewModel>()
                     .ForMember(dst => dst.Id, opt => opt.MapFrom(src => src.TypographicResource.Id))
                     .ForMember(dst => dst.Sequence, opt => opt.MapFrom(src => src.TypographicResource.Sequence))
-                    .ForMember(dst => dst.ImageBase64, opt => opt.MapFrom(src => ImageSharpUtil.TransparentToImageBase64(src.TypographicResource.ImageFullPath)));
+                    .ForMember(dst => dst.ImageBase64, opt => opt.MapFrom(src => ImageTransparentUtil.FromPath(src.TypographicResource.ImageFullPath)));
 
             //臨時章(log)
             CreateMap<TemporarySealLocationViewModel, TemporarySealLocationViewModel>()
@@ -150,7 +149,7 @@ namespace SealTypographicWebAPI.Config.MapperProfile
 
             //讀取PDF概要內容的Map
             CreateMap<TypographicPDF, TypographicPDFSettingViewModel>()
-                 .ForMember(dst => dst.OriginalFileName, y => y.MapFrom(o => o.OriginFileName))
+                 .ForMember(dst => dst.OriginalFileName, opt => opt.MapFrom(o => o.OriginFileName))
                  .ForMember(dst => dst.QuarterYearId, opt => opt.MapFrom(src => src.QuarterYear.Id))
                  .ForMember(dst => dst.EditPageCount, opt => opt.MapFrom(o => o.TypographicPages.Where(src => src.TypographicResourceLocations.Any()).Count()))
                  .ForMember(dst => dst.BlankPageCount, opt => opt.MapFrom(o => o.TypographicPages.Where(src => src.BlankCheck == true).Count()))
@@ -163,7 +162,7 @@ namespace SealTypographicWebAPI.Config.MapperProfile
             // PDF排版圖像與位置的Map
             CreateMap<TypographicResourceLocation, EditImage>()
                 //透通處理                
-                .ForMember(dst => dst.ImageBase64, opt => opt.MapFrom(src => Convert.ToBase64String(OpenCvUtil.TransparentToBytes(src.TypographicResource.ImageFullPath, 160))))
+                .ForMember(dst => dst.ImageBase64, opt => opt.MapFrom(src => ImageTransparentUtil.FromPath(src.TypographicResource.ImageFullPath)))
                 //確認圖像種類決定縮放大小
                 .ForMember(dst => dst.ImageScale, opt => opt.MapFrom(src => PdfOutputUtil.GetImageScale(src.TypographicResource.SubSealType)));
 

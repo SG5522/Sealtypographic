@@ -3,7 +3,6 @@ using Microsoft.EntityFrameworkCore;
 using SealTypographicWebAPI.Models;
 using SealTypographicWebAPI.Utils;
 using DBEntities.Consts;
-using DJLib.Models;
 using AutoMapper.QueryableExtensions;
 using SealTypographicWebAPI.Models.CustomerSeal;
 using SealTypographicWebAPI.Models.Customer;
@@ -12,6 +11,7 @@ using DBEntities;
 using DBEntities.Entities.TypographicModels;
 using DBEntities.Entities.CustomerModels;
 using DBEntities.Utils;
+using DJImageLib.Utils;
 
 namespace SealTypographicWebAPI.Services.Implements
 {
@@ -238,8 +238,8 @@ namespace SealTypographicWebAPI.Services.Implements
                     {
                         foreach (CustomerSealViewModel customerSealViewModel in customerSealViewModels.SealViewModels)
                         {
-                            ImageInfo imageInfo = ImageInfo.FromImageBase64(customerSealViewModel.ImageBase64);
-                            customerSealViewModel.ImageBase64 = imageInfo.TransparentToImageBase64();                            
+                            //ImageInfo imageInfo = ImageInfo.FromImageBase64(customerSealViewModel.ImageBase64);
+                            customerSealViewModel.ImageBase64 = ImageTransparentUtil.FromDataUrl(customerSealViewModel.ImageBase64);
                         }
                     }
                     customerSealViewModels.Success();

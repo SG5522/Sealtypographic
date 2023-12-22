@@ -1,7 +1,4 @@
-﻿using DJLib.Models;
-using System.Text.Json.Serialization;
-
-namespace SealTypographicWebAPI.Models.TypographicPDF
+﻿namespace SealTypographicWebAPI.Models.TypographicPDF
 {
     /// <summary>
     /// 排版PDF + 回應訊息

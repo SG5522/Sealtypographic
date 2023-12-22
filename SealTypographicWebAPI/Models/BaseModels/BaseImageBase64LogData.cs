@@ -1,4 +1,5 @@
-﻿using DJLib.Models;
+﻿using DJImageLib.Extensions;
+using DJImageLib.Utils;
 
 namespace SealTypographicWebAPI.Models.BaseModels
 {
@@ -19,10 +20,9 @@ namespace SealTypographicWebAPI.Models.BaseModels
             {
                 imageBase64 = value;
                 if (imageBase64 != string.Empty)
-                {
-                    ImageInfo imageInfo = ImageInfo.FromImageBase64(imageBase64);
-                    imageInfo.ReSize(imageInfo, 0.3);//預設壓到原圖的0.3
-                    imageBase64 = imageInfo.ToBase64();
+                {                
+                    
+                    imageBase64 = ImageUtil.ReSize(DataUrlUtil.GetBase64(imageBase64).ToBytes(), 0.3, 0.3);
                 }
             }
         }

@@ -1,4 +1,5 @@
-﻿using DJLib.Models;
+﻿using DJImageLib.Extensions;
+using DJImageLib.Utils;
 using System.Text.Json.Serialization;
 
 namespace SealTypographicWebAPI.Models.TypographicPDF
@@ -21,9 +22,7 @@ namespace SealTypographicWebAPI.Models.TypographicPDF
                 pDFBase64 = value;
                 if (pDFBase64 != string.Empty)
                 {
-                    ImageInfo imageInfo = ImageInfo.FromImageBase64(pDFBase64);
-                    imageInfo.ReSize(imageInfo, 0.1);
-                    ThumbnailPDFBase6 = imageInfo.ToBase64();
+                    ThumbnailPDFBase64  = ImageUtil.ReSize(DataUrlUtil.GetBase64(pDFBase64).ToBytes(), 0.1, 0.1); ;
                 }
             }
         }
@@ -32,6 +31,6 @@ namespace SealTypographicWebAPI.Models.TypographicPDF
         /// PDF縮圖(base64)
         /// </summary>
         [JsonIgnore]
-        public string ThumbnailPDFBase6 { get; set; }
+        public string ThumbnailPDFBase64 { get; set; }
     }
 }

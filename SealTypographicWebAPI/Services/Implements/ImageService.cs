@@ -1,9 +1,13 @@
-﻿using DJLib;
-using Microsoft.Extensions.Options;
+﻿using Microsoft.Extensions.Options;
 using SealTypographicWebAPI.Config;
 using SealTypographicWebAPI.Models;
 using DBEntities.Consts;
-using DJLib.Models;
+using DJImageLib;
+using SixLabors.ImageSharp;
+using DJImageLib.Models;
+using CommonLib.Utils;
+using DJImageLib.Utils;
+using SkiaSharp;
 
 namespace SealTypographicWebAPI.Services.Implements
 {
@@ -35,7 +39,18 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <returns></returns>
         public string GetPathToBase64(string fullpath)
         {
-            return ImageSharpUtil.PathImageFileToBase64(fullpath);
+            //return ImageSharpUtil.PathImageFileToBase64(fullpath);
+            ImageModel imageModel = new();
+            if(Path.GetExtension(fullpath) == "txt")
+            {
+                imageModel.Base64 = File.ReadAllText(fullpath);
+            }
+            else
+            {
+                imageModel.Base64 = Convert.ToBase64String(File.ReadAllBytes(fullpath));
+            }                        
+
+            return imageModel.DataUrl!;
         }
 
         /// <summary>
@@ -70,13 +85,18 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <returns></returns>
         public void SaveImage(string imageBase64, string savePath, bool isResize)
         {
-            ImageInfo imageInfo = ImageInfo.FromImageBase64(imageBase64);
-            savePath += $".{imageInfo.ImageFormat.Name.ToLower()}";
+            //ImageInfo imageInfo = ImageInfo.FromImageBase64(imageBase64);
+            //ImageUtil.ReSizeBase64Only(imageBase64);
+
+            //savePath += $".{imageInfo.ImageFormat.Name.ToLower()}";
+            ImageModel imageModel = new() { DataUrl = imageBase64 };
             if (isResize)
             {
-                imageInfo.ReSize(imageInfo, sealPathOption.ResizeScale);
+                //imageInfo.ReSize(imageInfo, sealPathOption.ResizeScale);
+                 ImageUtil.ReSizeBase64Only(imageBase64, sealPathOption.ResizeScale, sealPathOption.ResizeScale);
             }
-            ImageSharpUtil.SaveFile(imageInfo, savePath);
+            //ImageSharpUtil.SaveFile(imageInfo, savePath);
+            FileUtil.SaveFileReturnPath(imageBase64, Path.GetPathRoot(savePath)!, imageModel.ImageFormat!.Name.ToLower()!);
         }
 
         /// <summary>
@@ -90,14 +110,17 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <returns></returns>
         public async Task<string> SaveImageAsync(string imageBase64, string savePath, bool isResize)
         {
-            ImageInfo imageInfo = ImageInfo.FromImageBase64(imageBase64);
-            savePath += $".{imageInfo.ImageFormat.Name.ToLower()}";            
+            //ImageInfo imageInfo = ImageInfo.FromImageBase64(imageBase64);
+            //savePath += $".{imageInfo.ImageFormat.Name.ToLower()}";            
+            ImageModel imageModel = new() { DataUrl = imageBase64 };
             if (isResize)
             {
-                imageInfo.ReSize(imageInfo, sealPathOption.ResizeScale);
+                //imageInfo.ReSize(imageInfo, sealPathOption.ResizeScale);
+                ImageUtil.ReSizeBase64Only(imageBase64, sealPathOption.ResizeScale, sealPathOption.ResizeScale);
             }
-            await ImageSharpUtil.SaveFileAsync(imageInfo, savePath);
-            return savePath;
+            //await ImageSharpUtil.SaveFileAsync(imageInfo, savePath);
+            //return savePath
+            return await FileUtil.SaveFileReturnPath(imageBase64, Path.GetPathRoot(savePath)!, imageModel.ImageFormat!.Name.ToLower()!);
         }
 
         /// <summary>

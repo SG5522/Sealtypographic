@@ -3,8 +3,8 @@ using SealTypographicWebAPI.Models.CustomerSealTemplate;
 using SealTypographicWebAPI.Models.AccountantSignTemplate;
 using SealTypographicWebAPI.Models.LetterheadImageTemplate;
 using SealTypographicWebAPI.Utils;
-using DJLib;
 using DBEntities.Entities.TemplateModels;
+using DJImageLib.Utils;
 
 namespace SealTypographicWebAPI.Config.MapperProfile
 {
@@ -35,7 +35,7 @@ namespace SealTypographicWebAPI.Config.MapperProfile
 
             //客戶印鑑樣版分頁查詢使用
             CreateMap<Template, CustomerSealTemplateViewModel>()
-                    .ForMember(dst => dst.ThumbnailBase64, opt => opt.MapFrom(src => ImageSharpUtil.PathImageFileToBase64(src.ThumbnailFullPath)));
+                    .ForMember(dst => dst.ThumbnailBase64, opt => opt.MapFrom(src => ImageUtil.ToDataUrlFromFilePath(src.ThumbnailFullPath)));
 
             //Log使用
             CreateMap<CustomerSealTemplateViewModel, CustomerSealTemplateLogModel>();
@@ -58,7 +58,7 @@ namespace SealTypographicWebAPI.Config.MapperProfile
 
             //會計師簽印樣版分頁查詢使用
             CreateMap<Template, AccountantSignTemplateViewModel>()
-                    .ForMember(dst => dst.ThumbnailBase64, opt => opt.MapFrom(src => ImageSharpUtil.PathImageFileToBase64(src.ThumbnailFullPath)));
+                    .ForMember(dst => dst.ThumbnailBase64, opt => opt.MapFrom(src => ImageUtil.ToDataUrlFromFilePath(src.ThumbnailFullPath)));
 
             CreateMap<TemplateLocation, TemplateLocation>();
             //Log使用
@@ -80,7 +80,7 @@ namespace SealTypographicWebAPI.Config.MapperProfile
 
             CreateMap<Template, LetterheadImageTemplateViewModel>()
                     .ForMember(dst => dst.ImageFullPath, opt => opt.MapFrom(src => src.ThumbnailFullPath))
-                    .ForMember(dst => dst.ThumbnailBase64, opt => opt.MapFrom(src => ImageSharpUtil.PathImageFileToBase64(src.ThumbnailFullPath)));
+                    .ForMember(dst => dst.ThumbnailBase64, opt => opt.MapFrom(src => ImageUtil.ToDataUrlFromFilePath(src.ThumbnailFullPath)));
 
             //Log使用
             CreateMap<LetterheadImageTemplateViewModel, LetterheadImageTemplateLogModel>();

@@ -1,11 +1,11 @@
 ﻿using AutoMapper;
-using DJLib;
 using DBEntities.Consts;
 using SealTypographicWebAPI.Utils;
 using SealTypographicWebAPI.Models.Customer;
 using SealTypographicWebAPI.Models.CustomerSeal;
 using DBEntities.Entities.TypographicModels;
 using DBEntities.Entities.CustomerModels;
+using DJImageLib.Utils;
 
 namespace SealTypographicWebAPI.Config.MapperProfile
 {
@@ -40,7 +40,7 @@ namespace SealTypographicWebAPI.Config.MapperProfile
 
             CreateMap<TypographicResource, CustomerSealViewModel>()
                     .ForMember(dst => dst.SealMappingConfigId, opt => opt.MapFrom(src => SealMappingConfigUtil.GetCustomerSealType(src.SubSealType)))
-                    .ForMember(dst => dst.ImageBase64, opt => opt.MapFrom(src => ImageSharpUtil.PathImageFileToBase64(src.ImageFullPath)));
+                    .ForMember(dst => dst.ImageBase64, opt => opt.MapFrom(src => ImageUtil.ToDataUrlFromFilePath(src.ImageFullPath)));
 
             CreateMap<CustomerSeal, TypographicResource>()
                     .ForMember(dst => dst.ImageFullPath, opt => opt.Ignore()) // <---ImagePath要額外處理所以要忽略                    

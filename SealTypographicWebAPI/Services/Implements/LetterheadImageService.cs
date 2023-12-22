@@ -5,11 +5,11 @@ using SealTypographicWebAPI.Models;
 using SealTypographicWebAPI.Models.Letterhead;
 using SealTypographicWebAPI.Utils;
 using DBEntities.Consts;
-using DJLib.Models;
-using DJLib;
 using DBEntities.Entities;
 using DBEntities;
 using DBEntities.Entities.TypographicModels;
+using DJImageLib.Utils;
+using SealTypographicWebAPI.Consts;
 
 namespace SealTypographicWebAPI.Services.Implements
 {
@@ -123,15 +123,17 @@ namespace SealTypographicWebAPI.Services.Implements
                                         .Select(x => new LetterheadImageViewModel
                                         {
                                             Id = x.Id,
-                                            ImageBase64 = ImageSharpUtil.PathImageFileToBase64(x.ImageFullPath)
+                                            //ImageBase64 = ImageSharpUtil.PathImageFileToBase64(x.ImageFullPath)
+                                            ImageBase64 = ImageUtil.ToDataUrlFromFilePath(x.ImageFullPath)
                                         }).FirstOrDefault();
 
                 if (letterheadImageViewModel != null)
                 {
                     if (isTransparent)
                     {
-                        ImageInfo imageInfo = ImageInfo.FromImageBase64(letterheadImageViewModel.ImageBase64);
-                        letterheadImageViewModel.ImageBase64 = imageInfo.TransparentToImageBase64();
+                        //ImageInfo imageInfo = ImageInfo.FromImageBase64(letterheadImageViewModel.ImageBase64);
+                        //letterheadImageViewModel.ImageBase64 = imageInfo.TransparentToImageBase64();
+                        letterheadImageViewModel.ImageBase64 = ImageUtil.TransparentToBase64(letterheadImageViewModel.ImageBase64, ImageConfigConsts.Threshold);
                     }
                     letterheadImageViewModel.Success();
                 }

@@ -6,12 +6,14 @@ using DBEntities.Entities;
 using DBEntities.Entities.CustomerModels;
 using DBEntities.Entities.TemplateModels;
 using DBEntities.Entities.TypographicModels;
-using DJLib.Models;
+using DJImageLib.Utils;
 using Microsoft.EntityFrameworkCore;
+using SealTypographicWebAPI.Consts;
 using SealTypographicWebAPI.Models;
 using SealTypographicWebAPI.Models.TemporarySeal;
 using SealTypographicWebAPI.Utils;
 using Serilog;
+using SixLabors.ImageSharp;
 
 namespace SealTypographicWebAPI.Services.Implements
 {
@@ -60,8 +62,9 @@ namespace SealTypographicWebAPI.Services.Implements
                 {
                     foreach (TemporarySealViewModel temporarySealViewModel in temporarySealDetailViewModel.ViewModels)
                     {
-                        ImageInfo imageInfo = ImageInfo.FromImageBase64(temporarySealViewModel.ImageBase64);
-                        temporarySealViewModel.ImageBase64 = imageInfo.TransparentToImageBase64();
+                        //ImageInfo imageInfo = ImageInfo.FromImageBase64(temporarySealViewModel.ImageBase64);
+                        //temporarySealViewModel.ImageBase64 = imageInfo.TransparentToImageBase64();
+                        temporarySealViewModel.ImageBase64 = ImageUtil.TransparentToBase64(temporarySealViewModel.ImageBase64, ImageConfigConsts.Threshold);
                     }
                 }                
                 temporarySealDetailViewModel.Success();                

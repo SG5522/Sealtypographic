@@ -5,8 +5,6 @@ using SealTypographicWebAPI.Models;
 using SealTypographicWebAPI.Models.Upload;
 using Microsoft.EntityFrameworkCore;
 using DBEntities.Consts;
-using DJLib;
-using DJLib.Models;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using SealTypographicWebAPI.Utils;
@@ -14,6 +12,9 @@ using DJSpire.Services;
 using DJSpire.Models;
 using DBEntities.Entities;
 using DBEntities;
+using DJImageLib.Utils;
+using CommonLib.Utils;
+using DJImageLib.Models;
 
 namespace SealTypographicWebAPI.Services.Implements
 {
@@ -246,7 +247,8 @@ namespace SealTypographicWebAPI.Services.Implements
                     }
                     else
                     {
-                        uploadFileImageView.ImageBase64 = ImageSharpUtil.PathImageFileToBase64(uploadFile.FullPath);
+                        //uploadFileImageView.ImageBase64 = ImageSharpUtil.PathImageFileToBase64(uploadFile.FullPath);
+                        uploadFileImageView.ImageBase64 = ImageUtil.ToDataUrlFromFilePath(uploadFile.FullPath);
                     }
                     uploadFileImageView.Success();
                 }
@@ -326,10 +328,12 @@ namespace SealTypographicWebAPI.Services.Implements
                 {
                     foreach (string imagebase64 in uploadBase64Data.ImageBase64Strings)
                     {
-                        ImageInfo imageInfo = ImageInfo.FromImageBase64(imagebase64);
-                        string originalFileName = $"{userId}{DateTime.Now:yyyyMMddHHmmssffff}scanFile.{imageInfo.ImageFormat.FileExtensions.First()}";
-                        string savePath = GetSavePath(uploadBase64Data.UploadType, userId, originalFileName);
-                        await ImageSharpUtil.SaveFileAsync(imageInfo, savePath);
+                        //ImageInfo imageInfo = ImageInfo.FromImageBase64(imagebase64);
+                        ImageModel imageModel = new() { DataUrl = imagebase64 };
+                        string originalFileName = $"{userId}{DateTime.Now:yyyyMMddHHmmssffff}scanFile.{imageModel.ImageFormat}";
+                        string savePath = GetSavePath(uploadBase64Data.UploadType, userId, originalFileName);                        
+                        //await ImageSharpUtil.SaveFileAsync(imageInfo, savePath);
+                        await FileUtil.SaveFileReturnPath(imagebase64, savePath, originalFileName);
                         companyQuery.UploadFiles.Add(NewUploadFile(savePath, uploadBase64Data.UploadType, userId, originalFileName));
                     }
                     dbContext.SaveChanges();

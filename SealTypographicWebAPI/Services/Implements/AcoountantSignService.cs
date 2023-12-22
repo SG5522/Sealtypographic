@@ -4,11 +4,12 @@ using SealTypographicWebAPI.Models;
 using SealTypographicWebAPI.Models.Accountant;
 using SealTypographicWebAPI.Utils;
 using DBEntities.Consts;
-using DJLib.Models;
 using AutoMapper.QueryableExtensions;
 using DBEntities;
 using DBEntities.Entities.TypographicModels;
 using DBEntities.Entities.AccountantModels;
+using DJImageLib.Utils;
+using SealTypographicWebAPI.Consts;
 
 namespace SealTypographicWebAPI.Services.Implements
 {
@@ -98,8 +99,9 @@ namespace SealTypographicWebAPI.Services.Implements
                     {
                         foreach (AccountantSignViewModel accountantSignViewModel in accountantSignViewModels.SignViewModels)
                         {
-                            ImageInfo imageInfo = ImageInfo.FromImageBase64(accountantSignViewModel.ImageBase64);
-                            accountantSignViewModel.ImageBase64 = imageInfo.TransparentToImageBase64();
+                            //ImageInfo imageInfo = ImageInfo.FromImageBase64(accountantSignViewModel.ImageBase64);
+                            //accountantSignViewModel.ImageBase64 = imageInfo.TransparentToImageBase64();
+                            accountantSignViewModel.ImageBase64 = ImageUtil.TransparentToBase64(accountantSignViewModel.ImageBase64, ImageConfigConsts.Threshold);
                         }
                     }
                     accountantSignViewModels.Success();

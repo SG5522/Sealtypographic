@@ -3,7 +3,6 @@ using SealTypographicWebAPI.Models.Accountant;
 using SealTypographicWebAPI.Models.Letterhead;
 using SealTypographicWebAPI.Models.AccountantGroup;
 using SealTypographicWebAPI.Models.TemporarySeal;
-using DJLib;
 using SealTypographicWebAPI.Utils;
 using DBEntities.Consts;
 using SealTypographicWebAPI.Models.AccountantGroupMember;
@@ -11,6 +10,7 @@ using DBEntities.Entities;
 using DBEntities.Entities.TypographicModels;
 using DBEntities.Entities.TemplateModels;
 using DBEntities.Entities.AccountantModels;
+using DJImageLib.Utils;
 
 namespace SealTypographicWebAPI.Config.MapperProfile
 {
@@ -83,7 +83,7 @@ namespace SealTypographicWebAPI.Config.MapperProfile
 
             CreateMap<TypographicResource, AccountantSignViewModel>()
                     .ForMember(dst => dst.SealMappingConfigId, opt => opt.MapFrom(src => SealMappingConfigUtil.GetAccountantSignType(src.SubSealType)))
-                    .ForMember(dst => dst.ImageBase64, opt => opt.MapFrom(src => ImageSharpUtil.PathImageFileToBase64(src.ImageFullPath)));
+                    .ForMember(dst => dst.ImageBase64, opt => opt.MapFrom(src => ImageUtil.ToDataUrlFromFilePath(src.ImageFullPath)));
 
             CreateMap<AccountantSign, TypographicResource>()
                     .ForMember(dst => dst.ImageFullPath, opt => opt.Ignore()); // <---imagebase64要額外處理所以要忽略
@@ -118,7 +118,7 @@ namespace SealTypographicWebAPI.Config.MapperProfile
                     .ForMember(dst => dst.Id, opt => opt.MapFrom(src => src.Id))
                     .ForMember(dst => dst.Sequence, opt => opt.MapFrom(src => src.Sequence))
                     .ForMember(dst => dst.ImageFullPath, opt => opt.MapFrom(src => src.ImageFullPath))
-                    .ForMember(dst => dst.ImageBase64, opt => opt.MapFrom(src => ImageSharpUtil.PathImageFileToBase64(src.ImageFullPath)));
+                    .ForMember(dst => dst.ImageBase64, opt => opt.MapFrom(src => ImageUtil.ToDataUrlFromFilePath(src.ImageFullPath)));
 
             CreateMap<TemporarySealGroup, TemporaryViewModel>()
                     .ForMember(dst => dst.Id, opt => opt.MapFrom(src => src.Id))
