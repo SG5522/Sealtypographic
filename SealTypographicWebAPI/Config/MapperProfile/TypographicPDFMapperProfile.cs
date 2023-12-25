@@ -1,9 +1,10 @@
 ﻿using AutoMapper;
 using SealTypographicWebAPI.Models.TypographicPDF;
-using DJSpire.Models;
 using DBEntities.Consts;
 using SealTypographicWebAPI.Utils;
 using DBEntities.Entities.TypographicModels;
+using SealTypographicWebAPI.Utils.Pdf;
+using SealTypographicWebAPI.Models.EditPdf;
 
 namespace SealTypographicWebAPI.Config.MapperProfile
 {
@@ -153,7 +154,7 @@ namespace SealTypographicWebAPI.Config.MapperProfile
                  .ForMember(dst => dst.QuarterYearId, opt => opt.MapFrom(src => src.QuarterYear.Id))
                  .ForMember(dst => dst.EditPageCount, opt => opt.MapFrom(o => o.TypographicPages.Where(src => src.TypographicResourceLocations.Any()).Count()))
                  .ForMember(dst => dst.BlankPageCount, opt => opt.MapFrom(o => o.TypographicPages.Where(src => src.BlankCheck == true).Count()))
-                 .ForMember(dst => dst.DefaultPdfFileName, opt => opt.MapFrom(src => new string(PdfOutputUtil.GetName(src.Customer.Code, src.QuarterYear))));
+                 .ForMember(dst => dst.DefaultPdfFileName, opt => opt.MapFrom(src => new string(PdfImageUtil.GetName(src.Customer.Code, src.QuarterYear))));
 
             //PDF該頁的編輯內容的Map
             CreateMap<TypographicPage, EditPage>()
@@ -164,7 +165,7 @@ namespace SealTypographicWebAPI.Config.MapperProfile
                 //透通處理                
                 .ForMember(dst => dst.ImageBase64, opt => opt.MapFrom(src => ImageTransparentUtil.FromPath(src.TypographicResource.ImageFullPath)))
                 //確認圖像種類決定縮放大小
-                .ForMember(dst => dst.ImageScale, opt => opt.MapFrom(src => PdfOutputUtil.GetImageScale(src.TypographicResource.SubSealType)));
+                .ForMember(dst => dst.ImageScale, opt => opt.MapFrom(src => PdfImageUtil.GetImageScale(src.TypographicResource.SubSealType)));
 
             // PDF排版圖像紀錄處理
             CreateMap<TypographicPDFEditViewResponse, TypographicPDFEditViewResponse>()                

@@ -2,12 +2,11 @@
 using SealTypographicWebAPI.Config;
 using SealTypographicWebAPI.Models;
 using DBEntities.Consts;
-using DJImageLib;
 using SixLabors.ImageSharp;
 using DJImageLib.Models;
 using CommonLib.Utils;
 using DJImageLib.Utils;
-using SkiaSharp;
+using DJImageLib.Extensions;
 
 namespace SealTypographicWebAPI.Services.Implements
 {
@@ -109,18 +108,15 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <param name="isResize">是否縮放</param>
         /// <returns></returns>
         public async Task<string> SaveImageAsync(string imageBase64, string savePath, bool isResize)
-        {
-            //ImageInfo imageInfo = ImageInfo.FromImageBase64(imageBase64);
-            //savePath += $".{imageInfo.ImageFormat.Name.ToLower()}";            
-            ImageModel imageModel = new() { DataUrl = imageBase64 };
+        {     
+            string base64 = DataUrlUtil.GetBase64(imageBase64);
+            savePath = $"{savePath}.{Image.DetectFormat(base64.ToBytes()).Name.ToLower()}";
+
             if (isResize)
-            {
-                //imageInfo.ReSize(imageInfo, sealPathOption.ResizeScale);
-                ImageUtil.ReSizeBase64Only(imageBase64, sealPathOption.ResizeScale, sealPathOption.ResizeScale);
-            }
-            //await ImageSharpUtil.SaveFileAsync(imageInfo, savePath);
-            //return savePath
-            return await FileUtil.SaveFileReturnPath(imageBase64, Path.GetPathRoot(savePath)!, imageModel.ImageFormat!.Name.ToLower()!);
+            {                
+                base64 = ImageUtil.ReSizeBase64Only(base64, sealPathOption.ResizeScale, sealPathOption.ResizeScale);
+            }            
+            return await FileUtil.SaveFileReturnPath(base64.ToBytes(), savePath);
         }
 
         /// <summary>

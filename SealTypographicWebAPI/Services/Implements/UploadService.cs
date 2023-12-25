@@ -15,6 +15,7 @@ using DBEntities;
 using DJImageLib.Utils;
 using CommonLib.Utils;
 using DJImageLib.Models;
+using SealTypographicWebAPI.Utils.Pdf;
 
 namespace SealTypographicWebAPI.Services.Implements
 {
@@ -240,14 +241,14 @@ namespace SealTypographicWebAPI.Services.Implements
                 {
                     if(uploadFile.UploadType == UploadType.FinancialReport || uploadFile.UploadType == UploadType.TaxReport)
                     {
+                        //PDFService pDFService = new() { PDFPath = uploadFile.FullPath, PageIndex = 1 };
+                        //PDFImageInfo pDFImageInfo = pDFService.GetPageImageInfo();
                         //取得單頁PDF圖檔
-                        PDFService pDFService = new() { PDFPath = uploadFile.FullPath, PageIndex = 1 };
-                        PDFImageInfo pDFImageInfo = pDFService.GetPageImageInfo();
+                        PDFImageInfo pDFImageInfo = PdfImageUtil.GetPageImageInfo(uploadFile.FullPath, 1);
                         uploadFileImageView.ImageBase64 = pDFImageInfo.ImageBase64;                        
                     }
                     else
-                    {
-                        //uploadFileImageView.ImageBase64 = ImageSharpUtil.PathImageFileToBase64(uploadFile.FullPath);
+                    {                        
                         uploadFileImageView.ImageBase64 = ImageUtil.ToDataUrlFromFilePath(uploadFile.FullPath);
                     }
                     uploadFileImageView.Success();
@@ -331,8 +332,7 @@ namespace SealTypographicWebAPI.Services.Implements
                         //ImageInfo imageInfo = ImageInfo.FromImageBase64(imagebase64);
                         ImageModel imageModel = new() { DataUrl = imagebase64 };
                         string originalFileName = $"{userId}{DateTime.Now:yyyyMMddHHmmssffff}scanFile.{imageModel.ImageFormat}";
-                        string savePath = GetSavePath(uploadBase64Data.UploadType, userId, originalFileName);                        
-                        //await ImageSharpUtil.SaveFileAsync(imageInfo, savePath);
+                        string savePath = GetSavePath(uploadBase64Data.UploadType, userId, originalFileName);                                                
                         await FileUtil.SaveFileReturnPath(imagebase64, savePath, originalFileName);
                         companyQuery.UploadFiles.Add(NewUploadFile(savePath, uploadBase64Data.UploadType, userId, originalFileName));
                     }

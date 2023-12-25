@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace DJSpire.Models
+﻿namespace SealTypographicWebAPI.Models
 {
     /// <summary>
-    /// PDF圖片資訊
+    /// PDF圖檔資訊
     /// </summary>
     public class PDFImageInfo
     {
@@ -20,8 +16,14 @@ namespace DJSpire.Models
         public int Height { get; set; }
 
         /// <summary>
+        /// Pdf總頁次
+        /// </summary>
+        public int TotalPage { get; set; }
+
+        /// <summary>
         /// Imagebase64
         /// </summary>
-        public string ImageBase64 {  get; set; }
+        public string ImageBase64 { get; set; }
+        
     }
 }

@@ -1,9 +1,7 @@
-﻿using DJSpire.Consts;
-using System;
-using System.IO;
+﻿using DBEntities.Consts;
 using System.Text.RegularExpressions;
 
-namespace DJSpire.Models
+namespace SealTypographicWebAPI.Models.EditPdf
 {
     /// <summary>
     /// PDF排版圖像與位置
@@ -22,7 +20,7 @@ namespace DJSpire.Models
                 imageBase64 = value;
                 if (imageBase64 != string.Empty)
                 {
-                    ImageStream = new MemoryStream(Convert.FromBase64String(Regex.Replace(ImageBase64, @"^data:image\/[a-zA-Z]+;base64,", string.Empty)));                    
+                    ImageStream = new MemoryStream(Convert.FromBase64String(Regex.Replace(ImageBase64, @"^data:image\/[a-zA-Z]+;base64,", string.Empty)));
                 }
             }
         }
@@ -51,7 +49,7 @@ namespace DJSpire.Models
         /// 圖片縮放大小
         /// 1 inch = 72pt, and when dpi = 300, 1 inch = 300px. So when dpi = 300, 1px = 0.24pt    
         /// </summary>
-        public float ImageScale {  get; set; }
+        public float ImageScale { get; set; }
 
         /// <summary>
         /// 旋轉輸入參數
@@ -61,12 +59,12 @@ namespace DJSpire.Models
         /// <summary>
         /// 更換顏色
         /// </summary>
-        public SealColor? SealDyeing { get; set; }
+        public SealDyeing? SealDyeing { get; set; }
 
         /// <summary>
         /// 是否差補點
         /// </summary>
-        public bool IsInpaint {  get; set; }
+        public bool IsInpaint { get; set; }
 
         /// <summary>
         /// 圖片流

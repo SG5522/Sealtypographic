@@ -1,8 +1,5 @@
 ﻿using DJSpire.Consts;
 using DJSpire.Models;
-using SixLabors.ImageSharp;
-using SixLabors.ImageSharp.Formats;
-using SixLabors.ImageSharp.Processing;
 using Spire.Pdf;
 using Spire.Pdf.Conversion;
 using Spire.Pdf.Graphics;
@@ -61,54 +58,6 @@ namespace DJSpire.Services
             }
         }
 
-        /// <summary>
-        /// 圖片轉為Stream
-        /// </summary>
-        /// <returns></returns>
-        public Stream GetPageImageStream(ImageType imageType = ImageType.Jpg)
-        {
-            Stream stream = new MemoryStream();
-            string imageTypeString;
-            switch (imageType)
-            {
-                case ImageType.Jpg:
-                    imageTypeString = "jpg";
-                    break;
-                case ImageType.Png:
-                    imageTypeString = "png";
-                    break;
-                case ImageType.Bmp:
-                    imageTypeString = "bmp";
-                    break;
-                default:
-                    imageTypeString = "jpg";
-                    break;
-            }
-            
-            IndexDocument.SaveToImageStream(0, stream, imageTypeString);            
-            return stream;
-        }
-
-        public PDFImageInfo GetPageImageInfo(double scale = 1, ImageType imageType = ImageType.Png)
-        {            
-            Image image = Image.Load(GetPageImageStream(imageType), out IImageFormat format);            
-            if (scale != 1.0)
-            {
-                int width = (int)(image.Width * scale);
-                int height = (int)(image.Height * scale);
-                image.Mutate(delegate (IImageProcessingContext x)
-                {
-                    x.Resize(width, height);
-                });
-            }
-
-            return new PDFImageInfo()
-            {
-                Width = image.Width,
-                Height = image.Height,
-                ImageBase64 = image.ToBase64String(format)
-            };
-        }
         public byte[] GetPDFBytes(PDFColor pdfColor)
         {
             MemoryStream stream = new MemoryStream();
@@ -210,15 +159,19 @@ namespace DJSpire.Services
                     foreach (EditImage editImage in editPDF.EditPages[pageIndex].EditImages)
                     {
                         //Create PdfUnitConvertor to convert the unit
-                        PdfUnitConvertor unitCvtr = new PdfUnitConvertor();                        
+                        PdfUnitConvertor pdfUnitConvertor = new PdfUnitConvertor(300f);                        
                         Document.Pages[editPDF.EditPages[pageIndex].PageNumber].Canvas.SetTransparency(1f, 1f, PdfBlendMode.Multiply);                        
                         Document.Pages[editPDF.EditPages[pageIndex].PageNumber].Canvas.DrawImage
                         (
                             PdfImage.FromStream(editImage.ImageStream),                                                    
-                            editImage.Left * editImage.ImageScale,
-                            editImage.Top * editImage.ImageScale,
-                            editImage.Width * editImage.ImageScale,
-                            editImage.Height * editImage.ImageScale
+                            //editImage.Left * editImage.ImageScale,
+                            //editImage.Top * editImage.ImageScale,
+                            //editImage.Width * editImage.ImageScale,
+                            //editImage.Height * editImage.ImageScale
+                            pdfUnitConvertor.ConvertToPixels(editImage.Left, PdfGraphicsUnit.Pixel),
+                            pdfUnitConvertor.ConvertToPixels(editImage.Top, PdfGraphicsUnit.Pixel),
+                            pdfUnitConvertor.ConvertToPixels(editImage.Width, PdfGraphicsUnit.Pixel),
+                            pdfUnitConvertor.ConvertToPixels(editImage.Left, PdfGraphicsUnit.Pixel)
                         );
                     }
                     if (editPDF.IsBlank & editPDF.EditPages[pageIndex].BlankCheck)//確認是否加入空白頁

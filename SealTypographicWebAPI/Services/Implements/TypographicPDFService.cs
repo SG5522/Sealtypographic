@@ -5,16 +5,15 @@ using Microsoft.EntityFrameworkCore;
 using DBEntities.Consts;
 using SealTypographicWebAPI.Utils;
 using DJSpire.Services;
-using DJSpire.Models;
 using AutoMapper.QueryableExtensions;
 using DJSpire.Consts;
 using SealTypographicWebAPI.Consts;
-using System.Text.Json;
-using System.Text;
 using DBEntities.Entities;
 using DBEntities;
 using DBEntities.Entities.TypographicModels;
 using DBEntities.Entities.CustomerModels;
+using SealTypographicWebAPI.Utils.Pdf;
+using SealTypographicWebAPI.Models.EditPdf;
 
 namespace SealTypographicWebAPI.Services.Implements
 {
@@ -159,16 +158,11 @@ namespace SealTypographicWebAPI.Services.Implements
                 string? uploadPath = dbContext.UploadFiles.Where(x => x.Id == uploadFileid).Select(x => x.FullPath).FirstOrDefault();
                 if (uploadPath != null)
                 {
-                    //取得單頁PDF圖檔
-                    PDFService pDFService = new()
-                    {
-                        PDFPath = uploadPath,
-                        PageIndex = pageNumber,
-                    };
-                    PDFImageInfo pDFImageInfo = pDFService.GetPageImageInfo(PDFImageScaleConsts.Default);
+                    //取得單頁PDF圖檔資訊
+                    PDFImageInfo pDFImageInfo = PdfImageUtil.GetPageImageInfo(uploadPath, pageNumber, PDFImageScaleConsts.Default);
 
                     pDFViewModel.PDFFullPath = uploadPath; //Log使用
-                    pDFViewModel.TotalPage = pDFService.GetTotalPage();
+                    pDFViewModel.TotalPage = pDFImageInfo.TotalPage;
                     pDFViewModel.ImageWidth = pDFImageInfo.Width;
                     pDFViewModel.ImageHeight = pDFImageInfo.Height;
                     pDFViewModel.ImageBase64 = pDFImageInfo.ImageBase64;
@@ -209,13 +203,8 @@ namespace SealTypographicWebAPI.Services.Implements
 
                 if (typographicPageViewModel != null)
                 {
-                    //取得單頁PDF圖檔
-                    PDFService pDFService = new()
-                    {
-                        PDFPath = typographicPageViewModel.PDFFullPath,
-                        PageIndex = typographicPDFPageSearch.PageNumber,
-                    };
-                    PDFImageInfo pDFImageInfo = pDFService.GetPageImageInfo(PDFImageScaleConsts.Default);
+                    //取得單頁PDF圖檔資訊
+                    PDFImageInfo pDFImageInfo = PdfImageUtil.GetPageImageInfo(typographicPageViewModel.PDFFullPath, typographicPDFPageSearch.PageNumber, PDFImageScaleConsts.Default);
 
                     typographicPageViewModel.PDFImageWidth = pDFImageInfo.Width;
                     typographicPageViewModel.PDFImageHeight = pDFImageInfo.Height;
@@ -304,8 +293,17 @@ namespace SealTypographicWebAPI.Services.Implements
                                     .Select(x => x.FullPath)
                                     .FirstOrDefault();
 
-                    PDFService pDFService = new() { PDFPath = pdfPath };
-                    typographicPDFEditViewResponse.PDFBase64 = pDFService.GetEditPDFBase64(editPDF);
+                    //PDFService pDFService = new() { PDFPath = pdfPath };
+                    //typographicPDFEditViewResponse.PDFBase64 = pDFService.GetEditPDFBase64(editPDF);
+                    if(pdfPath != null)
+                    {
+                        typographicPDFEditViewResponse.PDFBase64 = PdfUitl.EditPdfToDataURL(pdfPath, editPDF, 300f);
+                    }
+                    else
+                    {
+                        typographicPDFEditViewResponse.FileUploadNoData();
+                    }
+                    
                     typographicPDFEditViewResponse.Success();
                 }
                 else
@@ -352,8 +350,10 @@ namespace SealTypographicWebAPI.Services.Implements
                                         .Select(x => x.FullPath)
                                         .FirstOrDefault();
                     
-                    PDFService pDFService = new() { PDFPath = pdfPath };
-                    typographicPagePDFResponse.PDFBase64 = pDFService.GetEditPDFBase64(editPDF);
+                    //PDFService pDFService = new() { PDFPath = pdfPath };
+                    //typographicPagePDFResponse.PDFBase64 = pDFService.GetEditPDFBase64(editPDF);
+                    typographicPagePDFResponse.PDFBase64 = PdfUitl.EditPdfToDataURL(pdfPath, editPDF, 300f);
+
                     typographicPagePDFResponse.Success();
                 }
                 else
