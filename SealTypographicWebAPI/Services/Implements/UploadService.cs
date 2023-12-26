@@ -16,6 +16,7 @@ using DJImageLib.Utils;
 using CommonLib.Utils;
 using DJImageLib.Models;
 using SealTypographicWebAPI.Utils.Pdf;
+using DJImageLib.Extensions;
 
 namespace SealTypographicWebAPI.Services.Implements
 {
@@ -328,12 +329,12 @@ namespace SealTypographicWebAPI.Services.Implements
                 if (companyQuery != null)
                 {
                     foreach (string imagebase64 in uploadBase64Data.ImageBase64Strings)
-                    {
-                        //ImageInfo imageInfo = ImageInfo.FromImageBase64(imagebase64);
+                    {                        
                         ImageModel imageModel = new() { DataUrl = imagebase64 };
-                        string originalFileName = $"{userId}{DateTime.Now:yyyyMMddHHmmssffff}scanFile.{imageModel.ImageFormat}";
+                        //掃描完存在資料庫的原始檔名
+                        string originalFileName = $"{userId}{DateTime.Now:yyyyMMddHHmmssffff}ScanFile.{imageModel.ImageFormat!.Name.ToLower()}";
                         string savePath = GetSavePath(uploadBase64Data.UploadType, userId, originalFileName);                                                
-                        await FileUtil.SaveFileReturnPath(imagebase64, savePath, originalFileName);
+                        await FileUtil.SaveFileReturnPath(imagebase64.ToBytes(), savePath);
                         companyQuery.UploadFiles.Add(NewUploadFile(savePath, uploadBase64Data.UploadType, userId, originalFileName));
                     }
                     dbContext.SaveChanges();
@@ -525,7 +526,7 @@ namespace SealTypographicWebAPI.Services.Implements
         private async Task<UploadFile> SaveFile(IFormFile formFile, UploadType uploadType, int userid)
         {
             string savePath = GetSavePath(uploadType, userid, formFile.FileName);
-            using Stream stream = new FileStream(savePath, FileMode.Create);
+            using Stream stream = new FileStream(savePath, FileMode.Create);            
             await formFile.CopyToAsync(stream);
             return NewUploadFile(savePath, uploadType, userid, formFile.FileName);
         }

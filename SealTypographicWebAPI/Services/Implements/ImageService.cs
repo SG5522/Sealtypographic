@@ -7,6 +7,7 @@ using DJImageLib.Models;
 using CommonLib.Utils;
 using DJImageLib.Utils;
 using DJImageLib.Extensions;
+using System.Buffers.Text;
 
 namespace SealTypographicWebAPI.Services.Implements
 {
@@ -109,14 +110,15 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <returns></returns>
         public async Task<string> SaveImageAsync(string imageBase64, string savePath, bool isResize)
         {     
-            string base64 = DataUrlUtil.GetBase64(imageBase64);
-            savePath = $"{savePath}.{Image.DetectFormat(base64.ToBytes()).Name.ToLower()}";
+            ImageModel imageModel = new() { DataUrl = imageBase64 };
+            savePath = $"{savePath}.{imageModel.ImageFormat!.Name.ToLower()}";
 
             if (isResize)
-            {                
-                base64 = ImageUtil.ReSizeBase64Only(base64, sealPathOption.ResizeScale, sealPathOption.ResizeScale);
+            {
+                //base64 = ImageUtil.ReSizeBase64Only(base64, sealPathOption.ResizeScale, sealPathOption.ResizeScale);
+                imageModel.Base64 = ImageUtil.ReSizeBase64Only(imageModel.Base64!, sealPathOption.ResizeScale, sealPathOption.ResizeScale);
             }            
-            return await FileUtil.SaveFileReturnPath(base64.ToBytes(), savePath);
+            return await FileUtil.SaveFileReturnPath(imageModel.Base64!.ToBytes(), savePath);
         }
 
         /// <summary>

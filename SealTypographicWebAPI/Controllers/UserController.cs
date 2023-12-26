@@ -47,8 +47,7 @@ namespace SealTypographicWebAPI.Controllers
             {
                 UsersQuery userQuery = new()
                 {
-                    Username = newUserForm.Username,
-                    Exact = true
+                   Username = newUserForm.Username,                    
                 };
                 
                 ResponseModel<UserViewModelPaginate> userViewModels = await base.Get(userQuery);

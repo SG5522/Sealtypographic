@@ -95,7 +95,12 @@ namespace SealTypographicWebAPI.Config.MapperProfile
                     .ForMember(dst => dst.Id, opt => opt.MapFrom(src => src.TypographicResource.Id))
                     .ForMember(dst => dst.Sequence, opt => opt.MapFrom(src => src.TypographicResource.Sequence))
                     .ForMember(dst => dst.CustomerSealType, opt => opt.MapFrom(src => SealMappingConfigUtil.GetCustomerSealType(src.TypographicResource.SubSealType)))                    
-                    .ForMember(dst => dst.ImageBase64, opt => opt.MapFrom(src => ImageTransparentUtil.FromPath(src.TypographicResource.ImageFullPath)));
+                    .ForMember(dst => dst.ImageBase64, opt => opt.MapFrom(src => ImageProcessingUtil.FromPath(
+                        src.TypographicResource.ImageFullPath,
+                        src.Angle,
+                        src.SealDyeing,
+                        src.IsInpaint
+                    )));
 
             //客戶印鑑(log)
             CreateMap<CustomerSealLocationViewModel, CustomerSealLocationViewModel>()

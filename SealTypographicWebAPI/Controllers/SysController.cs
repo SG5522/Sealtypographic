@@ -7,6 +7,12 @@ using DBEntities;
 using SealTypographicWebAPI.Services;
 using Microsoft.Extensions.Options;
 using SealTypographicWebAPI.Config;
+using DJImageLib.Models;
+using DJImageLib.Extensions;
+using DJImageLib.Utils;
+using OpenCvSharp;
+using SixLabors.ImageSharp.Formats;
+using SixLabors.ImageSharp;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -91,5 +97,21 @@ namespace SealTypographicWebAPI.Controllers
         {
             return systemConfigOption;
         }
-    }
+
+        public class ImageTest
+        {
+            public string ImageDataURL { get; set; }
+        }
+
+        /// <summary>
+        /// 測試imageDataURL       
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost("[Action]")]
+        public void Test(ImageTest imageTest)
+        {
+            ImageModel imageModel = new() { DataUrl = imageTest.ImageDataURL };
+
+        }
+    }    
 }
