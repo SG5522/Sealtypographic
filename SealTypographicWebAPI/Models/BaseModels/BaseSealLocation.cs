@@ -21,10 +21,10 @@ namespace SealTypographicWebAPI.Models.BaseModels
             set
             {
                 imageBase64 = value;
-                if (imageBase64 != string.Empty)
-                {
-                    ThumbnailImageBase64 = ImageUtil.ReSize(DataUrlUtil.GetBase64(imageBase64).ToBytes(), 0.1, 0.1);
-                }
+                //if (imageBase64 != string.Empty)
+                //{
+                //    ThumbnailImageBase64 = ImageUtil.ReSize(DataUrlUtil.GetBase64(imageBase64).ToBytes(), 0.1, 0.1);
+                //}
             }
         }
 

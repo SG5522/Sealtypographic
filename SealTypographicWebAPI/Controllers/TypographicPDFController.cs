@@ -3,6 +3,7 @@ using DBEntities.Consts;
 using Microsoft.AspNetCore.Mvc;
 using SealTypographicWebAPI.Models;
 using SealTypographicWebAPI.Models.TypographicPDF;
+using SealTypographicWebAPI.Models.TypographicPDF.EditViewModels;
 using SealTypographicWebAPI.Services;
 using Serilog;
 
@@ -84,14 +85,14 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="typographicPDFForm">排版資訊(新增使用)</param>
         /// <returns></returns>
         [HttpPost]
-        public TypographicPDFNewResronse New(TypographicPDFForm typographicPDFForm) => typographicPDFService.New(typographicPDFForm, TypographyType.FinancialReport);
+        public async Task<TypographicPDFNewResronse> New(TypographicPDFForm typographicPDFForm) => await typographicPDFService.New(typographicPDFForm, TypographyType.FinancialReport);
 
         /// <summary>
         /// 更新PDF排版
         /// </summary>        
         /// <param name="typographicPDFSaveForm">排板資訊(存檔使用)</param>        
         [HttpPut]
-        public ResponseViewModel Save(TypographicPDFSaveForm typographicPDFSaveForm) => typographicPDFService.Save(typographicPDFSaveForm);
+        public async Task<ResponseViewModel> Save(TypographicPDFSaveForm typographicPDFSaveForm) => await typographicPDFService.Save(typographicPDFSaveForm);
 
         /// <summary>
         /// 建立排版後的PDF(Base64)

@@ -8,15 +8,14 @@ using DBEntities.Consts;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using SealTypographicWebAPI.Utils;
-using DJSpire.Services;
-using DJSpire.Models;
 using DBEntities.Entities;
 using DBEntities;
 using DJImageLib.Utils;
 using CommonLib.Utils;
 using DJImageLib.Models;
-using SealTypographicWebAPI.Utils.Pdf;
 using DJImageLib.Extensions;
+using DJSpire.Utils;
+using DJSpire.Models;
 
 namespace SealTypographicWebAPI.Services.Implements
 {
@@ -245,8 +244,8 @@ namespace SealTypographicWebAPI.Services.Implements
                         //PDFService pDFService = new() { PDFPath = uploadFile.FullPath, PageIndex = 1 };
                         //PDFImageInfo pDFImageInfo = pDFService.GetPageImageInfo();
                         //取得單頁PDF圖檔
-                        PDFImageInfo pDFImageInfo = PdfImageUtil.GetPageImageInfo(uploadFile.FullPath, 1);
-                        uploadFileImageView.ImageBase64 = pDFImageInfo.ImageBase64;                        
+                        PdfPageImageInfo pDFImageInfo = PdfImageUtil.GetPdfPageImageInfo(uploadFile.FullPath, 0);
+                        uploadFileImageView.ImageBase64 = pDFImageInfo.ImageDataUrl;                        
                     }
                     else
                     {                        

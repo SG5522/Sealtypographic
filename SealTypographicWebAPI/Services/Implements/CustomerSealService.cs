@@ -239,7 +239,7 @@ namespace SealTypographicWebAPI.Services.Implements
                         foreach (CustomerSealViewModel customerSealViewModel in customerSealViewModels.SealViewModels)
                         {
                             //ImageInfo imageInfo = ImageInfo.FromImageBase64(customerSealViewModel.ImageBase64);
-                            customerSealViewModel.ImageBase64 = ImageTransparentUtil.FromDataUrl(customerSealViewModel.ImageBase64);
+                            customerSealViewModel.ImageBase64 = ImageTransparentUtil.ToDataUrlFromDataUrl(customerSealViewModel.ImageBase64);
                         }
                     }
                     customerSealViewModels.Success();

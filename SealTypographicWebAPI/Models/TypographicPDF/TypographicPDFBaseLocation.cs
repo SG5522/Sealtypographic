@@ -1,5 +1,4 @@
-﻿using DBEntities.Consts;
-using SealTypographicWebAPI.Models.BaseModels;
+﻿using SealTypographicWebAPI.Models.BaseModels;
 
 namespace SealTypographicWebAPI.Models.TypographicPDF
 {
@@ -9,18 +8,8 @@ namespace SealTypographicWebAPI.Models.TypographicPDF
     public abstract class TypographicPDFBaseLocation : BaseLocation
     {
         /// <summary>
-        /// 角度
+        /// 影像處理後的ImageBase64
         /// </summary>
-        public float Angle { get; set; }
-
-        /// <summary>
-        /// 是否差補點(使用OpenCV差補點演算法修圖)
-        /// </summary>
-        public bool IsInpaint { get; set; }
-
-        /// <summary>
-        /// 印鑑染色
-        /// </summary>
-        public SealDyeing SealDyeing { get; set; }
+        public string? EditPdfImageBase64 { get; set; }
     }
 }

@@ -1,4 +1,7 @@
 ﻿using DBEntities.Consts;
+using DJImageLib.Extensions;
+using DJImageLib.Utils;
+using Humanizer.Localisation;
 using System.Text.RegularExpressions;
 
 namespace SealTypographicWebAPI.Models.EditPdf
@@ -19,8 +22,8 @@ namespace SealTypographicWebAPI.Models.EditPdf
             {
                 imageBase64 = value;
                 if (imageBase64 != string.Empty)
-                {
-                    ImageStream = new MemoryStream(Convert.FromBase64String(Regex.Replace(ImageBase64, @"^data:image\/[a-zA-Z]+;base64,", string.Empty)));
+                {                    
+                    ImageStream = new MemoryStream(imageBase64.ToBytes());
                 }
             }
         }
@@ -49,22 +52,7 @@ namespace SealTypographicWebAPI.Models.EditPdf
         /// 圖片縮放大小
         /// 1 inch = 72pt, and when dpi = 300, 1 inch = 300px. So when dpi = 300, 1px = 0.24pt    
         /// </summary>
-        public float ImageScale { get; set; }
-
-        /// <summary>
-        /// 旋轉輸入參數
-        /// </summary>
-        public float? Angle { get; set; }
-
-        /// <summary>
-        /// 更換顏色
-        /// </summary>
-        public SealDyeing? SealDyeing { get; set; }
-
-        /// <summary>
-        /// 是否差補點
-        /// </summary>
-        public bool IsInpaint { get; set; }
+        //public float ImageScale { get; set; }
 
         /// <summary>
         /// 圖片流

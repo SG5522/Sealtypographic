@@ -85,10 +85,6 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <returns></returns>
         public void SaveImage(string imageBase64, string savePath, bool isResize)
         {
-            //ImageInfo imageInfo = ImageInfo.FromImageBase64(imageBase64);
-            //ImageUtil.ReSizeBase64Only(imageBase64);
-
-            //savePath += $".{imageInfo.ImageFormat.Name.ToLower()}";
             ImageModel imageModel = new() { DataUrl = imageBase64 };
             if (isResize)
             {
@@ -114,8 +110,7 @@ namespace SealTypographicWebAPI.Services.Implements
             savePath = $"{savePath}.{imageModel.ImageFormat!.Name.ToLower()}";
 
             if (isResize)
-            {
-                //base64 = ImageUtil.ReSizeBase64Only(base64, sealPathOption.ResizeScale, sealPathOption.ResizeScale);
+            {                
                 imageModel.Base64 = ImageUtil.ReSizeBase64Only(imageModel.Base64!, sealPathOption.ResizeScale, sealPathOption.ResizeScale);
             }            
             return await FileUtil.SaveFileReturnPath(imageModel.Base64!.ToBytes(), savePath);

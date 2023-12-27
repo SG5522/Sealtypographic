@@ -28,7 +28,7 @@
         /// <summary>
         /// 會計師證明書(若是NULL則此頁不加入會計師證明書)
         /// </summary>
-        public UploadFile? UploadFile { get; set; }
+        public UploadFile? AccountantCertificateFile { get; set; }
 
         /// <summary>
         /// 排版PDF資料表

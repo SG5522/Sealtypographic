@@ -7,7 +7,7 @@
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <DocumentationFile></DocumentationFile>
     <IncrementVersionOnBuild>0.0.3.1+</IncrementVersionOnBuild>
-    <Version>0.0.3.854</Version>
+    <Version>0.0.3.895</Version>
     <PackageIcon>android-chrome-128x128.png</PackageIcon>
     <Configurations>Debug;Release</Configurations>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>    
@@ -62,17 +62,15 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Reference Include="Spire.Pdf">
-      <HintPath>..\DJSpire\Library\Spire.Pdf.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-
-  <ItemGroup>
     <Content Update="appsettings.Sit.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Models\TypographicPDF\NewFolder\" />
   </ItemGroup>
 
     <Target Name="CopyOtherForBuild" AfterTargets="Build">

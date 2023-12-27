@@ -15,9 +15,9 @@ namespace SealTypographicWebAPI.Utils
         /// </summary>
         /// <param name="fullPath"></param>
         /// <returns></returns>
-        public static string FromPath(string fullPath)
+        public static string ToDataUrl(string fullPath)
         {
-            return FromDataUrl(ImageUtil.ToDataUrlFromFilePath(fullPath));
+            return ToDataUrlFromDataUrl(ImageUtil.ToDataUrlFromFilePath(fullPath));
         }
 
         /// <summary>
@@ -25,9 +25,9 @@ namespace SealTypographicWebAPI.Utils
         /// </summary>
         /// <param name="dataUrl"></param>
         /// <returns></returns>
-        public static string FromDataUrl(string dataUrl)
+        public static string ToDataUrlFromDataUrl(string dataUrl)
         {                        
-            return FromBytes(DataUrlUtil.GetBase64(dataUrl).ToBytes());
+            return ToDataUrl(DataUrlUtil.GetBase64(dataUrl).ToBytes());
         }
 
         /// <summary>
@@ -35,7 +35,7 @@ namespace SealTypographicWebAPI.Utils
         /// </summary>
         /// <param name="srcBytes"></param>
         /// <returns></returns>
-        public static string FromBytes(byte[] srcBytes)
+        public static string ToDataUrl(byte[] srcBytes)
         {            
             return ImageUtil.ToDataUrl(ImageUtil.Transparent(srcBytes, ImageConfigConsts.Threshold));
         }

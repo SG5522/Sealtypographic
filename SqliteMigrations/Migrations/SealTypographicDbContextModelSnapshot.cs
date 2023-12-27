@@ -837,6 +837,9 @@ namespace Sqlite.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<int?>("AccountantCertificateFileId")
+                        .HasColumnType("INTEGER");
+
                     b.Property<bool>("BlankCheck")
                         .HasColumnType("INTEGER");
 
@@ -849,14 +852,11 @@ namespace Sqlite.Migrations
                     b.Property<int>("TypographicPDFId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int?>("UploadFileId")
-                        .HasColumnType("INTEGER");
-
                     b.HasKey("Id");
 
-                    b.HasIndex("TypographicPDFId");
+                    b.HasIndex("AccountantCertificateFileId");
 
-                    b.HasIndex("UploadFileId");
+                    b.HasIndex("TypographicPDFId");
 
                     b.ToTable("TypographicPages");
                 });
@@ -886,6 +886,9 @@ namespace Sqlite.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("ImageProcessingFullPath")
+                        .HasColumnType("TEXT");
+
                     b.Property<int?>("LetterheadId")
                         .HasColumnType("INTEGER");
 
@@ -902,6 +905,9 @@ namespace Sqlite.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("ThumbnailFullPath")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("TypographicEditImageFullPath")
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime>("UpdateDate")
@@ -938,20 +944,11 @@ namespace Sqlite.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<float?>("Angle")
-                        .HasColumnType("REAL");
-
                     b.Property<int>("Height")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<bool?>("IsInpaint")
                         .HasColumnType("INTEGER");
 
                     b.Property<float>("Left")
                         .HasColumnType("REAL");
-
-                    b.Property<byte?>("SealDyeing")
-                        .HasColumnType("INTEGER");
 
                     b.Property<float>("Top")
                         .HasColumnType("REAL");
@@ -1377,19 +1374,19 @@ namespace Sqlite.Migrations
 
             modelBuilder.Entity("DBEntities.Entities.TypographicModels.TypographicPage", b =>
                 {
+                    b.HasOne("DBEntities.Entities.UploadFile", "AccountantCertificateFile")
+                        .WithMany()
+                        .HasForeignKey("AccountantCertificateFileId");
+
                     b.HasOne("DBEntities.Entities.TypographicModels.TypographicPDF", "TypographicPDF")
                         .WithMany("TypographicPages")
                         .HasForeignKey("TypographicPDFId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("DBEntities.Entities.UploadFile", "UploadFile")
-                        .WithMany()
-                        .HasForeignKey("UploadFileId");
+                    b.Navigation("AccountantCertificateFile");
 
                     b.Navigation("TypographicPDF");
-
-                    b.Navigation("UploadFile");
                 });
 
             modelBuilder.Entity("DBEntities.Entities.TypographicModels.TypographicResource", b =>

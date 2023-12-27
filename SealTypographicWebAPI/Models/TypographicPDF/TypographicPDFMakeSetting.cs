@@ -1,4 +1,4 @@
-﻿using DJSpire.Consts;
+﻿using SealTypographicWebAPI.Consts;
 
 namespace SealTypographicWebAPI.Models.TypographicPDF
 {

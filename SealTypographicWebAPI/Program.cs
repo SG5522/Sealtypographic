@@ -38,6 +38,9 @@ builder.Services.Configure<SealPathOption>(
 builder.Services.Configure<TemplateImagePathOption>(
     builder.Configuration.GetSection("TemplateImagePath"));
 
+builder.Services.Configure<TypographyEditImagePathOptions>(
+    builder.Configuration.GetSection("TypographyEditImagePath"));
+
 builder.Services.Configure<KeycloakOptions>(
     builder.Configuration.GetSection("KeycloakAdmin"));
 

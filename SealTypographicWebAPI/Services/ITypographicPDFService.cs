@@ -1,6 +1,7 @@
 ﻿using DBEntities.Consts;
 using SealTypographicWebAPI.Models;
 using SealTypographicWebAPI.Models.TypographicPDF;
+using SealTypographicWebAPI.Models.TypographicPDF.EditViewModels;
 
 namespace SealTypographicWebAPI.Services
 {
@@ -73,7 +74,7 @@ namespace SealTypographicWebAPI.Services
         /// <param name="typographyType">排版類別</param>
         /// <param name="userId">登入的使用者Id</param>
         /// <returns></returns>
-        TypographicPDFNewResronse New(TypographicPDFForm typographicPDFForm, TypographyType typographyType, int userId = 1);
+        Task<TypographicPDFNewResronse> New(TypographicPDFForm typographicPDFForm, TypographyType typographyType, int userId = 1);
 
         /// <summary>
         /// 儲存PDF排版資訊(更新資料)
@@ -81,7 +82,7 @@ namespace SealTypographicWebAPI.Services
         /// <param name="typographicPDFSaveForm"></param>
         /// <param name="userId">登入的使用者Id</param>
         /// <returns></returns>
-        ResponseViewModel Save(TypographicPDFSaveForm typographicPDFSaveForm, int userId = 1);
+        Task<ResponseViewModel> Save(TypographicPDFSaveForm typographicPDFSaveForm, int userId = 1);
 
         /// <summary>
         /// 變更PDF排版建檔狀態(未來會變更為審核狀態)
