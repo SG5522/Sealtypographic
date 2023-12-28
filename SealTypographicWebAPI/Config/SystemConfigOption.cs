@@ -15,7 +15,7 @@ namespace SealTypographicWebAPI.Config
         /// <summary>
         /// 是否啟用稅報功能
         /// </summary>
-        public bool TaxReporEnabled { get; set; }
+        public bool TaxReportEnabled { get; set; }
 
     }
 }

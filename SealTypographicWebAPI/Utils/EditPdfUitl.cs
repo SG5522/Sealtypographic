@@ -1,4 +1,6 @@
-﻿using SealTypographicWebAPI.Models.EditPdf;
+﻿using SealTypographicWebAPI.Consts;
+using SealTypographicWebAPI.Models.EditPdf;
+using SealTypographicWebAPI.Utils.Pdf;
 using Spire.Pdf;
 using Spire.Pdf.Graphics;
 
@@ -13,114 +15,27 @@ namespace SealTypographicWebAPI.Utils
         private const string DATA_URL = "data:application/pdf;base64,";
 
         /// <summary>
-        /// 參照EditPDF class塞入印鑑 (Input FilePath)
-        /// </summary>
-        /// <param name="srcPath">FilePath</param>
-        /// <param name="editPDF"></param>
-        /// <param name="dpi"></param>
-        /// <returns></returns>
-        public static byte[] EditPdfToBytes(string srcPath, EditPDF editPDF, float dpi = 300f)
-        {
-            return EditPdfToBytes(File.ReadAllBytes(srcPath), editPDF, dpi);
-        }
-
-        /// <summary>
-        /// 參照EditPDF class塞入印鑑 (Input Bytes)
-        /// </summary>
-        /// <param name="srcbytes">Bytes</param>
-        /// <param name="editPDF"></param>
-        /// <param name="dpi"></param>
-        /// <returns></returns>
-        public static byte[] EditPdfToBytes(byte[] srcbytes, EditPDF editPDF, float dpi = 300f)
-        {
-            return EditPdfToBytes(new PdfDocument(srcbytes), editPDF, dpi);
-        }
-
-        /// <summary>
-        /// 參照EditPDF class塞入印鑑 (Input FilePath)
-        /// </summary>
-        /// <param name="srcPath">FilePath</param>
-        /// <param name="editPDF"></param>
-        /// <param name="dpi"></param>
-        /// <returns></returns>
-        public static string EditPdfToDataURL(string srcPath, EditPDF editPDF, float dpi = 300f)
-        {
-            return EditPdfToDataURL(File.ReadAllBytes(srcPath), editPDF, dpi);
-        }
-
-        /// <summary>
-        /// 參照EditPDF class塞入印鑑 (Input Bytes)
-        /// </summary>
-        /// <param name="srcbytes">Bytes</param>
-        /// <param name="editPDF"></param>
-        /// <param name="dpi"></param>
-        /// <returns></returns>
-        public static string EditPdfToDataURL(byte[] srcbytes, EditPDF editPDF, float dpi = 300f)
-        {
-            return EditPdfToDataURL(new PdfDocument(srcbytes), editPDF, dpi);
-        }
-
-        /// <summary>
-        /// 參照EditPDF class塞入印鑑 (Input FilePath)
-        /// </summary>
-        /// <param name="srcPath">FilePath</param>
-        /// <param name="editPDF"></param>
-        /// <param name="dpi"></param>
-        /// <returns></returns>
-        public static PdfDocument EditPdf(string srcPath, EditPDF editPDF, float dpi = 300f)
-        {
-            return EditPdf(File.ReadAllBytes(srcPath), editPDF, dpi);
-        }
-
-        /// <summary>
-        /// 參照EditPDF class塞入印鑑 (Input Bytes)
-        /// </summary>
-        /// <param name="srcbytes">Bytes</param>
-        /// <param name="editPDF"></param>
-        /// <param name="dpi"></param>
-        /// <returns></returns>
-        public static PdfDocument EditPdf(byte[] srcbytes, EditPDF editPDF, float dpi = 300f)
-        {
-            return EditPdf(new PdfDocument(srcbytes), editPDF, dpi);
-        }
-
-
-
-        /// <summary>
         /// 參照EditPDF class塞入印鑑 (Input PdfDocument)
         /// </summary>
-        /// <param name="pdfDocument">Spire Pdf Document Class</param>
         /// <param name="editPDF"></param>
         /// <param name="dpi"></param>
         /// <returns></returns>
-        public static string EditPdfToDataURL(PdfDocument pdfDocument, EditPDF editPDF, float dpi = 300f)
+        public static string ToDataURL(EditPDF editPDF, float dpi = 300f)
         {
-            return $"{DATA_URL}{Convert.ToBase64String(EditPdfToBytes(pdfDocument, editPDF, dpi))}";
+            return $"{DATA_URL}{Convert.ToBase64String(ToBytes(editPDF, dpi))}";
         }
 
         /// <summary>
         /// 參照EditPDF class塞入印鑑 (Input PdfDocument)
         /// </summary>
-        /// <param name="pdfDocument">Spire Pdf Document Class</param>
-        /// <param name="editPDF"></param>
-        /// <param name="dpi"></param>
-        /// <returns></returns>
-        public static byte[] EditPdfToBytes(PdfDocument pdfDocument, EditPDF editPDF, float dpi = 300f)
-        {
-            MemoryStream stream = new MemoryStream();
-            EditPdf(pdfDocument, editPDF, dpi).SaveToStream(stream);
-            return stream.ToArray();
-        }
-
-        /// <summary>
-        /// 參照EditPDF class塞入印鑑 (Input PdfDocument)
-        /// </summary>
-        /// <param name="pdfDocument">Spire Pdf Document Class</param>
         /// <param name="editPDF"></param>
         /// <param name="srcDpi"></param>
         /// <returns></returns>
-        public static PdfDocument EditPdf(PdfDocument pdfDocument, EditPDF editPDF, float srcDpi = 300f)
+        public static byte[] ToBytes(EditPDF editPDF, float srcDpi = 300f)
         {
+            byte[] result;
+            PdfDocument pdfDocument = new(editPDF.Bytes);            
+
             for (int pageCount = editPDF.EditPages.Count; pageCount > 0; pageCount--)
             {
                 int pageIndex = pageCount - 1;
@@ -159,7 +74,7 @@ namespace SealTypographicWebAPI.Utils
                         }
                         else
                         {
-                            PdfDocument accountantCertificatePdf = new PdfDocument(editPDF.EditPages[pageIndex].AccountantCertificateStream);
+                            PdfDocument accountantCertificatePdf = new(editPDF.EditPages[pageIndex].AccountantCertificateStream);
                             pdfDocument.InsertPage(accountantCertificatePdf, 0, editPDF.EditPages[pageIndex].PageNumber + 1);
                         }
                     }
@@ -170,7 +85,16 @@ namespace SealTypographicWebAPI.Utils
                 }
             }
 
-            return pdfDocument;
+            if(editPDF.PDFColor == PDFColor.GrayScale)
+            {
+                result = PdfUitl.PdfGrayConverterToBytes(pdfDocument);
+            }
+            else
+            {
+                result = PdfUitl.ToBytes(pdfDocument);
+            }
+
+            return result;
         }
 
         private static void InsertBlankPage(PdfDocument pdfDocument, int pageNumber)

@@ -41,12 +41,7 @@ namespace SealTypographicWebAPI.Services.Implements
             configurationProvider = mapper.ConfigurationProvider;
         }
 
-        /// <summary>
-        /// 取得臨時章詳細基本資料
-        /// </summary>
-        /// <param name="temporaryId">臨時章ID</param>
-        /// <param name="isTransparent">是否白底透明化</param>
-        /// <returns></returns>
+        ///<inheritdoc />
         public TemporarySealDetailViewModel GetDetail(int temporaryId, bool isTransparent)
         {            
             TemporarySealDetailViewModel? temporarySealDetailViewModel = dbContext.TemporarySealGroups
@@ -78,11 +73,7 @@ namespace SealTypographicWebAPI.Services.Implements
             return temporarySealDetailViewModel;
         }
 
-        /// <summary>
-        /// 取得臨時章資料列表(分頁)
-        /// </summary>
-        /// <param name="temporarySealSearch">臨時章分頁搜尋</param>        
-        /// <returns></returns>
+        ///<inheritdoc />
         public TemporarySealPaginateViewModel GetPaginate(TemporarySealSearch temporarySealSearch)
         {
             TemporarySealPaginateViewModel temporarySealPaginateViewModel = new();
@@ -129,10 +120,8 @@ namespace SealTypographicWebAPI.Services.Implements
             return temporarySealPaginateViewModel;
         }
 
-        /// <summary>
-        /// 新增客戶基本資料
-        /// </summary>
-        /// <param name="temporarySealForm">基本資料</param>
+
+        ///<inheritdoc />  
         public async Task<ResponseViewModel> New(TemporarySealForm temporarySealForm)
         {
             ResponseViewModel response = new ();
@@ -140,9 +129,9 @@ namespace SealTypographicWebAPI.Services.Implements
             //取得季度
             //之後輸入要從前端提供Id
             QuarterYear? quarter = dbContext.QuarterYears.FirstOrDefault
-                                (
-                                    x => x.Id == temporarySealForm.QuarterYearId                                    
-                                );
+                                    (
+                                        x => x.Id == temporarySealForm.QuarterYearId                                    
+                                    );
 
             if (quarter != null)
             {
@@ -189,10 +178,7 @@ namespace SealTypographicWebAPI.Services.Implements
             return response;
         }
 
-        /// <summary>
-        /// 更新臨時章
-        /// </summary>        
-        /// <param name="temporarySealUpdateForm">基本資料</param>
+        ///<inheritdoc />
         public async Task<ResponseViewModel> Update(TemporarySealUpdateForm temporarySealUpdateForm)
         {
             ResponseViewModel response = new();
@@ -258,10 +244,7 @@ namespace SealTypographicWebAPI.Services.Implements
             return response;
         }
 
-        /// <summary>
-        /// 刪除臨時章。
-        /// </summary>
-        /// <param name="Id"></param>
+        ///<inheritdoc />
         public ResponseViewModel Delete(int Id)
         {
             ResponseViewModel response = new();

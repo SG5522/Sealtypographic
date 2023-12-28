@@ -19,6 +19,7 @@ using Microsoft.Extensions.Options;
 using DJImageLib.Models;
 using CommonLib.Utils;
 using DJImageLib.Extensions;
+using DBEntities.Utils;
 
 namespace SealTypographicWebAPI.Services.Implements
 {
@@ -289,36 +290,20 @@ namespace SealTypographicWebAPI.Services.Implements
 
             try
             {
-                List<EditPage> editPages = dbContext.TypographicPages
-                                        .Include(x => x.TypographicResourceLocations)
-                                        .ThenInclude(x => x.TypographicResource)
-                                        .Where(x => x.TypographicPDF.Id == typographicPDFId)
-                                        .ProjectTo<EditPage>(configurationProvider).ToList();
-
-                if (editPages != null)
-                {
-                    EditPDF editPDF = new()
-                    {
-                        PDFColor = PDFColor.Original,
-                        IsBlank = false,
-                        EditPages = editPages
-                    };
-                    string? pdfPath = dbContext.UploadFiles
-                                    .Where(x => x.TypographicPDFs.Any(x => x.Id == typographicPDFId))
-                                    .Select(x => x.FullPath)
+                EditPDF? editPDF = dbContext.TypographicPDFs
+                                    .Include(x => x.TypographicPages)
+                                    .ThenInclude(x => x.TypographicResourceLocations)
+                                    .ThenInclude(x => x.TypographicResource)
+                                    .Where(x => x.Id == typographicPDFId)
+                                    .ProjectTo<EditPDF>(configurationProvider)
                                     .FirstOrDefault();
 
-                    //PDFService pDFService = new() { PDFPath = pdfPath };
-                    //typographicPDFEditViewResponse.PDFBase64 = pDFService.GetEditPDFBase64(editPDF);
-                    if(pdfPath != null)
-                    {
-                        typographicPDFEditViewResponse.PDFBase64 = EditPdfUitl.EditPdfToDataURL(pdfPath, editPDF, 300f);
-                    }
-                    else
-                    {
-                        typographicPDFEditViewResponse.FileUploadNoData();
-                    }
-                    
+                if (editPDF != null)
+                {
+                    editPDF.PDFColor = PDFColor.Original;
+                    editPDF.IsBlank = false;
+
+                    typographicPDFEditViewResponse.PDFBase64 = EditPdfUitl.ToDataURL(editPDF, 300f);                    
                     typographicPDFEditViewResponse.Success();
                 }
                 else
@@ -345,30 +330,20 @@ namespace SealTypographicWebAPI.Services.Implements
             try
             {
                 //取得排版的頁面印鑑與座標
-                List<EditPage> editPages = dbContext.TypographicPages
-                                            .Include(x => x.TypographicResourceLocations)
-                                            .ThenInclude(x => x.TypographicResource)
-                                            .Where(x => x.TypographicPDF.Id == typographicPDFMakeSetting.TypographicPDFId)
-                                            .ProjectTo<EditPage>(configurationProvider).ToList();
+                EditPDF? editPDF = dbContext.TypographicPDFs
+                                    .Include(x => x.TypographicPages)
+                                    .ThenInclude(x => x.TypographicResourceLocations)
+                                    .ThenInclude(x => x.TypographicResource)
+                                    .Where(x => x.Id == typographicPDFMakeSetting.TypographicPDFId)
+                                    .ProjectTo<EditPDF>(configurationProvider)
+                                    .FirstOrDefault();
 
-                if (editPages != null)
+                if (editPDF != null)
                 {
-
-                    EditPDF editPDF = new()
-                    {
-                        PDFColor = typographicPDFMakeSetting.PDFColor,
-                        IsBlank = typographicPDFMakeSetting.IsBlank,
-                        EditPages = editPages
-                    };
-                    string? pdfPath = dbContext.UploadFiles
-                                        .Where(x => x.TypographicPDFs.Any(x => x.Id == typographicPDFMakeSetting.TypographicPDFId))
-                                        .Select(x => x.FullPath)
-                                        .FirstOrDefault();
+                    editPDF.PDFColor = typographicPDFMakeSetting.PDFColor;
+                    editPDF.IsBlank = typographicPDFMakeSetting.IsBlank;     
                     
-                    //PDFService pDFService = new() { PDFPath = pdfPath };
-                    //typographicPagePDFResponse.PDFBase64 = pDFService.GetEditPDFBase64(editPDF);
-                    typographicPagePDFResponse.PDFBase64 = EditPdfUitl.EditPdfToDataURL(pdfPath, editPDF, 300f);
-
+                    typographicPagePDFResponse.PDFBase64 = EditPdfUitl.ToDataURL(editPDF, 300f);
                     typographicPagePDFResponse.Success();
                 }
                 else
@@ -413,8 +388,8 @@ namespace SealTypographicWebAPI.Services.Implements
                         QuarterYear = quarter,
                         TypographyType = typographyType,
                         TypographicPages = new List<TypographicPage>()
-                    };
-                    BaseInputTypographicPDF(typographicPDF, true, userId);
+                    };                    
+                    InputUtil.SetWithReview(typographicPDF, true, userId);
                     foreach (TypographicPageForm pageInfo in typographicPDFForm.Pages)
                     {
                         typographicPDF.TypographicPages.Add(await PageSave(pageInfo));
@@ -558,19 +533,19 @@ namespace SealTypographicWebAPI.Services.Implements
         /// </summary>
         /// <param name="typographicPDF">DB上的排板PDF資料</param>        
         /// <param name="isCreate">確認是否新增還是更新的動作</param>
-        /// <param name="userid">使用者ID</param>
-        private static void BaseInputTypographicPDF(TypographicPDF typographicPDF, bool isCreate, int userid)
+        /// <param name="userId">使用者ID</param>
+        private static void BaseInputTypographicPDF(TypographicPDF typographicPDF, bool isCreate, int userId)
         {
             if (isCreate)
             {                
-                typographicPDF.CreateUserId = userid;
+                typographicPDF.CreateUserId = userId;
                 typographicPDF.CreateDate = DateTime.Now;
                 typographicPDF.DeleteStatus = DeleteStatus.No;
                 typographicPDF.ReviewStatus = ReviewStatus.Draft;
             }
             else
             {
-                typographicPDF.UpdateUserId = userid;
+                typographicPDF.UpdateUserId = userId;
                 typographicPDF.UpdateDate = DateTime.Now;                
             }
         }

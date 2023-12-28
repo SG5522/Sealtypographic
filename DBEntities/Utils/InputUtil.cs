@@ -9,6 +9,23 @@ namespace DBEntities.Utils
     public static class InputUtil
     {
         /// <summary>
+        /// 包含審核基本輸入處理
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="input"></param>
+        /// <param name="isCreate"></param>
+        /// <param name="userId"></param>
+        public static void SetWithReview<T>(T input, bool isCreate, int userId) where T : BaseReviewData
+        {
+            if(isCreate)
+            {
+                input.ReviewStatus = ReviewStatus.Draft;
+            }
+            Set(input, isCreate, userId);
+        }
+
+
+        /// <summary>
         /// 各類資料表的基本輸入處理
         /// </summary>
         /// <typeparam name="T"></typeparam>

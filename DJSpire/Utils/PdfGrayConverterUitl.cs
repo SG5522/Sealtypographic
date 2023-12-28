@@ -23,7 +23,7 @@ namespace SealTypographicWebAPI.Utils.Pdf
         /// <returns></returns>
         public static byte[] PdfGrayConverter(byte[] srcBytes)
         {
-            return PdfGrayConverter(new PdfDocument(srcBytes));
+            return PdfGrayConverterToBytes(new PdfDocument(srcBytes));
         }
 
         /// <summary>
@@ -53,7 +53,7 @@ namespace SealTypographicWebAPI.Utils.Pdf
         /// <returns></returns>
         public static string PdfGrayConverterToDataURL(PdfDocument pdfDocument)
         {
-            return $"{DATA_URL}{Convert.ToBase64String(PdfGrayConverter(pdfDocument))}";
+            return $"{DATA_URL}{Convert.ToBase64String(PdfGrayConverterToBytes(pdfDocument))}";
         }
 
         /// <summary>
@@ -61,14 +61,34 @@ namespace SealTypographicWebAPI.Utils.Pdf
         /// </summary>
         /// <param name="pdfDocument">Spire Pdf Document Class</param>        
         /// <returns></returns>
-        public static byte[] PdfGrayConverter(PdfDocument pdfDocument)
+        public static byte[] PdfGrayConverterToBytes(PdfDocument pdfDocument)
+        {
+            return PdfGrayConverterToStream(pdfDocument).ToArray();
+        }
+
+        /// <summary>
+        /// pdf灰階處理 (Input PdfDocument)
+        /// </summary>
+        /// <param name="pdfDocument">Spire Pdf Document Class</param>
+        /// <returns></returns>
+        public static PdfDocument PdfGrayConverter(PdfDocument pdfDocument)
+        {
+            return new PdfDocument(PdfGrayConverterToStream(pdfDocument));
+        }
+
+        /// <summary>
+        /// pdf灰階處理 (Input PdfDocument)
+        /// </summary>
+        /// <param name="pdfDocument">Spire Pdf Document Class</param>        
+        /// <returns></returns>
+        public static MemoryStream PdfGrayConverterToStream(PdfDocument pdfDocument)
         {
             MemoryStream stream = new();
             MemoryStream grayStream = new();
-            pdfDocument.SaveToStream(stream);            
+            pdfDocument.SaveToStream(stream);
             PdfGrayConverter pdfGrayConverter = new(stream);
             pdfGrayConverter.ToGrayPdf(grayStream);
-            return grayStream.ToArray();
+            return grayStream;
         }
     }
 }

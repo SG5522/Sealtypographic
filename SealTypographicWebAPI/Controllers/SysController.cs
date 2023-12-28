@@ -97,21 +97,5 @@ namespace SealTypographicWebAPI.Controllers
         {
             return systemConfigOption;
         }
-
-        public class ImageTest
-        {
-            public string ImageDataURL { get; set; }
-        }
-
-        /// <summary>
-        /// 測試imageDataURL       
-        /// </summary>
-        /// <returns></returns>
-        [HttpPost("[Action]")]
-        public void Test(ImageTest imageTest)
-        {
-            ImageModel imageModel = new() { DataUrl = imageTest.ImageDataURL };
-
-        }
     }    
 }

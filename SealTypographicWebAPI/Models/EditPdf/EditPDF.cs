@@ -8,13 +8,37 @@ namespace SealTypographicWebAPI.Models.EditPdf
     /// </summary>
     public class EditPDF
     {
+        private string pdfPath;
+        private byte[] bytes;
+
         /// <summary>
-        /// 
+        /// 建置
         /// </summary>
         public EditPDF()
         {
             EditPages = new List<EditPage>();
         }
+
+        /// <summary>
+        /// PDF檔案路徑
+        /// </summary>
+        public string? PdfPath 
+        {
+            get => pdfPath;
+            set
+            {
+                if(!string.IsNullOrWhiteSpace(value))
+                {
+                    pdfPath = value;
+                    Bytes = File.ReadAllBytes(pdfPath);
+                }
+            }
+        }
+
+        /// <summary>
+        /// PDFByes
+        /// </summary>
+        public byte[] Bytes { get; set; }
 
         /// <summary>
         /// PDF輸出顏色

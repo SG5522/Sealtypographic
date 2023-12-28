@@ -35,14 +35,14 @@ namespace SealTypographicWebAPI.Config.MapperProfile
             CreateMap<TypographicPageForm, TypographicPage>();
 
             CreateMap<PDFViewModel, PDFViewModel>()
-                    .ForMember(dst => dst.ImageBase64, opt => opt.Ignore());
+                .ForMember(dst => dst.ImageBase64, opt => opt.Ignore());
 
             CreateMap<TypographicPDF, TypographicPagesResponse>()
-                    .ForMember(dst => dst.Id, opt => opt.MapFrom(src => src.Id))
-                    .ForMember(dst => dst.UploadId, opt => opt.MapFrom(src => src.UploadFile.Id))
-                    .ForMember(dst => dst.CustomerId, opt => opt.MapFrom(src => src.Customer.Id))
-                    .ForMember(dst => dst.QuarterYearId, opt => opt.MapFrom(src => src.QuarterYear.Id))
-                    .ForMember(dst => dst.Pages, opt => opt.MapFrom(src => src.TypographicPages));
+                .ForMember(dst => dst.Id, opt => opt.MapFrom(src => src.Id))
+                .ForMember(dst => dst.UploadId, opt => opt.MapFrom(src => src.UploadFile.Id))
+                .ForMember(dst => dst.CustomerId, opt => opt.MapFrom(src => src.Customer.Id))
+                .ForMember(dst => dst.QuarterYearId, opt => opt.MapFrom(src => src.QuarterYear.Id))
+                .ForMember(dst => dst.Pages, opt => opt.MapFrom(src => src.TypographicPages));
 
             CreateMap<TypographicResourceLocation, CustomerSealEditLocation>()
                     .ForMember(dst => dst.Id, opt => opt.MapFrom(src => src.TypographicResource.Id));
@@ -182,16 +182,25 @@ namespace SealTypographicWebAPI.Config.MapperProfile
                  .ForMember(dst => dst.BlankPageCount, opt => opt.MapFrom(o => o.TypographicPages.Where(src => src.BlankCheck == true).Count()))
                  .ForMember(dst => dst.DefaultPdfFileName, opt => opt.MapFrom(src => new string($"{src.Customer.Code}{QuarterUtil.GetTaiwanYearQuarter(src.QuarterYear)}")));
 
+            //TypographicPDF的Map
+            CreateMap<TypographicPDF, EditPDF>()
+                .ForMember(dst => dst.PdfPath, opt => opt.MapFrom(o => o.UploadFile.FullPath))
+                .ForMember(dst => dst.EditPages, opt => opt.MapFrom(src => src.TypographicPages));
+
             //PDF該頁的編輯內容的Map
             CreateMap<TypographicPage, EditPage>()
                  .ForMember(dst => dst.AccountantCertificatePath, opt => opt.MapFrom(src => src.AccountantCertificateFile != null ? src.AccountantCertificateFile.FullPath : string.Empty))
-                 .ForMember(dst => dst.EditImages, y => y.MapFrom(o => o.TypographicResourceLocations));
+                 .ForMember(dst => dst.EditImages, opt => opt.MapFrom(src => src.TypographicResourceLocations));
+
             // PDF排版圖像與位置的Map
             CreateMap<TypographicResourceLocation, EditImage>()
                 //透通處理                
-                .ForMember(dst => dst.ImageBase64, opt => opt.MapFrom(src => ImageTransparentUtil.ToDataUrl(src.TypographicResource.ImageFullPath)));
-                //確認圖像種類決定縮放大小
-                //.ForMember(dst => dst.ImageScale, opt => opt.MapFrom(src => PdfImageUtil.GetImageScale(src.TypographicResource.SubSealType)));
+                .ForMember(dst => dst.ImageBase64, opt => opt.MapFrom(src =>
+                    ImageTransparentUtil.ToDataUrl
+                    (
+                        string.IsNullOrWhiteSpace(src.TypographicResource.TypographicEditImageFullPath) ?
+                        src.TypographicResource.ImageFullPath : src.TypographicResource.TypographicEditImageFullPath
+                    )));
 
             // PDF排版圖像紀錄處理
             CreateMap<TypographicPDFEditViewResponse, TypographicPDFEditViewResponse>()                
