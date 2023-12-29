@@ -571,50 +571,24 @@ namespace SealTypographicWebAPI.Services.Implements
             //客戶印鑑座標
             foreach (CustomerSealLocationForm customerSealLocationForm in pageFrom.CustomerSealLocations)
             {
-                //TypographicResourceLocation typographicResourceLocation = mapper.Map<TypographicResourceLocation>(customerSealLocationForm);
-                //typographicResourceLocation.TypographicResource = GetTypographicResource(customerSealLocationForm.Id);
-                //if (!string.IsNullOrWhiteSpace(customerSealLocationForm.EditPdfImageBase64))
-                //{
-                //    await SaveEditImage(typographicResourceLocation.TypographicResource, customerSealLocationForm.EditPdfImageBase64);
-                //}
-
-                //typographicResourceLocations.Add(typographicResourceLocation);
-
                 await AddTypographicResourceLocation(typographicResourceLocations, customerSealLocationForm);
             }
 
             //會計師簽印座標
             foreach (AccountantSignLocationForm accountantSignLocationForm in pageFrom.AccountantSignLocations)
-            {
-                //TypographicResourceLocation typographicResourceLocation = mapper.Map<TypographicResourceLocation>(accountantSignLocationForm);
-                //typographicResourceLocation.TypographicResource = GetTypographicResource(accountantSignLocationForm.Id);
-                //if (!string.IsNullOrWhiteSpace(accountantSignLocationForm.EditPdfImageBase64))
-                //{
-                //    await SaveEditImage(typographicResourceLocation.TypographicResource, accountantSignLocationForm.EditPdfImageBase64);
-                //}
-
-                //typographicResourceLocations.Add(typographicResourceLocation);
-
+            {               
                 await AddTypographicResourceLocation(typographicResourceLocations, accountantSignLocationForm);
             }
 
             //信頭座標
             foreach (LetterheadImageLocationForm letterheadImageLocationForm in pageFrom.LetterheadImageLocations)
             {
-                //TypographicResourceLocation typographicResourceLocation = mapper.Map<TypographicResourceLocation>(letterheadImageLocationForm);
-                //typographicResourceLocation.TypographicResource = GetTypographicResource(letterheadImageLocationForm.Id);
-                //typographicResourceLocations.Add(typographicResourceLocation);
-
                 await AddTypographicResourceLocation(typographicResourceLocations, letterheadImageLocationForm);
             }
 
             //信頭座標
             foreach (TemporarySealLocationForm temporarySealLocationForm in pageFrom.TemporarySealLocations)
             {
-                //TypographicResourceLocation typographicResourceLocation = mapper.Map<TypographicResourceLocation>(temporarySealLocationForm);
-                //typographicResourceLocation.TypographicResource = GetTypographicResource(temporarySealLocationForm.Id);
-                //typographicResourceLocations.Add(typographicResourceLocation);
-
                 await AddTypographicResourceLocation(typographicResourceLocations, temporarySealLocationForm);
             }
             typographicPage.TypographicResourceLocations = typographicResourceLocations;
