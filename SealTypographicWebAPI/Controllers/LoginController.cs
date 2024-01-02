@@ -1,6 +1,7 @@
 ﻿using DJKeycloakLib.Configs;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
+using SealTypographicWebAPI.Config;
 using System.Text.Json;
 
 namespace SealTypographicWebAPI.Controllers
@@ -13,7 +14,7 @@ namespace SealTypographicWebAPI.Controllers
     [ApiController]
     public class LoginController : ControllerBase
     {
-        private readonly KeycloakOptions keycloakOptions;
+        private KeycloakOptions keycloakOptions;
 
         /// <summary>
         /// 
@@ -21,6 +22,11 @@ namespace SealTypographicWebAPI.Controllers
         public LoginController(IOptionsMonitor<KeycloakOptions> keyCloakOptionsMonitor) 
         {
             keycloakOptions = keyCloakOptionsMonitor.CurrentValue;
+
+            keyCloakOptionsMonitor.OnChange(options =>
+            {
+                keycloakOptions = options;
+            });
         }
 
         /// <summary>

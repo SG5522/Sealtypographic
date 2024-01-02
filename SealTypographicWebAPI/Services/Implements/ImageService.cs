@@ -17,8 +17,8 @@ namespace SealTypographicWebAPI.Services.Implements
     /// </summary>
     public class ImageService
     {
-        private readonly SealPathOption sealPathOption;
-        private readonly TemplateImagePathOption templateImagePathOption;
+        private SealPathOption sealPathOption;
+        private TemplateImagePathOption templateImagePathOption;
 
         /// <summary>
         /// 注入appsetting的ScanConfigPath資料
@@ -26,10 +26,20 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <param name="sealPathOption"></param>
         /// <param name="templateImagePathOption"></param>
 
-        public ImageService(IOptionsSnapshot<SealPathOption> sealPathOption, IOptionsSnapshot<TemplateImagePathOption> templateImagePathOption)
+        public ImageService(IOptionsMonitor<SealPathOption> sealPathOption, IOptionsMonitor<TemplateImagePathOption> templateImagePathOption)
         {
-            this.sealPathOption = sealPathOption.Value;
-            this.templateImagePathOption = templateImagePathOption.Value;
+            this.sealPathOption = sealPathOption.CurrentValue;
+            this.templateImagePathOption = templateImagePathOption.CurrentValue;
+
+            sealPathOption.OnChange(options =>
+            {
+                this.sealPathOption = options;
+            });
+
+            templateImagePathOption.OnChange(options =>
+            {
+                this.templateImagePathOption = options;
+            });
         }
 
         /// <summary>
@@ -57,7 +67,7 @@ namespace SealTypographicWebAPI.Services.Implements
         /// Base64轉圖檔並存檔回傳存檔路徑(存檔路徑透過ImageBase64Info生成)
         /// </summary>
         /// <param name="imageBase64Info">ImageBase64資訊</param>     
-        public async Task<string> GetSavedImageFilePath(ImageBase64Info imageBase64Info)
+        public async Task<string> GetSavedImageFilePath(ImageSaveInfo imageBase64Info)
         {
             string savePath = imageBase64Info.GetImageFilePath();
             return await SaveImageAsync(imageBase64Info.ImageBase64, savePath, false);
@@ -69,7 +79,7 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <param name="imageBase64Info"></param>
         /// <param name="isResize"></param>
         /// <returns></returns>
-        public async Task<string> GetSavedImageThumbnailFilePath(ImageBase64Info imageBase64Info, bool isResize)
+        public async Task<string> GetSavedImageThumbnailFilePath(ImageSaveInfo imageBase64Info, bool isResize)
         {
             string savePath = imageBase64Info.GetImageThumbnailFilePath();
             return await SaveImageAsync(imageBase64Info.ImageBase64, savePath, isResize);            
@@ -87,11 +97,9 @@ namespace SealTypographicWebAPI.Services.Implements
         {
             ImageModel imageModel = new() { DataUrl = imageBase64 };
             if (isResize)
-            {
-                //imageInfo.ReSize(imageInfo, sealPathOption.ResizeScale);
+            {               
                  ImageUtil.ReSizeBase64Only(imageBase64, sealPathOption.ResizeScale, sealPathOption.ResizeScale);
-            }
-            //ImageSharpUtil.SaveFile(imageInfo, savePath);
+            }            
             FileUtil.SaveFileReturnPath(imageBase64, Path.GetPathRoot(savePath)!, imageModel.ImageFormat!.Name.ToLower()!);
         }
 
@@ -122,9 +130,9 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <param name="code">編碼(檔名結構之一)</param>
         /// <param name="sealType">依Type決定SaveRootPath</param>
         /// <returns></returns>
-        public ImageBase64Info SetImageBase64InfoWithSeal(string code, SealType sealType)
+        public ImageSaveInfo SetImageBase64InfoWithSeal(string code, SealType sealType)
         {
-            ImageBase64Info imageBase64Info = new()
+            ImageSaveInfo imageBase64Info = new()
             {
                 Code = code,
             };
@@ -152,9 +160,9 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <param name="code">編碼(檔名結構之一)</param>
         /// <param name="sealType">依Type決定SaveRootPath</param>
         /// <returns></returns>
-        public ImageBase64Info SetImageBase64InfoWithTemplate(string code, SealType sealType)
+        public ImageSaveInfo SetImageBase64InfoWithTemplate(string code, SealType sealType)
         {
-            ImageBase64Info imageBase64Info = new()
+            ImageSaveInfo imageBase64Info = new()
             {
                 Code = code,
             };

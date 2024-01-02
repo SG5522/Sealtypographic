@@ -99,8 +99,6 @@ namespace SealTypographicWebAPI.Services.Implements
                     {
                         foreach (AccountantSignViewModel accountantSignViewModel in accountantSignViewModels.SignViewModels)
                         {
-                            //ImageInfo imageInfo = ImageInfo.FromImageBase64(accountantSignViewModel.ImageBase64);
-                            //accountantSignViewModel.ImageBase64 = imageInfo.TransparentToImageBase64();
                             accountantSignViewModel.ImageBase64 = ImageUtil.TransparentToBase64(accountantSignViewModel.ImageBase64, ImageConfigConsts.Threshold);
                         }
                     }
@@ -144,7 +142,7 @@ namespace SealTypographicWebAPI.Services.Implements
                 {
                     AccountantSignGroup accountantSignGroup = new();
                     //之後調整無需轉型
-                    ImageBase64Info imageBase64Info = imageService.SetImageBase64InfoWithSeal(accountantQuery.Code, SealType.Accountant);
+                    ImageSaveInfo imageBase64Info = imageService.SetImageBase64InfoWithSeal(accountantQuery.Code, SealType.Accountant);
 
                     BaseInputSignGroupJournal(accountantSignGroup, true, userId);
                     //新增簽印資料(圖檔與DB資源)         
@@ -203,7 +201,7 @@ namespace SealTypographicWebAPI.Services.Implements
                         };
 
                         //之後拔除轉型調整
-                        ImageBase64Info imageBase64Info = imageService.SetImageBase64InfoWithSeal(accountant.Code, SealType.Accountant);
+                        ImageSaveInfo imageBase64Info = imageService.SetImageBase64InfoWithSeal(accountant.Code, SealType.Accountant);
 
                         //修改(更新ID移入DeleteAccountantSignIds，更新的簽印移入新增CreateAccountantSigns)
                         foreach (AccountantSignUpdateForm accountantSignFormUpdate in accountantSignUpdate.UpdateAccountantSigns)
@@ -361,10 +359,10 @@ namespace SealTypographicWebAPI.Services.Implements
         /// 新增印鑑、簽印、圖片資料
         /// </summary>
         /// <param name="formSeals">輸入</param>        
-        /// <param name="imageBase64Info">圖檔資訊</param>
+        /// <param name="imageSaveInfo">圖檔資訊</param>
         /// <param name="userId">使用者Id</param>
         /// <returns></returns>
-        private async Task<List<TypographicResource>> NewTypographyResource(List<AccountantSign> formSeals, ImageBase64Info imageBase64Info, int userId = 1)
+        private async Task<List<TypographicResource>> NewTypographyResource(List<AccountantSign> formSeals, ImageSaveInfo imageSaveInfo, int userId = 1)
         {
             List<TypographicResource> typographyResources = new();
             foreach (AccountantSign accountantSign in formSeals)
@@ -373,12 +371,12 @@ namespace SealTypographicWebAPI.Services.Implements
                 {
                     SealType = SealType.Accountant,
                     //輸入model之後要修正為新的db
-                    SubSealType = SealMappingConfigUtil.GetSubSealTypeWithAccountant((AccountantSignType)accountantSign.SealMappingConfigId),
+                    SubSealType = SealMappingConfigUtil.GetSubSealTypeWithAccountant(accountantSign.SealMappingConfigId),
                 };
                 //ImageBase64轉圖檔並存到指定資料夾
-                imageBase64Info.ImageBase64 = accountantSign.ImageBase64;
-                typographyResource.ImageFullPath = await imageService.GetSavedImageFilePath(imageBase64Info);
-                typographyResource.ThumbnailFullPath = await imageService.GetSavedImageThumbnailFilePath(imageBase64Info, true);
+                imageSaveInfo.ImageBase64 = accountantSign.ImageBase64;
+                typographyResource.ImageFullPath = await imageService.GetSavedImageFilePath(imageSaveInfo);
+                typographyResource.ThumbnailFullPath = await imageService.GetSavedImageThumbnailFilePath(imageSaveInfo, true);
 
                 TypographicResourceUtil.BaseInputTypographyResource(typographyResource, true, userId);
                 typographyResources.Add(typographyResource);

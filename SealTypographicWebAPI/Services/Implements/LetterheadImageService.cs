@@ -174,7 +174,7 @@ namespace SealTypographicWebAPI.Services.Implements
                         TypographicResources = new List<TypographicResource>()
                     };
 
-                    ImageBase64Info imageBase64Info = imageService.SetImageBase64InfoWithSeal(companyQuery.Code, SealType.Letterhead);
+                    ImageSaveInfo imageBase64Info = imageService.SetImageBase64InfoWithSeal(companyQuery.Code, SealType.Letterhead);
 
                     //信頭基本資料
                     letterhead.Name = letterheadImageForm.Name;
@@ -222,7 +222,7 @@ namespace SealTypographicWebAPI.Services.Implements
                 if (updateImageQuery != null)
                 {
                     List<TypographicResource> typographyResources = new();
-                    ImageBase64Info imageBase64Info = imageService.SetImageBase64InfoWithSeal(updateImageQuery.Letterhead!.Company.Code, SealType.Letterhead);
+                    ImageSaveInfo imageBase64Info = imageService.SetImageBase64InfoWithSeal(updateImageQuery.Letterhead!.Company.Code, SealType.Letterhead);
 
                     //原圖片狀態變更停用(刪除)
                     updateImageQuery.DeleteStatus = DeleteStatus.Yes;
@@ -267,7 +267,7 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <param name="imageBase64Info">圖檔資訊</param>
         /// <param name="userId">使用者Id</param>
         /// <returns></returns>
-        private async Task NewTypographyResource(string imageBase64, IList<TypographicResource> typographyResources, ImageBase64Info imageBase64Info, int userId)
+        private async Task NewTypographyResource(string imageBase64, IList<TypographicResource> typographyResources, ImageSaveInfo imageBase64Info, int userId)
         {
             TypographicResource typographicResource = new()
             {

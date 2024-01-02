@@ -149,7 +149,7 @@ namespace SealTypographicWebAPI.Services.Implements
                     {
                         TemporarySealGroup temporarySealGroup = new();
                         List<TypographicResource> typographicResources = new();
-                        ImageBase64Info imageBase64Info = imageService.SetImageBase64InfoWithSeal(customerQuery.Code, SealType.TemporarySeal);
+                        ImageSaveInfo imageBase64Info = imageService.SetImageBase64InfoWithSeal(customerQuery.Code, SealType.TemporarySeal);
                         int userId = 1;
 
                         BaseInputTemporarySealGroup(temporarySealGroup, true, userId);
@@ -189,7 +189,7 @@ namespace SealTypographicWebAPI.Services.Implements
                                                             .FirstOrDefault(temporarySealGroup => temporarySealGroup.Id == temporarySealUpdateForm.Id);
             if(temporarySealGroup != null)
             {                
-                ImageBase64Info imageBase64Info = imageService.SetImageBase64InfoWithSeal(temporarySealGroup.Customer.Code, SealType.TemporarySeal);
+                ImageSaveInfo imageBase64Info = imageService.SetImageBase64InfoWithSeal(temporarySealGroup.Customer.Code, SealType.TemporarySeal);
 
                 //更新臨時章印鑑組
                 foreach (TemporarySealUpdate temporarySealUpdate in temporarySealUpdateForm.SealsToUpdate)
@@ -293,7 +293,7 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <param name="imageBase64Info">圖檔資訊</param>
         /// <param name="userId">使用者Id</param>
         /// <returns></returns>
-        private async Task NewTypographyResource(IList<TemporarySeal> formseals, IList<TypographicResource> typographicResources, ImageBase64Info imageBase64Info, int userId)
+        private async Task NewTypographyResource(IList<TemporarySeal> formseals, IList<TypographicResource> typographicResources, ImageSaveInfo imageBase64Info, int userId)
         {
             foreach (TemporarySeal temporarySeal in formseals)
             {

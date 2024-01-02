@@ -24,12 +24,11 @@ namespace SealTypographicWebAPI.Services.Implements
     /// </summary>
     public class UploadService : IUploadService
     {        
-        private readonly IStringLocalizer<UploadService> localizer;
-        private readonly UploadPathOption uploadConfigPath;
+        private readonly IStringLocalizer<UploadService> localizer;        
         private readonly SealTypographicDbContext dbContext;
-        private readonly ILogger<UploadData> logger;
-        private readonly IMapper mapper;
+        private readonly ILogger<UploadData> logger;        
         private readonly AutoMapper.IConfigurationProvider configurationProvider;
+        private UploadPathOption uploadConfigPath;
 
         /// <summary>
         /// 建構
@@ -40,17 +39,21 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <param name="logger">注入logger</param>
         /// <param name="mapper"></param>       
         public UploadService(SealTypographicDbContext dbContext
-            ,IStringLocalizer<UploadService> localizer
-            , IOptionsSnapshot<UploadPathOption> options
+            ,IStringLocalizer<UploadService> localizer           
             , ILogger<UploadData> logger
-            , IMapper mapper)
+            , IMapper mapper
+            , IOptionsMonitor<UploadPathOption> options)
         {
             this.dbContext = dbContext;
-            this.localizer = localizer;
-            uploadConfigPath = options.Value;
-            this.logger = logger;
-            this.mapper = mapper;
+            this.localizer = localizer;            
+            this.logger = logger;            
             configurationProvider = mapper.ConfigurationProvider;
+            uploadConfigPath = options.CurrentValue;
+
+            options.OnChange(options =>
+            {
+                uploadConfigPath = options;
+            });
         }
 
         /// <summary>

@@ -13,6 +13,7 @@ using DJImageLib.Utils;
 using OpenCvSharp;
 using SixLabors.ImageSharp.Formats;
 using SixLabors.ImageSharp;
+using DJKeycloakLib.Configs;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -29,8 +30,8 @@ namespace SealTypographicWebAPI.Controllers
     {
         private readonly ILogger<SysController> logger;
         private readonly IWebHostEnvironment environment;
-        private readonly KeycloakAuthenticationOptions keycloakAuthenticationOptions;
-        private readonly SystemConfigOption systemConfigOption;
+        private KeycloakAuthenticationOptions keycloakAuthenticationOptions;
+        private SystemConfigOption systemConfigOption;
 
         /// <summary>
         /// 建構
@@ -50,6 +51,16 @@ namespace SealTypographicWebAPI.Controllers
             this.environment = environment;
             keycloakAuthenticationOptions = keycloakAuthenticationOptionsMonitor.CurrentValue;    
             systemConfigOption = systemConfigOptionMonitor.CurrentValue;
+
+            keycloakAuthenticationOptionsMonitor.OnChange(options =>
+            {
+                keycloakAuthenticationOptions = options;
+            });
+
+            systemConfigOptionMonitor.OnChange(options =>
+            {
+                systemConfigOption = options;
+            });
         }
 
         /// <summary>

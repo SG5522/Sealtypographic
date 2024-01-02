@@ -237,8 +237,7 @@ namespace SealTypographicWebAPI.Services.Implements
                     if (isTransparent)
                     {
                         foreach (CustomerSealViewModel customerSealViewModel in customerSealViewModels.SealViewModels)
-                        {
-                            //ImageInfo imageInfo = ImageInfo.FromImageBase64(customerSealViewModel.ImageBase64);
+                        {                            
                             customerSealViewModel.ImageBase64 = ImageTransparentUtil.ToDataUrlFromDataUrl(customerSealViewModel.ImageBase64);
                         }
                     }
@@ -292,7 +291,7 @@ namespace SealTypographicWebAPI.Services.Implements
                     {
                         CustomerSealGroup customerSealGroup = new();
 
-                        ImageBase64Info imageBase64Info = imageService.SetImageBase64InfoWithSeal(customerQuery.Code, SealType.Customer);
+                        ImageSaveInfo imageBase64Info = imageService.SetImageBase64InfoWithSeal(customerQuery.Code, SealType.Customer);
 
                         customerSealGroup.QuarterYear = quarter;
                         customerSealGroup.TypographyType = typographyType;
@@ -348,7 +347,7 @@ namespace SealTypographicWebAPI.Services.Implements
 
                 if (customerSealGroup != null)
                 {
-                    ImageBase64Info imageBase64Info = imageService.SetImageBase64InfoWithSeal(customerSealGroup.Customer.Code, SealType.Customer);
+                    ImageSaveInfo imageBase64Info = imageService.SetImageBase64InfoWithSeal(customerSealGroup.Customer.Code, SealType.Customer);
 
                     //修改印鑑(更新ID移入DeleteCustomerSealIds，更新的資料移入CreateCustomerSeals，之後下一階段調整輸入時要拔掉此項)
                     foreach (CustomerSealUpdateForm customerSealFormUpdate in customerSealUpdate.UpdateCustomerSeals)
@@ -499,7 +498,7 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <param name="imageBase64Info">圖檔資訊</param>
         /// <param name="userId">使用者Id</param>
         /// <returns></returns>
-        private async Task<List<TypographicResource>> NewTypographyResource(List<CustomerSeal> formSeals, ImageBase64Info imageBase64Info, int userId)
+        private async Task<List<TypographicResource>> NewTypographyResource(List<CustomerSeal> formSeals, ImageSaveInfo imageBase64Info, int userId)
         {
             List<TypographicResource> typographyResources = new();
             foreach (CustomerSeal customerSeal in formSeals)
@@ -514,8 +513,7 @@ namespace SealTypographicWebAPI.Services.Implements
                 imageBase64Info.ImageBase64 = customerSeal.ImageBase64;
                 typographyResource.ImageFullPath = await imageService.GetSavedImageFilePath(imageBase64Info);
                 typographyResource.ThumbnailFullPath = await imageService.GetSavedImageThumbnailFilePath(imageBase64Info, true);
-
-                //TypographicResourceUtil.BaseInputTypographyResource(typographyResource, true, userId);
+                
                 InputUtil.Set(typographyResource, true, userId);
                 typographyResources.Add(typographyResource);
             }

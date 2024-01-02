@@ -3,7 +3,7 @@
     /// <summary>
     /// ImageBase64資訊
     /// </summary>
-    public class ImageBase64Info
+    public class ImageSaveInfo
     {
         /// <summary>
         /// 編號

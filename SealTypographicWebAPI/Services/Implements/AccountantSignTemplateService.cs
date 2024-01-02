@@ -150,7 +150,7 @@ namespace SealTypographicWebAPI.Services.Implements
                 Template template = mapper.Map<Template>(accountantSignTemplateForm);
                 List<TemplateLocation> templateLocations = new();
                 //儲存圖片(原圖)
-                ImageBase64Info imageBase64Info = imageService.SetImageBase64InfoWithTemplate(companyQuery.Code, SealType.Accountant);
+                ImageSaveInfo imageBase64Info = imageService.SetImageBase64InfoWithTemplate(companyQuery.Code, SealType.Accountant);
                 imageBase64Info.ImageBase64 = accountantSignTemplateForm.ImageBase64;
                 template.ImageViewFullPath = await imageService.GetSavedImageFilePath(imageBase64Info);
                 //儲存縮圖
@@ -188,7 +188,7 @@ namespace SealTypographicWebAPI.Services.Implements
                 FileUtil.DeleteFile(template.ImageViewFullPath);
                 FileUtil.DeleteFile(template.ThumbnailFullPath);
                 //儲存圖片(原圖)                
-                ImageBase64Info imageBase64Info = imageService.SetImageBase64InfoWithTemplate(template.Company.Code, SealType.Accountant);
+                ImageSaveInfo imageBase64Info = imageService.SetImageBase64InfoWithTemplate(template.Company.Code, SealType.Accountant);
                 imageBase64Info.ImageBase64 = accountantSignTemplateUpdateForm.ImageBase64;
                 template.ImageViewFullPath = await imageService.GetSavedImageFilePath(imageBase64Info);
                 //儲存縮圖
