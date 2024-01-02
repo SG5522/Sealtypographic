@@ -54,7 +54,6 @@ namespace SealTypographicWebAPI.Services.Implements
             {
                 typographyEditImagePathOptions = options;
             });
-
         }
 
         ///<inheritdoc />
