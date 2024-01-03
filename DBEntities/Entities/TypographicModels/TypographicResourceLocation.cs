@@ -10,6 +10,11 @@ namespace DBEntities.Entities.TypographicModels
     public class TypographicResourceLocation : BasePageLocation
     {
         /// <summary>
+        /// 排版時影像處理後的圖檔路徑
+        /// </summary>
+        public string? EditImageFullPath { get; set; }
+
+        /// <summary>
         /// 排版素材
         /// </summary>
         public TypographicResource TypographicResource { get; set; }

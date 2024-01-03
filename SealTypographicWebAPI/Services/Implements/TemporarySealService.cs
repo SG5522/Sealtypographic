@@ -56,10 +56,8 @@ namespace SealTypographicWebAPI.Services.Implements
                 if (isTransparent)
                 {
                     foreach (TemporarySealViewModel temporarySealViewModel in temporarySealDetailViewModel.ViewModels)
-                    {
-                        //ImageInfo imageInfo = ImageInfo.FromImageBase64(temporarySealViewModel.ImageBase64);
-                        //temporarySealViewModel.ImageBase64 = imageInfo.TransparentToImageBase64();
-                        temporarySealViewModel.ImageBase64 = ImageUtil.TransparentToBase64(temporarySealViewModel.ImageBase64, ImageConfigConsts.Threshold);
+                    {                        
+                        temporarySealViewModel.ImageBase64 = ImageTransparentUtil.ToDataUrlFromDataUrl(temporarySealViewModel.ImageBase64);                           
                     }
                 }                
                 temporarySealDetailViewModel.Success();                
@@ -110,9 +108,7 @@ namespace SealTypographicWebAPI.Services.Implements
                                                             .ToList();
 
                 temporarySealPaginateViewModel.PageNumber = temporarySealSearch.PageNumber;
-                temporarySealPaginateViewModel.PageSize = temporarySealSearch.PageSize;
-                //計算總頁數
-                //temporarySealPaginateViewModel.TotalPage = PageUtil.GetTotalPage(temporarySealGroupQuery.Count(), temporarySealSearch.PageSize);
+                temporarySealPaginateViewModel.PageSize = temporarySealSearch.PageSize;                                
                 temporarySealPaginateViewModel.TotalCount = temporarySealGroupQuery.Count();
             }
             temporarySealPaginateViewModel.Success();

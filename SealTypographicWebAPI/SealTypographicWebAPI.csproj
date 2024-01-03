@@ -7,7 +7,7 @@
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <DocumentationFile></DocumentationFile>
     <IncrementVersionOnBuild>0.0.3.1+</IncrementVersionOnBuild>
-    <Version>0.0.3.910</Version>
+    <Version>0.0.3.941</Version>
     <PackageIcon>android-chrome-128x128.png</PackageIcon>
     <Configurations>Debug;Release</Configurations>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>    
@@ -32,7 +32,7 @@
     <PackageReference Include="AspNetCore.HealthChecks.UI" Version="7.0.2" />
     <PackageReference Include="AspNetCore.HealthChecks.UI.InMemory.Storage" Version="7.0.0" />
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
-    <PackageReference Include="DJCommonLib" Version="6.0.5" />
+    <PackageReference Include="DJCommonLib" Version="6.0.6" />
     <PackageReference Include="DJImageLib" Version="6.0.5" />	  
 	<PackageReference Include="DJKeycloakAPI" Version="6.0.11" CopyDirectory="lib\net6.0\**\*.*" />	  
 	<PackageReference Include="DJKeycloakLib" Version="6.0.7" CopyDirectory="lib\net6.0\**\*.*" />	  

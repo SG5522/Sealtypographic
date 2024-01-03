@@ -122,8 +122,7 @@ namespace SealTypographicWebAPI.Services.Implements
                                         .Where(x => x.Id == id && x.DeleteStatus == DeleteStatus.No)
                                         .Select(x => new LetterheadImageViewModel
                                         {
-                                            Id = x.Id,
-                                            //ImageBase64 = ImageSharpUtil.PathImageFileToBase64(x.ImageFullPath)
+                                            Id = x.Id,                                            
                                             ImageBase64 = ImageUtil.ToDataUrlFromFilePath(x.ImageFullPath)
                                         }).FirstOrDefault();
 
@@ -131,9 +130,7 @@ namespace SealTypographicWebAPI.Services.Implements
                 {
                     if (isTransparent)
                     {
-                        //ImageInfo imageInfo = ImageInfo.FromImageBase64(letterheadImageViewModel.ImageBase64);
-                        //letterheadImageViewModel.ImageBase64 = imageInfo.TransparentToImageBase64();
-                        letterheadImageViewModel.ImageBase64 = ImageUtil.TransparentToBase64(letterheadImageViewModel.ImageBase64, ImageConfigConsts.Threshold);
+                        letterheadImageViewModel.ImageBase64 = ImageTransparentUtil.ToDataUrlFromDataUrl(letterheadImageViewModel.ImageBase64);
                     }
                     letterheadImageViewModel.Success();
                 }

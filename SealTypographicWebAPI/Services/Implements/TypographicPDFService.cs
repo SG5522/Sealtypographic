@@ -210,8 +210,7 @@ namespace SealTypographicWebAPI.Services.Implements
                                             .Include(x => x.TypographicPDF)
                                             .ThenInclude(x => x.UploadFile)
                                             .Include(x => x.TypographicResourceLocations)
-                                            .ThenInclude(x => x.TypographicResource)
-                                            .AsSplitQuery()
+                                            .ThenInclude(x => x.TypographicResource)                                            
                                             .Where(x => x.TypographicPDF.Id == typographicPDFPageSearch.Id && x.PageNumber == typographicPDFPageSearch.PageNumber)
                                             .ProjectTo<TypographicPageViewModel>(configurationProvider)
                                             .FirstOrDefault();
@@ -601,9 +600,13 @@ namespace SealTypographicWebAPI.Services.Implements
             typographicResourceLocation.TypographicResource = dbContext.TypographicResources.Single(x => x.Id == t.Id);
             if (!string.IsNullOrWhiteSpace(t.EditPdfImageBase64))
             {
-                await SaveEditImage(typographicResourceLocation.TypographicResource, t.EditPdfImageBase64);
+                ImageModel imageModel = new() { DataUrl = t.EditPdfImageBase64 };
+                string originalFileName = $"{DateTime.Now:yyyyMMddHHmmssffff}.{imageModel.ImageFormat!.Name.ToLower()}";
+                //存到指定位置
+                string savePath = await FileUtil.SaveFileReturnPath(imageModel.Base64!.ToBytes(), $"{typographyEditImagePathOptions.RootPath}{originalFileName}");
+                typographicResourceLocation.EditImageFullPath = savePath;
+                //await SaveEditImage(typographicResourceLocation, t.EditPdfImageBase64);
             }
-
             typographicResourceLocations.Add(typographicResourceLocation);
         }
 
@@ -612,15 +615,13 @@ namespace SealTypographicWebAPI.Services.Implements
         /// </summary>
         /// <param name="typographicResource"></param>
         /// <param name="imageDataUrl"></param>
-        private async Task SaveEditImage(TypographicResource typographicResource, string imageDataUrl)
+        private async Task SaveEditImage(TypographicResourceLocation typographicResource, string imageDataUrl)
         {
-            ImageModel imageModel = new() { DataUrl = imageDataUrl };                
+            ImageModel imageModel = new() { DataUrl = imageDataUrl };
             string originalFileName = $"{DateTime.Now:yyyyMMddHHmmssffff}.{imageModel.ImageFormat!.Name.ToLower()}";
             //存到指定位置
             string savePath = await FileUtil.SaveFileReturnPath(imageModel.Base64!.ToBytes(), $"{typographyEditImagePathOptions.RootPath}{originalFileName}");
-
-            typographicResource.TypographicEditImageFullPath = savePath;
-            await dbContext.SaveChangesAsync();
+            typographicResource.EditImageFullPath = savePath;
         }
     }
 }

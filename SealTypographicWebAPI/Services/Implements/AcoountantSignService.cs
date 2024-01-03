@@ -98,8 +98,8 @@ namespace SealTypographicWebAPI.Services.Implements
                     if (isTransparent)
                     {
                         foreach (AccountantSignViewModel accountantSignViewModel in accountantSignViewModels.SignViewModels)
-                        {
-                            accountantSignViewModel.ImageBase64 = ImageUtil.TransparentToBase64(accountantSignViewModel.ImageBase64, ImageConfigConsts.Threshold);
+                        {                            
+                            accountantSignViewModel.ImageBase64 = ImageTransparentUtil.ToDataUrlFromDataUrl(accountantSignViewModel.ImageBase64);
                         }
                     }
                     accountantSignViewModels.Success();

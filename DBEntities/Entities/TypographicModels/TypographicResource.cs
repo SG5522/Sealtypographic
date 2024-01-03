@@ -34,11 +34,6 @@ namespace DBEntities.Entities.TypographicModels
         public string? ImageProcessingFullPath { get; set; }
 
         /// <summary>
-        /// 排版時影像處理後的圖檔路徑
-        /// </summary>
-        public string? TypographicEditImageFullPath { get; set; }
-
-        /// <summary>
         /// 客戶印鑑季度資料表
         /// </summary>
         public CustomerSealGroup? CustomerSealGroup { get; set; }

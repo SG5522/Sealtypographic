@@ -11,7 +11,6 @@ using DBEntities;
 using DBEntities.Entities.TypographicModels;
 using DBEntities.Entities.CustomerModels;
 using DBEntities.Utils;
-using DJImageLib.Utils;
 
 namespace SealTypographicWebAPI.Services.Implements
 {
@@ -21,7 +20,8 @@ namespace SealTypographicWebAPI.Services.Implements
     public class CustomerSealService : ICustomerSealService
     {
         private readonly SealTypographicDbContext dbContext;
-        private readonly ImageService imageService;        
+        private readonly ImageService imageService;
+        private readonly IMapper mapper;
         private readonly AutoMapper.IConfigurationProvider configurationProvider;
         private readonly ILogger<CustomerSealService> logger;
 
@@ -37,6 +37,7 @@ namespace SealTypographicWebAPI.Services.Implements
             this.dbContext = dbContext;                 
             this.imageService = imageService;                   
             this.logger = logger;
+            this.mapper = mapper;
             configurationProvider = mapper.ConfigurationProvider;
         }
 
@@ -248,7 +249,7 @@ namespace SealTypographicWebAPI.Services.Implements
                     customerSealViewModels = new();
                     customerSealViewModels.CustomerSealNoData();
                 }
-                logger.LogInformation("GetSeals output {@Output}", customerSealViewModels);
+                logger.LogInformation("GetSeals output {@Output}", mapper.Map<CustomerSealViewModels>(customerSealViewModels));
             }
             catch (Exception ex) 
             {
