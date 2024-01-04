@@ -92,7 +92,7 @@ namespace SealTypographicWebAPI.Services.Implements
                     (
                         customer =>
                         customer.Code.ToLower().Contains(customerSearch.KeyWord.ToLower())
-                        || customer.Name.Contains(customerSearch.KeyWord)
+                        || customer.Name.ToLower().Contains(customerSearch.KeyWord.ToLower())
                     );
                 }
                 customerQuery = customerQuery.OrderBy(customer => customer.Code);

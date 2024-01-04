@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
+using CommonLib.Models;
 using DBEntities;
 using DBEntities.Consts;
 using DBEntities.Entities.TypographicModels;
 using Microsoft.EntityFrameworkCore;
+using SealTypographicWebAPI.Models;
 using SealTypographicWebAPI.Models.LogReport;
 using SealTypographicWebAPI.Utils;
 
@@ -32,6 +34,21 @@ namespace SealTypographicWebAPI.Services.Implements
             this.mapper = mapper;
             configurationProvider = mapper.ConfigurationProvider;
             //this.adminService = adminService;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="operationLogModel"></param>
+        /// <returns></returns>
+        public ResponseViewModel SaveOperationLog (OperationLogModel operationLogModel)
+        {
+            ResponseViewModel response = new();
+
+            LogModel<OperationLogModel> logmodel = null;
+
+
+            return response;
         }
 
         /// <summary>

@@ -8,6 +8,7 @@ using AutoMapper.QueryableExtensions;
 using DBEntities.Entities.AccountantModels;
 using DBEntities.Entities;
 using DBEntities;
+using CommonLib.Models;
 
 namespace SealTypographicWebAPI.Services.Implements
 {
@@ -59,8 +60,11 @@ namespace SealTypographicWebAPI.Services.Implements
                 {
                     accountantResponse.DbNoData();
                 }
-
-                logger.LogInformation("GetDetail output {@output}", accountantResponse);
+                LogModel<AccountantDetailResponse> log = new()
+                {
+                    Data = accountantResponse
+                };
+                logger.LogInformation("GetDetail output {@output}", accountantResponse);                
             }
             catch (Exception ex) 
             {
@@ -100,7 +104,7 @@ namespace SealTypographicWebAPI.Services.Implements
                     (
                         accountant =>
                         accountant.Code.ToLower().Contains(accountantSearch.KeyWord.ToLower())
-                        || accountant.Name.Contains(accountantSearch.KeyWord)
+                        || accountant.Name.ToLower().Contains(accountantSearch.KeyWord.ToLower())
                     );
                 }
 
