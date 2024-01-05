@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using CommonLib.Enums;
 using CommonLib.Models;
 using DBEntities;
 using DBEntities.Consts;
@@ -37,18 +38,24 @@ namespace SealTypographicWebAPI.Services.Implements
         }
 
         /// <summary>
-        /// 
+        /// 操作紀錄(傳到MongoDB)
         /// </summary>
         /// <param name="operationLogModel"></param>
+        /// <param name="logModelBase"></param>
         /// <returns></returns>
-        public ResponseViewModel SaveOperationLog (OperationLogModel operationLogModel)
+        public void SaveOperationLog(OperationLogModel operationLogModel, LogModel logModelBase)
         {
-            ResponseViewModel response = new();
-
-            LogModel<OperationLogModel> logmodel = null;
-
-
-            return response;
+            LogModel<OperationLogModel> logModel = new()
+            {
+                Data = operationLogModel,
+                DateTime = DateTime.Now,
+                OperateType = logModelBase.OperateType,
+                FunctionType = FunctionType.SealTypographic,
+                LogLevel = logModelBase.LogLevel,
+                SystemType = SystemType.SealTypographic,
+                UserId = logModelBase.UserId,
+                UserName = logModelBase.UserName
+            };            
         }
 
         /// <summary>
@@ -119,6 +126,25 @@ namespace SealTypographicWebAPI.Services.Implements
             return customerTypoReportPaginate;
         }
 
-        
+        /// <summary>
+        /// 操作紀錄(傳到MongoDB)
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="log"></param>
+        /// <returns></returns>
+        public void SaveCustomizeLog<T>(T data, LogModel log)
+        {
+            LogModel<T> logModel = new()
+            {
+                Data = data,
+                SystemType = SystemType.SealTypographic,
+                OperateType = log.OperateType,
+                FunctionType = FunctionType.SealTypographic,                                
+                LogLevel = log.LogLevel,
+                DateTime = log.DateTime,                          
+                UserId = log.UserId,
+                UserName = log.UserName
+            };
+        }
     }
 }

@@ -67,4 +67,52 @@ namespace SealTypographicWebAPI.Consts
         [Description("黑色")]
         Black
     }
+
+    /// <summary>
+    /// 動作類別(紀錄使用)
+    /// </summary>
+    public enum ActionType
+    {
+        /// <summary>
+        /// 登入
+        /// </summary>
+        [Description("登入")]
+        Login = 0,
+
+        /// <summary>
+        /// 客戶資料查詢
+        /// </summary>
+        [Description("客戶資料查詢")]
+        CustomerQuery = 1,
+
+        /// <summary>
+        /// 會計師資料查詢
+        /// </summary>
+        [Description("會計師資料查詢")]
+        AccountantQuery = 2,
+
+        /// <summary>
+        /// 財報印鑑查詢
+        /// </summary>
+        [Description("財報印鑑查詢")]
+        FinancialReportSealQuery = 3,
+
+        /// <summary>
+        /// 稅報印鑑查詢
+        /// </summary>
+        [Description("稅報印鑑查詢")]
+        TaxReportSealQuery = 4,
+
+        /// <summary>
+        /// 會計師簽印查詢
+        /// </summary>
+        [Description("會計師簽印查詢")]
+        AccountantSignQuery = 5,
+
+        /// <summary>
+        /// 登入
+        /// </summary>
+        [Description("登出")]
+        Logout = 6,
+    }
 }

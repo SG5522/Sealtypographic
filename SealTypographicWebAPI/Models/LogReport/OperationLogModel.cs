@@ -1,10 +1,17 @@
-﻿namespace SealTypographicWebAPI.Models.LogReport
+﻿using SealTypographicWebAPI.Consts;
+
+namespace SealTypographicWebAPI.Models.LogReport
 {
     /// <summary>
     /// 操作紀錄
     /// </summary>
     public class OperationLogModel
     {
+        /// <summary>
+        /// 動作類型
+        /// </summary>
+        public ActionType ActionType { get; set; } 
+
         /// <summary>
         /// 客戶Id
         /// </summary>
@@ -16,9 +23,9 @@
         public string CustomerName { get; set; }
 
         /// <summary>
-        /// 公曆用的季度Id
+        /// 客戶印鑑群組Id
         /// </summary>
-        public int QuarterYearId { get; set; }
+        public int CustomerSealGroupId { get; set; }
 
         /// <summary>
         /// 公曆用的季度字串
