@@ -74,12 +74,6 @@ namespace SealTypographicWebAPI.Consts
     public enum ActionType
     {
         /// <summary>
-        /// 登入
-        /// </summary>
-        [Description("登入")]
-        Login = 0,
-
-        /// <summary>
         /// 客戶資料查詢
         /// </summary>
         [Description("客戶資料查詢")]
@@ -112,7 +106,13 @@ namespace SealTypographicWebAPI.Consts
         /// <summary>
         /// 登入
         /// </summary>
+        [Description("登入")]
+        Login = 10,
+
+        /// <summary>
+        /// 登入
+        /// </summary>
         [Description("登出")]
-        Logout = 6,
+        Logout = 11,
     }
 }

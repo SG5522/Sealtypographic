@@ -5,8 +5,12 @@ using DBEntities;
 using DBEntities.Consts;
 using DBEntities.Entities.TypographicModels;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
+using MongoDB.Driver;
 using SealTypographicWebAPI.Models;
 using SealTypographicWebAPI.Models.LogReport;
+using SealTypographicWebAPI.Models.MongoDBEntities;
+using SealTypographicWebAPI.Models.MongoDBModel;
 using SealTypographicWebAPI.Utils;
 
 namespace SealTypographicWebAPI.Services.Implements
@@ -20,6 +24,8 @@ namespace SealTypographicWebAPI.Services.Implements
         private readonly ILogger<LogReportService> logger;
         private readonly IMapper mapper;
         private readonly AutoMapper.IConfigurationProvider configurationProvider;
+        private readonly IMongoDatabase database;
+        private readonly IMongoCollection<OperationLog> operationLog;
         //private readonly IAdminService adminService;
 
         /// <summary>
@@ -34,28 +40,33 @@ namespace SealTypographicWebAPI.Services.Implements
             this.logger = logger;
             this.mapper = mapper;
             configurationProvider = mapper.ConfigurationProvider;
+
             //this.adminService = adminService;
         }
 
         /// <summary>
         /// 操作紀錄(傳到MongoDB)
-        /// </summary>
-        /// <param name="operationLogModel"></param>
-        /// <param name="logModelBase"></param>
+        /// </summary>        
+        /// <param name="operationLogForm"></param>
+        /// <param name="userName"></param>
+        /// <param name="userId"></param>
         /// <returns></returns>
-        public void SaveOperationLog(OperationLogModel operationLogModel, LogModel logModelBase)
+        public void SaveOperationLog(OperationLogForm operationLogForm, string userName = "test", string userId = "test")
         {
-            LogModel<OperationLogModel> logModel = new()
+            LogModel<OperationLogForm> logModel = new()
             {
-                Data = operationLogModel,
+                Data = operationLogForm,
                 DateTime = DateTime.Now,
-                OperateType = logModelBase.OperateType,
-                FunctionType = FunctionType.SealTypographic,
-                LogLevel = logModelBase.LogLevel,
+                OperateType = OperateType.Search,
+                FunctionType = FunctionType.SealTypographic,                     
+                LogLevel = CommonLib.Enums.LogLevel.Info,
                 SystemType = SystemType.SealTypographic,
-                UserId = logModelBase.UserId,
-                UserName = logModelBase.UserName
-            };            
+                UserId = userId,
+                UserName = userName,                
+            };
+            
+            OperationLog operationLog = OperationLog.MapFrom(logModel);
+
         }
 
         /// <summary>
