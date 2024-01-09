@@ -2,6 +2,7 @@
 using AutoMapper.QueryableExtensions;
 using DBEntities;
 using DBEntities.Consts;
+using DBEntities.Entities;
 using SealTypographicWebAPI.Models.QuarterYear;
 
 namespace SealTypographicWebAPI.Services.Implements
@@ -32,14 +33,14 @@ namespace SealTypographicWebAPI.Services.Implements
         public QuarterResponse GetQuarters()
         {
             QuarterResponse result = new();
-
+            ReNewQuarterYear();
             IQueryable<QuarterViewModel> quarterQuery = dbContext.QuarterYears
                                                         .Where(x => x.Type == TypographyType.FinancialReport)
                                                         .OrderByDescending(x => x.Id)                                                                        
                                                         .ProjectTo<QuarterViewModel>(configurationProvider);
 
             if(quarterQuery.Any())
-            {
+            {                
                 result.Quarters = quarterQuery.ToList();
                 result.Success();
             }
@@ -58,7 +59,7 @@ namespace SealTypographicWebAPI.Services.Implements
         public YearResponse GetYears()
         {
             YearResponse result = new();
-
+            ReNewQuarterYear();
             IQueryable<YearViewModel> yearQuery = dbContext.QuarterYears
                                                 .Where(x => x.Type == TypographyType.TaxReport)
                                                 .OrderByDescending(x => x.Id)                                                                
@@ -75,6 +76,38 @@ namespace SealTypographicWebAPI.Services.Implements
             }
 
             return result;
+        }
+        
+        private void ReNewQuarterYear()
+        {
+            int year = DateTime.Now.Year;
+            IQueryable<QuarterYear> quarterYears = dbContext.QuarterYears.Where(x => x.GregorianYear == year);
+
+            if(!quarterYears.Any())
+            {
+                List<QuarterYear> quarters = new();
+                //(財報季度列表)
+                for (int period = 1; period <= 4; period++)
+                {
+                    QuarterYear quarter = new()
+                    {
+                        GregorianYear = year,
+                        Period = $"Q{period}",
+                        Type = TypographyType.FinancialReport
+                    };
+                    quarters.Add(quarter);
+                }
+
+                QuarterYear quarterYear = new()
+                {
+                    GregorianYear = year,
+                    Type = TypographyType.TaxReport
+                };
+                quarters.Add(quarterYear);
+
+                dbContext.QuarterYears.AddRange(quarters);
+                dbContext.SaveChanges();
+            }
         }
     }
 }

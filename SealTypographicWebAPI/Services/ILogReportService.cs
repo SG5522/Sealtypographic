@@ -17,5 +17,14 @@ namespace SealTypographicWebAPI.Services
         /// <param name="userId"></param>
         /// <returns></returns>
         TypographicReportPaginate GetTypographicReport(TypographicReportSearch customerTypoReportSearch, TypographyType typographyType, int userId = 1);
+
+        /// <summary>
+        /// 儲存操作紀錄
+        /// </summary>
+        /// <param name="operationLogForm"></param>
+        /// <param name="userName"></param>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        Task SaveOperationLog(OperationLogForm operationLogForm, string userName = "test", string userId = "test");
     }
 }

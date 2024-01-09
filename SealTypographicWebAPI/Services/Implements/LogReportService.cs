@@ -7,9 +7,10 @@ using DBEntities.Entities.TypographicModels;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
+using SealTypographicWebAPI.Config;
+using SealTypographicWebAPI.Consts;
 using SealTypographicWebAPI.Models;
 using SealTypographicWebAPI.Models.LogReport;
-using SealTypographicWebAPI.Models.MongoDBEntities;
 using SealTypographicWebAPI.Models.MongoDBModel;
 using SealTypographicWebAPI.Utils;
 
@@ -23,8 +24,7 @@ namespace SealTypographicWebAPI.Services.Implements
         private readonly SealTypographicDbContext dbContext;
         private readonly ILogger<LogReportService> logger;
         private readonly IMapper mapper;
-        private readonly AutoMapper.IConfigurationProvider configurationProvider;
-        private readonly IMongoDatabase database;
+        private readonly AutoMapper.IConfigurationProvider configurationProvider;        
         private readonly IMongoCollection<OperationLog> operationLog;
         //private readonly IAdminService adminService;
 
@@ -34,13 +34,16 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <param name="dbContext"></param>        
         /// <param name="logger"></param>
         /// <param name="mapper"></param>
-        public LogReportService (SealTypographicDbContext dbContext, ILogger<LogReportService> logger, IMapper mapper)
+        /// <param name="options"></param>
+        public LogReportService(SealTypographicDbContext dbContext, ILogger<LogReportService> logger, IMapper mapper, IOptionsMonitor<LogDatabaseOptions> options)
         {
             this.dbContext = dbContext;
             this.logger = logger;
             this.mapper = mapper;
             configurationProvider = mapper.ConfigurationProvider;
-
+            MongoClient mongoClient = new (options.CurrentValue.ConnectionString);
+            IMongoDatabase mongoDatabase = mongoClient.GetDatabase(options.CurrentValue.DatabaseName);
+            operationLog = mongoDatabase.GetCollection<OperationLog>(LogDataBaseCollectionConsts.OperationLog);
             //this.adminService = adminService;
         }
 
@@ -51,7 +54,7 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <param name="userName"></param>
         /// <param name="userId"></param>
         /// <returns></returns>
-        public void SaveOperationLog(OperationLogForm operationLogForm, string userName = "test", string userId = "test")
+        public async Task SaveOperationLog(OperationLogForm operationLogForm, string userName = "test", string userId = "test")
         {
             LogModel<OperationLogForm> logModel = new()
             {
@@ -62,12 +65,12 @@ namespace SealTypographicWebAPI.Services.Implements
                 LogLevel = CommonLib.Enums.LogLevel.Info,
                 SystemType = SystemType.SealTypographic,
                 UserId = userId,
-                UserName = userName,                
-            };
-            
-            OperationLog operationLog = OperationLog.MapFrom(logModel);
-
+                UserName = userName,
+            };            
+            await operationLog.InsertOneAsync(OperationLog.MapFrom(logModel));            
         }
+
+        
 
         /// <summary>
         /// 

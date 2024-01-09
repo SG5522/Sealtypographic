@@ -1,7 +1,8 @@
-﻿using CommonLib.Models;
+﻿using CommonLib.Enums;
+using CommonLib.Models;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
-using SealTypographicWebAPI.Models.MongoDBEntities;
+using SealTypographicWebAPI.Models.LogReport;
 
 namespace SealTypographicWebAPI.Models.MongoDBModel
 {

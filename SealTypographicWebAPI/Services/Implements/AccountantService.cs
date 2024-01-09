@@ -9,6 +9,8 @@ using DBEntities.Entities.AccountantModels;
 using DBEntities.Entities;
 using DBEntities;
 using CommonLib.Models;
+using SealTypographicWebAPI.Consts;
+using SealTypographicWebAPI.Models.LogReport;
 
 namespace SealTypographicWebAPI.Services.Implements
 {
@@ -21,6 +23,7 @@ namespace SealTypographicWebAPI.Services.Implements
         private readonly IMapper mapper;
         private readonly AutoMapper.IConfigurationProvider configurationProvider;
         private readonly ILogger<AccountantService> logger;
+        private readonly ILogReportService logReportService;
 
         /// <summary>
         /// 注入DB與Mapper
@@ -28,12 +31,14 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <param name="dbContext"></param>
         /// <param name="mapper"></param>
         /// <param name="logger"></param>
-        public AccountantService(SealTypographicDbContext dbContext, IMapper mapper, ILogger<AccountantService> logger)
+        /// <param name="logReportService"></param>
+        public AccountantService(SealTypographicDbContext dbContext, IMapper mapper, ILogger<AccountantService> logger, ILogReportService logReportService)
         {
             this.dbContext = dbContext;
             this.mapper = mapper;
             configurationProvider = mapper.ConfigurationProvider;
             this.logger = logger;
+            this.logReportService = logReportService;
         }
 
         ///<inheritdoc />
@@ -55,6 +60,12 @@ namespace SealTypographicWebAPI.Services.Implements
                 {
                     accountantResponse.AccountantDetailViewModel = accountantDetailViewModel;
                     accountantResponse.Success();
+                    logReportService.SaveOperationLog(new OperationLogForm
+                    {
+                        ActionType = ActionType.AccountantQuery,
+                        AccountantId = accountantDetailViewModel.Id,
+                        AccountantName = accountantDetailViewModel.Name
+                    });
                 }
                 else
                 {
@@ -64,7 +75,7 @@ namespace SealTypographicWebAPI.Services.Implements
                 {
                     Data = accountantResponse
                 };
-                logger.LogInformation("GetDetail output {@output}", accountantResponse);                
+                logger.LogInformation("GetDetail output {@output}", accountantResponse);
             }
             catch (Exception ex) 
             {

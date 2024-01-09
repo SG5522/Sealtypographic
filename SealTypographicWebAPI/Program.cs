@@ -44,6 +44,9 @@ builder.Services.Configure<TypographyEditImagePathOptions>(
 builder.Services.Configure<KeycloakOptions>(
     builder.Configuration.GetSection("KeycloakAdmin"));
 
+builder.Services.Configure<LogDatabaseOptions>(
+    builder.Configuration.GetSection("LogDatabase"));
+
 KeycloakAuthenticationOptions keycloakAuthenticationOptions = new();
 
 builder.Configuration
