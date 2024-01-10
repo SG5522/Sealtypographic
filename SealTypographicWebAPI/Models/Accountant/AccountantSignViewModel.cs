@@ -1,5 +1,6 @@
 ﻿using DBEntities.Consts;
 using SealTypographicWebAPI.Models.BaseModels;
+using System.Text.Json.Serialization;
 
 namespace SealTypographicWebAPI.Models.Accountant
 {
@@ -43,6 +44,20 @@ namespace SealTypographicWebAPI.Models.Accountant
         /// 審核狀態
         /// </summary>
         public ReviewStatus ReviewStatus { get; set; }
+
+        //--------------log Save Date-------------//
+        /// <summary>
+        /// 會計師id
+        /// </summary>
+        [JsonIgnore]
+        public int AccountantId { get; set; }
+
+        /// <summary>
+        /// 會計師姓名
+        /// </summary>
+        [JsonIgnore]
+        public string AccountantName { get; set; }
+        //--------------log Save Date-------------//
 
         /// <summary>
         /// 會計師印鑑簽名組

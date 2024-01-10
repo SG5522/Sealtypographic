@@ -8,8 +8,8 @@ using AutoMapper.QueryableExtensions;
 using DBEntities;
 using DBEntities.Entities.TypographicModels;
 using DBEntities.Entities.AccountantModels;
-using DJImageLib.Utils;
 using SealTypographicWebAPI.Consts;
+using SealTypographicWebAPI.Models.LogReport;
 
 namespace SealTypographicWebAPI.Services.Implements
 {
@@ -23,6 +23,7 @@ namespace SealTypographicWebAPI.Services.Implements
         private readonly IMapper mapper;   
         private readonly AutoMapper.IConfigurationProvider configurationProvider;
         private readonly ILogger<AcoountantSignService> logger;
+        private readonly ILogReportService logReportService;
 
         /// <summary>
         /// 取得DB與ResponseService
@@ -30,14 +31,16 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <param name="dbContext"></param>        
         /// <param name="mapper"></param>
         /// <param name="imageService"></param>
-        /// <param name="logger"></param>                
-        public AcoountantSignService(SealTypographicDbContext dbContext, IMapper mapper, ImageService imageService, ILogger<AcoountantSignService> logger)
+        /// <param name="logger"></param>
+        /// <param name="logReportService"></param>                
+        public AcoountantSignService(SealTypographicDbContext dbContext, IMapper mapper, ImageService imageService, ILogger<AcoountantSignService> logger, ILogReportService logReportService)
         {
             this.dbContext = dbContext;            
             this.mapper = mapper;
             configurationProvider = mapper.ConfigurationProvider;
             this.imageService = imageService;            
             this.logger = logger;
+            this.logReportService = logReportService;
         }
 
         ///<inheritdoc />
@@ -89,6 +92,7 @@ namespace SealTypographicWebAPI.Services.Implements
             try
             {
                 accountantSignViewModels = dbContext.AccountantSignGroups
+                                            .Include(x => x.Accountant)
                                             .Include(x => x.TypographicResources)
                                             .ProjectTo<AccountantSignViewModels>(configurationProvider)
                                             .FirstOrDefault(x => x.AccountantSignGroupId == accountantSignGroupId);
@@ -103,6 +107,14 @@ namespace SealTypographicWebAPI.Services.Implements
                         }
                     }
                     accountantSignViewModels.Success();
+                    logReportService.SaveOperationLog(new OperationLogForm
+                    {
+                        ActionType = ActionType.AccountantQuery,
+                        AccountantId = accountantSignViewModels.AccountantId,
+                        AccountantName = accountantSignViewModels.AccountantName,
+                        AccountantSignGroupId = accountantSignViewModels.AccountantSignGroupId,
+                        AccountantSignGroupCreateDate = accountantSignViewModels.GroupCreateDate
+                    });
                 }
                 else
                 {

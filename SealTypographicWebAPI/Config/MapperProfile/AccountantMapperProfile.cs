@@ -79,6 +79,10 @@ namespace SealTypographicWebAPI.Config.MapperProfile
                     .ForMember(dst => dst.AccountantSignGroupId, opt => opt.MapFrom(src => src.Id))
                     .ForMember(dst => dst.GroupCreateDate, opt => opt.MapFrom(src => src.CreateDate))
                     .ForMember(dst => dst.ReviewStatus, opt => opt.MapFrom(src => src.ReviewStatus))
+                    //--Log Save--//
+                    .ForMember(dst => dst.AccountantId, opt => opt.MapFrom(src => src.Accountant.Id))
+                    .ForMember(dst => dst.AccountantName, opt => opt.MapFrom(src => src.Accountant.Name))
+                    //--Log Save--//
                     .ForMember(dst => dst.SignViewModels, opt => opt.MapFrom(src => src.TypographicResources.Where(x => x.DeleteStatus == DeleteStatus.No)));
 
             CreateMap<TypographicResource, AccountantSignViewModel>()

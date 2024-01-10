@@ -9,7 +9,6 @@ using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 using SealTypographicWebAPI.Config;
 using SealTypographicWebAPI.Consts;
-using SealTypographicWebAPI.Models;
 using SealTypographicWebAPI.Models.LogReport;
 using SealTypographicWebAPI.Models.MongoDBModel;
 using SealTypographicWebAPI.Utils;
@@ -25,8 +24,7 @@ namespace SealTypographicWebAPI.Services.Implements
         private readonly ILogger<LogReportService> logger;
         private readonly IMapper mapper;
         private readonly AutoMapper.IConfigurationProvider configurationProvider;        
-        private readonly IMongoCollection<OperationLog> operationLog;
-        //private readonly IAdminService adminService;
+        private readonly IMongoCollection<OperationLog> operationLog;        
 
         /// <summary>
         /// 建置
@@ -41,10 +39,10 @@ namespace SealTypographicWebAPI.Services.Implements
             this.logger = logger;
             this.mapper = mapper;
             configurationProvider = mapper.ConfigurationProvider;
+            //MongoDb連線
             MongoClient mongoClient = new (options.CurrentValue.ConnectionString);
             IMongoDatabase mongoDatabase = mongoClient.GetDatabase(options.CurrentValue.DatabaseName);
-            operationLog = mongoDatabase.GetCollection<OperationLog>(LogDataBaseCollectionConsts.OperationLog);
-            //this.adminService = adminService;
+            operationLog = mongoDatabase.GetCollection<OperationLog>(LogDataBaseCollectionConsts.OperationLog);            
         }
 
         /// <summary>
@@ -116,9 +114,6 @@ namespace SealTypographicWebAPI.Services.Implements
 
                 if (typographicPDFQuery.Any())
                 {
-                    List<TypographicReportViewModel> typographicReportViewModels = PageUtil.SetPaginateViewModel<TypographicPDF, TypographicReportViewModel>
-                                                                                    (typographicPDFQuery, customerTypoReportSearch.PageNumber, customerTypoReportSearch.PageSize, configurationProvider);
-
 
                     customerTypoReportPaginate.ViewModels = PageUtil.SetPaginateViewModel<TypographicPDF, TypographicReportViewModel>
                                                             (typographicPDFQuery, customerTypoReportSearch.PageNumber, customerTypoReportSearch.PageSize, configurationProvider);
