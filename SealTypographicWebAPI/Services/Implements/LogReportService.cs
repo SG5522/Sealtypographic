@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using CommonLib.Enums;
 using CommonLib.Models;
 using DBEntities;
@@ -6,12 +7,16 @@ using DBEntities.Consts;
 using DBEntities.Entities.TypographicModels;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using MongoDB.Bson;
 using MongoDB.Driver;
+using MongoDB.Driver.Linq;
 using SealTypographicWebAPI.Config;
 using SealTypographicWebAPI.Consts;
+using SealTypographicWebAPI.Models.Accountant;
 using SealTypographicWebAPI.Models.LogReport;
 using SealTypographicWebAPI.Models.MongoDBModel;
 using SealTypographicWebAPI.Utils;
+using System.Linq;
 
 namespace SealTypographicWebAPI.Services.Implements
 {
@@ -24,7 +29,7 @@ namespace SealTypographicWebAPI.Services.Implements
         private readonly ILogger<LogReportService> logger;
         private readonly IMapper mapper;
         private readonly AutoMapper.IConfigurationProvider configurationProvider;        
-        private readonly IMongoCollection<OperationLog> operationLog;        
+        private IMongoCollection<OperationLog> operationLog;        
 
         /// <summary>
         /// 建置
@@ -42,21 +47,34 @@ namespace SealTypographicWebAPI.Services.Implements
             //MongoDb連線
             MongoClient mongoClient = new (options.CurrentValue.ConnectionString);
             IMongoDatabase mongoDatabase = mongoClient.GetDatabase(options.CurrentValue.DatabaseName);
-            operationLog = mongoDatabase.GetCollection<OperationLog>(LogDataBaseCollectionConsts.OperationLog);            
+            Init(mongoDatabase);            
+        }
+
+        private void Init(IMongoDatabase mongoDatabase)
+        {
+            if (!mongoDatabase.ListCollections(new ListCollectionsOptions { Filter = new BsonDocument("name", LogDbCollectionNames.OperationLog) }).Any())
+            {
+                mongoDatabase.CreateCollection(LogDbCollectionNames.OperationLog,
+                    new CreateCollectionOptions
+                    {
+                        TimeSeriesOptions = new TimeSeriesOptions("DateTime")
+                    });
+            }
+            operationLog = mongoDatabase.GetCollection<OperationLog>(LogDbCollectionNames.OperationLog);
         }
 
         /// <summary>
         /// 操作紀錄(傳到MongoDB)
         /// </summary>        
-        /// <param name="operationLogForm"></param>
+        /// <param name="operationLogSave"></param>
         /// <param name="userName"></param>
         /// <param name="userId"></param>
         /// <returns></returns>
-        public async Task SaveOperationLog(OperationLogForm operationLogForm, string userName = "test", string userId = "test")
+        public async Task SaveOperationLog(OperationLogSave operationLogSave, string userName = "test", string userId = "test")
         {
-            LogModel<OperationLogForm> logModel = new()
+            LogModel<OperationLogSave> logModel = new()
             {
-                Data = operationLogForm,
+                Data = operationLogSave,
                 DateTime = DateTime.Now,
                 OperateType = OperateType.Search,
                 FunctionType = FunctionType.SealTypographic,                     
@@ -65,9 +83,58 @@ namespace SealTypographicWebAPI.Services.Implements
                 UserId = userId,
                 UserName = userName,
             };            
-            await operationLog.InsertOneAsync(OperationLog.MapFrom(logModel));            
+            await operationLog.InsertOneAsync(OperationLog.MapFrom(logModel));
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public OperationLogPaginate OperationLogPaginate(OperationLogSearch operationLogSearch)
+        {
+            OperationLogPaginate operationLogPaginate = new();
+
+            logger.LogInformation("OperationLogPaginate input operationLogSearch: {@operationLogSearch}", operationLogSearch);
+
+            IQueryable<OperationLog> operationLogQuery = operationLog.AsQueryable().Where
+                                                        (
+                                                            x => x.DateTime >= operationLogSearch.StartDate 
+                                                            && x.DateTime < operationLogSearch.EndDate                                                            
+                                                        );
+
+            if (operationLogSearch.ActionType != 0)
+            {
+                operationLogQuery = operationLogQuery.Where(x => x.Data!.ActionType == operationLogSearch.ActionType);
+            }
+
+            if (!string.IsNullOrWhiteSpace(operationLogSearch.KeyWord))
+            {
+                operationLogQuery = operationLogQuery.Where(x => x.UserId.ToUpper().Contains(operationLogSearch.KeyWord.ToUpper())
+                                                            || x.UserName.ToUpper().Contains(operationLogSearch.KeyWord.ToUpper()));
+            }
+
+            if(!string.IsNullOrWhiteSpace(operationLogSearch.ObjectName))
+            {
+                operationLogQuery = operationLogQuery.Where(x => x.Data!.CustomerName.ToUpper().Contains(operationLogSearch.ObjectName.ToUpper())
+                                                            || x.Data!.AccountantName.ToUpper().Contains(operationLogSearch.ObjectName.ToUpper()));
+            }
+
+            if(operationLogQuery.Any())
+            {
+                operationLogPaginate.ViewModels = PageUtil.SetPaginateViewModel<OperationLog, OperationLogViewModel>
+                                                    (operationLogQuery, operationLogSearch.PageNumber, operationLogSearch.PageSize, configurationProvider);
+
+                PageUtil.SetPaginate(operationLogPaginate, operationLogSearch.PageNumber, operationLogSearch.PageSize, operationLogQuery.Count());
+
+                operationLogPaginate.Success();
+            }
+            else
+            {
+                operationLogPaginate.DbNoData();
+            }
+
+            return operationLogPaginate;
+        }
         
 
         /// <summary>
@@ -139,20 +206,22 @@ namespace SealTypographicWebAPI.Services.Implements
         /// 操作紀錄(傳到MongoDB)
         /// </summary>
         /// <param name="data"></param>
+        /// <param name="userName"></param>
+        /// <param name="userId"></param>
         /// <param name="log"></param>
         /// <returns></returns>
-        public void SaveCustomizeLog<T>(T data, LogModel log)
+        public void SaveCustomizeLog<T>(T data, string userName = "test", string userId = "test")
         {
             LogModel<T> logModel = new()
             {
                 Data = data,
                 SystemType = SystemType.SealTypographic,
-                OperateType = log.OperateType,
+                OperateType = OperateType.Search,
                 FunctionType = FunctionType.SealTypographic,                                
-                LogLevel = log.LogLevel,
-                DateTime = log.DateTime,                          
-                UserId = log.UserId,
-                UserName = log.UserName
+                LogLevel = CommonLib.Enums.LogLevel.Info,
+                DateTime = DateTime.Now,                          
+                UserId = userId,
+                UserName = userName
             };
         }
     }

@@ -5,7 +5,7 @@ namespace SealTypographicWebAPI.Models.LogReport
     /// <summary>
     /// 操作紀錄
     /// </summary>
-    public class OperationLogForm
+    public class OperationLogSave
     {
         /// <summary>
         /// 動作類型

@@ -3,7 +3,7 @@
     /// <summary>
     /// 
     /// </summary>
-    public class LogDataBaseCollectionConsts
+    public class LogDbCollectionNames
     {
         /// <summary>
         /// 

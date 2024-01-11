@@ -25,6 +25,14 @@ namespace SealTypographicWebAPI.Services
         /// <param name="userName"></param>
         /// <param name="userId"></param>
         /// <returns></returns>
-        Task SaveOperationLog(OperationLogForm operationLogForm, string userName = "test", string userId = "test");
+        Task SaveOperationLog(OperationLogSave operationLogForm, string userName = "test", string userId = "test");
+
+
+        /// <summary>
+        /// 取得操作紀錄
+        /// </summary>
+        /// <param name="operationLogSearch"></param>
+        /// <returns></returns>
+        OperationLogPaginate OperationLogPaginate(OperationLogSearch operationLogSearch);
     }
 }

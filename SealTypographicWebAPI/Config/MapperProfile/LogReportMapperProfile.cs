@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using DBEntities.Entities.TypographicModels;
 using SealTypographicWebAPI.Models.LogReport;
-using System.Linq;
+using SealTypographicWebAPI.Models.MongoDBModel;
 
 namespace SealTypographicWebAPI.Config.MapperProfile
 {
@@ -28,8 +28,19 @@ namespace SealTypographicWebAPI.Config.MapperProfile
                     .ForMember(dst => dst.RecordDate, opt => opt.MapFrom(src => src.UpdateDate))
                     .ForMember(dst => dst.EditFileName, opt => opt.MapFrom(src => src.OriginFileName))
                     .ForMember(dst => dst.EditPageCount, opt => opt.MapFrom(src => src.TypographicPages.Where(x => x.BlankCheck == false).Count()))
-                    .ForMember(dst => dst.BlankPageCount, opt => opt.MapFrom(src => src.TypographicPages.Where(x => x.BlankCheck == true).Count()))
-                    ;
+                    .ForMember(dst => dst.BlankPageCount, opt => opt.MapFrom(src => src.TypographicPages.Where(x => x.BlankCheck == true).Count()));
+
+            //操作紀錄Map
+            CreateMap<OperationLog, OperationLogViewModel>()
+                    .ForMember(dst => dst.ActionType, opt => opt.MapFrom(src => src.Data!.ActionType))
+                    .ForMember(dst => dst.CustomerId, opt => opt.MapFrom(src => src.Data!.CustomerId))
+                    .ForMember(dst => dst.CustomerName, opt => opt.MapFrom(src => src.Data!.CustomerName))
+                    .ForMember(dst => dst.CustomerSealGroupId, opt => opt.MapFrom(src => src.Data!.CustomerSealGroupId))
+                    .ForMember(dst => dst.AccountantId, opt => opt.MapFrom(src => src.Data!.AccountantId))
+                    .ForMember(dst => dst.AccountantName, opt => opt.MapFrom(src => src.Data!.AccountantName))
+                    .ForMember(dst => dst.AccountantSignGroupId, opt => opt.MapFrom(src => src.Data!.AccountantSignGroupId))
+                    .ForMember(dst => dst.AccountantSignGroupCreateDate, opt => opt.MapFrom(src => src.Data!.AccountantSignGroupCreateDate))
+                    .ForMember(dst => dst.GregorainQuarter, opt => opt.MapFrom(src => src.Data!.GregorainQuarter));
         }
     }
 }

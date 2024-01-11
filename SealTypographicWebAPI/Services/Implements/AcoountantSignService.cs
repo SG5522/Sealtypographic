@@ -107,7 +107,7 @@ namespace SealTypographicWebAPI.Services.Implements
                         }
                     }
                     accountantSignViewModels.Success();
-                    logReportService.SaveOperationLog(new OperationLogForm
+                    logReportService.SaveOperationLog(new OperationLogSave
                     {
                         ActionType = ActionType.AccountantQuery,
                         AccountantId = accountantSignViewModels.AccountantId,

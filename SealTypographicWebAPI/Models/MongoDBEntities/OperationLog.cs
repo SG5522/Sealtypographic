@@ -9,7 +9,7 @@ namespace SealTypographicWebAPI.Models.MongoDBModel
     /// <summary>
     /// 
     /// </summary>
-    public class OperationLog : LogModel<OperationLogForm>
+    public class OperationLog : LogModel<OperationLogSave>
     {
         /// <summary>
         /// 
@@ -24,7 +24,7 @@ namespace SealTypographicWebAPI.Models.MongoDBModel
         /// <param name="logModel"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"></exception>
-        public static OperationLog MapFrom(LogModel<OperationLogForm> logModel)
+        public static OperationLog MapFrom(LogModel<OperationLogSave> logModel)
         {
             if (logModel == null) throw new ArgumentNullException(nameof(logModel));
 

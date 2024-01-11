@@ -26,6 +26,15 @@ namespace SealTypographicWebAPI.Controllers
 
 
         /// <summary>
+        /// 取得操作紀錄
+        /// </summary>
+        /// <param name="operationLogSearch"></param>
+        /// <returns></returns>
+        [HttpGet("[Action]")]
+        public OperationLogPaginate OperationLog([FromQuery] OperationLogSearch operationLogSearch)
+            => logReportService.OperationLogPaginate(operationLogSearch);
+
+        /// <summary>
         /// 取得財報排版紀錄
         /// </summary>
         /// <param name="customerTypoReportSearch"></param>
