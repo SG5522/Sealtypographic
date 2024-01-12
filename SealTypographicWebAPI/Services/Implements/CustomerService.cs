@@ -10,6 +10,8 @@ using DBEntities.Entities;
 using DBEntities;
 using DBEntities.Entities.CustomerModels;
 using DBEntities.Utils;
+using SealTypographicWebAPI.Consts;
+using SealTypographicWebAPI.Models.LogReport;
 
 namespace SealTypographicWebAPI.Services.Implements
 {
@@ -22,6 +24,7 @@ namespace SealTypographicWebAPI.Services.Implements
         private readonly IMapper mapper;
         private readonly AutoMapper.IConfigurationProvider configurationProvider;
         private readonly ILogger<CustomerService> logger;
+        private readonly ILogReportService logReportService;
 
         /// <summary>
         /// 建構
@@ -29,12 +32,14 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <param name="dbContext"></param>
         /// <param name="mapper"></param>
         /// <param name="logger"></param>
-        public CustomerService(SealTypographicDbContext dbContext, IMapper mapper, ILogger<CustomerService> logger)
+        /// <param name="logReportService"></param>
+        public CustomerService(SealTypographicDbContext dbContext, IMapper mapper, ILogger<CustomerService> logger, ILogReportService logReportService)
         {
             this.dbContext = dbContext;            
             this.mapper = mapper;
             configurationProvider = mapper.ConfigurationProvider;
             this.logger = logger;
+            this.logReportService = logReportService;
         }
 
         ///<inheritdoc />
@@ -54,6 +59,7 @@ namespace SealTypographicWebAPI.Services.Implements
                 {
                     customerDetailViewModel.CustomerDetail = customerDetail;
                     customerDetailViewModel.Success();
+                    logReportService.SaveOperationLog(mapper.Map<OperationLogSave>(customerDetail));                    
                 }
                 else
                 {

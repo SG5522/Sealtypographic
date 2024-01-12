@@ -1,4 +1,5 @@
 ﻿using DBEntities.Consts;
+using System.Text.Json.Serialization;
 
 namespace SealTypographicWebAPI.Models.CustomerSeal
 {
@@ -33,6 +34,26 @@ namespace SealTypographicWebAPI.Models.CustomerSeal
         /// </summary>
         /// <example>0</example>
         public ReviewStatus ReviewStatus { get; set; }
+
+        //-----Log Save-----//
+        /// <summary>
+        /// 客戶Id
+        /// </summary>
+        [JsonIgnore]
+        public int CustomerId { get; set; }
+
+        /// <summary>
+        /// 客戶名稱
+        /// </summary>
+        [JsonIgnore]
+        public string CustomerName { get; set; }
+
+        /// <summary>
+        /// 排版類別
+        /// </summary>
+        [JsonIgnore]
+        public TypographyType TypographyType { get; set; }
+        //-----Log Save-----//
 
         /// <summary>
         /// 客戶印鑑組

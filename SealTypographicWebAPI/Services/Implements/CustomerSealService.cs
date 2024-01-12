@@ -11,6 +11,8 @@ using DBEntities;
 using DBEntities.Entities.TypographicModels;
 using DBEntities.Entities.CustomerModels;
 using DBEntities.Utils;
+using SealTypographicWebAPI.Consts;
+using SealTypographicWebAPI.Models.LogReport;
 
 namespace SealTypographicWebAPI.Services.Implements
 {
@@ -24,6 +26,7 @@ namespace SealTypographicWebAPI.Services.Implements
         private readonly IMapper mapper;
         private readonly AutoMapper.IConfigurationProvider configurationProvider;
         private readonly ILogger<CustomerSealService> logger;
+        private readonly ILogReportService logReportService;
 
         /// <summary>
         /// 建構
@@ -32,13 +35,15 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <param name="mapper"></param>
         /// <param name="imageService"></param>
         /// <param name="logger"></param>
-        public CustomerSealService(SealTypographicDbContext dbContext, IMapper mapper, ImageService imageService, ILogger<CustomerSealService> logger)
+        /// <param name="logReportService"></param>
+        public CustomerSealService(SealTypographicDbContext dbContext, IMapper mapper, ImageService imageService, ILogger<CustomerSealService> logger, ILogReportService logReportService)
         {
             this.dbContext = dbContext;                 
             this.imageService = imageService;                   
             this.logger = logger;
             this.mapper = mapper;
             configurationProvider = mapper.ConfigurationProvider;
+            this.logReportService = logReportService;
         }
 
         ///<inheritdoc />
@@ -243,6 +248,13 @@ namespace SealTypographicWebAPI.Services.Implements
                         }
                     }
                     customerSealViewModels.Success();
+                    logReportService.SaveOperationLog(new OperationLogSave
+                    {
+                        ActionType = customerSealViewModels.TypographyType == TypographyType.FinancialReport ? ActionType.FinancialReportSealQuery : ActionType.TaxReportSealQuery,
+                        CustomerId = customerSealViewModels.CustomerId,
+                        CustomerName = customerSealViewModels.CustomerName,
+                        CustomerSealGroupId = customerSealViewModels.CustomerSealQuarterId
+                    });
                 }
                 else
                 {

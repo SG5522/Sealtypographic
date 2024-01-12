@@ -8,6 +8,8 @@ namespace SealTypographicWebAPI.Models.LogReport
     /// </summary>
     public abstract class LogSearchBase : PaginateViewModel
     {
+        private DateTime endDate;
+
         /// <summary>
         /// 起始日期
         /// </summary>
@@ -18,6 +20,14 @@ namespace SealTypographicWebAPI.Models.LogReport
         /// 結束日期
         /// </summary>
         [Required]
-        public DateTime EndDate { get; set; }
+        public DateTime EndDate
+        {
+            get => endDate;
+            set
+            {
+                // 調整為結束日期的 23:59:59
+                endDate = value.Date.AddDays(1).AddSeconds(-1);
+            }
+        }
     }
 }

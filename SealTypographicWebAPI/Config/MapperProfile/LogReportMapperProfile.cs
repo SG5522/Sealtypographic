@@ -1,5 +1,10 @@
 ﻿using AutoMapper;
+using DBEntities.Consts;
 using DBEntities.Entities.TypographicModels;
+using SealTypographicWebAPI.Consts;
+using SealTypographicWebAPI.Models.Accountant;
+using SealTypographicWebAPI.Models.Customer;
+using SealTypographicWebAPI.Models.CustomerSeal;
 using SealTypographicWebAPI.Models.LogReport;
 using SealTypographicWebAPI.Models.MongoDBModel;
 
@@ -41,6 +46,28 @@ namespace SealTypographicWebAPI.Config.MapperProfile
                     .ForMember(dst => dst.AccountantSignGroupId, opt => opt.MapFrom(src => src.Data!.AccountantSignGroupId))
                     .ForMember(dst => dst.AccountantSignGroupCreateDate, opt => opt.MapFrom(src => src.Data!.AccountantSignGroupCreateDate))
                     .ForMember(dst => dst.GregorainQuarter, opt => opt.MapFrom(src => src.Data!.GregorainQuarter));
+
+            //操作紀錄Map客戶資料
+            CreateMap<CustomerDetail, OperationLogSave>()
+                    .ForMember(dst => dst.ActionType, opt => opt.MapFrom(src => ActionType.CustomerQuery))
+                    .ForMember(dst => dst.CustomerId, opt => opt.MapFrom(src => src.Id))
+                    .ForMember(dst => dst.CustomerName, opt => opt.MapFrom(src => src.Name));                    
+
+            //操作紀錄Map客戶印鑑資料
+            CreateMap<CustomerSealViewModels, OperationLogSave>()
+                    .ForMember(dst => dst.ActionType, opt => opt.MapFrom(src => 
+                        src.TypographyType == TypographyType.FinancialReport ? ActionType.FinancialReportSealQuery : ActionType.TaxReportSealQuery
+                    ));
+
+            //操作紀錄Map會計簽印資料
+            CreateMap<AccountantViewModel, OperationLogSave>()
+                    .ForMember(dst => dst.ActionType, opt => opt.MapFrom(src => ActionType.AccountantQuery))
+                    .ForMember(dst => dst.AccountantId, opt => opt.MapFrom(src => src.Id));
+
+            //操作紀錄Map會計簽印資料
+            CreateMap<AccountantSignViewModels, OperationLogSave>()
+                    .ForMember(dst => dst.ActionType, opt => opt.MapFrom(src => ActionType.AccountantSignQuery))
+                    .ForMember(dst => dst.AccountantSignGroupCreateDate, opt => opt.MapFrom(src => src.GroupCreateDate));
         }
     }
 }

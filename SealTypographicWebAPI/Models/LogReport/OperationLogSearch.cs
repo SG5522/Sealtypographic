@@ -13,7 +13,7 @@ namespace SealTypographicWebAPI.Models.LogReport
         public ActionType? ActionType { get; set; }
 
         /// <summary>
-        /// 
+        /// UserId or UserName
         /// </summary>
         public string? KeyWord { get; set; }
 

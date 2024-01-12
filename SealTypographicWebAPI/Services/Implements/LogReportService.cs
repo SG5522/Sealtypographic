@@ -99,7 +99,7 @@ namespace SealTypographicWebAPI.Services.Implements
             IQueryable<OperationLog> operationLogQuery = operationLog.AsQueryable().Where
                                                         (
                                                             x => x.DateTime >= operationLogSearch.StartDate 
-                                                            && x.DateTime < operationLogSearch.EndDate                                                            
+                                                            && x.DateTime <= operationLogSearch.EndDate                                                            
                                                         );
 
             if (operationLogSearch.ActionType != 0)
@@ -109,14 +109,18 @@ namespace SealTypographicWebAPI.Services.Implements
 
             if (!string.IsNullOrWhiteSpace(operationLogSearch.KeyWord))
             {
-                operationLogQuery = operationLogQuery.Where(x => x.UserId.ToUpper().Contains(operationLogSearch.KeyWord.ToUpper())
-                                                            || x.UserName.ToUpper().Contains(operationLogSearch.KeyWord.ToUpper()));
+                operationLogQuery = operationLogQuery.Where(x => x.UserId.ToLower().Contains(operationLogSearch.KeyWord.ToLower())
+                                                            || x.UserName.ToLower().Contains(operationLogSearch.KeyWord.ToLower()));
             }
 
             if(!string.IsNullOrWhiteSpace(operationLogSearch.ObjectName))
             {
-                operationLogQuery = operationLogQuery.Where(x => x.Data!.CustomerName.ToUpper().Contains(operationLogSearch.ObjectName.ToUpper())
-                                                            || x.Data!.AccountantName.ToUpper().Contains(operationLogSearch.ObjectName.ToUpper()));
+                operationLogQuery = operationLogQuery.Where(x => x.Data != null &&
+                                                                (
+                                                                    x.Data!.CustomerName.ToLower().Contains(operationLogSearch.ObjectName.ToLower())
+                                                                    || x.Data!.AccountantName.ToLower().Contains(operationLogSearch.ObjectName.ToLower())
+                                                                )
+                                                            );                
             }
 
             if(operationLogQuery.Any())
