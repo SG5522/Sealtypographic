@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using AutoMapper.QueryableExtensions;
 using CommonLib.Enums;
 using CommonLib.Models;
 using DBEntities;
@@ -12,11 +11,10 @@ using MongoDB.Driver;
 using MongoDB.Driver.Linq;
 using SealTypographicWebAPI.Config;
 using SealTypographicWebAPI.Consts;
-using SealTypographicWebAPI.Models.Accountant;
-using SealTypographicWebAPI.Models.LogReport;
+using SealTypographicWebAPI.Models.LogReport.OperationLog;
+using SealTypographicWebAPI.Models.LogReport.TypographicReport;
 using SealTypographicWebAPI.Models.MongoDBModel;
 using SealTypographicWebAPI.Utils;
-using System.Linq;
 
 namespace SealTypographicWebAPI.Services.Implements
 {
@@ -52,7 +50,9 @@ namespace SealTypographicWebAPI.Services.Implements
 
         private void Init(IMongoDatabase mongoDatabase)
         {
-            if (!mongoDatabase.ListCollections(new ListCollectionsOptions { Filter = new BsonDocument("name", LogDbCollectionNames.OperationLog) }).Any())
+            ListCollectionsOptions listCollectionsOptions = new ListCollectionsOptions();            
+
+            if (!mongoDatabase.ListCollections(new ListCollectionsOptions { Filter = new BsonDocument("name", LogDbCollectionNames.OperationLog)}).Any())
             {
                 mongoDatabase.CreateCollection(LogDbCollectionNames.OperationLog,
                     new CreateCollectionOptions
@@ -70,20 +70,9 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <param name="userName"></param>
         /// <param name="userId"></param>
         /// <returns></returns>
-        public async Task SaveOperationLog(OperationLogSave operationLogSave, string userName = "test", string userId = "test")
-        {
-            LogModel<OperationLogSave> logModel = new()
-            {
-                Data = operationLogSave,
-                DateTime = DateTime.Now,
-                OperateType = OperateType.Search,
-                FunctionType = FunctionType.SealTypographic,                     
-                LogLevel = CommonLib.Enums.LogLevel.Info,
-                SystemType = SystemType.SealTypographic,
-                UserId = userId,
-                UserName = userName,
-            };            
-            await operationLog.InsertOneAsync(OperationLog.MapFrom(logModel));
+        public async Task SaveOperationLog(OperationLogSave operationLogSave, string userId = "test", string userName = "test")
+        {                        
+            await operationLog.InsertOneAsync(MapFrom<OperationLog, OperationLogSave>(operationLogSave, userId, userName));
         }
 
         /// <summary>
@@ -224,6 +213,23 @@ namespace SealTypographicWebAPI.Services.Implements
                 FunctionType = FunctionType.SealTypographic,                                
                 LogLevel = CommonLib.Enums.LogLevel.Info,
                 DateTime = DateTime.Now,                          
+                UserId = userId,
+                UserName = userName
+            };
+        }
+
+        private static T MapFrom<T, K>(K logSaveData, string userId, string userName) where T : LogModel<K>, new()             
+        {
+            if (logSaveData == null) throw new ArgumentNullException(nameof(logSaveData));
+
+            return new ()
+            {
+                Data = logSaveData,
+                DateTime = DateTime.Now,
+                OperateType = OperateType.Search,
+                FunctionType = FunctionType.SealTypographic,
+                LogLevel = CommonLib.Enums.LogLevel.Info,
+                SystemType = SystemType.SealTypographic,
                 UserId = userId,
                 UserName = userName
             };

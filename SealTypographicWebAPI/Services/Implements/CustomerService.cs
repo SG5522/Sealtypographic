@@ -5,13 +5,11 @@ using SealTypographicWebAPI.Utils;
 using Microsoft.EntityFrameworkCore;
 using DBEntities.Consts;
 using AutoMapper.QueryableExtensions;
-using SealTypographicWebAPI.Models.Accountant;
 using DBEntities.Entities;
 using DBEntities;
 using DBEntities.Entities.CustomerModels;
 using DBEntities.Utils;
-using SealTypographicWebAPI.Consts;
-using SealTypographicWebAPI.Models.LogReport;
+using SealTypographicWebAPI.Models.LogReport.OperationLog;
 
 namespace SealTypographicWebAPI.Services.Implements
 {

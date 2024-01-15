@@ -1,6 +1,6 @@
 ﻿using SealTypographicWebAPI.Consts;
 
-namespace SealTypographicWebAPI.Models.LogReport
+namespace SealTypographicWebAPI.Models.LogReport.OperationLog
 {
     /// <summary>
     /// 操作紀錄

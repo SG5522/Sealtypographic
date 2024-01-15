@@ -5,7 +5,8 @@ using SealTypographicWebAPI.Consts;
 using SealTypographicWebAPI.Models.Accountant;
 using SealTypographicWebAPI.Models.Customer;
 using SealTypographicWebAPI.Models.CustomerSeal;
-using SealTypographicWebAPI.Models.LogReport;
+using SealTypographicWebAPI.Models.LogReport.OperationLog;
+using SealTypographicWebAPI.Models.LogReport.TypographicReport;
 using SealTypographicWebAPI.Models.MongoDBModel;
 
 namespace SealTypographicWebAPI.Config.MapperProfile
@@ -62,7 +63,8 @@ namespace SealTypographicWebAPI.Config.MapperProfile
             //操作紀錄Map會計簽印資料
             CreateMap<AccountantViewModel, OperationLogSave>()
                     .ForMember(dst => dst.ActionType, opt => opt.MapFrom(src => ActionType.AccountantQuery))
-                    .ForMember(dst => dst.AccountantId, opt => opt.MapFrom(src => src.Id));
+                    .ForMember(dst => dst.AccountantId, opt => opt.MapFrom(src => src.Id))
+                    .ForMember(dst => dst.AccountantName, opt => opt.MapFrom(src => src.Name));
 
             //操作紀錄Map會計簽印資料
             CreateMap<AccountantSignViewModels, OperationLogSave>()

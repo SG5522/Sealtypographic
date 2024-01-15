@@ -1,6 +1,6 @@
 ﻿using SealTypographicWebAPI.Models.BaseModels;
 
-namespace SealTypographicWebAPI.Models.LogReport
+namespace SealTypographicWebAPI.Models.LogReport.TypographicReport
 {
     /// <summary>
     /// 客戶財稅報排版紀錄列表

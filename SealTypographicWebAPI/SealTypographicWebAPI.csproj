@@ -33,7 +33,7 @@
     <PackageReference Include="AspNetCore.HealthChecks.UI.InMemory.Storage" Version="7.0.0" />
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
     <PackageReference Include="DJCommonLib" Version="6.0.6" />
-    <PackageReference Include="DJImageLib" Version="6.0.5" />	  
+    <PackageReference Include="DJImageLib" Version="6.0.6" />	  
 	<PackageReference Include="DJKeycloakAPI" Version="6.0.11" CopyDirectory="lib\net6.0\**\*.*" />	  
 	<PackageReference Include="DJKeycloakLib" Version="6.0.7" CopyDirectory="lib\net6.0\**\*.*" />	  
     <PackageReference Include="Keycloak.AuthServices.Authentication" Version="1.6.0" />

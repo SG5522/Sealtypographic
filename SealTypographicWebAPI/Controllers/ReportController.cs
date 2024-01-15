@@ -1,6 +1,7 @@
 ﻿using DBEntities.Consts;
 using Microsoft.AspNetCore.Mvc;
-using SealTypographicWebAPI.Models.LogReport;
+using SealTypographicWebAPI.Models.LogReport.OperationLog;
+using SealTypographicWebAPI.Models.LogReport.TypographicReport;
 using SealTypographicWebAPI.Services;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860

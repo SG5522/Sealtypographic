@@ -12,7 +12,7 @@ using DBEntities.Entities.TypographicModels;
 using DBEntities.Entities.CustomerModels;
 using DBEntities.Utils;
 using SealTypographicWebAPI.Consts;
-using SealTypographicWebAPI.Models.LogReport;
+using SealTypographicWebAPI.Models.LogReport.OperationLog;
 
 namespace SealTypographicWebAPI.Services.Implements
 {
@@ -248,13 +248,7 @@ namespace SealTypographicWebAPI.Services.Implements
                         }
                     }
                     customerSealViewModels.Success();
-                    logReportService.SaveOperationLog(new OperationLogSave
-                    {
-                        ActionType = customerSealViewModels.TypographyType == TypographyType.FinancialReport ? ActionType.FinancialReportSealQuery : ActionType.TaxReportSealQuery,
-                        CustomerId = customerSealViewModels.CustomerId,
-                        CustomerName = customerSealViewModels.CustomerName,
-                        CustomerSealGroupId = customerSealViewModels.CustomerSealQuarterId
-                    });
+                    logReportService.SaveOperationLog(mapper.Map<OperationLogSave>(customerSealViewModels));
                 }
                 else
                 {

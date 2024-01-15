@@ -10,6 +10,8 @@ using DBEntities.Entities.TypographicModels;
 using DBEntities.Entities.AccountantModels;
 using SealTypographicWebAPI.Consts;
 using SealTypographicWebAPI.Models.LogReport;
+using SealTypographicWebAPI.Models.Customer;
+using SealTypographicWebAPI.Models.LogReport.OperationLog;
 
 namespace SealTypographicWebAPI.Services.Implements
 {
@@ -107,14 +109,8 @@ namespace SealTypographicWebAPI.Services.Implements
                         }
                     }
                     accountantSignViewModels.Success();
-                    logReportService.SaveOperationLog(new OperationLogSave
-                    {
-                        ActionType = ActionType.AccountantQuery,
-                        AccountantId = accountantSignViewModels.AccountantId,
-                        AccountantName = accountantSignViewModels.AccountantName,
-                        AccountantSignGroupId = accountantSignViewModels.AccountantSignGroupId,
-                        AccountantSignGroupCreateDate = accountantSignViewModels.GroupCreateDate
-                    });
+
+                    logReportService.SaveOperationLog(mapper.Map<OperationLogSave>(accountantSignViewModels));
                 }
                 else
                 {

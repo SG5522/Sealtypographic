@@ -2,7 +2,7 @@
 using CommonLib.Models;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
-using SealTypographicWebAPI.Models.LogReport;
+using SealTypographicWebAPI.Models.LogReport.OperationLog;
 
 namespace SealTypographicWebAPI.Models.MongoDBModel
 {
@@ -17,28 +17,5 @@ namespace SealTypographicWebAPI.Models.MongoDBModel
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
         public string? Id { get; set; }
-
-        /// <summary>
-        /// OperationLog AutoMap
-        /// </summary>
-        /// <param name="logModel"></param>
-        /// <returns></returns>
-        /// <exception cref="ArgumentNullException"></exception>
-        public static OperationLog MapFrom(LogModel<OperationLogSave> logModel)
-        {
-            if (logModel == null) throw new ArgumentNullException(nameof(logModel));
-
-            return new OperationLog
-            {
-                Data = logModel.Data,
-                DateTime = logModel.DateTime,
-                OperateType = logModel.OperateType,
-                FunctionType = logModel.FunctionType,
-                LogLevel = logModel.LogLevel,
-                SystemType = logModel.SystemType,
-                UserId = logModel.UserId,
-                UserName = logModel.UserName
-            };
-        }
     }
 }
