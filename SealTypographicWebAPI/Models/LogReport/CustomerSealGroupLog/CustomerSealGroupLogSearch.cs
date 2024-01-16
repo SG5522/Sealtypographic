@@ -1,16 +1,16 @@
-﻿using SealTypographicWebAPI.Consts;
+﻿using DBEntities.Consts;
 
-namespace SealTypographicWebAPI.Models.LogReport.OperationLog
+namespace SealTypographicWebAPI.Models.LogReport.SealGroupLog
 {
     /// <summary>
     /// 操作紀錄
     /// </summary>
-    public class OperationLogSearch : LogSearchBase
+    public class CustomerSealGroupLogSearch : LogSearchBase
     {
         /// <summary>
         /// 動作類別(紀錄使用)
         /// </summary>
-        public ActionType? ActionType { get; set; }
+        public ReviewStatus? ReviewStatus { get; set; }
 
         /// <summary>
         /// UserId or UserName
@@ -20,6 +20,6 @@ namespace SealTypographicWebAPI.Models.LogReport.OperationLog
         /// <summary>
         /// 查詢對象
         /// </summary>
-        public string? TargetName { get; set; }
+        public string? CustomerName { get; set; }
     }
 }

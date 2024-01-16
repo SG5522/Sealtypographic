@@ -1,5 +1,6 @@
 ﻿using DBEntities.Consts;
 using SealTypographicWebAPI.Models.LogReport.OperationLog;
+using SealTypographicWebAPI.Models.LogReport.SealGroupLog;
 using SealTypographicWebAPI.Models.LogReport.TypographicReport;
 
 namespace SealTypographicWebAPI.Services

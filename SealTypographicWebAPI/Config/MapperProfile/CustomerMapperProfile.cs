@@ -32,7 +32,16 @@ namespace SealTypographicWebAPI.Config.MapperProfile
                     .ForMember(dst => dst.CustomerSealQuarterId, opt => opt.MapFrom(src => src.Id))
                     .ForMember(dst => dst.QuarterYearId, opt => opt.MapFrom(src => src.QuarterYear.Id))
                     .ForMember(dst => dst.ReviewStatus, opt => opt.MapFrom(src => src.ReviewStatus))
-                    .ForMember(dst => dst.SealViewModels, opt => opt.MapFrom(src => src.TypographicResources.Where(x => x.DeleteStatus == DeleteStatus.No)));
+                    .ForMember(dst => dst.SealViewModels, opt => opt.MapFrom(src => src.TypographicResources.Where(x => x.DeleteStatus == DeleteStatus.No)))
+                    //log save
+                    .ForMember(dst => dst.GregorainQuarterYear, opt => opt.MapFrom(src => 
+                        src.QuarterYear.Type == TypographyType.FinancialReport ?
+                        QuarterUtil.GetGregorainQuarter(src.QuarterYear) : QuarterUtil.GetGregorainYear(src.QuarterYear)
+                    ))
+                    .ForMember(dst => dst.DisplayQuarterYear, opt => opt.MapFrom(src =>
+                        src.QuarterYear.Type == TypographyType.FinancialReport ?
+                        QuarterUtil.GetTaiwanYearQuarter(src.QuarterYear) : QuarterUtil.GetTaiwanYear(src.QuarterYear)
+                    ));                     
 
             //客戶印鑑(Log)
             CreateMap<CustomerSealViewModels, CustomerSealViewModels>();

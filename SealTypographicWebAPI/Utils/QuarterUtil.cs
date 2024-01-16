@@ -10,41 +10,41 @@ namespace SealTypographicWebAPI.Utils
         /// <summary>
         /// 取得公曆用的季度字串
         /// </summary>
-        /// <param name="quarter"></param>
+        /// <param name="quarterYear"></param>
         /// <returns></returns>
-        public static string GetGregorainQuarter(QuarterYear quarter)
+        public static string GetGregorainQuarter(QuarterYear quarterYear)
         {                        
-            return $"{quarter.GregorianYear}{quarter.Period}";
+            return $"{quarterYear.GregorianYear}{quarterYear.Period}";
         }
 
         /// <summary>
         /// 取得台灣用的季度字串
         /// </summary>
-        /// <param name="quarter"></param>
+        /// <param name="quarterYear"></param>
         /// <returns></returns>
-        public static string GetTaiwanYearQuarter(QuarterYear quarter)
+        public static string GetTaiwanYearQuarter(QuarterYear quarterYear)
         {            
-            return $"{quarter.GregorianYear - 1911}{quarter.Period}";
+            return $"{quarterYear.GregorianYear - 1911}{quarterYear.Period}";
         }
 
         /// <summary>
         /// 取得台灣用的季度字串
         /// </summary>
-        /// <param name="quarter"></param>
+        /// <param name="quarterYear"></param>
         /// <returns></returns>
-        public static string GetGregorainYear(QuarterYear quarter)
+        public static string GetGregorainYear(QuarterYear quarterYear)
         {
-            return $"{quarter.GregorianYear}";
+            return $"{quarterYear.GregorianYear}";
         }
 
         /// <summary>
         /// 取得台灣用的季度字串
         /// </summary>
-        /// <param name="quarter"></param>
+        /// <param name="quarterYear"></param>
         /// <returns></returns>
-        public static string GetTaiwanYear(QuarterYear quarter)
+        public static string GetTaiwanYear(QuarterYear quarterYear)
         {
-            return $"{quarter.GregorianYear - 1911}";
+            return $"{quarterYear.GregorianYear - 1911}";
         }
     }
 }

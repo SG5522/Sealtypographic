@@ -49,6 +49,18 @@ namespace SealTypographicWebAPI.Models.CustomerSeal
         public string CustomerName { get; set; }
 
         /// <summary>
+        /// 公曆年季度
+        /// </summary>
+        [JsonIgnore]
+        public string GregorainQuarterYear { get; set; }
+
+        /// <summary>
+        /// 顯示用年季度(目前使用民國年)
+        /// </summary>
+        [JsonIgnore]
+        public string DisplayQuarterYear { get; set; }
+
+        /// <summary>
         /// 排版類別
         /// </summary>
         [JsonIgnore]

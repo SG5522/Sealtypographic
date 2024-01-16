@@ -11,6 +11,7 @@ using MongoDB.Driver;
 using MongoDB.Driver.Linq;
 using SealTypographicWebAPI.Config;
 using SealTypographicWebAPI.Consts;
+using SealTypographicWebAPI.Models.LogReport.CustomerSealGroupLog;
 using SealTypographicWebAPI.Models.LogReport.OperationLog;
 using SealTypographicWebAPI.Models.LogReport.TypographicReport;
 using SealTypographicWebAPI.Models.MongoDBModel;
@@ -24,10 +25,10 @@ namespace SealTypographicWebAPI.Services.Implements
     public class LogReportService : ILogReportService
     {
         private readonly SealTypographicDbContext dbContext;
-        private readonly ILogger<LogReportService> logger;
-        private readonly IMapper mapper;
+        private readonly ILogger<LogReportService> logger;        
         private readonly AutoMapper.IConfigurationProvider configurationProvider;        
-        private IMongoCollection<OperationLog> operationLog;        
+        private IMongoCollection<OperationLog> operationLog;
+        private IMongoCollection<CustomerSealGroupLog> customerSealGroupLog;
 
         /// <summary>
         /// 建置
@@ -39,8 +40,7 @@ namespace SealTypographicWebAPI.Services.Implements
         public LogReportService(SealTypographicDbContext dbContext, ILogger<LogReportService> logger, IMapper mapper, IOptionsMonitor<LogDatabaseOptions> options)
         {
             this.dbContext = dbContext;
-            this.logger = logger;
-            this.mapper = mapper;
+            this.logger = logger;            
             configurationProvider = mapper.ConfigurationProvider;
             //MongoDb連線
             MongoClient mongoClient = new (options.CurrentValue.ConnectionString);
@@ -61,6 +61,7 @@ namespace SealTypographicWebAPI.Services.Implements
                     });
             }
             operationLog = mongoDatabase.GetCollection<OperationLog>(LogDbCollectionNames.OperationLog);
+            customerSealGroupLog = mongoDatabase.GetCollection<CustomerSealGroupLog>(LogDbCollectionNames.CustomerSealGroupLog);
         }
 
         /// <summary>
@@ -73,6 +74,18 @@ namespace SealTypographicWebAPI.Services.Implements
         public async Task SaveOperationLog(OperationLogSave operationLogSave, string userId = "test", string userName = "test")
         {                        
             await operationLog.InsertOneAsync(MapFrom<OperationLog, OperationLogSave>(operationLogSave, userId, userName));
+        }
+
+        /// <summary>
+        /// 操作紀錄(傳到MongoDB)
+        /// </summary>        
+        /// <param name="customerSealGroupLogSave"></param>
+        /// <param name="userName"></param>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        public async Task SaveCustomerSealGroupLog(CustomerSealGroupLogSave customerSealGroupLogSave, string userId = "test", string userName = "test")
+        {
+            await customerSealGroupLog.InsertOneAsync(MapFrom<CustomerSealGroupLog, CustomerSealGroupLogSave>(customerSealGroupLogSave, userId, userName));
         }
 
         /// <summary>
@@ -91,7 +104,7 @@ namespace SealTypographicWebAPI.Services.Implements
                                                             && x.DateTime <= operationLogSearch.EndDate                                                            
                                                         );
 
-            if (operationLogSearch.ActionType != 0)
+            if (operationLogSearch.ActionType != null)
             {
                 operationLogQuery = operationLogQuery.Where(x => x.Data!.ActionType == operationLogSearch.ActionType);
             }
@@ -102,12 +115,12 @@ namespace SealTypographicWebAPI.Services.Implements
                                                             || x.UserName.ToLower().Contains(operationLogSearch.KeyWord.ToLower()));
             }
 
-            if(!string.IsNullOrWhiteSpace(operationLogSearch.ObjectName))
+            if(!string.IsNullOrWhiteSpace(operationLogSearch.TargetName))
             {
                 operationLogQuery = operationLogQuery.Where(x => x.Data != null &&
                                                                 (
-                                                                    x.Data!.CustomerName.ToLower().Contains(operationLogSearch.ObjectName.ToLower())
-                                                                    || x.Data!.AccountantName.ToLower().Contains(operationLogSearch.ObjectName.ToLower())
+                                                                    x.Data!.CustomerName.ToLower().Contains(operationLogSearch.TargetName.ToLower())
+                                                                    || x.Data!.AccountantName.ToLower().Contains(operationLogSearch.TargetName.ToLower())
                                                                 )
                                                             );                
             }
@@ -153,7 +166,7 @@ namespace SealTypographicWebAPI.Services.Implements
                                                                             && x.TypographyType == typographyType
                                                                             && x.ReviewStatus == ReviewStatus.Approval
                                                                             && x.UpdateDate >= customerTypoReportSearch.StartDate
-                                                                            && x.UpdateDate < customerTypoReportSearch.EndDate
+                                                                            && x.UpdateDate <= customerTypoReportSearch.EndDate
                                                                       );
 
                 if(!string.IsNullOrEmpty(customerTypoReportSearch.UserKeyWord))

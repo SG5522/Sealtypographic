@@ -3,12 +3,12 @@
 namespace SealTypographicWebAPI.Models.LogReport.OperationLog
 {
     /// <summary>
-    /// 會計師成員列表
+    /// 操作紀錄列表
     /// </summary>
     public class OperationLogPaginate : PaginateViewModel
     {
         /// <summary>
-        /// 會計師成員
+        /// 列表內容
         /// </summary>
         public List<OperationLogViewModel> ViewModels { get; set; }
     }

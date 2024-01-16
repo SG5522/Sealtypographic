@@ -6,7 +6,7 @@ namespace SealTypographicWebAPI.Models.LogReport
     /// <summary>
     /// Log基本搜尋
     /// </summary>
-    public abstract class LogSearchBase : PaginateViewModel
+    public abstract class LogSearchBase : PaginateSearch
     {
         private DateTime endDate;
 

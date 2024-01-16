@@ -3,7 +3,7 @@
     /// <summary>
     /// 紀錄使用TypographicPDF Service時所讀取的資料
     /// </summary>
-    public class LogCustomerBase
+    public class CustomerLog
     {
         /// <summary>
         /// 客戶Id
@@ -26,8 +26,13 @@
         public int QuarterYearId { get; set; }
 
         /// <summary>
-        /// 公曆用的季度字串
+        /// 公曆年季度
         /// </summary>
-        public string GregorainQuarter { get; set; }
+        public string GregorainQuarterYear { get; set; }
+
+        /// <summary>
+        /// 年季度顯示(目前顯示民國年)
+        /// </summary>
+        public string DisplayQuarterYear { get; set; }
     }    
 }

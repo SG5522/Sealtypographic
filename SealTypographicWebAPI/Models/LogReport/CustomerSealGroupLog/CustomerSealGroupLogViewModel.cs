@@ -3,9 +3,9 @@
 namespace SealTypographicWebAPI.Models.LogReport.SealGroupLog
 {
     /// <summary>
-    /// 印鑑異動紀錄
+    /// 操作紀錄
     /// </summary>
-    public class SealGroupLogSave
+    public class CustomerSealGroupLogViewModel : LogViewModelBase
     {
         /// <summary>
         /// 審核狀態
@@ -13,23 +13,18 @@ namespace SealTypographicWebAPI.Models.LogReport.SealGroupLog
         public ReviewStatus ReviewStatus { get; set; }
 
         /// <summary>
-        /// 客戶Id
+        /// 公司編號
         /// </summary>
-        public int CustomerId { get; set; }
+        public string Code { get; set; }
 
         /// <summary>
-        /// 客戶名稱
+        /// 會計師姓名
         /// </summary>
-        public string CustomerName { get; set; }
-
-        /// <summary>
-        /// 客戶印鑑群組Id
-        /// </summary>
-        public int CustomerSealGroupId { get; set; }
+        public string TargetName { get; set; }
 
         /// <summary>
         /// 公曆用的季度字串
         /// </summary>
-        public string GregorainQuarter { get; set; }
+        public string DisplayQuarterYear { get; set; }
     }
 }

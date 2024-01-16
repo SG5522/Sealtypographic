@@ -1,13 +1,25 @@
-﻿namespace SealTypographicWebAPI.Models.LogReport.OperationLog
+﻿using SealTypographicWebAPI.Consts;
+
+namespace SealTypographicWebAPI.Models.LogReport.OperationLog
 {
     /// <summary>
     /// 操作紀錄
     /// </summary>
-    public class OperationLogViewModel : OperationLogSave
+    public class OperationLogViewModel : LogViewModelBase
     {
         /// <summary>
-        /// 作業時間
+        /// 動作類型
         /// </summary>
-        public DateTime DateTime { get; set; }
+        public ActionType ActionType { get; set; }
+
+        /// <summary>
+        /// 公司名稱或會計師姓名
+        /// </summary>
+        public string TargetName { get; set; }
+
+        /// <summary>
+        /// 公曆用的季度字串
+        /// </summary>
+        public string DisplayQuarterYear { get; set; }
     }
 }

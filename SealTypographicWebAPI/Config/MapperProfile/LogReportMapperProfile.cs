@@ -8,6 +8,7 @@ using SealTypographicWebAPI.Models.CustomerSeal;
 using SealTypographicWebAPI.Models.LogReport.OperationLog;
 using SealTypographicWebAPI.Models.LogReport.TypographicReport;
 using SealTypographicWebAPI.Models.MongoDBModel;
+using SealTypographicWebAPI.Utils;
 
 namespace SealTypographicWebAPI.Config.MapperProfile
 {
@@ -37,16 +38,14 @@ namespace SealTypographicWebAPI.Config.MapperProfile
                     .ForMember(dst => dst.BlankPageCount, opt => opt.MapFrom(src => src.TypographicPages.Where(x => x.BlankCheck == true).Count()));
 
             //操作紀錄Map
-            CreateMap<OperationLog, OperationLogViewModel>()
+            CreateMap<OperationLog, OperationLogViewModel>()                    
                     .ForMember(dst => dst.ActionType, opt => opt.MapFrom(src => src.Data!.ActionType))
-                    .ForMember(dst => dst.CustomerId, opt => opt.MapFrom(src => src.Data!.CustomerId))
-                    .ForMember(dst => dst.CustomerName, opt => opt.MapFrom(src => src.Data!.CustomerName))
-                    .ForMember(dst => dst.CustomerSealGroupId, opt => opt.MapFrom(src => src.Data!.CustomerSealGroupId))
-                    .ForMember(dst => dst.AccountantId, opt => opt.MapFrom(src => src.Data!.AccountantId))
-                    .ForMember(dst => dst.AccountantName, opt => opt.MapFrom(src => src.Data!.AccountantName))
-                    .ForMember(dst => dst.AccountantSignGroupId, opt => opt.MapFrom(src => src.Data!.AccountantSignGroupId))
-                    .ForMember(dst => dst.AccountantSignGroupCreateDate, opt => opt.MapFrom(src => src.Data!.AccountantSignGroupCreateDate))
-                    .ForMember(dst => dst.GregorainQuarter, opt => opt.MapFrom(src => src.Data!.GregorainQuarter));
+                    .ForMember(dst => dst.TargetName, opt => opt.MapFrom(src => 
+                        !string.IsNullOrWhiteSpace(src.Data!.AccountantName) ? src.Data.AccountantName : src.Data.CustomerName
+                    ))
+                    .ForMember(dst => dst.DisplayQuarterYear, opt => opt.MapFrom(src =>
+                        !string.IsNullOrWhiteSpace(src.Data!.DisplayQuarterYear) ? src.Data.DisplayQuarterYear : null
+                    ));
 
             //操作紀錄Map客戶資料
             CreateMap<CustomerDetail, OperationLogSave>()
@@ -56,8 +55,10 @@ namespace SealTypographicWebAPI.Config.MapperProfile
 
             //操作紀錄Map客戶印鑑資料
             CreateMap<CustomerSealViewModels, OperationLogSave>()
+                    .ForMember(dst => dst.CustomerSealGroupId, opt => opt.MapFrom(src => src.CustomerSealQuarterId))
                     .ForMember(dst => dst.ActionType, opt => opt.MapFrom(src => 
-                        src.TypographyType == TypographyType.FinancialReport ? ActionType.FinancialReportSealQuery : ActionType.TaxReportSealQuery
+                        src.TypographyType == TypographyType.FinancialReport ? 
+                        ActionType.FinancialReportSealQuery : ActionType.TaxReportSealQuery
                     ));
 
             //操作紀錄Map會計簽印資料
