@@ -1,11 +1,11 @@
 ﻿using DBEntities.Consts;
 
-namespace SealTypographicWebAPI.Models.LogReport.SealGroupLog
+namespace SealTypographicWebAPI.Models.LogReport.CustomerSealEventLog
 {
     /// <summary>
     /// 操作紀錄
     /// </summary>
-    public class CustomerSealGroupLogSearch : LogSearchBase
+    public class CustomerSealEventLogSearch : LogSearchBase
     {
         /// <summary>
         /// 動作類別(紀錄使用)
@@ -18,8 +18,8 @@ namespace SealTypographicWebAPI.Models.LogReport.SealGroupLog
         public string? KeyWord { get; set; }
 
         /// <summary>
-        /// 查詢對象
+        /// 客戶編號/名稱
         /// </summary>
-        public string? CustomerName { get; set; }
+        public string? CustomerCodeOrName { get; set; }
     }
 }

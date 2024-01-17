@@ -13,7 +13,7 @@ namespace SealTypographicWebAPI.Models.LogReport.OperationLog
         public ActionType ActionType { get; set; }
 
         /// <summary>
-        /// 公司名稱或會計師姓名
+        /// 查詢對象
         /// </summary>
         public string TargetName { get; set; }
 

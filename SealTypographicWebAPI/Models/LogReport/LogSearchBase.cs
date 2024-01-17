@@ -8,13 +8,19 @@ namespace SealTypographicWebAPI.Models.LogReport
     /// </summary>
     public abstract class LogSearchBase : PaginateSearch
     {
+        private DateTime startDate;
         private DateTime endDate;
 
         /// <summary>
         /// 起始日期
         /// </summary>
         [Required]
-        public DateTime StartDate { get; set; }
+        public DateTime StartDate
+        {
+            //MongoDB預設紀錄的時間為utc需要先轉成utc搜尋
+            get => startDate;
+            set => startDate = value.ToUniversalTime();
+        }
 
         /// <summary>
         /// 結束日期
@@ -26,7 +32,8 @@ namespace SealTypographicWebAPI.Models.LogReport
             set
             {
                 // 調整為結束日期的 23:59:59
-                endDate = value.Date.AddDays(1).AddSeconds(-1);
+                //MongoDB預設紀錄的時間為utc需要先轉成utc搜尋
+                endDate = value.Date.AddDays(1).AddSeconds(-1).ToUniversalTime();                
             }
         }
     }

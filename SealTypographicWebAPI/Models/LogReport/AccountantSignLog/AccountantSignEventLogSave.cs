@@ -1,14 +1,14 @@
 ﻿using DBEntities.Consts;
 
-namespace SealTypographicWebAPI.Models.LogReport.CustomerSealGroupLog
+namespace SealTypographicWebAPI.Models.LogReport.AccountantSignLog
 {
     /// <summary>
     /// 印鑑異動紀錄
     /// </summary>
-    public class CustomerSealGroupLogSave : CustomerLog
+    public class AccountantSignEventLogSave : AccountantLog
     {
         /// <summary>
-        /// 公司編號
+        /// 會計師編號
         /// </summary>
         public string Code { get; set; }
 

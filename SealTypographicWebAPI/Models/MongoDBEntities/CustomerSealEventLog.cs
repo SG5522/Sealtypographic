@@ -1,15 +1,18 @@
 ﻿using CommonLib.Models;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
-using SealTypographicWebAPI.Models.LogReport.CustomerSealGroupLog;
+using SealTypographicWebAPI.Models.LogReport.CustomerSealEventLog;
+using System;
 
 namespace SealTypographicWebAPI.Models.MongoDBModel
 {
     /// <summary>
     /// 
     /// </summary>
-    public class CustomerSealGroupLog : LogModel<CustomerSealGroupLogSave>
+    public class CustomerSealEventLog : LogModel<CustomerSealEventLogSave>
     {
+        private DateTime dateTime;
+
         /// <summary>
         /// 
         /// </summary>

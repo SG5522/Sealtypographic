@@ -1,11 +1,11 @@
 ﻿using DBEntities.Consts;
 
-namespace SealTypographicWebAPI.Models.LogReport.SealGroupLog
+namespace SealTypographicWebAPI.Models.LogReport.CustomerSealEventLog
 {
     /// <summary>
     /// 操作紀錄
     /// </summary>
-    public class CustomerSealGroupLogViewModel : LogViewModelBase
+    public class CustomerSealEventLogViewModel : LogViewModelBase
     {
         /// <summary>
         /// 審核狀態
@@ -18,9 +18,9 @@ namespace SealTypographicWebAPI.Models.LogReport.SealGroupLog
         public string Code { get; set; }
 
         /// <summary>
-        /// 會計師姓名
+        /// 公司姓名
         /// </summary>
-        public string TargetName { get; set; }
+        public string CustomerName { get; set; }
 
         /// <summary>
         /// 公曆用的季度字串

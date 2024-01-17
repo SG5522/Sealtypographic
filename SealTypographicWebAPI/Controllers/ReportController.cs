@@ -1,7 +1,6 @@
 ﻿using DBEntities.Consts;
 using Microsoft.AspNetCore.Mvc;
 using SealTypographicWebAPI.Models.LogReport.OperationLog;
-using SealTypographicWebAPI.Models.LogReport.SealGroupLog;
 using SealTypographicWebAPI.Models.LogReport.TypographicReport;
 using SealTypographicWebAPI.Services;
 

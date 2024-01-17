@@ -11,7 +11,7 @@ using MongoDB.Driver;
 using MongoDB.Driver.Linq;
 using SealTypographicWebAPI.Config;
 using SealTypographicWebAPI.Consts;
-using SealTypographicWebAPI.Models.LogReport.CustomerSealGroupLog;
+using SealTypographicWebAPI.Models.LogReport.CustomerSealEventLog;
 using SealTypographicWebAPI.Models.LogReport.OperationLog;
 using SealTypographicWebAPI.Models.LogReport.TypographicReport;
 using SealTypographicWebAPI.Models.MongoDBModel;
@@ -28,7 +28,8 @@ namespace SealTypographicWebAPI.Services.Implements
         private readonly ILogger<LogReportService> logger;        
         private readonly AutoMapper.IConfigurationProvider configurationProvider;        
         private IMongoCollection<OperationLog> operationLog;
-        private IMongoCollection<CustomerSealGroupLog> customerSealGroupLog;
+        private IMongoCollection<CustomerSealEventLog> customerSealGroupLog;
+        private IMongoCollection<AccountantSignEventLog> accountantSignEventLog;
 
         /// <summary>
         /// 建置
@@ -48,20 +49,43 @@ namespace SealTypographicWebAPI.Services.Implements
             Init(mongoDatabase);            
         }
 
+        /// <summary>
+        /// mongodb的初始化
+        /// </summary>
+        /// <param name="mongoDatabase"></param>
         private void Init(IMongoDatabase mongoDatabase)
         {
-            ListCollectionsOptions listCollectionsOptions = new ListCollectionsOptions();            
-
-            if (!mongoDatabase.ListCollections(new ListCollectionsOptions { Filter = new BsonDocument("name", LogDbCollectionNames.OperationLog)}).Any())
-            {
-                mongoDatabase.CreateCollection(LogDbCollectionNames.OperationLog,
-                    new CreateCollectionOptions
-                    {
-                        TimeSeriesOptions = new TimeSeriesOptions("DateTime")
-                    });
-            }
+            //建立TimeSeriesCollection
+            CreateTimeSeriesCollection(mongoDatabase, LogDbCollectionNames.OperationLog);
+            CreateTimeSeriesCollection(mongoDatabase, LogDbCollectionNames.CustomerSealEventLog);
+            CreateTimeSeriesCollection(mongoDatabase, LogDbCollectionNames.AccountantSignEventLog);
+            //取得Collection
             operationLog = mongoDatabase.GetCollection<OperationLog>(LogDbCollectionNames.OperationLog);
-            customerSealGroupLog = mongoDatabase.GetCollection<CustomerSealGroupLog>(LogDbCollectionNames.CustomerSealGroupLog);
+            customerSealGroupLog = mongoDatabase.GetCollection<CustomerSealEventLog>(LogDbCollectionNames.CustomerSealEventLog);
+            accountantSignEventLog = mongoDatabase.GetCollection<AccountantSignEventLog>(LogDbCollectionNames.AccountantSignEventLog);
+        }
+
+        /// <summary>
+        /// 建立TimeSeriesCollection。
+        /// 先確認是否資料庫有該Collection，
+        /// 沒有才依TimeSeriesCollection方式建立。
+        /// </summary>
+        /// <param name="mongoDatabase"></param>
+        /// <param name="collectionName"></param>
+        private static void CreateTimeSeriesCollection(IMongoDatabase mongoDatabase, string collectionName)
+        {
+            ListCollectionsOptions listCollectionsOptions = new()
+            {
+                Filter = new BsonDocument
+                {
+                    { "name", collectionName },
+                }
+            };
+
+            if (!mongoDatabase.ListCollections(listCollectionsOptions).Any())
+            {                
+                mongoDatabase.CreateCollection(collectionName, new() { TimeSeriesOptions = new TimeSeriesOptions("DateTime") });
+            }
         }
 
         /// <summary>
@@ -77,19 +101,19 @@ namespace SealTypographicWebAPI.Services.Implements
         }
 
         /// <summary>
-        /// 操作紀錄(傳到MongoDB)
+        /// 客戶印鑑事件紀錄(傳到MongoDB)
         /// </summary>        
         /// <param name="customerSealGroupLogSave"></param>
         /// <param name="userName"></param>
         /// <param name="userId"></param>
         /// <returns></returns>
-        public async Task SaveCustomerSealGroupLog(CustomerSealGroupLogSave customerSealGroupLogSave, string userId = "test", string userName = "test")
+        public async Task SaveCustomerSealEventLog(CustomerSealEventLogSave customerSealGroupLogSave, string userId = "test", string userName = "test")
         {
-            await customerSealGroupLog.InsertOneAsync(MapFrom<CustomerSealGroupLog, CustomerSealGroupLogSave>(customerSealGroupLogSave, userId, userName));
+            await customerSealGroupLog.InsertOneAsync(MapFrom<CustomerSealEventLog, CustomerSealEventLogSave>(customerSealGroupLogSave, userId, userName));
         }
 
         /// <summary>
-        /// 
+        /// 操作紀錄分頁列表
         /// </summary>
         /// <returns></returns>
         public OperationLogPaginate OperationLogPaginate(OperationLogSearch operationLogSearch)
@@ -239,8 +263,8 @@ namespace SealTypographicWebAPI.Services.Implements
             {
                 Data = logSaveData,
                 DateTime = DateTime.Now,
-                OperateType = OperateType.Search,
-                FunctionType = FunctionType.SealTypographic,
+                OperateType = OperateType.Search,                
+                FunctionType = FunctionType.SealTypographic,                
                 LogLevel = CommonLib.Enums.LogLevel.Info,
                 SystemType = SystemType.SealTypographic,
                 UserId = userId,

@@ -1,6 +1,6 @@
 ﻿using DBEntities.Consts;
+using SealTypographicWebAPI.Models.LogReport.CustomerSealEventLog;
 using SealTypographicWebAPI.Models.LogReport.OperationLog;
-using SealTypographicWebAPI.Models.LogReport.SealGroupLog;
 using SealTypographicWebAPI.Models.LogReport.TypographicReport;
 
 namespace SealTypographicWebAPI.Services
@@ -21,7 +21,7 @@ namespace SealTypographicWebAPI.Services
         TypographicReportPaginate GetTypographicReport(TypographicReportSearch customerTypoReportSearch, TypographyType typographyType, int userId = 1);
 
         /// <summary>
-        /// 儲存操作紀錄
+        /// 操作紀錄(傳到MongoDB)
         /// </summary>
         /// <param name="operationLogForm"></param>
         /// <param name="userName"></param>
@@ -29,6 +29,14 @@ namespace SealTypographicWebAPI.Services
         /// <returns></returns>
         Task SaveOperationLog(OperationLogSave operationLogForm, string userName = "test", string userId = "test");
 
+        /// <summary>
+        /// 客戶印鑑事件紀錄(傳到MongoDB)
+        /// </summary>        
+        /// <param name="customerSealGroupLogSave"></param>
+        /// <param name="userName"></param>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        Task SaveCustomerSealEventLog(CustomerSealEventLogSave customerSealGroupLogSave, string userId = "test", string userName = "test");
 
         /// <summary>
         /// 取得操作紀錄

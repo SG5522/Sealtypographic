@@ -1,4 +1,5 @@
-﻿using SealTypographicWebAPI.Consts;
+﻿using MongoDB.Bson.Serialization.Attributes;
+using SealTypographicWebAPI.Consts;
 
 namespace SealTypographicWebAPI.Models.LogReport.OperationLog
 {
@@ -59,7 +60,7 @@ namespace SealTypographicWebAPI.Models.LogReport.OperationLog
 
         /// <summary>
         /// 會計師簽印群組建立日期
-        /// </summary>
+        /// </summary>        
         public DateTime AccountantSignGroupCreateDate { get; set; }
     }
 }
