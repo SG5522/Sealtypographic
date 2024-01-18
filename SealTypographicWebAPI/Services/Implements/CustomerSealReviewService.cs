@@ -1,11 +1,15 @@
 ﻿using AutoMapper;
 using AutoMapper.QueryableExtensions;
+using CommonLib.Enums;
 using DBEntities;
 using DBEntities.Consts;
 using DBEntities.Entities.CustomerModels;
 using Microsoft.EntityFrameworkCore;
 using SealTypographicWebAPI.Models;
+using SealTypographicWebAPI.Models.CustomerSeal;
 using SealTypographicWebAPI.Models.CustomerSealReview;
+using SealTypographicWebAPI.Models.LogReport.CustomerSealEventLog;
+using SealTypographicWebAPI.Models.LogReport.OperationLog;
 using SealTypographicWebAPI.Utils;
 
 namespace SealTypographicWebAPI.Services.Implements
@@ -16,7 +20,9 @@ namespace SealTypographicWebAPI.Services.Implements
     public class CustomerSealReviewService : ICustomerSealReviewService
     {
         private readonly SealTypographicDbContext dbContext;               
+        private readonly IMapper mapper;
         private readonly AutoMapper.IConfigurationProvider configurationProvider;
+        private readonly ILogReportService logReportService;        
         private readonly ILogger<CustomerSealReviewService> logger;
 
         /// <summary>
@@ -25,11 +31,15 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <param name="dbContext"></param>
         /// <param name="mapper"></param>
         /// <param name="logger"></param>
-        public CustomerSealReviewService(SealTypographicDbContext dbContext, IMapper mapper, ILogger<CustomerSealReviewService> logger)
+        /// <param name="logReportService"></param>
+        public CustomerSealReviewService(SealTypographicDbContext dbContext, IMapper mapper, ILogReportService logReportService, ILogger<CustomerSealReviewService> logger)
         {
-            this.dbContext = dbContext;                        
+            this.dbContext = dbContext;
+            this.mapper = mapper;
+            this.logReportService = logReportService;
             configurationProvider = mapper.ConfigurationProvider;
             this.logger = logger;
+            
         }
 
         ///<inheritdoc />
@@ -72,15 +82,17 @@ namespace SealTypographicWebAPI.Services.Implements
                 if (customerSealQuarterQuery.Any())
                 {
                     //取得該頁                   
-                    customerSealQuarterResponse.ViewModels = customerSealQuarterQuery
-                                                            .Include(x => x.TypographicResources)
-                                                            .Skip((customerSealSearchReview.PageNumber - 1) * customerSealSearchReview.PageSize)
-                                                            .Take(customerSealSearchReview.PageSize)
-                                                            .ProjectTo<CustomerSealGroupReviewViewModel>(configurationProvider)
-                                                            .ToList();
+                    //customerSealQuarterResponse.ViewModels = customerSealQuarterQuery
+                    //                                        .Include(x => x.TypographicResources)
+                    //                                        .Skip((customerSealSearchReview.PageNumber - 1) * customerSealSearchReview.PageSize)
+                    //                                        .Take(customerSealSearchReview.PageSize)
+                    //                                        .ProjectTo<CustomerSealGroupReviewViewModel>(configurationProvider)
+                    //                                        .ToList();
+                    customerSealQuarterResponse.ViewModels = 
+                    PageUtil.SetPaginateViewModel<CustomerSealGroup, CustomerSealGroupReviewViewModel>(customerSealQuarterQuery, customerSealSearchReview.PageNumber, customerSealSearchReview.PageSize, configurationProvider);
 
                     PageUtil.SetPaginate(customerSealQuarterResponse, customerSealSearchReview.PageNumber, customerSealSearchReview.PageSize, customerSealQuarterQuery.Count());
-                    customerSealQuarterResponse.Success();
+                    customerSealQuarterResponse.Success();                    
                 }
                 else
                 {
@@ -118,6 +130,7 @@ namespace SealTypographicWebAPI.Services.Implements
                 {
                     customerSealReviewDetailResponse.ViewModel = customerSealGroupQuery;
                     customerSealReviewDetailResponse.Success();
+                    logReportService.SaveOperationLog(mapper.Map<OperationLogSave>(customerSealGroupQuery));
                 }
                 else
                 {
@@ -158,9 +171,10 @@ namespace SealTypographicWebAPI.Services.Implements
                             customerSealGroup.EndDate = DateTime.Parse("9999/12/31");
                         }
                         if (reviewStatus == ReviewStatus.Refuse)
-                        {
+                        {   
                             customerSealGroup.DeleteStatus = DeleteStatus.Yes;
                         }
+                        logReportService.SaveCustomerSealEventLog(mapper.Map<CustomerSealEventLogSave>(customerSealGroup), OperateType.Review);
                     }
                     else
                     {
@@ -171,7 +185,7 @@ namespace SealTypographicWebAPI.Services.Implements
                 if (response.ErrorItem == null)
                 {
                     dbContext.SaveChanges();
-                    response.Success();
+                    response.Success();                    
                 }
                 else
                 {

@@ -1,6 +1,8 @@
-﻿using SealTypographicWebAPI.Models.Customer;
+﻿using DBEntities.Consts;
+using SealTypographicWebAPI.Models.Customer;
 using SealTypographicWebAPI.Models.CustomerSeal;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace SealTypographicWebAPI.Models.CustomerSealReview
 {
@@ -40,6 +42,35 @@ namespace SealTypographicWebAPI.Models.CustomerSealReview
         /// </summary>         
         /// <example>1</example>
         public int QuarterYearId { get; set; }
+
+
+        //============LogSave============//
+
+        /// <summary>
+        /// 客戶Id
+        /// </summary>
+        [JsonIgnore]
+        public int CustomerId { get; set; }
+
+        /// <summary>
+        /// 排版類別
+        /// </summary>
+        [JsonIgnore]
+        public TypographyType TypographyType { get; set; }
+
+        /// <summary>
+        /// 公曆年季度
+        /// </summary>
+        [JsonIgnore]
+        public string GregorainQuarterYear { get; set; }
+
+        /// <summary>
+        /// 顯示用年季度(目前使用民國年)
+        /// </summary>
+        [JsonIgnore]
+        public string DisplayQuarterYear { get; set; }
+
+        //============LogSave============//
 
         /// <summary>
         /// 客戶印鑑組

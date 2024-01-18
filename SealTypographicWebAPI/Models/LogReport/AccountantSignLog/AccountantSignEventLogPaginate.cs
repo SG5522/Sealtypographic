@@ -11,7 +11,7 @@ namespace SealTypographicWebAPI.Models.LogReport.AccountantSignLog
         /// <summary>
         /// 列表內容
         /// </summary>
-        public List<CustomerSealEventLogViewModel> ViewModels { get; set; }
+        public List<AccountantSignEventLogViewModel> ViewModels { get; set; }
     }
 
 }

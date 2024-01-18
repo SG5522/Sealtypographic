@@ -3,7 +3,7 @@
 namespace SealTypographicWebAPI.Models.LogReport.AccountantSignLog
 {
     /// <summary>
-    /// 操作紀錄
+    /// 會計師異動紀錄查詢
     /// </summary>
     public class AccountantSignEventLogSearch : LogSearchBase
     {
@@ -15,11 +15,11 @@ namespace SealTypographicWebAPI.Models.LogReport.AccountantSignLog
         /// <summary>
         /// UserId or UserName
         /// </summary>
-        public string? KeyWord { get; set; }
+        public string? UserKeyword { get; set; }
 
         /// <summary>
         /// 查詢對象
         /// </summary>
-        public string? AccountantCodeOrName { get; set; }
+        public string? AccountantKeyword { get; set; }
     }
 }

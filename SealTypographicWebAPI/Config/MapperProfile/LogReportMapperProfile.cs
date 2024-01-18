@@ -1,10 +1,13 @@
 ﻿using AutoMapper;
 using DBEntities.Consts;
+using DBEntities.Entities.CustomerModels;
 using DBEntities.Entities.TypographicModels;
 using SealTypographicWebAPI.Consts;
 using SealTypographicWebAPI.Models.Accountant;
 using SealTypographicWebAPI.Models.Customer;
 using SealTypographicWebAPI.Models.CustomerSeal;
+using SealTypographicWebAPI.Models.CustomerSealReview;
+using SealTypographicWebAPI.Models.LogReport.CustomerSealEventLog;
 using SealTypographicWebAPI.Models.LogReport.OperationLog;
 using SealTypographicWebAPI.Models.LogReport.TypographicReport;
 using SealTypographicWebAPI.Models.MongoDBModel;
@@ -67,10 +70,40 @@ namespace SealTypographicWebAPI.Config.MapperProfile
                     .ForMember(dst => dst.AccountantId, opt => opt.MapFrom(src => src.Id))
                     .ForMember(dst => dst.AccountantName, opt => opt.MapFrom(src => src.Name));
 
+            //客戶印鑑審核查詢
+            CreateMap<CustomerSealGroupDetailReviewViewModel, OperationLogSave>()
+                    .ForMember(dst => dst.ActionType, opt => opt.MapFrom(src =>
+                        src.TypographyType == TypographyType.FinancialReport ?
+                        ActionType.FinancialReportSealQuery : ActionType.TaxReportSealQuery
+                    ))
+                    .ForMember(dst => dst.CustomerId, opt => opt.MapFrom(src => src.CustomerId))
+                    .ForMember(dst => dst.CustomerName, opt => opt.MapFrom(src => src.Name))
+                    .ForMember(dst => dst.CustomerSealGroupId, opt => opt.MapFrom(src => src.Id));
+
+
             //操作紀錄Map會計簽印資料
             CreateMap<AccountantSignViewModels, OperationLogSave>()
                     .ForMember(dst => dst.ActionType, opt => opt.MapFrom(src => ActionType.AccountantSignQuery))
                     .ForMember(dst => dst.AccountantSignGroupCreateDate, opt => opt.MapFrom(src => src.GroupCreateDate));
+
+            //印鑑異動建檔紀錄
+            CreateMap<CustomerSealGroup, CustomerSealEventLogSave>()                    
+                    .ForMember(dst => dst.CustomerId, opt => opt.MapFrom(src => src.Customer.Id))
+                    .ForMember(dst => dst.CustomerCode, opt => opt.MapFrom(src => src.Customer.Code))
+                    .ForMember(dst => dst.CustomerName, opt => opt.MapFrom(src => src.Customer.Name))                    
+                    .ForMember(dst => dst.CustomerSealGroupId, opt => opt.MapFrom(src => src.Id))
+                    .ForMember(dst => dst.QuarterYearId, opt => opt.MapFrom(src => src.QuarterYear.Id))
+                    .ForMember(dst => dst.GregorainQuarterYear, opt => opt.MapFrom(src =>
+                            src.TypographyType == TypographyType.FinancialReport ?
+                            QuarterUtil.GetGregorainQuarter(src.QuarterYear) : QuarterUtil.GetGregorainYear(src.QuarterYear)
+                    ))
+                    .ForMember(dst => dst.DisplayQuarterYear, opt => opt.MapFrom(src =>
+                            src.TypographyType == TypographyType.FinancialReport ?
+                            QuarterUtil.GetTaiwanYearQuarter(src.QuarterYear) : QuarterUtil.GetTaiwanYear(src.QuarterYear)
+                    ));
+
+
+
         }
     }
 }

@@ -43,6 +43,16 @@ namespace SealTypographicWebAPI.Config.MapperProfile
                      //客戶基本資料
                      .ForMember(dst => dst.Name, opt => opt.MapFrom(src => src.Customer.Name))
                      .ForMember(dst => dst.Code, opt => opt.MapFrom(src => src.Customer.Code))
+                     //Log Save
+                     .ForMember(dst => dst.CustomerId, opt => opt.MapFrom(src => src.Customer.Id))
+                     .ForMember(dst => dst.GregorainQuarterYear, opt => opt.MapFrom(src =>
+                        src.QuarterYear.Type == TypographyType.FinancialReport ?
+                        QuarterUtil.GetGregorainQuarter(src.QuarterYear) : QuarterUtil.GetGregorainYear(src.QuarterYear)
+                    ))
+                    .ForMember(dst => dst.DisplayQuarterYear, opt => opt.MapFrom(src =>
+                        src.QuarterYear.Type == TypographyType.FinancialReport ?
+                        QuarterUtil.GetTaiwanYearQuarter(src.QuarterYear) : QuarterUtil.GetTaiwanYear(src.QuarterYear)
+                    ))
                      //印鑑與季度相關
                      .ForMember(dst => dst.Id, opt => opt.MapFrom(src => src.Id))
                      .ForMember(dst => dst.QuarterYearId, opt => opt.MapFrom(src => src.QuarterYear.Id))

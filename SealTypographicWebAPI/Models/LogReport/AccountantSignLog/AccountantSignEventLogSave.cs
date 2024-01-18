@@ -10,7 +10,7 @@ namespace SealTypographicWebAPI.Models.LogReport.AccountantSignLog
         /// <summary>
         /// 會計師編號
         /// </summary>
-        public string Code { get; set; }
+        public string AccountantCode { get; set; }
 
         /// <summary>
         /// 審核狀態

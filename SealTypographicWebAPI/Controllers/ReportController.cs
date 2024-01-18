@@ -1,5 +1,7 @@
 ﻿using DBEntities.Consts;
 using Microsoft.AspNetCore.Mvc;
+using SealTypographicWebAPI.Models.LogReport.AccountantSignLog;
+using SealTypographicWebAPI.Models.LogReport.CustomerSealEventLog;
 using SealTypographicWebAPI.Models.LogReport.OperationLog;
 using SealTypographicWebAPI.Models.LogReport.TypographicReport;
 using SealTypographicWebAPI.Services;
@@ -27,13 +29,40 @@ namespace SealTypographicWebAPI.Controllers
 
 
         /// <summary>
-        /// 取得操作紀錄
+        /// 取得操作紀錄分頁列表
         /// </summary>
         /// <param name="operationLogSearch"></param>
         /// <returns></returns>
         [HttpGet("[Action]")]
-        public OperationLogPaginate OperationLog([FromQuery] OperationLogSearch operationLogSearch)
-            => logReportService.OperationLogPaginate(operationLogSearch);
+        public OperationLogPaginate OperationLogPaginate ([FromQuery] OperationLogSearch operationLogSearch)
+            => logReportService.GetOperationLogPaginate(operationLogSearch);
+
+        /// <summary>
+        /// 取得財報印鑑異動紀錄分頁列表
+        /// </summary>
+        /// <param name="customerSealEventLogSearch"></param>
+        /// <returns></returns>
+        [HttpGet("[Action]")]
+        public CustomerSealEventLogPaginate FinancialReportSealEventLogPaginate([FromQuery] CustomerSealEventLogSearch customerSealEventLogSearch)
+            => logReportService.GetCustomerSealEventLogPaginate(customerSealEventLogSearch, TypographyType.FinancialReport);
+
+        /// <summary>
+        /// 取得稅報印鑑異動紀錄分頁列表
+        /// </summary>
+        /// <param name="customerSealEventLogSearch"></param>
+        /// <returns></returns>
+        [HttpGet("[Action]")]
+        public CustomerSealEventLogPaginate TaxReportSealEventLogPaginate([FromQuery] CustomerSealEventLogSearch customerSealEventLogSearch)
+            => logReportService.GetCustomerSealEventLogPaginate(customerSealEventLogSearch, TypographyType.TaxReport);
+
+        /// <summary>
+        /// 取得會計師簽印異動紀錄分頁列表
+        /// </summary>
+        /// <param name="accountantSignEventLogSearch"></param>
+        /// <returns></returns>
+        [HttpGet("[Action]")]
+        public AccountantSignEventLogPaginate AccountantSignEventLogPaginate([FromQuery] AccountantSignEventLogSearch accountantSignEventLogSearch)
+            => logReportService.GetAccountantSignEventLogPaginate(accountantSignEventLogSearch);
 
         /// <summary>
         /// 取得財報排版紀錄

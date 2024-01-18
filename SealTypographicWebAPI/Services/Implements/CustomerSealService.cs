@@ -11,8 +11,9 @@ using DBEntities;
 using DBEntities.Entities.TypographicModels;
 using DBEntities.Entities.CustomerModels;
 using DBEntities.Utils;
-using SealTypographicWebAPI.Consts;
 using SealTypographicWebAPI.Models.LogReport.OperationLog;
+using SealTypographicWebAPI.Models.LogReport.CustomerSealEventLog;
+using CommonLib.Enums;
 
 namespace SealTypographicWebAPI.Services.Implements
 {
@@ -309,6 +310,7 @@ namespace SealTypographicWebAPI.Services.Implements
                         customerQuery.CustomerSealGroups.Add(customerSealGroup);
                         await dbContext.SaveChangesAsync();
                         response.Success();
+                        await logReportService.SaveCustomerSealEventLog(mapper.Map<CustomerSealEventLogSave>(customerSealGroup), OperateType.Create);
                     }
                     else
                     {
@@ -408,6 +410,7 @@ namespace SealTypographicWebAPI.Services.Implements
                         await dbContext.SaveChangesAsync();
                         response.Success();
                         responseViewModels.Add(response);
+                        await logReportService.SaveCustomerSealEventLog(mapper.Map<CustomerSealEventLogSave>(customerSealGroup), OperateType.Modify);
                     }
                 }
                 logger.LogInformation("Update output {@Output}", responseViewModels);
@@ -437,7 +440,7 @@ namespace SealTypographicWebAPI.Services.Implements
         }
 
         ///<inheritdoc />  
-        public ResponseViewModel ChangeReviewStatus(int customerSealQuarterId, ReviewStatus reviewStatus,int userId = 1)
+        public ResponseViewModel ChangeReviewStatus(int customerSealQuarterId, ReviewStatus reviewStatus, int userId = 1)
         {
             logger.LogInformation("ChangeReviewStatus input customerSealQuarterId: {@CustomerSealQuarterId} reviewStatus: {ReviewStatus} userId {@userId}"
                 , customerSealQuarterId, reviewStatus, userId);
@@ -463,6 +466,7 @@ namespace SealTypographicWebAPI.Services.Implements
                     customerSealGroup.UpdateUserId = userId;
                     dbContext.SaveChanges();
                     response.Success();
+                    logReportService.SaveCustomerSealEventLog(mapper.Map<CustomerSealEventLogSave>(customerSealGroup), OperateType.Modify);
                 }
                 else
                 {

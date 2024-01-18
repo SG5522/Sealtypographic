@@ -11,6 +11,7 @@ using MongoDB.Driver;
 using MongoDB.Driver.Linq;
 using SealTypographicWebAPI.Config;
 using SealTypographicWebAPI.Consts;
+using SealTypographicWebAPI.Models.LogReport.AccountantSignLog;
 using SealTypographicWebAPI.Models.LogReport.CustomerSealEventLog;
 using SealTypographicWebAPI.Models.LogReport.OperationLog;
 using SealTypographicWebAPI.Models.LogReport.TypographicReport;
@@ -28,7 +29,7 @@ namespace SealTypographicWebAPI.Services.Implements
         private readonly ILogger<LogReportService> logger;        
         private readonly AutoMapper.IConfigurationProvider configurationProvider;        
         private IMongoCollection<OperationLog> operationLog;
-        private IMongoCollection<CustomerSealEventLog> customerSealGroupLog;
+        private IMongoCollection<CustomerSealEventLog> customerSealEventLog;
         private IMongoCollection<AccountantSignEventLog> accountantSignEventLog;
 
         /// <summary>
@@ -61,7 +62,7 @@ namespace SealTypographicWebAPI.Services.Implements
             CreateTimeSeriesCollection(mongoDatabase, LogDbCollectionNames.AccountantSignEventLog);
             //取得Collection
             operationLog = mongoDatabase.GetCollection<OperationLog>(LogDbCollectionNames.OperationLog);
-            customerSealGroupLog = mongoDatabase.GetCollection<CustomerSealEventLog>(LogDbCollectionNames.CustomerSealEventLog);
+            customerSealEventLog = mongoDatabase.GetCollection<CustomerSealEventLog>(LogDbCollectionNames.CustomerSealEventLog);
             accountantSignEventLog = mongoDatabase.GetCollection<AccountantSignEventLog>(LogDbCollectionNames.AccountantSignEventLog);
         }
 
@@ -97,26 +98,27 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <returns></returns>
         public async Task SaveOperationLog(OperationLogSave operationLogSave, string userId = "test", string userName = "test")
         {                        
-            await operationLog.InsertOneAsync(MapFrom<OperationLog, OperationLogSave>(operationLogSave, userId, userName));
+            await operationLog.InsertOneAsync(MapFrom<OperationLog, OperationLogSave>(operationLogSave, OperateType.Search, userId, userName));
         }
 
         /// <summary>
         /// 客戶印鑑事件紀錄(傳到MongoDB)
         /// </summary>        
         /// <param name="customerSealGroupLogSave"></param>
+        /// <param name="operateType"></param>
         /// <param name="userName"></param>
         /// <param name="userId"></param>
         /// <returns></returns>
-        public async Task SaveCustomerSealEventLog(CustomerSealEventLogSave customerSealGroupLogSave, string userId = "test", string userName = "test")
+        public async Task SaveCustomerSealEventLog(CustomerSealEventLogSave customerSealGroupLogSave, OperateType operateType, string userId = "test", string userName = "test")
         {
-            await customerSealGroupLog.InsertOneAsync(MapFrom<CustomerSealEventLog, CustomerSealEventLogSave>(customerSealGroupLogSave, userId, userName));
+            await customerSealEventLog.InsertOneAsync(MapFrom<CustomerSealEventLog, CustomerSealEventLogSave>(customerSealGroupLogSave, operateType, userId, userName));
         }
 
         /// <summary>
         /// 操作紀錄分頁列表
         /// </summary>
         /// <returns></returns>
-        public OperationLogPaginate OperationLogPaginate(OperationLogSearch operationLogSearch)
+        public OperationLogPaginate GetOperationLogPaginate(OperationLogSearch operationLogSearch)
         {
             OperationLogPaginate operationLogPaginate = new();
 
@@ -133,18 +135,18 @@ namespace SealTypographicWebAPI.Services.Implements
                 operationLogQuery = operationLogQuery.Where(x => x.Data!.ActionType == operationLogSearch.ActionType);
             }
 
-            if (!string.IsNullOrWhiteSpace(operationLogSearch.KeyWord))
+            if (!string.IsNullOrWhiteSpace(operationLogSearch.UserKeyWord))
             {
-                operationLogQuery = operationLogQuery.Where(x => x.UserId.ToLower().Contains(operationLogSearch.KeyWord.ToLower())
-                                                            || x.UserName.ToLower().Contains(operationLogSearch.KeyWord.ToLower()));
+                operationLogQuery = operationLogQuery.Where(x => x.UserId.ToLower().Contains(operationLogSearch.UserKeyWord.ToLower())
+                                                            || x.UserName.ToLower().Contains(operationLogSearch.UserKeyWord.ToLower()));
             }
 
-            if(!string.IsNullOrWhiteSpace(operationLogSearch.TargetName))
+            if(!string.IsNullOrWhiteSpace(operationLogSearch.TargetKeyWord))
             {
                 operationLogQuery = operationLogQuery.Where(x => x.Data != null &&
                                                                 (
-                                                                    x.Data!.CustomerName.ToLower().Contains(operationLogSearch.TargetName.ToLower())
-                                                                    || x.Data!.AccountantName.ToLower().Contains(operationLogSearch.TargetName.ToLower())
+                                                                    x.Data!.CustomerName.ToLower().Contains(operationLogSearch.TargetKeyWord.ToLower())
+                                                                    || x.Data!.AccountantName.ToLower().Contains(operationLogSearch.TargetKeyWord.ToLower())
                                                                 )
                                                             );                
             }
@@ -165,7 +167,115 @@ namespace SealTypographicWebAPI.Services.Implements
 
             return operationLogPaginate;
         }
-        
+
+        /// <summary>
+        /// 客戶印鑑異動分頁列表
+        /// </summary>
+        /// <returns></returns>
+        public CustomerSealEventLogPaginate GetCustomerSealEventLogPaginate(CustomerSealEventLogSearch customerSealEventLogSearch, TypographyType typographyType)
+        {
+            CustomerSealEventLogPaginate customerSealEventLogPaginate = new();
+
+            logger.LogInformation("OperationLogPaginate input operationLogSearch: {@operationLogSearch}", customerSealEventLogSearch);
+
+            IQueryable<CustomerSealEventLog> customerSealEventLogQuery = customerSealEventLog.AsQueryable().Where
+                                                        (
+                                                            x => x.DateTime >= customerSealEventLogSearch.StartDate
+                                                            && x.DateTime <= customerSealEventLogSearch.EndDate
+                                                            && x.Data!.TypographyType == typographyType
+                                                        );
+
+            if (customerSealEventLogSearch.ReviewStatus != null)
+            {
+                customerSealEventLogQuery = customerSealEventLogQuery.Where(x => x.Data!.ReviewStatus == customerSealEventLogSearch.ReviewStatus);
+            }
+
+            if (!string.IsNullOrWhiteSpace(customerSealEventLogSearch.UserKeyWord))
+            {
+                customerSealEventLogQuery = customerSealEventLogQuery.Where(x => x.UserId.ToLower().Contains(customerSealEventLogSearch.UserKeyWord.ToLower())
+                                                            || x.UserName.ToLower().Contains(customerSealEventLogSearch.UserKeyWord.ToLower()));
+            }
+
+            if (!string.IsNullOrWhiteSpace(customerSealEventLogSearch.CustomerKeyWord))
+            {
+                customerSealEventLogQuery = customerSealEventLogQuery.Where(x => x.Data != null &&
+                                                                (
+                                                                    x.Data!.CustomerCode.ToLower().Contains(customerSealEventLogSearch.CustomerKeyWord.ToLower())
+                                                                    || x.Data!.CustomerName.ToLower().Contains(customerSealEventLogSearch.CustomerKeyWord.ToLower())
+                                                                )
+                                                            );
+            }
+
+            if (customerSealEventLogQuery.Any())
+            {
+                customerSealEventLogPaginate.ViewModels = PageUtil.SetPaginateViewModel<CustomerSealEventLog, CustomerSealEventLogViewModel>
+                                                    (customerSealEventLogQuery, customerSealEventLogSearch.PageNumber, customerSealEventLogSearch.PageSize, configurationProvider);
+
+                PageUtil.SetPaginate(customerSealEventLogPaginate, customerSealEventLogSearch.PageNumber, customerSealEventLogSearch.PageSize, customerSealEventLogQuery.Count());
+
+                customerSealEventLogPaginate.Success();
+            }
+            else
+            {
+                customerSealEventLogPaginate.DbNoData();
+            }
+
+            return customerSealEventLogPaginate;
+        }
+
+        /// <summary>
+        /// 客戶印鑑異動分頁列表
+        /// </summary>
+        /// <returns></returns>
+        public AccountantSignEventLogPaginate GetAccountantSignEventLogPaginate(AccountantSignEventLogSearch accountantSignEventLogSearch)
+        {
+            AccountantSignEventLogPaginate accountantSignEventLogPaginate = new();
+
+            logger.LogInformation("OperationLogPaginate input operationLogSearch: {@operationLogSearch}", accountantSignEventLogSearch);
+
+            IQueryable<AccountantSignEventLog> accountantSignEventLogQuery = accountantSignEventLog.AsQueryable().Where
+                                                        (
+                                                            x => x.DateTime >= accountantSignEventLogSearch.StartDate
+                                                            && x.DateTime <= accountantSignEventLogSearch.EndDate
+                                                        );
+
+            if (accountantSignEventLogSearch.ReviewStatus != null)
+            {
+                accountantSignEventLogQuery = accountantSignEventLogQuery.Where(x => x.Data!.ReviewStatus == accountantSignEventLogSearch.ReviewStatus);
+            }
+
+            if (!string.IsNullOrWhiteSpace(accountantSignEventLogSearch.UserKeyword))
+            {
+                accountantSignEventLogQuery = accountantSignEventLogQuery.Where(x => x.UserId.ToLower().Contains(accountantSignEventLogSearch.UserKeyword.ToLower())
+                                                            || x.UserName.ToLower().Contains(accountantSignEventLogSearch.UserKeyword.ToLower()));
+            }
+
+            if (!string.IsNullOrWhiteSpace(accountantSignEventLogSearch.AccountantKeyword))
+            {
+                accountantSignEventLogQuery = accountantSignEventLogQuery.Where(x => x.Data != null &&
+                                                                (
+                                                                    x.Data!.AccountantCode.ToLower().Contains(accountantSignEventLogSearch.AccountantKeyword.ToLower())
+                                                                    || x.Data!.AccountantName.ToLower().Contains(accountantSignEventLogSearch.AccountantKeyword.ToLower())
+                                                                )
+                                                            );
+            }
+
+            if (accountantSignEventLogQuery.Any())
+            {
+                accountantSignEventLogPaginate.ViewModels = PageUtil.SetPaginateViewModel<AccountantSignEventLog, AccountantSignEventLogViewModel>
+                                                    (accountantSignEventLogQuery, accountantSignEventLogSearch.PageNumber, accountantSignEventLogSearch.PageSize, configurationProvider);
+
+                PageUtil.SetPaginate(accountantSignEventLogPaginate, accountantSignEventLogSearch.PageNumber, accountantSignEventLogSearch.PageSize, accountantSignEventLogQuery.Count());
+
+                accountantSignEventLogPaginate.Success();
+            }
+            else
+            {
+                accountantSignEventLogPaginate.DbNoData();
+            }
+
+            return accountantSignEventLogPaginate;
+        }
 
         /// <summary>
         /// 
@@ -255,7 +365,7 @@ namespace SealTypographicWebAPI.Services.Implements
             };
         }
 
-        private static T MapFrom<T, K>(K logSaveData, string userId, string userName) where T : LogModel<K>, new()             
+        private static T MapFrom<T, K>(K logSaveData, OperateType operateType, string userId, string userName) where T : LogModel<K>, new()             
         {
             if (logSaveData == null) throw new ArgumentNullException(nameof(logSaveData));
 
@@ -263,7 +373,7 @@ namespace SealTypographicWebAPI.Services.Implements
             {
                 Data = logSaveData,
                 DateTime = DateTime.Now,
-                OperateType = OperateType.Search,                
+                OperateType = operateType,                
                 FunctionType = FunctionType.SealTypographic,                
                 LogLevel = CommonLib.Enums.LogLevel.Info,
                 SystemType = SystemType.SealTypographic,

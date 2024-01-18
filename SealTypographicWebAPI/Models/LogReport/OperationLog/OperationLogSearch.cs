@@ -3,7 +3,7 @@
 namespace SealTypographicWebAPI.Models.LogReport.OperationLog
 {
     /// <summary>
-    /// 操作紀錄
+    /// 操作紀錄查詢
     /// </summary>
     public class OperationLogSearch : LogSearchBase
     {
@@ -15,11 +15,11 @@ namespace SealTypographicWebAPI.Models.LogReport.OperationLog
         /// <summary>
         /// UserId or UserName
         /// </summary>
-        public string? KeyWord { get; set; }
+        public string? UserKeyWord { get; set; }
 
         /// <summary>
-        /// 查詢對象
+        /// 對象名稱
         /// </summary>
-        public string? TargetName { get; set; }
+        public string? TargetKeyWord { get; set; }
     }
 }

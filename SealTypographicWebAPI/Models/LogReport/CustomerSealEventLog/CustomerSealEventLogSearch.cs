@@ -3,7 +3,7 @@
 namespace SealTypographicWebAPI.Models.LogReport.CustomerSealEventLog
 {
     /// <summary>
-    /// 操作紀錄
+    /// 客戶印鑑紀錄查詢
     /// </summary>
     public class CustomerSealEventLogSearch : LogSearchBase
     {
@@ -15,11 +15,11 @@ namespace SealTypographicWebAPI.Models.LogReport.CustomerSealEventLog
         /// <summary>
         /// UserId or UserName
         /// </summary>
-        public string? KeyWord { get; set; }
+        public string? UserKeyWord { get; set; }
 
         /// <summary>
         /// 客戶編號/名稱
         /// </summary>
-        public string? CustomerCodeOrName { get; set; }
+        public string? CustomerKeyWord { get; set; }
     }
 }
