@@ -159,7 +159,10 @@ namespace SealTypographicWebAPI.Services.Implements
             {
                 foreach (int customerSealQuarterId in customerSealQuarterIds)
                 {
-                    CustomerSealGroup? customerSealGroup = dbContext.CustomerSealGroups.Find(customerSealQuarterId);
+                    CustomerSealGroup? customerSealGroup = dbContext.CustomerSealGroups
+                                                            .Include(x => x.Customer)
+                                                            .Include(x => x.QuarterYear)
+                                                            .FirstOrDefault(x => x.Id == customerSealQuarterId);
                     if (customerSealGroup != null)
                     {
                         customerSealGroup.ReviewUserId = userId;

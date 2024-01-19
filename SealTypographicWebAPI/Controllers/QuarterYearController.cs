@@ -43,7 +43,7 @@ namespace SealTypographicWebAPI.Controllers
             try
             {
                 financialQuarterResponse = quarterYearService.GetQuarters();
-                logger.LogInformation("FinancialQuarterList output {@Output}", financialQuarterResponse);
+                //logger.LogInformation("FinancialQuarterList output {@Output}", financialQuarterResponse);
             }
             catch (Exception ex) 
             {
@@ -65,7 +65,7 @@ namespace SealTypographicWebAPI.Controllers
             try
             {
                 taxYearResponse = quarterYearService.GetYears();
-                logger.LogInformation("TaxYearList output {@Output}", taxYearResponse);
+                //logger.LogInformation("TaxYearList output {@Output}", taxYearResponse);
             }
             catch (Exception ex)
             {

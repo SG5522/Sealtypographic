@@ -55,11 +55,11 @@ namespace SealTypographicWebAPI.Models.LogReport.OperationLog
         /// <summary>
         /// 會計師簽印群組Id
         /// </summary>
-        public int AccountantSignGroupId { get; set; }
+        public int AccountantSignGroupId { get; set; }        
 
         /// <summary>
         /// 會計師簽印群組建立日期
         /// </summary>    
-        public DateTime AccountantSignGroupCreateDate { get; set; }
+        public DateTime? AccountantSignGroupCreateDate { get; set; }
     }
 }

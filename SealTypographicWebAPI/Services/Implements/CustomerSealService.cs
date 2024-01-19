@@ -271,7 +271,8 @@ namespace SealTypographicWebAPI.Services.Implements
         ///<inheritdoc />
         public async Task<ResponseViewModel> New(CustomerSealForm customerSealForm, TypographyType typographyType, int userId = 1)
         {
-            logger.LogInformation("New input {@customerSealForm} typographyType: {@typographyType} userId: {@userId}", customerSealForm, typographyType, userId);    
+            logger.LogInformation("New input {@customerSealForm} typographyType: {@typographyType} userId: {@userId}",
+                 LogFilterUtil.FilterSensitiveData(customerSealForm), typographyType, userId);    
             
             ResponseViewModel response = new();            
 
@@ -340,7 +341,7 @@ namespace SealTypographicWebAPI.Services.Implements
         ///<inheritdoc />
         public async Task<List<ResponseViewModel>> Update(CustomerSealUpdate customerSealUpdate, int userId = 1)
         {
-            logger.LogInformation("Update input {@customerSealUpdate} userId: {@userId}", customerSealUpdate, userId);
+            logger.LogInformation("Update input {@customerSealUpdate} userId: {@userId}", LogFilterUtil.FilterSensitiveData(customerSealUpdate), userId);
 
             List<ResponseViewModel> responseViewModels = new();                        
 
@@ -348,6 +349,7 @@ namespace SealTypographicWebAPI.Services.Implements
             {
                 CustomerSealGroup? customerSealGroup = dbContext.CustomerSealGroups
                                                     .Include(customerSealGroup => customerSealGroup.Customer)
+                                                    .Include(customerSealGroup => customerSealGroup.QuarterYear)
                                                     .Include(customerSealGroup => customerSealGroup.TypographicResources.Where(x => x.DeleteStatus == DeleteStatus.No))
                                                     .FirstOrDefault
                                                     (
@@ -449,7 +451,10 @@ namespace SealTypographicWebAPI.Services.Implements
 
             try
             {
-                CustomerSealGroup? customerSealGroup = dbContext.CustomerSealGroups.Find(customerSealQuarterId);
+                CustomerSealGroup? customerSealGroup = dbContext.CustomerSealGroups
+                                                        .Include(customerSealGroup => customerSealGroup.Customer)
+                                                        .Include(customerSealGroup => customerSealGroup.QuarterYear)
+                                                        .FirstOrDefault(x => x.Id == customerSealQuarterId);                                                        
 
                 if (customerSealGroup != null)
                 {

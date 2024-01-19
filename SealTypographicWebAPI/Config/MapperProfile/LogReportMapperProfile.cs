@@ -86,12 +86,12 @@ namespace SealTypographicWebAPI.Config.MapperProfile
                     .ForMember(dst => dst.ActionType, opt => opt.MapFrom(src => ActionType.AccountantSignQuery))
                     .ForMember(dst => dst.AccountantSignGroupCreateDate, opt => opt.MapFrom(src => src.GroupCreateDate));
 
-            //印鑑異動建檔紀錄
+            //印鑑異動建檔紀錄存檔Map
             CreateMap<CustomerSealGroup, CustomerSealEventLogSave>()                    
                     .ForMember(dst => dst.CustomerId, opt => opt.MapFrom(src => src.Customer.Id))
                     .ForMember(dst => dst.CustomerCode, opt => opt.MapFrom(src => src.Customer.Code))
                     .ForMember(dst => dst.CustomerName, opt => opt.MapFrom(src => src.Customer.Name))                    
-                    .ForMember(dst => dst.CustomerSealGroupId, opt => opt.MapFrom(src => src.Id))
+                    .ForMember(dst => dst.CustomerSealGroupId, opt => opt.MapFrom(src => src.Id))                    
                     .ForMember(dst => dst.QuarterYearId, opt => opt.MapFrom(src => src.QuarterYear.Id))
                     .ForMember(dst => dst.GregorainQuarterYear, opt => opt.MapFrom(src =>
                             src.TypographyType == TypographyType.FinancialReport ?
@@ -102,7 +102,12 @@ namespace SealTypographicWebAPI.Config.MapperProfile
                             QuarterUtil.GetTaiwanYearQuarter(src.QuarterYear) : QuarterUtil.GetTaiwanYear(src.QuarterYear)
                     ));
 
-
+            //印鑑異動紀錄Map(分頁顯示)
+            CreateMap<CustomerSealEventLog, CustomerSealEventLogViewModel>()
+                    .ForMember(dst => dst.Code, opt => opt.MapFrom(src => src.Data!.CustomerCode))
+                    .ForMember(dst => dst.ReviewStatus, opt => opt.MapFrom(src => src.Data!.ReviewStatus))
+                    .ForMember(dst => dst.CustomerName, opt => opt.MapFrom(src => src.Data!.CustomerName))
+                    .ForMember(dst => dst.DisplayQuarterYear, opt => opt.MapFrom(src => src.Data!.DisplayQuarterYear));
 
         }
     }
