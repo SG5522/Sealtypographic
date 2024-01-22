@@ -33,7 +33,11 @@ namespace SealTypographicWebAPI.Utils
         /// <param name="pageSize">每頁顯示的個數</param>
         /// <param name="configurationProvider">AutoMapper配置提供者</param>
         /// <returns></returns>
-        public static List<TDestination> SetPaginateViewModel<TSoucre, TDestination>(IQueryable<TSoucre> srcData, int pageNumber, int pageSize, AutoMapper.IConfigurationProvider configurationProvider)                
+        public static List<TDestination> SetPaginateViewModel<TSoucre, TDestination>(
+            IQueryable<TSoucre> srcData, 
+            int pageNumber, 
+            int pageSize, 
+            AutoMapper.IConfigurationProvider configurationProvider)                
         {            
             return  srcData
                     .Skip((pageNumber - 1) * pageSize)

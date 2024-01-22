@@ -46,6 +46,16 @@ namespace SealTypographicWebAPI.Config.MapperProfile
             //客戶印鑑(Log)
             CreateMap<CustomerSealViewModels, CustomerSealViewModels>();
 
+            CreateMap<CustomerSealForm, CustomerSealForm>();
+
+            CreateMap<CustomerSealUpdate, CustomerSealUpdate>();
+
+            CreateMap<CustomerSealUpdateForm, CustomerSealUpdateForm>()
+                    .ForMember(dst => dst.ImageBase64, opt => opt.Ignore());
+
+            CreateMap<CustomerSeal, CustomerSeal>()
+                    .ForMember(dst => dst.ImageBase64, opt => opt.Ignore());
+
             CreateMap<CustomerSealViewModel, CustomerSealViewModel>()
                     .ForMember(dst => dst.ImageBase64, opt => opt.Ignore());
 
@@ -63,7 +73,6 @@ namespace SealTypographicWebAPI.Config.MapperProfile
 
             CreateMap<CustomerSealViewModel, TypographicResource>()
                     .ForMember(dst => dst.ImageFullPath, opt => opt.Ignore()); // <---ImagePath要額外處理所以要忽略  
-
 
             CreateMap<CustomerSealUpdateForm, TypographicResource>()
                     .ForMember(dst => dst.ImageFullPath, opt => opt.Ignore()) // <---ImagePath要額外處理所以要忽略

@@ -1,5 +1,7 @@
 ﻿using System.Collections;
 using System.Reflection;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.Text.Json;
 
 namespace SealTypographicWebAPI.Utils
 {
@@ -15,9 +17,10 @@ namespace SealTypographicWebAPI.Utils
         /// <param name="obj"></param>
         /// <returns></returns>
         public static T? FilterSensitiveData<T>(T obj)
-        {
+        {            
             return FilterSensitiveData(obj, new List<string> { "ImageBase64" });
         }
+
 
         /// <summary>
         /// 過濾，指定要過濾的屬性名稱
@@ -29,11 +32,32 @@ namespace SealTypographicWebAPI.Utils
         public static T? FilterSensitiveData<T>(T obj, List<string> propertiesToFilter)
         {
             T? result = default;
-            if (obj != null)
+            T? copy = obj != null ? CloneObject(obj) : default;
+            
+            if (copy != null)
             {
-                result = (T)FilterObject(obj, propertiesToFilter);
+                result = (T)FilterObject(copy, propertiesToFilter);
             }
+
             return result;
+        }
+
+        private static T? CloneObject<T>(T obj)
+        {
+            if (obj == null)
+                throw new ArgumentNullException(nameof(obj));
+
+            // 使用 System.Text.Json 進行序列化和反序列化
+            var options = new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true,
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                WriteIndented = true
+            };
+
+            string json = JsonSerializer.Serialize(obj, options);
+
+            return JsonSerializer.Deserialize<T>(json, options);
         }
 
         private static object FilterObject(object obj, List<string> propertiesToFilter)
@@ -89,6 +113,5 @@ namespace SealTypographicWebAPI.Utils
             // 是否在要過濾的屬性名稱清單中 (不分大小寫)
             return propertiesToFilter.Contains(property.Name, StringComparer.OrdinalIgnoreCase) && property.CanWrite;
         }
-
     }
 }

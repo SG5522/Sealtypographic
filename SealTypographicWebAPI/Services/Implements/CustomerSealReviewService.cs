@@ -6,7 +6,6 @@ using DBEntities.Consts;
 using DBEntities.Entities.CustomerModels;
 using Microsoft.EntityFrameworkCore;
 using SealTypographicWebAPI.Models;
-using SealTypographicWebAPI.Models.CustomerSeal;
 using SealTypographicWebAPI.Models.CustomerSealReview;
 using SealTypographicWebAPI.Models.LogReport.CustomerSealEventLog;
 using SealTypographicWebAPI.Models.LogReport.OperationLog;
@@ -82,14 +81,13 @@ namespace SealTypographicWebAPI.Services.Implements
                 if (customerSealQuarterQuery.Any())
                 {
                     //取得該頁                   
-                    //customerSealQuarterResponse.ViewModels = customerSealQuarterQuery
-                    //                                        .Include(x => x.TypographicResources)
-                    //                                        .Skip((customerSealSearchReview.PageNumber - 1) * customerSealSearchReview.PageSize)
-                    //                                        .Take(customerSealSearchReview.PageSize)
-                    //                                        .ProjectTo<CustomerSealGroupReviewViewModel>(configurationProvider)
-                    //                                        .ToList();
-                    customerSealQuarterResponse.ViewModels = 
-                    PageUtil.SetPaginateViewModel<CustomerSealGroup, CustomerSealGroupReviewViewModel>(customerSealQuarterQuery, customerSealSearchReview.PageNumber, customerSealSearchReview.PageSize, configurationProvider);
+                    customerSealQuarterResponse.ViewModels = PageUtil.SetPaginateViewModel<CustomerSealGroup, CustomerSealGroupReviewViewModel>
+                                                            (
+                                                                customerSealQuarterQuery, 
+                                                                customerSealSearchReview.PageNumber, 
+                                                                customerSealSearchReview.PageSize,
+                                                                configurationProvider
+                                                            );
 
                     PageUtil.SetPaginate(customerSealQuarterResponse, customerSealSearchReview.PageNumber, customerSealSearchReview.PageSize, customerSealQuarterQuery.Count());
                     customerSealQuarterResponse.Success();                    

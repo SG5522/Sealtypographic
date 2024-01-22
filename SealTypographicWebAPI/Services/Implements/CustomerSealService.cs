@@ -272,8 +272,8 @@ namespace SealTypographicWebAPI.Services.Implements
         public async Task<ResponseViewModel> New(CustomerSealForm customerSealForm, TypographyType typographyType, int userId = 1)
         {
             logger.LogInformation("New input {@customerSealForm} typographyType: {@typographyType} userId: {@userId}",
-                 LogFilterUtil.FilterSensitiveData(customerSealForm), typographyType, userId);    
-            
+                mapper.Map<CustomerSealForm>(customerSealForm), typographyType, userId);            
+
             ResponseViewModel response = new();            
 
             try
@@ -341,7 +341,7 @@ namespace SealTypographicWebAPI.Services.Implements
         ///<inheritdoc />
         public async Task<List<ResponseViewModel>> Update(CustomerSealUpdate customerSealUpdate, int userId = 1)
         {
-            logger.LogInformation("Update input {@customerSealUpdate} userId: {@userId}", LogFilterUtil.FilterSensitiveData(customerSealUpdate), userId);
+            logger.LogInformation("Update input {@customerSealUpdate} userId: {@userId}", mapper.Map<CustomerSealUpdate>(customerSealUpdate), userId);
 
             List<ResponseViewModel> responseViewModels = new();                        
 
