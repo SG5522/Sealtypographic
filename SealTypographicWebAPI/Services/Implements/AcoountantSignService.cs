@@ -12,6 +12,9 @@ using SealTypographicWebAPI.Consts;
 using SealTypographicWebAPI.Models.LogReport;
 using SealTypographicWebAPI.Models.Customer;
 using SealTypographicWebAPI.Models.LogReport.OperationLog;
+using SealTypographicWebAPI.Models.CustomerSeal;
+using SealTypographicWebAPI.Models.LogReport.AccountantSignLog;
+using CommonLib.Enums;
 
 namespace SealTypographicWebAPI.Services.Implements
 {
@@ -109,7 +112,7 @@ namespace SealTypographicWebAPI.Services.Implements
                         }
                     }
                     accountantSignViewModels.Success();
-
+                    //操作紀錄(查詢)存檔
                     logReportService.SaveOperationLog(mapper.Map<OperationLogSave>(accountantSignViewModels));
                 }
                 else
@@ -159,6 +162,8 @@ namespace SealTypographicWebAPI.Services.Implements
                     accountantQuery.AccountantSignGroups.Add(accountantSignGroup);
                     dbContext.SaveChanges();
                     response.Success();
+                    //異動紀錄存檔(新增)
+                    await logReportService.SaveAccountantSignEventLog(mapper.Map<AccountantSignEventLogSave>(accountantSignGroup), OperateType.Create);
                 }
                 else
                 {
@@ -262,6 +267,8 @@ namespace SealTypographicWebAPI.Services.Implements
                             accountant.AccountantSignGroups.Add(accountantSignGroup);
                             dbContext.SaveChanges();
                             response.Success();
+                            //異動紀錄存檔(修改)
+                            await logReportService.SaveAccountantSignEventLog(mapper.Map<AccountantSignEventLogSave>(accountantSignGroup), OperateType.Modify);
                             responseViewModels.Add(response);
                         }
                     }

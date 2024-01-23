@@ -21,7 +21,8 @@ using SealTypographicWebAPI.Utils;
 namespace SealTypographicWebAPI.Services.Implements
 {
     /// <summary>
-    /// 
+    /// 報表管理Service
+    /// 紀錄操作(主要為查詢)、客戶印鑑異動、會計師簽印異動
     /// </summary>
     public class LogReportService : ILogReportService
     {
@@ -87,31 +88,6 @@ namespace SealTypographicWebAPI.Services.Implements
             {                
                 mongoDatabase.CreateCollection(collectionName, new() { TimeSeriesOptions = new TimeSeriesOptions("DateTime") });
             }
-        }
-
-        /// <summary>
-        /// 操作紀錄(傳到MongoDB)
-        /// </summary>        
-        /// <param name="operationLogSave"></param>
-        /// <param name="userName"></param>
-        /// <param name="userId"></param>
-        /// <returns></returns>
-        public async Task SaveOperationLog(OperationLogSave operationLogSave, string userId = "test", string userName = "test")
-        {                        
-            await operationLog.InsertOneAsync(MapFrom<OperationLog, OperationLogSave>(operationLogSave, OperateType.Search, userId, userName));
-        }
-
-        /// <summary>
-        /// 客戶印鑑事件紀錄(傳到MongoDB)
-        /// </summary>        
-        /// <param name="customerSealGroupLogSave"></param>
-        /// <param name="operateType"></param>
-        /// <param name="userName"></param>
-        /// <param name="userId"></param>
-        /// <returns></returns>
-        public async Task SaveCustomerSealEventLog(CustomerSealEventLogSave customerSealGroupLogSave, OperateType operateType, string userId = "test", string userName = "test")
-        {
-            await customerSealEventLog.InsertOneAsync(MapFrom<CustomerSealEventLog, CustomerSealEventLogSave>(customerSealGroupLogSave, operateType, userId, userName));
         }
 
         /// <summary>
@@ -344,25 +320,40 @@ namespace SealTypographicWebAPI.Services.Implements
 
         /// <summary>
         /// 操作紀錄(傳到MongoDB)
-        /// </summary>
-        /// <param name="data"></param>
+        /// </summary>        
+        /// <param name="operationLogSave"></param>
         /// <param name="userName"></param>
         /// <param name="userId"></param>
-        /// <param name="log"></param>
         /// <returns></returns>
-        public void SaveCustomizeLog<T>(T data, string userName = "test", string userId = "test")
+        public async Task SaveOperationLog(OperationLogSave operationLogSave, string userId = "test", string userName = "test")
         {
-            LogModel<T> logModel = new()
-            {
-                Data = data,
-                SystemType = SystemType.SealTypographic,
-                OperateType = OperateType.Search,
-                FunctionType = FunctionType.SealTypographic,                                
-                LogLevel = CommonLib.Enums.LogLevel.Info,
-                DateTime = DateTime.Now,                          
-                UserId = userId,
-                UserName = userName
-            };
+            await operationLog.InsertOneAsync(MapFrom<OperationLog, OperationLogSave>(operationLogSave, OperateType.Search, userId, userName));
+        }
+
+        /// <summary>
+        /// 客戶印鑑事件紀錄(傳到MongoDB)
+        /// </summary>        
+        /// <param name="customerSealGroupLogSave"></param>
+        /// <param name="operateType"></param>
+        /// <param name="userName"></param>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        public async Task SaveCustomerSealEventLog(CustomerSealEventLogSave customerSealGroupLogSave, OperateType operateType, string userId = "test", string userName = "test")
+        {
+            await customerSealEventLog.InsertOneAsync(MapFrom<CustomerSealEventLog, CustomerSealEventLogSave>(customerSealGroupLogSave, operateType, userId, userName));
+        }
+
+        /// <summary>
+        /// 會計師簽印事件紀錄(傳到MongoDB)
+        /// </summary>        
+        /// <param name="accountantSignEventLogSave"></param>
+        /// <param name="operateType"></param>
+        /// <param name="userName"></param>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        public async Task SaveAccountantSignEventLog(AccountantSignEventLogSave accountantSignEventLogSave, OperateType operateType, string userId = "test", string userName = "test")
+        {
+            await accountantSignEventLog.InsertOneAsync(MapFrom<AccountantSignEventLog, AccountantSignEventLogSave>(accountantSignEventLogSave, operateType, userId, userName));
         }
 
         private static T MapFrom<T, K>(K logSaveData, OperateType operateType, string userId, string userName) where T : LogModel<K>, new()             

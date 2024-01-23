@@ -1,12 +1,15 @@
 ﻿using AutoMapper;
 using DBEntities.Consts;
+using DBEntities.Entities.AccountantModels;
 using DBEntities.Entities.CustomerModels;
 using DBEntities.Entities.TypographicModels;
 using SealTypographicWebAPI.Consts;
 using SealTypographicWebAPI.Models.Accountant;
+using SealTypographicWebAPI.Models.AccountantSignReview;
 using SealTypographicWebAPI.Models.Customer;
 using SealTypographicWebAPI.Models.CustomerSeal;
 using SealTypographicWebAPI.Models.CustomerSealReview;
+using SealTypographicWebAPI.Models.LogReport.AccountantSignLog;
 using SealTypographicWebAPI.Models.LogReport.CustomerSealEventLog;
 using SealTypographicWebAPI.Models.LogReport.OperationLog;
 using SealTypographicWebAPI.Models.LogReport.TypographicReport;
@@ -57,7 +60,7 @@ namespace SealTypographicWebAPI.Config.MapperProfile
                     .ForMember(dst => dst.CustomerName, opt => opt.MapFrom(src => src.Name));                    
 
             //操作紀錄Map客戶印鑑資料
-            CreateMap<CustomerSealViewModels, OperationLogSave>()
+            CreateMap<CustomerSealViewModels, OperationLogSave>()                    
                     .ForMember(dst => dst.CustomerSealGroupId, opt => opt.MapFrom(src => src.CustomerSealQuarterId))
                     .ForMember(dst => dst.ActionType, opt => opt.MapFrom(src => 
                         src.TypographyType == TypographyType.FinancialReport ? 
@@ -86,6 +89,11 @@ namespace SealTypographicWebAPI.Config.MapperProfile
                     .ForMember(dst => dst.ActionType, opt => opt.MapFrom(src => ActionType.AccountantSignQuery))
                     .ForMember(dst => dst.AccountantSignGroupCreateDate, opt => opt.MapFrom(src => src.GroupCreateDate));
 
+            CreateMap<AccountantSignGroupDetailReviewViewModel, OperationLogSave>()
+                    .ForMember(dst => dst.ActionType, opt => opt.MapFrom(src => ActionType.AccountantSignQuery))
+                    .ForMember(dst => dst.AccountantSignGroupCreateDate, opt => opt.MapFrom(src => src.GroupCreateDate))
+                    ;
+
             //印鑑異動建檔紀錄存檔Map
             CreateMap<CustomerSealGroup, CustomerSealEventLogSave>()                    
                     .ForMember(dst => dst.CustomerId, opt => opt.MapFrom(src => src.Customer.Id))
@@ -101,6 +109,14 @@ namespace SealTypographicWebAPI.Config.MapperProfile
                             src.TypographyType == TypographyType.FinancialReport ?
                             QuarterUtil.GetTaiwanYearQuarter(src.QuarterYear) : QuarterUtil.GetTaiwanYear(src.QuarterYear)
                     ));
+
+            //會計師簽印異動建檔紀錄存檔Map
+            CreateMap<AccountantSignGroup, AccountantSignEventLogSave>()
+                    .ForMember(dst => dst.AccountantId, opt => opt.MapFrom(src => src.Accountant.Id))
+                    .ForMember(dst => dst.AccountantCode, opt => opt.MapFrom(src => src.Accountant.Code))
+                    .ForMember(dst => dst.AccountantName, opt => opt.MapFrom(src => src.Accountant.Name))
+                    .ForMember(dst => dst.AccountantSignGroupId, opt => opt.MapFrom(src => src.Id))
+                    .ForMember(dst => dst.AccountantSignGroupCreateDate, opt => opt.MapFrom(src => src.CreateDate));
 
             //印鑑異動紀錄Map(分頁顯示)
             CreateMap<CustomerSealEventLog, CustomerSealEventLogViewModel>()

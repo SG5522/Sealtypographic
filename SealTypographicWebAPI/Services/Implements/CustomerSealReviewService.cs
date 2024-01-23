@@ -152,6 +152,8 @@ namespace SealTypographicWebAPI.Services.Implements
                 , customerSealQuarterIds, reviewStatus, userId);
 
             ResponseViewModel response = new();
+            
+            List<CustomerSealEventLogSave> customerSealEventLogSaves = new ();
 
             try
             {
@@ -175,7 +177,7 @@ namespace SealTypographicWebAPI.Services.Implements
                         {   
                             customerSealGroup.DeleteStatus = DeleteStatus.Yes;
                         }
-                        logReportService.SaveCustomerSealEventLog(mapper.Map<CustomerSealEventLogSave>(customerSealGroup), OperateType.Review);
+                        customerSealEventLogSaves.Add(mapper.Map<CustomerSealEventLogSave>(customerSealGroup));                        
                     }
                     else
                     {
@@ -186,7 +188,12 @@ namespace SealTypographicWebAPI.Services.Implements
                 if (response.ErrorItem == null)
                 {
                     dbContext.SaveChanges();
-                    response.Success();                    
+                    response.Success();
+                    //異動紀錄存檔(審核)
+                    foreach (CustomerSealEventLogSave customerSealEventLogSave in customerSealEventLogSaves)
+                    {
+                        logReportService.SaveCustomerSealEventLog(customerSealEventLogSave, OperateType.Review);
+                    }
                 }
                 else
                 {

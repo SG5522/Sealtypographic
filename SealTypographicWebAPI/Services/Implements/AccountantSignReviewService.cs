@@ -7,6 +7,10 @@ using DBEntities.Consts;
 using AutoMapper.QueryableExtensions;
 using DBEntities;
 using DBEntities.Entities.AccountantModels;
+using CommonLib.Enums;
+using SealTypographicWebAPI.Models.LogReport.AccountantSignLog;
+using SealTypographicWebAPI.Models.Accountant;
+using SealTypographicWebAPI.Models.LogReport.OperationLog;
 
 namespace SealTypographicWebAPI.Services.Implements
 {
@@ -16,20 +20,24 @@ namespace SealTypographicWebAPI.Services.Implements
     public class AccountantSignReviewService : IAccountantSignReviewService
     {
         private readonly SealTypographicDbContext dbContext;        
+        private readonly IMapper mapper;
         private readonly AutoMapper.IConfigurationProvider configurationProvider;
         private readonly ILogger<AccountantSignReviewService> logger;
+        private readonly ILogReportService logReportService;
 
         /// <summary>
         /// 建構
         /// </summary>
         /// <param name="dbContext"></param>        
         /// <param name="mapper"></param>
-        /// <param name="logger"></param>    
-        public AccountantSignReviewService(SealTypographicDbContext dbContext, IMapper mapper, ILogger<AccountantSignReviewService> logger)
+        /// <param name="logger"></param>
+        /// <param name="logReportService"></param>    
+        public AccountantSignReviewService(SealTypographicDbContext dbContext, IMapper mapper, ILogger<AccountantSignReviewService> logger, ILogReportService logReportService)
         {
             this.dbContext = dbContext;
             configurationProvider = mapper.ConfigurationProvider;
             this.logger = logger;
+            this.logReportService = logReportService;
         }
 
         ///<inheritdoc />
@@ -117,6 +125,7 @@ namespace SealTypographicWebAPI.Services.Implements
                 {
                     accountantSignGroupDetailReviewResponse.ViewModel = accountantSignGroupQuery;
                     accountantSignGroupDetailReviewResponse.Success();
+                    logReportService.SaveOperationLog(mapper.Map<OperationLogSave>(accountantSignGroupQuery));
                 }
                 else 
                 {
@@ -145,6 +154,8 @@ namespace SealTypographicWebAPI.Services.Implements
             logger.LogInformation("StatusChange accountantSignGroupIds: {@accountantSignGroupIds}, reviewStatus: {@reviewStatus}, userId: {@userId} "
                                     , accountantSignGroupIds, reviewStatus, userId);
 
+            List<AccountantSignEventLogSave> accountantSignEventLogSaves = new ();
+
             ResponseViewModel response = new();
 
             try
@@ -152,28 +163,28 @@ namespace SealTypographicWebAPI.Services.Implements
                 
                 foreach (int accountantSignGroupId in accountantSignGroupIds)
                 {
-                    AccountantSignGroup? accountantSignGroupJournal = dbContext.AccountantSignGroups.Include(x => x.Accountant)
-                                                                                                    .FirstOrDefault(x => x.Id == accountantSignGroupId);
-                    if (accountantSignGroupJournal != null)
+                    AccountantSignGroup? accountantSignGroupQuery = dbContext.AccountantSignGroups.Include(x => x.Accountant)
+                                                                                            .FirstOrDefault(x => x.Id == accountantSignGroupId);
+                    if (accountantSignGroupQuery != null)
                     {
-                        accountantSignGroupJournal.ReviewUserId = userId;
-                        accountantSignGroupJournal.ReviewStatus = reviewStatus;
-                        accountantSignGroupJournal.ReviewDate = DateTime.Now;
+                        accountantSignGroupQuery.ReviewUserId = userId;
+                        accountantSignGroupQuery.ReviewStatus = reviewStatus;
+                        accountantSignGroupQuery.ReviewDate = DateTime.Now;
                         switch (reviewStatus)
                         {
                             case ReviewStatus.Approval:
                                 //變更啟用與結束日期
-                                accountantSignGroupJournal.StartDate = DateTime.Now;
-                                accountantSignGroupJournal.EndDate = DateTime.Parse("9999/12/31");
+                                accountantSignGroupQuery.StartDate = DateTime.Now;
+                                accountantSignGroupQuery.EndDate = DateTime.Parse("9999/12/31");
                                 //找出審核通過的簽印組
                                 IQueryable<AccountantSignGroup>? accountantSignGroups = dbContext.AccountantSignGroups
                                                                                        .Where
                                                                                        (
-                                                                                           x => x.Accountant.Id == accountantSignGroupJournal.Accountant.Id
+                                                                                           x => x.Accountant.Id == accountantSignGroupQuery.Accountant.Id
                                                                                            && x.Id != accountantSignGroupId
                                                                                            && x.ReviewStatus == ReviewStatus.Approval
                                                                                        );
-                                //如有審核通過的簽印組則停用
+                                //如有審核通過的簽印組則停用(會計師簽印只能有一組是通過的)
                                 if (accountantSignGroups != null)
                                 {
                                     foreach (AccountantSignGroup accountantSignGroup in accountantSignGroups)
@@ -182,12 +193,13 @@ namespace SealTypographicWebAPI.Services.Implements
                                         accountantSignGroup.EndDate = DateTime.Now;
                                     }
                                 }
-
                                 break;
                             case ReviewStatus.Refuse:
-                                accountantSignGroupJournal.DeleteStatus = DeleteStatus.Yes;
+                                accountantSignGroupQuery.DeleteStatus = DeleteStatus.Yes;
                                 break;
                         }
+                        //加入異動紀錄
+                        accountantSignEventLogSaves.Add(mapper.Map<AccountantSignEventLogSave>(accountantSignGroupQuery));                        
                     }
                     else
                     {
@@ -199,6 +211,11 @@ namespace SealTypographicWebAPI.Services.Implements
                 {
                     dbContext.SaveChanges();
                     response.Success();
+                    //異動紀錄存檔(審核)
+                    foreach(AccountantSignEventLogSave accountantSignEventLogSave in accountantSignEventLogSaves)
+                    {
+                        logReportService.SaveAccountantSignEventLog(accountantSignEventLogSave, OperateType.Review);
+                    }                    
                 }
                 else
                 {

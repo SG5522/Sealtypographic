@@ -8,11 +8,11 @@ using SealTypographicWebAPI.Models.LogReport.TypographicReport;
 namespace SealTypographicWebAPI.Services
 {
     /// <summary>
-    /// 
+    /// 報表管理Service
+    /// 紀錄操作(主要為查詢)、客戶印鑑異動、會計師簽印異動
     /// </summary>
     public interface ILogReportService
     {
-
         /// <summary>
         /// 取得排版紀錄
         /// </summary>
@@ -21,25 +21,6 @@ namespace SealTypographicWebAPI.Services
         /// <param name="userId"></param>
         /// <returns></returns>
         TypographicReportPaginate GetTypographicReport(TypographicReportSearch customerTypoReportSearch, TypographyType typographyType, int userId = 1);
-
-        /// <summary>
-        /// 操作紀錄(傳到MongoDB)
-        /// </summary>
-        /// <param name="operationLogForm"></param>
-        /// <param name="userName"></param>
-        /// <param name="userId"></param>
-        /// <returns></returns>
-        Task SaveOperationLog(OperationLogSave operationLogForm, string userName = "test", string userId = "test");
-
-        /// <summary>
-        /// 客戶印鑑事件紀錄(傳到MongoDB)
-        /// </summary>        
-        /// <param name="customerSealGroupLogSave">印鑑異動紀錄</param>
-        /// <param name="operateType">操作型態</param>
-        /// <param name="userName"></param>
-        /// <param name="userId"></param>
-        /// <returns></returns>
-        Task SaveCustomerSealEventLog(CustomerSealEventLogSave customerSealGroupLogSave, OperateType operateType, string userId = "test", string userName = "test");
 
         /// <summary>
         /// 取得操作紀錄分頁列表
@@ -62,5 +43,34 @@ namespace SealTypographicWebAPI.Services
         /// <param name="accountantSignEventLogSearch"></param>
         /// <returns></returns>
         AccountantSignEventLogPaginate GetAccountantSignEventLogPaginate(AccountantSignEventLogSearch accountantSignEventLogSearch);
+
+        /// <summary>
+        /// 操作紀錄(傳到MongoDB)
+        /// </summary>
+        /// <param name="operationLogForm"></param>
+        /// <param name="userName"></param>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        Task SaveOperationLog(OperationLogSave operationLogForm, string userName = "test", string userId = "test");
+
+        /// <summary>
+        /// 客戶印鑑事件紀錄(傳到MongoDB)
+        /// </summary>        
+        /// <param name="customerSealGroupLogSave">印鑑異動紀錄</param>
+        /// <param name="operateType">操作型態</param>
+        /// <param name="userName"></param>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        Task SaveCustomerSealEventLog(CustomerSealEventLogSave customerSealGroupLogSave, OperateType operateType, string userId = "test", string userName = "test");
+
+        /// <summary>
+        /// 會計師簽印事件紀錄(傳到MongoDB)
+        /// </summary>        
+        /// <param name="accountantSignEventLogSave"></param>
+        /// <param name="operateType"></param>
+        /// <param name="userName"></param>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        Task SaveAccountantSignEventLog(AccountantSignEventLogSave accountantSignEventLogSave, OperateType operateType, string userId = "test", string userName = "test");
     }
 }
