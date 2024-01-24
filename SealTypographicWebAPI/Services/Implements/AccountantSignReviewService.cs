@@ -9,7 +9,6 @@ using DBEntities;
 using DBEntities.Entities.AccountantModels;
 using CommonLib.Enums;
 using SealTypographicWebAPI.Models.LogReport.AccountantSignLog;
-using SealTypographicWebAPI.Models.Accountant;
 using SealTypographicWebAPI.Models.LogReport.OperationLog;
 
 namespace SealTypographicWebAPI.Services.Implements
@@ -35,7 +34,8 @@ namespace SealTypographicWebAPI.Services.Implements
         public AccountantSignReviewService(SealTypographicDbContext dbContext, IMapper mapper, ILogger<AccountantSignReviewService> logger, ILogReportService logReportService)
         {
             this.dbContext = dbContext;
-            configurationProvider = mapper.ConfigurationProvider;
+            this.mapper = mapper;
+            configurationProvider = mapper.ConfigurationProvider;            
             this.logger = logger;
             this.logReportService = logReportService;
         }
@@ -50,12 +50,14 @@ namespace SealTypographicWebAPI.Services.Implements
             try
             {
                 IQueryable<AccountantSignGroup> accountantSignGroupQuery = dbContext.AccountantSignGroups
-                                                                        .Include(x => x.Accountant)
-                                                                        .Where
-                                                                        (
-                                                                            x => x.DeleteStatus == DeleteStatus.No
-                                                                            && x.ReviewStatus < ReviewStatus.Disabled
-                                                                        ).OrderByDescending(x => x.Id);
+                                                                            .Include(x => x.TypographicResources)
+                                                                            .Include(x => x.Accountant)
+                                                                            .ThenInclude(x => x.AccountantGroups)
+                                                                            .Where
+                                                                            (
+                                                                                x => x.DeleteStatus == DeleteStatus.No
+                                                                                && x.ReviewStatus < ReviewStatus.Disabled
+                                                                            ).OrderByDescending(x => x.Id);
 
                 if (!string.IsNullOrWhiteSpace(accountantSignSearchReview.KeyWord))
                 {
@@ -75,18 +77,21 @@ namespace SealTypographicWebAPI.Services.Implements
 
                 if (accountantSignGroupQuery.Any())
                 {
-                    //取得該頁                            
-                    accountantSignGroupReviewPaginate.ViewModels = accountantSignGroupQuery
-                                                                .Include(x => x.TypographicResources)
-                                                                .Include(x => x.Accountant)
-                                                                .ThenInclude(x => x.AccountantGroups)
-                                                                .Skip((accountantSignSearchReview.PageNumber - 1) * accountantSignSearchReview.PageSize)
-                                                                .Take(accountantSignSearchReview.PageSize)
-                                                                .ProjectTo<AccountantSignGroupReviewViewModel>(configurationProvider)
-                                                                .ToList();
+                    //取得該頁                   
+                    accountantSignGroupReviewPaginate.ViewModels = PageUtil.SetPaginateViewModel<AccountantSignGroup, AccountantSignGroupReviewViewModel>
+                                                                    (
+                                                                        accountantSignGroupQuery,
+                                                                        accountantSignSearchReview.PageNumber,
+                                                                        accountantSignSearchReview.PageSize,
+                                                                        configurationProvider
+                                                                    );
 
                     PageUtil.SetPaginate(accountantSignGroupReviewPaginate, accountantSignSearchReview.PageNumber, accountantSignSearchReview.PageSize, accountantSignGroupQuery.Count());
                     accountantSignGroupReviewPaginate.Success();
+                    foreach(AccountantSignGroupReviewViewModel accountantSignGroupReviewViewModel in accountantSignGroupReviewPaginate.ViewModels)
+                    {                        
+                        logReportService.SaveOperationLog(mapper.Map<OperationLogSave>(accountantSignGroupReviewViewModel));
+                    }
                 }
                 else
                 {
@@ -114,12 +119,12 @@ namespace SealTypographicWebAPI.Services.Implements
             try
             {
                 AccountantSignGroupDetailReviewViewModel? accountantSignGroupQuery = dbContext.AccountantSignGroups
-                                                                                .Include(x => x.Accountant)
-                                                                                .ThenInclude(x => x.AccountantGroups)
-                                                                                .Include(x => x.TypographicResources)
-                                                                                .Where(x => x.Id == accountantSignGroupId)
-                                                                                .ProjectTo<AccountantSignGroupDetailReviewViewModel>(configurationProvider)
-                                                                                .FirstOrDefault();
+                                                                                    .Include(x => x.Accountant)
+                                                                                    .ThenInclude(x => x.AccountantGroups)
+                                                                                    .Include(x => x.TypographicResources)
+                                                                                    .Where(x => x.Id == accountantSignGroupId)
+                                                                                    .ProjectTo<AccountantSignGroupDetailReviewViewModel>(configurationProvider)
+                                                                                    .FirstOrDefault();
 
                 if (accountantSignGroupQuery != null)
                 {

@@ -28,6 +28,16 @@ namespace SealTypographicWebAPI.Config.MapperProfile
                     .ForMember(dst => dst.Name, opt => opt.MapFrom(src => src.Customer.Name))
                     .ForMember(dst => dst.Code, opt => opt.MapFrom(src => src.Customer.Code))
                     .ForMember(dst => dst.QuarterYearId, opt => opt.MapFrom(src => src.QuarterYear.Id))
+                     //Log Save
+                     .ForMember(dst => dst.CustomerId, opt => opt.MapFrom(src => src.Customer.Id))
+                     .ForMember(dst => dst.GregorainQuarterYear, opt => opt.MapFrom(src =>
+                        src.QuarterYear.Type == TypographyType.FinancialReport ?
+                        QuarterUtil.GetGregorainQuarter(src.QuarterYear) : QuarterUtil.GetGregorainYear(src.QuarterYear)
+                    ))
+                    .ForMember(dst => dst.DisplayQuarterYear, opt => opt.MapFrom(src =>
+                        src.QuarterYear.Type == TypographyType.FinancialReport ?
+                        QuarterUtil.GetTaiwanYearQuarter(src.QuarterYear) : QuarterUtil.GetTaiwanYear(src.QuarterYear)
+                    ))
                     .ForMember(dst => dst.SealImageInfos, opt => opt.MapFrom(src => src.TypographicResources.Where(x => x.DeleteStatus == DeleteStatus.No)));
 
             CreateMap<TypographicResource, SealImageInfo>()
@@ -70,6 +80,9 @@ namespace SealTypographicWebAPI.Config.MapperProfile
                     .ForMember(dst => dst.Code, opt => opt.MapFrom(src => src.Accountant.Code))
                     .ForMember(dst => dst.GroupName, opt => opt.MapFrom(src => src.Accountant.AccountantGroups.First().Name))
                     .ForMember(dst => dst.ReviewStatus, opt => opt.MapFrom(src => src.ReviewStatus))
+                    //Log Save
+                    .ForMember(dst => dst.AccountantId, opt => opt.MapFrom(src => src.Accountant.Id))
+                    .ForMember(dst => dst.GroupCreateDate, opt => opt.MapFrom(src => src.CreateDate))
                     .ForMember(dst => dst.SignImageInfos, opt => opt.MapFrom(src => src.TypographicResources.Where(x => x.DeleteStatus == DeleteStatus.No)));
 
             //會計師簽印審核詳細資料的簽印部份
@@ -82,7 +95,10 @@ namespace SealTypographicWebAPI.Config.MapperProfile
                     .ForMember(dst => dst.Id, opt => opt.MapFrom(src => src.Id))
                     .ForMember(dst => dst.Name, opt => opt.MapFrom(src => src.Accountant.Name))
                     .ForMember(dst => dst.Code, opt => opt.MapFrom(src => src.Accountant.Code))
-                    //.ForMember(dst => dst.GroupName, opt => opt.MapFrom(src => src.Accountant.AccountantGroup.Name))
+                    //Log Save
+                    .ForMember(dst => dst.AccountantId, opt => opt.MapFrom(src => src.Accountant.Id))
+                    .ForMember(dst => dst.GroupCreateDate, opt => opt.MapFrom(src => src.CreateDate))
+                    //TODO 之後要想辦法改成顯示多個Name
                     .ForMember(dst => dst.GroupName, opt => opt.MapFrom(src => src.Accountant.AccountantGroups.First().Name))
                     .ForMember(dst => dst.Signs, opt => opt.MapFrom(src => src.TypographicResources.Where(x => x.DeleteStatus == DeleteStatus.No)));
 

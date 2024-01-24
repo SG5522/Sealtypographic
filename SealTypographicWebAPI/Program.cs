@@ -5,6 +5,7 @@ using DJKeycloakAPI.Models.Users;
 using DJKeycloakLib.Configs;
 using DJKeycloakLib.Services;
 using Keycloak.AuthServices.Authentication;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.EntityFrameworkCore;
@@ -282,6 +283,21 @@ using (IServiceScope scope = app.Services.CreateScope())
 
 app.UseHttpsRedirection();
 app.UseAuthentication();
+
+// 設定身份驗證事件
+//app.Use(async (context, next) =>
+//{
+//    AuthenticateResult result = await context.AuthenticateAsync();
+//    if (result.Succeeded)
+//    {
+//        // 登入成功，記錄日誌
+//        string? username = result.Principal.Identity.Name;
+//        Console.WriteLine($"User {username} logged in successfully.");
+//    }
+
+//    await next();
+//});
+
 app.UseAuthorization();
 //app.UseSerilogRequestLogging(); // <-SeriLog 
 

@@ -1,9 +1,6 @@
 ﻿using DJKeycloakAPI.Models.Users;
 using DJKeycloakLib.Models.BaseModel;
 using SealTypographicWebAPI.Models;
-using SealTypographicWebAPI.Models.Accountant;
-using SealTypographicWebAPI.Models.AccountantGroupMember;
-using SealTypographicWebAPI.Models.Customer;
 using System.Security.Claims;
 
 namespace SealTypographicWebAPI.Services

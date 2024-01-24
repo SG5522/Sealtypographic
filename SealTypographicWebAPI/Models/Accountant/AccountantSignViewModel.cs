@@ -45,7 +45,7 @@ namespace SealTypographicWebAPI.Models.Accountant
         /// </summary>
         public ReviewStatus ReviewStatus { get; set; }
 
-        //--------------log Save Date-------------//
+        //--------------log Save Data-------------//
         /// <summary>
         /// 會計師id
         /// </summary>
@@ -57,7 +57,7 @@ namespace SealTypographicWebAPI.Models.Accountant
         /// </summary>
         [JsonIgnore]
         public string AccountantName { get; set; }
-        //--------------log Save Date-------------//
+        //--------------log Save Data-------------//
 
         /// <summary>
         /// 會計師印鑑簽名組

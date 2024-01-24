@@ -1,5 +1,6 @@
-﻿using SealTypographicWebAPI.Models.Accountant;
-using SealTypographicWebAPI.Models.CustomerSealReview;
+﻿using DBEntities.Consts;
+using SealTypographicWebAPI.Models.Accountant;
+using System.Text.Json.Serialization;
 
 namespace SealTypographicWebAPI.Models.AccountantSignReview
 {
@@ -21,6 +22,20 @@ namespace SealTypographicWebAPI.Models.AccountantSignReview
         /// </summary>
         /// <example>1</example>
         public int Id { get; set; }
+
+        //--------------log Save Data-------------//
+        /// <summary>
+        /// 會計師ID
+        /// </summary>
+        [JsonIgnore]
+        public int AccountantId { get; set; }
+
+        /// <summary>
+        /// 會計簽印群組建立日期
+        /// </summary>
+        [JsonIgnore]
+        public DateTime GroupCreateDate { get; set; }
+        //--------------log Save Data-------------//
 
         /// <summary>
         /// 會計師簽印組

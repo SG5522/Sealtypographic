@@ -91,6 +91,11 @@ namespace SealTypographicWebAPI.Services.Implements
 
                     PageUtil.SetPaginate(customerSealQuarterResponse, customerSealSearchReview.PageNumber, customerSealSearchReview.PageSize, customerSealQuarterQuery.Count());
                     customerSealQuarterResponse.Success();                    
+
+                    foreach(CustomerSealGroupReviewViewModel customerSealGroupReviewViewModel in customerSealQuarterResponse.ViewModels)
+                    {
+                        logReportService.SaveOperationLog(mapper.Map<OperationLogSave>(customerSealGroupReviewViewModel));
+                    }
                 }
                 else
                 {
