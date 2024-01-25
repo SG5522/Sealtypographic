@@ -1,5 +1,6 @@
 ﻿using CommonLib.Enums;
 using DBEntities.Consts;
+using SealTypographicWebAPI.Models;
 using SealTypographicWebAPI.Models.LogReport.AccountantSignLog;
 using SealTypographicWebAPI.Models.LogReport.CustomerSealEventLog;
 using SealTypographicWebAPI.Models.LogReport.OperationLog;
@@ -43,6 +44,13 @@ namespace SealTypographicWebAPI.Services
         /// <param name="accountantSignEventLogSearch"></param>
         /// <returns></returns>
         AccountantSignEventLogPaginate GetAccountantSignEventLogPaginate(AccountantSignEventLogSearch accountantSignEventLogSearch);
+
+        /// <summary>
+        /// 登入日誌
+        /// </summary>
+        /// <param name="userInfo"></param>                
+        /// <returns></returns>
+        Task LogLogin(UserInfo userInfo);
 
         /// <summary>
         /// 操作紀錄(傳到MongoDB)

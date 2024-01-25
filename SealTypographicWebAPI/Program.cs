@@ -5,12 +5,12 @@ using DJKeycloakAPI.Models.Users;
 using DJKeycloakLib.Configs;
 using DJKeycloakLib.Services;
 using Keycloak.AuthServices.Authentication;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using SealTypographicWebAPI.Config;
+using SealTypographicWebAPI.Models;
 using SealTypographicWebAPI.Services;
 using SealTypographicWebAPI.Services.Implements;
 using Serilog;
@@ -210,10 +210,28 @@ builder.Services.AddSwaggerGen(c =>
 builder.Services.AddKeycloakAuthentication(keycloakAuthenticationOptions, options =>
 {
     options.RequireHttpsMetadata = true;
-    options.Audience = "account";
+    options.Audience = "account";    
     options.BackchannelHttpHandler = new HttpClientHandler
     {
         ServerCertificateCustomValidationCallback = delegate { return true; }
+    };
+    options.Events = new JwtBearerEvents
+    {        
+        OnTokenValidated = async context =>
+        {
+            if (context.Principal!.Identity != null && context.Principal.Identity.IsAuthenticated)
+            {
+                // 登入成功時的處理程序
+                // 可以在這裡呼叫 LogReportService 來紀錄登入日誌
+                ILogReportService logReportService = context.HttpContext.RequestServices.GetRequiredService<ILogReportService>();
+                IApplicationUserService applicationUserService = context.HttpContext.RequestServices.GetRequiredService<IApplicationUserService>();
+
+                UserInfo userInfo = await applicationUserService.GetUserInfo(context.Principal!);
+
+                // 使用 LogReportService 來紀錄登入日誌
+                await logReportService.LogLogin(userInfo);                
+            }            
+        },        
     };
 });
 
@@ -283,20 +301,6 @@ using (IServiceScope scope = app.Services.CreateScope())
 
 app.UseHttpsRedirection();
 app.UseAuthentication();
-
-// 設定身份驗證事件
-//app.Use(async (context, next) =>
-//{
-//    AuthenticateResult result = await context.AuthenticateAsync();
-//    if (result.Succeeded)
-//    {
-//        // 登入成功，記錄日誌
-//        string? username = result.Principal.Identity.Name;
-//        Console.WriteLine($"User {username} logged in successfully.");
-//    }
-
-//    await next();
-//});
 
 app.UseAuthorization();
 //app.UseSerilogRequestLogging(); // <-SeriLog 

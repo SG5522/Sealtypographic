@@ -6,6 +6,8 @@ using DBEntities.Entities;
 using DJKeycloakLib.Models.BaseModel;
 using DJKeycloakAPI.Models.Users;
 using System.Data.Common;
+using DBEntities.Entities.AccountantModels;
+using Serilog;
 
 namespace SealTypographicWebAPI.Services.Implements
 {
@@ -17,34 +19,50 @@ namespace SealTypographicWebAPI.Services.Implements
         private readonly SealTypographicDbContext dbContext;
         private readonly IMapper mapper;
         private readonly AutoMapper.IConfigurationProvider configurationProvider;
+        private readonly ILogger<ApplicationUserService> logger;
 
         /// <summary>
         /// 建構
         /// </summary>        
         /// <param name="dbContext">注入資料庫</param>
-        /// <param name="mapper"></param>       
-        public ApplicationUserService(SealTypographicDbContext dbContext, IMapper mapper)
+        /// <param name="mapper"></param>
+        /// <param name="logger"></param>       
+        public ApplicationUserService(SealTypographicDbContext dbContext, IMapper mapper, ILogger<ApplicationUserService> logger)
         {
             this.dbContext = dbContext;
             this.mapper = mapper;
             configurationProvider = mapper.ConfigurationProvider;
+            this.logger = logger;
         }
 
         /// <summary>
         /// 取得上傳類別
         /// </summary>
         /// <returns></returns>
-        public UserInfo GetUserInfo(ClaimsPrincipal claims)
+        public async Task<UserInfo> GetUserInfo(ClaimsPrincipal claims)
         {            
             UserInfo userInfo = new();
             if(claims.Identity!.IsAuthenticated)
             {                
-                userInfo.ApplicationUserId = dbContext.ApplicationUsers.FirstOrDefault(x => x.UserName == claims.Identity.Name)?.Id ?? 0 ;
-                userInfo.UserName = claims.Identity.Name;
+                ApplicationUser? applicationUser = dbContext.ApplicationUsers.FirstOrDefault(x => x.UserName == claims.Identity.Name);
+                if(applicationUser != null)
+                {
+                    userInfo.ApplicationUserId = applicationUser.Id;
+                }
+                else
+                {
+                    await AddUser(new NewUserForm
+                    {
+                        Username = claims.Identity.Name!,
+                        FirstName = claims.FindFirstValue(ClaimTypes.GivenName),
+                        LastName = claims.FindFirstValue(ClaimTypes.GivenName),
+                    });
+                }
+                userInfo.UserName = claims.Identity.Name!;
                 userInfo.FirstName = claims.FindFirstValue(ClaimTypes.GivenName);
             }            
             return userInfo;
-        }
+        }        
 
         /// <summary>
         /// 
@@ -54,6 +72,8 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <returns></returns>
         public async Task<ResponseModel> AddUser(NewUserForm newUserForm, string userName = "admin")
         {
+            logger.LogInformation("AddUser input newUserForm: {@accountantId} userName {@userName}", newUserForm, userName);
+
             ResponseModel response = new();
 
             try
@@ -65,6 +85,9 @@ namespace SealTypographicWebAPI.Services.Implements
                 ApplicationUser user = new()
                 {
                     UserName = newUserForm.Username,
+                    FirstName = newUserForm.FirstName,
+                    LastName = newUserForm.LastName,
+                    Email = newUserForm.Email,
                     Company = company
                 };
 
@@ -74,15 +97,16 @@ namespace SealTypographicWebAPI.Services.Implements
             }
             catch(DbException ex)
             {
+                logger.LogError("AddUser Error while updating database {@error}", ex.InnerException!.Message);
                 response = ResponseModel.SystemError();
                 response.Message = ex.InnerException!.Message;
             }
             catch(Exception ex) 
             {
+                logger.LogError("AddUser error {@error}", ex.Message);
                 response = ResponseModel.SystemError();
                 response.Message = ex.Message;                
             }
-
             return response;
         }
     }

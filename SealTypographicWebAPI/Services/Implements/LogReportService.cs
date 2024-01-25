@@ -11,6 +11,7 @@ using MongoDB.Driver;
 using MongoDB.Driver.Linq;
 using SealTypographicWebAPI.Config;
 using SealTypographicWebAPI.Consts;
+using SealTypographicWebAPI.Models;
 using SealTypographicWebAPI.Models.LogReport.AccountantSignLog;
 using SealTypographicWebAPI.Models.LogReport.CustomerSealEventLog;
 using SealTypographicWebAPI.Models.LogReport.OperationLog;
@@ -316,6 +317,22 @@ namespace SealTypographicWebAPI.Services.Implements
                 logger.LogError("GetTypographicReport error {@error}", ex.Message);
             }
             return customerTypoReportPaginate;
+        }
+
+        /// <summary>
+        /// 登入日誌
+        /// </summary>        
+        /// <param name="userInfo"></param>
+        /// <returns></returns>
+        public async Task LogLogin(UserInfo userInfo)
+        {
+            OperationLogSave operationLogSave = new()
+            {
+                ActionType = ActionType.Login,
+            };
+
+            // 呼叫現有的 SaveOperationLog 方法
+            await SaveOperationLog(operationLogSave, userInfo.UserName, $"{userInfo.FirstName}{userInfo.LastName}" );
         }
 
         /// <summary>

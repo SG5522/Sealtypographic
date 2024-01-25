@@ -76,7 +76,7 @@ namespace SealTypographicWebAPI.Services.Implements
             catch (Exception ex) 
             {
                 accountantResponse.Error();
-                logger.LogInformation("GetDetail error {@error}", ex.Message);
+                logger.LogError("GetDetail error {@error}", ex.Message);
             }
 
             return accountantResponse;

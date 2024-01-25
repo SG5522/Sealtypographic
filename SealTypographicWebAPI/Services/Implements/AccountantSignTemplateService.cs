@@ -6,16 +6,11 @@ using DBEntities.Consts;
 using DBEntities.Entities;
 using DBEntities.Entities.TemplateModels;
 using DBEntities.Utils;
-using Keycloak.AuthServices.Sdk.Admin.Models;
 using Microsoft.EntityFrameworkCore;
 using SealTypographicWebAPI.Models;
-using SealTypographicWebAPI.Models.AccountantSignReview;
 using SealTypographicWebAPI.Models.AccountantSignTemplate;
-using SealTypographicWebAPI.Models.BaseModels;
-using SealTypographicWebAPI.Models.CustomerSealTemplate;
 using SealTypographicWebAPI.Utils;
 using Serilog;
-using System.Drawing.Printing;
 
 namespace SealTypographicWebAPI.Services.Implements
 {

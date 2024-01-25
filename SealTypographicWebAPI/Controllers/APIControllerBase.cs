@@ -33,9 +33,9 @@ namespace SealTypographicWebAPI.Controllers
         /// </summary>
         /// <returns></returns>
         [NonAction]
-        public virtual UserInfo GetUserInfo()
+        public virtual async Task<UserInfo> GetUserInfo()
         {                        
-            return applicationUserService.GetUserInfo(User);
+            return await applicationUserService.GetUserInfo(User);
         }
     }
 }

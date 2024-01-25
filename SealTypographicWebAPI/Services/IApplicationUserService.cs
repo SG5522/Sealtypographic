@@ -15,7 +15,7 @@ namespace SealTypographicWebAPI.Services
         /// </summary>
         /// <param name="claims"></param>
         /// <returns></returns>
-        UserInfo GetUserInfo(ClaimsPrincipal claims);
+        Task<UserInfo> GetUserInfo(ClaimsPrincipal claims);
 
         /// <summary>
         /// 新增User(db上的新增)

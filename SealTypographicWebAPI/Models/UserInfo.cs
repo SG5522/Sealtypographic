@@ -13,7 +13,7 @@
         /// <summary>
         /// 使用者名稱(帳號)
         /// </summary>
-        public string? UserName { get; set; }
+        public string UserName { get; set; }
 
         /// <summary>
         /// 使用者暱稱
