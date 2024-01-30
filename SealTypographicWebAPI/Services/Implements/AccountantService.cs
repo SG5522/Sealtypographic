@@ -94,11 +94,12 @@ namespace SealTypographicWebAPI.Services.Implements
             try
             {
                 IQueryable<Accountant> accountantQuery = dbContext.Accountants
-                                                    .Where
-                                                    (
-                                                        accountant => accountant.Company.Id == companyId
-                                                        && accountant.DeleteStatus == DeleteStatus.No
-                                                    );
+                                                        .Include(x => x.AccountantSignGroups)
+                                                        .Where
+                                                        (
+                                                            accountant => accountant.Company.Id == companyId
+                                                            && accountant.DeleteStatus == DeleteStatus.No                                                            
+                                                        );
 
                 if (isTypographicUse)
                 {
@@ -120,14 +121,14 @@ namespace SealTypographicWebAPI.Services.Implements
                     accountantQuery = accountantQuery.Where(accountant => accountant.GroupAccountants.First().AccountantGroup.Code == accountantSearch.AccountantGroupNumber);
                 }
 
-                accountantQuery = accountantQuery.OrderBy(accountant => accountant.Id);
+                accountantQuery = accountantQuery.OrderBy(accountant => accountant.Id);                
 
                 if (accountantQuery.Any())
                 {
                     //取得該頁            
                     accountantPaginatesViewModels.ViewModels = accountantQuery
                                                                 .Skip((accountantSearch.PageNumber - 1) * accountantSearch.PageSize)
-                                                                .Take(accountantSearch.PageSize)
+                                                                .Take(accountantSearch.PageSize)                                                                
                                                                 .ProjectTo<AccountantViewModelWithCreateDate>(configurationProvider)
                                                                 .ToList();
 

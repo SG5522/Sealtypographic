@@ -8,11 +8,7 @@ using AutoMapper.QueryableExtensions;
 using DBEntities;
 using DBEntities.Entities.TypographicModels;
 using DBEntities.Entities.AccountantModels;
-using SealTypographicWebAPI.Consts;
-using SealTypographicWebAPI.Models.LogReport;
-using SealTypographicWebAPI.Models.Customer;
 using SealTypographicWebAPI.Models.LogReport.OperationLog;
-using SealTypographicWebAPI.Models.CustomerSeal;
 using SealTypographicWebAPI.Models.LogReport.AccountantSignLog;
 using CommonLib.Enums;
 
@@ -212,9 +208,8 @@ namespace SealTypographicWebAPI.Services.Implements
                         {
                             TypographicResources = new List<TypographicResource>()
                         };
-
-                        //之後拔除轉型調整
-                        ImageSaveInfo imageBase64Info = imageService.SetImageBase64InfoWithSeal(accountant.Code, SealType.Accountant);
+                        
+                        ImageSaveInfo imageSaveInfo = imageService.SetImageBase64InfoWithSeal(accountant.Code, SealType.Accountant);
 
                         //修改(更新ID移入DeleteAccountantSignIds，更新的簽印移入新增CreateAccountantSigns)
                         foreach (AccountantSignUpdateForm accountantSignFormUpdate in accountantSignUpdate.UpdateAccountantSigns)
@@ -258,7 +253,7 @@ namespace SealTypographicWebAPI.Services.Implements
                         BaseInputSignGroupJournal(accountantSignGroup, true, userId);
 
                         //新增簽印資料(圖檔與DB資源)         
-                        accountantSignGroup.TypographicResources = await NewTypographyResource(accountantSignUpdate.CreateAccountantSigns, imageBase64Info, userId);
+                        accountantSignGroup.TypographicResources = await NewTypographyResource(accountantSignUpdate.CreateAccountantSigns, imageSaveInfo, userId);
 
                         //沒有任何回傳訊息(錯誤訊息)就更新資料庫
                         if (!responseViewModels.Any())

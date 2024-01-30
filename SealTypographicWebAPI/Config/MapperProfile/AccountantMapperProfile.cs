@@ -39,7 +39,11 @@ namespace SealTypographicWebAPI.Config.MapperProfile
                     .ForMember(dst => dst.AccountantNumber, opt => opt.MapFrom(o => o.Code))
                     .ForMember(dst => dst.AccountantSignGroupId, opt => opt.MapFrom
                     (
-                        src => src.AccountantSignGroups.Any() ? src.AccountantSignGroups.First().Id : 0
+                        src => src.AccountantSignGroups
+                                .Where(x => x.ReviewStatus <= ReviewStatus.Pending)
+                                .OrderByDescending(x => x.Id)                                
+                                .Select(x => x.Id)
+                                .FirstOrDefault()
                     ));
 
             CreateMap<AccountantForm, Accountant>()
