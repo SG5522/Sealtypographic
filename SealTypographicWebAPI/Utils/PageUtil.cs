@@ -34,16 +34,28 @@ namespace SealTypographicWebAPI.Utils
         /// <param name="configurationProvider">AutoMapper配置提供者</param>
         /// <returns></returns>
         public static List<TDestination> SetPaginateViewModel<TSoucre, TDestination>(
-            IQueryable<TSoucre> srcData, 
-            int pageNumber, 
-            int pageSize, 
-            AutoMapper.IConfigurationProvider configurationProvider)                
-        {            
-            return  srcData
-                    .Skip((pageNumber - 1) * pageSize)
-                    .Take(pageSize)
-                    .ProjectTo<TDestination>(configurationProvider)
-                    .ToList();            
+            IQueryable<TSoucre> srcData,
+            AutoMapper.IConfigurationProvider configurationProvider,
+            int pageNumber = 0, 
+            int pageSize = 0)                
+        {
+            List<TDestination> result; 
+
+            if(pageNumber == 0 && pageSize == 0)
+            {
+                result = srcData
+                        .ProjectTo<TDestination>(configurationProvider)
+                        .ToList();
+            }
+            else 
+            {
+                result = srcData
+                        .Skip((pageNumber - 1) * pageSize)
+                        .Take(pageSize)
+                        .ProjectTo<TDestination>(configurationProvider)
+                        .ToList();
+            }
+            return result;
         }
     }
 }

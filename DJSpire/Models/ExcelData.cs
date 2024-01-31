@@ -1,23 +1,20 @@
 ﻿
+using System.Diagnostics;
+
 namespace DJSpire.Models
 {
     public class ExcelData<T>
     {
         /// <summary>
-        /// 建制時 Hearders的List不得超過T的屬性量
+        /// 建制時 Headers 的 List 可以超過 T 的屬性量，但會進行警告
         /// </summary>
         /// <param name="headers"></param>
         /// <param name="values"></param>
         /// <exception cref="ArgumentException"></exception>
-        public ExcelData(List<string>? headers, List<T> values)
+        public ExcelData(List<T> values, List<string>? headers = null)
         {
-            if (headers != null && headers.Count > 0 && values.Count > 0)
-            {                
-                if (headers.Count > typeof(T).GetProperties().Length)
-                {
-                    throw new ArgumentException("Headers count cannot exceed the number of properties in Data.");
-                }
-            }
+            Debug.Assert(headers == null || headers.Count <= typeof(T).GetProperties().Length,
+            "Headers count exceeds the number of properties in Data.");
 
             Headers = headers;
             Values = values;

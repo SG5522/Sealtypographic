@@ -83,10 +83,10 @@ namespace SealTypographicWebAPI.Services.Implements
                     //取得該頁                   
                     customerSealQuarterResponse.ViewModels = PageUtil.SetPaginateViewModel<CustomerSealGroup, CustomerSealGroupReviewViewModel>
                                                             (
-                                                                customerSealQuarterQuery, 
-                                                                customerSealSearchReview.PageNumber, 
-                                                                customerSealSearchReview.PageSize,
-                                                                configurationProvider
+                                                                customerSealQuarterQuery,                                                                 
+                                                                configurationProvider,
+                                                                customerSealSearchReview.PageNumber,
+                                                                customerSealSearchReview.PageSize
                                                             );
 
                     PageUtil.SetPaginate(customerSealQuarterResponse, customerSealSearchReview.PageNumber, customerSealSearchReview.PageSize, customerSealQuarterQuery.Count());

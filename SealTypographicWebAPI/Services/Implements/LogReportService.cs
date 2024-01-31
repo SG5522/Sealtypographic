@@ -32,7 +32,7 @@ namespace SealTypographicWebAPI.Services.Implements
         private readonly AutoMapper.IConfigurationProvider configurationProvider;        
         private IMongoCollection<OperationLog> operationLog;
         private IMongoCollection<CustomerSealEventLog> customerSealEventLog;
-        private IMongoCollection<AccountantSignEventLog> accountantSignEventLog;
+        private IMongoCollection<AccountantSignEventLog> accountantSignEventLog;        
 
         /// <summary>
         /// 建置
@@ -92,10 +92,41 @@ namespace SealTypographicWebAPI.Services.Implements
         }
 
         /// <summary>
+        /// 取得動作類別名稱
+        /// </summary>
+        /// <returns></returns>
+        public ActionTypeResponse GetActionType()
+        {
+            ActionTypeResponse actionTypeResponse = new();
+            try
+            {
+                foreach (ActionType actionType in (ActionType[])Enum.GetValues(typeof(ActionType)))
+                {
+                    ActionTypeViewModel uploadTypeViewModel = new()
+                    {
+                        ActionType = actionType,
+                        Name = actionType.GetDescription()
+                    };
+                    actionTypeResponse.ViewModels.Add(uploadTypeViewModel);
+                }
+                actionTypeResponse.Success();
+                logger.LogInformation("GetUploadType output {@Output}", actionTypeResponse);
+            }
+            catch (Exception ex)
+            {
+                actionTypeResponse.Error();
+                logger.LogError("GetUploadType error {@Error}", ex.Message);
+            }
+
+            return actionTypeResponse;
+        }
+
+
+        /// <summary>
         /// 操作紀錄分頁列表
         /// </summary>
         /// <returns></returns>
-        public OperationLogPaginate GetOperationLogPaginate(OperationLogSearch operationLogSearch)
+        public OperationLogPaginate GetOperationLogPaginate(OperationLogSearch operationLogSearch, bool isFullPageOut = false)
         {
             OperationLogPaginate operationLogPaginate = new();
 
@@ -130,10 +161,26 @@ namespace SealTypographicWebAPI.Services.Implements
 
             if(operationLogQuery.Any())
             {
-                operationLogPaginate.ViewModels = PageUtil.SetPaginateViewModel<OperationLog, OperationLogViewModel>
-                                                    (operationLogQuery, operationLogSearch.PageNumber, operationLogSearch.PageSize, configurationProvider);
+                if(isFullPageOut)
+                {
+                    operationLogPaginate.ViewModels = PageUtil.SetPaginateViewModel<OperationLog, OperationLogViewModel>
+                                                        (
+                                                            operationLogQuery, 
+                                                            configurationProvider
+                                                        );
+                }
+                else
+                {
+                    operationLogPaginate.ViewModels = PageUtil.SetPaginateViewModel<OperationLog, OperationLogViewModel>
+                                                        (
+                                                            operationLogQuery, 
+                                                            configurationProvider, 
+                                                            operationLogSearch.PageNumber, 
+                                                            operationLogSearch.PageSize
+                                                        );
 
-                PageUtil.SetPaginate(operationLogPaginate, operationLogSearch.PageNumber, operationLogSearch.PageSize, operationLogQuery.Count());
+                    PageUtil.SetPaginate(operationLogPaginate, operationLogSearch.PageNumber, operationLogSearch.PageSize, operationLogQuery.Count());
+                }                                
 
                 operationLogPaginate.Success();
             }
@@ -186,7 +233,12 @@ namespace SealTypographicWebAPI.Services.Implements
             if (customerSealEventLogQuery.Any())
             {
                 customerSealEventLogPaginate.ViewModels = PageUtil.SetPaginateViewModel<CustomerSealEventLog, CustomerSealEventLogViewModel>
-                                                    (customerSealEventLogQuery, customerSealEventLogSearch.PageNumber, customerSealEventLogSearch.PageSize, configurationProvider);
+                                                            (
+                                                                customerSealEventLogQuery, 
+                                                                configurationProvider, 
+                                                                customerSealEventLogSearch.PageNumber, 
+                                                                customerSealEventLogSearch.PageSize
+                                                            );
 
                 PageUtil.SetPaginate(customerSealEventLogPaginate, customerSealEventLogSearch.PageNumber, customerSealEventLogSearch.PageSize, customerSealEventLogQuery.Count());
 
@@ -240,7 +292,12 @@ namespace SealTypographicWebAPI.Services.Implements
             if (accountantSignEventLogQuery.Any())
             {
                 accountantSignEventLogPaginate.ViewModels = PageUtil.SetPaginateViewModel<AccountantSignEventLog, AccountantSignEventLogViewModel>
-                                                    (accountantSignEventLogQuery, accountantSignEventLogSearch.PageNumber, accountantSignEventLogSearch.PageSize, configurationProvider);
+                                                            (
+                                                                accountantSignEventLogQuery, 
+                                                                configurationProvider, 
+                                                                accountantSignEventLogSearch.PageNumber, 
+                                                                accountantSignEventLogSearch.PageSize
+                                                            );
 
                 PageUtil.SetPaginate(accountantSignEventLogPaginate, accountantSignEventLogSearch.PageNumber, accountantSignEventLogSearch.PageSize, accountantSignEventLogQuery.Count());
 
@@ -300,7 +357,12 @@ namespace SealTypographicWebAPI.Services.Implements
                 {
 
                     customerTypoReportPaginate.ViewModels = PageUtil.SetPaginateViewModel<TypographicPDF, TypographicReportViewModel>
-                                                            (typographicPDFQuery, customerTypoReportSearch.PageNumber, customerTypoReportSearch.PageSize, configurationProvider);
+                                                            (
+                                                                typographicPDFQuery,
+                                                                configurationProvider,
+                                                                customerTypoReportSearch.PageNumber,
+                                                                customerTypoReportSearch.PageSize
+                                                            );
                     
 
                     PageUtil.SetPaginate(customerTypoReportPaginate, customerTypoReportSearch.PageNumber, customerTypoReportSearch.PageSize, typographicPDFQuery.Count());
@@ -371,7 +433,7 @@ namespace SealTypographicWebAPI.Services.Implements
         public async Task SaveAccountantSignEventLog(AccountantSignEventLogSave accountantSignEventLogSave, OperateType operateType, string userId = "test", string userName = "test")
         {
             await accountantSignEventLog.InsertOneAsync(MapFrom<AccountantSignEventLog, AccountantSignEventLogSave>(accountantSignEventLogSave, operateType, userId, userName));
-        }
+        }        
 
         private static T MapFrom<T, K>(K logSaveData, OperateType operateType, string userId, string userName) where T : LogModel<K>, new()             
         {

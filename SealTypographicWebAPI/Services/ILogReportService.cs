@@ -14,6 +14,13 @@ namespace SealTypographicWebAPI.Services
     /// </summary>
     public interface ILogReportService
     {
+
+        /// <summary>
+        /// 取得動作類別名稱
+        /// </summary>
+        /// <returns></returns>
+        ActionTypeResponse GetActionType();
+
         /// <summary>
         /// 取得排版紀錄
         /// </summary>
@@ -27,8 +34,9 @@ namespace SealTypographicWebAPI.Services
         /// 取得操作紀錄分頁列表
         /// </summary>
         /// <param name="operationLogSearch">操作紀錄查詢</param>
+        /// <param name="isFullPageOut">是否全頁輸出</param>
         /// <returns></returns>
-        OperationLogPaginate GetOperationLogPaginate(OperationLogSearch operationLogSearch);
+        OperationLogPaginate GetOperationLogPaginate(OperationLogSearch operationLogSearch, bool isFullPageOut = false);
 
         /// <summary>
         /// 取得客戶印鑑異動分頁列表

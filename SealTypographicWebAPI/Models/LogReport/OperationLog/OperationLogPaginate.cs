@@ -12,5 +12,4 @@ namespace SealTypographicWebAPI.Models.LogReport.OperationLog
         /// </summary>
         public List<OperationLogViewModel> ViewModels { get; set; }
     }
-
 }

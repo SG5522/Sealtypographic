@@ -6,13 +6,50 @@ namespace DJSpire.Utils
     public class ExcelUtil
     {
         /// <summary>
+        /// 存在指定路徑
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="excelData"></param>
+        /// <param name="filePath"></param>
+        /// <param name="fileFormat"></param>
+        public static void CreateFileToSavePath<T>(ExcelData<T> excelData, string filePath, FileFormat fileFormat = FileFormat.Version2016) where T : class
+        {
+            using FileStream fileStream = new(filePath, FileMode.Create, FileAccess.Write);
+            CreateFile(excelData, fileFormat).WriteTo(fileStream);
+        }
+
+        /// <summary>
+        /// 創建Excel檔案 Base64輸出
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="excelData"></param>
+        /// <param name="fileFormat"></param>
+        /// <returns></returns>
+        public static string CreateFileToBase64<T>(ExcelData<T> excelData, FileFormat fileFormat = FileFormat.Version2016) where T : class
+        {
+            return Convert.ToBase64String(CreateFileToBytes(excelData, fileFormat));
+        }
+
+        /// <summary>
+        /// 創建Excel檔案 Bytes輸出
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="excelData"></param>
+        /// <param name="fileFormat"></param>
+        /// <returns></returns>
+        public static byte[] CreateFileToBytes<T>(ExcelData<T> excelData, FileFormat fileFormat = FileFormat.Version2016) where T : class
+        {
+            return CreateFile(excelData, fileFormat).ToArray();
+        }
+
+        /// <summary>
         /// 創建Excel檔案
         /// </summary>
         /// <typeparam name="T"></typeparam>        
         /// <param name="excelData"></param>
         /// <param name="fileFormat"></param>
         /// <returns></returns>
-        public MemoryStream CreateFile<T>(ExcelData<T> excelData, FileFormat fileFormat = FileFormat.Version2016) where T : class
+        public static MemoryStream CreateFile<T>(ExcelData<T> excelData, FileFormat fileFormat = FileFormat.Version2016) where T : class
         {
             MemoryStream result = new();
             Workbook workbook = new();
@@ -45,7 +82,7 @@ namespace DJSpire.Utils
                     }
                 }
                 sheet.AllocatedRange.AutoFitColumns();
-                workbook.SaveToStream(result, fileFormat);
+                workbook.SaveToStream(result, fileFormat);                
             }
             catch (InvalidCastException) 
             {

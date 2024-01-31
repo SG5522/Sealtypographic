@@ -8,7 +8,7 @@ namespace SealTypographicWebAPI.Models.LogReport.AccountantSignLog
     public class AccountantSignEventLogSearch : LogSearchBase
     {
         /// <summary>
-        /// 動作類別(紀錄使用)
+        /// 審核狀態
         /// </summary>
         public ReviewStatus? ReviewStatus { get; set; }
 

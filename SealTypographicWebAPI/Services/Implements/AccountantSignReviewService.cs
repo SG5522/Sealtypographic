@@ -80,10 +80,10 @@ namespace SealTypographicWebAPI.Services.Implements
                     //取得該頁                   
                     accountantSignGroupReviewPaginate.ViewModels = PageUtil.SetPaginateViewModel<AccountantSignGroup, AccountantSignGroupReviewViewModel>
                                                                     (
-                                                                        accountantSignGroupQuery,
+                                                                        accountantSignGroupQuery,                                                                        
+                                                                        configurationProvider,
                                                                         accountantSignSearchReview.PageNumber,
-                                                                        accountantSignSearchReview.PageSize,
-                                                                        configurationProvider
+                                                                        accountantSignSearchReview.PageSize
                                                                     );
 
                     PageUtil.SetPaginate(accountantSignGroupReviewPaginate, accountantSignSearchReview.PageNumber, accountantSignSearchReview.PageSize, accountantSignGroupQuery.Count());
