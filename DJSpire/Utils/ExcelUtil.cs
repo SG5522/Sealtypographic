@@ -1,5 +1,7 @@
 ﻿using DJSpire.Models;
 using Spire.Xls;
+using System.ComponentModel.DataAnnotations;
+using System.Reflection;
 
 namespace DJSpire.Utils
 {
@@ -57,14 +59,20 @@ namespace DJSpire.Utils
             Worksheet sheet = workbook.Worksheets[0];
 
             try
-            {
+            {                
+                PropertyInfo[] properties = typeof(T).GetProperties()
+                                            .OrderBy(
+                                            p => {
+                                                return p.GetCustomAttributes(typeof(DisplayAttribute), true).FirstOrDefault() is DisplayAttribute displayAttribute ? displayAttribute.Order : int.MaxValue;
+                                            })
+                                            .ToArray();
+
                 for (int row = 1; row <= excelData.Values.Count; row++)
                 {
-                    for (int col = 1; col <= typeof(T).GetProperties().Length; col++)
+                    for (int col = 1; col <= properties.Length; col++)
                     {
-                        // 使用反射取得屬性名稱，然後取得該屬性的值
-                        string propertyName = GetPropertyName<T>(col - 1);
-                        object? propertyValue = typeof(T).GetProperty(propertyName)?.GetValue(excelData.Values[row - 1]);
+                        // 使用反射取得屬性名稱，然後取得該屬性的值                     
+                        object? propertyValue = properties[col - 1].GetValue(excelData.Values[row - 1]);
 
                         if (excelData.Headers != null)
                         {
@@ -89,17 +97,6 @@ namespace DJSpire.Utils
                 throw;
             }            
             return result;
-        }
-
-        /// <summary>
-        /// 取得class名稱
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="index"></param>
-        /// <returns></returns>
-        private static string GetPropertyName<T>(int index)
-        {
-            return typeof(T).GetProperties()[index].Name;
         }
     }
 }

@@ -1,5 +1,4 @@
-﻿using SealTypographicWebAPI.Utils;
-using System.Text.Json.Serialization;
+﻿using System.Text.Json.Serialization;
 
 namespace SealTypographicWebAPI.Models.BaseModels
 {
@@ -8,8 +7,6 @@ namespace SealTypographicWebAPI.Models.BaseModels
     /// </summary>
     public abstract class BaseSealLocation : BaseLocation
     {        
-        private string imagePath;
-
         /// <summary>
         /// 圖片
         /// </summary>

@@ -8,6 +8,8 @@ using SealTypographicWebAPI.Models.LogReport.OperationLog;
 using SealTypographicWebAPI.Models.LogReport.TypographicReport;
 using SealTypographicWebAPI.Services;
 using Serilog;
+using System.Collections.Immutable;
+using System.Collections.ObjectModel;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -23,6 +25,15 @@ namespace SealTypographicWebAPI.Controllers
         private readonly ILogReportService logReportService;
         private readonly ILogger<ReportController> logger;
         private const string EXCEL_CONTENT_TYPE = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+        private readonly List<string> operationLogHeaders = new()
+        {
+            "使用者ID",
+            "使用者名稱",
+            "紀錄日期",
+            "動作",
+            "查詢對象",
+            "印鑑季度/年度"
+        };
 
         /// <summary>
         /// 建置
@@ -61,7 +72,7 @@ namespace SealTypographicWebAPI.Controllers
         {
             FileContentResult result;
 
-            ExcelData<OperationLogViewModel> excelData = new(logReportService.GetOperationLogPaginate(operationLogSearch, true).ViewModels);
+            ExcelData<OperationLogViewModel> excelData = new(logReportService.GetOperationLogPaginate(operationLogSearch, true).ViewModels, operationLogHeaders);
 
             result = new FileContentResult(ExcelUtil.CreateFileToBytes(excelData), EXCEL_CONTENT_TYPE)
             {

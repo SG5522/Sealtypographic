@@ -81,7 +81,6 @@ namespace SealTypographicWebAPI.Controllers
                                             environment.EnvironmentName                                            
                                          );                  
             logger.LogDebug("Hello End");
-            GetUserInfo();
             return result;
         }
         

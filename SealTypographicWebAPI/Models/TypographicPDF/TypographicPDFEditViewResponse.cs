@@ -9,8 +9,6 @@ namespace SealTypographicWebAPI.Models.TypographicPDF
     /// </summary>
     public class TypographicPDFEditViewResponse : ResponseViewModel
     {
-        private string pDFBase64;
-
         /// <summary>
         /// PDF圖檔(base64)
         /// </summary>

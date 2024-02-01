@@ -8,8 +8,7 @@ namespace SealTypographicWebAPI.Models.EditPdf
     /// </summary>
     public class EditPDF
     {
-        private string pdfPath;
-        private byte[] bytes;
+        private string pdfPath;        
 
         /// <summary>
         /// 建置

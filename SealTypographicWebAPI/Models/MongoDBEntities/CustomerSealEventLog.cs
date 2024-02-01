@@ -10,9 +10,7 @@ namespace SealTypographicWebAPI.Models.MongoDBModel
     /// 
     /// </summary>
     public class CustomerSealEventLog : LogModel<CustomerSealEventLogSave>
-    {
-        private DateTime dateTime;
-
+    {        
         /// <summary>
         /// 
         /// </summary>

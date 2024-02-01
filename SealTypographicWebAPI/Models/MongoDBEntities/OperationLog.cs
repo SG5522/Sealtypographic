@@ -10,8 +10,6 @@ namespace SealTypographicWebAPI.Models.MongoDBModel
     /// </summary>
     public class OperationLog : LogModel<OperationLogSave>
     {
-        private DateTime dateTime;
-
         /// <summary>
         /// 
         /// </summary>

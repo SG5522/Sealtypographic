@@ -10,9 +10,7 @@ namespace SealTypographicWebAPI.Models.MongoDBModel
     /// 
     /// </summary>
     public class AccountantSignEventLog : LogModel<AccountantSignEventLogSave>
-    {
-        private DateTime dateTime;
-
+    {        
         /// <summary>
         /// ID
         /// </summary>
