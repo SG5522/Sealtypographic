@@ -16,6 +16,7 @@ using DJImageLib.Models;
 using DJImageLib.Extensions;
 using DJSpire.Utils;
 using DJSpire.Models;
+using CommonLib.Extensions;
 
 namespace SealTypographicWebAPI.Services.Implements
 {

@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using CommonLib.Enums;
+using CommonLib.Extensions;
 using CommonLib.Models;
 using DBEntities;
 using DBEntities.Consts;

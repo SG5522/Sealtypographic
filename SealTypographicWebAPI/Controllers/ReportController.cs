@@ -7,9 +7,6 @@ using SealTypographicWebAPI.Models.LogReport.CustomerSealEventLog;
 using SealTypographicWebAPI.Models.LogReport.OperationLog;
 using SealTypographicWebAPI.Models.LogReport.TypographicReport;
 using SealTypographicWebAPI.Services;
-using Serilog;
-using System.Collections.Immutable;
-using System.Collections.ObjectModel;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -68,17 +65,30 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="fileName">預設為OperationLog</param>
         /// <returns></returns>
         [HttpGet("[Action]")]
-        public FileContentResult OperationLogToExcel([FromQuery] OperationLogSearch operationLogSearch, string fileName = "OperationLog")
+        public IActionResult OperationLogToExcel([FromQuery] OperationLogSearch operationLogSearch, string fileName = "OperationLog")
         {
-            FileContentResult result;
+            IActionResult result;
 
-            ExcelData<OperationLogViewModel> excelData = new(logReportService.GetOperationLogPaginate(operationLogSearch, true).ViewModels, operationLogHeaders);
+            List<OperationLogViewModel> paginatedData = logReportService.GetOperationLogPaginate(operationLogSearch, true).ViewModels;
 
-            result = new FileContentResult(ExcelUtil.CreateFileToBytes(excelData), EXCEL_CONTENT_TYPE)
+            if (paginatedData != null)
             {
-                FileDownloadName = $"{fileName}.xlsx"
-            };
-   
+                ExcelData<OperationLogViewModel> excelData = new(paginatedData, operationLogHeaders);
+
+                result = new FileContentResult(ExcelUtil.CreateFileToBytes(excelData), EXCEL_CONTENT_TYPE)
+                {
+                    FileDownloadName = $"{fileName}.xlsx"
+                };
+            }
+            else
+            {
+                // 當沒有資料時的處理邏輯                
+                result = new ObjectResult("No data found")
+                {
+                    StatusCode = 204 // 204 表示 No Content
+                };
+            }
+
             return result;
         }
 

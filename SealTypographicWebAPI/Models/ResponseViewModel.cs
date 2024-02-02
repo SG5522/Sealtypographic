@@ -1,4 +1,4 @@
-﻿using SealTypographicWebAPI.Config;
+﻿using CommonLib.Extensions;
 using SealTypographicWebAPI.Consts;
 
 namespace SealTypographicWebAPI.Models

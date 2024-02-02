@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
-using SealTypographicWebAPI.Config;
 using SealTypographicWebAPI.Models;
 using SealTypographicWebAPI.Models.Letterhead;
 using SealTypographicWebAPI.Utils;
@@ -9,7 +8,7 @@ using DBEntities.Entities;
 using DBEntities;
 using DBEntities.Entities.TypographicModels;
 using DJImageLib.Utils;
-using SealTypographicWebAPI.Consts;
+using CommonLib.Extensions;
 
 namespace SealTypographicWebAPI.Services.Implements
 {

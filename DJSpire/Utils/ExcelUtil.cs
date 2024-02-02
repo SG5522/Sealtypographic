@@ -1,4 +1,5 @@
-﻿using DJSpire.Models;
+﻿using CommonLib.Extensions;
+using DJSpire.Models;
 using Spire.Xls;
 using System.ComponentModel.DataAnnotations;
 using System.Reflection;
@@ -80,16 +81,22 @@ namespace DJSpire.Utils
                             if (row == 1)
                             {
                                 sheet.Range[row, col].Value = excelData.Headers[col - 1];
+                                sheet.Range[row, col].Style.Font.IsBold = true;                                
                             }
-                            sheet.Range[row + 1, col].Value = propertyValue != null ? Convert.ToString(propertyValue) : null;
+                            // 處理單元格的值
+                            SetCellContent(sheet, row + 1, col, propertyValue);                         
                         }
                         else
                         {
-                            sheet.Range[row, col].Value = propertyValue != null ? Convert.ToString(propertyValue) : null;
+                            // 處理單元格的值
+                            SetCellContent(sheet, row, col, propertyValue);                         
                         }
                     }
                 }
                 sheet.AllocatedRange.AutoFitColumns();
+                sheet.AllocatedRange.AutoFitRows();
+                sheet.AllocatedRange.Style.HorizontalAlignment = HorizontalAlignType.Center;
+
                 workbook.SaveToStream(result, fileFormat);                
             }
             catch (InvalidCastException) 
@@ -98,5 +105,18 @@ namespace DJSpire.Utils
             }            
             return result;
         }
+
+        private static void SetCellContent(Worksheet sheet, int row, int col, object? propertyValue)
+        {
+            if (propertyValue != null && propertyValue.GetType().IsEnum)
+            {
+                sheet.Range[row, col].Value = ((Enum)propertyValue).GetDescription() ?? propertyValue.ToString();
+            }
+            else
+            {
+                sheet.Range[row, col].Value = propertyValue != null ? Convert.ToString(propertyValue) : null;
+            }
+        }
+
     }
 }

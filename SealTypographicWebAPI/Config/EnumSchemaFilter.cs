@@ -1,7 +1,7 @@
-﻿using Microsoft.OpenApi.Any;
+﻿using CommonLib.Extensions;
+using Microsoft.OpenApi.Any;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
-using System.Runtime.Serialization;
 
 namespace SealTypographicWebAPI.Config
 {

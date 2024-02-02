@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Localization;
-using SealTypographicWebAPI.Config;
 using SealTypographicWebAPI.Models.ReviewStatusList;
 using DBEntities.Consts;
+using CommonLib.Extensions;
 
 namespace SealTypographicWebAPI.Services.Implements
 {
