@@ -143,6 +143,12 @@ namespace SealTypographicWebAPI.Config.MapperProfile
                     .ForMember(dst => dst.CustomerName, opt => opt.MapFrom(src => src.Data!.CustomerName))
                     .ForMember(dst => dst.DisplayQuarterYear, opt => opt.MapFrom(src => src.Data!.DisplayQuarterYear));
 
+            //印鑑異動紀錄Map(分頁顯示)
+            CreateMap<AccountantSignEventLog, AccountantSignEventLogViewModel>()
+                    .ForMember(dst => dst.AccountantCode, opt => opt.MapFrom(src => src.Data!.AccountantCode))
+                    .ForMember(dst => dst.ReviewStatus, opt => opt.MapFrom(src => src.Data!.ReviewStatus))
+                    .ForMember(dst => dst.AccountantName, opt => opt.MapFrom(src => src.Data!.AccountantName));
+
         }
     }
 }

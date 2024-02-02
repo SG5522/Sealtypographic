@@ -29,12 +29,9 @@ namespace SealTypographicWebAPI.Models.LogReport
         public DateTime EndDate
         {
             get => endDate;
-            set
-            {
-                // 調整為結束日期的 23:59:59
-                //MongoDB預設紀錄的時間為utc需要先轉成utc搜尋
-                endDate = value.Date.AddDays(1).AddSeconds(-1).ToUniversalTime();                
-            }
+            // 調整為結束日期的 23:59:59
+            //MongoDB預設紀錄的時間為utc需要先轉成utc搜尋
+            set => endDate = value.Date.AddDays(1).AddSeconds(-1).ToUniversalTime();
         }
     }
 }
