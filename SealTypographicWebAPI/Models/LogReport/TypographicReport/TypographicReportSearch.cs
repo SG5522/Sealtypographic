@@ -3,7 +3,7 @@
 namespace SealTypographicWebAPI.Models.LogReport.TypographicReport
 {
     /// <summary>
-    /// 
+    /// 排版紀錄查詢
     /// </summary>
     public class TypographicReportSearch : PaginateWithDateSearch
     {

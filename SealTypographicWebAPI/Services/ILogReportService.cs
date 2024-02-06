@@ -22,15 +22,6 @@ namespace SealTypographicWebAPI.Services
         ActionTypeResponse GetActionType();
 
         /// <summary>
-        /// 取得排版紀錄
-        /// </summary>
-        /// <param name="customerTypoReportSearch"></param>
-        /// <param name="typographyType"></param>
-        /// <param name="userId"></param>
-        /// <returns></returns>
-        TypographicReportPaginate GetTypographicReport(TypographicReportSearch customerTypoReportSearch, TypographyType typographyType, int userId = 1);
-
-        /// <summary>
         /// 取得操作紀錄分頁列表
         /// </summary>
         /// <param name="operationLogSearch">操作紀錄查詢</param>
@@ -43,15 +34,27 @@ namespace SealTypographicWebAPI.Services
         /// </summary>
         /// <param name="customerSealEventLogSearch">客戶印鑑紀錄查詢</param>
         /// <param name="typographyType">排版類別</param>
+        /// <param name="isFullPageOut">是否全部輸出</param>
         /// <returns></returns>
-        CustomerSealEventLogPaginate GetCustomerSealEventLogPaginate(CustomerSealEventLogSearch customerSealEventLogSearch, TypographyType typographyType);
+        CustomerSealEventLogPaginate GetCustomerSealEventLogPaginate(CustomerSealEventLogSearch customerSealEventLogSearch, TypographyType typographyType, bool isFullPageOut = false);
 
         /// <summary>
         /// 取得會計師簽印分頁列表
         /// </summary>
-        /// <param name="accountantSignEventLogSearch"></param>
+        /// <param name="accountantSignEventLogSearch">會計師簽印紀錄查詢</param>
+        /// <param name="isFullPageOut">是否全部輸出</param>
         /// <returns></returns>
-        AccountantSignEventLogPaginate GetAccountantSignEventLogPaginate(AccountantSignEventLogSearch accountantSignEventLogSearch);
+        AccountantSignEventLogPaginate GetAccountantSignEventLogPaginate(AccountantSignEventLogSearch accountantSignEventLogSearch, bool isFullPageOut = false);
+
+        /// <summary>
+        /// 取得排版紀錄
+        /// </summary>
+        /// <param name="typographicReportSearch">排版紀錄查詢</param>
+        /// <param name="typographyType">排版類別</param>
+        /// <param name="userId">使用者Id</param>
+        /// <param name="isFullPageOut">是否全部輸出</param>
+        /// <returns></returns>
+        TypographicReportPaginate GetTypographicReport(TypographicReportSearch typographicReportSearch, TypographyType typographyType, int userId = 1, bool isFullPageOut = false);
 
         /// <summary>
         /// 登入日誌

@@ -215,44 +215,7 @@ builder.Services.AddKeycloakAuthentication(keycloakAuthenticationOptions, option
     options.BackchannelHttpHandler = new HttpClientHandler
     {
         ServerCertificateCustomValidationCallback = delegate { return true; }
-    };
-    options.Events = new JwtBearerEvents
-    {        
-        OnTokenValidated = async context =>
-        {
-            if (context.Principal!.Identity != null && context.Principal.Identity.IsAuthenticated)
-                //{
-                //    // 登入成功時的處理程序
-                //    // 可以在這裡呼叫 LogReportService 來紀錄登入日誌
-                //    ILogReportService logReportService = context.HttpContext.RequestServices.GetRequiredService<ILogReportService>();
-                //    IApplicationUserService applicationUserService = context.HttpContext.RequestServices.GetRequiredService<IApplicationUserService>();
-
-                //    UserInfo userInfo = await applicationUserService.GetUserInfo(context.Principal!);
-
-                //    // 使用 LogReportService 來紀錄登入日誌
-                //    await logReportService.LogLogin(userInfo);                
-                //}
-
-                if (!context.HttpContext.Items.ContainsKey("TokenValidated"))
-                {
-                    if (context.Principal!.Identity != null && context.Principal.Identity.IsAuthenticated)
-                    {
-                        // 登入成功時的處理程序
-                        // 可以在這裡呼叫 LogReportService 來紀錄登入日誌
-                        ILogReportService logReportService = context.HttpContext.RequestServices.GetRequiredService<ILogReportService>();
-                        IApplicationUserService applicationUserService = context.HttpContext.RequestServices.GetRequiredService<IApplicationUserService>();
-
-                        UserInfo userInfo = await applicationUserService.GetUserInfo(context.Principal!);
-
-                        // 使用 LogReportService 來紀錄登入日誌
-                        await logReportService.LogLogin(userInfo);
-
-                        // 設置標誌，表示已經處理過登入成功
-                        context.HttpContext.Items["TokenValidated"] = true;
-                    }
-                }
-        },        
-    };
+    };    
 });
 
 //builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

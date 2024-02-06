@@ -2,6 +2,8 @@
 using DJSpire.Models;
 using DJSpire.Utils;
 using Microsoft.AspNetCore.Mvc;
+using OpenCvSharp;
+using SealTypographicWebAPI.Consts;
 using SealTypographicWebAPI.Models.LogReport.AccountantSignLog;
 using SealTypographicWebAPI.Models.LogReport.CustomerSealEventLog;
 using SealTypographicWebAPI.Models.LogReport.OperationLog;
@@ -19,28 +21,17 @@ namespace SealTypographicWebAPI.Controllers
     [ApiController]
     public class ReportController : ControllerBase
     {
-        private readonly ILogReportService logReportService;
-        private readonly ILogger<ReportController> logger;
+        private readonly ILogReportService logReportService;        
         private const string EXCEL_CONTENT_TYPE = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
-        private readonly List<string> operationLogHeaders = new()
-        {
-            "使用者ID",
-            "使用者名稱",
-            "紀錄日期",
-            "動作",
-            "查詢對象",
-            "印鑑季度/年度"
-        };
+        
 
         /// <summary>
         /// 建置
         /// </summary>
-        public ReportController(ILogReportService logReportService, ILogger<ReportController> logger)
+        public ReportController(ILogReportService logReportService)
         {
             this.logReportService = logReportService;
-            this.logger = logger;
         }
-
 
         /// <summary>
         /// 取得動作類別名稱
@@ -62,18 +53,138 @@ namespace SealTypographicWebAPI.Controllers
         /// 操作紀錄輸出Excel(全頁輸出)        
         /// </summary>
         /// <param name="operationLogSearch"></param>
-        /// <param name="fileName">預設為OperationLog</param>
+        /// <param name="fileName">預設檔名為OperationLog</param>
         /// <returns></returns>
         [HttpGet("[Action]")]
         public IActionResult OperationLogToExcel([FromQuery] OperationLogSearch operationLogSearch, string fileName = "OperationLog")
+            => ToExcel(
+                        logReportService.GetOperationLogPaginate(operationLogSearch, true).ViewModels,
+                        ExcelHearderConsts.OperationLogHeaders,
+                        fileName
+                     );
+
+        /// <summary>
+        /// 取得財報印鑑異動紀錄分頁列表
+        /// </summary>
+        /// <param name="customerSealEventLogSearch"></param>
+        /// <returns></returns>
+        [HttpGet("[Action]")]
+        public CustomerSealEventLogPaginate FinancialReportSealEventLogPaginate([FromQuery] CustomerSealEventLogSearch customerSealEventLogSearch)
+            => logReportService.GetCustomerSealEventLogPaginate(customerSealEventLogSearch, TypographyType.FinancialReport);
+
+        /// <summary>
+        /// 財報印鑑異動紀錄輸出Excel(全頁輸出)        
+        /// </summary>
+        /// <param name="customerSealEventLogSearch"></param>        
+        /// <param name="fileName">預設檔名為FinancialReportSealEventLog</param>
+        /// <returns></returns>
+        [HttpGet("[Action]")]
+        public IActionResult FinancialReportSealEventLogToExcel([FromQuery] CustomerSealEventLogSearch customerSealEventLogSearch, string fileName = "FinancialReportSealEventLog")
+                => ToExcel(
+                            logReportService.GetCustomerSealEventLogPaginate(customerSealEventLogSearch, TypographyType.FinancialReport, true).ViewModels,
+                            ExcelHearderConsts.FinancialReportSealEventLogHeaders,
+                            fileName
+                        );
+
+        /// <summary>
+        /// 取得稅報印鑑異動紀錄分頁列表
+        /// </summary>
+        /// <param name="customerSealEventLogSearch"></param>
+        /// <returns></returns>
+        [HttpGet("[Action]")]
+        public CustomerSealEventLogPaginate TaxReportSealEventLogPaginate([FromQuery] CustomerSealEventLogSearch customerSealEventLogSearch)
+            => logReportService.GetCustomerSealEventLogPaginate(customerSealEventLogSearch, TypographyType.TaxReport);
+
+        /// <summary>
+        /// 稅報印鑑異動紀錄輸出Excel(全頁輸出)        
+        /// </summary>
+        /// <param name="customerSealEventLogSearch"></param>        
+        /// <param name="fileName">預設檔名為TaxReportSealEventLog</param>
+        /// <returns></returns>
+        [HttpGet("[Action]")]
+        public IActionResult TaxReportSealEventLogToExcel([FromQuery] CustomerSealEventLogSearch customerSealEventLogSearch, string fileName = "TaxReportSealEventLog")
+                => ToExcel(
+                            logReportService.GetCustomerSealEventLogPaginate(customerSealEventLogSearch, TypographyType.FinancialReport, true).ViewModels,
+                            ExcelHearderConsts.TaxReportSealEventLogHeaders,
+                            fileName
+                        );
+
+        /// <summary>
+        /// 取得會計師簽印異動紀錄分頁列表
+        /// </summary>
+        /// <param name="accountantSignEventLogSearch">會計師異動紀錄查詢</param>
+        /// <returns></returns>
+        [HttpGet("[Action]")]
+        public AccountantSignEventLogPaginate AccountantSignEventLogPaginate([FromQuery] AccountantSignEventLogSearch accountantSignEventLogSearch)
+            => logReportService.GetAccountantSignEventLogPaginate(accountantSignEventLogSearch);
+
+        /// <summary>
+        /// 會計師簽印異動紀錄輸出Excel(全頁輸出)        
+        /// </summary>
+        /// <param name="accountantSignEventLogSearch">會計師異動紀錄查詢</param>        
+        /// <param name="fileName">預設為AccountantSignEventLog</param>
+        /// <returns></returns>
+        [HttpGet("[Action]")]
+        public IActionResult AccountantSignEventLogToExcel([FromQuery] AccountantSignEventLogSearch accountantSignEventLogSearch, string fileName = "AccountantSignEventLog")
+                => ToExcel(
+                            logReportService.GetAccountantSignEventLogPaginate(accountantSignEventLogSearch, true).ViewModels,
+                            ExcelHearderConsts.AccountantSignEventLogHeaders,
+                            fileName
+                        );
+
+        /// <summary>
+        /// 取得財報排版紀錄
+        /// </summary>
+        /// <param name="typographicReportSearch">排版紀錄查詢</param>
+        /// <returns></returns>
+        [HttpGet("[Action]")]
+        public TypographicReportPaginate FinancialReport([FromQuery] TypographicReportSearch typographicReportSearch)
+            => logReportService.GetTypographicReport(typographicReportSearch, TypographyType.FinancialReport);
+
+        /// <summary>
+        /// 取得財報排版紀錄
+        /// </summary>
+        /// <param name="typographicReportSearch"></param>
+        /// <param name="fileName">預設FinancialReport</param>
+        /// <returns></returns>
+        [HttpGet("[Action]")]
+        public IActionResult FinancialReportToExcel([FromQuery] TypographicReportSearch typographicReportSearch, string fileName = "FinancialReport")
+                => ToExcel(
+                            logReportService.GetTypographicReport(typographicReportSearch, TypographyType.FinancialReport, 1, true).ViewModels,
+                            ExcelHearderConsts.FinancialTypographicLogHeaders,
+                            fileName
+                        );
+
+        /// <summary>
+        /// 取得稅報排版紀錄
+        /// </summary>
+        /// <param name="typographicReportSearch">排版紀錄查詢</param>
+        /// <returns></returns>
+        [HttpGet("[Action]")]
+        public TypographicReportPaginate TaxReport([FromQuery] TypographicReportSearch typographicReportSearch)
+            => logReportService.GetTypographicReport(typographicReportSearch, TypographyType.TaxReport);
+
+        /// <summary>
+        /// 取得稅報排版紀錄
+        /// </summary>
+        /// <param name="typographicReportSearch">排版紀錄查詢</param>
+        /// <param name="fileName">預設檔名為TaxReport</param>
+        /// <returns></returns>
+        [HttpGet("[Action]")]
+        public IActionResult TaxReportToExcel([FromQuery] TypographicReportSearch typographicReportSearch, string fileName = "TaxReport")
+                => ToExcel(
+                            logReportService.GetTypographicReport(typographicReportSearch, TypographyType.TaxReport, 1, true).ViewModels,
+                            ExcelHearderConsts.TaxTypographicLogHeaders,
+                            fileName
+                        );
+
+        private static IActionResult ToExcel<T>(List<T> paginatedData, List<string> headers, string fileName) where T : class
         {
             IActionResult result;
 
-            List<OperationLogViewModel> paginatedData = logReportService.GetOperationLogPaginate(operationLogSearch, true).ViewModels;
-
             if (paginatedData != null)
             {
-                ExcelData<OperationLogViewModel> excelData = new(paginatedData, operationLogHeaders);
+                ExcelData<T> excelData = new(paginatedData, headers);
 
                 result = new FileContentResult(ExcelUtil.CreateFileToBytes(excelData), EXCEL_CONTENT_TYPE)
                 {
@@ -88,53 +199,7 @@ namespace SealTypographicWebAPI.Controllers
                     StatusCode = 204 // 204 表示 No Content
                 };
             }
-
             return result;
         }
-
-        /// <summary>
-        /// 取得財報印鑑異動紀錄分頁列表
-        /// </summary>
-        /// <param name="customerSealEventLogSearch"></param>
-        /// <returns></returns>
-        [HttpGet("[Action]")]
-        public CustomerSealEventLogPaginate FinancialReportSealEventLogPaginate([FromQuery] CustomerSealEventLogSearch customerSealEventLogSearch)
-            => logReportService.GetCustomerSealEventLogPaginate(customerSealEventLogSearch, TypographyType.FinancialReport);
-
-        /// <summary>
-        /// 取得稅報印鑑異動紀錄分頁列表
-        /// </summary>
-        /// <param name="customerSealEventLogSearch"></param>
-        /// <returns></returns>
-        [HttpGet("[Action]")]
-        public CustomerSealEventLogPaginate TaxReportSealEventLogPaginate([FromQuery] CustomerSealEventLogSearch customerSealEventLogSearch)
-            => logReportService.GetCustomerSealEventLogPaginate(customerSealEventLogSearch, TypographyType.TaxReport);
-
-        /// <summary>
-        /// 取得會計師簽印異動紀錄分頁列表
-        /// </summary>
-        /// <param name="accountantSignEventLogSearch"></param>
-        /// <returns></returns>
-        [HttpGet("[Action]")]
-        public AccountantSignEventLogPaginate AccountantSignEventLogPaginate([FromQuery] AccountantSignEventLogSearch accountantSignEventLogSearch)
-            => logReportService.GetAccountantSignEventLogPaginate(accountantSignEventLogSearch);
-
-        /// <summary>
-        /// 取得財報排版紀錄
-        /// </summary>
-        /// <param name="customerTypoReportSearch"></param>
-        /// <returns></returns>
-        [HttpGet("[Action]")]
-        public TypographicReportPaginate FinancialReport([FromQuery] TypographicReportSearch customerTypoReportSearch)
-            => logReportService.GetTypographicReport(customerTypoReportSearch, TypographyType.FinancialReport);
-
-        /// <summary>
-        /// 取得稅報排版紀錄
-        /// </summary>
-        /// <param name="customerTypoReportSearch"></param>
-        /// <returns></returns>
-        [HttpGet("[Action]")]
-        public TypographicReportPaginate TaxReport([FromQuery] TypographicReportSearch customerTypoReportSearch)
-            => logReportService.GetTypographicReport(customerTypoReportSearch, TypographyType.TaxReport);
     }
 }

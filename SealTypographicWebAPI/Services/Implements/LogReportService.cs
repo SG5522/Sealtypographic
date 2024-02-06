@@ -197,18 +197,18 @@ namespace SealTypographicWebAPI.Services.Implements
         /// 客戶印鑑異動分頁列表
         /// </summary>
         /// <returns></returns>
-        public CustomerSealEventLogPaginate GetCustomerSealEventLogPaginate(CustomerSealEventLogSearch customerSealEventLogSearch, TypographyType typographyType)
+        public CustomerSealEventLogPaginate GetCustomerSealEventLogPaginate(CustomerSealEventLogSearch customerSealEventLogSearch, TypographyType typographyType, bool isFullPageOut = false)
         {
             CustomerSealEventLogPaginate customerSealEventLogPaginate = new();
 
             logger.LogInformation("OperationLogPaginate input operationLogSearch: {@operationLogSearch}", customerSealEventLogSearch);
 
             IQueryable<CustomerSealEventLog> customerSealEventLogQuery = customerSealEventLog.AsQueryable().Where
-                                                        (
-                                                            x => x.DateTime >= customerSealEventLogSearch.StartDate
-                                                            && x.DateTime <= customerSealEventLogSearch.EndDate
-                                                            && x.Data!.TypographyType == typographyType
-                                                        );
+                                                                        (
+                                                                            x => x.DateTime >= customerSealEventLogSearch.StartDate
+                                                                            && x.DateTime <= customerSealEventLogSearch.EndDate
+                                                                            && x.Data!.TypographyType == typographyType
+                                                                        );
 
             if (customerSealEventLogSearch.ReviewStatus != null)
             {
@@ -233,13 +233,25 @@ namespace SealTypographicWebAPI.Services.Implements
 
             if (customerSealEventLogQuery.Any())
             {
-                customerSealEventLogPaginate.ViewModels = PageUtil.SetPaginateViewModel<CustomerSealEventLog, CustomerSealEventLogViewModel>
-                                                            (
-                                                                customerSealEventLogQuery, 
-                                                                configurationProvider, 
-                                                                customerSealEventLogSearch.PageNumber, 
-                                                                customerSealEventLogSearch.PageSize
-                                                            );
+                if(isFullPageOut)
+                {
+                    customerSealEventLogPaginate.ViewModels = PageUtil.SetPaginateViewModel<CustomerSealEventLog, CustomerSealEventLogViewModel>
+                                                                (
+                                                                    customerSealEventLogQuery,
+                                                                    configurationProvider
+                                                                );
+                }
+                else
+                {
+                    customerSealEventLogPaginate.ViewModels = PageUtil.SetPaginateViewModel<CustomerSealEventLog, CustomerSealEventLogViewModel>
+                                                                (
+                                                                    customerSealEventLogQuery,
+                                                                    configurationProvider,
+                                                                    customerSealEventLogSearch.PageNumber,
+                                                                    customerSealEventLogSearch.PageSize
+                                                                );
+                }
+
 
                 PageUtil.SetPaginate(customerSealEventLogPaginate, customerSealEventLogSearch.PageNumber, customerSealEventLogSearch.PageSize, customerSealEventLogQuery.Count());
 
@@ -257,7 +269,7 @@ namespace SealTypographicWebAPI.Services.Implements
         /// 客戶印鑑異動分頁列表
         /// </summary>
         /// <returns></returns>
-        public AccountantSignEventLogPaginate GetAccountantSignEventLogPaginate(AccountantSignEventLogSearch accountantSignEventLogSearch)
+        public AccountantSignEventLogPaginate GetAccountantSignEventLogPaginate(AccountantSignEventLogSearch accountantSignEventLogSearch, bool isFullPageOut = false)
         {
             AccountantSignEventLogPaginate accountantSignEventLogPaginate = new();
 
@@ -292,13 +304,24 @@ namespace SealTypographicWebAPI.Services.Implements
 
             if (accountantSignEventLogQuery.Any())
             {
-                accountantSignEventLogPaginate.ViewModels = PageUtil.SetPaginateViewModel<AccountantSignEventLog, AccountantSignEventLogViewModel>
-                                                            (
-                                                                accountantSignEventLogQuery, 
-                                                                configurationProvider, 
-                                                                accountantSignEventLogSearch.PageNumber, 
-                                                                accountantSignEventLogSearch.PageSize
-                                                            );
+                if(isFullPageOut)
+                {
+                    accountantSignEventLogPaginate.ViewModels = PageUtil.SetPaginateViewModel<AccountantSignEventLog, AccountantSignEventLogViewModel>
+                                            (
+                                                accountantSignEventLogQuery,
+                                                configurationProvider
+                                            );
+                }
+                else
+                {
+                    accountantSignEventLogPaginate.ViewModels = PageUtil.SetPaginateViewModel<AccountantSignEventLog, AccountantSignEventLogViewModel>
+                                                                (
+                                                                    accountantSignEventLogQuery,
+                                                                    configurationProvider,
+                                                                    accountantSignEventLogSearch.PageNumber,
+                                                                    accountantSignEventLogSearch.PageSize
+                                                                );
+                }
 
                 PageUtil.SetPaginate(accountantSignEventLogPaginate, accountantSignEventLogSearch.PageNumber, accountantSignEventLogSearch.PageSize, accountantSignEventLogQuery.Count());
 
@@ -313,13 +336,14 @@ namespace SealTypographicWebAPI.Services.Implements
         }
 
         /// <summary>
-        /// 
+        /// 取得排版紀錄
         /// </summary>
         /// <param name="customerTypoReportSearch"></param>
         /// <param name="typographyType"></param>
         /// <param name="userId"></param>
+        /// <param name="isFullPageOut"></param>
         /// <returns></returns>
-        public TypographicReportPaginate GetTypographicReport(TypographicReportSearch customerTypoReportSearch, TypographyType typographyType, int userId = 1)
+        public TypographicReportPaginate GetTypographicReport(TypographicReportSearch customerTypoReportSearch, TypographyType typographyType, int userId = 1, bool isFullPageOut = false)
         {
             logger.LogInformation("GetTypographicReport input customerTypoReportSearch: {@customerTypoReportSearch} typographyType: {@typographyType} userId: {@userId}"
                 , customerTypoReportSearch, typographyType, userId);
@@ -356,15 +380,24 @@ namespace SealTypographicWebAPI.Services.Implements
 
                 if (typographicPDFQuery.Any())
                 {
-
-                    customerTypoReportPaginate.ViewModels = PageUtil.SetPaginateViewModel<TypographicPDF, TypographicReportViewModel>
-                                                            (
-                                                                typographicPDFQuery,
-                                                                configurationProvider,
-                                                                customerTypoReportSearch.PageNumber,
-                                                                customerTypoReportSearch.PageSize
-                                                            );
-                    
+                    if(isFullPageOut)
+                    {
+                        customerTypoReportPaginate.ViewModels = PageUtil.SetPaginateViewModel<TypographicPDF, TypographicReportViewModel>
+                                                                (
+                                                                    typographicPDFQuery,
+                                                                    configurationProvider
+                                                                );
+                    }
+                    else
+                    {
+                        customerTypoReportPaginate.ViewModels = PageUtil.SetPaginateViewModel<TypographicPDF, TypographicReportViewModel>
+                                                                (
+                                                                    typographicPDFQuery,
+                                                                    configurationProvider,
+                                                                    customerTypoReportSearch.PageNumber,
+                                                                    customerTypoReportSearch.PageSize
+                                                                );
+                    }                                        
 
                     PageUtil.SetPaginate(customerTypoReportPaginate, customerTypoReportSearch.PageNumber, customerTypoReportSearch.PageSize, typographicPDFQuery.Count());
                 }
