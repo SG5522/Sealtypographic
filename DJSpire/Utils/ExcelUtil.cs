@@ -60,12 +60,14 @@ namespace DJSpire.Utils
             Worksheet sheet = workbook.Worksheets[0];
 
             try
-            {                
+            {
+                //搜尋包含Display的屬性值並參照Order排序
                 PropertyInfo[] properties = typeof(T).GetProperties()
-                                            .OrderBy(
-                                            p => {
-                                                return p.GetCustomAttributes(typeof(DisplayAttribute), true).FirstOrDefault() is DisplayAttribute displayAttribute ? displayAttribute.Order : int.MaxValue;
-                                            })
+                                            .Where(
+                                                    p => p.GetCustomAttribute<DisplayAttribute>() != null
+                                                    && p.GetValue(excelData.Values.FirstOrDefault()) != null
+                                                )
+                                            .OrderBy(p => p.GetCustomAttribute<DisplayAttribute>()?.Order ?? int.MaxValue)
                                             .ToArray();
 
                 for (int row = 1; row <= excelData.Values.Count; row++)
@@ -81,15 +83,15 @@ namespace DJSpire.Utils
                             if (row == 1)
                             {
                                 sheet.Range[row, col].Value = excelData.Headers[col - 1];
-                                sheet.Range[row, col].Style.Font.IsBold = true;                                
+                                sheet.Range[row, col].Style.Font.IsBold = true;
                             }
                             // 處理單元格的值
-                            SetCellContent(sheet, row + 1, col, propertyValue);                         
+                            SetCellContent(sheet, row + 1, col, propertyValue);
                         }
                         else
                         {
                             // 處理單元格的值
-                            SetCellContent(sheet, row, col, propertyValue);                         
+                            SetCellContent(sheet, row, col, propertyValue);
                         }
                     }
                 }

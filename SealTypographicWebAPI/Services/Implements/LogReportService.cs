@@ -217,18 +217,19 @@ namespace SealTypographicWebAPI.Services.Implements
 
             if (!string.IsNullOrWhiteSpace(customerSealEventLogSearch.UserKeyWord))
             {
-                customerSealEventLogQuery = customerSealEventLogQuery.Where(x => x.UserId.ToLower().Contains(customerSealEventLogSearch.UserKeyWord.ToLower())
-                                                            || x.UserName.ToLower().Contains(customerSealEventLogSearch.UserKeyWord.ToLower()));
+                customerSealEventLogQuery = customerSealEventLogQuery
+                                            .Where(x => x.UserId.ToLower().Contains(customerSealEventLogSearch.UserKeyWord.ToLower())
+                                            || x.UserName.ToLower().Contains(customerSealEventLogSearch.UserKeyWord.ToLower()));
             }
 
             if (!string.IsNullOrWhiteSpace(customerSealEventLogSearch.CustomerKeyWord))
             {
-                customerSealEventLogQuery = customerSealEventLogQuery.Where(x => x.Data != null &&
-                                                                (
-                                                                    x.Data!.CustomerCode.ToLower().Contains(customerSealEventLogSearch.CustomerKeyWord.ToLower())
-                                                                    || x.Data!.CustomerName.ToLower().Contains(customerSealEventLogSearch.CustomerKeyWord.ToLower())
-                                                                )
-                                                            );
+                customerSealEventLogQuery = customerSealEventLogQuery
+                                            .Where(x => x.Data != null &&
+                                            (
+                                                x.Data!.CustomerCode.ToLower().Contains(customerSealEventLogSearch.CustomerKeyWord.ToLower())
+                                                || x.Data!.CustomerName.ToLower().Contains(customerSealEventLogSearch.CustomerKeyWord.ToLower())
+                                            ));
             }
 
             if (customerSealEventLogQuery.Any())
@@ -276,10 +277,10 @@ namespace SealTypographicWebAPI.Services.Implements
             logger.LogInformation("OperationLogPaginate input operationLogSearch: {@operationLogSearch}", accountantSignEventLogSearch);
 
             IQueryable<AccountantSignEventLog> accountantSignEventLogQuery = accountantSignEventLog.AsQueryable().Where
-                                                        (
-                                                            x => x.DateTime >= accountantSignEventLogSearch.StartDate
-                                                            && x.DateTime <= accountantSignEventLogSearch.EndDate
-                                                        );
+                                                                            (
+                                                                                x => x.DateTime >= accountantSignEventLogSearch.StartDate
+                                                                                && x.DateTime <= accountantSignEventLogSearch.EndDate
+                                                                            );
 
             if (accountantSignEventLogSearch.ReviewStatus != null)
             {
