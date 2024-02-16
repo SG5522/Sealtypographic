@@ -1,7 +1,7 @@
 ﻿namespace SealTypographicWebAPI.Models.LogReport
 {
     /// <summary>
-    /// 紀錄使用TypographicPDF Service時所讀取的資料
+    /// 紀錄使用客戶印鑑 Service時所讀取的資料
     /// </summary>
     public class CustomerLog
     {

@@ -431,10 +431,10 @@ namespace SealTypographicWebAPI.Services.Implements
                     typographicPDF.UploadFile = dbContext.UploadFiles.Single(x => x.Id == typographicPDFSaveForm.UploadId);
                     //之後輸入要從前端提供Id
                     typographicPDF.QuarterYear = dbContext.QuarterYears
-                                            .Single(x => x.Id == typographicPDFSaveForm.QuarterYearId);
+                                            .Single(x => x.Id == typographicPDFSaveForm.QuarterYearId);  
+                    
+                    InputUtil.SetWithReview(typographicPDF, false, userId);
 
-                    typographicPDF.ReviewStatus = ReviewStatus.Draft;
-                    BaseInputTypographicPDF(typographicPDF, false, userId);
                     List<TypographicPage> newPages = new();
 
                     foreach (TypographicPageForm typographicPageForm in typographicPDFSaveForm.Pages)
@@ -473,8 +473,8 @@ namespace SealTypographicWebAPI.Services.Implements
                 TypographicPDF? typographicPDF = dbContext.TypographicPDFs.Find(typographicPDFId);
                 if (typographicPDF != null)
                 {
-                    typographicPDF.ReviewStatus = reviewStatus;
-                    BaseInputTypographicPDF(typographicPDF, false, userId);
+                    typographicPDF.ReviewStatus = reviewStatus;                    
+                    InputUtil.SetWithReview(typographicPDF, false, userId);
                     dbContext.SaveChanges();
                     response.Success();
                 }
@@ -507,8 +507,8 @@ namespace SealTypographicWebAPI.Services.Implements
                 if (typographicPDF != null)
                 {
                     typographicPDF.DeleteStatus = DeleteStatus.Yes;
-                    typographicPDF.ReviewStatus = ReviewStatus.Disabled;
-                    BaseInputTypographicPDF(typographicPDF, false, userId);
+                    typographicPDF.ReviewStatus = ReviewStatus.Disabled;                    
+                    InputUtil.SetWithReview(typographicPDF, false, userId);
                     dbContext.SaveChanges();
                     response.Success();
                 }
@@ -524,28 +524,6 @@ namespace SealTypographicWebAPI.Services.Implements
                 logger.LogError("Delete error {@error}", ex.Message);
             }            
             return response;
-        }
-
-        /// <summary>
-        /// 資料新增修改時基本資料輸入
-        /// </summary>
-        /// <param name="typographicPDF">DB上的排板PDF資料</param>        
-        /// <param name="isCreate">確認是否新增還是更新的動作</param>
-        /// <param name="userId">使用者ID</param>
-        private static void BaseInputTypographicPDF(TypographicPDF typographicPDF, bool isCreate, int userId)
-        {
-            if (isCreate)
-            {                
-                typographicPDF.CreateUserId = userId;
-                typographicPDF.CreateDate = DateTime.Now;
-                typographicPDF.DeleteStatus = DeleteStatus.No;
-                typographicPDF.ReviewStatus = ReviewStatus.Draft;
-            }
-            else
-            {
-                typographicPDF.UpdateUserId = userId;
-                typographicPDF.UpdateDate = DateTime.Now;                
-            }
         }
 
         /// <summary>
@@ -594,34 +572,19 @@ namespace SealTypographicWebAPI.Services.Implements
             return typographicPage;
         }
 
-        private async Task AddTypographicResourceLocation<T>(List<TypographicResourceLocation> typographicResourceLocations, T t)  where T : TypographicPDFBaseLocation
+        private async Task AddTypographicResourceLocation<T>(List<TypographicResourceLocation> typographicResourceLocations, T locationData)  where T : TypographicPDFBaseLocation
         {
-            TypographicResourceLocation typographicResourceLocation = mapper.Map<TypographicResourceLocation>(t);
-            typographicResourceLocation.TypographicResource = dbContext.TypographicResources.Single(x => x.Id == t.Id);
-            if (!string.IsNullOrWhiteSpace(t.EditPdfImageBase64))
+            TypographicResourceLocation typographicResourceLocation = mapper.Map<TypographicResourceLocation>(locationData);
+            typographicResourceLocation.TypographicResource = dbContext.TypographicResources.Single(x => x.Id == locationData.Id);
+            if (!string.IsNullOrWhiteSpace(locationData.EditPdfImageBase64))
             {
-                ImageModel imageModel = new() { DataUrl = t.EditPdfImageBase64 };
+                ImageModel imageModel = new() { DataUrl = locationData.EditPdfImageBase64 };
                 string originalFileName = $"{DateTime.Now:yyyyMMddHHmmssffff}.{imageModel.ImageFormat!.Name.ToLower()}";
                 //存到指定位置
                 string savePath = await FileUtil.SaveFileReturnPath(imageModel.Base64!.ToBytes(), $"{typographyEditImagePathOptions.RootPath}{originalFileName}");
                 typographicResourceLocation.EditImageFullPath = savePath;
-                //await SaveEditImage(typographicResourceLocation, t.EditPdfImageBase64);
             }
             typographicResourceLocations.Add(typographicResourceLocation);
-        }
-
-        /// <summary>
-        /// 排版時所做的影像另外進行存檔
-        /// </summary>
-        /// <param name="typographicResource"></param>
-        /// <param name="imageDataUrl"></param>
-        private async Task SaveEditImage(TypographicResourceLocation typographicResource, string imageDataUrl)
-        {
-            ImageModel imageModel = new() { DataUrl = imageDataUrl };
-            string originalFileName = $"{DateTime.Now:yyyyMMddHHmmssffff}.{imageModel.ImageFormat!.Name.ToLower()}";
-            //存到指定位置
-            string savePath = await FileUtil.SaveFileReturnPath(imageModel.Base64!.ToBytes(), $"{typographyEditImagePathOptions.RootPath}{originalFileName}");
-            typographicResource.EditImageFullPath = savePath;
         }
     }
 }

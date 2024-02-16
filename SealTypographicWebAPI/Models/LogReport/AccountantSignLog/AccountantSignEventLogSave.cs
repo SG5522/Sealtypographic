@@ -3,7 +3,7 @@
 namespace SealTypographicWebAPI.Models.LogReport.AccountantSignLog
 {
     /// <summary>
-    /// 印鑑異動紀錄
+    /// 會計師簽印異動紀錄
     /// </summary>
     public class AccountantSignEventLogSave : AccountantLog
     {

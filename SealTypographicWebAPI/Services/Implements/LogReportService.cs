@@ -4,6 +4,7 @@ using CommonLib.Extensions;
 using CommonLib.Models;
 using DBEntities;
 using DBEntities.Consts;
+using DBEntities.Entities.AccountantModels;
 using DBEntities.Entities.TypographicModels;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
@@ -13,6 +14,9 @@ using MongoDB.Driver.Linq;
 using SealTypographicWebAPI.Config;
 using SealTypographicWebAPI.Consts;
 using SealTypographicWebAPI.Models;
+using SealTypographicWebAPI.Models.Accountant;
+using SealTypographicWebAPI.Models.LogReport.AccountantList;
+using SealTypographicWebAPI.Models.LogReport.AccountantMember;
 using SealTypographicWebAPI.Models.LogReport.AccountantSignLog;
 using SealTypographicWebAPI.Models.LogReport.CustomerSealEventLog;
 using SealTypographicWebAPI.Models.LogReport.OperationLog;
@@ -267,7 +271,7 @@ namespace SealTypographicWebAPI.Services.Implements
         }
 
         /// <summary>
-        /// 客戶印鑑異動分頁列表
+        /// 會計師簽印異動分頁列表
         /// </summary>
         /// <returns></returns>
         public AccountantSignEventLogPaginate GetAccountantSignEventLogPaginate(AccountantSignEventLogSearch accountantSignEventLogSearch, bool isFullPageOut = false)
@@ -417,6 +421,74 @@ namespace SealTypographicWebAPI.Services.Implements
         }
 
         /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="accountantMemberSearch"></param>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        public AccountantMemberPaginate GetAccountantMemberPaginate(AccountantMemberSearch accountantMemberSearch, int userId = 1)
+        {
+            AccountantMemberPaginate accountantMemberPaginate = new();
+
+            logger.LogInformation("GetAccountantMemberPaginate input accountantMemberSearch: {@accountantMemberSearch} userId: {@userId}"
+                , accountantMemberSearch, userId);
+            int companyId = 1;
+
+            try
+            {
+                IQueryable<Accountant> accountantQuery = dbContext.Accountants
+                                                        .Include(x => x.AccountantSignGroups)
+                                                        .Where
+                                                        (
+                                                            accountant => accountant.Company.Id == companyId
+                                                            && accountant.DeleteStatus == DeleteStatus.No
+                                                        );
+
+
+                if (!string.IsNullOrWhiteSpace(accountantMemberSearch.Keyword))
+                {
+                    accountantQuery = accountantQuery.Where
+                    (
+                        accountant =>
+                        accountant.Code.ToLower().Contains(accountantMemberSearch.Keyword.ToLower())
+                            || accountant.Name.ToLower().Contains(accountantMemberSearch.Keyword.ToLower())
+                    );
+                }
+
+                if (!string.IsNullOrWhiteSpace(accountantMemberSearch.AccountantGroupId))
+                {
+                    accountantQuery = accountantQuery.Where(accountant => accountant.GroupAccountants.First().AccountantGroup.Code == accountantSearch.AccountantGroupNumber);
+                }
+
+                accountantQuery = accountantQuery.OrderBy(accountant => accountant.Id);
+
+                if (accountantQuery.Any())
+                {
+                    //取得該頁            
+                    accountantPaginatesViewModels.ViewModels = accountantQuery
+                    .Skip((accountantSearch.PageNumber - 1) * accountantSearch.PageSize)
+                                                                .Take(accountantSearch.PageSize)
+                                                                .ProjectTo<AccountantViewModelWithCreateDate>(configurationProvider)
+                    .ToList();
+
+                    PageUtil.SetPaginate(accountantPaginatesViewModels, accountantSearch.PageNumber, accountantSearch.PageSize, accountantQuery.Count());
+                    accountantPaginatesViewModels.Success();
+                }
+                else
+                {
+                    accountantPaginatesViewModels.DbNoData();
+                }
+                logger.LogInformation("GetPaginate output {@output}", accountantPaginatesViewModels);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError("GetAccountantMemberPaginate error {@error}", ex.Message);
+            }
+
+            return accountantMemberPaginate;
+        }
+
+        /// <summary>
         /// 登入日誌
         /// </summary>        
         /// <param name="userInfo"></param>
@@ -468,7 +540,7 @@ namespace SealTypographicWebAPI.Services.Implements
         public async Task SaveAccountantSignEventLog(AccountantSignEventLogSave accountantSignEventLogSave, OperateType operateType, string userId = "test", string userName = "test")
         {
             await accountantSignEventLog.InsertOneAsync(MapFrom<AccountantSignEventLog, AccountantSignEventLogSave>(accountantSignEventLogSave, operateType, userId, userName));
-        }        
+        }                
 
         private static T MapFrom<T, K>(K logSaveData, OperateType operateType, string userId, string userName) where T : LogModel<K>, new()             
         {

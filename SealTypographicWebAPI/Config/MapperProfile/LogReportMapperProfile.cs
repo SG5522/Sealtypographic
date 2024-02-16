@@ -35,23 +35,18 @@ namespace SealTypographicWebAPI.Config.MapperProfile
                     //.ForMember(dst => dst.CreateUserId, opt => opt.MapFrom(src => src.CreateUserId))
                     ////TODO:透過keycloak取得使用者名稱
                     //.ForMember(dst => dst.CreateUserName, opt => opt.MapFrom(src => src.CreateUserId.ToString()))
-                    .ForMember(dst => dst.UserName, opt => opt.MapFrom(src => src.UpdateUser != null ? src.UpdateUser.UserName : string.Empty))
-                    .ForMember(dst => dst.UserNickName, opt => opt.MapFrom(src => src.UpdateUser != null ? src.UpdateUser.LastName : string.Empty))                    
+                    .ForMember(dst => dst.UserName, opt => opt.MapFrom(src => !string.IsNullOrWhiteSpace(src.UpdateUser!.UserName) ? src.UpdateUser.UserName : string.Empty))
+                    .ForMember(dst => dst.UserNickName, opt => opt.MapFrom(src => !string.IsNullOrWhiteSpace(src.UpdateUser!.LastName) ? src.UpdateUser.LastName : string.Empty))
                     .ForMember(dst => dst.CustomerCode, opt => opt.MapFrom(src => src.Customer.Code))
                     .ForMember(dst => dst.CustomerName, opt => opt.MapFrom(src => src.Customer.Name))
                     .ForMember(dst => dst.RecordDate, opt => opt.MapFrom(src => src.UpdateDate))
                     .ForMember(dst => dst.EditFileName, opt => opt.MapFrom(src => src.OriginFileName))
                     .ForMember(dst => dst.EditPageCount, opt => opt.MapFrom(src => src.TypographicPages.Where(x => x.BlankCheck == false).Count()))
-                    .ForMember(dst => dst.BlankPageCount, opt => opt.Ignore())  // 忽略 BlankPageCount 屬性的映射
-                    .BeforeMap((src, dst) =>
-                    {
-                        // 在映射之前，檢查 TypographyType 是否為 FinancialReport
-                        if (src.TypographyType == TypographyType.FinancialReport)
-                        {
-                            // 如果是，則將 BlankPageCount 屬性映射到目標對象
-                            dst.BlankPageCount = src.TypographicPages.Count(x => x.BlankCheck);
-                        }
-                    });
+                    .ForMember(dst => dst.BlankPageCount, opt => opt.MapFrom(src =>
+                        //判斷是否是財報，如果是就提供空白頁次，否則null
+                            src.TypographyType == TypographyType.FinancialReport ?
+                            src.TypographicPages.Where(x => x.BlankCheck).Count() : (int?)null
+                    ));
 
             //操作紀錄Map
             CreateMap<OperationLog, OperationLogViewModel>()                    
@@ -100,7 +95,6 @@ namespace SealTypographicWebAPI.Config.MapperProfile
                     .ForMember(dst => dst.CustomerId, opt => opt.MapFrom(src => src.CustomerId))
                     .ForMember(dst => dst.CustomerName, opt => opt.MapFrom(src => src.Name))
                     .ForMember(dst => dst.CustomerSealGroupId, opt => opt.MapFrom(src => src.Id));
-
 
             //操作紀錄Map會計簽印資料
             CreateMap<AccountantSignViewModels, OperationLogSave>()

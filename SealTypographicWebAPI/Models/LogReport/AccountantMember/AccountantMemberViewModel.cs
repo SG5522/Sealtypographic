@@ -1,6 +1,6 @@
 ﻿using SealTypographicWebAPI.Models.BaseModels;
 
-namespace SealTypographicWebAPI.Models.LogReport
+namespace SealTypographicWebAPI.Models.LogReport.AccountantList
 {
     /// <summary>
     /// 會計師成員
