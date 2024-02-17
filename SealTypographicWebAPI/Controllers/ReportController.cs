@@ -4,6 +4,8 @@ using DJSpire.Utils;
 using Microsoft.AspNetCore.Mvc;
 using OpenCvSharp;
 using SealTypographicWebAPI.Consts;
+using SealTypographicWebAPI.Models.LogReport.AccountantList;
+using SealTypographicWebAPI.Models.LogReport.AccountantMember;
 using SealTypographicWebAPI.Models.LogReport.AccountantSignLog;
 using SealTypographicWebAPI.Models.LogReport.CustomerSealEventLog;
 using SealTypographicWebAPI.Models.LogReport.OperationLog;
@@ -175,6 +177,29 @@ namespace SealTypographicWebAPI.Controllers
                 => ToExcel(
                             logReportService.GetTypographicReport(typographicReportSearch, TypographyType.TaxReport, 1, true).ViewModels,
                             ExcelHearderConsts.TaxTypographicLogHeaders,
+                            fileName
+                        );
+
+        /// <summary>
+        /// 取得稅報排版紀錄
+        /// </summary>
+        /// <param name="accountantMemberSearch">會計師成員查詢</param>
+        /// <returns></returns>
+        [HttpGet("[Action]")]
+        public AccountantMemberPaginate AccountantMember ([FromQuery] AccountantMemberSearch accountantMemberSearch)
+            => logReportService.GetAccountantMemberPaginate(accountantMemberSearch);
+
+        /// <summary>
+        /// 取得稅報排版紀錄
+        /// </summary>
+        /// <param name="accountantMemberSearch">會計師成員查詢</param>        
+        /// <param name="fileName">預設檔名為AccountantMember</param>
+        /// <returns></returns>
+        [HttpGet("[Action]")]
+        public IActionResult AccountantMemberToExcel([FromQuery] AccountantMemberSearch accountantMemberSearch, string fileName = "AccountantMember")
+                => ToExcel(
+                            logReportService.GetAccountantMemberPaginate(accountantMemberSearch, 1, true).ViewModels,
+                            ExcelHearderConsts.AccountantHeaders,
                             fileName
                         );
 

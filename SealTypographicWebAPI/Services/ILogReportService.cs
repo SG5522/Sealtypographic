@@ -1,6 +1,8 @@
 ﻿using CommonLib.Enums;
 using DBEntities.Consts;
 using SealTypographicWebAPI.Models;
+using SealTypographicWebAPI.Models.LogReport.AccountantList;
+using SealTypographicWebAPI.Models.LogReport.AccountantMember;
 using SealTypographicWebAPI.Models.LogReport.AccountantSignLog;
 using SealTypographicWebAPI.Models.LogReport.CustomerSealEventLog;
 using SealTypographicWebAPI.Models.LogReport.OperationLog;
@@ -55,6 +57,15 @@ namespace SealTypographicWebAPI.Services
         /// <param name="isFullPageOut">是否全部輸出</param>
         /// <returns></returns>
         TypographicReportPaginate GetTypographicReport(TypographicReportSearch typographicReportSearch, TypographyType typographyType, int userId = 1, bool isFullPageOut = false);
+
+        /// <summary>
+        /// 取得會計師成員分頁列表
+        /// </summary>
+        /// <param name="accountantMemberSearch">會計師成員查詢</param>
+        /// <param name="userId">使用者Id</param>
+        /// <param name="isFullPageOut">是否全部輸出</param>
+        /// <returns></returns>
+        AccountantMemberPaginate GetAccountantMemberPaginate(AccountantMemberSearch accountantMemberSearch, int userId = 1, bool isFullPageOut = false);
 
         /// <summary>
         /// 登入日誌

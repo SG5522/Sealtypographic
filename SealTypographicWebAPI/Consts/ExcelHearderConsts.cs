@@ -99,7 +99,7 @@
         };
 
         /// <summary>
-        /// 會計師清單的標頭
+        /// 使用者清單的標頭
         /// </summary>
         public static readonly List<string> UserHeaders = new()
         {

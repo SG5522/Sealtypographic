@@ -10,6 +10,7 @@ using SealTypographicWebAPI.Models.AccountantSignReview;
 using SealTypographicWebAPI.Models.Customer;
 using SealTypographicWebAPI.Models.CustomerSeal;
 using SealTypographicWebAPI.Models.CustomerSealReview;
+using SealTypographicWebAPI.Models.LogReport.AccountantList;
 using SealTypographicWebAPI.Models.LogReport.AccountantSignLog;
 using SealTypographicWebAPI.Models.LogReport.CustomerSealEventLog;
 using SealTypographicWebAPI.Models.LogReport.OperationLog;
@@ -152,6 +153,21 @@ namespace SealTypographicWebAPI.Config.MapperProfile
                     .ForMember(dst => dst.AccountantCode, opt => opt.MapFrom(src => src.Data!.AccountantCode))
                     .ForMember(dst => dst.ReviewStatus, opt => opt.MapFrom(src => src.Data!.ReviewStatus))
                     .ForMember(dst => dst.AccountantName, opt => opt.MapFrom(src => src.Data!.AccountantName));
+
+
+            CreateMap<IQueryable<GroupAccountant>, List<AccountantMemberViewModel>>()
+            .ConvertUsing((src, dest, context) =>
+            {
+                var distinctGroupAccountants = src.DistinctBy(groupAccountant => groupAccountant.Accountant.Id).ToList();
+                var distinctViewModels = context.Mapper.Map<List<AccountantMemberViewModel>>(distinctGroupAccountants);
+                return distinctViewModels;
+            });
+
+            //會計師成員列表
+            CreateMap<GroupAccountant, AccountantMemberViewModel>()
+                    .ForMember(dst => dst.Code, opt => opt.MapFrom(src => src.Accountant.Code))
+                    .ForMember(dst => dst.Name, opt => opt.MapFrom(src => src.Accountant.Name))
+                    .ForMember(dst => dst.GroupName, opt => opt.MapFrom(src => src.AccountantGroup.Name));                    
 
         }
     }

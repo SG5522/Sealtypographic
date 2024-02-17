@@ -36,7 +36,7 @@ namespace SealTypographicWebAPI.Services.Implements
         }
 
         /// <summary>
-        /// 取得上傳類別
+        /// 取得使用者資訊
         /// </summary>
         /// <returns></returns>
         public async Task<UserInfo> GetUserInfo(ClaimsPrincipal claims)
