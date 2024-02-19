@@ -160,7 +160,7 @@ namespace SealTypographicWebAPI.Services.Implements
                                                                                 .ToList();
 
                     PageUtil.SetPaginate(customerSealQuarterPaginateViewModel, customerSealQuarterPaginateSearch.PageNumber
-                        , customerSealQuarterPaginateSearch.PageSize, customerSealGroupsQuery.Count());
+                                , customerSealQuarterPaginateSearch.PageSize, customerSealGroupsQuery.Count());
                     customerSealQuarterPaginateViewModel.Success();
                 }
                 else

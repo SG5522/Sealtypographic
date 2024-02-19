@@ -3,7 +3,6 @@ using DBEntities.Consts;
 using DBEntities.Entities.AccountantModels;
 using DBEntities.Entities.CustomerModels;
 using DBEntities.Entities.TypographicModels;
-using Microsoft.EntityFrameworkCore.Sqlite.Storage.Internal;
 using SealTypographicWebAPI.Consts;
 using SealTypographicWebAPI.Models.Accountant;
 using SealTypographicWebAPI.Models.AccountantSignReview;
@@ -11,12 +10,14 @@ using SealTypographicWebAPI.Models.Customer;
 using SealTypographicWebAPI.Models.CustomerSeal;
 using SealTypographicWebAPI.Models.CustomerSealReview;
 using SealTypographicWebAPI.Models.LogReport.AccountantList;
+using SealTypographicWebAPI.Models.LogReport.AccountantMember;
 using SealTypographicWebAPI.Models.LogReport.AccountantSignLog;
 using SealTypographicWebAPI.Models.LogReport.CustomerSealEventLog;
 using SealTypographicWebAPI.Models.LogReport.OperationLog;
 using SealTypographicWebAPI.Models.LogReport.TypographicReport;
 using SealTypographicWebAPI.Models.MongoDBModel;
 using SealTypographicWebAPI.Utils;
+using static Azure.Core.HttpHeader;
 
 namespace SealTypographicWebAPI.Config.MapperProfile
 {
@@ -30,6 +31,8 @@ namespace SealTypographicWebAPI.Config.MapperProfile
         /// </summary>
         public LogReport()
         {
+            int logReportQueryValue = 0;
+
             //會計師分頁顯示Map
             CreateMap<TypographicPDF, TypographicReportViewModel>()
                     ////TODO:透過keycloak取得使用者Id
@@ -155,19 +158,16 @@ namespace SealTypographicWebAPI.Config.MapperProfile
                     .ForMember(dst => dst.AccountantName, opt => opt.MapFrom(src => src.Data!.AccountantName));
 
 
-            CreateMap<IQueryable<GroupAccountant>, List<AccountantMemberViewModel>>()
-            .ConvertUsing((src, dest, context) =>
-            {
-                var distinctGroupAccountants = src.DistinctBy(groupAccountant => groupAccountant.Accountant.Id).ToList();
-                var distinctViewModels = context.Mapper.Map<List<AccountantMemberViewModel>>(distinctGroupAccountants);
-                return distinctViewModels;
-            });
-
             //會計師成員列表
-            CreateMap<GroupAccountant, AccountantMemberViewModel>()
-                    .ForMember(dst => dst.Code, opt => opt.MapFrom(src => src.Accountant.Code))
-                    .ForMember(dst => dst.Name, opt => opt.MapFrom(src => src.Accountant.Name))
-                    .ForMember(dst => dst.GroupName, opt => opt.MapFrom(src => src.AccountantGroup.Name));                    
+            CreateMap<Accountant, AccountantMemberViewModel>()
+                    .ForMember(dst => dst.Code, opt => opt.MapFrom(src => src.Code))
+                    .ForMember(dst => dst.Name, opt => opt.MapFrom(src => src.Name))                    
+                    .ForMember(dst => dst.GroupName, opt => opt.MapFrom(src =>
+                            //logReportQueryValue 目前在這裡當作AccountantGroupId來搜尋
+                            logReportQueryValue == 0 ?
+                            src.AccountantGroups.Select(group => group.Name).FirstOrDefault() ?? string.Empty :
+                            src.AccountantGroups.Where(group => group.Id == logReportQueryValue).Select(group => group.Name).FirstOrDefault() ?? string.Empty
+                    ));
 
         }
     }

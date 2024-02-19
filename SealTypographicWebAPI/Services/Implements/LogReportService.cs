@@ -12,6 +12,7 @@ using MongoDB.Bson;
 using MongoDB.Driver;
 using MongoDB.Driver.Linq;
 using SealTypographicWebAPI.Config;
+using SealTypographicWebAPI.Config.MapperProfile;
 using SealTypographicWebAPI.Consts;
 using SealTypographicWebAPI.Models;
 using SealTypographicWebAPI.Models.Accountant;
@@ -426,7 +427,7 @@ namespace SealTypographicWebAPI.Services.Implements
         /// </summary>
         /// <param name="accountantMemberSearch">會計師成員查詢</param>
         /// <param name="userId">使用者Id</param>
-        /// <param name="isFullPageOut">是否全部輸出</param>
+        /// <param name="isFullPageOut"></param>        
         /// <returns></returns>
         public AccountantMemberPaginate GetAccountantMemberPaginate(AccountantMemberSearch accountantMemberSearch, int userId = 1, bool isFullPageOut = false)
         {
@@ -438,62 +439,58 @@ namespace SealTypographicWebAPI.Services.Implements
 
             try
             {
-                IQueryable<GroupAccountant> groupAccountantQuery = dbContext.GroupAccountants
-                                                                .Include(x => x.Accountant)
-                                                                .Include(x => x.AccountantGroup)
+                IQueryable<Accountant> accountantQuery = dbContext.Accountants                                                                
+                                                                .Include(x => x.AccountantGroups)
                                                                 .Where
                                                                 (
-                                                                    groupAccountant => groupAccountant.Accountant.Company.Id == companyId
-                                                                    && groupAccountant.Accountant.DeleteStatus == DeleteStatus.No
-                                                                    && (
-                                                                        accountantMemberSearch.AccountantGroupId == 0
-                                                                        || groupAccountant.AccountantGroupId == accountantMemberSearch.AccountantGroupId
-                                                                    )
+                                                                    accountant => accountant.Company.Id == companyId
+                                                                    && accountant.DeleteStatus == DeleteStatus.No
                                                                 );
 
 
                 if (!string.IsNullOrWhiteSpace(accountantMemberSearch.Keyword))
                 {
-                    groupAccountantQuery = groupAccountantQuery.Where
+                    accountantQuery = accountantQuery.Where
                     (
                         groupAccountant =>
-                        groupAccountant.Accountant.Code.ToLower().Contains(accountantMemberSearch.Keyword.ToLower())
-                            || groupAccountant.Accountant.Name.ToLower().Contains(accountantMemberSearch.Keyword.ToLower())
+                        groupAccountant.Code.ToLower().Contains(accountantMemberSearch.Keyword.ToLower())
+                            || groupAccountant.Name.ToLower().Contains(accountantMemberSearch.Keyword.ToLower())
                     );
                 }
 
-                //if (accountantMemberSearch.AccountantGroupId != 0)
-                //{                                        
-                //    groupAccountantQuery = groupAccountantQuery.Where(groupAccountant => groupAccountant.AccountantGroupId == accountantMemberSearch.AccountantGroupId);
-                //}
+                if(accountantMemberSearch.AccountantGroupId != 0)
+                {
+                    accountantQuery = accountantQuery.Where(accountant => accountant.AccountantGroups.Any(group => group.Id == accountantMemberSearch.AccountantGroupId));
+                }
+
 
                 // 根據會計師的 ID 進行分組，並選擇每組中的第一個元素
-                groupAccountantQuery = groupAccountantQuery.OrderBy(groupAccountant => groupAccountant.Accountant.Id);                                                        
+                accountantQuery = accountantQuery.OrderBy(accountant => accountant.Id);
 
-                if (groupAccountantQuery.Any())
-                {
+                if (accountantQuery.Any())
+                {                    
                     if (isFullPageOut)
                     {
-                        accountantMemberPaginate.ViewModels = PageUtil.SetPaginateViewModel<GroupAccountant, AccountantMemberViewModel>
+                        accountantMemberPaginate.ViewModels = PageUtil.SetPaginateViewModelWithLogReport<Accountant, AccountantMemberViewModel>
                                                                 (
-                                                                    groupAccountantQuery,
-                                                                    configurationProvider
+                                                                    accountantQuery,
+                                                                    configurationProvider,
+                                                                    accountantMemberSearch.AccountantGroupId
                                                                 );
                     }
                     else
-                    {       
-                        accountantMemberPaginate.ViewModels = PageUtil.SetPaginateViewModel<GroupAccountant, AccountantMemberViewModel>
+                    {
+                        accountantMemberPaginate.ViewModels = PageUtil.SetPaginateViewModelWithLogReport<Accountant, AccountantMemberViewModel>
                                                                 (
-                                                                    groupAccountantQuery,
+                                                                    accountantQuery,
                                                                     configurationProvider,
+                                                                    accountantMemberSearch.AccountantGroupId,
                                                                     accountantMemberSearch.PageNumber,
                                                                     accountantMemberSearch.PageSize
                                                                 );
                     }
-                    //暫時先從實體後的資料做DistinctBy之後在尋找其他方法
-                   // accountantMemberPaginate.ViewModels = accountantMemberPaginate.ViewModels.DistinctBy(accountantMemberViewModel => accountantMemberViewModel.Code).ToList();
 
-                    PageUtil.SetPaginate(accountantMemberPaginate, accountantMemberSearch.PageNumber, accountantMemberSearch.PageSize, groupAccountantQuery.Count());
+                    PageUtil.SetPaginate(accountantMemberPaginate, accountantMemberSearch.PageNumber, accountantMemberSearch.PageSize, accountantQuery.Count());
                     accountantMemberPaginate.Success();
                 }
                 else
