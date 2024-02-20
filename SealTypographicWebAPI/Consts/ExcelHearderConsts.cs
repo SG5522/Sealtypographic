@@ -103,10 +103,10 @@
         /// </summary>
         public static readonly List<string> UserHeaders = new()
         {
-            "使用者ID",
+            "使用者ID",            
             "使用者名稱",
-            "建立日期",
-            "密碼有效日期",
+            "使用者姓氏",
+            "建立日期",            
             "使用者群組",
         };
     }

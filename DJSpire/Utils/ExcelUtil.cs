@@ -77,6 +77,12 @@ namespace DJSpire.Utils
                         // 使用反射取得屬性名稱，然後取得該屬性的值                     
                         object? propertyValue = properties[col - 1].GetValue(excelData.Values[row - 1]);
 
+                        // 如果屬性是 List<string>，則將其串接成一個字串
+                        if (properties[col - 1].PropertyType == typeof(List<string>))
+                        {
+                            propertyValue = string.Join(", ", (List<string>)propertyValue!);
+                        }
+
                         if (excelData.Headers != null)
                         {
                             //塞入標頭用
@@ -95,6 +101,7 @@ namespace DJSpire.Utils
                         }
                     }
                 }
+                //自動擴展Excel每格寬高
                 sheet.AllocatedRange.AutoFitColumns();
                 sheet.AllocatedRange.AutoFitRows();
                 sheet.AllocatedRange.Style.HorizontalAlignment = HorizontalAlignType.Center;

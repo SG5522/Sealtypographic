@@ -24,6 +24,6 @@ namespace SealTypographicWebAPI.Models.LogReport.AccountantList
         /// 群組名稱
         /// </summary>
         [Display(Order = 2)]
-        public string GroupName { get; set; }
+        public List<string> Groups { get; set; }
     }
 }

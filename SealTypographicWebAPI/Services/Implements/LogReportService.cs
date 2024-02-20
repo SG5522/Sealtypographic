@@ -6,25 +6,28 @@ using DBEntities;
 using DBEntities.Consts;
 using DBEntities.Entities.AccountantModels;
 using DBEntities.Entities.TypographicModels;
+using DJKeycloakLib.Models.BaseModel;
+using DJKeycloakLib.Models.Group;
+using DJKeycloakLib.Models.User;
+using DJKeycloakLib.Services;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using MongoDB.Driver.Linq;
 using SealTypographicWebAPI.Config;
-using SealTypographicWebAPI.Config.MapperProfile;
 using SealTypographicWebAPI.Consts;
 using SealTypographicWebAPI.Models;
-using SealTypographicWebAPI.Models.Accountant;
 using SealTypographicWebAPI.Models.LogReport.AccountantList;
 using SealTypographicWebAPI.Models.LogReport.AccountantMember;
 using SealTypographicWebAPI.Models.LogReport.AccountantSignLog;
 using SealTypographicWebAPI.Models.LogReport.CustomerSealEventLog;
 using SealTypographicWebAPI.Models.LogReport.OperationLog;
 using SealTypographicWebAPI.Models.LogReport.TypographicReport;
+using SealTypographicWebAPI.Models.LogReport.UserMember;
 using SealTypographicWebAPI.Models.MongoDBModel;
 using SealTypographicWebAPI.Utils;
-using System.Linq;
 
 namespace SealTypographicWebAPI.Services.Implements
 {
@@ -35,23 +38,29 @@ namespace SealTypographicWebAPI.Services.Implements
     public class LogReportService : ILogReportService
     {
         private readonly SealTypographicDbContext dbContext;
-        private readonly ILogger<LogReportService> logger;        
+        private readonly IAdminService adminService;
+        private readonly ILogger<LogReportService> logger;
+        private readonly IMapper mapper;
         private readonly AutoMapper.IConfigurationProvider configurationProvider;        
         private IMongoCollection<OperationLog> operationLog;
         private IMongoCollection<CustomerSealEventLog> customerSealEventLog;
-        private IMongoCollection<AccountantSignEventLog> accountantSignEventLog;        
+        private IMongoCollection<AccountantSignEventLog> accountantSignEventLog;
+
 
         /// <summary>
         /// 建置
         /// </summary>
-        /// <param name="dbContext"></param>        
+        /// <param name="dbContext"></param>
+        /// <param name="adminService"></param>        
         /// <param name="logger"></param>
         /// <param name="mapper"></param>
         /// <param name="options"></param>
-        public LogReportService(SealTypographicDbContext dbContext, ILogger<LogReportService> logger, IMapper mapper, IOptionsMonitor<LogDatabaseOptions> options)
+        public LogReportService(SealTypographicDbContext dbContext, IAdminService adminService, ILogger<LogReportService> logger, IMapper mapper, IOptionsMonitor<LogDatabaseOptions> options)
         {
             this.dbContext = dbContext;
+            this.adminService = adminService;
             this.logger = logger;            
+            this.mapper = mapper;
             configurationProvider = mapper.ConfigurationProvider;
             //MongoDb連線
             MongoClient mongoClient = new (options.CurrentValue.ConnectionString);
@@ -503,9 +512,67 @@ namespace SealTypographicWebAPI.Services.Implements
             {
                 logger.LogError("GetAccountantMemberPaginate error {@error}", ex.Message);
             }
-
             return accountantMemberPaginate;
         }
+
+        /// <summary>
+        /// 取得UserMember
+        /// </summary>
+        /// <param name="userMemberSearch">使用者成員查詢</param>
+        /// <param name="isFullPageOut">是否全部輸出</param>
+        /// <returns></returns>
+        public async Task<DJKeycloakLib.Models.BaseModel.ResponseModel<UserMemberPaginate>> GetUserMember([FromQuery] UserMemberSearch userMemberSearch, bool isFullPageOut = false)
+        {
+            DJKeycloakLib.Models.BaseModel.ResponseModel<IList<UserRepresentation>> userRepresentationsResponseModel = await adminService.FindUsers(true, null, null, null, null,
+                userMemberSearch.FirstName, userMemberSearch.LastName, userMemberSearch.UserName);
+
+            //取得成員資料
+            DJKeycloakLib.Models.BaseModel.ResponseModel<UserMemberPaginate> userMemberPaginate = new()
+            {
+                Code = userRepresentationsResponseModel.Code,
+                Message = userRepresentationsResponseModel.Message,
+                Data = new()
+                {
+                    ViewModels = mapper.Map<List<UserMemberViewModel>>(userRepresentationsResponseModel.Data),
+                    PageNumber = userMemberSearch.PageNumber,
+                    PageSize = userMemberSearch.PageSize,                    
+                }
+            };
+
+            //確定有資料後取得群組資料
+            if (userMemberPaginate.Data != null)
+            {
+                foreach (UserMemberViewModel userMember in userMemberPaginate.Data.ViewModels)
+                {
+                    DJKeycloakLib.Models.BaseModel.ResponseModel<IList<GroupRepresentation>> groupResponse = await adminService.FindUserGroups(userMember.Id);
+                    if (groupResponse is { Code: KeycloakResponseCode.Success, Data: not null })
+                    {
+                        //mapper.Map(groupResponse.Data, userMember.Groups);
+                        foreach (GroupRepresentation groupRepresentation in groupResponse.Data)
+                        {
+                            userMember.Groups.Add(groupRepresentation.Name ?? string.Empty);
+                        }
+                    }
+                }
+                if(!string.IsNullOrWhiteSpace(userMemberSearch.UserGroupName))
+                {
+                    userMemberPaginate.Data.ViewModels = userMemberPaginate.Data.ViewModels.Where(x => x.Groups.Contains(userMemberSearch.UserGroupName)).ToList();
+                }
+
+                userMemberPaginate.Data.TotalCount = userMemberPaginate.Data.ViewModels.Count;
+
+                if (!isFullPageOut)
+                {
+                    userMemberPaginate.Data.ViewModels = userMemberPaginate.Data.ViewModels
+                                                        .Skip((userMemberPaginate.Data.PageNumber - 1) * userMemberPaginate.Data.PageSize)
+                                                        .Take(userMemberPaginate.Data.PageSize)
+                                                        .ToList();
+                }
+            }            
+
+            return userMemberPaginate;
+        }
+
 
         /// <summary>
         /// 登入日誌

@@ -1,12 +1,15 @@
 ﻿using CommonLib.Enums;
 using DBEntities.Consts;
+using Microsoft.AspNetCore.Mvc;
 using SealTypographicWebAPI.Models;
+using SealTypographicWebAPI.Models.LogReport;
 using SealTypographicWebAPI.Models.LogReport.AccountantList;
 using SealTypographicWebAPI.Models.LogReport.AccountantMember;
 using SealTypographicWebAPI.Models.LogReport.AccountantSignLog;
 using SealTypographicWebAPI.Models.LogReport.CustomerSealEventLog;
 using SealTypographicWebAPI.Models.LogReport.OperationLog;
 using SealTypographicWebAPI.Models.LogReport.TypographicReport;
+using SealTypographicWebAPI.Models.LogReport.UserMember;
 
 namespace SealTypographicWebAPI.Services
 {
@@ -66,6 +69,14 @@ namespace SealTypographicWebAPI.Services
         /// <param name="isFullPageOut">是否全部輸出</param>
         /// <returns></returns>
         AccountantMemberPaginate GetAccountantMemberPaginate(AccountantMemberSearch accountantMemberSearch, int userId = 1, bool isFullPageOut = false);
+
+        /// <summary>
+        /// 取得使用者資料
+        /// </summary>
+        /// <param name="userMemberSearch">使用者成員查詢</param>
+        /// <param name="isFullPageOut">是否全部輸出</param>
+        /// <returns></returns>
+        Task<DJKeycloakLib.Models.BaseModel.ResponseModel<UserMemberPaginate>> GetUserMember([FromQuery] UserMemberSearch userMemberSearch, bool isFullPageOut = false);
 
         /// <summary>
         /// 登入日誌

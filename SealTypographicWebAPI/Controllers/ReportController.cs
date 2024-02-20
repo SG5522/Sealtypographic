@@ -1,4 +1,11 @@
-﻿using DBEntities.Consts;
+﻿using AutoMapper;
+using Azure;
+using DBEntities.Consts;
+using DJKeycloakAPI.Models.Users;
+using DJKeycloakLib.Models.BaseModel;
+using DJKeycloakLib.Models.Group;
+using DJKeycloakLib.Models.User;
+using DJKeycloakLib.Services;
 using DJSpire.Models;
 using DJSpire.Utils;
 using Microsoft.AspNetCore.Mvc;
@@ -10,6 +17,7 @@ using SealTypographicWebAPI.Models.LogReport.AccountantSignLog;
 using SealTypographicWebAPI.Models.LogReport.CustomerSealEventLog;
 using SealTypographicWebAPI.Models.LogReport.OperationLog;
 using SealTypographicWebAPI.Models.LogReport.TypographicReport;
+using SealTypographicWebAPI.Models.LogReport.UserMember;
 using SealTypographicWebAPI.Services;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -23,16 +31,23 @@ namespace SealTypographicWebAPI.Controllers
     [ApiController]
     public class ReportController : ControllerBase
     {
-        private readonly ILogReportService logReportService;        
+        private readonly ILogReportService logReportService;
+        private readonly IAdminService adminService;
+        private readonly IMapper mapper;
         private const string EXCEL_CONTENT_TYPE = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
-        
+
 
         /// <summary>
         /// 建置
         /// </summary>
-        public ReportController(ILogReportService logReportService)
+        /// <param name="logReportService"></param>
+        /// <param name="adminService"></param>
+        /// <param name="mapper"></param>
+        public ReportController(ILogReportService logReportService, IAdminService adminService, IMapper mapper)
         {
             this.logReportService = logReportService;
+            this.adminService = adminService;
+            this.mapper = mapper;
         }
 
         /// <summary>
@@ -202,6 +217,33 @@ namespace SealTypographicWebAPI.Controllers
                             ExcelHearderConsts.AccountantHeaders,
                             fileName
                         );
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("[Action]")]
+        public async Task<ResponseModel<UserMemberPaginate>> UserMember([FromQuery] UserMemberSearch userMemberSearch) => await logReportService.GetUserMember(userMemberSearch);        
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="userMemberSearch"></param>
+        /// <param name="fileName"></param>
+        /// <returns></returns>
+        [HttpGet("[Action]")]
+        public async Task<IActionResult> UserMemberToExcel([FromQuery] UserMemberSearch userMemberSearch, string fileName = "UserMember")
+        {
+            ResponseModel<UserMemberPaginate> userMemberPaginate = await logReportService.GetUserMember(userMemberSearch, true);
+
+            return ToExcel(
+                    userMemberPaginate.Data!.ViewModels,
+                    ExcelHearderConsts.UserHeaders,
+                    fileName
+                );
+        }
+
+
 
         private static IActionResult ToExcel<T>(List<T> paginatedData, List<string> headers, string fileName) where T : class
         {

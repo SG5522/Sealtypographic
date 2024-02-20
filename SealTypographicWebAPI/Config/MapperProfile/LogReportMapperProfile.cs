@@ -3,6 +3,10 @@ using DBEntities.Consts;
 using DBEntities.Entities.AccountantModels;
 using DBEntities.Entities.CustomerModels;
 using DBEntities.Entities.TypographicModels;
+using DJKeycloakAPI.Models.Groups;
+using DJKeycloakAPI.Models.Users;
+using DJKeycloakLib.Models.Group;
+using DJKeycloakLib.Models.User;
 using SealTypographicWebAPI.Consts;
 using SealTypographicWebAPI.Models.Accountant;
 using SealTypographicWebAPI.Models.AccountantSignReview;
@@ -15,6 +19,7 @@ using SealTypographicWebAPI.Models.LogReport.AccountantSignLog;
 using SealTypographicWebAPI.Models.LogReport.CustomerSealEventLog;
 using SealTypographicWebAPI.Models.LogReport.OperationLog;
 using SealTypographicWebAPI.Models.LogReport.TypographicReport;
+using SealTypographicWebAPI.Models.LogReport.UserMember;
 using SealTypographicWebAPI.Models.MongoDBModel;
 using SealTypographicWebAPI.Utils;
 using static Azure.Core.HttpHeader;
@@ -161,14 +166,19 @@ namespace SealTypographicWebAPI.Config.MapperProfile
             //會計師成員列表
             CreateMap<Accountant, AccountantMemberViewModel>()
                     .ForMember(dst => dst.Code, opt => opt.MapFrom(src => src.Code))
-                    .ForMember(dst => dst.Name, opt => opt.MapFrom(src => src.Name))                    
-                    .ForMember(dst => dst.GroupName, opt => opt.MapFrom(src =>
-                            //logReportQueryValue 目前在這裡當作AccountantGroupId來搜尋
-                            logReportQueryValue == 0 ?
-                            src.AccountantGroups.Select(group => group.Name).FirstOrDefault() ?? string.Empty :
-                            src.AccountantGroups.Where(group => group.Id == logReportQueryValue).Select(group => group.Name).FirstOrDefault() ?? string.Empty
-                    ));
+                    .ForMember(dst => dst.Name, opt => opt.MapFrom(src => src.Name))
+                    //.ForMember(dst => dst.Groups, opt => opt.MapFrom(src =>
+                    //        //logReportQueryValue 目前在這裡當作AccountantGroupId來搜尋
+                    //        logReportQueryValue == 0 ?
+                    //        src.AccountantGroups.Select(group => group.Name).FirstOrDefault() ?? string.Empty :
+                    //        src.AccountantGroups.Where(group => group.Id == logReportQueryValue).Select(group => group.Name).FirstOrDefault() ?? string.Empty
+                    //))
+                    .ForMember(dst => dst.Groups, opt => opt.MapFrom(src => src.AccountantGroups.Select(x => x.Name)));
 
+            CreateMap<UserRepresentation, UserMemberViewModel>()
+                .ForMember(dst => dst.CreatedDate, opt => opt.MapFrom(src => src.CreatedTimestamp.HasValue ?
+                DateTimeOffset.FromUnixTimeMilliseconds(src.CreatedTimestamp.Value).DateTime.ToLocalTime() : (DateTime?)null ));
+            
         }
     }
 }

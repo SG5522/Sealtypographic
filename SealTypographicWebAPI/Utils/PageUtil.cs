@@ -94,11 +94,6 @@ namespace SealTypographicWebAPI.Utils
                         .ToList();
             }
             return result;
-        }
-
-        public static int CheckValue(int test)
-        {
-            return test;
-        }
+        }        
     }
 }
