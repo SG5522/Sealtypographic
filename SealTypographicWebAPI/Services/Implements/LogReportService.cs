@@ -480,20 +480,18 @@ namespace SealTypographicWebAPI.Services.Implements
                 {                    
                     if (isFullPageOut)
                     {
-                        accountantMemberPaginate.ViewModels = PageUtil.SetPaginateViewModelWithLogReport<Accountant, AccountantMemberViewModel>
+                        accountantMemberPaginate.ViewModels = PageUtil.SetPaginateViewModel<Accountant, AccountantMemberViewModel>
                                                                 (
                                                                     accountantQuery,
-                                                                    configurationProvider,
-                                                                    accountantMemberSearch.AccountantGroupId
+                                                                    configurationProvider                                                             
                                                                 );
                     }
                     else
                     {
-                        accountantMemberPaginate.ViewModels = PageUtil.SetPaginateViewModelWithLogReport<Accountant, AccountantMemberViewModel>
+                        accountantMemberPaginate.ViewModels = PageUtil.SetPaginateViewModel<Accountant, AccountantMemberViewModel>
                                                                 (
                                                                     accountantQuery,
-                                                                    configurationProvider,
-                                                                    accountantMemberSearch.AccountantGroupId,
+                                                                    configurationProvider,                                                                    
                                                                     accountantMemberSearch.PageNumber,
                                                                     accountantMemberSearch.PageSize
                                                                 );

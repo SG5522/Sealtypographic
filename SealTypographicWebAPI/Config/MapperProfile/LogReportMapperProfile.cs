@@ -35,9 +35,7 @@ namespace SealTypographicWebAPI.Config.MapperProfile
         /// 建置
         /// </summary>
         public LogReport()
-        {
-            int logReportQueryValue = 0;
-
+        {            
             //會計師分頁顯示Map
             CreateMap<TypographicPDF, TypographicReportViewModel>()
                     ////TODO:透過keycloak取得使用者Id
@@ -166,13 +164,7 @@ namespace SealTypographicWebAPI.Config.MapperProfile
             //會計師成員列表
             CreateMap<Accountant, AccountantMemberViewModel>()
                     .ForMember(dst => dst.Code, opt => opt.MapFrom(src => src.Code))
-                    .ForMember(dst => dst.Name, opt => opt.MapFrom(src => src.Name))
-                    //.ForMember(dst => dst.Groups, opt => opt.MapFrom(src =>
-                    //        //logReportQueryValue 目前在這裡當作AccountantGroupId來搜尋
-                    //        logReportQueryValue == 0 ?
-                    //        src.AccountantGroups.Select(group => group.Name).FirstOrDefault() ?? string.Empty :
-                    //        src.AccountantGroups.Where(group => group.Id == logReportQueryValue).Select(group => group.Name).FirstOrDefault() ?? string.Empty
-                    //))
+                    .ForMember(dst => dst.Name, opt => opt.MapFrom(src => src.Name))                    
                     .ForMember(dst => dst.Groups, opt => opt.MapFrom(src => src.AccountantGroups.Select(x => x.Name)));
 
             CreateMap<UserRepresentation, UserMemberViewModel>()

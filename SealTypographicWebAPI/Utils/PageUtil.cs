@@ -57,43 +57,6 @@ namespace SealTypographicWebAPI.Utils
                         .ToList();
             }
             return result;
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <typeparam name="TSoucre"></typeparam>
-        /// <typeparam name="TDestination"></typeparam>
-        /// <param name="srcData"></param>
-        /// <param name="configurationProvider"></param>
-        /// <param name="queryValue"></param>
-        /// <param name="pageNumber"></param>
-        /// <param name="pageSize"></param>
-        /// <returns></returns>
-        public static List<TDestination> SetPaginateViewModelWithLogReport <TSoucre, TDestination>(
-            IQueryable<TSoucre> srcData,
-            AutoMapper.IConfigurationProvider configurationProvider,
-            int queryValue = 0,
-            int pageNumber = 0,
-            int pageSize = 0)
-        {
-            List<TDestination> result;
-
-            if (pageNumber == 0 && pageSize == 0)
-            {
-                result = srcData
-                        .ProjectTo<TDestination>(configurationProvider, new { logReportQueryValue = queryValue })
-                        .ToList();
-            }
-            else
-            {
-                result = srcData
-                        .Skip((pageNumber - 1) * pageSize)
-                        .Take(pageSize)
-                        .ProjectTo<TDestination>(configurationProvider,new { logReportQueryValue = queryValue })
-                        .ToList();
-            }
-            return result;
-        }        
+        }       
     }
 }
