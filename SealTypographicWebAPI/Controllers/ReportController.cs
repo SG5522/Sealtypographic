@@ -159,7 +159,7 @@ namespace SealTypographicWebAPI.Controllers
             => logReportService.GetTypographicReport(typographicReportSearch, TypographyType.FinancialReport);
 
         /// <summary>
-        /// 取得財報排版紀錄
+        /// 財報排版紀錄輸出Excel(全頁輸出) 
         /// </summary>
         /// <param name="typographicReportSearch"></param>
         /// <param name="fileName">預設FinancialReport</param>
@@ -182,7 +182,7 @@ namespace SealTypographicWebAPI.Controllers
             => logReportService.GetTypographicReport(typographicReportSearch, TypographyType.TaxReport);
 
         /// <summary>
-        /// 取得稅報排版紀錄
+        /// 稅報排版紀錄輸出Excel(全頁輸出) 
         /// </summary>
         /// <param name="typographicReportSearch">排版紀錄查詢</param>
         /// <param name="fileName">預設檔名為TaxReport</param>
@@ -196,7 +196,7 @@ namespace SealTypographicWebAPI.Controllers
                         );
 
         /// <summary>
-        /// 取得稅報排版紀錄
+        /// 取得會計師列表
         /// </summary>
         /// <param name="accountantMemberSearch">會計師成員查詢</param>
         /// <returns></returns>
@@ -205,7 +205,7 @@ namespace SealTypographicWebAPI.Controllers
             => logReportService.GetAccountantMemberPaginate(accountantMemberSearch);
 
         /// <summary>
-        /// 取得稅報排版紀錄
+        /// 會計師列表輸出Excel(全頁輸出) 
         /// </summary>
         /// <param name="accountantMemberSearch">會計師成員查詢</param>        
         /// <param name="fileName">預設檔名為AccountantMember</param>
@@ -219,17 +219,18 @@ namespace SealTypographicWebAPI.Controllers
                         );
 
         /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
-        [HttpGet("[Action]")]
-        public async Task<ResponseModel<UserMemberPaginate>> UserMember([FromQuery] UserMemberSearch userMemberSearch) => await logReportService.GetUserMember(userMemberSearch);        
-
-        /// <summary>
-        /// 
+        /// 取得使用者清單
         /// </summary>
         /// <param name="userMemberSearch"></param>
-        /// <param name="fileName"></param>
+        /// <returns></returns>
+        [HttpGet("[Action]")]
+        public async Task<ResponseModel<UserMemberPaginate>> UserMember([FromQuery] UserMemberSearch userMemberSearch) => await logReportService.GetUserMember(userMemberSearch);
+
+        /// <summary>
+        /// 使用者清單輸出Excel(全頁輸出) 
+        /// </summary>
+        /// <param name="userMemberSearch">使用者成員搜尋</param>
+        /// <param name="fileName">預設檔名為UserMember</param>
         /// <returns></returns>
         [HttpGet("[Action]")]
         public async Task<IActionResult> UserMemberToExcel([FromQuery] UserMemberSearch userMemberSearch, string fileName = "UserMember")

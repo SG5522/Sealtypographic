@@ -3,9 +3,6 @@ using DBEntities.Consts;
 using DBEntities.Entities.AccountantModels;
 using DBEntities.Entities.CustomerModels;
 using DBEntities.Entities.TypographicModels;
-using DJKeycloakAPI.Models.Groups;
-using DJKeycloakAPI.Models.Users;
-using DJKeycloakLib.Models.Group;
 using DJKeycloakLib.Models.User;
 using SealTypographicWebAPI.Consts;
 using SealTypographicWebAPI.Models.Accountant;
@@ -14,7 +11,6 @@ using SealTypographicWebAPI.Models.Customer;
 using SealTypographicWebAPI.Models.CustomerSeal;
 using SealTypographicWebAPI.Models.CustomerSealReview;
 using SealTypographicWebAPI.Models.LogReport.AccountantList;
-using SealTypographicWebAPI.Models.LogReport.AccountantMember;
 using SealTypographicWebAPI.Models.LogReport.AccountantSignLog;
 using SealTypographicWebAPI.Models.LogReport.CustomerSealEventLog;
 using SealTypographicWebAPI.Models.LogReport.OperationLog;
@@ -22,7 +18,6 @@ using SealTypographicWebAPI.Models.LogReport.TypographicReport;
 using SealTypographicWebAPI.Models.LogReport.UserMember;
 using SealTypographicWebAPI.Models.MongoDBModel;
 using SealTypographicWebAPI.Utils;
-using static Azure.Core.HttpHeader;
 
 namespace SealTypographicWebAPI.Config.MapperProfile
 {

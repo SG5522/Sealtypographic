@@ -2,7 +2,6 @@
 using SealTypographicWebAPI.Models;
 using SealTypographicWebAPI.Models.Customer;
 using SealTypographicWebAPI.Services;
-using Serilog;
 
 
 namespace SealTypographicWebAPI.Controllers
@@ -12,7 +11,7 @@ namespace SealTypographicWebAPI.Controllers
     /// </summary>
     [Route("api/[controller]")]    
     [ApiController]
-    public class CustomerController : ControllerBase
+    public class CustomerController : APIControllerBase
     {
         /// <summary>
         /// 管理客戶資料的Service
@@ -23,7 +22,8 @@ namespace SealTypographicWebAPI.Controllers
         /// 建構:注入Service
         /// </summary>
         /// <param name="customerService">管理客戶資料的Service</param>
-        public CustomerController(ICustomerService customerService)
+        /// <param name="applicationUserService">GetUserInfoService</param>
+        public CustomerController(ICustomerService customerService, IApplicationUserService applicationUserService) : base(applicationUserService)
         {
             this.customerService = customerService;                        
         }
@@ -34,7 +34,8 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="customerSearch">客戶分頁搜尋</param>        
         /// <returns></returns>
         [HttpGet("[Action]")]
-        public CustomerPaginateSummary Paginate([FromQuery] CustomerSearch customerSearch) => customerService.GetPaginate(customerSearch);
+        public async Task<CustomerPaginateSummary> Paginate([FromQuery] CustomerSearch customerSearch) => 
+            customerService.GetPaginate(customerSearch, ((UserInfo)await GetUserInfo()).UserId);
 
         /// <summary>
         /// 取得客戶詳細基本資料

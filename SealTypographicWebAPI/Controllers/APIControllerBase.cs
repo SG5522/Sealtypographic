@@ -1,10 +1,7 @@
-﻿using DBEntities;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
 using SealTypographicWebAPI.Models;
 using SealTypographicWebAPI.Services;
-using SealTypographicWebAPI.Services.Implements;
-using System.Security.Claims;
-using System.Text.Json.Serialization;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -18,7 +15,8 @@ namespace SealTypographicWebAPI.Controllers
     public abstract class APIControllerBase : ControllerBase
     {
 
-        private readonly IApplicationUserService applicationUserService; 
+        private readonly IApplicationUserService applicationUserService;
+        private readonly IMemoryCache cache;
 
         /// <summary>
         /// 建置
@@ -26,6 +24,16 @@ namespace SealTypographicWebAPI.Controllers
         public APIControllerBase(IApplicationUserService applicationUserService)
         {
             this.applicationUserService = applicationUserService;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        [NonAction]
+        public virtual async Task<int> GetUserId()
+        {
+            return (await GetUserInfo()).UserId;
         }
 
         /// <summary>

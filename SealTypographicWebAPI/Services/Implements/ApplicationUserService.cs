@@ -6,8 +6,6 @@ using DBEntities.Entities;
 using DJKeycloakLib.Models.BaseModel;
 using DJKeycloakAPI.Models.Users;
 using System.Data.Common;
-using DBEntities.Entities.AccountantModels;
-using Serilog;
 
 namespace SealTypographicWebAPI.Services.Implements
 {
@@ -47,7 +45,13 @@ namespace SealTypographicWebAPI.Services.Implements
                 ApplicationUser? applicationUser = dbContext.ApplicationUsers.FirstOrDefault(x => x.UserName == claims.Identity.Name);
                 if(applicationUser != null)
                 {
-                    userInfo.ApplicationUserId = applicationUser.Id;
+                    userInfo.UserId = applicationUser.Id;
+                    if(applicationUser.FirstName != claims.FindFirstValue(ClaimTypes.GivenName) || applicationUser.LastName == claims.FindFirstValue(ClaimTypes.Surname))
+                    {
+                        applicationUser.FirstName = claims.FindFirstValue(ClaimTypes.GivenName);
+                        applicationUser.LastName = claims.FindFirstValue(ClaimTypes.Surname);
+                        await dbContext.SaveChangesAsync();
+                    }
                 }
                 else
                 {
@@ -55,11 +59,12 @@ namespace SealTypographicWebAPI.Services.Implements
                     {
                         Username = claims.Identity.Name!,
                         FirstName = claims.FindFirstValue(ClaimTypes.GivenName),
-                        LastName = claims.FindFirstValue(ClaimTypes.GivenName),
+                        LastName = claims.FindFirstValue(ClaimTypes.Surname),
                     });
                 }
                 userInfo.UserName = claims.Identity.Name!;
                 userInfo.FirstName = claims.FindFirstValue(ClaimTypes.GivenName);
+                userInfo.LastName = claims.FindFirstValue(ClaimTypes.Surname);
             }            
             return userInfo;
         }        
