@@ -15,8 +15,7 @@ namespace SealTypographicWebAPI.Controllers
     public abstract class APIControllerBase : ControllerBase
     {
 
-        private readonly IApplicationUserService applicationUserService;
-        private readonly IMemoryCache cache;
+        private readonly IApplicationUserService applicationUserService;        
 
         /// <summary>
         /// 建置
