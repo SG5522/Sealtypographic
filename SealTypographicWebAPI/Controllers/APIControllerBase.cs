@@ -15,34 +15,28 @@ namespace SealTypographicWebAPI.Controllers
     public abstract class APIControllerBase : ControllerBase
     {
 
-        private readonly IApplicationUserService applicationUserService;        
+        private readonly IApplicationUserService applicationUserService;
 
         /// <summary>
         /// 建置
         /// </summary>
-        public APIControllerBase(IApplicationUserService applicationUserService)
+        protected APIControllerBase(IApplicationUserService applicationUserService)
         {
             this.applicationUserService = applicationUserService;
         }
 
         /// <summary>
-        /// 
+        /// 取得UserId
         /// </summary>
         /// <returns></returns>
         [NonAction]
-        public virtual async Task<int> GetUserId()
-        {
-            return (await GetUserInfo()).UserId;
-        }
+        protected virtual async Task<int> GetUserId() => (await GetUserInfo()).UserId;
 
         /// <summary>
         /// 取得User資料
         /// </summary>
         /// <returns></returns>
         [NonAction]
-        public virtual async Task<UserInfo> GetUserInfo()
-        {                        
-            return await applicationUserService.GetUserInfo(User);
-        }
+        protected virtual async Task<UserInfo> GetUserInfo() => await applicationUserService.GetUserInfo(User);
     }
 }

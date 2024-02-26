@@ -224,7 +224,7 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="userMemberSearch"></param>
         /// <returns></returns>
         [HttpGet("[Action]")]
-        public async Task<ResponseModel<UserMemberPaginate>> UserMember([FromQuery] UserMemberSearch userMemberSearch) => await logReportService.GetUserMember(userMemberSearch);
+        public async Task<UserMemberPaginate> UserMember([FromQuery] UserMemberSearch userMemberSearch) => await logReportService.GetUserMember(userMemberSearch);
 
         /// <summary>
         /// 使用者清單輸出Excel(全頁輸出) 
@@ -233,18 +233,12 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="fileName">預設檔名為UserMember</param>
         /// <returns></returns>
         [HttpGet("[Action]")]
-        public async Task<IActionResult> UserMemberToExcel([FromQuery] UserMemberSearch userMemberSearch, string fileName = "UserMember")
-        {
-            ResponseModel<UserMemberPaginate> userMemberPaginate = await logReportService.GetUserMember(userMemberSearch, true);
-
-            return ToExcel(
-                    userMemberPaginate.Data!.ViewModels,
-                    ExcelHearderConsts.UserHeaders,
-                    fileName
-                );
-        }
-
-
+        public async Task<IActionResult> UserMemberToExcel([FromQuery] UserMemberSearch userMemberSearch, string fileName = "UserMember") 
+                => ToExcel(
+                            (await logReportService.GetUserMember(userMemberSearch, true)).ViewModels,
+                            ExcelHearderConsts.UserHeaders,
+                            fileName
+                        );
 
         private static IActionResult ToExcel<T>(List<T> paginatedData, List<string> headers, string fileName) where T : class
         {

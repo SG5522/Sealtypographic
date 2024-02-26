@@ -51,7 +51,7 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="customerForm">基本資料</param>
         /// <returns></returns>
         [HttpPost]
-        public CreateCustomerResponse New(CustomerForm customerForm) => customerService.New(customerForm);
+        public async Task<CreateCustomerResponse> New(CustomerForm customerForm) => customerService.New(customerForm, await GetUserId());
 
         /// <summary>
         /// 更新基本資料

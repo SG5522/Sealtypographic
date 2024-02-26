@@ -519,33 +519,27 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <param name="userMemberSearch">使用者成員查詢</param>
         /// <param name="isFullPageOut">是否全部輸出</param>
         /// <returns></returns>
-        public async Task<DJKeycloakLib.Models.BaseModel.ResponseModel<UserMemberPaginate>> GetUserMember([FromQuery] UserMemberSearch userMemberSearch, bool isFullPageOut = false)
-        {
+        public async Task<UserMemberPaginate> GetUserMember([FromQuery] UserMemberSearch userMemberSearch, bool isFullPageOut = false)
+        {            
             DJKeycloakLib.Models.BaseModel.ResponseModel<IList<UserRepresentation>> userRepresentationsResponseModel = await adminService.FindUsers(true, null, null, null, null,
                 userMemberSearch.FirstName, userMemberSearch.LastName, userMemberSearch.UserName);
 
             //取得成員資料
-            DJKeycloakLib.Models.BaseModel.ResponseModel<UserMemberPaginate> userMemberPaginate = new()
-            {
-                Code = userRepresentationsResponseModel.Code,
-                Message = userRepresentationsResponseModel.Message,
-                Data = new()
-                {
-                    ViewModels = mapper.Map<List<UserMemberViewModel>>(userRepresentationsResponseModel.Data),
-                    PageNumber = userMemberSearch.PageNumber,
-                    PageSize = userMemberSearch.PageSize,                    
-                }
+            UserMemberPaginate userMemberPaginate = new()
+            {                                
+                ViewModels = mapper.Map<List<UserMemberViewModel>>(userRepresentationsResponseModel.Data),
+                PageNumber = userMemberSearch.PageNumber,
+                PageSize = userMemberSearch.PageSize,
             };
 
             //確定有資料後取得群組資料
-            if (userMemberPaginate.Data != null)
+            if (userMemberPaginate.ViewModels.Any())
             {
-                foreach (UserMemberViewModel userMember in userMemberPaginate.Data.ViewModels)
+                foreach (UserMemberViewModel userMember in userMemberPaginate.ViewModels)
                 {
                     DJKeycloakLib.Models.BaseModel.ResponseModel<IList<GroupRepresentation>> groupResponse = await adminService.FindUserGroups(userMember.Id);
                     if (groupResponse is { Code: KeycloakResponseCode.Success, Data: not null })
-                    {
-                        //mapper.Map(groupResponse.Data, userMember.Groups);
+                    {                       
                         foreach (GroupRepresentation groupRepresentation in groupResponse.Data)
                         {
                             userMember.Groups.Add(groupRepresentation.Name ?? string.Empty);
@@ -554,19 +548,24 @@ namespace SealTypographicWebAPI.Services.Implements
                 }
                 if(!string.IsNullOrWhiteSpace(userMemberSearch.UserGroupName))
                 {
-                    userMemberPaginate.Data.ViewModels = userMemberPaginate.Data.ViewModels.Where(x => x.Groups.Contains(userMemberSearch.UserGroupName)).ToList();
+                    userMemberPaginate.ViewModels = userMemberPaginate.ViewModels.Where(x => x.Groups.Contains(userMemberSearch.UserGroupName)).ToList();
                 }
 
-                userMemberPaginate.Data.TotalCount = userMemberPaginate.Data.ViewModels.Count;
+                userMemberPaginate.TotalCount = userMemberPaginate.ViewModels.Count;
 
                 if (!isFullPageOut)
                 {
-                    userMemberPaginate.Data.ViewModels = userMemberPaginate.Data.ViewModels
-                                                        .Skip((userMemberPaginate.Data.PageNumber - 1) * userMemberPaginate.Data.PageSize)
-                                                        .Take(userMemberPaginate.Data.PageSize)
+                    userMemberPaginate.ViewModels = userMemberPaginate.ViewModels
+                                                        .Skip((userMemberPaginate.PageNumber - 1) * userMemberPaginate.PageSize)
+                                                        .Take(userMemberPaginate.PageSize)
                                                         .ToList();
                 }
+                userMemberPaginate.Success();
             }            
+            else
+            {
+                userMemberPaginate.KeycloakNoData();
+            }
 
             return userMemberPaginate;
         }

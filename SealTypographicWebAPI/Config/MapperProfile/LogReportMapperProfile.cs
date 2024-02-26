@@ -3,6 +3,7 @@ using DBEntities.Consts;
 using DBEntities.Entities.AccountantModels;
 using DBEntities.Entities.CustomerModels;
 using DBEntities.Entities.TypographicModels;
+using DJKeycloakLib.Models.Group;
 using DJKeycloakLib.Models.User;
 using SealTypographicWebAPI.Consts;
 using SealTypographicWebAPI.Models.Accountant;
@@ -18,6 +19,7 @@ using SealTypographicWebAPI.Models.LogReport.TypographicReport;
 using SealTypographicWebAPI.Models.LogReport.UserMember;
 using SealTypographicWebAPI.Models.MongoDBModel;
 using SealTypographicWebAPI.Utils;
+using System.Text.RegularExpressions;
 
 namespace SealTypographicWebAPI.Config.MapperProfile
 {

@@ -76,7 +76,7 @@ namespace SealTypographicWebAPI.Services
         /// <param name="userMemberSearch">使用者成員查詢</param>
         /// <param name="isFullPageOut">是否全部輸出</param>
         /// <returns></returns>
-        Task<DJKeycloakLib.Models.BaseModel.ResponseModel<UserMemberPaginate>> GetUserMember([FromQuery] UserMemberSearch userMemberSearch, bool isFullPageOut = false);
+        Task<UserMemberPaginate> GetUserMember([FromQuery] UserMemberSearch userMemberSearch, bool isFullPageOut = false);
 
         /// <summary>
         /// 登入日誌

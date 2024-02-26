@@ -14,9 +14,7 @@ namespace SealTypographicWebAPI.Services.Implements
     /// </summary>
     public class ApplicationUserService : IApplicationUserService
     {        
-        private readonly SealTypographicDbContext dbContext;
-        private readonly IMapper mapper;
-        private readonly AutoMapper.IConfigurationProvider configurationProvider;
+        private readonly SealTypographicDbContext dbContext;        
         private readonly ILogger<ApplicationUserService> logger;
 
         /// <summary>
@@ -25,11 +23,9 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <param name="dbContext">注入資料庫</param>
         /// <param name="mapper"></param>
         /// <param name="logger"></param>       
-        public ApplicationUserService(SealTypographicDbContext dbContext, IMapper mapper, ILogger<ApplicationUserService> logger)
+        public ApplicationUserService(SealTypographicDbContext dbContext, ILogger<ApplicationUserService> logger)
         {
-            this.dbContext = dbContext;
-            this.mapper = mapper;
-            configurationProvider = mapper.ConfigurationProvider;
+            this.dbContext = dbContext;                       
             this.logger = logger;
         }
 
@@ -46,7 +42,8 @@ namespace SealTypographicWebAPI.Services.Implements
                 if(applicationUser != null)
                 {
                     userInfo.UserId = applicationUser.Id;
-                    if(applicationUser.FirstName != claims.FindFirstValue(ClaimTypes.GivenName) || applicationUser.LastName == claims.FindFirstValue(ClaimTypes.Surname))
+                    if(applicationUser.FirstName != claims.FindFirstValue(ClaimTypes.GivenName) 
+                        || applicationUser.LastName == claims.FindFirstValue(ClaimTypes.Surname))
                     {
                         applicationUser.FirstName = claims.FindFirstValue(ClaimTypes.GivenName);
                         applicationUser.LastName = claims.FindFirstValue(ClaimTypes.Surname);
@@ -102,9 +99,9 @@ namespace SealTypographicWebAPI.Services.Implements
             }
             catch(DbException ex)
             {
-                logger.LogError("AddUser Error while updating database {@error}", ex.InnerException!.Message);
+                logger.LogError("AddUser Error while updating database {@error}", ex.InnerException?.Message);
                 response = ResponseModel.SystemError();
-                response.Message = ex.InnerException!.Message;
+                response.Message = ex.InnerException?.Message;
             }
             catch(Exception ex) 
             {
