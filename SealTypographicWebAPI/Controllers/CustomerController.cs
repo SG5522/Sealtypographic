@@ -35,7 +35,7 @@ namespace SealTypographicWebAPI.Controllers
         /// <returns></returns>
         [HttpGet("[Action]")]
         public async Task<CustomerPaginateSummary> Paginate([FromQuery] CustomerSearch customerSearch) => 
-            customerService.GetPaginate(customerSearch, await GetUserId());
+            await customerService.GetPaginate(customerSearch, await GetUserId());
 
         /// <summary>
         /// 取得客戶詳細基本資料
@@ -43,7 +43,7 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="customerId">客戶ID</param>
         /// <returns></returns>
         [HttpGet("{customerId}")]
-        public async Task<CustomerDetailViewModel> Detail(int customerId) => customerService.GetDetail(customerId, await GetUserId());
+        public async Task<CustomerDetailViewModel> Detail(int customerId) => await customerService.GetDetail(customerId, await GetUserId());
 
         /// <summary>
         /// 新增客戶基本資料

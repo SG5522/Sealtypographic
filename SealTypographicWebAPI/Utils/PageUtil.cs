@@ -60,7 +60,7 @@ namespace SealTypographicWebAPI.Utils
         }
 
         /// <summary>
-        /// 設定分頁顯示內容非同步
+        /// 設定分頁顯示內容(非同步處理)
         /// </summary>
         /// <typeparam name="TSoucre">來源</typeparam>
         /// <typeparam name="TDestination">目標</typeparam>

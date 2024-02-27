@@ -15,7 +15,7 @@ namespace SealTypographicWebAPI.Services
         /// <param name="customerId">客戶ID</param>
         /// <param name="userId">登入的使用者Id</param>
         /// <returns></returns>
-        CustomerDetailViewModel GetDetail(int customerId, int userId = 1);
+        Task<CustomerDetailViewModel> GetDetail(int customerId, int userId = 1);
 
         /// <summary>
         /// 取得客戶資料列表(分頁)
@@ -23,7 +23,7 @@ namespace SealTypographicWebAPI.Services
         /// <param name="customerSearch">客戶分頁搜尋</param>
         /// <param name="userId">登入的使用者Id</param>
         /// <returns></returns>
-        CustomerPaginateSummary GetPaginate(CustomerSearch customerSearch, int userId = 1);
+        Task<CustomerPaginateSummary> GetPaginate(CustomerSearch customerSearch, int userId = 1);
 
 
         /// <summary>

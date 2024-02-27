@@ -62,8 +62,8 @@ namespace SealTypographicWebAPI.Services.Implements
             this.logger = logger;            
             this.mapper = mapper;
             configurationProvider = mapper.ConfigurationProvider;
-            //MongoDb連線
-            MongoClient mongoClient = new (options.CurrentValue.ConnectionString);
+            //MongoDb連線            
+            MongoClient mongoClient = new(options.CurrentValue.ConnectionString);
             IMongoDatabase mongoDatabase = mongoClient.GetDatabase(options.CurrentValue.DatabaseName);
             Init(mongoDatabase);            
         }
@@ -137,6 +137,8 @@ namespace SealTypographicWebAPI.Services.Implements
             return actionTypeResponse;
         }
 
+        // 注意 MongoDB 不支援使用 "!" 運算子來判定 null 值，因此在存取其屬性之前，需要額外確保 x.Data 不為 null。
+        // 下述有類似Data可以Null的情況請參照此作法
 
         /// <summary>
         /// 操作紀錄分頁列表
@@ -155,8 +157,9 @@ namespace SealTypographicWebAPI.Services.Implements
                                                         );
 
             if (operationLogSearch.ActionType != null)
-            {
-                operationLogQuery = operationLogQuery.Where(x => x.Data!.ActionType == operationLogSearch.ActionType);
+            {                                
+                operationLogQuery = operationLogQuery.Where(x => x.Data != null
+                                                            && x.Data.ActionType == operationLogSearch.ActionType.Value);
             }
 
             if (!string.IsNullOrWhiteSpace(operationLogSearch.UserKeyWord))
@@ -166,11 +169,11 @@ namespace SealTypographicWebAPI.Services.Implements
             }
 
             if(!string.IsNullOrWhiteSpace(operationLogSearch.TargetKeyWord))
-            {
+            {                
                 operationLogQuery = operationLogQuery.Where(x => x.Data != null &&
                                                                 (
-                                                                    x.Data!.CustomerName.ToLower().Contains(operationLogSearch.TargetKeyWord.ToLower())
-                                                                    || x.Data!.AccountantName.ToLower().Contains(operationLogSearch.TargetKeyWord.ToLower())
+                                                                    x.Data.CustomerName.ToLower().Contains(operationLogSearch.TargetKeyWord.ToLower())
+                                                                    || x.Data.AccountantName.ToLower().Contains(operationLogSearch.TargetKeyWord.ToLower())
                                                                 )
                                                             );                
             }
@@ -217,17 +220,21 @@ namespace SealTypographicWebAPI.Services.Implements
             CustomerSealEventLogPaginate customerSealEventLogPaginate = new();
 
             logger.LogInformation("OperationLogPaginate input operationLogSearch: {@operationLogSearch}", customerSealEventLogSearch);
-
+            
             IQueryable<CustomerSealEventLog> customerSealEventLogQuery = customerSealEventLog.AsQueryable().Where
                                                                         (
                                                                             x => x.DateTime >= customerSealEventLogSearch.StartDate
                                                                             && x.DateTime <= customerSealEventLogSearch.EndDate
-                                                                            && x.Data!.TypographyType == typographyType
+                                                                            && x.Data != null
+                                                                            && x.Data.TypographyType == typographyType
                                                                         );
 
             if (customerSealEventLogSearch.ReviewStatus != null)
-            {
-                customerSealEventLogQuery = customerSealEventLogQuery.Where(x => x.Data!.ReviewStatus == customerSealEventLogSearch.ReviewStatus);
+            {                
+                customerSealEventLogQuery = customerSealEventLogQuery.Where(
+                                                                                x => x.Data != null 
+                                                                                && x.Data.ReviewStatus == customerSealEventLogSearch.ReviewStatus.Value
+                                                                            );
             }
 
             if (!string.IsNullOrWhiteSpace(customerSealEventLogSearch.UserKeyWord))
@@ -238,13 +245,13 @@ namespace SealTypographicWebAPI.Services.Implements
             }
 
             if (!string.IsNullOrWhiteSpace(customerSealEventLogSearch.CustomerKeyWord))
-            {
+            {                
                 customerSealEventLogQuery = customerSealEventLogQuery
                                             .Where(x => x.Data != null &&
-                                            (
-                                                x.Data!.CustomerCode.ToLower().Contains(customerSealEventLogSearch.CustomerKeyWord.ToLower())
-                                                || x.Data!.CustomerName.ToLower().Contains(customerSealEventLogSearch.CustomerKeyWord.ToLower())
-                                            ));
+                                            (                                              
+                                                x.Data.CustomerCode.ToLower().Contains(customerSealEventLogSearch.CustomerKeyWord.ToLower())                                                
+                                                || x.Data.CustomerName.ToLower().Contains(customerSealEventLogSearch.CustomerKeyWord.ToLower())                                                                                              
+                                            ));                
             }
 
             if (customerSealEventLogQuery.Any())
@@ -294,12 +301,14 @@ namespace SealTypographicWebAPI.Services.Implements
             IQueryable<AccountantSignEventLog> accountantSignEventLogQuery = accountantSignEventLog.AsQueryable().Where
                                                                             (
                                                                                 x => x.DateTime >= accountantSignEventLogSearch.StartDate
-                                                                                && x.DateTime <= accountantSignEventLogSearch.EndDate
+                                                                                && x.DateTime <= accountantSignEventLogSearch.EndDate                                                                                
                                                                             );
 
             if (accountantSignEventLogSearch.ReviewStatus != null)
             {
-                accountantSignEventLogQuery = accountantSignEventLogQuery.Where(x => x.Data!.ReviewStatus == accountantSignEventLogSearch.ReviewStatus);
+                //MongoDb 沒辦法使用!判別null不比對所以需要加上x.Data != null
+                accountantSignEventLogQuery = accountantSignEventLogQuery.Where(x => x.Data != null 
+                                                                                && x.Data.ReviewStatus == accountantSignEventLogSearch.ReviewStatus.Value);
             }
 
             if (!string.IsNullOrWhiteSpace(accountantSignEventLogSearch.UserKeyword))
@@ -312,8 +321,8 @@ namespace SealTypographicWebAPI.Services.Implements
             {
                 accountantSignEventLogQuery = accountantSignEventLogQuery.Where(x => x.Data != null &&
                                                                 (
-                                                                    x.Data!.AccountantCode.ToLower().Contains(accountantSignEventLogSearch.AccountantKeyword.ToLower())
-                                                                    || x.Data!.AccountantName.ToLower().Contains(accountantSignEventLogSearch.AccountantKeyword.ToLower())
+                                                                    x.Data.AccountantCode.ToLower().Contains(accountantSignEventLogSearch.AccountantKeyword.ToLower())
+                                                                    || x.Data.AccountantName.ToLower().Contains(accountantSignEventLogSearch.AccountantKeyword.ToLower())
                                                                 )
                                                             );
             }

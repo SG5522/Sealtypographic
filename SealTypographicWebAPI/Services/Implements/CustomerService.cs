@@ -41,23 +41,23 @@ namespace SealTypographicWebAPI.Services.Implements
         }
 
         ///<inheritdoc />
-        public CustomerDetailViewModel GetDetail(int customerId, int userId = 1)
+        public async Task<CustomerDetailViewModel> GetDetail(int customerId, int userId = 1)
         {
             logger.LogInformation("GetDetail input customerId: {@customerId} userId: {@userId}", customerId, userId);
             CustomerDetailViewModel customerDetailViewModel = new();                                    
 
             try
             {
-                CustomerDetail? customerDetail = dbContext.Customers
+                CustomerDetail? customerDetail = await dbContext.Customers
                                 .Where(x => x.Id == customerId)
                                 .ProjectTo<CustomerDetail>(configurationProvider)
-                                .FirstOrDefault();
+                                .FirstOrDefaultAsync();
 
                 if (customerDetail != null)
                 {
                     customerDetailViewModel.CustomerDetail = customerDetail;
                     customerDetailViewModel.Success();
-                    logReportService.SaveOperationLog(mapper.Map<OperationLogSave>(customerDetail));                    
+                    await logReportService.SaveOperationLog(mapper.Map<OperationLogSave>(customerDetail));                    
                 }
                 else
                 {
@@ -75,7 +75,7 @@ namespace SealTypographicWebAPI.Services.Implements
         }
 
         ///<inheritdoc />
-        public CustomerPaginateSummary GetPaginate(CustomerSearch customerSearch, int userId = 1) 
+        public async Task<CustomerPaginateSummary> GetPaginate(CustomerSearch customerSearch, int userId = 1) 
         {
             logger.LogInformation("GetCustomerPaginate input {@customerSearch} userId: {@userId}", customerSearch, userId);
 
@@ -104,12 +104,15 @@ namespace SealTypographicWebAPI.Services.Implements
                 if (customerQuery.Any())
                 {
                     //取得該頁
-                    customerPaginateSummary.Summarys = customerQuery
-                                                        .Skip((customerSearch.PageNumber - 1) * customerSearch.PageSize)
-                                                        .Take(customerSearch.PageSize)
-                                                        .ProjectTo<CustomerSummary>(configurationProvider)
-                                                        .ToList();
-                    
+                    //customerPaginateSummary.Summarys = customerQuery
+                    //                                    .Skip((customerSearch.PageNumber - 1) * customerSearch.PageSize)
+                    //                                    .Take(customerSearch.PageSize)
+                    //                                    .ProjectTo<CustomerSummary>(configurationProvider)
+                    //                                    .ToList();
+
+                    customerPaginateSummary.Summarys = await PageUtil.SetPaginateViewModelAsync<Customer ,CustomerSummary>
+                                                        (customerQuery, configurationProvider, customerSearch.PageNumber, customerSearch.PageSize);
+
                     PageUtil.SetPaginate(customerPaginateSummary, customerSearch.PageNumber, customerSearch.PageSize, customerQuery.Count());
                     customerPaginateSummary.Success();
                 }

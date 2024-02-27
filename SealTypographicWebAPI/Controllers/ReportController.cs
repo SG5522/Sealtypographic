@@ -1,15 +1,9 @@
 ﻿using AutoMapper;
-using Azure;
 using DBEntities.Consts;
-using DJKeycloakAPI.Models.Users;
-using DJKeycloakLib.Models.BaseModel;
-using DJKeycloakLib.Models.Group;
-using DJKeycloakLib.Models.User;
 using DJKeycloakLib.Services;
 using DJSpire.Models;
 using DJSpire.Utils;
 using Microsoft.AspNetCore.Mvc;
-using OpenCvSharp;
 using SealTypographicWebAPI.Consts;
 using SealTypographicWebAPI.Models.LogReport.AccountantList;
 using SealTypographicWebAPI.Models.LogReport.AccountantMember;
@@ -32,8 +26,6 @@ namespace SealTypographicWebAPI.Controllers
     public class ReportController : ControllerBase
     {
         private readonly ILogReportService logReportService;
-        private readonly IAdminService adminService;
-        private readonly IMapper mapper;
         private const string EXCEL_CONTENT_TYPE = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
 
 
@@ -41,13 +33,9 @@ namespace SealTypographicWebAPI.Controllers
         /// 建置
         /// </summary>
         /// <param name="logReportService"></param>
-        /// <param name="adminService"></param>
-        /// <param name="mapper"></param>
-        public ReportController(ILogReportService logReportService, IAdminService adminService, IMapper mapper)
+        public ReportController(ILogReportService logReportService)
         {
             this.logReportService = logReportService;
-            this.adminService = adminService;
-            this.mapper = mapper;
         }
 
         /// <summary>
@@ -121,7 +109,7 @@ namespace SealTypographicWebAPI.Controllers
         [HttpGet("[Action]")]
         public IActionResult TaxReportSealEventLogToExcel([FromQuery] CustomerSealEventLogSearch customerSealEventLogSearch, string fileName = "TaxReportSealEventLog")
                 => ToExcel(
-                            logReportService.GetCustomerSealEventLogPaginate(customerSealEventLogSearch, TypographyType.FinancialReport, true).ViewModels,
+                            logReportService.GetCustomerSealEventLogPaginate(customerSealEventLogSearch, TypographyType.TaxReport, true).ViewModels,
                             ExcelHearderConsts.TaxReportSealEventLogHeaders,
                             fileName
                         );
@@ -244,7 +232,7 @@ namespace SealTypographicWebAPI.Controllers
         {
             IActionResult result;
 
-            if (paginatedData != null)
+            if (paginatedData?.Count > 0)
             {
                 ExcelData<T> excelData = new(paginatedData, headers);
 
