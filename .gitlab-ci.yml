@@ -4,9 +4,13 @@ stages:
     - build
     - test
 
+variables:
+  NUGET_CONFIG_FILE: "nuget.config"  # 指定 nuget.config 檔案的路徑
+
 build:
     stage: build
     script:
+        -  nuget restore -ConfigFile $NUGET_CONFIG_FILE
         - "dotnet build"
     artifacts:
       paths:
