@@ -10,7 +10,8 @@ variables:
 build:
     stage: build
     script:
-        -  nuget restore -ConfigFile $NUGET_CONFIG_FILE
+        - apt-get update && apt-get install -y nuget  # 使用 apt-get 在 Docker 容器中安裝 NuGet 工具
+        - nuget restore -ConfigFile $NUGET_CONFIG_FILE
         - "dotnet build"
     artifacts:
       paths:
