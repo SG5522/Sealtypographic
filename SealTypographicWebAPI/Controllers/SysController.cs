@@ -3,18 +3,9 @@ using Keycloak.AuthServices.Authentication;
 using System.Reflection;
 using SealTypographicWebAPI.Models;
 using Microsoft.AspNetCore.Authorization;
-using DBEntities;
 using SealTypographicWebAPI.Services;
 using Microsoft.Extensions.Options;
 using SealTypographicWebAPI.Config;
-using DJImageLib.Models;
-using DJImageLib.Extensions;
-using DJImageLib.Utils;
-using OpenCvSharp;
-using SixLabors.ImageSharp.Formats;
-using SixLabors.ImageSharp;
-using DJKeycloakLib.Configs;
-using System.Text.Json;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -109,6 +100,12 @@ namespace SealTypographicWebAPI.Controllers
         {
             return systemConfigOption;
         }
-        
+
+        /// <summary>
+        /// 取得KeycloakUserId
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("[Action]")]
+        public async Task<string> GetKeyclaokUserId() => (await GetUserInfo()).KeycloakUserId;
     }    
 }

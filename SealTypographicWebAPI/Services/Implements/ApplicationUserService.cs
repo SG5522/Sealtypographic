@@ -42,6 +42,7 @@ namespace SealTypographicWebAPI.Services.Implements
                 if(applicationUser != null)
                 {
                     userInfo.UserId = applicationUser.Id;
+                    //如果資料庫跟keycloak上的名稱不同就進行同步更新
                     if(applicationUser.FirstName != claims.FindFirstValue(ClaimTypes.GivenName) 
                         || applicationUser.LastName == claims.FindFirstValue(ClaimTypes.Surname))
                     {
@@ -59,6 +60,7 @@ namespace SealTypographicWebAPI.Services.Implements
                         LastName = claims.FindFirstValue(ClaimTypes.Surname),
                     });
                 }
+                userInfo.KeycloakUserId = claims.FindFirstValue(ClaimTypes.NameIdentifier);
                 userInfo.UserName = claims.Identity.Name!;
                 userInfo.FirstName = claims.FindFirstValue(ClaimTypes.GivenName);
                 userInfo.LastName = claims.FindFirstValue(ClaimTypes.Surname);

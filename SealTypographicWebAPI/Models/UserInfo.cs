@@ -1,10 +1,18 @@
-﻿namespace SealTypographicWebAPI.Models
+﻿using System.Text.Json.Serialization;
+
+namespace SealTypographicWebAPI.Models
 {
     /// <summary>
     /// 登入使用者基本資訊
     /// </summary>
     public class UserInfo
     {
+        /// <summary>
+        /// Keycloak UserId
+        /// </summary>
+        [JsonIgnore]
+        public string KeycloakUserId { get; set; }
+
         /// <summary>
         /// 使用者Id
         /// </summary>
