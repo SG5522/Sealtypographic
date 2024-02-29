@@ -5,7 +5,7 @@ stages:
     - test
 
 variables:
-  NUGET_CONFIG_FILE: "nuget.config"  # 指定 nuget.config 檔案的路徑
+  NUGET_CONFIG_FILE: "NuGet.config"  # 指定 NuGet.config 檔案的路徑
 
 build:
     stage: build
