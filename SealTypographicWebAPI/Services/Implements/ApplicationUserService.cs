@@ -20,8 +20,7 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <summary>
         /// 建構
         /// </summary>        
-        /// <param name="dbContext">注入資料庫</param>
-        /// <param name="mapper"></param>
+        /// <param name="dbContext">注入資料庫</param>        
         /// <param name="logger"></param>       
         public ApplicationUserService(SealTypographicDbContext dbContext, ILogger<ApplicationUserService> logger)
         {
@@ -64,6 +63,8 @@ namespace SealTypographicWebAPI.Services.Implements
                 userInfo.UserName = claims.Identity.Name!;
                 userInfo.FirstName = claims.FindFirstValue(ClaimTypes.GivenName);
                 userInfo.LastName = claims.FindFirstValue(ClaimTypes.Surname);
+                userInfo.SetRoles(claims.Claims.Where(x => x.Type == "role").Select(x => x.Value).ToList());
+
             }            
             return userInfo;
         }        

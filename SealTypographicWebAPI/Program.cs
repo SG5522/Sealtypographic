@@ -284,7 +284,6 @@ using (IServiceScope scope = app.Services.CreateScope())
 
 app.UseHttpsRedirection();
 app.UseAuthentication();
-
 app.UseAuthorization();
 //app.UseSerilogRequestLogging(); // <-SeriLog 
 

@@ -107,5 +107,12 @@ namespace SealTypographicWebAPI.Controllers
         /// <returns></returns>
         [HttpGet("[Action]")]
         public async Task<string> GetKeyclaokUserId() => (await GetUserInfo()).KeycloakUserId;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("[Action]")]
+        public async Task<UserInfo> UserInfo() => await GetUserInfo();
     }    
 }

@@ -33,5 +33,18 @@ namespace SealTypographicWebAPI.Models
         /// </summary>
         public string? LastName { get; set; }
 
+        /// <summary>
+        /// 角色權限
+        /// </summary>
+        public List<string> Roles { get; private set; } = new List<string>(); // 可寫入，但只能在類內部設置值
+
+        /// <summary>
+        /// 提供方法來設置 Roles 屬性的值
+        /// </summary>
+        /// <param name="roles"></param>
+        public void SetRoles(List<string> roles)
+        {
+            Roles = roles;
+        }
     }
 }
