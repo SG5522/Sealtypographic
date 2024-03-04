@@ -9,9 +9,8 @@ using DBEntities.Entities.AccountantModels;
 using DBEntities.Entities;
 using DBEntities;
 using CommonLib.Models;
-using SealTypographicWebAPI.Consts;
-using SealTypographicWebAPI.Models.Customer;
 using SealTypographicWebAPI.Models.LogReport.OperationLog;
+using DBEntities.Utils;
 
 namespace SealTypographicWebAPI.Services.Implements
 {
@@ -43,7 +42,7 @@ namespace SealTypographicWebAPI.Services.Implements
         }
 
         ///<inheritdoc />
-        public AccountantDetailResponse GetDetail(int accountantId, int userId = 1)
+        public async Task<AccountantDetailResponse> GetDetail(int accountantId, int userId = 1)
         {
             logger.LogInformation("GetDetail input accountantId: {@accountantId} userId {@userId}", accountantId, userId);
 
@@ -51,17 +50,17 @@ namespace SealTypographicWebAPI.Services.Implements
 
             try
             {
-                AccountantViewModel? accountantDetailViewModel = dbContext.Accountants
+                AccountantViewModel? accountantDetailViewModel = await dbContext.Accountants
                                                                 .Include(accountant => accountant.AccountantGroups)                                                                                                                                                                                   
                                                                 .Where(accountant => accountant.Id == accountantId)
                                                                 .ProjectTo<AccountantViewModel>(configurationProvider)
-                                                                .FirstOrDefault();
+                                                                .FirstOrDefaultAsync();
 
                 if (accountantDetailViewModel != null)
                 {
                     accountantResponse.AccountantDetailViewModel = accountantDetailViewModel;
                     accountantResponse.Success();
-                    logReportService.SaveOperationLog(mapper.Map<OperationLogSave>(accountantDetailViewModel));
+                    await logReportService.SaveOperationLog(mapper.Map<OperationLogSave>(accountantDetailViewModel));
                 }
                 else
                 {
@@ -83,7 +82,7 @@ namespace SealTypographicWebAPI.Services.Implements
         }
 
         ///<inheritdoc />
-        public AccountantPaginateViewModel GetPaginate(AccountantSearch accountantSearch, bool isTypographicUse, int userId = 1)
+        public async Task<AccountantPaginateViewModel> GetPaginate(AccountantSearch accountantSearch, bool isTypographicUse, int userId = 1)
         {
             logger.LogInformation("GetPaginate input {@accountantSearch} isTypographicUse: {@isTypographicUse} userId {@userId}"
                 ,accountantSearch, isTypographicUse, userId);
@@ -125,12 +124,9 @@ namespace SealTypographicWebAPI.Services.Implements
 
                 if (accountantQuery.Any())
                 {
-                    //取得該頁            
-                    accountantPaginatesViewModels.ViewModels = accountantQuery
-                                                                .Skip((accountantSearch.PageNumber - 1) * accountantSearch.PageSize)
-                                                                .Take(accountantSearch.PageSize)                                                                
-                                                                .ProjectTo<AccountantViewModelWithCreateDate>(configurationProvider)
-                                                                .ToList();
+                    //取得該頁     
+                    accountantPaginatesViewModels.ViewModels = await PageUtil.SetPaginateViewModelAsync<Accountant, AccountantViewModelWithCreateDate>
+                                                                (accountantQuery, configurationProvider, accountantSearch.PageNumber, accountantSearch.PageSize);
 
                     PageUtil.SetPaginate(accountantPaginatesViewModels, accountantSearch.PageNumber, accountantSearch.PageSize, accountantQuery.Count());
                     accountantPaginatesViewModels.Success();
@@ -152,7 +148,7 @@ namespace SealTypographicWebAPI.Services.Implements
 
 
         ///<inheritdoc />
-        public AccountantCreateResponse New(AccountantForm accountantForm, int userId = 1)
+        public async Task<AccountantCreateResponse> New(AccountantForm accountantForm, int userId = 1)
         {
             logger.LogInformation("New input {@accountantForm} userId: {@userId}", accountantForm, userId);
 
@@ -176,10 +172,10 @@ namespace SealTypographicWebAPI.Services.Implements
                     if (!accountantCodeQuery.Any())
                     {
                         Accountant dbAccountant = mapper.Map<Accountant>(accountantForm);
-                        dbAccountant.AccountantGroups = dbContext.AccountantGroups.Where(x => x.Id == accountantForm.AccountantGroupId).ToList();
-                        BaseInputAccountant(dbAccountant, true, userId);
+                        dbAccountant.AccountantGroups = dbContext.AccountantGroups.Where(x => x.Id == accountantForm.AccountantGroupId).ToList();                        
+                        InputUtil.Set(dbAccountant, true, userId);
                         companyQuery.Accountants.Add(dbAccountant);
-                        dbContext.SaveChanges();
+                        await dbContext.SaveChangesAsync();
 
                         if (dbAccountant != null)
                         {
@@ -214,7 +210,7 @@ namespace SealTypographicWebAPI.Services.Implements
         }
 
         ///<inheritdoc />      
-        public ResponseViewModel Update(AccountantUpdateForm accountantFormUpdate, int userId = 1)
+        public async Task<ResponseViewModel> Update(AccountantUpdateForm accountantFormUpdate, int userId = 1)
         {
             logger.LogInformation("Update input {@accountantFormUpdate} userId {@userId}", accountantFormUpdate, userId);
 
@@ -233,9 +229,9 @@ namespace SealTypographicWebAPI.Services.Implements
                     {                        
                         accountantQuery.AccountantGroups.Add(dbContext.AccountantGroups.Single(x => x.Id == accountantFormUpdate.AccountantGroupId));
                     }
-
-                    BaseInputAccountant(accountantQuery, false, userId);
-                    dbContext.SaveChanges();
+                    
+                    InputUtil.Set(accountantQuery, false, userId);
+                    await dbContext.SaveChangesAsync();
                     response.Success();
                 }
                 else
@@ -259,7 +255,7 @@ namespace SealTypographicWebAPI.Services.Implements
         }
 
         ///<inheritdoc />     
-        public ResponseViewModel Delete(int accountantId, int userId = 1)
+        public async Task<ResponseViewModel> Delete(int accountantId, int userId = 1)
         {
             logger.LogInformation("Delete input accountantId: {@accountantId} userId {@userId}", accountantId, userId);
 
@@ -284,9 +280,9 @@ namespace SealTypographicWebAPI.Services.Implements
 
             if (accountantQuery != null)
             {
-                accountantQuery.DeleteStatus = DeleteStatus.Yes;
-                BaseInputAccountant(accountantQuery, false, userId);
-                dbContext.SaveChanges();
+                accountantQuery.DeleteStatus = DeleteStatus.Yes;                
+                InputUtil.Set(accountantQuery, false, userId);
+                await dbContext.SaveChangesAsync();
                 response.Success();
             }
             else
@@ -294,27 +290,6 @@ namespace SealTypographicWebAPI.Services.Implements
                 response.DeleteAccountantNoData();
             }
             return response;
-        }
-
-        /// <summary>
-        /// 信頭資料新增修改時基本資料輸入
-        /// </summary>
-        /// <param name="accountant">DB上的客戶資料</param>
-        /// <param name="isCreate">確認是否新增的動作</param>
-        /// <param name="userid">使用者ID</param>
-        private static void BaseInputAccountant(Accountant accountant, bool isCreate, int userid)
-        {
-            if (isCreate)
-            {
-                accountant.CreateUserId = userid;
-                accountant.CreateDate = DateTime.Now;
-                accountant.DeleteStatus = DeleteStatus.No;
-            }
-            else
-            {
-                accountant.UpdateUserId = userid;
-                accountant.UpdateDate = DateTime.Now;
-            }
-        }             
+        }        
     }    
 }

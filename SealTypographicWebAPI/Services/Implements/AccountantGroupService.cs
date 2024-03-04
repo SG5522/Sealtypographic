@@ -7,6 +7,7 @@ using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
 using DBEntities;
 using DBEntities.Entities.AccountantModels;
+using DBEntities.Utils;
 
 namespace SealTypographicWebAPI.Services.Implements
 {
@@ -66,7 +67,7 @@ namespace SealTypographicWebAPI.Services.Implements
         }
 
         ///<inheritdoc />
-        public AccountantGroupResponse GetData(int accountantGroupId, int userId = 1)
+        public async Task<AccountantGroupResponse> GetData(int accountantGroupId, int userId = 1)
         {
             logger.LogInformation("GetData input accountantGroupId: {@accountantGroupId} userId: {@userId}", accountantGroupId, userId);
 
@@ -74,10 +75,10 @@ namespace SealTypographicWebAPI.Services.Implements
 
             try
             {
-                AccountantGroupViewModel? accountantGroup = dbContext.AccountantGroups
+                AccountantGroupViewModel? accountantGroup = await dbContext.AccountantGroups
                                                             .Where(accountantGroup => accountantGroup.Id == accountantGroupId)
                                                             .ProjectTo<AccountantGroupViewModel>(configurationProvider)
-                                                            .FirstOrDefault(accountantGroup => accountantGroup.Id == accountantGroupId);
+                                                            .FirstOrDefaultAsync(accountantGroup => accountantGroup.Id == accountantGroupId);
 
                 if (accountantGroup != null)
                 {
@@ -101,7 +102,7 @@ namespace SealTypographicWebAPI.Services.Implements
         }
 
         ///<inheritdoc />
-        public AccountantGroupPaginateViewModel GetPaginate(AccountantGroupSearch accountantGroupSearch, int userId = 1)
+        public async Task<AccountantGroupPaginateViewModel> GetPaginate(AccountantGroupSearch accountantGroupSearch, int userId = 1)
         {
             logger.LogInformation("GetPaginate input {@accountantGroupSearch} userId: {@userId}", accountantGroupSearch, userId);
 
@@ -136,6 +137,9 @@ namespace SealTypographicWebAPI.Services.Implements
                                                                 .ProjectTo<AccountantGroupViewModel>(configurationProvider)
                                                                 .ToList();
 
+                    accountantGroupResponses.AccountantGroups =  await PageUtil.SetPaginateViewModelAsync<AccountantGroup, AccountantGroupViewModel>
+                                                                (accountantGroupsQuery, configurationProvider, accountantGroupSearch.PageNumber, accountantGroupSearch.PageSize);
+
                     PageUtil.SetPaginate(accountantGroupResponses, accountantGroupSearch.PageNumber, accountantGroupSearch.PageSize, accountantGroupsQuery.Count());
                     accountantGroupResponses.Success();
                 }
@@ -155,7 +159,7 @@ namespace SealTypographicWebAPI.Services.Implements
         }
 
         ///<inheritdoc />
-        public ResponseViewModel New(AccountantGroupForm accountantGroupForm, int userId = 1)
+        public async Task<ResponseViewModel> New(AccountantGroupForm accountantGroupForm, int userId = 1)
         {
             logger.LogInformation("New input {@accountantGroupForm} userId: {@userId}", accountantGroupForm, userId);
 
@@ -176,12 +180,11 @@ namespace SealTypographicWebAPI.Services.Implements
 
                 if (accountantGroupQuery == null)
                 {
-                    AccountantGroup accountantGroup = mapper.Map<AccountantGroup>(accountantGroupForm);
-                    accountantGroup.CreateDate = DateTime.Now;
-                    accountantGroup.Company = dbContext.Companys.Single(x => x.Id == companyId);
-                    accountantGroup.CreateUserId = userId;
+                    AccountantGroup accountantGroup = mapper.Map<AccountantGroup>(accountantGroupForm);                    
+                    accountantGroup.Company = dbContext.Companys.Single(x => x.Id == companyId);                    
+                    InputUtil.Set(accountantGroup, true, userId);
                     dbContext.AccountantGroups.Add(accountantGroup);                    
-                    dbContext.SaveChanges();
+                    await dbContext.SaveChangesAsync();
                     response.Success();
                 }
                 else
@@ -200,7 +203,7 @@ namespace SealTypographicWebAPI.Services.Implements
         }
 
         ///<inheritdoc />
-        public ResponseViewModel Update(AccountantGroupUpdateForm accountantGroupFormUpdate, int userId = 1)
+        public async Task<ResponseViewModel> Update(AccountantGroupUpdateForm accountantGroupFormUpdate, int userId = 1)
         {
             logger.LogInformation("Update input {@accountantGroupFormUpdate} userId: {@userId}", accountantGroupFormUpdate, userId);
 
@@ -213,10 +216,11 @@ namespace SealTypographicWebAPI.Services.Implements
                 if (accountantGroupQuery != null)
                 {
                     mapper.Map(accountantGroupFormUpdate, accountantGroupQuery);
+                    InputUtil.Set(accountantGroupQuery, false, userId);
                     accountantGroupQuery.UpdateDate = DateTime.Now;
                     accountantGroupQuery.UpdateUserId = userId;
 
-                    dbContext.SaveChanges();
+                    await dbContext.SaveChangesAsync();
                     response.Success();
                 }
                 else
@@ -235,7 +239,7 @@ namespace SealTypographicWebAPI.Services.Implements
         }
 
         ///<inheritdoc />       
-        public ResponseViewModel Delete(int accountantGroupId, int userId = 1)
+        public async Task<ResponseViewModel> Delete(int accountantGroupId, int userId = 1)
         {
             logger.LogInformation("Delete input accountantGroupId: {@accountantGroupId} userId: {@userId}", accountantGroupId, userId);
 
@@ -248,7 +252,7 @@ namespace SealTypographicWebAPI.Services.Implements
                 if (accountantGroup != null)
                 {                    
                     dbContext.Remove(accountantGroup);
-                    dbContext.SaveChanges();
+                    await dbContext.SaveChangesAsync();
                     response.Success();
                 }
                 else

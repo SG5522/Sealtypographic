@@ -1,9 +1,7 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using SealTypographicWebAPI.Models;
 using SealTypographicWebAPI.Models.Accountant;
 using SealTypographicWebAPI.Services;
-using Serilog;
 
 
 namespace SealTypographicWebAPI.Controllers
@@ -13,7 +11,7 @@ namespace SealTypographicWebAPI.Controllers
     /// </summary>
     [Route("api/[controller]")]    
     [ApiController]    
-    public class AccountantController : ControllerBase
+    public class AccountantController : APIControllerBase
     {
         /// <summary>
         /// 會計師資料管理Service
@@ -24,7 +22,8 @@ namespace SealTypographicWebAPI.Controllers
         /// 建構:注入Service
         /// </summary>
         /// <param name="accountantService">管理會計師資料</param>
-        public AccountantController(IAccountantService accountantService)
+        /// <param name="applicationUserService"></param>
+        public AccountantController(IAccountantService accountantService, IApplicationUserService applicationUserService) : base(applicationUserService)
         {
             this.accountantService = accountantService;
         }
@@ -35,7 +34,7 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="accountantId">會計師ID</param>        
         /// <returns></returns>
         [HttpGet("{accountantId}")]
-        public AccountantDetailResponse Detail(int accountantId) => accountantService.GetDetail(accountantId);
+        public async Task<AccountantDetailResponse> Detail(int accountantId) => await accountantService.GetDetail(accountantId, await GetUserId());
 
         /// <summary>
         /// 依搜尋條件獲得資料列表(分頁)
@@ -43,8 +42,8 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="accountantSearch">搜尋條件</param>
         /// <returns></returns>
         [HttpGet]
-        public AccountantPaginateViewModel Paginate([FromQuery]AccountantSearch accountantSearch) 
-            => accountantService.GetPaginate(accountantSearch, false);
+        public async Task<AccountantPaginateViewModel> Paginate([FromQuery]AccountantSearch accountantSearch) 
+            => await accountantService.GetPaginate(accountantSearch, false, await GetUserId());
 
         /// <summary>
         /// 依搜尋條件獲得資料列表(排版使用)
@@ -52,28 +51,28 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="accountantSearch">搜尋條件</param>
         /// <returns></returns>
         [HttpGet("[Action]")]
-        public AccountantPaginateViewModel PaginateWithTypographic([FromQuery] AccountantSearch accountantSearch) 
-            => accountantService.GetPaginate(accountantSearch, true);
+        public async Task<AccountantPaginateViewModel> PaginateWithTypographic([FromQuery] AccountantSearch accountantSearch) 
+            => await accountantService.GetPaginate(accountantSearch, true, await GetUserId());
 
         /// <summary>
         /// 新增資料
         /// </summary>
         /// <param name="accountantForm">會計師資料</param>
         [HttpPost]
-        public AccountantCreateResponse New(AccountantForm accountantForm) => accountantService.New(accountantForm);
+        public async Task<AccountantCreateResponse> New(AccountantForm accountantForm) => await accountantService.New(accountantForm, await GetUserId());
 
         /// <summary>
         /// 更新資料
         /// </summary>
         /// <param name="accountantFormUpdate">會計師資料(Id為查詢用)</param>        
         [HttpPut]
-        public ResponseViewModel Update(AccountantUpdateForm accountantFormUpdate) => accountantService.Update(accountantFormUpdate);
+        public async Task<ResponseViewModel> Update(AccountantUpdateForm accountantFormUpdate) => await accountantService.Update(accountantFormUpdate, await GetUserId());
 
         /// <summary>
         /// 刪除資料
         /// </summary>
         /// <param name="accountantId">會計師ID</param>        
         [HttpDelete("{accountantId}")]
-        public ResponseViewModel Delete(int accountantId) => accountantService.Delete(accountantId);
+        public async Task<ResponseViewModel> Delete(int accountantId) => await accountantService.Delete(accountantId, await GetUserId());
     }
 }

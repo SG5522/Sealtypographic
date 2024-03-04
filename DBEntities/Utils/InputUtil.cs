@@ -30,7 +30,7 @@ namespace DBEntities.Utils
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="input">輸入class</param>
-        /// <param name="isCreate">是否為建立新表</param>
+        /// <param name="isCreate">是否為建立新表，否為Update</param>
         /// <param name="userId">使用者Id</param>
         public static void Set<T>(T input, bool isCreate, int userId) where T : BaseData
         {

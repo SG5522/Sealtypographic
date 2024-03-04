@@ -31,14 +31,14 @@ namespace SealTypographicWebAPI.Services
         /// </summary>
         /// <param name="customerForm">基本資料</param>
         /// <param name="userId">登入的使用者Id</param>
-        CreateCustomerResponse New(CustomerForm customerForm, int userId = 1);
+        Task<CreateCustomerResponse> New(CustomerForm customerForm, int userId = 1);
 
         /// <summary>
         /// 更新基本資料
         /// </summary>
         /// <param name="customerUpdateForm">基本資料</param>
         /// <param name="userId">登入的使用者Id</param>
-        ResponseViewModel Update(CustomerUpdateForm customerUpdateForm, int userId = 1);
+        Task<ResponseViewModel> Update(CustomerUpdateForm customerUpdateForm, int userId = 1);
 
         /// <summary>
         /// 刪除基本資料，
@@ -47,6 +47,6 @@ namespace SealTypographicWebAPI.Services
         /// </summary>
         /// <param name="customerId">客戶Id</param>
         /// <param name="userId">登入的使用者Id</param>
-        ResponseViewModel Delete(int customerId, int userId = 1);
+        Task<ResponseViewModel> Delete(int customerId, int userId = 1);
     }
 }

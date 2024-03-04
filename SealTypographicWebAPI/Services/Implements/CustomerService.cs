@@ -132,7 +132,7 @@ namespace SealTypographicWebAPI.Services.Implements
         }        
 
         ///<inheritdoc />
-        public CreateCustomerResponse New(CustomerForm customerForm, int userId = 1)
+        public async Task<CreateCustomerResponse> New(CustomerForm customerForm, int userId = 1)
         {
             logger.LogInformation("New input {@customerForm} userId: {@userId}", customerForm, userId);
 
@@ -157,7 +157,7 @@ namespace SealTypographicWebAPI.Services.Implements
                         Customer dbCustomer = mapper.Map<Customer>(customerForm);                        
                         InputUtil.Set(dbCustomer, true, userId);
                         companyQuery.Customers.Add(dbCustomer);
-                        dbContext.SaveChanges();
+                        await dbContext.SaveChangesAsync();
 
                         if (dbCustomer != null)
                         {
@@ -196,7 +196,7 @@ namespace SealTypographicWebAPI.Services.Implements
         }
 
         ///<inheritdoc />
-        public ResponseViewModel Update(CustomerUpdateForm customerFormUpdate, int userId = 1)
+        public async Task<ResponseViewModel> Update(CustomerUpdateForm customerFormUpdate, int userId = 1)
         {
             logger.LogInformation("Update input {@customerFormUpdate} userId: {@userId}", customerFormUpdate, userId);
 
@@ -210,7 +210,7 @@ namespace SealTypographicWebAPI.Services.Implements
                 {
                     mapper.Map(customerFormUpdate, customerQuery);                    
                     InputUtil.Set(customerQuery, false, userId);
-                    dbContext.SaveChanges();
+                    await dbContext.SaveChangesAsync();
                     response.Success();
                 }
                 else
@@ -234,7 +234,7 @@ namespace SealTypographicWebAPI.Services.Implements
         }
 
         ///<inheritdoc /> 
-        public ResponseViewModel Delete(int customerId, int userId = 1)
+        public async Task<ResponseViewModel> Delete(int customerId, int userId = 1)
         {
             logger.LogInformation("Delete input customerId: {@customerId} userId: {@userId}", customerId, userId);
             
@@ -248,7 +248,7 @@ namespace SealTypographicWebAPI.Services.Implements
                 {
                     customerQuery.DeleteStatus = DeleteStatus.Yes;                   
                     InputUtil.Set(customerQuery, false, userId);
-                    dbContext.SaveChanges();
+                    await dbContext.SaveChangesAsync();
                     response.Success();
                 }
                 else

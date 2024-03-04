@@ -51,14 +51,14 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="customerForm">基本資料</param>
         /// <returns></returns>
         [HttpPost]
-        public async Task<CreateCustomerResponse> New(CustomerForm customerForm) => customerService.New(customerForm, await GetUserId());
+        public async Task<CreateCustomerResponse> New(CustomerForm customerForm) => await customerService.New(customerForm, await GetUserId());
 
         /// <summary>
         /// 更新基本資料
         /// </summary>
         /// <param name="customerUpdateForm">基本資料</param>
         [HttpPut]
-        public ResponseViewModel Update(CustomerUpdateForm customerUpdateForm) => customerService.Update(customerUpdateForm);
+        public async Task<ResponseViewModel> Update(CustomerUpdateForm customerUpdateForm) =>await customerService.Update(customerUpdateForm, await GetUserId());
 
         /// <summary>
         /// 刪除基本資料，
@@ -68,6 +68,6 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="customerId">客戶Id</param>
         /// <returns></returns>
         [HttpDelete("{customerId}")]
-        public ResponseViewModel Delete(int customerId) => customerService.Delete(customerId);
+        public async Task<ResponseViewModel> Delete(int customerId) => await customerService.Delete(customerId, await GetUserId());
     }
 }

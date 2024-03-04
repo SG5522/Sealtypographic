@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SealTypographicWebAPI.Models;
 using SealTypographicWebAPI.Services;
-using Serilog;
 using SealTypographicWebAPI.Models.AccountantGroup;
 
 
@@ -12,7 +11,7 @@ namespace SealTypographicWebAPI.Controllers
     /// </summary>
     [Route("api/[controller]")]    
     [ApiController]
-    public class AccountantGroupController : ControllerBase
+    public class AccountantGroupController : APIControllerBase
     {
         /// <summary>
         /// 管理會計師群組的Service
@@ -22,8 +21,9 @@ namespace SealTypographicWebAPI.Controllers
         /// <summary>
         /// 建構:注入Service
         /// </summary>
-        /// <param name="accountantGroupService">管理會計師群組的Service</param>        
-        public AccountantGroupController(IAccountantGroupService accountantGroupService)
+        /// <param name="accountantGroupService">管理會計師群組的Service</param>
+        /// <param name="applicationUserService"></param>        
+        public AccountantGroupController(IAccountantGroupService accountantGroupService, IApplicationUserService applicationUserService) : base(applicationUserService)
         {
             this.accountantGroupService = accountantGroupService;
         }
@@ -41,7 +41,8 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="accountantGroupSearch">群組搜尋條件(分頁)</param>
         /// <returns></returns>
         [HttpGet]
-        public AccountantGroupPaginateViewModel Paginate([FromQuery]AccountantGroupSearch accountantGroupSearch) => accountantGroupService.GetPaginate(accountantGroupSearch);
+        public async Task<AccountantGroupPaginateViewModel> Paginate([FromQuery]AccountantGroupSearch accountantGroupSearch) => 
+            await accountantGroupService.GetPaginate(accountantGroupSearch, await GetUserId());
 
         /// <summary>
         /// 取得群組資料(單筆)
@@ -49,7 +50,7 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="accountantGroupId">群組ID</param>
         /// <returns></returns>
         [HttpGet("{accountantGroupId}")]        
-        public AccountantGroupResponse Data(int accountantGroupId) => accountantGroupService.GetData(accountantGroupId);
+        public async Task<AccountantGroupResponse> Data(int accountantGroupId) => await accountantGroupService.GetData(accountantGroupId, await GetUserId());
 
         /// <summary>
         /// 新增群組
@@ -57,7 +58,7 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="accountantGroupForm">群組資料</param>
         /// <returns></returns>
         [HttpPost]
-        public ResponseViewModel New(AccountantGroupForm accountantGroupForm) => accountantGroupService.New(accountantGroupForm);
+        public Task<ResponseViewModel> New(AccountantGroupForm accountantGroupForm) => accountantGroupService.New(accountantGroupForm);
 
         /// <summary>
         /// 更新群組資料
@@ -65,7 +66,7 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="accountantGroupFormUpdate">群組資料(含Id)</param>       
         /// <returns></returns>
         [HttpPut]
-        public ResponseViewModel Update(AccountantGroupUpdateForm accountantGroupFormUpdate) => accountantGroupService.Update(accountantGroupFormUpdate);
+        public Task<ResponseViewModel> Update(AccountantGroupUpdateForm accountantGroupFormUpdate) => accountantGroupService.Update(accountantGroupFormUpdate);
 
         /// <summary>
         /// 刪除群組
@@ -73,6 +74,6 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="accountantGroupDataId">群組Id</param>
         /// <returns></returns>
         [HttpDelete("{accountantGroupDataId}")]
-        public ResponseViewModel Delete(int accountantGroupDataId) => accountantGroupService.Delete(accountantGroupDataId);
+        public Task<ResponseViewModel> Delete(int accountantGroupDataId) => accountantGroupService.Delete(accountantGroupDataId);
     }
 }

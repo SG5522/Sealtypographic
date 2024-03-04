@@ -1,7 +1,5 @@
 ﻿using SealTypographicWebAPI.Models;
-using SealTypographicWebAPI.Models.Accountant;
 using SealTypographicWebAPI.Models.AccountantGroup;
-using SealTypographicWebAPI.Models.Customer;
 
 namespace SealTypographicWebAPI.Services
 {
@@ -22,7 +20,7 @@ namespace SealTypographicWebAPI.Services
         /// <param name="accountantGroupId">群組ID</param>
         /// <param name="userId">登入的使用者Id</param>
         /// <returns></returns>
-        AccountantGroupResponse GetData(int accountantGroupId, int userId = 1);
+        Task<AccountantGroupResponse> GetData(int accountantGroupId, int userId = 1);
 
         /// <summary>
         /// 依搜尋條件取得群組列表(分頁)
@@ -30,7 +28,7 @@ namespace SealTypographicWebAPI.Services
         /// <param name="accountantGroupSearch">群組搜尋條件(分頁)</param>
         /// <param name="userId">登入的使用者Id</param> 
         /// <returns></returns>
-        AccountantGroupPaginateViewModel GetPaginate(AccountantGroupSearch accountantGroupSearch, int userId = 1);
+        Task<AccountantGroupPaginateViewModel> GetPaginate(AccountantGroupSearch accountantGroupSearch, int userId = 1);
 
         /// <summary>
         /// 新增群組
@@ -38,7 +36,7 @@ namespace SealTypographicWebAPI.Services
         /// <param name="accountantGroupForm">群組資料</param>
         /// <param name="userId">登入的使用者Id</param>
         /// <returns></returns>
-        ResponseViewModel New(AccountantGroupForm accountantGroupForm, int userId = 1);
+        Task<ResponseViewModel> New(AccountantGroupForm accountantGroupForm, int userId = 1);
 
         /// <summary>
         /// 更新群組資料
@@ -46,7 +44,7 @@ namespace SealTypographicWebAPI.Services
         /// <param name="accountantGroupFormUpdate">群組資料(含Id)</param>
         /// <param name="userId">登入的使用者Id</param>
         /// <returns></returns>
-        ResponseViewModel Update(AccountantGroupUpdateForm accountantGroupFormUpdate, int userId = 1);
+        Task<ResponseViewModel> Update(AccountantGroupUpdateForm accountantGroupFormUpdate, int userId = 1);
 
         /// <summary>
         /// 刪除群組(將該群組的所有人員先轉移到無群組在進行群組刪除)
@@ -54,6 +52,6 @@ namespace SealTypographicWebAPI.Services
         /// <param name="accountantGroupId">群組Id</param>
         /// <param name="userId">登入的使用者Id</param>
         /// <returns></returns>
-        ResponseViewModel Delete(int accountantGroupId, int userId = 1);
+        Task<ResponseViewModel> Delete(int accountantGroupId, int userId = 1);
     }
 }

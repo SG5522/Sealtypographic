@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Caching.Memory;
 using SealTypographicWebAPI.Models;
 using SealTypographicWebAPI.Services;
 
