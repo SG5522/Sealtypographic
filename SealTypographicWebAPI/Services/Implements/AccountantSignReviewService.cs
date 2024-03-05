@@ -154,7 +154,7 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <param name="reviewStatus">審核狀態</param>
         /// <param name="userId">從Keycloak驗證取得</param>
         /// <returns></returns>
-        public Task<ResponseViewModel> StatusChange(List<int> accountantSignGroupIds, ReviewStatus reviewStatus, int userId = 1)
+        public async Task<ResponseViewModel> StatusChange(List<int> accountantSignGroupIds, ReviewStatus reviewStatus, int userId = 1)
         {
             logger.LogInformation("StatusChange accountantSignGroupIds: {@accountantSignGroupIds}, reviewStatus: {@reviewStatus}, userId: {@userId} "
                                     , accountantSignGroupIds, reviewStatus, userId);
@@ -214,12 +214,12 @@ namespace SealTypographicWebAPI.Services.Implements
 
                 if (response.ErrorItem == null)
                 {
-                    dbContext.SaveChanges();
+                    await dbContext.SaveChangesAsync();
                     response.Success();
                     //異動紀錄存檔(審核)
                     foreach(AccountantSignEventLogSave accountantSignEventLogSave in accountantSignEventLogSaves)
                     {
-                        logReportService.SaveAccountantSignEventLog(accountantSignEventLogSave, OperateType.Review);
+                        await logReportService.SaveAccountantSignEventLog(accountantSignEventLogSave, OperateType.Review);
                     }                    
                 }
                 else

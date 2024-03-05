@@ -34,8 +34,8 @@ namespace SealTypographicWebAPI.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet("[Action]")]
-        public AccountantSignGroupReviewPaginate ReviewPaginate([FromQuery]AccountantSignSearchReview accountantSignSearchReview) 
-           => accountSignReviewService.GetReviewPaginate(accountantSignSearchReview);
+        public async Task<AccountantSignGroupReviewPaginate> ReviewPaginate([FromQuery]AccountantSignSearchReview accountantSignSearchReview) 
+           => await accountSignReviewService.GetReviewPaginate(accountantSignSearchReview);
 
         /// <summary>
         /// 會計師基本資料與簽印組
@@ -43,31 +43,31 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="accountantSignGroupId"></param>        
         /// <returns></returns>
         [HttpGet("{accountantSignGroupId}")]
-        public AccountantSignGroupDetailReviewResponse ReviewDetail(int accountantSignGroupId)
-             => accountSignReviewService.GetReviewDetail(accountantSignGroupId);
+        public async Task<AccountantSignGroupDetailReviewResponse> ReviewDetail(int accountantSignGroupId)
+             => await accountSignReviewService.GetReviewDetail(accountantSignGroupId);
 
         /// <summary>
         /// 審核通過
         /// </summary>
         /// <param name="accountantSignGroupIds"></param>
         [HttpPut("[Action]")]
-        public ResponseViewModel Approval(List<int> accountantSignGroupIds) 
-            => accountSignReviewService.StatusChange(accountantSignGroupIds, ReviewStatus.Approval);
+        public async Task<ResponseViewModel> Approval(List<int> accountantSignGroupIds) 
+            => await accountSignReviewService.StatusChange(accountantSignGroupIds, ReviewStatus.Approval);
 
         /// <summary>
         /// 審核退件
         /// </summary>
         /// <param name="accountantSignGroupIds"></param>
         [HttpPut("[Action]")]
-        public ResponseViewModel Reject(List<int> accountantSignGroupIds) 
-            => accountSignReviewService.StatusChange(accountantSignGroupIds, ReviewStatus.Reject);
+        public async Task<ResponseViewModel> Reject(List<int> accountantSignGroupIds) 
+            => await accountSignReviewService.StatusChange(accountantSignGroupIds, ReviewStatus.Reject);
 
         /// <summary>
         /// 審核不受理
         /// </summary>
         /// <param name="accountantSignGroupIds"></param>
         [HttpPut("[Action]")]
-        public ResponseViewModel Refuse(List<int> accountantSignGroupIds) 
-            => accountSignReviewService.StatusChange(accountantSignGroupIds, ReviewStatus.Refuse);
+        public async Task<ResponseViewModel> Refuse(List<int> accountantSignGroupIds) 
+            => await accountSignReviewService.StatusChange(accountantSignGroupIds, ReviewStatus.Refuse);
     }
 }
