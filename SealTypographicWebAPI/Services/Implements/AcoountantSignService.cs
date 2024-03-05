@@ -45,7 +45,7 @@ namespace SealTypographicWebAPI.Services.Implements
         }
 
         ///<inheritdoc />
-        public AccountantSignGroupResponse GetCreateDates(int accountantId, int userId = 1)
+        public async Task<AccountantSignGroupResponse> GetCreateDates(int accountantId, int userId = 1)
         {
             logger.LogInformation("GetCreateDates input accountantId: {@accountantId} userId: {@userId}", accountantId, userId);
 
@@ -64,7 +64,7 @@ namespace SealTypographicWebAPI.Services.Implements
 
                 if (AccountantSignGroupQuery.Any())
                 {
-                    accountantSignStartDates.AccountantSignGroups = AccountantSignGroupQuery.ToList();
+                    accountantSignStartDates.AccountantSignGroups = await AccountantSignGroupQuery.ToListAsync();
                     accountantSignStartDates.Success();
                 }
                 else
@@ -83,7 +83,7 @@ namespace SealTypographicWebAPI.Services.Implements
         }
 
         ///<inheritdoc />
-        public AccountantSignViewModels GetSignViewModels(int accountantSignGroupId, bool isTransparent, int userId = 1)
+        public async Task<AccountantSignViewModels> GetSignViewModels(int accountantSignGroupId, bool isTransparent, int userId = 1)
         {
             logger.LogInformation("GetSignViewModels input accountantSignGroupId: {@accountantSignGroupId} isTransparent: {@isTransparent} userId: {@userId}"
                 , accountantSignGroupId, isTransparent, userId);
@@ -92,11 +92,11 @@ namespace SealTypographicWebAPI.Services.Implements
 
             try
             {
-                accountantSignViewModels = dbContext.AccountantSignGroups
+                accountantSignViewModels = await dbContext.AccountantSignGroups
                                             .Include(x => x.Accountant)
                                             .Include(x => x.TypographicResources)
                                             .ProjectTo<AccountantSignViewModels>(configurationProvider)
-                                            .FirstOrDefault(x => x.AccountantSignGroupId == accountantSignGroupId);
+                                            .FirstOrDefaultAsync(x => x.AccountantSignGroupId == accountantSignGroupId);
 
                 if (accountantSignViewModels != null)
                 {
@@ -109,12 +109,12 @@ namespace SealTypographicWebAPI.Services.Implements
                     }
                     accountantSignViewModels.Success();
                     //操作紀錄(查詢)存檔
-                    logReportService.SaveOperationLog(mapper.Map<OperationLogSave>(accountantSignViewModels));
+                    await logReportService.SaveOperationLog(mapper.Map<OperationLogSave>(accountantSignViewModels));
                 }
                 else
                 {
                     accountantSignViewModels = new();
-                    accountantSignViewModels.AccountantSignNoData();
+                    accountantSignViewModels!.AccountantSignNoData();
                 }
                 logger.LogInformation("GetSignViewModels output {@Output}", accountantSignViewModels);
             }

@@ -131,12 +131,6 @@ namespace SealTypographicWebAPI.Services.Implements
                 if (accountantGroupsQuery.Any())
                 {
                     //取得該頁
-                    accountantGroupResponses.AccountantGroups = accountantGroupsQuery
-                                                                .Skip((accountantGroupSearch.PageNumber - 1) * accountantGroupSearch.PageSize)
-                                                                .Take(accountantGroupSearch.PageSize)
-                                                                .ProjectTo<AccountantGroupViewModel>(configurationProvider)
-                                                                .ToList();
-
                     accountantGroupResponses.AccountantGroups =  await PageUtil.SetPaginateViewModelAsync<AccountantGroup, AccountantGroupViewModel>
                                                                 (accountantGroupsQuery, configurationProvider, accountantGroupSearch.PageNumber, accountantGroupSearch.PageSize);
 

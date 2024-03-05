@@ -12,7 +12,7 @@ namespace SealTypographicWebAPI.Controllers
     /// </summary>
     [Route("api/[controller]")]    
     [ApiController]
-    public class AccountantSignController : ControllerBase
+    public class AccountantSignController : APIControllerBase
     {
         /// <summary>
         /// 會計師簽印管理Service
@@ -22,8 +22,9 @@ namespace SealTypographicWebAPI.Controllers
         /// <summary>
         /// 建構：注入會計師簽印管理Service
         /// </summary>
-        /// <param name="accountantSignService">會計師簽印管理Service</param>        
-        public AccountantSignController(IAccountantSignService accountantSignService)
+        /// <param name="accountantSignService">會計師簽印管理Service</param>
+        /// <param name="applicationUserService"></param>        
+        public AccountantSignController(IAccountantSignService accountantSignService, IApplicationUserService applicationUserService) : base(applicationUserService)
         {
             this.accountantSignService = accountantSignService;            
         }
@@ -34,7 +35,7 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="accountantId">會計師ID</param>        
         /// <returns></returns>
         [HttpGet("{accountantId}")]
-        public AccountantSignGroupResponse GetCreateDates(int accountantId) => accountantSignService.GetCreateDates(accountantId);
+        public async Task<AccountantSignGroupResponse> GetCreateDates(int accountantId) => await accountantSignService.GetCreateDates(accountantId, await GetUserId());
 
         /// <summary>
         /// 取得會計師簽印組
@@ -43,7 +44,8 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="isTransparent" example="false" >是否白底透明化</param>        
         /// <returns></returns>        
         [HttpGet]
-        public AccountantSignViewModels Signs(int accountantSignGroupId, bool isTransparent) => accountantSignService.GetSignViewModels(accountantSignGroupId, isTransparent);
+        public async Task<AccountantSignViewModels> Signs(int accountantSignGroupId, bool isTransparent) 
+                => await accountantSignService.GetSignViewModels(accountantSignGroupId, isTransparent, await GetUserId());
 
         /// <summary>
         /// 新增會計師簽印組

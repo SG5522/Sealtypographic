@@ -11,7 +11,7 @@ namespace SealTypographicWebAPI.Controllers
     /// </summary>
     [Route("api/[controller]")]    
     [ApiController]    
-    public class AccountantGroupMemberController : ControllerBase
+    public class AccountantGroupMemberController : APIControllerBase
     {
         /// <summary>
         /// 管理會計師群組成員的Service
@@ -21,8 +21,9 @@ namespace SealTypographicWebAPI.Controllers
         /// <summary>
         /// 建構：注入Service
         /// </summary>
-        /// <param name="accountantGroupMemberService">管理會計師群組成員的Service</param>   
-        public AccountantGroupMemberController(IAccountantGroupMemberService accountantGroupMemberService)
+        /// <param name="accountantGroupMemberService">管理會計師群組成員的Service</param>
+        /// <param name="applicationUserService"></param>   
+        public AccountantGroupMemberController(IAccountantGroupMemberService accountantGroupMemberService, IApplicationUserService applicationUserService) : base(applicationUserService)
         {
             this.accountantGroupMemberService = accountantGroupMemberService;
         }
@@ -33,8 +34,8 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="accountantGroupMemberSearch">群組成員搜尋條件</param>
         /// <returns></returns>
         [HttpGet]
-        public AccountantGroupMembers Members([FromQuery] AccountantGroupMemberSearch accountantGroupMemberSearch) 
-            => accountantGroupMemberService.GetMembers(accountantGroupMemberSearch, true);    
+        public async Task<AccountantGroupMembers> Members([FromQuery] AccountantGroupMemberSearch accountantGroupMemberSearch) 
+            => await accountantGroupMemberService.GetMembers(accountantGroupMemberSearch, true, await GetUserId());    
 
         /// <summary>
         /// 取得非該群組會計師列表
@@ -42,8 +43,8 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="accountantGroupMemberSearch">群組成員搜尋條件</param>
         /// <returns></returns>
         [HttpGet("[Action]")]
-        public AccountantGroupMembers NotTheGroup([FromQuery] AccountantGroupMemberSearch accountantGroupMemberSearch) 
-            => accountantGroupMemberService.GetMembers(accountantGroupMemberSearch, false);
+        public async Task<AccountantGroupMembers> NotTheGroup([FromQuery] AccountantGroupMemberSearch accountantGroupMemberSearch) 
+            => await accountantGroupMemberService.GetMembers(accountantGroupMemberSearch, false, await GetUserId());
 
 
         /// <summary>
@@ -51,8 +52,8 @@ namespace SealTypographicWebAPI.Controllers
         /// </summary>
         /// <param name="accountantGroupMemberForm">會計師群組成員資料</param>       
         [HttpPut("[Action]")]
-        public ResponseViewModel UpdateGroupMembers(AccountantGroupMemberForm accountantGroupMemberForm) 
-            => accountantGroupMemberService.UpdateGroupMembers(accountantGroupMemberForm);
+        public async Task<ResponseViewModel> UpdateGroupMembers(AccountantGroupMemberForm accountantGroupMemberForm) 
+            => await accountantGroupMemberService.UpdateGroupMembers(accountantGroupMemberForm, await GetUserId());
 
     }
 }

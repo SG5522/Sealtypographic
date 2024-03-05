@@ -4,7 +4,6 @@ using SealTypographicWebAPI.Utils;
 using Microsoft.EntityFrameworkCore;
 using AutoMapper;
 using DBEntities.Consts;
-using AutoMapper.QueryableExtensions;
 using DBEntities;
 using DBEntities.Entities.AccountantModels;
 
@@ -33,7 +32,7 @@ namespace SealTypographicWebAPI.Services.Implements
         }
 
         ///<inheritdoc /> 
-        public AccountantGroupMembers GetMembers(AccountantGroupMemberSearch accountantGroupMemberSearch, bool isGroupMember, int userId = 1)
+        public async Task<AccountantGroupMembers> GetMembers(AccountantGroupMemberSearch accountantGroupMemberSearch, bool isGroupMember, int userId = 1)
         {
             logger.LogInformation("GetMembers input {@accountantGroupMemberSearch} isGroupMember: {@isGroupMember} userId: {@userId}", accountantGroupMemberSearch, isGroupMember, userId);
 
@@ -57,11 +56,8 @@ namespace SealTypographicWebAPI.Services.Implements
                 if (accountantQuery.Any())
                 {
                     //取得該頁            
-                    accountantGroupMembers.Members = accountantQuery
-                                                    .Skip((accountantGroupMemberSearch.PageNumber - 1) * accountantGroupMemberSearch.PageSize)
-                                                    .Take(accountantGroupMemberSearch.PageSize)
-                                                    .ProjectTo<AccountantGroupMember>(configurationProvider)
-                                                    .ToList();
+                    accountantGroupMembers.Members = await PageUtil.SetPaginateViewModelAsync<Accountant, AccountantGroupMember>
+                                                    (accountantQuery, configurationProvider, accountantGroupMemberSearch.PageNumber, accountantGroupMemberSearch.PageSize);
 
                     PageUtil.SetPaginate(accountantGroupMembers, accountantGroupMemberSearch.PageNumber, accountantGroupMemberSearch.PageSize, accountantQuery.Count());
                     accountantGroupMembers.Success();
@@ -83,7 +79,7 @@ namespace SealTypographicWebAPI.Services.Implements
       
 
         ///<inheritdoc /> 
-        public ResponseViewModel UpdateGroupMembers(AccountantGroupMemberForm accountantGroupMemberForm, int userId = 1)
+        public async Task<ResponseViewModel> UpdateGroupMembers(AccountantGroupMemberForm accountantGroupMemberForm, int userId = 1)
         {
             logger.LogInformation("UpdateGroupMembers input {@accountantGroupMemberForm} userId {@userId}", accountantGroupMemberForm, userId);
 
@@ -148,7 +144,7 @@ namespace SealTypographicWebAPI.Services.Implements
 
                     if (noDataAccountantIds.Count == 0)
                     {
-                        dbContext.SaveChanges();
+                        await dbContext.SaveChangesAsync();
                         response.Success();
                     }
                     else

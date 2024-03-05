@@ -29,7 +29,7 @@ namespace SealTypographicWebAPI.Models.Accountant
         {
             SignViewModels = new();
         }
-
+        
         /// <summary>
         /// 會計師簽印群組ID
         /// </summary>

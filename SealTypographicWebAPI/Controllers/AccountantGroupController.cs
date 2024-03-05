@@ -41,8 +41,8 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="accountantGroupSearch">群組搜尋條件(分頁)</param>
         /// <returns></returns>
         [HttpGet]
-        public async Task<AccountantGroupPaginateViewModel> Paginate([FromQuery]AccountantGroupSearch accountantGroupSearch) => 
-            await accountantGroupService.GetPaginate(accountantGroupSearch, await GetUserId());
+        public async Task<AccountantGroupPaginateViewModel> Paginate([FromQuery]AccountantGroupSearch accountantGroupSearch) 
+            => await accountantGroupService.GetPaginate(accountantGroupSearch, await GetUserId());
 
         /// <summary>
         /// 取得群組資料(單筆)
@@ -58,7 +58,7 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="accountantGroupForm">群組資料</param>
         /// <returns></returns>
         [HttpPost]
-        public Task<ResponseViewModel> New(AccountantGroupForm accountantGroupForm) => accountantGroupService.New(accountantGroupForm);
+        public async Task<ResponseViewModel> New(AccountantGroupForm accountantGroupForm) => await accountantGroupService.New(accountantGroupForm, await GetUserId());
 
         /// <summary>
         /// 更新群組資料
@@ -66,7 +66,8 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="accountantGroupFormUpdate">群組資料(含Id)</param>       
         /// <returns></returns>
         [HttpPut]
-        public Task<ResponseViewModel> Update(AccountantGroupUpdateForm accountantGroupFormUpdate) => accountantGroupService.Update(accountantGroupFormUpdate);
+        public async Task<ResponseViewModel> Update(AccountantGroupUpdateForm accountantGroupFormUpdate) 
+            => await accountantGroupService.Update(accountantGroupFormUpdate, await GetUserId());
 
         /// <summary>
         /// 刪除群組
@@ -74,6 +75,6 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="accountantGroupDataId">群組Id</param>
         /// <returns></returns>
         [HttpDelete("{accountantGroupDataId}")]
-        public Task<ResponseViewModel> Delete(int accountantGroupDataId) => accountantGroupService.Delete(accountantGroupDataId);
+        public async Task<ResponseViewModel> Delete(int accountantGroupDataId) => await accountantGroupService.Delete(accountantGroupDataId, await GetUserId());
     }
 }

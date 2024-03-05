@@ -41,7 +41,7 @@ namespace SealTypographicWebAPI.Services.Implements
         }
 
         ///<inheritdoc />
-        public AccountantSignGroupReviewPaginate GetReviewPaginate(AccountantSignSearchReview accountantSignSearchReview, int userId = 1)
+        public async Task<AccountantSignGroupReviewPaginate> GetReviewPaginate(AccountantSignSearchReview accountantSignSearchReview, int userId = 1)
         {
             logger.LogInformation("GetReviewPaginate input {@input} userId {@userId}", accountantSignSearchReview, userId);
 
@@ -78,7 +78,7 @@ namespace SealTypographicWebAPI.Services.Implements
                 if (accountantSignGroupQuery.Any())
                 {
                     //取得該頁                   
-                    accountantSignGroupReviewPaginate.ViewModels = PageUtil.SetPaginateViewModel<AccountantSignGroup, AccountantSignGroupReviewViewModel>
+                    accountantSignGroupReviewPaginate.ViewModels = await PageUtil.SetPaginateViewModelAsync<AccountantSignGroup, AccountantSignGroupReviewViewModel>
                                                                     (
                                                                         accountantSignGroupQuery,                                                                        
                                                                         configurationProvider,
@@ -90,7 +90,7 @@ namespace SealTypographicWebAPI.Services.Implements
                     accountantSignGroupReviewPaginate.Success();
                     foreach(AccountantSignGroupReviewViewModel accountantSignGroupReviewViewModel in accountantSignGroupReviewPaginate.ViewModels)
                     {                        
-                        logReportService.SaveOperationLog(mapper.Map<OperationLogSave>(accountantSignGroupReviewViewModel));
+                        await logReportService.SaveOperationLog(mapper.Map<OperationLogSave>(accountantSignGroupReviewViewModel));
                     }
                 }
                 else
@@ -110,7 +110,7 @@ namespace SealTypographicWebAPI.Services.Implements
         }
 
         ///<inheritdoc />
-        public AccountantSignGroupDetailReviewResponse GetReviewDetail(int accountantSignGroupId, int userId = 1)
+        public async Task<AccountantSignGroupDetailReviewResponse> GetReviewDetail(int accountantSignGroupId, int userId = 1)
         {
             logger.LogInformation("GetReviewDetail accountantSignGroupId {@accountantSignGroupId} userId {@userId}", accountantSignGroupId, userId);
 
@@ -118,19 +118,19 @@ namespace SealTypographicWebAPI.Services.Implements
 
             try
             {
-                AccountantSignGroupDetailReviewViewModel? accountantSignGroupQuery = dbContext.AccountantSignGroups
+                AccountantSignGroupDetailReviewViewModel? accountantSignGroupQuery = await dbContext.AccountantSignGroups
                                                                                     .Include(x => x.Accountant)
                                                                                     .ThenInclude(x => x.AccountantGroups)
                                                                                     .Include(x => x.TypographicResources)
                                                                                     .Where(x => x.Id == accountantSignGroupId)
                                                                                     .ProjectTo<AccountantSignGroupDetailReviewViewModel>(configurationProvider)
-                                                                                    .FirstOrDefault();
+                                                                                    .FirstOrDefaultAsync();
 
                 if (accountantSignGroupQuery != null)
                 {
                     accountantSignGroupDetailReviewResponse.ViewModel = accountantSignGroupQuery;
                     accountantSignGroupDetailReviewResponse.Success();
-                    logReportService.SaveOperationLog(mapper.Map<OperationLogSave>(accountantSignGroupQuery));
+                    await logReportService.SaveOperationLog(mapper.Map<OperationLogSave>(accountantSignGroupQuery));
                 }
                 else 
                 {
@@ -154,7 +154,7 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <param name="reviewStatus">審核狀態</param>
         /// <param name="userId">從Keycloak驗證取得</param>
         /// <returns></returns>
-        public ResponseViewModel StatusChange(List<int> accountantSignGroupIds, ReviewStatus reviewStatus, int userId = 1)
+        public Task<ResponseViewModel> StatusChange(List<int> accountantSignGroupIds, ReviewStatus reviewStatus, int userId = 1)
         {
             logger.LogInformation("StatusChange accountantSignGroupIds: {@accountantSignGroupIds}, reviewStatus: {@reviewStatus}, userId: {@userId} "
                                     , accountantSignGroupIds, reviewStatus, userId);
@@ -169,7 +169,7 @@ namespace SealTypographicWebAPI.Services.Implements
                 foreach (int accountantSignGroupId in accountantSignGroupIds)
                 {
                     AccountantSignGroup? accountantSignGroupQuery = dbContext.AccountantSignGroups.Include(x => x.Accountant)
-                                                                                            .FirstOrDefault(x => x.Id == accountantSignGroupId);
+                                                                                .FirstOrDefault(x => x.Id == accountantSignGroupId);
                     if (accountantSignGroupQuery != null)
                     {
                         accountantSignGroupQuery.ReviewUserId = userId;
