@@ -42,13 +42,13 @@ namespace SealTypographicWebAPI.Services.Implements
         /// 客戶印鑑樣本詳細
         /// </summary>
         /// <returns></returns>
-        public CustomerSealTemplateDetailViewModel GetDetail(int Id)
+        public async Task<CustomerSealTemplateDetailViewModel> GetDetail(int Id)
         {
-            CustomerSealTemplateDetailViewModel? customerSealTemplateDetailViewModel = dbContext.Templates
+            CustomerSealTemplateDetailViewModel? customerSealTemplateDetailViewModel = await dbContext.Templates
                                                                                         .Include(x => x.TemplateLocations)
                                                                                         .Where(x => x.Id == Id)
                                                                                         .ProjectTo<CustomerSealTemplateDetailViewModel>(configurationProvider)
-                                                                                        .FirstOrDefault();
+                                                                                        .FirstOrDefaultAsync();
             
             if(customerSealTemplateDetailViewModel != null)
             {
@@ -68,12 +68,14 @@ namespace SealTypographicWebAPI.Services.Implements
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public CustomerSealTemplateImageView GetImage(int id)
+        public async Task<CustomerSealTemplateImageView> GetImage(int id)
         {
             CustomerSealTemplateImageView viewImage = new();
 
-            string? imagePath = dbContext.Templates.Where(x => x.Id == id)
-                                                   .Select(x => x.ImageViewFullPath).FirstOrDefault();       
+            string? imagePath = await dbContext.Templates
+                                .Where(x => x.Id == id)
+                                .Select(x => x.ImageViewFullPath)
+                                .FirstOrDefaultAsync();      
 
             if(imagePath != null)
             {
@@ -88,7 +90,7 @@ namespace SealTypographicWebAPI.Services.Implements
         /// </summary>
         /// <param name="customerSealTemplateSearch"></param>
         /// <returns></returns>
-        public CustomerSealTemplatePaginate GetPaginate(CustomerSealTemplateSearch customerSealTemplateSearch)
+        public async Task<CustomerSealTemplatePaginate> GetPaginate(CustomerSealTemplateSearch customerSealTemplateSearch)
         {
             CustomerSealTemplatePaginate customerSealTemplatePaginate = new ();            
             int companyId = 1;
@@ -112,11 +114,12 @@ namespace SealTypographicWebAPI.Services.Implements
 
             if (templateQuery.Any())
             {
-                customerSealTemplatePaginate.ViewModels = templateQuery
-                                                        .Skip((customerSealTemplateSearch.PageNumber - 1) * customerSealTemplateSearch.PageSize)
-                                                        .Take(customerSealTemplateSearch.PageSize)
-                                                        .ProjectTo<CustomerSealTemplateViewModel>(configurationProvider)
-                                                        .ToList();
+                customerSealTemplatePaginate.ViewModels = await PageUtil.SetPaginateViewModelAsync<Template, CustomerSealTemplateViewModel>(
+                                                                templateQuery,
+                                                                configurationProvider,
+                                                                customerSealTemplateSearch.PageNumber,
+                                                                customerSealTemplateSearch.PageSize
+                                                            );  
 
                 PageUtil.SetPaginate(customerSealTemplatePaginate, customerSealTemplateSearch.PageNumber, customerSealTemplateSearch.PageSize, templateQuery.Count());
                 customerSealTemplatePaginate.Success();
@@ -229,7 +232,7 @@ namespace SealTypographicWebAPI.Services.Implements
         /// </summary>
         /// <param name="Id">客戶印鑑樣板Id</param>
         /// <returns></returns>
-        public ResponseViewModel Delete (int Id)
+        public async Task<ResponseViewModel> Delete (int Id)
         {
             ResponseViewModel response = new();
             int userId = 1;
@@ -240,7 +243,7 @@ namespace SealTypographicWebAPI.Services.Implements
             {
                 templateQuery.DeleteStatus = DeleteStatus.Yes;                
                 InputUtil.Set(templateQuery, false, userId);
-                dbContext.SaveChanges();
+                await dbContext.SaveChangesAsync();
                 response.Success();
             }
             else

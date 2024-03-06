@@ -1,7 +1,5 @@
-﻿using SealTypographicWebAPI.Models.Customer;
-using SealTypographicWebAPI.Models;
+﻿using SealTypographicWebAPI.Models;
 using SealTypographicWebAPI.Models.CustomerSealTemplate;
-using SealTypographicWebAPI.Models.BaseModels;
 
 namespace SealTypographicWebAPI.Services
 {
@@ -15,21 +13,21 @@ namespace SealTypographicWebAPI.Services
         /// </summary>
         /// <param name="id">客戶印鑑樣本Id</param>
         /// <returns></returns>
-        CustomerSealTemplateDetailViewModel GetDetail(int id);
+        Task<CustomerSealTemplateDetailViewModel> GetDetail(int id);
 
         /// <summary>
         /// 客戶印鑑樣板圖片顯示
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        CustomerSealTemplateImageView GetImage(int id);
+        Task<CustomerSealTemplateImageView> GetImage(int id);
 
         /// <summary>
         /// 客戶印鑑樣板分頁顯示
         /// </summary>
         /// <param name="customerSealTemplateSearch">客戶印鑑樣板分頁搜尋</param>
         /// <returns></returns>
-        CustomerSealTemplatePaginate GetPaginate(CustomerSealTemplateSearch customerSealTemplateSearch);
+        Task<CustomerSealTemplatePaginate> GetPaginate(CustomerSealTemplateSearch customerSealTemplateSearch);
         
         /// <summary>
         /// 新增客戶印鑑樣板
@@ -50,7 +48,7 @@ namespace SealTypographicWebAPI.Services
         /// </summary>
         /// <param name="Id">客戶印鑑樣板Id</param>
         /// <returns></returns>
-        ResponseViewModel Delete(int Id);
+        Task<ResponseViewModel> Delete(int Id);
 
 
     }

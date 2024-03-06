@@ -11,7 +11,7 @@ namespace SealTypographicWebAPI.Controllers
     /// </summary>
     [Route("api/[controller]")]
     [ApiController]
-    public class CustomerSealTemplateController : ControllerBase
+    public class CustomerSealTemplateController : APIControllerBase
     {
         private readonly ICustomerSealTemplateService customerSealTemplateService;
 
@@ -19,7 +19,8 @@ namespace SealTypographicWebAPI.Controllers
         /// 建構 注入Service
         /// </summary>
         /// <param name="customerSealTemplateService"></param>
-        public CustomerSealTemplateController(ICustomerSealTemplateService customerSealTemplateService)
+        /// <param name="applicationUserService"></param>
+        public CustomerSealTemplateController(ICustomerSealTemplateService customerSealTemplateService, IApplicationUserService applicationUserService) : base(applicationUserService)
         {
             this.customerSealTemplateService = customerSealTemplateService;
         }
@@ -30,13 +31,13 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpGet("{id}")]
-        public CustomerSealTemplateDetailViewModel Detail(int id)
+        public async Task<CustomerSealTemplateDetailViewModel> Detail(int id)
         {
             CustomerSealTemplateDetailViewModel customerSealTemplateDetailViewModel = new();
             try
             {
                 Log.Information("CustomerSealTemplate detail input {@Input}", id);
-                customerSealTemplateDetailViewModel = customerSealTemplateService.GetDetail(id);
+                customerSealTemplateDetailViewModel = await customerSealTemplateService.GetDetail(id);
                 Log.Information("CustomerSealTemplate detail output {@Output}", customerSealTemplateDetailViewModel);
             }
             catch (Exception ex)
@@ -52,13 +53,13 @@ namespace SealTypographicWebAPI.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet("[Action]/{id}")]
-        public CustomerSealTemplateImageView ViewImage(int id)
+        public async Task<CustomerSealTemplateImageView> ViewImage(int id)
         {
             CustomerSealTemplateImageView viewImage = new();
             try
             {
                 Log.Information("CustomerSealTemplate detail input {@Input}", id);
-                viewImage = customerSealTemplateService.GetImage(id);
+                viewImage = await customerSealTemplateService.GetImage(id);
                 Log.Information("CustomerSealTemplate detail output {@Output}", id);
             }
             catch (Exception ex)
@@ -75,13 +76,13 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="customerSealTemplateSearch">客戶印鑑樣板分頁搜尋</param>
         /// <returns></returns>
         [HttpGet]
-        public CustomerSealTemplatePaginate Paginate([FromQuery]CustomerSealTemplateSearch customerSealTemplateSearch)
+        public async Task<CustomerSealTemplatePaginate> Paginate([FromQuery]CustomerSealTemplateSearch customerSealTemplateSearch)
         {
             CustomerSealTemplatePaginate customerSealTemplatePaginate = new ();
             try
             {
                 Log.Information("CustomerSealTemplate paginate input {@Input}", customerSealTemplateSearch);
-                customerSealTemplatePaginate = customerSealTemplateService.GetPaginate(customerSealTemplateSearch);               
+                customerSealTemplatePaginate = await customerSealTemplateService.GetPaginate(customerSealTemplateSearch);               
             }
             catch (Exception ex)
             {
@@ -144,13 +145,13 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpDelete("{id}")]
-        public ResponseViewModel Delete(int id)
+        public async Task<ResponseViewModel> Delete(int id)
         {
             ResponseViewModel response = new();
             try
             {
                 Log.Information("CustomerSealTemplate delete input  {@id}", id);
-                response = customerSealTemplateService.Delete(id);
+                response = await customerSealTemplateService.Delete(id);
                 Log.Information("CustomerSealTemplate delete output {@Output}", response);
             }
             catch (Exception ex)

@@ -48,7 +48,7 @@ namespace SealTypographicWebAPI.Services.Implements
         }
 
         ///<inheritdoc />
-        public CustomerPaginateViewModel GetPaginate(CustomerSearch customerSearch, TypographyType typographyType, int userId = 1)
+        public async Task<CustomerPaginateViewModel> GetPaginate(CustomerSearch customerSearch, TypographyType typographyType, int userId = 1)
         {
             logger.LogInformation("GetPaginate input {@customerSearch} typographyType: {@TypographyType} userId: {userId}"
                 , customerSearch, typographyType, userId);
@@ -84,7 +84,7 @@ namespace SealTypographicWebAPI.Services.Implements
                 if (customerQuery.Any())
                 {
                     //取得該頁            
-                    customerPaginateViewModel.ViewModels = customerQuery                                                            
+                    customerPaginateViewModel.ViewModels = await customerQuery                                                            
                                                             .Skip((customerSearch.PageNumber - 1) * customerSearch.PageSize)
                                                             .Take(customerSearch.PageSize)                                                            
                                                             .Select(customer => new CustomerViewModel()
@@ -104,7 +104,7 @@ namespace SealTypographicWebAPI.Services.Implements
                                                                                         .OrderByDescending(x => x.Id)
                                                                                         .First().Id
                                                             })
-                                                            .ToList();
+                                                            .ToListAsync();
 
                     PageUtil.SetPaginate(customerPaginateViewModel, customerSearch.PageNumber, customerSearch.PageSize, customerQuery.Count());
                     customerPaginateViewModel.Success();
@@ -126,7 +126,7 @@ namespace SealTypographicWebAPI.Services.Implements
         }
 
         ///<inheritdoc />
-        public CustomerSealQuarterPaginateViewModel GetQuarterYear(CustomerSealQuarterPaginateSearch customerSealQuarterPaginateSearch, 
+        public async Task<CustomerSealQuarterPaginateViewModel> GetQuarterYear(CustomerSealQuarterPaginateSearch customerSealQuarterPaginateSearch, 
             bool isTypographic, TypographyType typographyType, int userId = 1)
         {
             logger.LogInformation("GetQuarterYear input {@customerSealQuarterPaginateSearch} isTypographicUse: {@isTypographic} typographyType: {@TypographyType} userId: {@userId}"
@@ -153,11 +153,13 @@ namespace SealTypographicWebAPI.Services.Implements
 
                 if (customerSealGroupsQuery.Any())
                 {
-                    customerSealQuarterPaginateViewModel.CustomerSealQuarters = customerSealGroupsQuery
-                                                                                .Skip((customerSealQuarterPaginateSearch.PageNumber - 1) * customerSealQuarterPaginateSearch.PageSize)
-                                                                                .Take(customerSealQuarterPaginateSearch.PageSize)
-                                                                                .ProjectTo<CustomerSealQuarterViewModel>(configurationProvider)
-                                                                                .ToList();
+                    customerSealQuarterPaginateViewModel.CustomerSealQuarters = await PageUtil.SetPaginateViewModelAsync<CustomerSealGroup, CustomerSealQuarterViewModel>
+                                                                                (
+                                                                                    customerSealGroupsQuery, 
+                                                                                    configurationProvider, 
+                                                                                    customerSealQuarterPaginateSearch.PageNumber, 
+                                                                                    customerSealQuarterPaginateSearch.PageSize
+                                                                                );
 
                     PageUtil.SetPaginate(customerSealQuarterPaginateViewModel, customerSealQuarterPaginateSearch.PageNumber
                                 , customerSealQuarterPaginateSearch.PageSize, customerSealGroupsQuery.Count());
@@ -180,7 +182,7 @@ namespace SealTypographicWebAPI.Services.Implements
         }
 
         ///<inheritdoc />
-        public CustomerSealGroupResponse GetCustomerSealGroupSummry(int customerId, int quaterId, int userId)
+        public async Task<CustomerSealGroupResponse> GetCustomerSealGroupSummry(int customerId, int quaterId, int userId)
         {
             logger.LogInformation("GetCustomerSealGroupSummry input customerId: {@customerId} quaterId: {@quaterId} userId: {@userId}", customerId, quaterId, userId);
 
@@ -188,7 +190,7 @@ namespace SealTypographicWebAPI.Services.Implements
 
             try
             {
-                customerSealGroupResponse = dbContext.CustomerSealGroups
+                customerSealGroupResponse = await dbContext.CustomerSealGroups
                                             .Include(customerSealGroups => customerSealGroups.QuarterYear)
                                             .Where
                                             (
@@ -198,7 +200,7 @@ namespace SealTypographicWebAPI.Services.Implements
                                                 && customerSealGroup.DeleteStatus == DeleteStatus.No
                                             )
                                             .ProjectTo<CustomerSealGroupResponse>(configurationProvider)
-                                            .FirstOrDefault();
+                                            .FirstOrDefaultAsync();
 
                 if (customerSealGroupResponse != null)
                 {
@@ -223,7 +225,7 @@ namespace SealTypographicWebAPI.Services.Implements
         }
 
         ///<inheritdoc />
-        public CustomerSealViewModels GetSeals(int customerSealQuarterId, bool isTransparent, int userId = 1)
+        public async Task<CustomerSealViewModels> GetSeals(int customerSealQuarterId, bool isTransparent, int userId = 1)
         {
             logger.LogInformation("GetSeals input customerSealQuarterId: {@customerSealQuarterId} isTransparent= {@isTransparent} userId: {@userId}"
                 , customerSealQuarterId, isTransparent, userId);
@@ -232,12 +234,12 @@ namespace SealTypographicWebAPI.Services.Implements
 
             try
             {
-                customerSealViewModels = dbContext.CustomerSealGroups
+                customerSealViewModels = await dbContext.CustomerSealGroups
                                         .Include(customerSealGroup => customerSealGroup.TypographicResources)
                                         .Include(customerSealGroup => customerSealGroup.QuarterYear)
                                         .Where(x => x.Id == customerSealQuarterId)
                                         .ProjectTo<CustomerSealViewModels>(configurationProvider)
-                                        .FirstOrDefault();
+                                        .FirstOrDefaultAsync();
 
                 if (customerSealViewModels != null)
                 {
@@ -249,7 +251,7 @@ namespace SealTypographicWebAPI.Services.Implements
                         }
                     }
                     customerSealViewModels.Success();
-                    logReportService.SaveOperationLog(mapper.Map<OperationLogSave>(customerSealViewModels));
+                    await logReportService.SaveOperationLog(mapper.Map<OperationLogSave>(customerSealViewModels));
                 }
                 else
                 {
@@ -303,8 +305,10 @@ namespace SealTypographicWebAPI.Services.Implements
                         ImageSaveInfo imageBase64Info = imageService.SetImageBase64InfoWithSeal(customerQuery.Code, SealType.Customer);
 
                         customerSealGroup.QuarterYear = quarter;
-                        customerSealGroup.TypographyType = typographyType;
-                        BaseInput(customerSealGroup, true, userId);              
+                        customerSealGroup.TypographyType = typographyType;                        
+                        InputUtil.SetWithReview(customerSealGroup, true, userId);
+                        customerSealGroup.StartDate = DateUtil.NotActivated();
+                        customerSealGroup.EndDate = DateUtil.NotActivated();
                         //新增印鑑資料(圖檔與DB資源)
                         customerSealGroup.TypographicResources = await NewTypographyResource(customerSealForm.Seals, imageBase64Info, userId);
 
@@ -442,7 +446,7 @@ namespace SealTypographicWebAPI.Services.Implements
         }
 
         ///<inheritdoc />  
-        public ResponseViewModel ChangeReviewStatus(int customerSealQuarterId, ReviewStatus reviewStatus, int userId = 1)
+        public async Task<ResponseViewModel> ChangeReviewStatus(int customerSealQuarterId, ReviewStatus reviewStatus, int userId = 1)
         {
             logger.LogInformation("ChangeReviewStatus input customerSealQuarterId: {@CustomerSealQuarterId} reviewStatus: {ReviewStatus} userId {@userId}"
                 , customerSealQuarterId, reviewStatus, userId);
@@ -469,9 +473,9 @@ namespace SealTypographicWebAPI.Services.Implements
                     customerSealGroup.ReviewStatus = reviewStatus;
                     customerSealGroup.UpdateDate = DateTime.Now;
                     customerSealGroup.UpdateUserId = userId;
-                    dbContext.SaveChanges();
+                    await dbContext.SaveChangesAsync();
                     response.Success();
-                    logReportService.SaveCustomerSealEventLog(mapper.Map<CustomerSealEventLogSave>(customerSealGroup), OperateType.Modify);
+                    await logReportService.SaveCustomerSealEventLog(mapper.Map<CustomerSealEventLogSave>(customerSealGroup), OperateType.Modify);
                 }
                 else
                 {
@@ -491,20 +495,6 @@ namespace SealTypographicWebAPI.Services.Implements
             }
             
             return response;
-        }
-
-        /// <summary>
-        /// 客戶印鑑新增修改時基本的資料輸入
-        /// </summary>
-        /// <param name="customerSealGroup">Db上的印鑑資料</param>
-        /// <param name="isCreate">對Db所做的行動</param>
-        /// <param name="userId">userId</param>
-        private static void BaseInput(CustomerSealGroup customerSealGroup, bool isCreate, int userId)
-        {
-            InputUtil.Set(customerSealGroup, isCreate, userId);
-            customerSealGroup.StartDate = DateUtil.NotActivated();
-            customerSealGroup.EndDate = DateUtil.NotActivated();
-            customerSealGroup.ReviewStatus = ReviewStatus.Draft;
         }
 
         /// <summary>

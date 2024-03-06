@@ -42,7 +42,7 @@ namespace SealTypographicWebAPI.Services.Implements
         }
 
         ///<inheritdoc />
-        public CustomerSealGroupReviewPaginate GetReviewList(CustomerSealSearchReview customerSealSearchReview, TypographyType typographyType, int userId = 1)
+        public async Task<CustomerSealGroupReviewPaginate> GetReviewList(CustomerSealSearchReview customerSealSearchReview, TypographyType typographyType, int userId = 1)
         {
             logger.LogInformation("GetReviewList input {@customerSealSearchReview} typographyType: {@TypographyType} userId : {@userId}"
                 , customerSealSearchReview, typographyType, userId);
@@ -81,20 +81,20 @@ namespace SealTypographicWebAPI.Services.Implements
                 if (customerSealQuarterQuery.Any())
                 {
                     //取得該頁                   
-                    customerSealQuarterResponse.ViewModels = PageUtil.SetPaginateViewModel<CustomerSealGroup, CustomerSealGroupReviewViewModel>
+                    customerSealQuarterResponse.ViewModels = await PageUtil.SetPaginateViewModelAsync<CustomerSealGroup, CustomerSealGroupReviewViewModel>
                                                             (
                                                                 customerSealQuarterQuery,                                                                 
                                                                 configurationProvider,
                                                                 customerSealSearchReview.PageNumber,
                                                                 customerSealSearchReview.PageSize
-                                                            );
+                                                            );                    
 
                     PageUtil.SetPaginate(customerSealQuarterResponse, customerSealSearchReview.PageNumber, customerSealSearchReview.PageSize, customerSealQuarterQuery.Count());
                     customerSealQuarterResponse.Success();                    
 
                     foreach(CustomerSealGroupReviewViewModel customerSealGroupReviewViewModel in customerSealQuarterResponse.ViewModels)
                     {
-                        logReportService.SaveOperationLog(mapper.Map<OperationLogSave>(customerSealGroupReviewViewModel));
+                        await logReportService.SaveOperationLog(mapper.Map<OperationLogSave>(customerSealGroupReviewViewModel));
                     }
                 }
                 else
@@ -113,7 +113,7 @@ namespace SealTypographicWebAPI.Services.Implements
         }
         
         ///<inheritdoc />
-        public CustomerSealGroupDetailReviewResponse GetReviewDetail(int customerSealQuarterId, int userId = 1)
+        public async Task<CustomerSealGroupDetailReviewResponse> GetReviewDetail(int customerSealQuarterId, int userId = 1)
         {
             logger.LogInformation("GetReviewDetail input customerSealQuarterId: {@customerSealQuarterId} userId: {@userId}", customerSealQuarterId, userId);
 
@@ -121,19 +121,19 @@ namespace SealTypographicWebAPI.Services.Implements
 
             try
             {
-                CustomerSealGroupDetailReviewViewModel? customerSealGroupQuery = dbContext.CustomerSealGroups
+                CustomerSealGroupDetailReviewViewModel? customerSealGroupQuery = await dbContext.CustomerSealGroups
                                                                                 .Include(x => x.Customer)
                                                                                 .Include(x => x.QuarterYear)
                                                                                 .Include(x => x.TypographicResources)
                                                                                 .Where(x => x.Id == customerSealQuarterId)
                                                                                 .ProjectTo<CustomerSealGroupDetailReviewViewModel>(configurationProvider)
-                                                                                .FirstOrDefault();
+                                                                                .FirstOrDefaultAsync();
 
                 if (customerSealGroupQuery != null)
                 {
                     customerSealReviewDetailResponse.ViewModel = customerSealGroupQuery;
                     customerSealReviewDetailResponse.Success();
-                    logReportService.SaveOperationLog(mapper.Map<OperationLogSave>(customerSealGroupQuery));
+                    await logReportService.SaveOperationLog(mapper.Map<OperationLogSave>(customerSealGroupQuery));
                 }
                 else
                 {
@@ -151,7 +151,7 @@ namespace SealTypographicWebAPI.Services.Implements
         }
 
         ///<inheritdoc />
-        public ResponseViewModel StatusChange(List<int> customerSealQuarterIds, ReviewStatus reviewStatus, int userId)
+        public async Task<ResponseViewModel> StatusChange(List<int> customerSealQuarterIds, ReviewStatus reviewStatus, int userId = 1)
         {
             logger.LogInformation("StatusChange input customerSealQuarterIds {@customerSealQuarterIds} reviewStatus: {@reviewStatus} userId: {@userId}"
                 , customerSealQuarterIds, reviewStatus, userId);
@@ -192,12 +192,12 @@ namespace SealTypographicWebAPI.Services.Implements
 
                 if (response.ErrorItem == null)
                 {
-                    dbContext.SaveChanges();
+                    await dbContext.SaveChangesAsync();
                     response.Success();
                     //異動紀錄存檔(審核)
                     foreach (CustomerSealEventLogSave customerSealEventLogSave in customerSealEventLogSaves)
                     {
-                        logReportService.SaveCustomerSealEventLog(customerSealEventLogSave, OperateType.Review);
+                        await logReportService.SaveCustomerSealEventLog(customerSealEventLogSave, OperateType.Review);
                     }
                 }
                 else

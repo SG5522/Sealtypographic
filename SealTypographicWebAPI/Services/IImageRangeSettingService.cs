@@ -16,14 +16,14 @@ namespace SealTypographicWebAPI.Services
         /// </summary>
         /// <param name="companyId">會計師事務所Id</param>
         /// <returns></returns>
-        CustomerSealRangeSettingResponse GetCustomerSealRangeSetting(int companyId = 1);
+        Task<CustomerSealRangeSettingResponse> GetCustomerSealRangeSetting(int companyId = 1);
 
         /// <summary>
         /// 取得會計師簽印分離截取設定
         /// </summary>
         /// <param name="companyId">會計師事務所Id</param>
         /// <returns></returns>
-        AccountantSignRangeSettingResponse GetAccountantSignRangeSetting(int companyId = 1);
+        Task<AccountantSignRangeSettingResponse> GetAccountantSignRangeSetting(int companyId = 1);
 
         /// <summary>
         /// 新增
@@ -32,7 +32,7 @@ namespace SealTypographicWebAPI.Services
         /// <param name="rangeSetting">範圍參數設定</param>
         /// <param name="userId">登入使用者Id</param>
         /// <returns></returns>
-        ResponseViewModel New<T>(T rangeSetting, int userId = 1);
+        Task<ResponseViewModel> New<T>(T rangeSetting, int userId = 1);
 
         /// <summary>
         /// 修改
@@ -40,7 +40,7 @@ namespace SealTypographicWebAPI.Services
         /// <param name="customerSealRangeSetting">範圍參數設定</param>        
         /// <param name="userId">登入使用者Id</param>
         /// <returns></returns>
-        ResponseViewModel UpdateCustomerSealRangeSetting(CustomerSealRangeSetting customerSealRangeSetting, int userId = 1);
+        Task<ResponseViewModel> UpdateCustomerSealRangeSetting(CustomerSealRangeSetting customerSealRangeSetting, int userId = 1);
 
         /// <summary>
         /// 修改
@@ -48,6 +48,6 @@ namespace SealTypographicWebAPI.Services
         /// <param name="accountantSignRangeSetting">範圍參數設定</param>        
         /// <param name="userId">登入使用者Id</param>
         /// <returns></returns>
-        ResponseViewModel UpdateAccountantSignRangeSetting(AccountantSignRangeSetting accountantSignRangeSetting, int userId = 1);
+        Task<ResponseViewModel> UpdateAccountantSignRangeSetting(AccountantSignRangeSetting accountantSignRangeSetting, int userId = 1);
     }
 }

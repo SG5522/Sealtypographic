@@ -69,7 +69,7 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="accountantSignGroupId">會計師簽印群組Id</param>        
         /// <returns></returns>
         [HttpPut("[Action]")]
-        public ResponseViewModel Pending(int accountantSignGroupId) => accountantSignService.ChangeReviewStatus(accountantSignGroupId, ReviewStatus.Pending);
+        public async Task<ResponseViewModel> Pending(int accountantSignGroupId) => await accountantSignService.ChangeReviewStatus(accountantSignGroupId, ReviewStatus.Pending);
 
         /// <summary>
         /// 將草稿的簽印組狀態變更為作廢
@@ -77,7 +77,7 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="accountantSignGroupId">會計師簽印群組Id</param>
         /// <returns></returns>
         [HttpPut("[Action]")]
-        public ResponseViewModel Invalid(int accountantSignGroupId) => accountantSignService.ChangeReviewStatus(accountantSignGroupId, ReviewStatus.Invalid);
+        public async Task<ResponseViewModel> Invalid(int accountantSignGroupId) => await accountantSignService.ChangeReviewStatus(accountantSignGroupId, ReviewStatus.Invalid);
 
         /// <summary>
         /// 將待審的簽印組狀態變更為草稿
@@ -85,6 +85,6 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="accountantSignGroupId">會計師簽印群組Id</param>
         /// <returns></returns>
         [HttpPut("[Action]")]
-        public ResponseViewModel CancelReview(int accountantSignGroupId) => accountantSignService.ChangeReviewStatus(accountantSignGroupId, ReviewStatus.Draft);
+        public async Task<ResponseViewModel> CancelReview(int accountantSignGroupId) => await accountantSignService.ChangeReviewStatus(accountantSignGroupId, ReviewStatus.Draft);
     }
 }

@@ -33,7 +33,7 @@ namespace SealTypographicWebAPI.Services.Implements
         }
 
         ///<inheritdoc />
-        public CustomerSealRangeSettingResponse GetCustomerSealRangeSetting(int companyId = 1)
+        public async Task<CustomerSealRangeSettingResponse> GetCustomerSealRangeSetting(int companyId = 1)
         {
             logger.LogInformation("GetCustomerSealCapture input userId: {@userId}", companyId);
 
@@ -41,11 +41,11 @@ namespace SealTypographicWebAPI.Services.Implements
 
             try
             {
-                CustomerSealRangeSetting? ImageCaptureSetting = dbContext.ImageRangeSettings
+                CustomerSealRangeSetting? ImageCaptureSetting = await dbContext.ImageRangeSettings
                                                                 .Include(x => x.ImageRangeLocations)
                                                                 .Where(x => x.Company!.Id == companyId && x.ImageRangeLocations.Any(location => location.SealType == SealType.Customer))
                                                                 .ProjectTo<CustomerSealRangeSetting>(configurationProvider)
-                                                                .FirstOrDefault();
+                                                                .FirstOrDefaultAsync();
 
                 if (ImageCaptureSetting != null) 
                 {
@@ -64,7 +64,7 @@ namespace SealTypographicWebAPI.Services.Implements
         }
 
         ///<inheritdoc />
-        public AccountantSignRangeSettingResponse GetAccountantSignRangeSetting(int companyId = 1)
+        public async Task<AccountantSignRangeSettingResponse> GetAccountantSignRangeSetting(int companyId = 1)
         {
             logger.LogInformation("GetAccountantSignCapturee input companyId: {@companyId}", companyId);
 
@@ -72,11 +72,11 @@ namespace SealTypographicWebAPI.Services.Implements
 
             try
             {
-                AccountantSignRangeSetting? ImageCaptureSetting = dbContext.ImageRangeSettings
+                AccountantSignRangeSetting? ImageCaptureSetting =   await dbContext.ImageRangeSettings
                                                                     .Include(x => x.ImageRangeLocations)
                                                                     .Where(x => x.Company!.Id == companyId && x.ImageRangeLocations.Any(location => location.SealType == SealType.Accountant))
                                                                     .ProjectTo<AccountantSignRangeSetting>(configurationProvider)
-                                                                    .FirstOrDefault();
+                                                                    .FirstOrDefaultAsync();
 
                 if (ImageCaptureSetting != null)
                 {
@@ -95,7 +95,7 @@ namespace SealTypographicWebAPI.Services.Implements
         }
 
         ///<inheritdoc />
-        public ResponseViewModel New<T>(T captureSetting, int companyId = 1)
+        public async Task<ResponseViewModel> New<T>(T captureSetting, int companyId = 1)
         {
             logger.LogInformation("New input {@captureSetting} companyId: {@companyId}", captureSetting, companyId);
 
@@ -107,7 +107,7 @@ namespace SealTypographicWebAPI.Services.Implements
                 imageCaptureSetting.Company = dbContext.Companys.Single(x => x.Id == companyId);
                 InputUtil.Set(imageCaptureSetting, true, companyId);
                 dbContext.ImageRangeSettings.Add(imageCaptureSetting);
-                dbContext.SaveChanges();
+                await dbContext.SaveChangesAsync();
                 logger.LogInformation("New output {@output}", response);
             }
             catch (DbUpdateException ex)
@@ -124,7 +124,7 @@ namespace SealTypographicWebAPI.Services.Implements
         }
 
         ///<inheritdoc />
-        public ResponseViewModel UpdateCustomerSealRangeSetting(CustomerSealRangeSetting customerSealRangeSetting, int userId = 1)
+        public async Task<ResponseViewModel> UpdateCustomerSealRangeSetting(CustomerSealRangeSetting customerSealRangeSetting, int userId = 1)
         {
             logger.LogInformation("UpdateCustomerSealRangeSetting input {@customerSealRangeSetting} userId: {@userId}", customerSealRangeSetting, userId);
 
@@ -132,10 +132,10 @@ namespace SealTypographicWebAPI.Services.Implements
 
             try
             {
-                ImageRangeSetting? imageRangeSetting = dbContext.ImageRangeSettings
-                                                                .Include(x => x.ImageRangeLocations)
-                                                                .Where(x => x.Id == customerSealRangeSetting.Id)                                                                        
-                                                                .FirstOrDefault();
+                ImageRangeSetting? imageRangeSetting =  dbContext.ImageRangeSettings
+                                                        .Include(x => x.ImageRangeLocations)
+                                                        .Where(x => x.Id == customerSealRangeSetting.Id)                                                                        
+                                                        .FirstOrDefault();
                 if (imageRangeSetting != null)
                 {
                     imageRangeSetting.PageSize = customerSealRangeSetting.PageSize;
@@ -146,7 +146,7 @@ namespace SealTypographicWebAPI.Services.Implements
                         mapper.Map(customerSealRangeLocation, imageRangeLocation);                        
                     }
                     InputUtil.Set(imageRangeSetting, false, userId);                    
-                    dbContext.SaveChanges();
+                    await dbContext.SaveChangesAsync();
                     response.Success();
                 }
                 else
@@ -164,7 +164,7 @@ namespace SealTypographicWebAPI.Services.Implements
         }
 
         ///<inheritdoc />
-        public ResponseViewModel UpdateAccountantSignRangeSetting(AccountantSignRangeSetting accountantSignRangeSetting, int userId = 1)
+        public async Task<ResponseViewModel> UpdateAccountantSignRangeSetting(AccountantSignRangeSetting accountantSignRangeSetting, int userId = 1)
         {
             logger.LogInformation("UpdateAccountantSignRangeSetting input {@accountantSignRangeSetting} userId: {@userId}", accountantSignRangeSetting, userId);
 
@@ -184,7 +184,7 @@ namespace SealTypographicWebAPI.Services.Implements
                         mapper.Map(accountantSignRangeLocation, imageRangeLocation);                        
                     }                    
                     InputUtil.Set(imageRangeSetting, false, userId);
-                    dbContext.SaveChanges();
+                    await dbContext.SaveChangesAsync();
                     response.Success();
                 }
                 else

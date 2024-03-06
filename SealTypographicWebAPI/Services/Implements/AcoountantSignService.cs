@@ -294,7 +294,7 @@ namespace SealTypographicWebAPI.Services.Implements
         }
 
         ///<inheritdoc />    
-        public ResponseViewModel ChangeReviewStatus(int accountantSignGroupId, ReviewStatus reviewStatus, int userId = 1)
+        public async Task<ResponseViewModel> ChangeReviewStatus(int accountantSignGroupId, ReviewStatus reviewStatus, int userId = 1)
         {
             logger.LogInformation("ChangeReviewStatus input accountantSignGroupId: {@accountantSignGroupId} reviewStatus: {@reviewStatus} userId: {@userId}"
                 , accountantSignGroupId, reviewStatus, userId);
@@ -314,7 +314,7 @@ namespace SealTypographicWebAPI.Services.Implements
                     {
                         accountantSignGroupQuery.DeleteStatus = DeleteStatus.Yes;
                     }
-                    dbContext.SaveChanges();
+                    await dbContext.SaveChangesAsync();
                     response.Success();
                 }
                 else

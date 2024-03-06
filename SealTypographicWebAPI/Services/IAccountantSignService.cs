@@ -49,6 +49,6 @@ namespace SealTypographicWebAPI.Services
         /// <param name="accountantSignGroupId">會計師簽印群組Id</param>
         /// <param name="reviewStatus">審查狀態</param>
         /// <param name="userId">登入的使用者ID</param>        
-        ResponseViewModel ChangeReviewStatus(int accountantSignGroupId, ReviewStatus reviewStatus, int userId = 1);
+        Task<ResponseViewModel> ChangeReviewStatus(int accountantSignGroupId, ReviewStatus reviewStatus, int userId = 1);
     }
 }
