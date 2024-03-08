@@ -1,6 +1,4 @@
-﻿using AutoMapper;
-using DBEntities.Consts;
-using DJKeycloakLib.Services;
+﻿using DBEntities.Consts;
 using DJSpire.Models;
 using DJSpire.Utils;
 using Microsoft.AspNetCore.Mvc;
@@ -228,13 +226,21 @@ namespace SealTypographicWebAPI.Controllers
                             fileName
                         );
 
-        private static IActionResult ToExcel<T>(List<T> paginatedData, List<string> headers, string fileName) where T : class
+        /// <summary>
+        /// 輸出Excel的共用處理
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="data">資料</param>
+        /// <param name="headers">標頭</param>
+        /// <param name="fileName">檔名</param>
+        /// <returns></returns>
+        private static IActionResult ToExcel<T>(List<T> data, List<string> headers, string fileName) where T : class
         {
             IActionResult result;
 
-            if (paginatedData?.Count > 0)
+            if (data?.Count > 0)
             {
-                ExcelData<T> excelData = new(paginatedData, headers);
+                ExcelData<T> excelData = new(data, headers);
 
                 result = new FileContentResult(ExcelUtil.CreateFileToBytes(excelData), EXCEL_CONTENT_TYPE)
                 {

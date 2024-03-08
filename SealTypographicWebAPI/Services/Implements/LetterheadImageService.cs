@@ -9,6 +9,8 @@ using DBEntities;
 using DBEntities.Entities.TypographicModels;
 using DJImageLib.Utils;
 using CommonLib.Extensions;
+using DBEntities.Utils;
+using NetTopologySuite.IO;
 
 namespace SealTypographicWebAPI.Services.Implements
 {
@@ -67,7 +69,7 @@ namespace SealTypographicWebAPI.Services.Implements
         }
 
         ///<inheritdoc />
-        public LetterheadImageCreateDateViews GetNameAndCreateDate(int letterheadId, int userId)
+        public async Task<LetterheadImageCreateDateViews> GetNameAndCreateDate(int letterheadId, int userId)
         {
             logger.LogInformation("GetNameAndCreateDate input letterheadId: {@letterheadId} userId: {@userId}", letterheadId, userId);
 
@@ -75,8 +77,8 @@ namespace SealTypographicWebAPI.Services.Implements
 
             try
             {
-                Letterhead? letterhead = dbContext.Letterheads.Include(x => x.TypographicResources)
-                                    .FirstOrDefault(letterhead => letterhead.Id == letterheadId);
+                Letterhead? letterhead = await dbContext.Letterheads.Include(x => x.TypographicResources)
+                                        .FirstOrDefaultAsync(letterhead => letterhead.Id == letterheadId);
 
                 if (letterhead != null)
                 {
@@ -108,7 +110,7 @@ namespace SealTypographicWebAPI.Services.Implements
         }
 
         ///<inheritdoc />
-        public LetterheadImageViewModel GetImageViewModel(int id, bool isTransparent, int userId)
+        public async Task<LetterheadImageViewModel> GetImageViewModel(int id, bool isTransparent, int userId)
         {
             logger.LogInformation("GetImageViewModel input id: {@letterheadId} isTransparent: {@isTransparent} userId: {@userId}"
                 , id, isTransparent, userId);
@@ -117,13 +119,13 @@ namespace SealTypographicWebAPI.Services.Implements
 
             try
             {
-                letterheadImageViewModel = dbContext.TypographicResources
-                                        .Where(x => x.Id == id && x.DeleteStatus == DeleteStatus.No)
-                                        .Select(x => new LetterheadImageViewModel
-                                        {
-                                            Id = x.Id,                                            
-                                            ImageBase64 = ImageUtil.ToDataUrlFromFilePath(x.ImageFullPath)
-                                        }).FirstOrDefault();
+                letterheadImageViewModel = await dbContext.TypographicResources
+                                            .Where(x => x.Id == id && x.DeleteStatus == DeleteStatus.No)
+                                            .Select(x => new LetterheadImageViewModel
+                                            {
+                                                Id = x.Id,                                            
+                                                ImageBase64 = ImageUtil.ToDataUrlFromFilePath(x.ImageFullPath)
+                                            }).FirstOrDefaultAsync();
 
                 if (letterheadImageViewModel != null)
                 {
@@ -206,7 +208,7 @@ namespace SealTypographicWebAPI.Services.Implements
         {
             logger.LogInformation("Update output {@letterheadImageUpdate} userId: {@userId}", letterheadImageUpdate, userId);
 
-            ResponseViewModel response = new();
+            ResponseViewModel response = new();            
 
             try
             {
@@ -226,10 +228,17 @@ namespace SealTypographicWebAPI.Services.Implements
 
                     await NewTypographyResource(letterheadImageUpdate.ImageBase64, typographyResources, imageBase64Info, userId);
 
+                    //TODO:這樣的寫法有點奇怪需要在調整
+                    //資料表的typographyResource 補上信頭欄位
+                    foreach (TypographicResource typographyResource in typographyResources)
+                    {
+                        typographyResource.Letterhead = updateImageQuery.Letterhead;
+                    }
+
                     //變更信頭名稱
-                    updateImageQuery.Letterhead.Name = letterheadImageUpdate.LetterheadName;
-                    BaseInputLetterhead(updateImageQuery.Letterhead, false, userId);
-                    
+                    updateImageQuery.Letterhead.Name = letterheadImageUpdate.LetterheadName;                    
+                    InputUtil.Set(updateImageQuery.Letterhead, false, userId);                    
+
                     dbContext.TypographicResources.AddRange(typographyResources);
                     dbContext.SaveChanges();
                     response.Success();
@@ -276,7 +285,7 @@ namespace SealTypographicWebAPI.Services.Implements
             typographicResource.ImageFullPath = await imageService.GetSavedImageFilePath(imageBase64Info);
             typographicResource.ThumbnailFullPath = await imageService.GetSavedImageThumbnailFilePath(imageBase64Info, true);
 
-            TypographicResourceUtil.BaseInputTypographyResource(typographicResource, true, userId);
+            TypographicResourceUtil.BaseInputTypographyResource(typographicResource, true, userId);           
             typographyResources.Add(typographicResource);
         }
 

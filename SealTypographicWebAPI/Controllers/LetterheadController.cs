@@ -11,7 +11,7 @@ namespace SealTypographicWebAPI.Controllers
     /// </summary>
     [Route("api/[controller]")]    
     [ApiController]
-    public class LetterheadController : ControllerBase
+    public class LetterheadController : APIControllerBase
     {
         /// <summary>
         /// 管理信頭資料的service
@@ -22,7 +22,8 @@ namespace SealTypographicWebAPI.Controllers
         /// 建構:注入Service
         /// </summary>
         /// <param name="letterheadService">管理信頭資料的service</param>
-        public LetterheadController(ILetterheadService letterheadService)
+        /// <param name="applicationUserService"></param>
+        public LetterheadController(ILetterheadService letterheadService, IApplicationUserService applicationUserService) : base(applicationUserService)
         {
             this.letterheadService = letterheadService;
         }
@@ -33,7 +34,7 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="letterheadSearch">信頭分頁搜尋</param>
         /// <returns></returns>
         [HttpGet]
-        public LetterheadPaginateViewModel Paginate([FromQuery] LetterheadSearch letterheadSearch) => letterheadService.GetPaginate(letterheadSearch);
+        public async Task<LetterheadPaginateViewModel> Paginate([FromQuery] LetterheadSearch letterheadSearch) => await letterheadService.GetPaginate(letterheadSearch);
 
         /// <summary>       
         /// 此刪除為更動狀態使其一般使用者看不到資料，
@@ -42,6 +43,6 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpDelete("{id}")]
-        public ResponseViewModel Delete(int id) => letterheadService.Delete(id);
+        public async Task<ResponseViewModel> Delete(int id) => await letterheadService.Delete(id);
     }
 }

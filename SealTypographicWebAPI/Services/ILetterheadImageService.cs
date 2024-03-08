@@ -20,7 +20,7 @@ namespace SealTypographicWebAPI.Services
         /// <param name="letterheadId">信頭Id</param>
         /// <param name="userId">登入的使用者Id</param>
         /// <returns></returns>
-        LetterheadImageCreateDateViews GetNameAndCreateDate(int letterheadId, int userId = 1);
+        Task<LetterheadImageCreateDateViews> GetNameAndCreateDate(int letterheadId, int userId = 1);
 
         /// <summary>
         /// 取得信頭圖片
@@ -29,7 +29,7 @@ namespace SealTypographicWebAPI.Services
         /// <param name="isTransparent">是否白底透明化</param>
         /// <param name="userId">登入的使用者Id</param>
         /// <returns></returns>
-        LetterheadImageViewModel GetImageViewModel(int id, bool isTransparent, int userId = 1);
+        Task<LetterheadImageViewModel> GetImageViewModel(int id, bool isTransparent, int userId = 1);
 
         /// <summary>
         /// 異動信頭圖片

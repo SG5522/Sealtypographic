@@ -4,7 +4,6 @@ using SealTypographicWebAPI.Models;
 using SealTypographicWebAPI.Models.Letterhead;
 using SealTypographicWebAPI.Utils;
 using DBEntities.Consts;
-using AutoMapper.QueryableExtensions;
 using DBEntities.Entities;
 using DBEntities;
 using DBEntities.Entities.TypographicModels;
@@ -34,7 +33,7 @@ namespace SealTypographicWebAPI.Services.Implements
         }
 
         ///<inheritdoc />
-        public LetterheadPaginateViewModel GetPaginate(LetterheadSearch letterheadSearch, int userId = 1)
+        public async Task<LetterheadPaginateViewModel> GetPaginate(LetterheadSearch letterheadSearch, int userId = 1)
         {
             logger.LogInformation("GetPaginate input {@letterheadSearch} userId: {@userId}", letterheadSearch, userId);
 
@@ -57,12 +56,14 @@ namespace SealTypographicWebAPI.Services.Implements
 
                 if (letterheadQuery.Any())
                 {
-                    //取得該頁  
-                    letterheadPaginateViewModel.ViewModels = letterheadQuery
-                                                              .Skip((letterheadSearch.PageNumber - 1) * letterheadSearch.PageSize)
-                                                              .Take(letterheadSearch.PageSize)
-                                                              .ProjectTo<LetterheadViewModel>(configurationProvider)
-                                                              .ToList();
+                    //取得該頁
+                    letterheadPaginateViewModel.ViewModels = await PageUtil.SetPaginateViewModelAsync<Letterhead, LetterheadViewModel>
+                                                            (
+                                                                letterheadQuery,
+                                                                configurationProvider,
+                                                                letterheadSearch.PageNumber,
+                                                                letterheadSearch.PageSize
+                                                            );
 
                     PageUtil.SetPaginate(letterheadPaginateViewModel, letterheadSearch.PageNumber, letterheadSearch.PageSize, letterheadQuery.Count());
                     letterheadPaginateViewModel.Success();
@@ -83,7 +84,7 @@ namespace SealTypographicWebAPI.Services.Implements
         }
 
         ///<inheritdoc />
-        public ResponseViewModel Delete(int id, int userId = 1)
+        public async Task<ResponseViewModel> Delete(int id, int userId = 1)
         {
             logger.LogInformation("Delete input id: {@id} userId: {userId}", id, userId);
 
@@ -105,7 +106,7 @@ namespace SealTypographicWebAPI.Services.Implements
                         typographicResource.DeleteStatus = DeleteStatus.Yes;
                     }
 
-                    dbContext.SaveChanges();
+                    await dbContext.SaveChangesAsync();
                     response.Success();
                 }
                 else

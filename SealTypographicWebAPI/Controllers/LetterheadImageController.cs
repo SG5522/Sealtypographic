@@ -41,7 +41,7 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="letterheadId">信頭Id</param>
         /// <returns></returns>
         [HttpGet("{letterheadId}")]
-        public LetterheadImageCreateDateViews NameAndCreateDate(int letterheadId) => letterheadImageService.GetNameAndCreateDate(letterheadId);
+        public async Task<LetterheadImageCreateDateViews> NameAndCreateDate(int letterheadId) => await letterheadImageService.GetNameAndCreateDate(letterheadId);
 
         /// <summary>
         /// 取得信頭圖片
@@ -50,7 +50,7 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="isTransparent">是否白底透明化</param>
         /// <returns></returns>
         [HttpGet]
-        public LetterheadImageViewModel ImageViewModel(int id, bool isTransparent) => letterheadImageService.GetImageViewModel(id, isTransparent);
+        public async Task<LetterheadImageViewModel> ImageViewModel(int id, bool isTransparent) => await letterheadImageService.GetImageViewModel(id, isTransparent);
 
         /// <summary>
         /// 新增信頭圖片
