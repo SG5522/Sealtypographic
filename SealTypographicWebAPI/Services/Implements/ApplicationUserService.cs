@@ -63,7 +63,7 @@ namespace SealTypographicWebAPI.Services.Implements
                 userInfo.UserName = claims.Identity.Name!;
                 userInfo.FirstName = claims.FindFirstValue(ClaimTypes.GivenName);
                 userInfo.LastName = claims.FindFirstValue(ClaimTypes.Surname);
-                userInfo.SetRoles(claims.Claims.Where(x => x.Type == "role").Select(x => x.Value).ToList());
+                userInfo.SetRoles(claims.Claims.Where(x => x.Type == "role").OrderBy(x => x.Value).Select(x => x.Value).ToList());
 
             }            
             return userInfo;
