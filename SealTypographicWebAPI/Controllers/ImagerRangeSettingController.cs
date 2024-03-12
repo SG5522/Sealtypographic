@@ -2,6 +2,7 @@
 using SealTypographicWebAPI.Models;
 using SealTypographicWebAPI.Services;
 using SealTypographicWebAPI.Models.ImageRangeSetting;
+using System.Runtime.CompilerServices;
 
 namespace SealTypographicWebAPI.Controllers
 {
@@ -10,7 +11,7 @@ namespace SealTypographicWebAPI.Controllers
     /// </summary>
     [Route("api/[controller]")]
     [ApiController]
-    public class ImagerRangeSettingController : ControllerBase
+    public class ImagerRangeSettingController : APIControllerBase
     {
         private readonly IImageRangeSettingService imageRangeSettingService;
 
@@ -18,7 +19,8 @@ namespace SealTypographicWebAPI.Controllers
         /// 注入ImageRangeSettingService
         /// </summary>
         /// <param name="imageRangeSettingService"></param>
-        public ImagerRangeSettingController(IImageRangeSettingService imageRangeSettingService)
+        /// <param name="applicationUserService"></param>
+        public ImagerRangeSettingController(IImageRangeSettingService imageRangeSettingService, IApplicationUserService applicationUserService) : base(applicationUserService)
         {
             this.imageRangeSettingService = imageRangeSettingService;            
         }
@@ -44,7 +46,7 @@ namespace SealTypographicWebAPI.Controllers
         /// <returns></returns>
         [HttpPut("[Action]")]
         public async Task<ResponseViewModel> UpdateCustomerSealRange(CustomerSealRangeSetting customerSealRangeSetting)
-            => await imageRangeSettingService.UpdateCustomerSealRangeSetting(customerSealRangeSetting);
+            => await imageRangeSettingService.UpdateCustomerSealRangeSetting(customerSealRangeSetting, await GetUserId());
 
         /// <summary>
         /// 更新會計師簽印範圍設定
@@ -53,7 +55,7 @@ namespace SealTypographicWebAPI.Controllers
         /// <returns></returns>
         [HttpPut("[Action]")]
         public async Task<ResponseViewModel> UpdateAccountantSignRange(AccountantSignRangeSetting accountantSignRangeSetting) 
-            => await imageRangeSettingService.UpdateAccountantSignRangeSetting(accountantSignRangeSetting);
+            => await imageRangeSettingService.UpdateAccountantSignRangeSetting(accountantSignRangeSetting, await GetUserId());
 
     }
 }

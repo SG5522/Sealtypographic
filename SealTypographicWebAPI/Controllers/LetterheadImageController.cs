@@ -2,7 +2,6 @@
 using SealTypographicWebAPI.Models;
 using SealTypographicWebAPI.Models.Letterhead;
 using SealTypographicWebAPI.Services;
-using Serilog;
 
 
 namespace SealTypographicWebAPI.Controllers
@@ -12,7 +11,7 @@ namespace SealTypographicWebAPI.Controllers
     /// </summary>
     [Route("api/[controller]")]    
     [ApiController]
-    public class LetterheadImageController : ControllerBase
+    public class LetterheadImageController : APIControllerBase
     {
         /// <summary>
         /// 管理信頭圖片service
@@ -23,7 +22,8 @@ namespace SealTypographicWebAPI.Controllers
         /// 建構:注入管理信頭圖片service
         /// </summary>
         /// <param name="letterheadImageService">信頭圖片管理service</param>
-        public LetterheadImageController(ILetterheadImageService letterheadImageService)
+        /// <param name="applicationUserService"></param>
+        public LetterheadImageController(ILetterheadImageService letterheadImageService, IApplicationUserService applicationUserService) : base(applicationUserService)
         {
             this.letterheadImageService = letterheadImageService;
         }
@@ -41,7 +41,8 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="letterheadId">信頭Id</param>
         /// <returns></returns>
         [HttpGet("{letterheadId}")]
-        public async Task<LetterheadImageCreateDateViews> NameAndCreateDate(int letterheadId) => await letterheadImageService.GetNameAndCreateDate(letterheadId);
+        public async Task<LetterheadImageCreateDateViews> NameAndCreateDate(int letterheadId) 
+            => await letterheadImageService.GetNameAndCreateDate(letterheadId, await GetUserId());
 
         /// <summary>
         /// 取得信頭圖片
@@ -50,7 +51,8 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="isTransparent">是否白底透明化</param>
         /// <returns></returns>
         [HttpGet]
-        public async Task<LetterheadImageViewModel> ImageViewModel(int id, bool isTransparent) => await letterheadImageService.GetImageViewModel(id, isTransparent);
+        public async Task<LetterheadImageViewModel> ImageViewModel(int id, bool isTransparent) 
+            => await letterheadImageService.GetImageViewModel(id, isTransparent, await GetUserId());
 
         /// <summary>
         /// 新增信頭圖片
@@ -58,7 +60,8 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="letterheadImageForm">信頭圖片</param>
         /// <returns></returns>
         [HttpPost]
-        public async Task<ResponseViewModel> New(LetterheadImageForm letterheadImageForm) => await letterheadImageService.New(letterheadImageForm);
+        public async Task<ResponseViewModel> New(LetterheadImageForm letterheadImageForm) 
+            => await letterheadImageService.New(letterheadImageForm, await GetUserId());
 
         /// <summary>
         /// 異動信頭圖片
@@ -66,6 +69,7 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="letterheadImageUpdate">異動信頭圖片資料</param>
         /// <returns></returns>
         [HttpPut]
-        public async Task<ResponseViewModel> Update(LetterheadImageUpdate letterheadImageUpdate) => await letterheadImageService.Update(letterheadImageUpdate);      
+        public async Task<ResponseViewModel> Update(LetterheadImageUpdate letterheadImageUpdate) 
+            => await letterheadImageService.Update(letterheadImageUpdate, await GetUserId());      
     }
 }

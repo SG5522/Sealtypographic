@@ -12,44 +12,50 @@ namespace SealTypographicWebAPI.Services
         /// 客戶印鑑樣板詳細資料
         /// </summary>
         /// <param name="id">客戶印鑑樣本Id</param>
+        /// <param name="userId">登入的使用者ID</param>
         /// <returns></returns>
-        Task<CustomerSealTemplateDetailViewModel> GetDetail(int id);
+        Task<CustomerSealTemplateDetailViewModel> GetDetail(int id, int userId = 1);
 
         /// <summary>
         /// 客戶印鑑樣板圖片顯示
         /// </summary>
         /// <param name="id"></param>
+        /// <param name="userId">登入的使用者ID</param>
         /// <returns></returns>
-        Task<CustomerSealTemplateImageView> GetImage(int id);
+        Task<CustomerSealTemplateImageView> GetImage(int id, int userId = 1);
 
         /// <summary>
         /// 客戶印鑑樣板分頁顯示
         /// </summary>
         /// <param name="customerSealTemplateSearch">客戶印鑑樣板分頁搜尋</param>
+        /// <param name="userId">登入的使用者ID</param>
+        /// <param name="companyId">公司ID 預設為1</param>
         /// <returns></returns>
-        Task<CustomerSealTemplatePaginate> GetPaginate(CustomerSealTemplateSearch customerSealTemplateSearch);
-        
+        Task<CustomerSealTemplatePaginate> GetPaginate(CustomerSealTemplateSearch customerSealTemplateSearch, int userId = 1, int companyId = 1);
+
         /// <summary>
         /// 新增客戶印鑑樣板
         /// </summary>
         /// <param name="customerSealTemplateForm">客戶印鑑樣板</param>
+        /// <param name="userId">登入的使用者ID</param>
+        /// <param name="companyId">公司ID 預設為1</param>        
         /// <returns></returns>
-        Task<ResponseViewModel> New(CustomerSealTemplateForm customerSealTemplateForm);
+        Task<ResponseViewModel> New(CustomerSealTemplateForm customerSealTemplateForm, int userId = 1, int companyId = 1);
 
         /// <summary>
         /// 更新客戶印鑑樣板
         /// </summary>        
         /// <param name="customerSealTemplateUpdateForm"></param>
+        /// <param name="userId">登入的使用者ID</param>
         /// <returns></returns>
-        Task<ResponseViewModel> Update(CustomerSealTemplateUpdateForm customerSealTemplateUpdateForm);
+        Task<ResponseViewModel> Update(CustomerSealTemplateUpdateForm customerSealTemplateUpdateForm, int userId = 1);
 
         /// <summary>
         /// 刪除客戶印鑑樣板
         /// </summary>
         /// <param name="Id">客戶印鑑樣板Id</param>
+        /// <param name="userId">登入的使用者ID</param>
         /// <returns></returns>
-        Task<ResponseViewModel> Delete(int Id);
-
-
+        Task<ResponseViewModel> Delete(int Id, int userId = 1);
     }
 }

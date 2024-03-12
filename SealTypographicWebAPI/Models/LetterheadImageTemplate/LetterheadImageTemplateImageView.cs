@@ -11,5 +11,4 @@
         /// <example>image/...</example>
         public string ImageBase64 { get; set; }
     }
-
 }

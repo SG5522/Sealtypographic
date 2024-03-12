@@ -12,7 +12,7 @@ namespace SealTypographicWebAPI.Controllers
     /// </summary>
     [Route("api/[controller]")]
     [ApiController]
-    public class AccountantSignTemplateController : ControllerBase
+    public class AccountantSignTemplateController : APIControllerBase
     {
         private readonly IAccountantSignTemplateService accountantSignTemplateService;
 
@@ -20,7 +20,8 @@ namespace SealTypographicWebAPI.Controllers
         /// 建構 注入Service
         /// </summary>
         /// <param name="accountantSignTemplateService"></param>
-        public AccountantSignTemplateController(IAccountantSignTemplateService accountantSignTemplateService)
+        /// <param name="applicationUserService"></param>
+        public AccountantSignTemplateController(IAccountantSignTemplateService accountantSignTemplateService, IApplicationUserService applicationUserService) : base(applicationUserService)
         {
             this.accountantSignTemplateService = accountantSignTemplateService;
         }
@@ -31,44 +32,16 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpGet("{id}")]
-        public AccountantSignTemplateDetailViewModel Detail(int id)
-        {
-            AccountantSignTemplateDetailViewModel accountantSignTemplateDetailViewModel = new();
-            try
-            {
-                Log.Information("AccountantSignTemplate detail input {@Input}", id);
-                accountantSignTemplateDetailViewModel = accountantSignTemplateService.GetDetail(id);
-                Log.Information("AccountantSignTemplate detail output {@Output}", accountantSignTemplateDetailViewModel);
-            }
-            catch (Exception ex)
-            {
-                Log.Error("AccountantSignTemplate paginate error {@Error}", ex.Message); 
-                accountantSignTemplateDetailViewModel.DbError();
-            }
-            return accountantSignTemplateDetailViewModel;
-        }
+        public async Task<AccountantSignTemplateDetailViewModel> Detail(int id)
+            => await accountantSignTemplateService.GetDetail(id, await GetUserId());
 
         /// <summary>
         /// 會計師簽印樣板圖片顯示
         /// </summary>
         /// <returns></returns>
         [HttpGet("[Action]/{id}")]
-        public AccountantSignTemplateImageView ViewImage(int id)
-        {
-            AccountantSignTemplateImageView viewImage = new();
-            try
-            {
-                Log.Information("AccountantSignTemplate viewImage input {@Input}", id);
-                viewImage = accountantSignTemplateService.GetImage(id);
-                Log.Information("AccountantSignTemplate viewImage output {@Output}", id);
-            }
-            catch (Exception ex)
-            {
-                Log.Error("AccountantSignTemplate viewImage error {@Error}", ex.Message); 
-                viewImage.DbError();
-            }
-            return viewImage;
-        }
+        public async Task<AccountantSignTemplateImageView> ViewImage(int id)
+            => await accountantSignTemplateService.GetImage(id, await GetUserId());
 
         /// <summary>
         /// 會計師簽印樣板分頁列表
@@ -76,21 +49,8 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="accountantSignTemplateSearch">會計師簽印樣板分頁搜尋</param>
         /// <returns></returns>
         [HttpGet]
-        public AccountantSignTemplatePaginate Paginate([FromQuery] AccountantSignTemplateSearch accountantSignTemplateSearch)
-        {
-            AccountantSignTemplatePaginate accountantSignTemplatePaginate = new ();
-            try
-            {
-                Log.Information("AccountantSignTemplate paginate input {@Input}", accountantSignTemplateSearch);
-                accountantSignTemplatePaginate = accountantSignTemplateService.GetPaginate(accountantSignTemplateSearch);
-            }
-            catch (Exception ex)
-            {
-                Log.Error("AccountantSignTemplate paginate error {@Error}", ex.Message); 
-                accountantSignTemplatePaginate.DbError();
-            }
-            return accountantSignTemplatePaginate;
-        }
+        public async Task<AccountantSignTemplatePaginate> Paginate([FromQuery] AccountantSignTemplateSearch accountantSignTemplateSearch)
+            => await accountantSignTemplateService.GetPaginate(accountantSignTemplateSearch, await GetUserId());
 
         /// <summary>
         /// 新增會計師簽印樣板
@@ -99,21 +59,7 @@ namespace SealTypographicWebAPI.Controllers
         /// <returns></returns>
         [HttpPost]
         public async Task<ResponseViewModel> New(AccountantSignTemplateForm accountantSignTemplateForm)
-        {
-            ResponseViewModel response = new ();
-            try
-            {                
-                Log.Information("AccountantSignTemplate new input {@Input}", accountantSignTemplateForm);
-                response = await accountantSignTemplateService.New(accountantSignTemplateForm);
-                Log.Information("AccountantSignTemplate new output {@Output}", response);
-            }
-            catch (Exception ex)
-            {
-                Log.Error("AccountantSignTemplate new error {@Error}", ex.Message); 
-                response.DbError();
-            }
-            return response;
-        }
+            => await accountantSignTemplateService.New(accountantSignTemplateForm, await GetUserId());
 
         /// <summary>
         /// 更新會計師簽印樣板
@@ -122,22 +68,7 @@ namespace SealTypographicWebAPI.Controllers
         /// <returns></returns>
         [HttpPut]
         public async Task<ResponseViewModel> Update(AccountantSignTemplateUpdateForm accountantSignTemplateUpdateForm)
-        {
-            ResponseViewModel response = new();
-            try
-            {                
-                Log.Information("AccountantSignTemplate update input {@input}", accountantSignTemplateUpdateForm);
-                response = await accountantSignTemplateService.Update(accountantSignTemplateUpdateForm);
-                Log.Information("AccountantSignTemplate update output {@Output}", response);
-            }
-            catch (Exception ex)
-            {
-                Log.Error("AccountantSignTemplate update error {@Error}", ex.Message); 
-                response.DbError();
-            }
-
-            return response;
-        }
+            => await accountantSignTemplateService.Update(accountantSignTemplateUpdateForm);
 
         /// <summary>
         /// 刪除會計師簽印樣板
@@ -145,22 +76,7 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="id">會計師簽印樣板Id</param>
         /// <returns></returns>
         [HttpDelete("{id}")]
-        public ResponseViewModel Delete(int id)
-        {
-            ResponseViewModel response = new();
-            try
-            {
-                Log.Information("AccountantSignTemplate delete input  {@id}", id);
-                response = accountantSignTemplateService.Delete(id);
-                Log.Information("AccountantSignTemplate delete output {@Output}", response);
-            }
-            catch (Exception ex)
-            {
-                Log.Error("AccountantSignTemplate new error {@Error}", ex.Message); 
-                response.DbError();
-            }
-
-            return response;
-        }
+        public async Task<ResponseViewModel> Delete(int id)
+            => await accountantSignTemplateService.Delete(id, await GetUserId());
     }
 }

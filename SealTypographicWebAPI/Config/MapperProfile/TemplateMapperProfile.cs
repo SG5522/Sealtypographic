@@ -37,9 +37,10 @@ namespace SealTypographicWebAPI.Config.MapperProfile
             CreateMap<Template, CustomerSealTemplateViewModel>()
                     .ForMember(dst => dst.ThumbnailBase64, opt => opt.MapFrom(src => ImageUtil.ToDataUrlFromFilePath(src.ThumbnailFullPath)));
 
-            //Log使用
-            CreateMap<CustomerSealTemplateViewModel, CustomerSealTemplateLogModel>();
-            CreateMap<CustomerSealTemplatePaginate, CustomerSealTemplatePaginateLog>();
+            //客戶印鑑Log使用            
+            CreateMap<CustomerSealTemplatePaginate, CustomerSealTemplatePaginate>();
+            CreateMap<CustomerSealTemplateViewModel, CustomerSealTemplateViewModel>()
+                .ForMember(dst => dst.ThumbnailBase64, opt => opt.Ignore());
 
 
             //會計師簽印樣板使用
@@ -61,9 +62,13 @@ namespace SealTypographicWebAPI.Config.MapperProfile
                     .ForMember(dst => dst.ThumbnailBase64, opt => opt.MapFrom(src => ImageUtil.ToDataUrlFromFilePath(src.ThumbnailFullPath)));
 
             CreateMap<TemplateLocation, TemplateLocation>();
-            //Log使用
-            CreateMap<AccountantSignTemplateViewModel, AccountantSignTemplateLogModel>();
-            CreateMap<AccountantSignTemplatePaginate, AccountantSignTemplatePaginateLog>();
+
+            //會計師Log使用            
+            CreateMap<AccountantSignTemplatePaginate, AccountantSignTemplatePaginate>();                
+
+            CreateMap<AccountantSignTemplateViewModel, AccountantSignTemplateViewModel>()
+                .ForMember(dst => dst.ThumbnailBase64, opt => opt.Ignore());
+
 
 
             //信頭樣板使用
@@ -82,9 +87,11 @@ namespace SealTypographicWebAPI.Config.MapperProfile
                     .ForMember(dst => dst.ImageFullPath, opt => opt.MapFrom(src => src.ThumbnailFullPath))
                     .ForMember(dst => dst.ThumbnailBase64, opt => opt.MapFrom(src => ImageUtil.ToDataUrlFromFilePath(src.ThumbnailFullPath)));
 
-            //Log使用
-            CreateMap<LetterheadImageTemplateViewModel, LetterheadImageTemplateLogModel>();
-            CreateMap<LetterheadImageTemplatePaginate, LetterheadImageTemplatePaginateLog>();
+            //信頭Log使用            
+            CreateMap<LetterheadImageTemplatePaginate, LetterheadImageTemplatePaginate>();
+
+            CreateMap<LetterheadImageTemplateViewModel, LetterheadImageTemplateViewModel>()
+                    .ForMember(dst => dst.ThumbnailBase64, opt => opt.Ignore());            
         }
     }
 }
