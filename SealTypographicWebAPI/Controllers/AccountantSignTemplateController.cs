@@ -68,7 +68,7 @@ namespace SealTypographicWebAPI.Controllers
         /// <returns></returns>
         [HttpPut]
         public async Task<ResponseViewModel> Update(AccountantSignTemplateUpdateForm accountantSignTemplateUpdateForm)
-            => await accountantSignTemplateService.Update(accountantSignTemplateUpdateForm);
+            => await accountantSignTemplateService.Update(accountantSignTemplateUpdateForm, await GetUserId());
 
         /// <summary>
         /// 刪除會計師簽印樣板

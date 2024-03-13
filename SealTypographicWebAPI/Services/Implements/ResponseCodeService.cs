@@ -2,6 +2,7 @@ using Microsoft.Extensions.Localization;
 using Microsoft.OpenApi.Extensions;
 using SealTypographicWebAPI.Models;
 using SealTypographicWebAPI.Consts;
+using Serilog;
 
 namespace SealTypographicWebAPI.Services.Implements
 {
@@ -11,14 +12,17 @@ namespace SealTypographicWebAPI.Services.Implements
     public class ResponseCodeService
     {
         private readonly IStringLocalizer<ResponseCodeService> localizer;
+        private readonly ILogger<ResponseCodeService> logger;
 
         /// <summary>
         /// IStringLocalizer
         /// </summary>
-        /// <param name="localizer"></param>      
-        public ResponseCodeService(IStringLocalizer<ResponseCodeService> localizer)
+        /// <param name="localizer"></param>
+        /// <param name="logger"></param>      
+        public ResponseCodeService(IStringLocalizer<ResponseCodeService> localizer, ILogger<ResponseCodeService> logger)
         {
             this.localizer = localizer;
+            this.logger = logger;
         }
 
         /// <summary>
@@ -29,16 +33,23 @@ namespace SealTypographicWebAPI.Services.Implements
         {
             ResponseCodeList responseCodeList = new();
 
-            foreach (ResponseCode responseCode in (ResponseCode[])Enum.GetValues(typeof(ResponseCode)))
+            try
             {
-                ResponseCodeViewModel responseCodeViewModel = new()
+                foreach (ResponseCode responseCode in (ResponseCode[])Enum.GetValues(typeof(ResponseCode)))
                 {
-                    Code = (int)responseCode,                    
-                    Description = localizer[responseCode.GetDisplayName()]
-                };
-                responseCodeList.ViewModels.Add(responseCodeViewModel);
+                    ResponseCodeViewModel responseCodeViewModel = new()
+                    {
+                        Code = (int)responseCode,
+                        Description = localizer[responseCode.GetDisplayName()]
+                    };
+                    responseCodeList.ViewModels.Add(responseCodeViewModel);
+                }
+                logger.LogInformation("Get output {@Output}", responseCodeList);
             }
-            
+            catch (Exception ex) 
+            {
+                logger.LogError("Get error {@Error}", ex.Message);
+            }
             return responseCodeList;
         }
 

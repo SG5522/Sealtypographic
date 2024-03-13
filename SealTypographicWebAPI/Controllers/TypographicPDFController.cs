@@ -40,7 +40,7 @@ namespace SealTypographicWebAPI.Controllers
         /// 取得PDF
         /// </summary>
         /// <param name="uploadId" example="1">上傳檔案Id</param>
-        /// <param name="pageNumber" example="1">pdf頁次</param>        
+        /// <param name="pageNumber" example="1">pdf頁次</param>
         /// <returns></returns>        
         [HttpGet("[Action]")]
         public PDFViewModel PDFView(int uploadId, int pageNumber) => typographicPDFService.GetPDFView(uploadId, pageNumber);
@@ -48,7 +48,7 @@ namespace SealTypographicWebAPI.Controllers
         /// <summary>
         /// 取得單頁PDF圖像與排版編輯資訊
         /// </summary>
-        /// <param name="typographicPDFPageSearch">排板PDFPage搜尋</param> 
+        /// <param name="typographicPDFPageSearch">排板PDFPage搜尋</param>
         /// <returns></returns>
         [HttpGet("[Action]")]
         public TypographicPageViewModel PageViewModel([FromQuery] TypographicPDFPageSearch typographicPDFPageSearch) => typographicPDFService.GetPageView(typographicPDFPageSearch);

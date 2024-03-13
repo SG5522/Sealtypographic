@@ -34,40 +34,14 @@ namespace SealTypographicWebAPI.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet("[Action]")]
-        public TemplateConfigResponseList PapeOrientation()
-        {
-            TemplateConfigResponseList templateConfigResponseList = new();
-            try
-            {                
-                templateConfigResponseList = templateConfigService.GetEnumData(typeof(PapeOrientation));                
-            }
-            catch (Exception ex)
-            {
-                Log.Error("ReviewStatusResponse PapeOrientation error {@Error}", ex.Message); 
-                templateConfigResponseList.Error();
-            }
-            return templateConfigResponseList;
-        }
+        public TemplateConfigResponseList PapeOrientation() => templateConfigService.GetEnumData(typeof(PapeOrientation));
 
         /// <summary>
         /// 取得頁面格式
         /// </summary>
         /// <returns></returns>
         [HttpGet("[Action]")]
-        public TemplateConfigResponseList PageSize()
-        {
-            TemplateConfigResponseList templateConfigResponseList = new();
-            try
-            {
-                templateConfigResponseList = templateConfigService.GetEnumData(typeof(PageSize));
-            }
-            catch (Exception ex)
-            {
-                Log.Error("ReviewStatusResponse pageSize error {@Error}", ex.Message); 
-                templateConfigResponseList.Error();
-            }
-            return templateConfigResponseList;
-        }
+        public TemplateConfigResponseList PageSize() => templateConfigService.GetEnumData(typeof(PageSize));
 
         /// <summary>
         /// 取得樣板(客戶)疊放方式

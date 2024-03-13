@@ -1,7 +1,6 @@
 ﻿using DJKeycloakLib.Configs;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
-using SealTypographicWebAPI.Config;
 using System.Text.Json;
 
 namespace SealTypographicWebAPI.Controllers

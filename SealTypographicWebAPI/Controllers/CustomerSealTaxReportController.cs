@@ -37,8 +37,8 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="customerSearch">客戶列表搜尋</param>
         /// <returns></returns>
         [HttpGet("[Action]")]
-        public async Task<CustomerPaginateViewModel> Paginate([FromQuery] CustomerSearch customerSearch) =>
-            await customerSealService.GetPaginate(customerSearch, TypographyType.TaxReport, await GetUserId()); 
+        public async Task<CustomerPaginateViewModel> Paginate([FromQuery] CustomerSearch customerSearch) 
+            => await customerSealService.GetPaginate(customerSearch, TypographyType.TaxReport, await GetUserId()); 
 
         /// <summary>
         /// 取得客戶印鑑稅報年度表
@@ -46,8 +46,8 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="customerSealQuarterPaginateSearch">印鑑年度分頁搜尋</param>
         /// <returns></returns>
         [HttpGet("[Action]")]
-        public async Task<CustomerSealQuarterPaginateViewModel> Year([FromQuery] CustomerSealQuarterPaginateSearch customerSealQuarterPaginateSearch) => 
-            await customerSealService.GetQuarterYear(customerSealQuarterPaginateSearch, false, TypographyType.TaxReport, await GetUserId());
+        public async Task<CustomerSealQuarterPaginateViewModel> Year([FromQuery] CustomerSealQuarterPaginateSearch customerSealQuarterPaginateSearch) 
+            => await customerSealService.GetQuarterYear(customerSealQuarterPaginateSearch, false, TypographyType.TaxReport, await GetUserId());
 
         /// <summary>
         /// 取得客戶印鑑稅報年度表(排版使用)
@@ -55,8 +55,8 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="customerSealQuarterPaginateSearch">印鑑季度分頁搜尋</param>
         /// <returns></returns>
         [HttpGet("[Action]")]
-        public async Task<CustomerSealQuarterPaginateViewModel> YearWithTypographic([FromQuery] CustomerSealQuarterPaginateSearch customerSealQuarterPaginateSearch) => 
-            await customerSealService.GetQuarterYear(customerSealQuarterPaginateSearch, true, TypographyType.TaxReport, await GetUserId());
+        public async Task<CustomerSealQuarterPaginateViewModel> YearWithTypographic([FromQuery] CustomerSealQuarterPaginateSearch customerSealQuarterPaginateSearch) 
+            => await customerSealService.GetQuarterYear(customerSealQuarterPaginateSearch, true, TypographyType.TaxReport, await GetUserId());
 
         /// <summary>
         /// 取得客戶印鑑群組簡短訊息
@@ -65,8 +65,8 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="quarterId"></param>        
         /// <returns></returns>
         [HttpGet("[Action]")]
-        public async Task<CustomerSealGroupResponse> CustomerSealGroupSummary(int customerId, int quarterId) => 
-            await customerSealService.GetCustomerSealGroupSummry(customerId, quarterId, await GetUserId());
+        public async Task<CustomerSealGroupResponse> CustomerSealGroupSummary(int customerId, int quarterId) 
+            => await customerSealService.GetCustomerSealGroupSummry(customerId, quarterId, await GetUserId());
 
         /// <summary>
         /// 取得客戶印鑑組
@@ -75,8 +75,8 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="isTransparent" example="false">是否白底透明化處理</param>             
         /// <returns></returns>        
         [HttpGet("[Action]")]
-        public async Task<CustomerSealViewModels> Seals(int customerSealQuarterId, bool isTransparent) => 
-            await customerSealService.GetSeals(customerSealQuarterId, isTransparent, await GetUserId());
+        public async Task<CustomerSealViewModels> Seals(int customerSealQuarterId, bool isTransparent) 
+            => await customerSealService.GetSeals(customerSealQuarterId, isTransparent, await GetUserId());
 
         /// <summary>
         /// 新增客戶印鑑組資料
@@ -84,7 +84,8 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="customerSealForms">客戶印鑑組資料</param>
         /// <returns></returns>
         [HttpPost]
-        public async Task<ResponseViewModel> New(CustomerSealForm customerSealForms) => await customerSealService.New(customerSealForms, TypographyType.TaxReport, await GetUserId());
+        public async Task<ResponseViewModel> New(CustomerSealForm customerSealForms) 
+            => await customerSealService.New(customerSealForms, TypographyType.TaxReport, await GetUserId());
 
         /// <summary>
         /// 異動客戶印鑑
@@ -92,7 +93,8 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="customerSealUpdate">需要異動客戶印鑑資料</param>
         /// <returns></returns>
         [HttpPut]
-        public async Task<List<ResponseViewModel>> Update(CustomerSealUpdate customerSealUpdate) => await customerSealService.Update(customerSealUpdate, await GetUserId());
+        public async Task<List<ResponseViewModel>> Update(CustomerSealUpdate customerSealUpdate) 
+            => await customerSealService.Update(customerSealUpdate, await GetUserId());
 
         /// <summary>
         /// 此季度印鑑從草稿狀態變更為待審
@@ -100,7 +102,8 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="customerSealQuarterId">客戶印鑑季度Id</param>
         /// <returns></returns>
         [HttpPut("[Action]")]
-        public async Task<ResponseViewModel> Pending(int customerSealQuarterId) => await customerSealService.ChangeReviewStatus(customerSealQuarterId, ReviewStatus.Pending, await GetUserId());
+        public async Task<ResponseViewModel> Pending(int customerSealQuarterId) 
+            => await customerSealService.ChangeReviewStatus(customerSealQuarterId, ReviewStatus.Pending, await GetUserId());
 
         /// <summary>
         /// 此季度印鑑從草稿狀態變更為作廢
@@ -108,7 +111,8 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="customerSealQuarterId">客戶印鑑季度Id</param>
         /// <returns></returns>
         [HttpPut("[Action]")]
-        public async Task<ResponseViewModel> Invalid(int customerSealQuarterId) => await customerSealService.ChangeReviewStatus(customerSealQuarterId, ReviewStatus.Invalid, await GetUserId());
+        public async Task<ResponseViewModel> Invalid(int customerSealQuarterId) 
+            => await customerSealService.ChangeReviewStatus(customerSealQuarterId, ReviewStatus.Invalid, await GetUserId());
 
         /// <summary>
         /// 此季度印鑑從待審狀態變更為草稿(收回)
@@ -116,6 +120,7 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="customerSealQuarterId">客戶印鑑季度Id</param>
         /// <returns></returns>
         [HttpPut("[Action]")]
-        public async Task<ResponseViewModel> CancelReview(int customerSealQuarterId) => await customerSealService.ChangeReviewStatus(customerSealQuarterId, ReviewStatus.Draft, await GetUserId());
+        public async Task<ResponseViewModel> CancelReview(int customerSealQuarterId) 
+            => await customerSealService.ChangeReviewStatus(customerSealQuarterId, ReviewStatus.Draft, await GetUserId());
     }
 }

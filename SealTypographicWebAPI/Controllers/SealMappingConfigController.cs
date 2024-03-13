@@ -33,21 +33,6 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="sealType">印鑑類別 1.客戶 2.會計師 </param>        
         /// <returns></returns>
         [HttpGet]
-        public SealMappingConfigResponseList ConfigList(SealType sealType)
-        {
-            SealMappingConfigResponseList sealMappingConfigResponseList = new ();
-            try
-            {
-                Log.Information("SealMappingConfig ConfigList input {@Input}", sealType);
-                sealMappingConfigResponseList = sealMappingConfigService.Get(sealType);
-                Log.Information("SealMappingConfig ConfigList output {@Output}", sealMappingConfigResponseList);                
-            }
-            catch (Exception ex)
-            {
-                Log.Error("SealMappingConfig ConfigList error {@Error}", ex.Message); 
-                sealMappingConfigResponseList.DbError();
-            }
-            return sealMappingConfigResponseList;
-        }          
+        public SealMappingConfigResponseList ConfigList(SealType sealType) => sealMappingConfigService.Get(sealType);   
     }
 }

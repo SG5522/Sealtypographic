@@ -32,20 +32,6 @@ namespace SealTypographicWebAPI.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        public ReviewStatusResponse StatusList()
-        {
-            ReviewStatusResponse reviewStatusResponse = new();
-            try
-            {                
-                reviewStatusResponse = reviewStatusService.GetStatusList();
-                Log.Information("ReviewStatusResponse StatusList output {@Output}", reviewStatusResponse);
-            }
-            catch (Exception ex)
-            {
-                Log.Error("ReviewStatusResponse StatusList error {@Error}", ex.Message); 
-                reviewStatusResponse.DbError();
-            }
-            return reviewStatusResponse;
-        }        
+        public ReviewStatusResponse StatusList() => reviewStatusService.GetStatusList();    
     }
 }

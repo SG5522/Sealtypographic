@@ -10,14 +10,16 @@ namespace SealTypographicWebAPI.Services.Implements
     public class TemplateConfigService
     {
         private readonly IStringLocalizer<TemplateConfigService> localizer;
+        private readonly ILogger<TemplateConfigService> logger;
 
         /// <summary>
         /// IStringLocalizer
         /// </summary>
         /// <param name="localizer"></param>      
-        public TemplateConfigService(IStringLocalizer<TemplateConfigService> localizer)
+        public TemplateConfigService(IStringLocalizer<TemplateConfigService> localizer, ILogger<TemplateConfigService> logger)
         {
             this.localizer = localizer;
+            this.logger = logger;
         }
 
         /// <summary>
@@ -29,21 +31,28 @@ namespace SealTypographicWebAPI.Services.Implements
         {
             TemplateConfigResponseList templateConfigResponseList = new();
 
-            Array enumValues = Enum.GetValues(enumType);
-
-            foreach (Enum enumValue in enumValues)
+            try
             {
-                TemplateConfigViewModel viewModel = new()
+                Array enumValues = Enum.GetValues(enumType);
+
+                foreach (Enum enumValue in enumValues)
                 {
-                    Id = Convert.ToInt32(enumValue),
-                    Name = enumValue.GetDisplayName(),
-                    Localizer = localizer[enumValue.GetDisplayName()]
-                };
-                templateConfigResponseList.ViewModels.Add(viewModel);
+                    TemplateConfigViewModel viewModel = new()
+                    {
+                        Id = Convert.ToInt32(enumValue),
+                        Name = enumValue.GetDisplayName(),
+                        Localizer = localizer[enumValue.GetDisplayName()]
+                    };
+                    templateConfigResponseList.ViewModels.Add(viewModel);
+                }
+
+                templateConfigResponseList.Success();
             }
-
-            templateConfigResponseList.Success();
-
+            catch (Exception ex) 
+            {
+                logger.LogError("GetEnumData error {@Error}", ex.Message);
+                templateConfigResponseList.Error();
+            }
             return templateConfigResponseList;
         }
 

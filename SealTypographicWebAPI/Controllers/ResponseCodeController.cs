@@ -33,20 +33,7 @@ namespace SealTypographicWebAPI.Controllers
         /// </summary> 
         /// <returns></returns>
         [HttpGet]
-        public ResponseCodeList ResponseCodeList()
-        {
-            ResponseCodeList responseCodeList = new ();
-            try
-            {                
-                responseCodeList = responseCodeService.Get();
-                Log.Information("ResponseCode ResponseCodeList output {@Output}", responseCodeList);                
-            }
-            catch (Exception ex)
-            {
-                Log.Error("ResponseCode ResponseCodeList error {@Error}", ex.Message);                 
-            }
-            return responseCodeList;
-        }
+        public ResponseCodeList ResponseCodeList() => responseCodeService.Get();
 
         /// <summary>
         /// 依多國語系取得訊息

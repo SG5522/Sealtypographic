@@ -2,6 +2,7 @@
 using SealTypographicWebAPI.Models.SealMappingConfig;
 using DBEntities.Consts;
 using CommonLib.Extensions;
+using Serilog;
 
 namespace SealTypographicWebAPI.Services.Implements
 {
@@ -11,14 +12,16 @@ namespace SealTypographicWebAPI.Services.Implements
     public class SealMappingConfigService
     {
         private readonly IStringLocalizer<SealMappingConfigService> localizer;
+        private readonly ILogger<SealMappingConfigService> logger;
 
         /// <summary>
         /// IStringLocalizer
         /// </summary>
         /// <param name="localizer"></param>      
-        public SealMappingConfigService(IStringLocalizer<SealMappingConfigService> localizer)
+        public SealMappingConfigService(IStringLocalizer<SealMappingConfigService> localizer, ILogger<SealMappingConfigService> logger)
         {
             this.localizer = localizer;
+            this.logger = logger;
         }
 
         /// <summary>
@@ -28,36 +31,46 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <returns></returns>
         public SealMappingConfigResponseList Get(SealType sealType)
         {
-            SealMappingConfigResponseList sealMappingConfigResponseList = new();
-            
-            switch (sealType)
-            {
-                case SealType.Customer:
-                    foreach (CustomerSealType customerSealType in (CustomerSealType[])Enum.GetValues(typeof(CustomerSealType)))
-                    {
-                        SealMappingConfigViewModel sealMappingConfigViewModel = new()
-                        {
-                            Id = (int)customerSealType,                            
-                            Name = localizer[customerSealType.GetDescription()]
-                        };
-                        sealMappingConfigResponseList.SealMappingConfigViewModels.Add(sealMappingConfigViewModel);
-                    }
-                    break;
-                case SealType.Accountant:
-                    foreach (AccountantSignType accountantSignType in (AccountantSignType[])Enum.GetValues(typeof(AccountantSignType)))
-                    {
-                        SealMappingConfigViewModel sealMappingConfigViewModel = new()
-                        {
-                            Id = (int)accountantSignType,
-                            Name = localizer[accountantSignType.GetDescription()]
-                        };
-                        sealMappingConfigResponseList.SealMappingConfigViewModels.Add(sealMappingConfigViewModel);
-                    }
-                    break;
-            }            
-            sealMappingConfigResponseList.SealType = Enum.GetName(sealType);
-            sealMappingConfigResponseList.Success();
+            logger.LogInformation("Get input {@Input}", sealType);
 
+            SealMappingConfigResponseList sealMappingConfigResponseList = new();
+
+            try
+            {
+                switch (sealType)
+                {
+                    case SealType.Customer:
+                        foreach (CustomerSealType customerSealType in (CustomerSealType[])Enum.GetValues(typeof(CustomerSealType)))
+                        {
+                            SealMappingConfigViewModel sealMappingConfigViewModel = new()
+                            {
+                                Id = (int)customerSealType,
+                                Name = localizer[customerSealType.GetDescription()]
+                            };
+                            sealMappingConfigResponseList.SealMappingConfigViewModels.Add(sealMappingConfigViewModel);
+                        }
+                        break;
+                    case SealType.Accountant:
+                        foreach (AccountantSignType accountantSignType in (AccountantSignType[])Enum.GetValues(typeof(AccountantSignType)))
+                        {
+                            SealMappingConfigViewModel sealMappingConfigViewModel = new()
+                            {
+                                Id = (int)accountantSignType,
+                                Name = localizer[accountantSignType.GetDescription()]
+                            };
+                            sealMappingConfigResponseList.SealMappingConfigViewModels.Add(sealMappingConfigViewModel);
+                        }
+                        break;
+                }
+                sealMappingConfigResponseList.SealType = Enum.GetName(sealType);
+                sealMappingConfigResponseList.Success();
+                logger.LogInformation("Get output {@Output}", sealMappingConfigResponseList);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError("Get error {@Error}", ex.Message);
+                sealMappingConfigResponseList.DbError();
+            }            
             return sealMappingConfigResponseList;
         }        
     }
