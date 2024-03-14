@@ -57,7 +57,7 @@ namespace SealTypographicWebAPI.Services.Implements
         }
 
         ///<inheritdoc />
-        public TypographicPDFPaginateViewModel GetPaginate(TypographicPDFSearch typographicPDFSearch, TypographyType typographyType, int userId = 1)
+        public async Task<TypographicPDFPaginateViewModel> GetPaginate(TypographicPDFSearch typographicPDFSearch, TypographyType typographyType, int userId = 1)
         {
             logger.LogInformation("GetPaginate input {@typographicPDFSearch} typographyType: {@typographyType} userId: {@userId}", typographicPDFSearch, typographyType, userId);
 
@@ -99,11 +99,12 @@ namespace SealTypographicWebAPI.Services.Implements
 
                 if (typographicPDFs.Any())
                 {
-                    typographicPDFPaginateViewModel.ViewModels = typographicPDFs
-                                                                .Skip((typographicPDFSearch.PageNumber - 1) * typographicPDFSearch.PageSize)
-                                                                .Take(typographicPDFSearch.PageSize)
-                                                                .ProjectTo<TypographicPDFViewModel>(configurationProvider)
-                                                                .ToList();
+                    typographicPDFPaginateViewModel.ViewModels = await PageUtil.SetPaginateViewModelAsync<TypographicPDF, TypographicPDFViewModel>(
+                                                                    typographicPDFs,
+                                                                    configurationProvider,
+                                                                    typographicPDFSearch.PageNumber,
+                                                                    typographicPDFSearch.PageSize
+                                                                );
 
                     PageUtil.SetPaginate(typographicPDFPaginateViewModel, typographicPDFSearch.PageNumber, typographicPDFSearch.PageSize, typographicPDFs.Count());
                     typographicPDFPaginateViewModel.Success();
@@ -124,7 +125,7 @@ namespace SealTypographicWebAPI.Services.Implements
         }
 
         ///<inheritdoc />
-        public TypographicPagesResponse GetEditPages(int id, int userId = 1)
+        public async Task<TypographicPagesResponse> GetEditPages(int id, int userId = 1)
         {
             logger.LogInformation("GetPaginate input id: {@id} userId: {@userId}", id, userId);
 
@@ -132,12 +133,12 @@ namespace SealTypographicWebAPI.Services.Implements
 
             try
             {
-                typographicPagesResponse = dbContext.TypographicPDFs
+                typographicPagesResponse = await dbContext.TypographicPDFs
                                             .Include(x => x.TypographicPages)
                                             .ThenInclude(x => x.TypographicResourceLocations)
                                             .Where(x => x.Id == id)
                                             .ProjectTo<TypographicPagesResponse>(configurationProvider)
-                                            .FirstOrDefault();
+                                            .FirstOrDefaultAsync();
 
                 if (typographicPagesResponse != null)
                 {
@@ -161,7 +162,7 @@ namespace SealTypographicWebAPI.Services.Implements
         }
 
         ///<inheritdoc />
-        public PDFViewModel GetPDFView(int uploadFileid, int pageNumber, int userId = 1)
+        public async Task<PDFViewModel> GetPDFView(int uploadFileid, int pageNumber, int userId = 1)
         {
             logger.LogInformation("GetPDFView input uploadFileid: {@uploadFileid} pageNumber: {@pageNumber} userId: {@userId}"
                                     , uploadFileid, pageNumber, userId);
@@ -170,7 +171,7 @@ namespace SealTypographicWebAPI.Services.Implements
 
             try
             {
-                string? uploadPath = dbContext.UploadFiles.Where(x => x.Id == uploadFileid).Select(x => x.FullPath).FirstOrDefault();
+                string? uploadPath = await dbContext.UploadFiles.Where(x => x.Id == uploadFileid).Select(x => x.FullPath).FirstOrDefaultAsync();
                 if (uploadPath != null)
                 {
                     //取得單頁PDF圖檔資訊
@@ -198,7 +199,7 @@ namespace SealTypographicWebAPI.Services.Implements
         }
 
         ///<inheritdoc />
-        public TypographicPageViewModel GetPageView(TypographicPDFPageSearch typographicPDFPageSearch, int userId = 1)
+        public async Task<TypographicPageViewModel> GetPageView(TypographicPDFPageSearch typographicPDFPageSearch, int userId = 1)
         {
             logger.LogInformation("GetPageView input {@typographicPDFPageSearch} userId: {@userId}", typographicPDFPageSearch, userId);
 
@@ -206,14 +207,14 @@ namespace SealTypographicWebAPI.Services.Implements
 
             try
             {
-                typographicPageViewModel = dbContext.TypographicPages
+                typographicPageViewModel = await dbContext.TypographicPages
                                             .Include(x => x.TypographicPDF)
                                             .ThenInclude(x => x.UploadFile)
                                             .Include(x => x.TypographicResourceLocations)
                                             .ThenInclude(x => x.TypographicResource)                                            
                                             .Where(x => x.TypographicPDF.Id == typographicPDFPageSearch.Id && x.PageNumber == typographicPDFPageSearch.PageNumber)
                                             .ProjectTo<TypographicPageViewModel>(configurationProvider)
-                                            .FirstOrDefault();
+                                            .FirstOrDefaultAsync();
 
                 if (typographicPageViewModel != null)
                 {
@@ -242,7 +243,7 @@ namespace SealTypographicWebAPI.Services.Implements
         }
 
         ///<inheritdoc />
-        public TypographicPDFSettingViewModel GetTypographicPDFSummary(int typographicPDFId, int userId = 1)
+        public async Task<TypographicPDFSettingViewModel> GetTypographicPDFSummary(int typographicPDFId, int userId = 1)
         {
             logger.LogInformation("GetTypographicPDFSummary typographicPDFId: {@typographicPDFId} userId: {@userId}}"
                                 , typographicPDFId, userId);
@@ -251,13 +252,13 @@ namespace SealTypographicWebAPI.Services.Implements
 
             try
             {
-                typographicPDFSettingViewModel = dbContext.TypographicPDFs
-                                            .Include(x => x.UploadFile)
-                                            .Include(x => x.QuarterYear)
-                                            .Include(x => x.TypographicPages)
-                                            .Where(x => x.Id == typographicPDFId)
-                                            .ProjectTo<TypographicPDFSettingViewModel>(configurationProvider)
-                                            .FirstOrDefault();
+                typographicPDFSettingViewModel = await dbContext.TypographicPDFs
+                                                .Include(x => x.UploadFile)
+                                                .Include(x => x.QuarterYear)
+                                                .Include(x => x.TypographicPages)
+                                                .Where(x => x.Id == typographicPDFId)
+                                                .ProjectTo<TypographicPDFSettingViewModel>(configurationProvider)
+                                                .FirstOrDefaultAsync();
 
                 if (typographicPDFSettingViewModel != null)
                 {
@@ -280,7 +281,7 @@ namespace SealTypographicWebAPI.Services.Implements
         }
 
         ///<inheritdoc />
-        public TypographicPDFEditViewResponse GetEditPDFView(int typographicPDFId, int userId = 1)
+        public async Task<TypographicPDFEditViewResponse> GetEditPDFView(int typographicPDFId, int userId = 1)
         {
             logger.LogInformation("GetEditPDFView input typographicPDFId: {@typographicPDFId} userId: {@userId}", typographicPDFId, userId);
 
@@ -288,13 +289,13 @@ namespace SealTypographicWebAPI.Services.Implements
 
             try
             {
-                EditPDF? editPDF = dbContext.TypographicPDFs
+                EditPDF? editPDF = await dbContext.TypographicPDFs
                                     .Include(x => x.TypographicPages)
                                     .ThenInclude(x => x.TypographicResourceLocations)
                                     .ThenInclude(x => x.TypographicResource)
                                     .Where(x => x.Id == typographicPDFId)
                                     .ProjectTo<EditPDF>(configurationProvider)
-                                    .FirstOrDefault();
+                                    .FirstOrDefaultAsync();
 
                 if (editPDF != null)
                 {
@@ -319,7 +320,7 @@ namespace SealTypographicWebAPI.Services.Implements
         }
 
         ///<inheritdoc />
-        public TypographicPDFMakeResponse MakeTyporaphicPDF(TypographicPDFMakeSetting typographicPDFMakeSetting, int userId = 1)
+        public async Task<TypographicPDFMakeResponse> MakeTyporaphicPDF(TypographicPDFMakeSetting typographicPDFMakeSetting, int userId = 1)
         {
             logger.LogInformation("MakeTyporaphicPDF input {@typographicPDFMakeSetting} userId: {@userId}", typographicPDFMakeSetting, userId);
 
@@ -328,13 +329,13 @@ namespace SealTypographicWebAPI.Services.Implements
             try
             {
                 //取得排版的頁面印鑑與座標
-                EditPDF? editPDF = dbContext.TypographicPDFs
+                EditPDF? editPDF = await dbContext.TypographicPDFs
                                     .Include(x => x.TypographicPages)
                                     .ThenInclude(x => x.TypographicResourceLocations)
                                     .ThenInclude(x => x.TypographicResource)
                                     .Where(x => x.Id == typographicPDFMakeSetting.TypographicPDFId)
                                     .ProjectTo<EditPDF>(configurationProvider)
-                                    .FirstOrDefault();
+                                    .FirstOrDefaultAsync();
 
                 if (editPDF != null)
                 {
@@ -394,7 +395,7 @@ namespace SealTypographicWebAPI.Services.Implements
                     }
 
                     dbContext.TypographicPDFs.Add(typographicPDF);
-                    dbContext.SaveChanges();
+                    await dbContext.SaveChangesAsync();
                     typographicPDFNewResronse.TypographicPDFId = typographicPDF.Id;
                     typographicPDFNewResronse.Success();
                 }
@@ -443,7 +444,7 @@ namespace SealTypographicWebAPI.Services.Implements
                     }
                     //由於Include(Pages)所以更換成newPages後會將舊的資料刪除
                     typographicPDF.TypographicPages = newPages;
-                    dbContext.SaveChanges();
+                    await dbContext.SaveChangesAsync();
                     response.Success();
                 }
                 else
@@ -461,7 +462,7 @@ namespace SealTypographicWebAPI.Services.Implements
         }
 
         ///<inheritdoc />
-        public ResponseViewModel ChangeReviewStatus(int typographicPDFId, ReviewStatus reviewStatus, int userId = 1)
+        public async Task<ResponseViewModel> ChangeReviewStatus(int typographicPDFId, ReviewStatus reviewStatus, int userId = 1)
         {
             logger.LogInformation("ChangeReviewStatus input typographicPDFId: {@typographicPDFId} reviewStatus: {@reviewStatus} userId: {@userId}"
                 , typographicPDFId, reviewStatus, userId);
@@ -475,7 +476,7 @@ namespace SealTypographicWebAPI.Services.Implements
                 {
                     typographicPDF.ReviewStatus = reviewStatus;                    
                     InputUtil.SetWithReview(typographicPDF, false, userId);
-                    dbContext.SaveChanges();
+                    await dbContext.SaveChangesAsync();
                     response.Success();
                 }
                 else
@@ -493,7 +494,7 @@ namespace SealTypographicWebAPI.Services.Implements
         }
 
         ///<inheritdoc />
-        public ResponseViewModel Delete(int typographicPDFId, int userId = 1)
+        public async Task<ResponseViewModel> Delete(int typographicPDFId, int userId = 1)
         {
             logger.LogInformation("Delete input typographicPDFId: {@typographicPDFId} userId: {@userId}"
                 , typographicPDFId, userId);
@@ -509,7 +510,7 @@ namespace SealTypographicWebAPI.Services.Implements
                     typographicPDF.DeleteStatus = DeleteStatus.Yes;
                     typographicPDF.ReviewStatus = ReviewStatus.Disabled;                    
                     InputUtil.SetWithReview(typographicPDF, false, userId);
-                    dbContext.SaveChanges();
+                    await dbContext.SaveChangesAsync();
                     response.Success();
                 }
                 else

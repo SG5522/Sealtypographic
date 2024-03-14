@@ -11,15 +11,16 @@ namespace SealTypographicWebAPI.Controllers
     /// </summary>
     [Route("api/[controller]")]
     [ApiController]
-    public class UploadController : ControllerBase
+    public class UploadController : APIControllerBase
     {
-        private readonly IUploadService uploadService;        
+        private readonly IUploadService uploadService;
 
         /// <summary>
         /// 注入UploadService
         /// </summary>
-        /// <param name="uploadService"></param>              
-        public UploadController(IUploadService uploadService)
+        /// <param name="uploadService"></param>
+        /// <param name="applicationUserService"></param>              
+        public UploadController(IUploadService uploadService, IApplicationUserService applicationUserService) : base(applicationUserService)
         {
             this.uploadService = uploadService;            
         }

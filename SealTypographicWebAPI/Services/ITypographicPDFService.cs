@@ -17,14 +17,14 @@ namespace SealTypographicWebAPI.Services
         /// <param name="typographyType">排版類別</param>
         /// <param name="userId">登入的使用者Id</param>
         /// <returns></returns>
-        TypographicPDFPaginateViewModel GetPaginate(TypographicPDFSearch typographicPDFSearch, TypographyType typographyType, int userId = 1);
+        Task<TypographicPDFPaginateViewModel> GetPaginate(TypographicPDFSearch typographicPDFSearch, TypographyType typographyType, int userId = 1);
 
         /// <summary>
         /// 取得已編輯PDF頁次資訊
         /// </summary>
         /// <param name="id">TypographicPDFId</param>
         /// <param name="userId">登入的使用者Id</param>       
-        TypographicPagesResponse GetEditPages(int id, int userId = 1);
+        Task<TypographicPagesResponse> GetEditPages(int id, int userId = 1);
 
         /// <summary>
         /// 取得PDF單頁內容
@@ -33,7 +33,7 @@ namespace SealTypographicWebAPI.Services
         /// <param name="pageNumber">pdf頁次</param>
         /// <param name="userId">登入的使用者Id</param>  
         /// <returns></returns>
-        PDFViewModel GetPDFView(int uploadFileid, int pageNumber, int userId = 1);
+        Task<PDFViewModel> GetPDFView(int uploadFileid, int pageNumber, int userId = 1);
 
         /// <summary>
         /// 取得單頁PDF圖像與排版編輯資訊
@@ -41,7 +41,7 @@ namespace SealTypographicWebAPI.Services
         /// <param name="typographicPDFPageSearch">排板PDFPage搜尋</param>
         /// <param name="userId">登入的使用者Id</param>
         /// <returns></returns>
-        TypographicPageViewModel GetPageView(TypographicPDFPageSearch typographicPDFPageSearch, int userId = 1);
+        Task<TypographicPageViewModel> GetPageView(TypographicPDFPageSearch typographicPDFPageSearch, int userId = 1);
 
         /// <summary>
         /// 讀取排版PDF的概要
@@ -49,7 +49,7 @@ namespace SealTypographicWebAPI.Services
         /// <param name="typographicPDFId">PDFID</param>
         /// <param name="userId">登入的使用者Id</param>
         /// <returns></returns>
-        TypographicPDFSettingViewModel GetTypographicPDFSummary(int typographicPDFId, int userId = 1);
+        Task<TypographicPDFSettingViewModel> GetTypographicPDFSummary(int typographicPDFId, int userId = 1);
 
         /// <summary>
         /// 建立排版後的PDF
@@ -57,7 +57,7 @@ namespace SealTypographicWebAPI.Services
         /// <param name="typographicPDFMakeSetting">輸出PDF檔案時的設定</param>
         /// <param name="userId">登入的使用者Id</param>
         /// <returns></returns>
-        TypographicPDFMakeResponse MakeTyporaphicPDF(TypographicPDFMakeSetting typographicPDFMakeSetting, int userId = 1);
+        Task<TypographicPDFMakeResponse> MakeTyporaphicPDF(TypographicPDFMakeSetting typographicPDFMakeSetting, int userId = 1);
 
         /// <summary>
         /// 取得排版後的PDFBase64
@@ -65,7 +65,7 @@ namespace SealTypographicWebAPI.Services
         /// <param name="typographicPDFId">PDF排版ID</param>
         /// <param name="userId">登入的使用者Id</param>
         /// <returns></returns>
-        TypographicPDFEditViewResponse GetEditPDFView(int typographicPDFId, int userId = 1);
+        Task<TypographicPDFEditViewResponse> GetEditPDFView(int typographicPDFId, int userId = 1);
 
         /// <summary>
         /// 建立PDF排版資訊
@@ -91,7 +91,7 @@ namespace SealTypographicWebAPI.Services
         /// <param name="reviewStatus">更換審核狀態</param>
         /// <param name="userId">登入的使用者Id</param>
         /// <returns></returns>
-        ResponseViewModel ChangeReviewStatus(int typographicPDFId, ReviewStatus reviewStatus, int userId = 1);
+        Task<ResponseViewModel> ChangeReviewStatus(int typographicPDFId, ReviewStatus reviewStatus, int userId = 1);
 
         /// <summary>
         /// 刪除排版PDF(標記刪除)
@@ -99,6 +99,6 @@ namespace SealTypographicWebAPI.Services
         /// <param name="typographicPDFId"></param>
         /// <param name="userId">登入的使用者Id</param>
         /// <returns></returns>
-        ResponseViewModel Delete(int typographicPDFId, int userId = 1);
+        Task<ResponseViewModel> Delete(int typographicPDFId, int userId = 1);
     }
 }

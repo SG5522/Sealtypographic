@@ -82,20 +82,32 @@ namespace SealTypographicWebAPI.Services.Implements
                 customerQuery = customerQuery.OrderBy(customer => customer.Code);                
 
                 if (customerQuery.Any())
-                {
+                {                                        
                     //取得該頁            
                     customerPaginateViewModel.ViewModels = await customerQuery                                                            
                                                             .Skip((customerSearch.PageNumber - 1) * customerSearch.PageSize)
-                                                            .Take(customerSearch.PageSize)                                                            
+                                                            .Take(customerSearch.PageSize)
                                                             .Select(customer => new CustomerViewModel()
                                                             {
                                                                 Id = customer.Id,
                                                                 Name = customer.Name,
                                                                 BAN = customer.BAN!,
-                                                                Code = customer.Code,
-                                                                IsDraff = customer.CustomerSealGroups.Any(x => x.ReviewStatus == ReviewStatus.Draft),
-                                                                IsPending = customer.CustomerSealGroups.Any(x => x.ReviewStatus == ReviewStatus.Pending),
-                                                                IsReject = customer.CustomerSealGroups.Any(x => x.ReviewStatus == ReviewStatus.Refuse),
+                                                                Code = customer.Code,                                                                
+
+                                                                IsDraff = customer.CustomerSealGroups.Any
+                                                                (
+                                                                    x => x.ReviewStatus == ReviewStatus.Draft
+                                                                    && x.DeleteStatus == DeleteStatus.No
+                                                                    && x.TypographyType == typographyType
+                                                                ),
+                                                                IsPending = customer.CustomerSealGroups.Any(
+                                                                    x => x.ReviewStatus == ReviewStatus.Pending
+                                                                    && x.DeleteStatus == DeleteStatus.No
+                                                                    && x.TypographyType == typographyType),
+                                                                IsReject = customer.CustomerSealGroups.Any(
+                                                                    x => x.ReviewStatus == ReviewStatus.Refuse
+                                                                    && x.DeleteStatus == DeleteStatus.No
+                                                                    && x.TypographyType == typographyType),
                                                                 CustomerSealQuarterId = customer.CustomerSealGroups
                                                                                         .Where(
                                                                                                 sealGroup => sealGroup.TypographyType == typographyType
