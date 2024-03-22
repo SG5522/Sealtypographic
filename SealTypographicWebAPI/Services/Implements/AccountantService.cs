@@ -115,9 +115,9 @@ namespace SealTypographicWebAPI.Services.Implements
                     );
                 }
 
-                if (!string.IsNullOrWhiteSpace(accountantSearch.AccountantGroupNumber))
+                if (!string.IsNullOrWhiteSpace(accountantSearch.AccountantGroupName))
                 {
-                    accountantQuery = accountantQuery.Where(accountant => accountant.GroupAccountants.First().AccountantGroup.Code == accountantSearch.AccountantGroupNumber);
+                    accountantQuery = accountantQuery.Where(accountant => accountant.AccountantGroups.Any(x => x.Name.Contains(accountantSearch.AccountantGroupName)));
                 }
 
                 accountantQuery = accountantQuery.OrderBy(accountant => accountant.Id);                
@@ -148,33 +148,42 @@ namespace SealTypographicWebAPI.Services.Implements
 
 
         ///<inheritdoc />
-        public async Task<AccountantCreateResponse> New(AccountantForm accountantForm, int userId = 1)
+        public async Task<AccountantCreateResponse> New(AccountantForm accountantForm, int userId = 1, int companyId = 1)
         {
             logger.LogInformation("New input {@accountantForm} userId: {@userId}", accountantForm, userId);
 
-            AccountantCreateResponse accountantCreateResponse = new();            
-            int companyId = 1;
+            AccountantCreateResponse accountantCreateResponse = new();                        
 
             try
             {
-                //尋找公司並與會計師關聯
-                Company? companyQuery = dbContext.Companys.Include(x => x.Accountants).FirstOrDefault(x => x.Id == companyId);
+                //確認公司是否存在
+                Company? companyQuery = dbContext.Companys.FirstOrDefault(x => x.Id == companyId);
 
                 if (companyQuery != null)
                 {
                     //驗證編號是否重複
-                    List<string> accountantCodeQuery = companyQuery.Accountants.Where
+                    bool isAccountantCodeDuplicate = dbContext.Accountants.Any
                                                         (
+                                                            
                                                             x => x.Code == accountantForm.AccountantNumber
+                                                            && x.Company.Id == companyId
                                                             && x.DeleteStatus == DeleteStatus.No
-                                                        ).Select(x => x.Code).ToList();
+                                                        );
 
-                    if (!accountantCodeQuery.Any())
+                    if (!isAccountantCodeDuplicate)
                     {
                         Accountant dbAccountant = mapper.Map<Accountant>(accountantForm);
-                        dbAccountant.AccountantGroups = dbContext.AccountantGroups.Where(x => x.Id == accountantForm.AccountantGroupId).ToList();                        
+                        IList<AccountantGroup> accountantGroups = dbContext.AccountantGroups
+                                                                .Where(x => accountantForm.AccountantGroupIds.Contains(x.Id))
+                                                                .ToList();                         
+                        
+                        foreach (AccountantGroup accountantGroup in accountantGroups)
+                        {
+                            dbAccountant.AccountantGroups.Add(accountantGroup);
+                        }
+
                         InputUtil.Set(dbAccountant, true, userId);
-                        companyQuery.Accountants.Add(dbAccountant);
+                        companyQuery.Accountants.Add(dbAccountant);                        
                         await dbContext.SaveChangesAsync();
 
                         if (dbAccountant != null)
@@ -198,12 +207,12 @@ namespace SealTypographicWebAPI.Services.Implements
             catch (DbUpdateException ex)
             {
                 accountantCreateResponse.DbError();
-                logger.LogInformation("New dbError {@dbError}", ex.Message);
+                logger.LogError("New dbError {@dbError}", ex.Message);
             }
             catch (Exception ex)
             {
                 accountantCreateResponse.Error();
-                logger.LogInformation("New error {@error}", ex.Message);
+                logger.LogError("New error {@error}", ex.Message);
             }            
 
             return accountantCreateResponse;

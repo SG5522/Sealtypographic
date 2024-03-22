@@ -31,8 +31,9 @@ namespace SealTypographicWebAPI.Services
         /// 新增資料
         /// </summary>
         /// <param name="accountantForm">會計師資料</param>
-        /// <param name="userId">登入的使用者Id</param>        
-        Task<AccountantCreateResponse> New(AccountantForm accountantForm, int userId = 1);
+        /// <param name="userId">登入的使用者Id</param>
+        /// <param name="company">公司Id</param>        
+        Task<AccountantCreateResponse> New(AccountantForm accountantForm, int userId = 1, int company = 1);
 
 
         /// <summary>

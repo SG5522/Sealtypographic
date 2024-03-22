@@ -29,6 +29,6 @@ namespace SealTypographicWebAPI.Models.Accountant
         /// </summary>
         /// <example>1</example>
         [Required]
-        public int AccountantGroupId { get; set; }
+        public List<int> AccountantGroupIds { get; set; }
     }
 }

@@ -35,7 +35,7 @@ namespace SealTypographicWebAPI.Config.MapperProfile
 
             //會計師分頁顯示Map
             CreateMap<Accountant, AccountantViewModelWithCreateDate>()
-                    .ForMember(dst => dst.AccountantGroupName, opt => opt.MapFrom(o => o.AccountantGroups.First().Name))
+                    .ForMember(dst => dst.AccountantGroupName, opt => opt.MapFrom(o => o.AccountantGroups.Select(x => x.Name)))
                     .ForMember(dst => dst.AccountantNumber, opt => opt.MapFrom(o => o.Code))
                     .ForMember(dst => dst.AccountantSignGroupId, opt => opt.MapFrom
                     (
