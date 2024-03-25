@@ -26,9 +26,8 @@ namespace SealTypographicWebAPI.Models.Accountant
         /// <summary>
         /// 會計師群組ID
         /// 0 無群組
-        /// </summary>
-        /// <example>0</example>        
+        /// </summary> 
         [Required]
-        public int AccountantGroupId { get; set; }
+        public IList<int> AccountantGroupIds { get; set; }
     }
 }

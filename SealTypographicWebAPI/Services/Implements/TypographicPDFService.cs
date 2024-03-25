@@ -67,14 +67,14 @@ namespace SealTypographicWebAPI.Services.Implements
             try
             {
                 IQueryable<TypographicPDF> typographicPDFs = dbContext.TypographicPDFs
-                                                        .Include(x => x.Customer)
-                                                        .Include(x => x.QuarterYear)
-                                                        .Where
-                                                        (
-                                                            x => x.Customer.Company.Id == companyId
-                                                            && x.DeleteStatus == DeleteStatus.No
-                                                            && x.TypographyType == typographyType
-                                                        );
+                                                            .Include(x => x.Customer)
+                                                            .Include(x => x.QuarterYear)
+                                                            .Where
+                                                            (
+                                                                x => x.Customer.Company.Id == companyId
+                                                                && x.DeleteStatus == DeleteStatus.No
+                                                                && x.TypographyType == typographyType
+                                                            );
 
                 if (!string.IsNullOrEmpty(typographicPDFSearch.CustomerKeyWord))
                 {

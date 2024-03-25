@@ -115,9 +115,9 @@ namespace SealTypographicWebAPI.Services.Implements
                     );
                 }
 
-                if (!string.IsNullOrWhiteSpace(accountantSearch.AccountantGroupName))
+                if (accountantSearch.AccountantGroupId != 0)
                 {
-                    accountantQuery = accountantQuery.Where(accountant => accountant.AccountantGroups.Any(x => x.Name.Contains(accountantSearch.AccountantGroupName)));
+                    accountantQuery = accountantQuery.Where(accountant => accountant.AccountantGroups.Any(x => x.Id == accountantSearch.AccountantGroupId));
                 }
 
                 accountantQuery = accountantQuery.OrderBy(accountant => accountant.Id);                
@@ -157,39 +157,35 @@ namespace SealTypographicWebAPI.Services.Implements
             try
             {
                 //確認公司是否存在
-                Company? companyQuery = dbContext.Companys.FirstOrDefault(x => x.Id == companyId);
+                Company? companyQuery = dbContext.Companys.Include(x => x.Accountants).FirstOrDefault(x => x.Id == companyId);
 
                 if (companyQuery != null)
                 {
                     //驗證編號是否重複
                     bool isAccountantCodeDuplicate = dbContext.Accountants.Any
-                                                        (
-                                                            
-                                                            x => x.Code == accountantForm.AccountantNumber
-                                                            && x.Company.Id == companyId
-                                                            && x.DeleteStatus == DeleteStatus.No
-                                                        );
+                                                    (                                                            
+                                                        x => x.Code == accountantForm.AccountantNumber
+                                                        && x.Company.Id == companyId
+                                                        && x.DeleteStatus == DeleteStatus.No
+                                                    );
 
                     if (!isAccountantCodeDuplicate)
                     {
-                        Accountant dbAccountant = mapper.Map<Accountant>(accountantForm);
+                        Accountant newAccountant = mapper.Map<Accountant>(accountantForm);
                         IList<AccountantGroup> accountantGroups = dbContext.AccountantGroups
                                                                 .Where(x => accountantForm.AccountantGroupIds.Contains(x.Id))
-                                                                .ToList();                         
-                        
-                        foreach (AccountantGroup accountantGroup in accountantGroups)
-                        {
-                            dbAccountant.AccountantGroups.Add(accountantGroup);
-                        }
+                                                                .ToList();
 
-                        InputUtil.Set(dbAccountant, true, userId);
-                        companyQuery.Accountants.Add(dbAccountant);                        
+                        newAccountant.AccountantGroups = accountantGroups;
+                        InputUtil.Set(newAccountant, true, userId);
+                        companyQuery.Accountants.Add(newAccountant);
+
                         await dbContext.SaveChangesAsync();
 
-                        if (dbAccountant != null)
+                        if (newAccountant != null)
                         {
                             //回傳剛建立的會計師基本資料 使建立會計師簽印找到該ID
-                            accountantCreateResponse.AccountantId = dbAccountant.Id;
+                            accountantCreateResponse.AccountantId = newAccountant.Id;
                             accountantCreateResponse.Success();
                         }
                         else
@@ -207,7 +203,7 @@ namespace SealTypographicWebAPI.Services.Implements
             catch (DbUpdateException ex)
             {
                 accountantCreateResponse.DbError();
-                logger.LogError("New dbError {@dbError}", ex.Message);
+                logger.LogError("New dbError {@dbError}", ex.InnerException);
             }
             catch (Exception ex)
             {
@@ -232,13 +228,16 @@ namespace SealTypographicWebAPI.Services.Implements
 
                 if (accountantQuery != null)
                 {
+                    IList<AccountantGroup> accountantGroups = dbContext.AccountantGroups
+                                                                .Where(x => accountantFormUpdate.AccountantGroupIds.Contains(x.Id))
+                                                                .ToList();
+
+                    //更新會計師群組
+                    accountantQuery.AccountantGroups = accountantGroups;
+
+                    //更新會計師群組以外的資料
                     mapper.Map(accountantFormUpdate, accountantQuery);
-                    //TODO 更新群組功能之後可能要拔掉
-                    if(!accountantQuery.AccountantGroups.Any(x => x.Id == accountantFormUpdate.AccountantGroupId))
-                    {                        
-                        accountantQuery.AccountantGroups.Add(dbContext.AccountantGroups.Single(x => x.Id == accountantFormUpdate.AccountantGroupId));
-                    }
-                    
+                                        
                     InputUtil.Set(accountantQuery, false, userId);
                     await dbContext.SaveChangesAsync();
                     response.Success();
@@ -252,12 +251,12 @@ namespace SealTypographicWebAPI.Services.Implements
             catch (DbUpdateException ex)
             {
                 response.DbError();
-                logger.LogInformation("Update dbError {@dbError}", ex.Message);
+                logger.LogError("Update dbError {@dbError}", ex.InnerException);
             }
             catch (Exception ex) 
             {
                 response.Error();
-                logger.LogInformation("Update error {@error}", ex.Message);
+                logger.LogError("Update error {@error}", ex.Message);
             }
             
             return response;
@@ -277,12 +276,12 @@ namespace SealTypographicWebAPI.Services.Implements
             catch (DbUpdateException ex)
             {
                 response.DbError();
-                logger.LogInformation("GetPaginate dbError {@dbError}", ex.Message);
+                logger.LogError("GetPaginate dbError {@dbError}", ex.InnerException);
             }
             catch (Exception ex)
             {
                 response.Error();
-                logger.LogInformation("GetPaginate error {@error}", ex.Message);
+                logger.LogError("GetPaginate error {@error}", ex.Message);
             }
 
             Accountant? accountantQuery = dbContext.Accountants.Find(accountantId);
