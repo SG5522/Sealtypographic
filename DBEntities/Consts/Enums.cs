@@ -533,15 +533,44 @@ namespace DBEntities.Consts
     }
 
     /// <summary>
-    /// 設定選項
+    /// 紀錄排版編輯步驟的狀態
     /// </summary>
-    public enum SettingOption : byte
+    public enum PdfEditState : byte
     {
         /// <summary>
-        /// Keycloak登入Url
+        /// 客戶印鑑
         /// </summary>
-        [Description("Keycloak登入Url")]
-        AuthorizationEndpoint = 1
-        
+        [Description("CustomerSeal")]
+        CustomerSeal = 1,
+
+        /// <summary>
+        /// 會計師簽印
+        /// </summary>
+        [Description("AccountantSign")]
+        AccountantSign = 2,
+
+        /// <summary>
+        /// 信頭
+        /// </summary>
+        [Description("Letterhead")]
+        Letterhead = 3,
+
+        /// <summary>
+        /// 臨時章
+        /// </summary>
+        [Description("TemporarySeal")]
+        TemporarySeal = 4,
+
+        /// <summary>
+        /// 會計師證明書
+        /// </summary>
+        [Description("Accountant Sign Certificate")]
+        AccountantSignCertificate = 5,
+
+        /// <summary>
+        /// 排版狀態
+        /// </summary>
+        [Description("PdfStatus")]
+        PdfStatus = 6,
     }
 }
