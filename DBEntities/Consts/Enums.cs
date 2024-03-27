@@ -533,9 +533,9 @@ namespace DBEntities.Consts
     }
 
     /// <summary>
-    /// 紀錄排版編輯步驟的狀態
+    /// 排版編輯步驟
     /// </summary>
-    public enum PdfEditState : byte
+    public enum PdfEditStep : byte
     {
         /// <summary>
         /// 客戶印鑑

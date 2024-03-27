@@ -1,4 +1,6 @@
-﻿namespace SealTypographicWebAPI.Models.TypographicPDF.EditViewModels
+﻿using DBEntities.Consts;
+
+namespace SealTypographicWebAPI.Models.TypographicPDF.EditViewModels
 {
     /// <summary>
     /// 取得所有排板頁面資訊
@@ -32,6 +34,11 @@
         /// 客戶印鑑季度Id (之後會改成群組id)
         /// </summary>
         public int QuarterYearId { get; set; }
+
+        /// <summary>
+        /// 排版編輯步驟
+        /// </summary>
+        public PdfEditStep PdfEditStep { get; set; }
 
         /// <summary>
         /// 排版頁面資訊

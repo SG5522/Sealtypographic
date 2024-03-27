@@ -40,6 +40,11 @@ namespace DBEntities.Entities.TypographicModels
         public UploadFile UploadFile { get; set; }
 
         /// <summary>
+        /// 排版編輯步驟
+        /// </summary>
+        public PdfEditStep PdfEditStep { get; set; }
+
+        /// <summary>
         /// 排版頁
         /// </summary>
         public IList<TypographicPage> TypographicPages { get; set; }

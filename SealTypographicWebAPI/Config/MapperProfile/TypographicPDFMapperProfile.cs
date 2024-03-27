@@ -42,6 +42,7 @@ namespace SealTypographicWebAPI.Config.MapperProfile
                 .ForMember(dst => dst.UploadId, opt => opt.MapFrom(src => src.UploadFile.Id))
                 .ForMember(dst => dst.CustomerId, opt => opt.MapFrom(src => src.Customer.Id))
                 .ForMember(dst => dst.QuarterYearId, opt => opt.MapFrom(src => src.QuarterYear.Id))
+                .ForMember(dst => dst.PdfEditStep, opt => opt.MapFrom(src => src.PdfEditStep))
                 .ForMember(dst => dst.Pages, opt => opt.MapFrom(src => src.TypographicPages));
 
             CreateMap<TypographicResourceLocation, CustomerSealEditLocation>()

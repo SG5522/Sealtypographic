@@ -386,6 +386,7 @@ namespace SealTypographicWebAPI.Services.Implements
                         FullPath = pDFInfo.FullPath,
                         QuarterYear = quarter,
                         TypographyType = typographyType,
+                        PdfEditStep = PdfEditStep.CustomerSeal,
                         TypographicPages = new List<TypographicPage>()
                     };                    
                     InputUtil.SetWithReview(typographicPDF, true, userId);
@@ -432,8 +433,10 @@ namespace SealTypographicWebAPI.Services.Implements
                     typographicPDF.UploadFile = dbContext.UploadFiles.Single(x => x.Id == typographicPDFSaveForm.UploadId);
                     //之後輸入要從前端提供Id
                     typographicPDF.QuarterYear = dbContext.QuarterYears
-                                            .Single(x => x.Id == typographicPDFSaveForm.QuarterYearId);  
-                    
+                                            .Single(x => x.Id == typographicPDFSaveForm.QuarterYearId);
+                    //紀錄pdf現在的步驟
+                    typographicPDF.PdfEditStep = typographicPDFSaveForm.PdfEditStep;
+
                     InputUtil.SetWithReview(typographicPDF, false, userId);
 
                     List<TypographicPage> newPages = new();

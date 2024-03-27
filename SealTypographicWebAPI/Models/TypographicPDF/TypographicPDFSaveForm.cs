@@ -28,6 +28,11 @@ namespace SealTypographicWebAPI.Models.TypographicPDF
         public int QuarterYearId { get; set; }
 
         /// <summary>
+        /// 排版編輯步驟
+        /// </summary>
+        public PdfEditStep PdfEditStep { get; set; }
+
+        /// <summary>
         /// 排版頁數
         /// </summary>
         public List<TypographicPageForm> Pages { get; set;}

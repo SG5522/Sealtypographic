@@ -7,7 +7,7 @@
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <DocumentationFile></DocumentationFile>
     <IncrementVersionOnBuild>0.0.3.1+</IncrementVersionOnBuild>
-    <Version>0.0.3.1426</Version>
+    <Version>0.0.3.1431</Version>
     <PackageIcon>android-chrome-128x128.png</PackageIcon>
     <Configurations>Debug;Release</Configurations>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>    
@@ -70,10 +70,6 @@
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </Content>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Models\TypographicPDF\NewFolder\" />
   </ItemGroup>
 
     <Target Name="CopyOtherForBuild" AfterTargets="Build">
