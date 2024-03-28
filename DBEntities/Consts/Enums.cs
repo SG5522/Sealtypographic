@@ -538,39 +538,45 @@ namespace DBEntities.Consts
     public enum PdfEditStep : byte
     {
         /// <summary>
+        /// 選擇PDF
+        /// </summary>
+        [Description("選擇PDF")]
+        SeletctPdf = 1,
+
+        /// <summary>
         /// 客戶印鑑
         /// </summary>
-        [Description("CustomerSeal")]
-        CustomerSeal = 1,
+        [Description("客戶印鑑")]
+        CustomerSeal = 2,
 
         /// <summary>
         /// 會計師簽印
         /// </summary>
-        [Description("AccountantSign")]
-        AccountantSign = 2,
+        [Description("會計師簽印")]
+        AccountantSign = 3,
 
         /// <summary>
         /// 信頭
         /// </summary>
-        [Description("Letterhead")]
-        Letterhead = 3,
+        [Description("信頭")]
+        Letterhead = 4,
 
         /// <summary>
         /// 臨時章
         /// </summary>
-        [Description("TemporarySeal")]
-        TemporarySeal = 4,
+        [Description("臨時章")]
+        TemporarySeal = 5,
 
         /// <summary>
         /// 會計師證明書
         /// </summary>
-        [Description("Accountant Sign Certificate")]
-        AccountantSignCertificate = 5,
+        [Description("會計師證明書")]
+        AccountantSignCertificate = 6,
 
         /// <summary>
         /// 排版狀態
         /// </summary>
-        [Description("PdfStatus")]
-        PdfStatus = 6,
+        [Description("排版狀態")]
+        PdfStatus = 7,
     }
 }

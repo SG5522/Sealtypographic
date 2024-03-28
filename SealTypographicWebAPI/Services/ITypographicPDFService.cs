@@ -68,6 +68,12 @@ namespace SealTypographicWebAPI.Services
         Task<TypographicPDFEditViewResponse> GetEditPDFView(int typographicPDFId, int userId = 1);
 
         /// <summary>
+        /// 取得排版狀態參數
+        /// </summary>
+        /// <returns></returns>
+        PdfEditStepResponse GetPdfEditStep();
+
+        /// <summary>
         /// 建立PDF排版資訊
         /// </summary>
         /// <param name="typographicPDFForm">排版資訊(新增使用)</param>

@@ -20,6 +20,8 @@ using DJImageLib.Models;
 using CommonLib.Utils;
 using DJImageLib.Extensions;
 using DBEntities.Utils;
+using CommonLib.Extensions;
+using Microsoft.OpenApi.Extensions;
 
 namespace SealTypographicWebAPI.Services.Implements
 {
@@ -357,6 +359,32 @@ namespace SealTypographicWebAPI.Services.Implements
                 logger.LogError("MakeTyporaphicPDF error {@error}", ex.Message);
             }            
             return typographicPagePDFResponse;
+        }
+
+        ///<inheritdoc />
+        public PdfEditStepResponse GetPdfEditStep()
+        {
+            PdfEditStepResponse result = new ();
+
+            try
+            {
+                foreach (PdfEditStep pdfEditStep in (PdfEditStep[])Enum.GetValues(typeof(PdfEditStep)))
+                {
+                    PdfEditStepViewModel pdfEditStepViewModel = new()
+                    {
+                        Id = (int)pdfEditStep,
+                        Name = pdfEditStep.GetDisplayName(),
+                        Description = pdfEditStep.GetDescription()
+                    };
+                    result.ViewModels.Add(pdfEditStepViewModel);
+                }
+            }
+            catch (Exception ex) 
+            {
+                result.Error();
+                logger.LogError("GetPdfEditStep error {@error}", ex.ToString());
+            }
+            return result;
         }
 
         ///<inheritdoc />

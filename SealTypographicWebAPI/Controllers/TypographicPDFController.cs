@@ -81,6 +81,13 @@ namespace SealTypographicWebAPI.Controllers
 
 
         /// <summary>
+        /// 取得排版步驟
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("[Action]")]
+        public PdfEditStepResponse PdfEditStep() => typographicPDFService.GetPdfEditStep();
+
+        /// <summary>
         /// 新增排版
         /// </summary>
         /// <param name="typographicPDFForm">排版資訊(新增使用)</param>
