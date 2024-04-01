@@ -121,7 +121,6 @@ namespace DBEntities
         {
         }
 
-        #region Required
         /// <summary>
         /// 
         /// </summary>
@@ -135,7 +134,7 @@ namespace DBEntities
                 .WithMany(e => e.Accountants)
                 .UsingEntity<GroupAccountant>();
 
-            //--以下為User關聯處理--Strat//
+            #region  --以下為User關聯處理--Strat
             modelBuilder.Entity<ApplicationUser>()
                 .HasMany(e => e.CreateUsers)
                 .WithOne(e => e.CreateUser)
@@ -275,8 +274,7 @@ namespace DBEntities
                 .HasMany(e => e.ImageRangeSettingUpdateUsers)
                 .WithOne(e => e.UpdateUser)
                 .HasForeignKey(e => e.UpdateUserId);
-            //--User關聯處理--End//
+            #endregion
         }
-        #endregion
     }
 }
