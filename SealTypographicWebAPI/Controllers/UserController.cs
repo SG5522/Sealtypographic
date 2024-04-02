@@ -1,13 +1,10 @@
 ﻿using AutoMapper;
-using DBEntities;
-using DBEntities.Entities;
 using DJKeycloakAPI.Controllers;
 using DJKeycloakAPI.Models.Users;
 using DJKeycloakLib.Models.BaseModel;
 using DJKeycloakLib.Services;
 using Microsoft.AspNetCore.Mvc;
 using SealTypographicWebAPI.Services;
-using SealTypographicWebAPI.Services.Implements;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -45,12 +42,14 @@ namespace SealTypographicWebAPI.Controllers
 
             if (responseModel.Code == KeycloakResponseCode.Success)
             {
+                //新增成功後搜尋剛新增的User
                 UsersQuery userQuery = new()
                 {
                    Username = newUserForm.Username,                    
-                };
-                
+                };                
                 ResponseModel<UserViewModelPaginate> userViewModels = await base.Get(userQuery);
+
+                //寫入DB
                 UserViewModel? userViewModel = userViewModels.Data!.Users!.FirstOrDefault();
                 if (userViewModel != null)
                 {
