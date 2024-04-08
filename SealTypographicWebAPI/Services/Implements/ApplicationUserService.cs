@@ -6,6 +6,7 @@ using DBEntities.Entities;
 using DJKeycloakLib.Models.BaseModel;
 using DJKeycloakAPI.Models.Users;
 using System.Data.Common;
+using DBEntities.Utils;
 
 namespace SealTypographicWebAPI.Services.Implements
 {
@@ -93,9 +94,11 @@ namespace SealTypographicWebAPI.Services.Implements
                     FirstName = newUserForm.FirstName,
                     LastName = newUserForm.LastName,
                     Email = newUserForm.Email,
-                    Company = company
+                    Company = company,
+                    CreateDate = DateTime.Now,
+                    CreateUserId = 1
                 };
-
+                
                 dbContext.ApplicationUsers.Add(user);
                 await dbContext.SaveChangesAsync();
                 response = ResponseModel.Success();

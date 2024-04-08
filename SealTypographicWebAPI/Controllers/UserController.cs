@@ -45,7 +45,7 @@ namespace SealTypographicWebAPI.Controllers
                 //新增成功後搜尋剛新增的User
                 UsersQuery userQuery = new()
                 {
-                   Username = newUserForm.Username,                    
+                   Keyword = newUserForm.Username,                    
                 };                
                 ResponseModel<UserViewModelPaginate> userViewModels = await base.Get(userQuery);
 
