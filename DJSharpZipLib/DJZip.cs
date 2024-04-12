@@ -13,7 +13,7 @@ namespace DJSharpZipLib
                 using (ZipOutputStream zipOutputStream = new ZipOutputStream(memoryStream))
                 {
                     zipOutputStream.SetLevel(9); // 設定壓縮等級，1~9，9為最高等級
-                    foreach (var sourceData in sourceDatas)
+                    foreach (KeyValuePair<string, byte[]> sourceData in sourceDatas)
                     {
                         ZipEntry entry = new ZipEntry(sourceData.Key);
                         zipOutputStream.PutNextEntry(entry);

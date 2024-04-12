@@ -1,12 +1,5 @@
-﻿using System;
-using System.IO;
-using ICSharpCode.SharpZipLib;
-using ICSharpCode.SharpZipLib.Zip;
+﻿using System.IO;
 using ICSharpCode.SharpZipLib.GZip;
-using ICSharpCode.SharpZipLib.Encryption;
-using ICSharpCode.SharpZipLib.Core;
-using System.Security.Cryptography;
-using ICSharpCode.SharpZipLib.BZip2;
 
 namespace DJSharpZipLib
 {
