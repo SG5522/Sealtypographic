@@ -6,6 +6,22 @@ namespace DJSharpZipLib
 {
     public class DJZip
     {
+        public static byte[] Compress(Dictionary<string, string> sourceDataPaths)
+        {
+            Dictionary<string, byte[]> sourceDatas = new Dictionary<string, byte[]>();
+
+            foreach (KeyValuePair<string, string> sourceData in sourceDataPaths)
+            {
+                sourceDatas.Add(sourceData.Key, File.ReadAllBytes(sourceData.Value));
+            }
+            return Compress(sourceDatas);
+        }
+
+        /// <summary>
+        /// 壓縮
+        /// </summary>
+        /// <param name="sourceDatas"></param>
+        /// <returns></returns>
         public static byte[] Compress(Dictionary<string, byte[]> sourceDatas)
         {
             using (var memoryStream = new MemoryStream())
@@ -24,10 +40,16 @@ namespace DJSharpZipLib
                 return memoryStream.ToArray();
             }
         }
-        public static Dictionary<string, byte[]> Decompress(byte[] compressedData)
+
+        /// <summary>
+        /// 解壓縮
+        /// </summary>
+        /// <param name="srcBytes">資料源</param>
+        /// <returns></returns>
+        public static Dictionary<string, byte[]> Decompress(byte[] srcBytes)
         {
             Dictionary<string, byte[]> result = new Dictionary<string, byte[]>();
-            using (MemoryStream compressedStream = new MemoryStream(compressedData))
+            using (MemoryStream compressedStream = new MemoryStream(srcBytes))
             {
                 using (ZipInputStream zipInputStream = new ZipInputStream(compressedStream))
                 {
