@@ -58,7 +58,8 @@ namespace SealTypographicWebAPI.Services.Implements
                                                                         .Where
                                                                         (
                                                                             customerSealGroup => customerSealGroup.DeleteStatus == DeleteStatus.No
-                                                                            && customerSealGroup.ReviewStatus < ReviewStatus.Disabled                                                                        
+                                                                            && customerSealGroup.ReviewStatus != ReviewStatus.Draft
+                                                                            && customerSealGroup.ReviewStatus < ReviewStatus.Disabled
                                                                             && customerSealGroup.Customer.Company.Id == companyId
                                                                             && customerSealGroup.TypographyType == typographyType
                                                                         ).OrderByDescending(x => x.QuarterYear.Id);

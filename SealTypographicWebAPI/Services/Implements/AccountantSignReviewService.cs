@@ -57,6 +57,7 @@ namespace SealTypographicWebAPI.Services.Implements
                                                                             (
                                                                                 x => x.DeleteStatus == DeleteStatus.No
                                                                                 && x.ReviewStatus < ReviewStatus.Disabled
+                                                                                && x.ReviewStatus != ReviewStatus.Draft
                                                                             ).OrderByDescending(x => x.Id);
 
                 if (!string.IsNullOrWhiteSpace(accountantSignSearchReview.KeyWord))

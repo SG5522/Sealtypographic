@@ -23,6 +23,12 @@ namespace SealTypographicWebAPI.Models.Customer
         public string Name { get; set; }
 
         /// <summary>
+        /// 客戶簡稱
+        /// </summary>
+        /// <example>映像</example>
+        public string ShortName { get; set; }
+
+        /// <summary>
         /// 統一編號 (Business administration number)
         /// </summary>
         public string BAN { get; set; }

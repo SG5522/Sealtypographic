@@ -32,7 +32,7 @@ namespace DJSharpZipLib
                     foreach (KeyValuePair<string, byte[]> sourceData in sourceDatas)
                     {
                         ZipEntry entry = new ZipEntry(sourceData.Key);
-                        zipOutputStream.PutNextEntry(entry);
+                        zipOutputStream.PutNextEntry(entry);                        
                         zipOutputStream.Write(sourceData.Value, 0, sourceData.Value.Length);
                         zipOutputStream.CloseEntry();
                     }
