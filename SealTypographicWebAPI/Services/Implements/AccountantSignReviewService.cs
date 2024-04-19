@@ -18,7 +18,7 @@ namespace SealTypographicWebAPI.Services.Implements
     /// </summary>
     public class AccountantSignReviewService : IAccountantSignReviewService
     {
-        private readonly SealTypographicDbContext dbContext;        
+        private readonly SealTypographicDbContext dbContext;
         private readonly IMapper mapper;
         private readonly AutoMapper.IConfigurationProvider configurationProvider;
         private readonly ILogger<AccountantSignReviewService> logger;
@@ -27,10 +27,10 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <summary>
         /// 建構
         /// </summary>
-        /// <param name="dbContext"></param>        
+        /// <param name="dbContext"></param>
         /// <param name="mapper"></param>
         /// <param name="logger"></param>
-        /// <param name="logReportService"></param>    
+        /// <param name="logReportService"></param>
         public AccountantSignReviewService(SealTypographicDbContext dbContext, IMapper mapper, ILogger<AccountantSignReviewService> logger, ILogReportService logReportService)
         {
             this.dbContext = dbContext;
