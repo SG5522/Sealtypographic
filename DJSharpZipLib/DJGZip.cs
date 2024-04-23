@@ -8,6 +8,7 @@ namespace DJSharpZipLib
     /// </summary>
     public class DJGZip
     {
+
         public static byte[] CompressBytes (string filePath) => CompressBytes(File.ReadAllBytes(filePath));        
 
         /// <summary>
@@ -21,7 +22,7 @@ namespace DJSharpZipLib
             {
                 using (GZipOutputStream gzipOutputStream = new GZipOutputStream(outputMemoryStream ))
                 {
-                    gzipOutputStream.SetLevel(9);
+                    gzipOutputStream.SetLevel(9);                    
                     gzipOutputStream.Write(inputBytes, 0, inputBytes.Length);
                 }
                 return outputMemoryStream.ToArray();

@@ -271,6 +271,20 @@ namespace SealTypographicWebAPI.Services.Implements
             
             try
             {
+                Accountant? accountantQuery = dbContext.Accountants.Find(accountantId);
+
+                if (accountantQuery != null)
+                {
+                    accountantQuery.DeleteStatus = DeleteStatus.Yes;
+                    InputUtil.Set(accountantQuery, false, userId);
+                    await dbContext.SaveChangesAsync();
+                    response.Success();
+                }
+                else
+                {
+                    response.DeleteAccountantNoData();
+                }
+
                 logger.LogInformation("Delete output {@output}", response);
             }
             catch (DbUpdateException ex)
@@ -283,20 +297,7 @@ namespace SealTypographicWebAPI.Services.Implements
                 response.Error();
                 logger.LogError("GetPaginate error {@error}", ex.Message);
             }
-
-            Accountant? accountantQuery = dbContext.Accountants.Find(accountantId);
-
-            if (accountantQuery != null)
-            {
-                accountantQuery.DeleteStatus = DeleteStatus.Yes;                
-                InputUtil.Set(accountantQuery, false, userId);
-                await dbContext.SaveChangesAsync();
-                response.Success();
-            }
-            else
-            {
-                response.DeleteAccountantNoData();
-            }
+            
             return response;
         }        
     }    

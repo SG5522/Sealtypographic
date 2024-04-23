@@ -4,8 +4,13 @@ using System.IO;
 
 namespace DJSharpZipLib
 {
-    public class DJZip
+    public class DJZip : FileModel
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sourceDataPaths">key檔名 value bytes資料</param>
+        /// <returns></returns>
         public static byte[] Compress(Dictionary<string, string> sourceDataPaths)
         {
             Dictionary<string, byte[]> sourceDatas = new Dictionary<string, byte[]>();
@@ -20,7 +25,7 @@ namespace DJSharpZipLib
         /// <summary>
         /// 壓縮
         /// </summary>
-        /// <param name="sourceDatas"></param>
+        /// <param name="sourceDatas">key檔名 value bytes資料</param>
         /// <returns></returns>
         public static byte[] Compress(Dictionary<string, byte[]> sourceDatas)
         {
@@ -28,7 +33,8 @@ namespace DJSharpZipLib
             {
                 using (ZipOutputStream zipOutputStream = new ZipOutputStream(memoryStream))
                 {
-                    zipOutputStream.SetLevel(9); // 設定壓縮等級，1~9，9為最高等級
+                    zipOutputStream.SetLevel(9); // 設定壓縮等級，1~9，9為最高等級                    
+                    //zipOutputStream.Password = 
                     foreach (KeyValuePair<string, byte[]> sourceData in sourceDatas)
                     {
                         ZipEntry entry = new ZipEntry(sourceData.Key);
