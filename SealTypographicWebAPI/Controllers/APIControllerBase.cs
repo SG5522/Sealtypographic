@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using SealTypographicWebAPI.Models;
 using SealTypographicWebAPI.Services;
 
@@ -11,7 +12,7 @@ namespace SealTypographicWebAPI.Controllers
     /// </summary>
     [Route("api/[controller]")]
     [ApiController]
-    []
+    [Authorize]
     public abstract class APIControllerBase : ControllerBase
     {
 

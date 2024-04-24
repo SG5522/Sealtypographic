@@ -11,7 +11,6 @@ namespace SealTypographicWebAPI.Controllers
     /// </summary>
     [Route("api/[controller]")]    
     [ApiController]
-    [A]
     public class AccountantGroupController : APIControllerBase
     {
         /// <summary>
