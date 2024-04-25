@@ -17,7 +17,8 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <summary>
         /// IStringLocalizer
         /// </summary>
-        /// <param name="localizer"></param>      
+        /// <param name="localizer"></param>
+        /// <param name="logger"></param>      
         public SealMappingConfigService(IStringLocalizer<SealMappingConfigService> localizer, ILogger<SealMappingConfigService> logger)
         {
             this.localizer = localizer;
