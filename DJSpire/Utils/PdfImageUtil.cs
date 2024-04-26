@@ -98,14 +98,14 @@ namespace DJSpire.Utils
 #pragma warning disable CA1416 // 驗證平台相容性            
             switch (imageType)
             {
-                case PdfImageType.Jpg:
-                    Conversion.SaveJpeg(memoryStream, bytes, null, pageNo - 1, dpi);
+                case PdfImageType.Jpg:                    
+                    Conversion.SaveJpeg(memoryStream, bytes, null, pageNo - 1, options: new(dpi));
                     break;
                 case PdfImageType.Png:
-                    Conversion.SavePng(memoryStream, bytes, null, pageNo - 1, dpi);
+                    Conversion.SavePng(memoryStream, bytes, null, pageNo - 1, options: new(dpi));
                     break;
                 case PdfImageType.Webp:
-                    Conversion.SaveWebp(memoryStream, bytes, null, pageNo - 1, dpi);
+                    Conversion.SaveWebp(memoryStream, bytes, null, pageNo - 1, options: new(dpi));
                     break;
             }
 #pragma warning restore CA1416 // 驗證平台相容性
