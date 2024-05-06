@@ -92,7 +92,7 @@ namespace SealTypographicWebAPI.Services
         /// <param name="userName"></param>
         /// <param name="userId"></param>
         /// <returns></returns>
-        Task SaveOperationLog(OperationLogSave operationLogForm, string userName = "test", string userId = "test");
+        Task SaveOperationLog(OperationLogSave operationLogForm, string userId = "test", string userName = "test");
 
         /// <summary>
         /// 客戶印鑑事件紀錄(傳到MongoDB)

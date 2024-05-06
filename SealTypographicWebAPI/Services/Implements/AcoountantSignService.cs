@@ -83,10 +83,10 @@ namespace SealTypographicWebAPI.Services.Implements
         }
 
         ///<inheritdoc />
-        public async Task<AccountantSignViewModels> GetSignViewModels(int accountantSignGroupId, bool isTransparent, int userId = 1)
+        public async Task<AccountantSignViewModels> GetSignViewModels(int accountantSignGroupId, bool isTransparent, UserInfo userInfo)
         {
             logger.LogInformation("GetSignViewModels input accountantSignGroupId: {@accountantSignGroupId} isTransparent: {@isTransparent} userId: {@userId}"
-                , accountantSignGroupId, isTransparent, userId);
+                , accountantSignGroupId, isTransparent, userInfo.UserId);
 
             AccountantSignViewModels? accountantSignViewModels;
 
@@ -109,7 +109,11 @@ namespace SealTypographicWebAPI.Services.Implements
                     }
                     accountantSignViewModels.Success();
                     //操作紀錄(查詢)存檔
-                    await logReportService.SaveOperationLog(mapper.Map<OperationLogSave>(accountantSignViewModels));
+                    await logReportService.SaveOperationLog(
+                                                                mapper.Map<OperationLogSave>(accountantSignViewModels),
+                                                                userInfo.UserName,
+                                                                $"{userInfo.FirstName}{userInfo.LastName}"
+                                                            );
                 }
                 else
                 {

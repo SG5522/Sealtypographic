@@ -318,7 +318,7 @@ namespace SealTypographicWebAPI.Services.Implements
 
                         customerSealGroup.QuarterYear = quarter;
                         customerSealGroup.TypographyType = typographyType;                        
-                        InputUtil.SetWithReview(customerSealGroup, true, userId);
+                        InputUtil.SetReviewDraft(customerSealGroup, userId, true);
                         customerSealGroup.StartDate = DateUtil.NotActivated();
                         customerSealGroup.EndDate = DateUtil.NotActivated();
                         //新增印鑑資料(圖檔與DB資源)

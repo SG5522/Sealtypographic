@@ -35,7 +35,7 @@ namespace SealTypographicWebAPI.Controllers
         /// <returns></returns>
         [HttpGet("[Action]")]
         public async Task<CustomerSealGroupReviewPaginate> ReviewPaginate([FromQuery]CustomerSealSearchReview customerSealReviewSearch) => 
-             await customerSealReviewService.GetReviewList(customerSealReviewSearch, TypographyType.FinancialReport, await GetUserId());
+             await customerSealReviewService.GetReviewList(customerSealReviewSearch, TypographyType.FinancialReport, await GetUserInfo());
 
         /// <summary>
         /// 客戶基本資料與該季所有印鑑
@@ -44,7 +44,7 @@ namespace SealTypographicWebAPI.Controllers
         /// <returns></returns>
         [HttpGet("{customerSealQuarterId}")]
         public async Task<CustomerSealGroupDetailReviewResponse> ReviewDetail(int customerSealQuarterId) => 
-            await customerSealReviewService.GetReviewDetail(customerSealQuarterId, await GetUserId());
+            await customerSealReviewService.GetReviewDetail(customerSealQuarterId, await GetUserInfo());
 
         /// <summary>
         /// 審核通過
@@ -52,7 +52,7 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="customerSealQuarterIds">印鑑季度Id</param>
         [HttpPut("[Action]")]
         public async Task<ResponseViewModel> Approval(List<int> customerSealQuarterIds) => 
-            await customerSealReviewService.StatusChange(customerSealQuarterIds, ReviewStatus.Approval, await GetUserId());
+            await customerSealReviewService.StatusChange(customerSealQuarterIds, ReviewStatus.Approval, await GetUserInfo());
 
         /// <summary>
         /// 審核退件
@@ -60,7 +60,7 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="customerSealQuarterIds">印鑑季度Id</param>
         [HttpPut("[Action]")]
         public async Task<ResponseViewModel> Reject(List<int> customerSealQuarterIds) => 
-            await customerSealReviewService.StatusChange(customerSealQuarterIds, ReviewStatus.Reject, await GetUserId());
+            await customerSealReviewService.StatusChange(customerSealQuarterIds, ReviewStatus.Reject, await GetUserInfo());
 
         /// <summary>
         /// 審核不受理
@@ -68,6 +68,6 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="customerSealQuarterIds">印鑑季度Id</param>
         [HttpPut("[Action]")]
         public async Task<ResponseViewModel> Refuse(List<int> customerSealQuarterIds) => 
-            await customerSealReviewService.StatusChange(customerSealQuarterIds, ReviewStatus.Refuse, await GetUserId());
+            await customerSealReviewService.StatusChange(customerSealQuarterIds, ReviewStatus.Refuse, await GetUserInfo());
     }
 }

@@ -14,9 +14,9 @@ namespace SealTypographicWebAPI.Services
         /// 取得資料
         /// </summary>
         /// <param name="accountantId">會計師Id</param>
-        /// <param name="userId">登入的使用者Id</param>
+        /// <param name="userInfo">登入使用者基本資訊(紀錄Log使用)</param>        
         /// <returns></returns>
-        Task<AccountantDetailResponse> GetDetail(int accountantId, int userId = 1);
+        Task<AccountantDetailResponse> GetDetail(int accountantId, UserInfo userInfo);
 
         /// <summary>
         /// 依搜尋條件獲得資料列表

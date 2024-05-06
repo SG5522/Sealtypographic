@@ -34,7 +34,7 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="accountantId">會計師ID</param>        
         /// <returns></returns>
         [HttpGet("{accountantId}")]
-        public async Task<AccountantDetailResponse> Detail(int accountantId) => await accountantService.GetDetail(accountantId, await GetUserId());
+        public async Task<AccountantDetailResponse> Detail(int accountantId) => await accountantService.GetDetail(accountantId, await GetUserInfo());
 
         /// <summary>
         /// 依搜尋條件獲得資料列表(分頁)

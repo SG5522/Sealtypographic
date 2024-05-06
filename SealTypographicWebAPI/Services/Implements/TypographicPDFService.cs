@@ -22,6 +22,7 @@ using DJImageLib.Extensions;
 using DBEntities.Utils;
 using CommonLib.Extensions;
 using Microsoft.OpenApi.Extensions;
+using DBEntities.Extensions;
 
 namespace SealTypographicWebAPI.Services.Implements
 {
@@ -417,7 +418,7 @@ namespace SealTypographicWebAPI.Services.Implements
                         PdfEditStep = PdfEditStep.CustomerSeal,
                         TypographicPages = new List<TypographicPage>()
                     };                    
-                    InputUtil.SetWithReview(typographicPDF, true, userId);
+                    InputUtil.SetReviewDraft(typographicPDF, userId, true);
                     foreach (TypographicPageForm pageInfo in typographicPDFForm.Pages)
                     {
                         typographicPDF.TypographicPages.Add(await PageSave(pageInfo));
@@ -465,7 +466,7 @@ namespace SealTypographicWebAPI.Services.Implements
                     //紀錄pdf現在的步驟
                     typographicPDF.PdfEditStep = typographicPDFSaveForm.PdfEditStep;
 
-                    InputUtil.SetWithReview(typographicPDF, false, userId);
+                    InputUtil.SetReviewDraft(typographicPDF, userId, false);
 
                     List<TypographicPage> newPages = new();
 
@@ -505,8 +506,7 @@ namespace SealTypographicWebAPI.Services.Implements
                 TypographicPDF? typographicPDF = dbContext.TypographicPDFs.Find(typographicPDFId);
                 if (typographicPDF != null)
                 {
-                    typographicPDF.ReviewStatus = reviewStatus;                    
-                    InputUtil.SetWithReview(typographicPDF, false, userId);
+                    reviewStatus.Set(typographicPDF, userId);
                     await dbContext.SaveChangesAsync();
                     response.Success();
                 }
@@ -538,9 +538,7 @@ namespace SealTypographicWebAPI.Services.Implements
 
                 if (typographicPDF != null)
                 {
-                    typographicPDF.DeleteStatus = DeleteStatus.Yes;
-                    typographicPDF.ReviewStatus = ReviewStatus.Disabled;                    
-                    InputUtil.SetWithReview(typographicPDF, false, userId);
+                    ReviewStatus.Disabled.Set(typographicPDF, userId);
                     await dbContext.SaveChangesAsync();
                     response.Success();
                 }

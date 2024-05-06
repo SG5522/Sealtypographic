@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using SealTypographicWebAPI.Models;
 using SealTypographicWebAPI.Models.AccountantSignReview;
 using SealTypographicWebAPI.Services;
-using Serilog;
 
 
 namespace SealTypographicWebAPI.Controllers
@@ -13,7 +12,7 @@ namespace SealTypographicWebAPI.Controllers
     /// </summary>
     [Route("api/[controller]")]    
     [ApiController]
-    public class AccountantSignReviewController : ControllerBase
+    public class AccountantSignReviewController : APIControllerBase
     {
         /// <summary>
         /// 會計師簽印審核管理的service
@@ -24,7 +23,9 @@ namespace SealTypographicWebAPI.Controllers
         /// 建構:注入Service
         /// </summary>
         /// <param name="accountSignReviewService">客戶印鑑審核管理</param>
-        public AccountantSignReviewController(IAccountantSignReviewService accountSignReviewService)
+        /// <param name="applicationUserService"></param>
+        public AccountantSignReviewController(IAccountantSignReviewService accountSignReviewService, 
+            IApplicationUserService applicationUserService) : base(applicationUserService)
         {
             this.accountSignReviewService = accountSignReviewService;
         }
@@ -35,7 +36,7 @@ namespace SealTypographicWebAPI.Controllers
         /// <returns></returns>
         [HttpGet("[Action]")]
         public async Task<AccountantSignGroupReviewPaginate> ReviewPaginate([FromQuery]AccountantSignSearchReview accountantSignSearchReview) 
-           => await accountSignReviewService.GetReviewPaginate(accountantSignSearchReview);
+           => await accountSignReviewService.GetReviewPaginate(accountantSignSearchReview, await GetUserInfo());
 
         /// <summary>
         /// 會計師基本資料與簽印組
@@ -44,7 +45,7 @@ namespace SealTypographicWebAPI.Controllers
         /// <returns></returns>
         [HttpGet("{accountantSignGroupId}")]
         public async Task<AccountantSignGroupDetailReviewResponse> ReviewDetail(int accountantSignGroupId)
-             => await accountSignReviewService.GetReviewDetail(accountantSignGroupId);
+             => await accountSignReviewService.GetReviewDetail(accountantSignGroupId, await GetUserInfo());
 
         /// <summary>
         /// 審核通過
@@ -52,7 +53,7 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="accountantSignGroupIds"></param>
         [HttpPut("[Action]")]
         public async Task<ResponseViewModel> Approval(List<int> accountantSignGroupIds) 
-            => await accountSignReviewService.StatusChange(accountantSignGroupIds, ReviewStatus.Approval);
+            => await accountSignReviewService.StatusChange(accountantSignGroupIds, ReviewStatus.Approval, await GetUserInfo());
 
         /// <summary>
         /// 審核退件
@@ -60,7 +61,7 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="accountantSignGroupIds"></param>
         [HttpPut("[Action]")]
         public async Task<ResponseViewModel> Reject(List<int> accountantSignGroupIds) 
-            => await accountSignReviewService.StatusChange(accountantSignGroupIds, ReviewStatus.Reject);
+            => await accountSignReviewService.StatusChange(accountantSignGroupIds, ReviewStatus.Reject, await GetUserInfo());
 
         /// <summary>
         /// 審核不受理
@@ -68,6 +69,6 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="accountantSignGroupIds"></param>
         [HttpPut("[Action]")]
         public async Task<ResponseViewModel> Refuse(List<int> accountantSignGroupIds) 
-            => await accountSignReviewService.StatusChange(accountantSignGroupIds, ReviewStatus.Refuse);
+            => await accountSignReviewService.StatusChange(accountantSignGroupIds, ReviewStatus.Refuse, await GetUserInfo());
     }
 }

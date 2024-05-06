@@ -4,6 +4,7 @@ using CommonLib.Enums;
 using DBEntities;
 using DBEntities.Consts;
 using DBEntities.Entities.CustomerModels;
+using DBEntities.Utils;
 using Microsoft.EntityFrameworkCore;
 using SealTypographicWebAPI.Models;
 using SealTypographicWebAPI.Models.CustomerSealReview;
@@ -42,10 +43,10 @@ namespace SealTypographicWebAPI.Services.Implements
         }
 
         ///<inheritdoc />
-        public async Task<CustomerSealGroupReviewPaginate> GetReviewList(CustomerSealSearchReview customerSealSearchReview, TypographyType typographyType, int userId = 1)
+        public async Task<CustomerSealGroupReviewPaginate> GetReviewList(CustomerSealSearchReview customerSealSearchReview, TypographyType typographyType, UserInfo userInfo)
         {
             logger.LogInformation("GetReviewList input {@customerSealSearchReview} typographyType: {@TypographyType} userId : {@userId}"
-                , customerSealSearchReview, typographyType, userId);
+                , customerSealSearchReview, typographyType, userInfo.UserId);
 
             CustomerSealGroupReviewPaginate customerSealQuarterResponse = new ();
             int companyId = 1;
@@ -95,7 +96,11 @@ namespace SealTypographicWebAPI.Services.Implements
 
                     foreach(CustomerSealGroupReviewViewModel customerSealGroupReviewViewModel in customerSealQuarterResponse.ViewModels)
                     {
-                        await logReportService.SaveOperationLog(mapper.Map<OperationLogSave>(customerSealGroupReviewViewModel));
+                        await logReportService.SaveOperationLog(
+                                                                    mapper.Map<OperationLogSave>(customerSealGroupReviewViewModel),
+                                                                    userInfo.UserName,
+                                                                    $"{userInfo.FirstName}{userInfo.LastName}"
+                                                                );
                     }
                 }
                 else
@@ -114,9 +119,9 @@ namespace SealTypographicWebAPI.Services.Implements
         }
         
         ///<inheritdoc />
-        public async Task<CustomerSealGroupDetailReviewResponse> GetReviewDetail(int customerSealQuarterId, int userId = 1)
+        public async Task<CustomerSealGroupDetailReviewResponse> GetReviewDetail(int customerSealQuarterId, UserInfo userInfo)
         {
-            logger.LogInformation("GetReviewDetail input customerSealQuarterId: {@customerSealQuarterId} userId: {@userId}", customerSealQuarterId, userId);
+            logger.LogInformation("GetReviewDetail input customerSealQuarterId: {@customerSealQuarterId} userId: {@userId}", customerSealQuarterId, userInfo.UserId);
 
             CustomerSealGroupDetailReviewResponse customerSealReviewDetailResponse = new();
 
@@ -134,7 +139,11 @@ namespace SealTypographicWebAPI.Services.Implements
                 {
                     customerSealReviewDetailResponse.ViewModel = customerSealGroupQuery;
                     customerSealReviewDetailResponse.Success();
-                    await logReportService.SaveOperationLog(mapper.Map<OperationLogSave>(customerSealGroupQuery));
+                    await logReportService.SaveOperationLog(
+                                                                mapper.Map<OperationLogSave>(customerSealGroupQuery),
+                                                                userInfo.UserName,
+                                                                $"{userInfo.FirstName}{userInfo.LastName}"
+                                                            );
                 }
                 else
                 {
@@ -152,10 +161,10 @@ namespace SealTypographicWebAPI.Services.Implements
         }
 
         ///<inheritdoc />
-        public async Task<ResponseViewModel> StatusChange(List<int> customerSealQuarterIds, ReviewStatus reviewStatus, int userId = 1)
+        public async Task<ResponseViewModel> StatusChange(List<int> customerSealQuarterIds, ReviewStatus reviewStatus, UserInfo userInfo)
         {
             logger.LogInformation("StatusChange input customerSealQuarterIds {@customerSealQuarterIds} reviewStatus: {@reviewStatus} userId: {@userId}"
-                , customerSealQuarterIds, reviewStatus, userId);
+                , customerSealQuarterIds, reviewStatus, userInfo.UserId);
 
             ResponseViewModel response = new();
             
@@ -171,7 +180,7 @@ namespace SealTypographicWebAPI.Services.Implements
                                                             .FirstOrDefault(x => x.Id == customerSealQuarterId);
                     if (customerSealGroup != null)
                     {
-                        customerSealGroup.ReviewUserId = userId;
+                        customerSealGroup.ReviewUserId = userInfo.UserId;
                         customerSealGroup.ReviewStatus = reviewStatus;
                         customerSealGroup.ReviewDate = DateTime.Now;
                         if (reviewStatus == ReviewStatus.Approval)
@@ -183,6 +192,8 @@ namespace SealTypographicWebAPI.Services.Implements
                         {   
                             customerSealGroup.DeleteStatus = DeleteStatus.Yes;
                         }
+
+                        InputUtil.SetReviewApproval(customerSealGroup, userInfo.UserId);
                         customerSealEventLogSaves.Add(mapper.Map<CustomerSealEventLogSave>(customerSealGroup));                        
                     }
                     else
@@ -198,7 +209,11 @@ namespace SealTypographicWebAPI.Services.Implements
                     //異動紀錄存檔(審核)
                     foreach (CustomerSealEventLogSave customerSealEventLogSave in customerSealEventLogSaves)
                     {
-                        await logReportService.SaveCustomerSealEventLog(customerSealEventLogSave, OperateType.Review);
+                        await logReportService.SaveCustomerSealEventLog(
+                                                                            customerSealEventLogSave, OperateType.Review,
+                                                                            userInfo.UserName,
+                                                                            $"{userInfo.FirstName}{userInfo.LastName}"
+                                                                        );
                     }
                 }
                 else

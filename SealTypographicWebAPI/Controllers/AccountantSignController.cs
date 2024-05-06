@@ -45,7 +45,7 @@ namespace SealTypographicWebAPI.Controllers
         /// <returns></returns>        
         [HttpGet]
         public async Task<AccountantSignViewModels> Signs(int accountantSignGroupId, bool isTransparent) 
-                => await accountantSignService.GetSignViewModels(accountantSignGroupId, isTransparent, await GetUserId());
+                => await accountantSignService.GetSignViewModels(accountantSignGroupId, isTransparent, await GetUserInfo());
 
         /// <summary>
         /// 新增會計師簽印組

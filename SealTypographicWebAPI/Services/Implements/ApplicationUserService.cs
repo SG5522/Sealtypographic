@@ -60,7 +60,7 @@ namespace SealTypographicWebAPI.Services.Implements
                         LastName = claims.FindFirstValue(ClaimTypes.Surname),
                     });
                 }
-                userInfo.KeycloakUserId = claims.FindFirstValue(ClaimTypes.NameIdentifier);
+                userInfo.KeycloakUserId = claims.FindFirstValue(ClaimTypes.NameIdentifier) ?? string.Empty;
                 userInfo.UserName = claims.Identity.Name!;
                 userInfo.FirstName = claims.FindFirstValue(ClaimTypes.GivenName);
                 userInfo.LastName = claims.FindFirstValue(ClaimTypes.Surname);

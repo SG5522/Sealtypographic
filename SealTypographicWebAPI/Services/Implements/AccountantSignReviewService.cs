@@ -10,6 +10,7 @@ using DBEntities.Entities.AccountantModels;
 using CommonLib.Enums;
 using SealTypographicWebAPI.Models.LogReport.AccountantSignLog;
 using SealTypographicWebAPI.Models.LogReport.OperationLog;
+using DBEntities.Utils;
 
 namespace SealTypographicWebAPI.Services.Implements
 {
@@ -30,20 +31,20 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <param name="dbContext"></param>
         /// <param name="mapper"></param>
         /// <param name="logger"></param>
-        /// <param name="logReportService"></param>
+        /// <param name="logReportService"></param>        
         public AccountantSignReviewService(SealTypographicDbContext dbContext, IMapper mapper, ILogger<AccountantSignReviewService> logger, ILogReportService logReportService)
         {
             this.dbContext = dbContext;
             this.mapper = mapper;
-            configurationProvider = mapper.ConfigurationProvider;            
+            configurationProvider = mapper.ConfigurationProvider;
             this.logger = logger;
             this.logReportService = logReportService;
         }
 
         ///<inheritdoc />
-        public async Task<AccountantSignGroupReviewPaginate> GetReviewPaginate(AccountantSignSearchReview accountantSignSearchReview, int userId = 1)
+        public async Task<AccountantSignGroupReviewPaginate> GetReviewPaginate(AccountantSignSearchReview accountantSignSearchReview, UserInfo userInfo)
         {
-            logger.LogInformation("GetReviewPaginate input {@input} userId {@userId}", accountantSignSearchReview, userId);
+            logger.LogInformation("GetReviewPaginate input {@input} userId {@userId}", accountantSignSearchReview, userInfo.UserId);
 
             AccountantSignGroupReviewPaginate accountantSignGroupReviewPaginate = new();
 
@@ -80,18 +81,22 @@ namespace SealTypographicWebAPI.Services.Implements
                 {
                     //取得該頁                   
                     accountantSignGroupReviewPaginate.ViewModels = await PageUtil.SetPaginateViewModelAsync<AccountantSignGroup, AccountantSignGroupReviewViewModel>
-                                                                    (
-                                                                        accountantSignGroupQuery,                                                                        
-                                                                        configurationProvider,
-                                                                        accountantSignSearchReview.PageNumber,
-                                                                        accountantSignSearchReview.PageSize
-                                                                    );
+                                                                        (
+                                                                            accountantSignGroupQuery,                                                                        
+                                                                            configurationProvider,
+                                                                            accountantSignSearchReview.PageNumber,
+                                                                            accountantSignSearchReview.PageSize
+                                                                        );
 
                     PageUtil.SetPaginate(accountantSignGroupReviewPaginate, accountantSignSearchReview.PageNumber, accountantSignSearchReview.PageSize, accountantSignGroupQuery.Count());
                     accountantSignGroupReviewPaginate.Success();
                     foreach(AccountantSignGroupReviewViewModel accountantSignGroupReviewViewModel in accountantSignGroupReviewPaginate.ViewModels)
                     {                        
-                        await logReportService.SaveOperationLog(mapper.Map<OperationLogSave>(accountantSignGroupReviewViewModel));
+                        await logReportService.SaveOperationLog(
+                                                                    mapper.Map<OperationLogSave>(accountantSignGroupReviewViewModel),
+                                                                    userInfo.UserName,
+                                                                    $"{userInfo.FirstName}{userInfo.LastName}"                                                                
+                                                                );
                     }
                 }
                 else
@@ -111,9 +116,9 @@ namespace SealTypographicWebAPI.Services.Implements
         }
 
         ///<inheritdoc />
-        public async Task<AccountantSignGroupDetailReviewResponse> GetReviewDetail(int accountantSignGroupId, int userId = 1)
+        public async Task<AccountantSignGroupDetailReviewResponse> GetReviewDetail(int accountantSignGroupId, UserInfo userInfo)
         {
-            logger.LogInformation("GetReviewDetail accountantSignGroupId {@accountantSignGroupId} userId {@userId}", accountantSignGroupId, userId);
+            logger.LogInformation("GetReviewDetail accountantSignGroupId {@accountantSignGroupId} userId {@userId}", accountantSignGroupId, userInfo.UserId);
 
             AccountantSignGroupDetailReviewResponse accountantSignGroupDetailReviewResponse = new();
 
@@ -131,7 +136,11 @@ namespace SealTypographicWebAPI.Services.Implements
                 {
                     accountantSignGroupDetailReviewResponse.ViewModel = accountantSignGroupQuery;
                     accountantSignGroupDetailReviewResponse.Success();
-                    await logReportService.SaveOperationLog(mapper.Map<OperationLogSave>(accountantSignGroupQuery));
+                    await logReportService.SaveOperationLog(
+                                                                mapper.Map<OperationLogSave>(accountantSignGroupQuery),
+                                                                userInfo.UserName,
+                                                                $"{userInfo.FirstName}{userInfo.LastName}"
+                                                            );
                 }
                 else 
                 {
@@ -148,17 +157,11 @@ namespace SealTypographicWebAPI.Services.Implements
             return accountantSignGroupDetailReviewResponse;            
         }
 
-        /// <summary>
-        /// 更換審核狀態
-        /// </summary>
-        /// <param name="accountantSignGroupIds">會計師簽印群組Id</param>
-        /// <param name="reviewStatus">審核狀態</param>
-        /// <param name="userId">從Keycloak驗證取得</param>
-        /// <returns></returns>
-        public async Task<ResponseViewModel> StatusChange(List<int> accountantSignGroupIds, ReviewStatus reviewStatus, int userId = 1)
+        ///<inheritdoc />
+        public async Task<ResponseViewModel> StatusChange(List<int> accountantSignGroupIds, ReviewStatus reviewStatus, UserInfo userInfo)
         {
             logger.LogInformation("StatusChange accountantSignGroupIds: {@accountantSignGroupIds}, reviewStatus: {@reviewStatus}, userId: {@userId} "
-                                    , accountantSignGroupIds, reviewStatus, userId);
+                                    , accountantSignGroupIds, reviewStatus, userInfo.UserId);
 
             List<AccountantSignEventLogSave> accountantSignEventLogSaves = new ();
 
@@ -173,9 +176,9 @@ namespace SealTypographicWebAPI.Services.Implements
                                                                                 .FirstOrDefault(x => x.Id == accountantSignGroupId);
                     if (accountantSignGroupQuery != null)
                     {
-                        accountantSignGroupQuery.ReviewUserId = userId;
+                        accountantSignGroupQuery.ReviewUserId = userInfo.UserId;
                         accountantSignGroupQuery.ReviewStatus = reviewStatus;
-                        accountantSignGroupQuery.ReviewDate = DateTime.Now;
+                        accountantSignGroupQuery.ReviewDate = DateTime.Now;                        
                         switch (reviewStatus)
                         {
                             case ReviewStatus.Approval:
@@ -220,7 +223,11 @@ namespace SealTypographicWebAPI.Services.Implements
                     //異動紀錄存檔(審核)
                     foreach(AccountantSignEventLogSave accountantSignEventLogSave in accountantSignEventLogSaves)
                     {
-                        await logReportService.SaveAccountantSignEventLog(accountantSignEventLogSave, OperateType.Review);
+                        await logReportService.SaveAccountantSignEventLog(
+                                                                            accountantSignEventLogSave, OperateType.Review,
+                                                                            userInfo.UserName,
+                                                                            $"{userInfo.FirstName}{userInfo.LastName}"
+                                                                        );
                     }                    
                 }
                 else

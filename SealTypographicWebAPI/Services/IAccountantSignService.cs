@@ -14,7 +14,7 @@ namespace SealTypographicWebAPI.Services
         /// 取得會計師簽印建立日期列表
         /// </summary>
         /// <param name="accountantId">會計師ID</param>
-        /// <param name="userId">登入的使用者ID</param>        
+        /// <param name="userId">登入的使用者ID</param>  
         /// <returns></returns>
         Task<AccountantSignGroupResponse> GetCreateDates(int accountantId, int userId = 1);
 
@@ -23,9 +23,9 @@ namespace SealTypographicWebAPI.Services
         /// </summary>
         /// <param name="accountantSignGroupId">會計師簽印群組Id</param>
         /// <param name="isTransparent">是否白底透明化</param>
-        /// <param name="userId">登入的使用者ID</param>
-        /// <returns></returns>
-        Task<AccountantSignViewModels> GetSignViewModels(int accountantSignGroupId, bool isTransparent,int userId = 1);
+        /// <param name="userInfo">登入使用者基本資訊</param>
+        /// <returns></returns>        
+        Task<AccountantSignViewModels> GetSignViewModels(int accountantSignGroupId, bool isTransparent, UserInfo userInfo);
 
         /// <summary>
         /// 新增會計師簽印組

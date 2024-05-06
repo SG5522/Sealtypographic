@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using System.Runtime.CompilerServices;
 
 namespace DBEntities.Consts
 {
@@ -57,7 +58,6 @@ namespace DBEntities.Consts
         [Description("Refuse")]
         Refuse = 60,
     }
-
     /// <summary>
     /// 信頭圖片狀態
     /// </summary>

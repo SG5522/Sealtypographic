@@ -42,9 +42,9 @@ namespace SealTypographicWebAPI.Services.Implements
         }
 
         ///<inheritdoc />
-        public async Task<AccountantDetailResponse> GetDetail(int accountantId, int userId = 1)
+        public async Task<AccountantDetailResponse> GetDetail(int accountantId, UserInfo userInfo)
         {
-            logger.LogInformation("GetDetail input accountantId: {@accountantId} userId {@userId}", accountantId, userId);
+            logger.LogInformation("GetDetail input accountantId: {@accountantId} userId {@userId}", accountantId, userInfo.UserId);
 
             AccountantDetailResponse accountantResponse = new();
 
@@ -60,7 +60,12 @@ namespace SealTypographicWebAPI.Services.Implements
                 {
                     accountantResponse.AccountantDetailViewModel = accountantDetailViewModel;
                     accountantResponse.Success();
-                    await logReportService.SaveOperationLog(mapper.Map<OperationLogSave>(accountantDetailViewModel));
+                    await logReportService.SaveOperationLog
+                            (
+                                mapper.Map<OperationLogSave>(accountantDetailViewModel), 
+                                userInfo.UserName, 
+                                $"{userInfo.FirstName}{userInfo.LastName}"
+                            );
                 }
                 else
                 {

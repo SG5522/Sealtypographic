@@ -15,8 +15,7 @@ namespace SealTypographicWebAPI.Controllers
     /// 系統訊息
     /// </summary>
     [Route("api/[controller]")]
-    [ApiController]
-    //[Authorize]
+    [ApiController]    
     [AllowAnonymous]
     public class SysController : APIControllerBase
     {

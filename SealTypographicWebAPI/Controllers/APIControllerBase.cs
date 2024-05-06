@@ -11,7 +11,8 @@ namespace SealTypographicWebAPI.Controllers
     /// 載入
     /// </summary>
     [Route("api/[controller]")]
-    [ApiController]    
+    [ApiController]
+    [Authorize]
     public abstract class APIControllerBase : ControllerBase
     {
 
