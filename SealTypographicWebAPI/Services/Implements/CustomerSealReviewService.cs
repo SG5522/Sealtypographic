@@ -4,6 +4,7 @@ using CommonLib.Enums;
 using DBEntities;
 using DBEntities.Consts;
 using DBEntities.Entities.CustomerModels;
+using DBEntities.Extensions;
 using DBEntities.Utils;
 using Microsoft.EntityFrameworkCore;
 using SealTypographicWebAPI.Models;
@@ -180,20 +181,7 @@ namespace SealTypographicWebAPI.Services.Implements
                                                             .FirstOrDefault(x => x.Id == customerSealQuarterId);
                     if (customerSealGroup != null)
                     {
-                        customerSealGroup.ReviewUserId = userInfo.UserId;
-                        customerSealGroup.ReviewStatus = reviewStatus;
-                        customerSealGroup.ReviewDate = DateTime.Now;
-                        if (reviewStatus == ReviewStatus.Approval)
-                        {
-                            customerSealGroup.StartDate = DateTime.Now;
-                            customerSealGroup.EndDate = DateTime.Parse("9999/12/31");
-                        }
-                        if (reviewStatus == ReviewStatus.Refuse)
-                        {   
-                            customerSealGroup.DeleteStatus = DeleteStatus.Yes;
-                        }
-
-                        InputUtil.SetReviewApproval(customerSealGroup, userInfo.UserId);
+                        reviewStatus.Set(customerSealGroup, userInfo.UserId);
                         customerSealEventLogSaves.Add(mapper.Map<CustomerSealEventLogSave>(customerSealGroup));                        
                     }
                     else

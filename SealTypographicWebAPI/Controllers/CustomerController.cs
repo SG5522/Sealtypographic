@@ -43,7 +43,7 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="customerId">客戶ID</param>
         /// <returns></returns>
         [HttpGet("{customerId}")]
-        public async Task<CustomerDetailViewModel> Detail(int customerId) => await customerService.GetDetail(customerId, await GetUserId());
+        public async Task<CustomerDetailViewModel> Detail(int customerId) => await customerService.GetDetail(customerId, await GetUserInfo());
 
         /// <summary>
         /// 新增客戶基本資料

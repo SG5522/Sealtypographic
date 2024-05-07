@@ -16,21 +16,29 @@ namespace DBEntities.Extensions
         /// <param name="isCreate"></param>
         public static void Set<T>(this ReviewStatus reviewStatus, T input, int userId, bool isCreate = false) where T : BaseReviewData
         {
-            // For Draft, Pending, and Reject, no additional action needed
+            // For Draft, Pending, and Reject, 不增加任何處理
+            //Disabled, Invalid, Refuse 
             if (reviewStatus >= ReviewStatus.Disabled)
             {
                 input.DeleteStatus = DeleteStatus.Yes;
+                //曾經是通過(啟用)的狀態變成停用 作廢 不受理 就將EndDate改成現在。
+                if (input.ReviewStatus == ReviewStatus.Approval) input.EndDate = DateTime.Now;
             }
+            //Approval 
             else if (reviewStatus == ReviewStatus.Approval)
             {
                 input.StartDate = DateTime.Now;
-                input.EndDate = DateTime.Parse("9999/12/31");
+                input.EndDate = DateTime.Parse("9999/12/31");                
             }
-            // Set review date for all cases except Draft
-            if (reviewStatus != ReviewStatus.Draft) input.ReviewDate = DateTime.Now;
+
+            // 更新草稿狀態以外的審核日期與使用者
+            if (reviewStatus != ReviewStatus.Draft)
+            {
+                input.ReviewDate = DateTime.Now;
+                input.ReviewUserId = userId;
+            }
 
             input.ReviewStatus = reviewStatus;
-            InputUtil.Set(input, isCreate, userId);
         }
     }
 }

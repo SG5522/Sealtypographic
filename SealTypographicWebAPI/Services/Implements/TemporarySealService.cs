@@ -6,6 +6,7 @@ using DBEntities.Entities;
 using DBEntities.Entities.CustomerModels;
 using DBEntities.Entities.TemplateModels;
 using DBEntities.Entities.TypographicModels;
+using DBEntities.Utils;
 using DJImageLib.Utils;
 using Microsoft.EntityFrameworkCore;
 using SealTypographicWebAPI.Consts;
@@ -219,8 +220,8 @@ namespace SealTypographicWebAPI.Services.Implements
                 //標記為刪除
                 foreach(TypographicResource deleteSeal in deleteSeals)
                 {
-                    deleteSeal.DeleteStatus = DeleteStatus.Yes;
-                    TypographicResourceUtil.BaseInputTypographyResource(deleteSeal, false, userId);                    
+                    deleteSeal.DeleteStatus = DeleteStatus.Yes;                    
+                    InputUtil.Set(deleteSeal, userId, false);
                 }
 
                 //新增臨時章                   
@@ -305,7 +306,7 @@ namespace SealTypographicWebAPI.Services.Implements
                 typographyResource.ImageFullPath = await imageService.GetSavedImageFilePath(imageBase64Info);
                 typographyResource.ThumbnailFullPath = await imageService.GetSavedImageThumbnailFilePath(imageBase64Info, true);
 
-                TypographicResourceUtil.BaseInputTypographyResource(typographyResource, true, userId);
+                InputUtil.Set(typographyResource, userId, true);
                 typographicResources.Add(typographyResource);
             }
         }

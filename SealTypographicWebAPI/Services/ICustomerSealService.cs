@@ -46,25 +46,25 @@ namespace SealTypographicWebAPI.Services
         /// </summary>
         /// <param name="customerSealQuarterId">客戶印鑑季度Id</param>
         /// <param name="isTransparent">是否白底透明化</param>
-        /// <param name="userId">登入的使用者Id</param>
-        /// <returns></returns>
-        Task<CustomerSealViewModels> GetSeals(int customerSealQuarterId, bool isTransparent, int userId = 1);
+        /// <param name="userInfo">登入使用者基本資訊</param>        
+        /// <returns></returns>        
+        Task<CustomerSealViewModels> GetSeals(int customerSealQuarterId, bool isTransparent, UserInfo userInfo);
 
         /// <summary>
         /// 新增客戶印鑑組資料
         /// </summary>
-        /// <param name="customerSealForms">客戶印鑑組資料</param>
+        /// <param name="customerSealForm">客戶印鑑組資料</param>
         /// <param name="typographyType">排版類別</param>
-        /// <param name="userId">登入的使用者Id</param>
-        /// <returns></returns>
-        Task<ResponseViewModel> New(CustomerSealForm customerSealForms, TypographyType typographyType, int userId = 1);
+        /// <param name="userInfo">登入使用者基本資訊</param>
+        /// <returns></returns>        
+        Task<ResponseViewModel> New(CustomerSealForm customerSealForm, TypographyType typographyType, UserInfo userInfo);
 
         /// <summary>
         /// 異動客戶印鑑
         /// </summary>
         /// <param name="customerSealUpdate">需要異動客戶印鑑資料</param>
         /// <param name="userId">登入的使用者Id</param>
-        /// <returns></returns>        
+        /// <returns></returns>
         Task<List<ResponseViewModel>> Update(CustomerSealUpdate customerSealUpdate, int userId = 1);
 
 
@@ -73,7 +73,7 @@ namespace SealTypographicWebAPI.Services
         /// </summary>
         /// <param name="customerSealQuarterId">客戶印鑑季度Id</param>
         /// <param name="reviewStatus">審查狀態</param>
-        /// <param name="userId">登入的使用者Id</param>        
-        Task<ResponseViewModel> ChangeReviewStatus(int customerSealQuarterId, ReviewStatus reviewStatus, int userId = 1);
+        /// <param name="userInfo">登入使用者基本資訊</param>
+        Task<ResponseViewModel> ChangeReviewStatus(int customerSealQuarterId, ReviewStatus reviewStatus, UserInfo userInfo);        
     }
 }

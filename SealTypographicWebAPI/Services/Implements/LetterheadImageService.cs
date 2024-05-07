@@ -10,7 +10,6 @@ using DBEntities.Entities.TypographicModels;
 using DJImageLib.Utils;
 using CommonLib.Extensions;
 using DBEntities.Utils;
-using NetTopologySuite.IO;
 
 namespace SealTypographicWebAPI.Services.Implements
 {
@@ -223,8 +222,8 @@ namespace SealTypographicWebAPI.Services.Implements
                     ImageSaveInfo imageBase64Info = imageService.SetImageBase64InfoWithSeal(updateImageQuery.Letterhead!.Company.Code, SealType.Letterhead);
 
                     //原圖片狀態變更停用(刪除)
-                    updateImageQuery.DeleteStatus = DeleteStatus.Yes;
-                    TypographicResourceUtil.BaseInputTypographyResource(updateImageQuery, false, userId);
+                    updateImageQuery.DeleteStatus = DeleteStatus.Yes;                    
+                    InputUtil.Set(updateImageQuery, userId, false);
 
                     await NewTypographyResource(letterheadImageUpdate.ImageBase64, typographyResources, imageBase64Info, userId);
 
@@ -237,7 +236,7 @@ namespace SealTypographicWebAPI.Services.Implements
 
                     //變更信頭名稱
                     updateImageQuery.Letterhead.Name = letterheadImageUpdate.LetterheadName;                    
-                    InputUtil.Set(updateImageQuery.Letterhead, false, userId);                    
+                    InputUtil.Set(updateImageQuery.Letterhead, userId, false);  
 
                     dbContext.TypographicResources.AddRange(typographyResources);
                     dbContext.SaveChanges();
@@ -285,7 +284,7 @@ namespace SealTypographicWebAPI.Services.Implements
             typographicResource.ImageFullPath = await imageService.GetSavedImageFilePath(imageBase64Info);
             typographicResource.ThumbnailFullPath = await imageService.GetSavedImageThumbnailFilePath(imageBase64Info, true);
 
-            TypographicResourceUtil.BaseInputTypographyResource(typographicResource, true, userId);           
+            InputUtil.Set(typographicResource, userId, true);           
             typographyResources.Add(typographicResource);
         }
 

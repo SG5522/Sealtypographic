@@ -182,7 +182,7 @@ namespace SealTypographicWebAPI.Services.Implements
                                                                 .ToList();
 
                         newAccountant.AccountantGroups = accountantGroups;
-                        InputUtil.Set(newAccountant, true, userId);
+                        InputUtil.Set(newAccountant, userId, true);
                         companyQuery.Accountants.Add(newAccountant);
 
                         await dbContext.SaveChangesAsync();
@@ -243,7 +243,7 @@ namespace SealTypographicWebAPI.Services.Implements
                     //更新會計師群組以外的資料
                     mapper.Map(accountantFormUpdate, accountantQuery);
                                         
-                    InputUtil.Set(accountantQuery, false, userId);
+                    InputUtil.Set(accountantQuery, userId, false);
                     await dbContext.SaveChangesAsync();
                     response.Success();
                 }
@@ -281,7 +281,7 @@ namespace SealTypographicWebAPI.Services.Implements
                 if (accountantQuery != null)
                 {
                     accountantQuery.DeleteStatus = DeleteStatus.Yes;
-                    InputUtil.Set(accountantQuery, false, userId);
+                    InputUtil.Set(accountantQuery, userId, false);
                     await dbContext.SaveChangesAsync();
                     response.Success();
                 }

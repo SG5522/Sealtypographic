@@ -162,10 +162,10 @@ namespace DBEntities.Utils
                             }
                         }
                     };
-                    InputUtil.Set(company, true, 1);
-                    InputUtil.Set(imageCaptureWithCustomer, true, 1);
-                    InputUtil.Set(imageCaptureWithAccountant, true, 1);
-                    InputUtil.Set(accountantGroup, true, 1);
+                    InputUtil.Set(company, 1,true);
+                    InputUtil.Set(imageCaptureWithCustomer, 1, true);
+                    InputUtil.Set(imageCaptureWithAccountant, 1, true);
+                    InputUtil.Set(accountantGroup, 1, true);
 
                     company.AccountantGroups.Add(accountantGroup);
                     company.ApplicationUsers.Add(user);

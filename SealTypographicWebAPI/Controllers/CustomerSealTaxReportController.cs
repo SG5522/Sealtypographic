@@ -76,7 +76,7 @@ namespace SealTypographicWebAPI.Controllers
         /// <returns></returns>        
         [HttpGet("[Action]")]
         public async Task<CustomerSealViewModels> Seals(int customerSealQuarterId, bool isTransparent) 
-            => await customerSealService.GetSeals(customerSealQuarterId, isTransparent, await GetUserId());
+            => await customerSealService.GetSeals(customerSealQuarterId, isTransparent, await GetUserInfo());
 
         /// <summary>
         /// 新增客戶印鑑組資料
@@ -85,7 +85,7 @@ namespace SealTypographicWebAPI.Controllers
         /// <returns></returns>
         [HttpPost]
         public async Task<ResponseViewModel> New(CustomerSealForm customerSealForms) 
-            => await customerSealService.New(customerSealForms, TypographyType.TaxReport, await GetUserId());
+            => await customerSealService.New(customerSealForms, TypographyType.TaxReport, await GetUserInfo());
 
         /// <summary>
         /// 異動客戶印鑑
@@ -103,7 +103,7 @@ namespace SealTypographicWebAPI.Controllers
         /// <returns></returns>
         [HttpPut("[Action]")]
         public async Task<ResponseViewModel> Pending(int customerSealQuarterId) 
-            => await customerSealService.ChangeReviewStatus(customerSealQuarterId, ReviewStatus.Pending, await GetUserId());
+            => await customerSealService.ChangeReviewStatus(customerSealQuarterId, ReviewStatus.Pending, await GetUserInfo());
 
         /// <summary>
         /// 此季度印鑑從草稿狀態變更為作廢
@@ -112,7 +112,7 @@ namespace SealTypographicWebAPI.Controllers
         /// <returns></returns>
         [HttpPut("[Action]")]
         public async Task<ResponseViewModel> Invalid(int customerSealQuarterId) 
-            => await customerSealService.ChangeReviewStatus(customerSealQuarterId, ReviewStatus.Invalid, await GetUserId());
+            => await customerSealService.ChangeReviewStatus(customerSealQuarterId, ReviewStatus.Invalid, await GetUserInfo());
 
         /// <summary>
         /// 此季度印鑑從待審狀態變更為草稿(收回)
@@ -121,6 +121,6 @@ namespace SealTypographicWebAPI.Controllers
         /// <returns></returns>
         [HttpPut("[Action]")]
         public async Task<ResponseViewModel> CancelReview(int customerSealQuarterId) 
-            => await customerSealService.ChangeReviewStatus(customerSealQuarterId, ReviewStatus.Draft, await GetUserId());
+            => await customerSealService.ChangeReviewStatus(customerSealQuarterId, ReviewStatus.Draft, await GetUserInfo());
     }
 }

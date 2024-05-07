@@ -53,7 +53,7 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="accountantSignForms">會計師簽印組</param>
         /// <returns></returns>
         [HttpPost]
-        public async Task<ResponseViewModel> New(AccountantSignForms accountantSignForms) => await accountantSignService.New(accountantSignForms);
+        public async Task<ResponseViewModel> New(AccountantSignForms accountantSignForms) => await accountantSignService.New(accountantSignForms, await GetUserInfo());
 
         /// <summary>
         /// 異動會計師簽印
@@ -61,7 +61,7 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="accountantSignUpdate">需要異動會計師簽印資料</param>
         /// <returns></returns>
         [HttpPut]
-        public async Task<List<ResponseViewModel>> Update(AccountantSignUpdate accountantSignUpdate) => await accountantSignService.Update(accountantSignUpdate);
+        public async Task<List<ResponseViewModel>> Update(AccountantSignUpdate accountantSignUpdate) => await accountantSignService.Update(accountantSignUpdate, await GetUserInfo());
 
         /// <summary>
         /// 將草稿的簽印組狀態變更為待審

@@ -210,7 +210,7 @@ namespace SealTypographicWebAPI.Services.Implements
                     template.ThumbnailFullPath = await imageService.GetSavedImageThumbnailFilePath(imageBase64Info, false);
 
                     NewTemplateLoction(letterheadImageTemplateForm.LetterheadTemplateLocationForm, templateLocations);
-                    InputUtil.Set(template, true, userId);
+                    InputUtil.Set(template, userId, true);
                     template.TemplateLocations = templateLocations;
                     template.Company = companyQuery;
                     dbContext.Templates.Add(template);
@@ -271,7 +271,7 @@ namespace SealTypographicWebAPI.Services.Implements
                     template.ThumbnailFullPath = await imageService.GetSavedImageThumbnailFilePath(imageBase64Info, false);
 
                     mapper.Map(letterheadImageTemplateUpdateForm, template);
-                    InputUtil.Set(template, false, userId);
+                    InputUtil.Set(template, userId, false);
 
                     TemplateLocation? templateLocation = template.TemplateLocations.FirstOrDefault(x => x.Id == letterheadImageTemplateUpdateForm.LocationUpdateForm.Id);
                     if (templateLocation != null)
@@ -322,7 +322,7 @@ namespace SealTypographicWebAPI.Services.Implements
                 if (templateQuery != null)
                 {
                     templateQuery.DeleteStatus = DeleteStatus.Yes;
-                    InputUtil.Set(templateQuery, false, userId);
+                    InputUtil.Set(templateQuery, userId, false);
                     await dbContext.SaveChangesAsync();
                     response.Success();
                 }

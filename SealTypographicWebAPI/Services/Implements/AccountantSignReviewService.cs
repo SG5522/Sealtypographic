@@ -11,6 +11,7 @@ using CommonLib.Enums;
 using SealTypographicWebAPI.Models.LogReport.AccountantSignLog;
 using SealTypographicWebAPI.Models.LogReport.OperationLog;
 using DBEntities.Utils;
+using DBEntities.Extensions;
 
 namespace SealTypographicWebAPI.Services.Implements
 {
@@ -176,37 +177,27 @@ namespace SealTypographicWebAPI.Services.Implements
                                                                                 .FirstOrDefault(x => x.Id == accountantSignGroupId);
                     if (accountantSignGroupQuery != null)
                     {
-                        accountantSignGroupQuery.ReviewUserId = userInfo.UserId;
-                        accountantSignGroupQuery.ReviewStatus = reviewStatus;
-                        accountantSignGroupQuery.ReviewDate = DateTime.Now;                        
-                        switch (reviewStatus)
+                        //一個會計師只能有一組通過(啟用)的會計師簽印所以需要額外處理
+                        if (reviewStatus == ReviewStatus.Approval)
                         {
-                            case ReviewStatus.Approval:
-                                //變更啟用與結束日期
-                                accountantSignGroupQuery.StartDate = DateTime.Now;
-                                accountantSignGroupQuery.EndDate = DateTime.Parse("9999/12/31");
-                                //找出審核通過的簽印組
-                                IQueryable<AccountantSignGroup>? accountantSignGroups = dbContext.AccountantSignGroups
-                                                                                       .Where
-                                                                                       (
-                                                                                           x => x.Accountant.Id == accountantSignGroupQuery.Accountant.Id
-                                                                                           && x.Id != accountantSignGroupId
-                                                                                           && x.ReviewStatus == ReviewStatus.Approval
-                                                                                       );
-                                //如有審核通過的簽印組則停用(會計師簽印只能有一組是通過的)
-                                if (accountantSignGroups != null)
+                            //找出審核通過的簽印組
+                            IQueryable<AccountantSignGroup>? accountantSignGroups = dbContext.AccountantSignGroups.Where
+                                                                                   (
+                                                                                       x => x.Accountant.Id == accountantSignGroupQuery.Accountant.Id
+                                                                                       && x.Id != accountantSignGroupId
+                                                                                       && x.ReviewStatus == ReviewStatus.Approval
+                                                                                   );
+                            //如有審核通過的簽印組則停用(會計師簽印只能有一組是通過的)
+                            if (accountantSignGroups != null)
+                            {
+                                foreach (AccountantSignGroup accountantSignGroup in accountantSignGroups)
                                 {
-                                    foreach (AccountantSignGroup accountantSignGroup in accountantSignGroups)
-                                    {
-                                        accountantSignGroup.ReviewStatus = ReviewStatus.Disabled;
-                                        accountantSignGroup.EndDate = DateTime.Now;
-                                    }
+                                    ReviewStatus.Disabled.Set(accountantSignGroup, userInfo.UserId);
                                 }
-                                break;
-                            case ReviewStatus.Refuse:
-                                accountantSignGroupQuery.DeleteStatus = DeleteStatus.Yes;
-                                break;
+                            }                            
                         }
+                        reviewStatus.Set(accountantSignGroupQuery, userInfo.UserId);
+
                         //加入異動紀錄
                         accountantSignEventLogSaves.Add(mapper.Map<AccountantSignEventLogSave>(accountantSignGroupQuery));                        
                     }

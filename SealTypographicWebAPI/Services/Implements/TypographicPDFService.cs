@@ -417,8 +417,9 @@ namespace SealTypographicWebAPI.Services.Implements
                         TypographyType = typographyType,
                         PdfEditStep = PdfEditStep.CustomerSeal,
                         TypographicPages = new List<TypographicPage>()
-                    };                    
-                    InputUtil.SetReviewDraft(typographicPDF, userId, true);
+                    };                                        
+                    ReviewStatus.Draft.Set(typographicPDF, userId, true);
+                    InputUtil.Set(typographicPDF, userId, true);
                     foreach (TypographicPageForm pageInfo in typographicPDFForm.Pages)
                     {
                         typographicPDF.TypographicPages.Add(await PageSave(pageInfo));
@@ -465,8 +466,9 @@ namespace SealTypographicWebAPI.Services.Implements
                                             .Single(x => x.Id == typographicPDFSaveForm.QuarterYearId);
                     //紀錄pdf現在的步驟
                     typographicPDF.PdfEditStep = typographicPDFSaveForm.PdfEditStep;
-
-                    InputUtil.SetReviewDraft(typographicPDF, userId, false);
+                    
+                    ReviewStatus.Draft.Set(typographicPDF, userId);
+                    InputUtil.Set(typographicPDF, userId);
 
                     List<TypographicPage> newPages = new();
 
@@ -539,6 +541,7 @@ namespace SealTypographicWebAPI.Services.Implements
                 if (typographicPDF != null)
                 {
                     ReviewStatus.Disabled.Set(typographicPDF, userId);
+                    InputUtil.Set(typographicPDF, userId);
                     await dbContext.SaveChangesAsync();
                     response.Success();
                 }

@@ -105,7 +105,7 @@ namespace SealTypographicWebAPI.Services.Implements
             {                
                 ImageRangeSetting imageCaptureSetting = mapper.Map<ImageRangeSetting>(captureSetting);
                 imageCaptureSetting.Company = dbContext.Companys.Single(x => x.Id == companyId);
-                InputUtil.Set(imageCaptureSetting, true, companyId);
+                InputUtil.Set(imageCaptureSetting, companyId, true);
                 dbContext.ImageRangeSettings.Add(imageCaptureSetting);
                 await dbContext.SaveChangesAsync();
                 logger.LogInformation("New output {@output}", response);
@@ -145,7 +145,7 @@ namespace SealTypographicWebAPI.Services.Implements
                         ImageRangeLocation imageRangeLocation = imageRangeSetting.ImageRangeLocations.Single(x => x.Id == customerSealRangeLocation.Id);                       
                         mapper.Map(customerSealRangeLocation, imageRangeLocation);                        
                     }
-                    InputUtil.Set(imageRangeSetting, false, userId);                    
+                    InputUtil.Set(imageRangeSetting, userId, false);                    
                     await dbContext.SaveChangesAsync();
                     response.Success();
                 }
@@ -183,7 +183,7 @@ namespace SealTypographicWebAPI.Services.Implements
                         ImageRangeLocation imageRangeLocation = imageRangeSetting.ImageRangeLocations.Single(x => x.Id == accountantSignRangeLocation.Id);
                         mapper.Map(accountantSignRangeLocation, imageRangeLocation);                        
                     }                    
-                    InputUtil.Set(imageRangeSetting, false, userId);
+                    InputUtil.Set(imageRangeSetting, userId, false);
                     await dbContext.SaveChangesAsync();
                     response.Success();
                 }

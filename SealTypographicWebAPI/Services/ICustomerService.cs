@@ -13,9 +13,9 @@ namespace SealTypographicWebAPI.Services
         /// 取得客戶詳細基本資料
         /// </summary>
         /// <param name="customerId">客戶ID</param>
-        /// <param name="userId">登入的使用者Id</param>
-        /// <returns></returns>
-        Task<CustomerDetailViewModel> GetDetail(int customerId, int userId = 1);
+        /// <param name="userInfo">登入使用者基本資訊</param>
+        /// <returns></returns>        
+        Task<CustomerDetailViewModel> GetDetail(int customerId, UserInfo userInfo);
 
         /// <summary>
         /// 取得客戶資料列表(分頁)
@@ -47,6 +47,6 @@ namespace SealTypographicWebAPI.Services
         /// </summary>
         /// <param name="customerId">客戶Id</param>
         /// <param name="userId">登入的使用者Id</param>
-        Task<ResponseViewModel> Delete(int customerId, int userId = 1);
+        Task<ResponseViewModel> Delete(int customerId, int userId = 1);        
     }
 }

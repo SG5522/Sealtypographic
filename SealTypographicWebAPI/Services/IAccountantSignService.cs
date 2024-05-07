@@ -31,17 +31,17 @@ namespace SealTypographicWebAPI.Services
         /// 新增會計師簽印組
         /// </summary>
         /// <param name="accountantSignForms">會計師簽印組</param>
-        /// <param name="userId">登入的使用者ID</param>
+        /// <param name="userInfo">登入使用者基本資訊</param>
         /// <returns></returns>
-        Task<ResponseViewModel> New(AccountantSignForms accountantSignForms, int userId = 1);
+        Task<ResponseViewModel> New(AccountantSignForms accountantSignForms, UserInfo userInfo);
 
         /// <summary>
         /// 異動會計師簽印
         /// </summary>
         /// <param name="accountantSignUpdate">需要異動會計師簽印資料</param>
-        /// <param name="userId">登入的使用者ID</param>
+        /// <param name="userInfo">登入使用者基本資訊</param>
         /// <returns></returns>
-        Task<List<ResponseViewModel>> Update(AccountantSignUpdate accountantSignUpdate, int userId = 1);
+        Task<List<ResponseViewModel>> Update(AccountantSignUpdate accountantSignUpdate, UserInfo userInfo);
 
         /// <summary>
         /// 會計師印鑑待審狀態變更。

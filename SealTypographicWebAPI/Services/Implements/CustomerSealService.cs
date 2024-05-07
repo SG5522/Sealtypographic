@@ -14,6 +14,7 @@ using DBEntities.Utils;
 using SealTypographicWebAPI.Models.LogReport.OperationLog;
 using SealTypographicWebAPI.Models.LogReport.CustomerSealEventLog;
 using CommonLib.Enums;
+using DBEntities.Extensions;
 
 namespace SealTypographicWebAPI.Services.Implements
 {
@@ -237,10 +238,10 @@ namespace SealTypographicWebAPI.Services.Implements
         }
 
         ///<inheritdoc />
-        public async Task<CustomerSealViewModels> GetSeals(int customerSealQuarterId, bool isTransparent, int userId = 1)
+        public async Task<CustomerSealViewModels> GetSeals(int customerSealQuarterId, bool isTransparent, UserInfo userInfo)
         {
             logger.LogInformation("GetSeals input customerSealQuarterId: {@customerSealQuarterId} isTransparent= {@isTransparent} userId: {@userId}"
-                , customerSealQuarterId, isTransparent, userId);
+                , customerSealQuarterId, isTransparent, userInfo.UserId);
 
             CustomerSealViewModels? customerSealViewModels;
 
@@ -263,7 +264,11 @@ namespace SealTypographicWebAPI.Services.Implements
                         }
                     }
                     customerSealViewModels.Success();
-                    await logReportService.SaveOperationLog(mapper.Map<OperationLogSave>(customerSealViewModels));
+                    await logReportService.SaveOperationLog(
+                                                                mapper.Map<OperationLogSave>(customerSealViewModels),
+                                                                userInfo.UserName,
+                                                                $"{userInfo.FirstName}{userInfo.LastName}"
+                                                            );
                 }
                 else
                 {
@@ -283,10 +288,10 @@ namespace SealTypographicWebAPI.Services.Implements
         }
 
         ///<inheritdoc />
-        public async Task<ResponseViewModel> New(CustomerSealForm customerSealForm, TypographyType typographyType, int userId = 1)
+        public async Task<ResponseViewModel> New(CustomerSealForm customerSealForm, TypographyType typographyType, UserInfo userInfo)
         {
             logger.LogInformation("New input {@customerSealForm} typographyType: {@typographyType} userId: {@userId}",
-                mapper.Map<CustomerSealForm>(customerSealForm), typographyType, userId);            
+                mapper.Map<CustomerSealForm>(customerSealForm), typographyType, userInfo.UserId);            
 
             ResponseViewModel response = new();            
 
@@ -318,16 +323,20 @@ namespace SealTypographicWebAPI.Services.Implements
 
                         customerSealGroup.QuarterYear = quarter;
                         customerSealGroup.TypographyType = typographyType;                        
-                        InputUtil.SetReviewDraft(customerSealGroup, userId, true);
-                        customerSealGroup.StartDate = DateUtil.NotActivated();
-                        customerSealGroup.EndDate = DateUtil.NotActivated();
+                        ReviewStatus.Draft.Set(customerSealGroup, userInfo.UserId, true);
+                        InputUtil.Set(customerSealGroup, userInfo.UserId, true);
+
                         //新增印鑑資料(圖檔與DB資源)
-                        customerSealGroup.TypographicResources = await NewTypographyResource(customerSealForm.Seals, imageBase64Info, userId);
+                        customerSealGroup.TypographicResources = await NewTypographyResource(customerSealForm.Seals, imageBase64Info, userInfo.UserId);
 
                         customerQuery.CustomerSealGroups.Add(customerSealGroup);
                         await dbContext.SaveChangesAsync();
                         response.Success();
-                        await logReportService.SaveCustomerSealEventLog(mapper.Map<CustomerSealEventLogSave>(customerSealGroup), OperateType.Create);
+                        await logReportService.SaveCustomerSealEventLog(
+                                                                            mapper.Map<CustomerSealEventLogSave>(customerSealGroup), OperateType.Create,
+                                                                            userInfo.UserName,
+                                                                            $"{userInfo.FirstName}{userInfo.LastName}"
+                                                                        );
                     }
                     else
                     {
@@ -411,8 +420,8 @@ namespace SealTypographicWebAPI.Services.Implements
                         foreach (TypographicResource deleteSeal in deleteSealQuery)
                         {
                             //原印鑑刪除(Hide)
-                            deleteSeal.DeleteStatus = DeleteStatus.Yes;
-                            TypographicResourceUtil.BaseInputTypographyResource(deleteSeal, false, userId);
+                            deleteSeal.DeleteStatus = DeleteStatus.Yes;                            
+                            InputUtil.Set(deleteSeal, userId, false);
                         }
                     }
 
@@ -458,10 +467,10 @@ namespace SealTypographicWebAPI.Services.Implements
         }
 
         ///<inheritdoc />  
-        public async Task<ResponseViewModel> ChangeReviewStatus(int customerSealQuarterId, ReviewStatus reviewStatus, int userId = 1)
+        public async Task<ResponseViewModel> ChangeReviewStatus(int customerSealQuarterId, ReviewStatus reviewStatus, UserInfo userInfo)
         {
             logger.LogInformation("ChangeReviewStatus input customerSealQuarterId: {@CustomerSealQuarterId} reviewStatus: {ReviewStatus} userId {@userId}"
-                , customerSealQuarterId, reviewStatus, userId);
+                , customerSealQuarterId, reviewStatus, userInfo.UserId);
 
             ResponseViewModel response = new();            
 
@@ -474,20 +483,14 @@ namespace SealTypographicWebAPI.Services.Implements
 
                 if (customerSealGroup != null)
                 {
-                    if (reviewStatus == ReviewStatus.Invalid)
-                    {
-                        customerSealGroup.DeleteStatus = DeleteStatus.Yes;
-                        if (customerSealGroup.ReviewStatus == ReviewStatus.Approval)
-                        {
-                            customerSealGroup.EndDate = DateTime.Now;
-                        }
-                    }
-                    customerSealGroup.ReviewStatus = reviewStatus;
-                    customerSealGroup.UpdateDate = DateTime.Now;
-                    customerSealGroup.UpdateUserId = userId;
+                    reviewStatus.Set(customerSealGroup, userInfo.UserId);
                     await dbContext.SaveChangesAsync();
                     response.Success();
-                    await logReportService.SaveCustomerSealEventLog(mapper.Map<CustomerSealEventLogSave>(customerSealGroup), OperateType.Modify);
+                    await logReportService.SaveCustomerSealEventLog(
+                                                                        mapper.Map<CustomerSealEventLogSave>(customerSealGroup), OperateType.Modify,
+                                                                        userInfo.UserName,
+                                                                        $"{userInfo.FirstName}{userInfo.LastName}"
+                                                                    );
                 }
                 else
                 {
@@ -532,7 +535,7 @@ namespace SealTypographicWebAPI.Services.Implements
                 typographyResource.ImageFullPath = await imageService.GetSavedImageFilePath(imageBase64Info);
                 typographyResource.ThumbnailFullPath = await imageService.GetSavedImageThumbnailFilePath(imageBase64Info, true);
                 
-                InputUtil.Set(typographyResource, true, userId);
+                InputUtil.Set(typographyResource, userId, true);
                 typographyResources.Add(typographyResource);
             }
             return typographyResources;

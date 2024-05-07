@@ -41,9 +41,9 @@ namespace SealTypographicWebAPI.Services.Implements
         }
 
         ///<inheritdoc />
-        public async Task<CustomerDetailViewModel> GetDetail(int customerId, int userId = 1)
+        public async Task<CustomerDetailViewModel> GetDetail(int customerId, UserInfo userInfo)
         {
-            logger.LogInformation("GetDetail input customerId: {@customerId} userId: {@userId}", customerId, userId);
+            logger.LogInformation("GetDetail input customerId: {@customerId} userId: {@userId}", customerId, userInfo.UserId);
             CustomerDetailViewModel customerDetailViewModel = new();                                    
 
             try
@@ -57,7 +57,11 @@ namespace SealTypographicWebAPI.Services.Implements
                 {
                     customerDetailViewModel.CustomerDetail = customerDetail;
                     customerDetailViewModel.Success();
-                    await logReportService.SaveOperationLog(mapper.Map<OperationLogSave>(customerDetail));                    
+                    await logReportService.SaveOperationLog(
+                                                                mapper.Map<OperationLogSave>(customerDetail),
+                                                                userInfo.UserName,
+                                                                $"{userInfo.FirstName}{userInfo.LastName}"
+                                                            );
                 }
                 else
                 {
@@ -155,7 +159,7 @@ namespace SealTypographicWebAPI.Services.Implements
                     if (!customerQuery.Any())
                     {
                         Customer dbCustomer = mapper.Map<Customer>(customerForm);                        
-                        InputUtil.Set(dbCustomer, true, userId);
+                        InputUtil.Set(dbCustomer, userId, true);
                         companyQuery.Customers.Add(dbCustomer);
                         await dbContext.SaveChangesAsync();
 
@@ -209,7 +213,7 @@ namespace SealTypographicWebAPI.Services.Implements
                 if (customerQuery != null)
                 {
                     mapper.Map(customerFormUpdate, customerQuery);                    
-                    InputUtil.Set(customerQuery, false, userId);
+                    InputUtil.Set(customerQuery, userId, false);
                     await dbContext.SaveChangesAsync();
                     response.Success();
                 }
@@ -247,7 +251,7 @@ namespace SealTypographicWebAPI.Services.Implements
                 if (customerQuery != null)
                 {
                     customerQuery.DeleteStatus = DeleteStatus.Yes;                   
-                    InputUtil.Set(customerQuery, false, userId);
+                    InputUtil.Set(customerQuery, userId, false);
                     await dbContext.SaveChangesAsync();
                     response.Success();
                 }

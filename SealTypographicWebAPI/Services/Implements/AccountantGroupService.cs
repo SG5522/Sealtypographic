@@ -176,7 +176,7 @@ namespace SealTypographicWebAPI.Services.Implements
                 {
                     AccountantGroup accountantGroup = mapper.Map<AccountantGroup>(accountantGroupForm);                    
                     accountantGroup.Company = dbContext.Companys.Single(x => x.Id == companyId);                    
-                    InputUtil.Set(accountantGroup, true, userId);
+                    InputUtil.Set(accountantGroup, userId, true);
                     dbContext.AccountantGroups.Add(accountantGroup);                    
                     await dbContext.SaveChangesAsync();
                     response.Success();
@@ -210,7 +210,7 @@ namespace SealTypographicWebAPI.Services.Implements
                 if (accountantGroupQuery != null)
                 {
                     mapper.Map(accountantGroupFormUpdate, accountantGroupQuery);
-                    InputUtil.Set(accountantGroupQuery, false, userId);
+                    InputUtil.Set(accountantGroupQuery, userId, false);
                     accountantGroupQuery.UpdateDate = DateTime.Now;
                     accountantGroupQuery.UpdateUserId = userId;
 
