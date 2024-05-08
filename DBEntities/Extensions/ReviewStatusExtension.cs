@@ -12,9 +12,8 @@ namespace DBEntities.Extensions
         /// <typeparam name="T"></typeparam>
         /// <param name="reviewStatus">客戶印鑑、會計師簽印的狀態</param>
         /// <param name="input">包含有BaseReviewData的資料庫model(Entites)</param>
-        /// <param name="userId">使用者Id</param>
-        /// <param name="isCreate"></param>
-        public static void Set<T>(this ReviewStatus reviewStatus, T input, int userId, bool isCreate = false) where T : BaseReviewData
+        /// <param name="userId">使用者Id</param>        
+        public static void Set<T>(this ReviewStatus reviewStatus, T input, int userId) where T : BaseReviewData
         {
             // For Draft, Pending, and Reject, 不增加任何處理
             //Disabled, Invalid, Refuse 

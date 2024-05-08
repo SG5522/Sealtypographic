@@ -403,6 +403,9 @@ namespace SealTypographicWebAPI.Services.Implements
                 {
                     List<TypographicPage> typographicPages = new();
 
+                    //將選取過的pdf更改為已處理(避免下次選取)
+                    pDFInfo.FileWorkStatus = FileWorkStatus.Done;
+
                     //之後輸入要從前端提供Id
                     QuarterYear quarter = dbContext.QuarterYears.Single(x => x.Id == typographicPDFForm.QuarterYearId);
 
@@ -417,9 +420,11 @@ namespace SealTypographicWebAPI.Services.Implements
                         TypographyType = typographyType,
                         PdfEditStep = PdfEditStep.CustomerSeal,
                         TypographicPages = new List<TypographicPage>()
-                    };                                        
-                    ReviewStatus.Draft.Set(typographicPDF, userId, true);
-                    InputUtil.Set(typographicPDF, userId, true);
+                    };
+
+                    //建立此排版PDF的審核類型與日期與建立日期                    
+                    InputUtil.SetDraftWithCreate(typographicPDF, userId);
+
                     foreach (TypographicPageForm pageInfo in typographicPDFForm.Pages)
                     {
                         typographicPDF.TypographicPages.Add(await PageSave(pageInfo));

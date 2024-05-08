@@ -63,10 +63,9 @@ namespace SealTypographicWebAPI.Services
         /// 異動客戶印鑑
         /// </summary>
         /// <param name="customerSealUpdate">需要異動客戶印鑑資料</param>
-        /// <param name="userId">登入的使用者Id</param>
+        /// <param name="userInfo">登入使用者基本資訊</param>
         /// <returns></returns>
-        Task<List<ResponseViewModel>> Update(CustomerSealUpdate customerSealUpdate, int userId = 1);
-
+        Task<List<ResponseViewModel>> Update(CustomerSealUpdate customerSealUpdate, UserInfo userInfo);        
 
         /// <summary>
         /// 客戶印鑑群組狀態變更
@@ -74,6 +73,7 @@ namespace SealTypographicWebAPI.Services
         /// <param name="customerSealQuarterId">客戶印鑑季度Id</param>
         /// <param name="reviewStatus">審查狀態</param>
         /// <param name="userInfo">登入使用者基本資訊</param>
-        Task<ResponseViewModel> ChangeReviewStatus(int customerSealQuarterId, ReviewStatus reviewStatus, UserInfo userInfo);        
+        Task<ResponseViewModel> ChangeReviewStatus(int customerSealQuarterId, ReviewStatus reviewStatus, UserInfo userInfo);
+        
     }
 }

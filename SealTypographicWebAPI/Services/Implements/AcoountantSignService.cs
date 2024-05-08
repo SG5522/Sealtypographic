@@ -157,9 +157,8 @@ namespace SealTypographicWebAPI.Services.Implements
                     //之後調整無需轉型
                     ImageSaveInfo imageBase64Info = imageService.SetImageBase64InfoWithSeal(accountantQuery.Code, SealType.Accountant);
                     //建立此組簽印的審核類型與日期與建立日期
-                    ReviewStatus.Draft.Set(accountantSignGroup, userInfo.UserId, true);
-                    //基本輸入處理
-                    InputUtil.Set(accountantSignGroup, userInfo.UserId, true);
+                    InputUtil.SetDraftWithCreate(accountantSignGroup, userInfo.UserId);
+
                     //新增簽印資料(圖檔與DB資源)         
                     accountantSignGroup.TypographicResources = await NewTypographyResource(accountantSignForms.SignForms, imageBase64Info, userInfo.UserId);
 
@@ -208,7 +207,8 @@ namespace SealTypographicWebAPI.Services.Implements
                 if (accountantSignGroupQuery != null)
                 {
                     //舊的會計師簽印群組停用                    
-                    ReviewStatus.Disabled.Set(accountantSignGroupQuery, userInfo.UserId);
+                    InputUtil.SetDisabled(accountantSignGroupQuery);
+
                     Accountant? accountant = dbContext.Accountants.Include(accountant => accountant.AccountantSignGroups)
                                             .FirstOrDefault(accountant => accountant.Id == accountantSignGroupQuery.Accountant.Id);
 
@@ -260,10 +260,9 @@ namespace SealTypographicWebAPI.Services.Implements
                         {
                             TypographicResource typographyResource = mapper.Map<TypographicResource>(copyTypographyResource);
                             accountantSignGroup.TypographicResources.Add(typographyResource);
-                        }
-                        BaseInputSignGroupJournal(accountantSignGroup, true, userInfo.UserId);
-                        ReviewStatus.Draft.Set(accountantSignGroup, userInfo.UserId, true);
-                        InputUtil.Set(accountantSignGroup, userInfo.UserId, true);
+                        }                        
+                        //審核狀態設定為草稿
+                        InputUtil.SetDraftWithCreate(accountantSignGroup, userInfo.UserId);
 
                         //新增簽印資料(圖檔與DB資源)         
                         accountantSignGroup.TypographicResources = await NewTypographyResource(accountantSignUpdate.CreateAccountantSigns, imageSaveInfo, userInfo.UserId);
@@ -276,7 +275,11 @@ namespace SealTypographicWebAPI.Services.Implements
                             dbContext.SaveChanges();
                             response.Success();
                             //異動紀錄存檔(修改)
-                            await logReportService.SaveAccountantSignEventLog(mapper.Map<AccountantSignEventLogSave>(accountantSignGroup), OperateType.Modify);
+                            await logReportService.SaveAccountantSignEventLog(
+                                                                                mapper.Map<AccountantSignEventLogSave>(accountantSignGroup), OperateType.Modify,
+                                                                                userInfo.UserName,
+                                                                                $"{userInfo.FirstName}{userInfo.LastName}"
+                                                                            );
                             responseViewModels.Add(response);
                         }
                     }
@@ -349,34 +352,6 @@ namespace SealTypographicWebAPI.Services.Implements
 
             return response;
         }
-
-        /// <summary>
-        /// 會計師簽印建立日期歷程基本資料輸入
-        /// </summary>
-        /// <param name="accountantSignGroup">會計師簽印建立日期歷程</param>
-        /// <param name="isCreate">對Db所做的行動</param>
-        /// <param name="userId">userId</param>
-        private static void BaseInputSignGroupJournal(AccountantSignGroup accountantSignGroup, bool isCreate, int userId = 1)
-        {
-            if (isCreate)
-            {
-                accountantSignGroup.CreateUserId = userId;
-                accountantSignGroup.CreateDate = DateTime.Now;
-                accountantSignGroup.DeleteStatus = DeleteStatus.No;           
-                accountantSignGroup.ReviewStatus = ReviewStatus.Draft;
-            }
-            else
-            {
-                //如果變更的簽印組狀態是通過將結束日期更新為現在
-                if (accountantSignGroup.ReviewStatus == ReviewStatus.Approval)
-                {
-                    accountantSignGroup.EndDate = DateTime.Now;
-                }
-                accountantSignGroup.UpdateUserId = userId;
-                accountantSignGroup.UpdateDate = DateTime.Now;
-                accountantSignGroup.ReviewStatus = ReviewStatus.Disabled;
-            }
-        }                
 
         /// <summary>
         /// 新增印鑑、簽印、圖片資料

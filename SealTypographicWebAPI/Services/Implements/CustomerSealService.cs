@@ -322,9 +322,9 @@ namespace SealTypographicWebAPI.Services.Implements
                         ImageSaveInfo imageBase64Info = imageService.SetImageBase64InfoWithSeal(customerQuery.Code, SealType.Customer);
 
                         customerSealGroup.QuarterYear = quarter;
-                        customerSealGroup.TypographyType = typographyType;                        
-                        ReviewStatus.Draft.Set(customerSealGroup, userInfo.UserId, true);
-                        InputUtil.Set(customerSealGroup, userInfo.UserId, true);
+                        customerSealGroup.TypographyType = typographyType;
+                        //建立此組印鑑的審核類型與日期與建立日期
+                        InputUtil.SetDraftWithCreate(customerSealGroup, userInfo.UserId);
 
                         //新增印鑑資料(圖檔與DB資源)
                         customerSealGroup.TypographicResources = await NewTypographyResource(customerSealForm.Seals, imageBase64Info, userInfo.UserId);
@@ -364,9 +364,9 @@ namespace SealTypographicWebAPI.Services.Implements
         }
 
         ///<inheritdoc />
-        public async Task<List<ResponseViewModel>> Update(CustomerSealUpdate customerSealUpdate, int userId = 1)
+        public async Task<List<ResponseViewModel>> Update(CustomerSealUpdate customerSealUpdate, UserInfo userInfo)
         {
-            logger.LogInformation("Update input {@customerSealUpdate} userId: {@userId}", mapper.Map<CustomerSealUpdate>(customerSealUpdate), userId);
+            logger.LogInformation("Update input {@customerSealUpdate} userId: {@userId}", mapper.Map<CustomerSealUpdate>(customerSealUpdate), userInfo.UserId);
 
             List<ResponseViewModel> responseViewModels = new();                        
 
@@ -421,12 +421,12 @@ namespace SealTypographicWebAPI.Services.Implements
                         {
                             //原印鑑刪除(Hide)
                             deleteSeal.DeleteStatus = DeleteStatus.Yes;                            
-                            InputUtil.Set(deleteSeal, userId, false);
+                            InputUtil.Set(deleteSeal, userInfo.UserId, false);
                         }
                     }
 
                     //新增印鑑資料(圖檔與DB資源)
-                    customerSealGroup.TypographicResources = await NewTypographyResource(customerSealUpdate.CreateCustomerSeals, imageBase64Info, userId);
+                    customerSealGroup.TypographicResources = await NewTypographyResource(customerSealUpdate.CreateCustomerSeals, imageBase64Info, userInfo.UserId);
 
                     //無任何回傳訊息(錯誤訊息)就更新資料庫
                     if (!responseViewModels.Any())
@@ -437,7 +437,11 @@ namespace SealTypographicWebAPI.Services.Implements
                         await dbContext.SaveChangesAsync();
                         response.Success();
                         responseViewModels.Add(response);
-                        await logReportService.SaveCustomerSealEventLog(mapper.Map<CustomerSealEventLogSave>(customerSealGroup), OperateType.Modify);
+                        await logReportService.SaveCustomerSealEventLog(
+                                                                            mapper.Map<CustomerSealEventLogSave>(customerSealGroup), OperateType.Modify,
+                                                                            userInfo.UserName,
+                                                                            $"{userInfo.FirstName}{userInfo.LastName}"
+                                                                        );
                     }
                 }
                 logger.LogInformation("Update output {@Output}", responseViewModels);

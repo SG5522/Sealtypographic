@@ -95,7 +95,7 @@ namespace SealTypographicWebAPI.Controllers
         /// <returns></returns>
         [HttpPut]
         public async Task<List<ResponseViewModel>> Update(CustomerSealUpdate customerSealUpdate) => 
-            await customerSealService.Update(customerSealUpdate, await GetUserId());
+            await customerSealService.Update(customerSealUpdate, await GetUserInfo());
 
         /// <summary>
         /// 此季度印鑑從草稿狀態變更為待審

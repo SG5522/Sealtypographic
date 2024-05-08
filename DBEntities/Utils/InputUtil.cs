@@ -32,5 +32,32 @@ namespace DBEntities.Utils
                 input.UpdateDate = DateTime.Now;
             }
         }
+
+        /// <summary>
+        /// 設定為停用
+        /// 預設是系統預設人員停用 所預設userId = 1
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="input">輸入class</param>
+        /// <param name="userId">使用者Id(預設為1)</param>
+        public static void SetDisabled<T>(T input, int userId = 1) where T : BaseReviewData
+        {
+            ReviewStatus.Disabled.Set(input, userId);
+            Set(input, userId);
+        }
+
+        /// <summary>        
+        /// 新增時的任何包含審核內容時的預設處理
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="input">輸入class</param>
+        /// <param name="userId">使用者Id(預設為1)</param>
+        public static void SetDraftWithCreate<T>(T input, int userId) where T : BaseReviewData
+        {
+            //設定草稿狀態
+            ReviewStatus.Draft.Set(input, userId);
+            //基本輸入處理
+            Set(input, userId, true);
+        }
     }
 }
