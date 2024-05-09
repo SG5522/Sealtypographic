@@ -13,7 +13,7 @@ namespace DJSharpZipLib
         /// <returns></returns>
         public static byte[] Compress(Dictionary<string, string> sourceDataPaths)
         {
-            Dictionary<string, byte[]> sourceDatas = new Dictionary<string, byte[]>();
+            Dictionary<string, byte[]> sourceDatas = new();
 
             foreach (KeyValuePair<string, string> sourceData in sourceDataPaths)
             {
@@ -22,29 +22,27 @@ namespace DJSharpZipLib
             return Compress(sourceDatas);
         }
 
+
+
         /// <summary>
         /// 壓縮
         /// </summary>
         /// <param name="sourceDatas">key檔名 value bytes資料</param>
         /// <returns></returns>
-        public static byte[] Compress(Dictionary<string, byte[]> sourceDatas)
+        public static byte[] Compress(Dictionary<string, byte[]> sourceDatas, string pwaosrsd = null)
         {
-            using (var memoryStream = new MemoryStream())
+            using MemoryStream memoryStream = new();
+            using ZipOutputStream zipOutputStream = new(memoryStream);
+            zipOutputStream.SetLevel(9); // 設定壓縮等級，1~9，9為最高等級
+            if(!string.IsNullOrWhiteSpace(pwaosrsd)) zipOutputStream.Password = pwaosrsd;
+            foreach (KeyValuePair<string, byte[]> sourceData in sourceDatas)
             {
-                using (ZipOutputStream zipOutputStream = new ZipOutputStream(memoryStream))
-                {
-                    zipOutputStream.SetLevel(9); // 設定壓縮等級，1~9，9為最高等級                    
-                    //zipOutputStream.Password = 
-                    foreach (KeyValuePair<string, byte[]> sourceData in sourceDatas)
-                    {
-                        ZipEntry entry = new ZipEntry(sourceData.Key);
-                        zipOutputStream.PutNextEntry(entry);                        
-                        zipOutputStream.Write(sourceData.Value, 0, sourceData.Value.Length);
-                        zipOutputStream.CloseEntry();
-                    }
-                }
-                return memoryStream.ToArray();
-            }
+                ZipEntry entry = new(sourceData.Key);
+                zipOutputStream.PutNextEntry(entry);
+                zipOutputStream.Write(sourceData.Value, 0, sourceData.Value.Length);
+                zipOutputStream.CloseEntry();
+            }            
+            return memoryStream.ToArray();
         }
 
         /// <summary>
@@ -52,30 +50,28 @@ namespace DJSharpZipLib
         /// </summary>
         /// <param name="srcBytes">資料源</param>
         /// <returns></returns>
-        public static Dictionary<string, byte[]> Decompress(byte[] srcBytes)
+        public static Dictionary<string, byte[]> Decompress(byte[] srcBytes, string pwaosrsd = null)
         {
-            Dictionary<string, byte[]> result = new Dictionary<string, byte[]>();
-            using (MemoryStream compressedStream = new MemoryStream(srcBytes))
+            Dictionary<string, byte[]> result = new();
+            using (MemoryStream compressedStream = new(srcBytes))
             {
-                using (ZipInputStream zipInputStream = new ZipInputStream(compressedStream))
+                using ZipInputStream zipInputStream = new(compressedStream);
+                ZipEntry entry;
+                while ((entry = zipInputStream.GetNextEntry()) != null)
                 {
-                    ZipEntry entry;
-                    while ((entry = zipInputStream.GetNextEntry()) != null)
+                    byte[] buffer = new byte[entry.Size];
+                    int offset = 0;
+                    while (offset < buffer.Length)
                     {
-                        byte[] buffer = new byte[entry.Size];
-                        int offset = 0;
-                        while (offset < buffer.Length)
+                        var bytesRead = zipInputStream.Read(buffer, offset, buffer.Length - offset);
+                        if (bytesRead == 0)
                         {
-                            var bytesRead = zipInputStream.Read(buffer, offset, buffer.Length - offset);
-                            if (bytesRead == 0)
-                            {
-                                break;
-                            }
-                            offset += bytesRead;
+                            break;
                         }
-                        // 將解壓縮後的資料存儲到字典中，使用 entry 的名稱作為 key
-                        result[entry.Name] = buffer;
+                        offset += bytesRead;
                     }
+                    // 將解壓縮後的資料存儲到字典中，使用 entry 的名稱作為 key
+                    result[entry.Name] = buffer;
                 }
             }
             return result;
