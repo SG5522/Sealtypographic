@@ -209,13 +209,22 @@ builder.Services.AddSwaggerGen(c =>
 builder.Services.AddKeycloakAuthentication(keycloakAuthenticationOptions, options =>
 {
     options.RequireHttpsMetadata = true;
-    options.Audience = "account";    
+    options.Audience = "account";
     options.BackchannelHttpHandler = new HttpClientHandler
     {
         ServerCertificateCustomValidationCallback = delegate { return true; }
-    };    
+    };
 });
 
+//builder.Services.AddKeycloakWebApiAuthentication(builder.Configuration, options =>
+//{
+//    options.RequireHttpsMetadata = true;
+//    options.Audience = "account";
+//    options.BackchannelHttpHandler = new HttpClientHandler
+//    {
+//        ServerCertificateCustomValidationCallback = delegate { return true; }
+//    };
+//});
 //builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 //            .AddJwtBearer(o =>
 //            {

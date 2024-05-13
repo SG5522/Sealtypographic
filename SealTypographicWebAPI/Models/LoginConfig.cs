@@ -8,7 +8,7 @@
         /// <summary>
         /// 驗證站台網址
         /// </summary>
-        public string Url { get; set; }
+        public string? Url { get; set; }
 
         /// <summary>
         /// Keycloak Realm
