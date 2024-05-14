@@ -215,16 +215,6 @@ builder.Services.AddKeycloakAuthentication(keycloakAuthenticationOptions, option
         ServerCertificateCustomValidationCallback = delegate { return true; }
     };
 });
-
-//builder.Services.AddKeycloakWebApiAuthentication(builder.Configuration, options =>
-//{
-//    options.RequireHttpsMetadata = true;
-//    options.Audience = "account";
-//    options.BackchannelHttpHandler = new HttpClientHandler
-//    {
-//        ServerCertificateCustomValidationCallback = delegate { return true; }
-//    };
-//});
 //builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 //            .AddJwtBearer(o =>
 //            {
