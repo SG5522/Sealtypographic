@@ -5,7 +5,9 @@ using DBEntities.Entities.CustomerModels;
 using DBEntities.Entities.TypographicModels;
 using DJKeycloakLib.Models.Group;
 using DJKeycloakLib.Models.User;
+using Microsoft.OpenApi.Extensions;
 using SealTypographicWebAPI.Consts;
+using SealTypographicWebAPI.Extensions;
 using SealTypographicWebAPI.Models.Accountant;
 using SealTypographicWebAPI.Models.AccountantSignReview;
 using SealTypographicWebAPI.Models.Customer;
@@ -167,7 +169,11 @@ namespace SealTypographicWebAPI.Config.MapperProfile
             CreateMap<UserRepresentation, UserMemberViewModel>()
                 .ForMember(dst => dst.CreatedDate, opt => opt.MapFrom(src => src.CreatedTimestamp.HasValue ?
                 DateTimeOffset.FromUnixTimeMilliseconds(src.CreatedTimestamp.Value).DateTime.ToLocalTime() : (DateTime?)null ));
-            
+
+            CreateMap<AccountantSignEventLogViewModel, AccountantSignEventLogExcelModel>()
+                    .ForMember(dst => dst.ReviewStatus, opt => opt.MapFrom(src => src.ReviewStatus.ToLocalizedString()));
+
+
         }
     }
 }

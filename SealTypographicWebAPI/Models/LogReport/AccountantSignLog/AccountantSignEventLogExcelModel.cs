@@ -1,4 +1,4 @@
-using CommonLib.Extensions;
+﻿using CommonLib.Extensions;
 using DBEntities.Consts;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
@@ -9,7 +9,7 @@ namespace SealTypographicWebAPI.Models.LogReport.AccountantSignLog
     /// <summary>
     /// 操作紀錄
     /// </summary>
-    public class AccountantSignEventLogViewModel : LogViewModelBase
+    public class AccountantSignEventLogExcelModel : LogViewModelBase
     {
         /// <summary>
         /// 會計師編號
@@ -25,8 +25,9 @@ namespace SealTypographicWebAPI.Models.LogReport.AccountantSignLog
 
         /// <summary>
         /// 審核狀態
-        /// </summary>
+        /// </summary>        
         [Display(Order = 7)]
-        public ReviewStatus ReviewStatus { get; set; }
+        public string ReviewStatus { get; set; }
+
     }
 }

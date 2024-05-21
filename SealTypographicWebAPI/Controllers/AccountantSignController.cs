@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using SealTypographicWebAPI.Models;
 using SealTypographicWebAPI.Models.Accountant;
+using SealTypographicWebAPI.Models.CustomerSeal;
 using SealTypographicWebAPI.Services;
 
 
@@ -32,10 +33,11 @@ namespace SealTypographicWebAPI.Controllers
         /// <summary>
         /// 取得會計師簽印建立日期列表
         /// </summary>
-        /// <param name="accountantId">會計師ID</param>        
+        /// <param name="accountantSignPaginateSearch">會計師簽印分頁搜尋</param>        
         /// <returns></returns>
-        [HttpGet("{accountantId}")]
-        public async Task<AccountantSignGroupResponse> GetCreateDates(int accountantId) => await accountantSignService.GetCreateDates(accountantId, await GetUserId());
+        [HttpGet("[Action]")]
+        public async Task<AccountantSignGroupResponse> GetCreateDates([FromQuery] AccountantSignPaginateSearch accountantSignPaginateSearch) 
+                => await accountantSignService.GetCreateDates(accountantSignPaginateSearch, await GetUserId());
 
         /// <summary>
         /// 取得會計師簽印組

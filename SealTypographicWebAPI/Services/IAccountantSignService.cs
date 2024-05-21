@@ -2,6 +2,7 @@
 using SealTypographicWebAPI.Models;
 using SealTypographicWebAPI.Models.Accountant;
 using SealTypographicWebAPI.Models.Customer;
+using SealTypographicWebAPI.Models.CustomerSeal;
 
 namespace SealTypographicWebAPI.Services
 {
@@ -13,10 +14,10 @@ namespace SealTypographicWebAPI.Services
         /// <summary>
         /// 取得會計師簽印建立日期列表
         /// </summary>
-        /// <param name="accountantId">會計師ID</param>
+        /// <param name="accountantSignPaginateSearch"></param>        
         /// <param name="userId">登入的使用者ID</param>  
-        /// <returns></returns>
-        Task<AccountantSignGroupResponse> GetCreateDates(int accountantId, int userId = 1);
+        /// <returns></returns>        
+        Task<AccountantSignGroupResponse> GetCreateDates(AccountantSignPaginateSearch accountantSignPaginateSearch, int userId = 1);
 
         /// <summary>
         /// 取得會計師簽印組

@@ -26,7 +26,6 @@ namespace SealTypographicWebAPI.Controllers
         private readonly ILogReportService logReportService;
         private const string EXCEL_CONTENT_TYPE = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
 
-
         /// <summary>
         /// 建置
         /// </summary>

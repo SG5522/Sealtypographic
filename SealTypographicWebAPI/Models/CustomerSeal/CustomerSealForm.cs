@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using DBEntities.Consts;
+using System.ComponentModel.DataAnnotations;
 
 namespace SealTypographicWebAPI.Models.CustomerSeal
 {
@@ -20,6 +21,12 @@ namespace SealTypographicWebAPI.Models.CustomerSeal
         /// <example>1</example>
         [Required]
         public int QuarterYearId { get; set; }
+
+        /// <summary>
+        /// 審核狀態
+        /// </summary>
+        //[Required]
+        //public ReviewStatus ReviewStatus { get; set; }
 
         /// <summary>
         /// 客戶印鑑

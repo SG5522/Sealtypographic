@@ -1,4 +1,5 @@
 ﻿using DBEntities.Consts;
+using SealTypographicWebAPI.Models.BaseModels;
 using SealTypographicWebAPI.Models.Customer;
 using System.ComponentModel.DataAnnotations;
 
@@ -33,7 +34,7 @@ namespace SealTypographicWebAPI.Models.Accountant
     /// <summary>
     /// 會計師簽印群組創建日期列表
     /// </summary>
-    public class AccountantSignGroupResponse : ResponseViewModel
+    public class AccountantSignGroupResponse : PaginateViewModel
     {
         /// <summary>
         /// new GroupCreateDates 

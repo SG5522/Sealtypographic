@@ -13,6 +13,8 @@ using SealTypographicWebAPI.Models.LogReport.AccountantSignLog;
 using CommonLib.Enums;
 using DBEntities.Extensions;
 using DBEntities.Utils;
+using DBEntities.Entities.CustomerModels;
+using SealTypographicWebAPI.Models.CustomerSeal;
 
 namespace SealTypographicWebAPI.Services.Implements
 {
@@ -23,7 +25,7 @@ namespace SealTypographicWebAPI.Services.Implements
     {
         private readonly SealTypographicDbContext dbContext;
         private readonly ImageService imageService;
-        private readonly IMapper mapper;   
+        private readonly IMapper mapper;
         private readonly AutoMapper.IConfigurationProvider configurationProvider;
         private readonly ILogger<AcoountantSignService> logger;
         private readonly ILogReportService logReportService;
@@ -38,49 +40,62 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <param name="logReportService"></param>                
         public AcoountantSignService(SealTypographicDbContext dbContext, IMapper mapper, ImageService imageService, ILogger<AcoountantSignService> logger, ILogReportService logReportService)
         {
-            this.dbContext = dbContext;            
+            this.dbContext = dbContext;
             this.mapper = mapper;
             configurationProvider = mapper.ConfigurationProvider;
-            this.imageService = imageService;            
+            this.imageService = imageService;
             this.logger = logger;
             this.logReportService = logReportService;
         }
 
         ///<inheritdoc />
-        public async Task<AccountantSignGroupResponse> GetCreateDates(int accountantId, int userId = 1)
+        public async Task<AccountantSignGroupResponse> GetCreateDates(AccountantSignPaginateSearch accountantSignPaginateSearch, int userId = 1)
         {
-            logger.LogInformation("GetCreateDates input accountantId: {@accountantId} userId: {@userId}", accountantId, userId);
+            logger.LogInformation("GetCreateDates input accountantSignPaginateSearch: {@accountantSignPaginateSearch} userId: {@userId}", accountantSignPaginateSearch, userId);
 
             AccountantSignGroupResponse accountantSignStartDates = new();
 
             try
             {
-                IQueryable<AccountantSignGroupViewModel> AccountantSignGroupQuery = dbContext.AccountantSignGroups
-                                                                                    .Where
-                                                                                    (
-                                                                                        accountantSignGroup => accountantSignGroup.Accountant.Id == accountantId
-                                                                                        && accountantSignGroup.ReviewStatus <= ReviewStatus.Disabled
-                                                                                        && accountantSignGroup.DeleteStatus == DeleteStatus.No
-                                                                                    ).ProjectTo<AccountantSignGroupViewModel>(configurationProvider)
-                                                                                    .OrderByDescending(accountantSignGroup => accountantSignGroup.GroupCreateDate);
+                IQueryable<AccountantSignGroup> accountantSignGroupQuery = dbContext.AccountantSignGroups.Where
+                                                                            (
+                                                                                accountantSignGroup => accountantSignGroup.Accountant.Id == accountantSignPaginateSearch.AccountId
+                                                                                && accountantSignGroup.ReviewStatus <= ReviewStatus.Disabled
+                                                                                && accountantSignGroup.DeleteStatus == DeleteStatus.No
+                                                                            ).OrderByDescending(accountantSignGroup => accountantSignGroup.CreateDate);
 
-                if (AccountantSignGroupQuery.Any())
+                if (accountantSignGroupQuery.Any())
                 {
-                    accountantSignStartDates.AccountantSignGroups = await AccountantSignGroupQuery.ToListAsync();
+
+
+                    accountantSignStartDates.AccountantSignGroups = await PageUtil.SetPaginateViewModelAsync<AccountantSignGroup, AccountantSignGroupViewModel>
+                                                                    (
+                                                                        accountantSignGroupQuery,
+                                                                        configurationProvider,
+                                                                        accountantSignPaginateSearch.PageNumber,
+                                                                        accountantSignPaginateSearch.PageSize
+                                                                    );
+
+                    PageUtil.SetPaginate(accountantSignStartDates,
+                                        accountantSignPaginateSearch.PageNumber,
+                                        accountantSignPaginateSearch.PageSize, 
+                                        accountantSignGroupQuery.Count());
+
                     accountantSignStartDates.Success();
                 }
+
                 else
                 {
                     accountantSignStartDates.DbNoData();
                 }
                 logger.LogInformation("GetCreateDates output {@Output}", accountantSignStartDates);
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 accountantSignStartDates.Error();
                 logger.LogError("GetCreateDates error {@Error}", ex.Message);
             }
-            
+
             return accountantSignStartDates;
         }
 
@@ -105,7 +120,7 @@ namespace SealTypographicWebAPI.Services.Implements
                     if (isTransparent)
                     {
                         foreach (AccountantSignViewModel accountantSignViewModel in accountantSignViewModels.SignViewModels)
-                        {                            
+                        {
                             accountantSignViewModel.ImageBase64 = ImageTransparentUtil.ToDataUrlFromDataUrl(accountantSignViewModel.ImageBase64);
                         }
                     }
@@ -139,7 +154,7 @@ namespace SealTypographicWebAPI.Services.Implements
         {
             logger.LogInformation("New input {@accountantSignForms} userId: {@userId}", accountantSignForms, userInfo.UserId);
 
-            ResponseViewModel response = new();            
+            ResponseViewModel response = new();
 
             try
             {
@@ -183,7 +198,7 @@ namespace SealTypographicWebAPI.Services.Implements
                 response.Error();
                 logger.LogError("New error {@Error}", ex.Message);
             }
-            
+
             return response;
         }
 
@@ -192,7 +207,7 @@ namespace SealTypographicWebAPI.Services.Implements
         {
             logger.LogInformation("Update input {@Input} userId: {@userId}", accountantSignUpdate, userInfo.UserId);
 
-            List<ResponseViewModel> responseViewModels = new();                        
+            List<ResponseViewModel> responseViewModels = new();
 
             try
             {
@@ -219,7 +234,7 @@ namespace SealTypographicWebAPI.Services.Implements
                         {
                             TypographicResources = new List<TypographicResource>()
                         };
-                        
+
                         ImageSaveInfo imageSaveInfo = imageService.SetImageBase64InfoWithSeal(accountant.Code, SealType.Accountant);
 
                         //修改(更新ID移入DeleteAccountantSignIds，更新的簽印移入新增CreateAccountantSigns)
@@ -260,7 +275,7 @@ namespace SealTypographicWebAPI.Services.Implements
                         {
                             TypographicResource typographyResource = mapper.Map<TypographicResource>(copyTypographyResource);
                             accountantSignGroup.TypographicResources.Add(typographyResource);
-                        }                        
+                        }
                         //審核狀態設定為草稿
                         InputUtil.SetDraftWithCreate(accountantSignGroup, userInfo.UserId);
 
@@ -305,7 +320,7 @@ namespace SealTypographicWebAPI.Services.Implements
                 responseViewModels.Add(response);
                 logger.LogInformation("Update error {@Error}", ex.Message);
             }
-                        
+
             return responseViewModels;
         }
 
@@ -315,8 +330,8 @@ namespace SealTypographicWebAPI.Services.Implements
             logger.LogInformation("ChangeReviewStatus input accountantSignGroupId: {@accountantSignGroupId} reviewStatus: {@reviewStatus} userId: {@userId}"
                 , accountantSignGroupId, reviewStatus, userId);
 
-            ResponseViewModel response = new();            
-            
+            ResponseViewModel response = new();
+
             try
             {
                 AccountantSignGroup? accountantSignGroupQuery = dbContext.AccountantSignGroups.Find(accountantSignGroupId);
@@ -341,13 +356,13 @@ namespace SealTypographicWebAPI.Services.Implements
             }
             catch (DbUpdateException ex)
             {
-                response.DbError();                
+                response.DbError();
                 logger.LogError("ChangeReviewStatus dbError {@Dberror}", ex.Message);
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
-                response.Error();                
-                logger.LogError("ChangeReviewStatus error {@Error}",ex.Message);
+                response.Error();
+                logger.LogError("ChangeReviewStatus error {@Error}", ex.Message);
             }
 
             return response;
@@ -375,7 +390,7 @@ namespace SealTypographicWebAPI.Services.Implements
                 imageSaveInfo.ImageBase64 = accountantSign.ImageBase64;
                 typographyResource.ImageFullPath = await imageService.GetSavedImageFilePath(imageSaveInfo);
                 typographyResource.ThumbnailFullPath = await imageService.GetSavedImageThumbnailFilePath(imageSaveInfo, true);
-                InputUtil.Set(typographyResource, userId, true);                
+                InputUtil.Set(typographyResource, userId, true);
                 typographyResources.Add(typographyResource);
             }
             return typographyResources;
