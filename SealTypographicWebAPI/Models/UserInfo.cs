@@ -1,4 +1,6 @@
-﻿using System.Text.Json.Serialization;
+﻿using System.Security.Claims;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace SealTypographicWebAPI.Models
 {
@@ -41,10 +43,14 @@ namespace SealTypographicWebAPI.Models
         /// <summary>
         /// 提供方法來設置 Roles 屬性的值
         /// </summary>
-        /// <param name="roles"></param>
-        public void SetRoles(List<string> roles)
+        /// <param name="claims"></param>        
+        public void SetRoles(ClaimsPrincipal claims)
         {
-            Roles = roles;
+            string resourceName = "";
+
+            //using JsonDocument jd = JsonDocument.Parse(claims.Claims.FirstOrDefault(c => c.Type == "resource_access").Value);
+            //Roles = JsonSerializer.Deserialize<List<string>>(jd.RootElement.GetProperty(resourceName).GetProperty("roles").GetRawText());
+            Roles = claims.Claims.Where(x => x.Type == "role").OrderBy(x => x.Value).Select(x => x.Value).ToList();
         }
     }
 }

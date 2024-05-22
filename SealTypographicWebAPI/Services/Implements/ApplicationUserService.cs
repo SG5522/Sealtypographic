@@ -7,6 +7,7 @@ using DJKeycloakLib.Models.BaseModel;
 using DJKeycloakAPI.Models.Users;
 using System.Data.Common;
 using DBEntities.Utils;
+using System.Text.Json;
 
 namespace SealTypographicWebAPI.Services.Implements
 {
@@ -64,8 +65,7 @@ namespace SealTypographicWebAPI.Services.Implements
                 userInfo.UserName = claims.Identity.Name!;
                 userInfo.FirstName = claims.FindFirstValue(ClaimTypes.GivenName);
                 userInfo.LastName = claims.FindFirstValue(ClaimTypes.Surname);
-                userInfo.SetRoles(claims.Claims.Where(x => x.Type == "role").OrderBy(x => x.Value).Select(x => x.Value).ToList());
-
+                userInfo.SetRoles(claims);
             }            
             return userInfo;
         }        
