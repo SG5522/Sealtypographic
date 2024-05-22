@@ -3,11 +3,8 @@ using DBEntities.Consts;
 using DBEntities.Entities.AccountantModels;
 using DBEntities.Entities.CustomerModels;
 using DBEntities.Entities.TypographicModels;
-using DJKeycloakLib.Models.Group;
 using DJKeycloakLib.Models.User;
-using Microsoft.OpenApi.Extensions;
 using SealTypographicWebAPI.Consts;
-using SealTypographicWebAPI.Extensions;
 using SealTypographicWebAPI.Models.Accountant;
 using SealTypographicWebAPI.Models.AccountantSignReview;
 using SealTypographicWebAPI.Models.Customer;
@@ -21,7 +18,6 @@ using SealTypographicWebAPI.Models.LogReport.TypographicReport;
 using SealTypographicWebAPI.Models.LogReport.UserMember;
 using SealTypographicWebAPI.Models.MongoDBModel;
 using SealTypographicWebAPI.Utils;
-using System.Text.RegularExpressions;
 
 namespace SealTypographicWebAPI.Config.MapperProfile
 {
@@ -34,7 +30,7 @@ namespace SealTypographicWebAPI.Config.MapperProfile
         /// 建置
         /// </summary>
         public LogReport()
-        {            
+        {
             //會計師分頁顯示Map
             CreateMap<TypographicPDF, TypographicReportViewModel>()
                     ////TODO:透過keycloak取得使用者Id
@@ -49,15 +45,15 @@ namespace SealTypographicWebAPI.Config.MapperProfile
                     .ForMember(dst => dst.EditFileName, opt => opt.MapFrom(src => src.OriginFileName))
                     .ForMember(dst => dst.EditPageCount, opt => opt.MapFrom(src => src.TypographicPages.Where(x => x.BlankCheck == false).Count()))
                     .ForMember(dst => dst.BlankPageCount, opt => opt.MapFrom(src =>
-                        //判斷是否是財報，如果是就提供空白頁次，否則null
+                            //判斷是否是財報，如果是就提供空白頁次，否則null
                             src.TypographyType == TypographyType.FinancialReport ?
                             src.TypographicPages.Where(x => x.BlankCheck).Count() : (int?)null
                     ));
 
             //操作紀錄Map
-            CreateMap<OperationLog, OperationLogViewModel>()                    
+            CreateMap<OperationLog, OperationLogViewModel>()
                     .ForMember(dst => dst.ActionType, opt => opt.MapFrom(src => src.Data!.ActionType))
-                    .ForMember(dst => dst.TargetName, opt => opt.MapFrom(src => 
+                    .ForMember(dst => dst.TargetName, opt => opt.MapFrom(src =>
                         !string.IsNullOrWhiteSpace(src.Data!.AccountantName) ? src.Data.AccountantName : src.Data.CustomerName
                     ))
                     .ForMember(dst => dst.DisplayQuarterYear, opt => opt.MapFrom(src =>
@@ -68,13 +64,13 @@ namespace SealTypographicWebAPI.Config.MapperProfile
             CreateMap<CustomerDetail, OperationLogSave>()
                     .ForMember(dst => dst.ActionType, opt => opt.MapFrom(src => ActionType.CustomerQuery))
                     .ForMember(dst => dst.CustomerId, opt => opt.MapFrom(src => src.Id))
-                    .ForMember(dst => dst.CustomerName, opt => opt.MapFrom(src => src.Name));                    
+                    .ForMember(dst => dst.CustomerName, opt => opt.MapFrom(src => src.Name));
 
             //操作紀錄Map客戶印鑑資料
-            CreateMap<CustomerSealViewModels, OperationLogSave>()                    
+            CreateMap<CustomerSealViewModels, OperationLogSave>()
                     .ForMember(dst => dst.CustomerSealGroupId, opt => opt.MapFrom(src => src.CustomerSealQuarterId))
-                    .ForMember(dst => dst.ActionType, opt => opt.MapFrom(src => 
-                        src.TypographyType == TypographyType.FinancialReport ? 
+                    .ForMember(dst => dst.ActionType, opt => opt.MapFrom(src =>
+                        src.TypographyType == TypographyType.FinancialReport ?
                         ActionType.FinancialReportSealQuery : ActionType.TaxReportSealQuery
                     ));
 
@@ -88,7 +84,7 @@ namespace SealTypographicWebAPI.Config.MapperProfile
                     .ForMember(dst => dst.ActionType, opt => opt.MapFrom(src =>
                         src.TypographyType == TypographyType.FinancialReport ?
                         ActionType.FinancialReportSealQuery : ActionType.TaxReportSealQuery
-                    ))                    
+                    ))
                     .ForMember(dst => dst.CustomerName, opt => opt.MapFrom(src => src.Name))
                     .ForMember(dst => dst.CustomerSealGroupId, opt => opt.MapFrom(src => src.Id));
 
@@ -117,17 +113,17 @@ namespace SealTypographicWebAPI.Config.MapperProfile
 
             //會計師審核查詢操作紀錄
             CreateMap<AccountantSignGroupDetailReviewViewModel, OperationLogSave>()
-                    .ForMember(dst => dst.ActionType, opt => opt.MapFrom(src => ActionType.AccountantSignQuery))                    
-                    .ForMember(dst => dst.AccountantName, opt => opt.MapFrom(src => src.Name))                    
+                    .ForMember(dst => dst.ActionType, opt => opt.MapFrom(src => ActionType.AccountantSignQuery))
+                    .ForMember(dst => dst.AccountantName, opt => opt.MapFrom(src => src.Name))
                     .ForMember(dst => dst.AccountantSignGroupId, opt => opt.MapFrom(src => src.Id))
                     .ForMember(dst => dst.AccountantSignGroupCreateDate, opt => opt.MapFrom(src => src.GroupCreateDate));
 
             //印鑑異動建檔紀錄存檔Map
-            CreateMap<CustomerSealGroup, CustomerSealEventLogSave>()                    
+            CreateMap<CustomerSealGroup, CustomerSealEventLogSave>()
                     .ForMember(dst => dst.CustomerId, opt => opt.MapFrom(src => src.Customer.Id))
                     .ForMember(dst => dst.CustomerCode, opt => opt.MapFrom(src => src.Customer.Code))
-                    .ForMember(dst => dst.CustomerName, opt => opt.MapFrom(src => src.Customer.Name))                    
-                    .ForMember(dst => dst.CustomerSealGroupId, opt => opt.MapFrom(src => src.Id))                    
+                    .ForMember(dst => dst.CustomerName, opt => opt.MapFrom(src => src.Customer.Name))
+                    .ForMember(dst => dst.CustomerSealGroupId, opt => opt.MapFrom(src => src.Id))
                     .ForMember(dst => dst.QuarterYearId, opt => opt.MapFrom(src => src.QuarterYear.Id))
                     .ForMember(dst => dst.GregorainQuarterYear, opt => opt.MapFrom(src =>
                             src.TypographyType == TypographyType.FinancialReport ?
@@ -163,15 +159,14 @@ namespace SealTypographicWebAPI.Config.MapperProfile
             //會計師成員列表
             CreateMap<Accountant, AccountantMemberViewModel>()
                     .ForMember(dst => dst.Code, opt => opt.MapFrom(src => src.Code))
-                    .ForMember(dst => dst.Name, opt => opt.MapFrom(src => src.Name))                    
+                    .ForMember(dst => dst.Name, opt => opt.MapFrom(src => src.Name))
                     .ForMember(dst => dst.Groups, opt => opt.MapFrom(src => src.AccountantGroups.Select(x => x.Name)));
 
             CreateMap<UserRepresentation, UserMemberViewModel>()
                 .ForMember(dst => dst.CreatedDate, opt => opt.MapFrom(src => src.CreatedTimestamp.HasValue ?
-                DateTimeOffset.FromUnixTimeMilliseconds(src.CreatedTimestamp.Value).DateTime.ToLocalTime() : (DateTime?)null ));
+                DateTimeOffset.FromUnixTimeMilliseconds(src.CreatedTimestamp.Value).DateTime.ToLocalTime() : (DateTime?)null));
 
-            CreateMap<AccountantSignEventLogViewModel, AccountantSignEventLogExcelModel>()
-                    .ForMember(dst => dst.ReviewStatus, opt => opt.MapFrom(src => src.ReviewStatus.ToLocalizedString()));
+            CreateMap<AccountantSignEventLogViewModel, AccountantSignEventLogExcelModel>();
 
 
         }
