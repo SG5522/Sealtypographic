@@ -8,6 +8,7 @@ using DJKeycloakAPI.Models.Users;
 using System.Data.Common;
 using DBEntities.Utils;
 using System.Text.Json;
+using SealTypographicWebAPI.Consts;
 
 namespace SealTypographicWebAPI.Services.Implements
 {
@@ -64,7 +65,7 @@ namespace SealTypographicWebAPI.Services.Implements
                 userInfo.KeycloakUserId = claims.FindFirstValue(ClaimTypes.NameIdentifier) ?? string.Empty;
                 userInfo.UserName = claims.Identity.Name!;
                 userInfo.FirstName = claims.FindFirstValue(ClaimTypes.GivenName);
-                userInfo.LastName = claims.FindFirstValue(ClaimTypes.Surname);
+                userInfo.LastName = claims.FindFirstValue(ClaimTypes.Surname);                                
                 userInfo.SetRoles(claims);
             }            
             return userInfo;

@@ -1,4 +1,5 @@
-﻿using System.Security.Claims;
+﻿using SealTypographicWebAPI.Consts;
+using System.Security.Claims;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -38,7 +39,7 @@ namespace SealTypographicWebAPI.Models
         /// <summary>
         /// 角色權限
         /// </summary>
-        public List<string> Roles { get; private set; } = new List<string>(); // 可寫入，但只能在類內部設置值
+        public IList<string> Roles { get; private set; } = new List<string>(); // 可寫入，但只能在類內部設置值
 
         /// <summary>
         /// 提供方法來設置 Roles 屬性的值
@@ -46,11 +47,22 @@ namespace SealTypographicWebAPI.Models
         /// <param name="claims"></param>        
         public void SetRoles(ClaimsPrincipal claims)
         {
-            string resourceName = "";
+            string? rolesJson = claims.FindFirstValue(KeycloakRoleConsts.CLAIM_TYPE);
+            if (!string.IsNullOrWhiteSpace(rolesJson))
+            {
+                using JsonDocument jd = JsonDocument.Parse(rolesJson);
+                Roles = JsonSerializer.Deserialize<List<string>>
+                        (jd.RootElement.GetProperty(KeycloakRoleConsts.RESOURCE_NAME)
+                        .GetProperty("roles")
+                        .GetRawText())?
+                        .OrderBy(role => role).ToList() ?? new List<string>();                
+            }
+            else
+            {
+                Roles.Clear();              
+            }
 
-            //using JsonDocument jd = JsonDocument.Parse(claims.Claims.FirstOrDefault(c => c.Type == "resource_access").Value);
-            //Roles = JsonSerializer.Deserialize<List<string>>(jd.RootElement.GetProperty(resourceName).GetProperty("roles").GetRawText());
-            Roles = claims.Claims.Where(x => x.Type == "role").OrderBy(x => x.Value).Select(x => x.Value).ToList();
+            //Roles = claims.Claims.Where(c => c.Type == "role").OrderBy(x => x.Value).Select(x => x.Value).ToList();
         }
     }
 }
