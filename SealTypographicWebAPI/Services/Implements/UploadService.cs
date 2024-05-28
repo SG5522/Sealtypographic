@@ -332,12 +332,12 @@ namespace SealTypographicWebAPI.Services.Implements
                 if (companyQuery != null)
                 {
                     foreach (string imagebase64 in uploadBase64Data.ImageBase64Strings)
-                    {                        
-                        ImageModel imageModel = new() { DataUrl = imagebase64 };
+                    {                                                
                         //掃描完存在資料庫的原始檔名
-                        string originalFileName = $"{userId}{DateTime.Now:yyyyMMddHHmmssffff}ScanFile.{imageModel.ImageFormat!.Name.ToLower()}";
-                        string savePath = GetSavePath(uploadBase64Data.UploadType, userId, originalFileName);                                                
-                        await FileUtil.SaveFileReturnPath(imagebase64.ToBytes(), savePath);
+                        string originalFileName = $"{userId}{DateTime.Now:yyyyMMddHHmmssffff}ScanFile";
+                        string savePath = GetSavePath(uploadBase64Data.UploadType, userId, originalFileName);
+                        //TODO: 確認存檔有無成功
+                        await ImageService.SaveImageAsync(imagebase64, savePath);                                                
                         companyQuery.UploadFiles.Add(NewUploadFile(savePath, uploadBase64Data.UploadType, userId, originalFileName));
                     }
                     dbContext.SaveChanges();

@@ -22,9 +22,9 @@ namespace SealTypographicWebAPI.Models.CustomerSeal
         [Required]
         public int QuarterYearId { get; set; }
 
-        /// <summary>
-        /// 審核狀態
-        /// </summary>
+        ///// <summary>
+        ///// 審核狀態
+        ///// </summary>
         //[Required]
         //public ReviewStatus ReviewStatus { get; set; }
 

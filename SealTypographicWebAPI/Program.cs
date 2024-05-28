@@ -216,13 +216,28 @@ builder.Services.AddKeycloakAuthentication(keycloakAuthenticationOptions, option
         ServerCertificateCustomValidationCallback = delegate { return true; }
     };
 });
+
+//builder.Services.AddKeycloakWebApiAuthentication(builder.Configuration, options =>
+//{
+//    options.RequireHttpsMetadata = true;
+//    options.Audience = "account";
+//    options.BackchannelHttpHandler = new HttpClientHandler
+//    {
+//        ServerCertificateCustomValidationCallback = delegate { return true; }
+//    };
+//});
+
 //builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 //            .AddJwtBearer(o =>
 //            {
-//                o.RequireHttpsMetadata = false;
-//                //o.MetadataAddress = builder.Configuration["Jwt:MetadataAddress"];
-//                o.Authority = builder.Configuration["Jwt:Authority"];
-//                o.Audience = builder.Configuration["Jwt:Audience"];
+//                o.RequireHttpsMetadata = true;
+//                o.MetadataAddress = $"{keycloakAuthenticationOptions.KeycloakUrlRealm}/.well-known/openid-configuration";
+//                o.Authority = $"{keycloakAuthenticationOptions.KeycloakUrlRealm}";
+//                o.Audience = "account";
+//                o.BackchannelHttpHandler = new HttpClientHandler
+//                {
+//                    ServerCertificateCustomValidationCallback = delegate { return true; }
+//                };
 //            });
 #endregion
 

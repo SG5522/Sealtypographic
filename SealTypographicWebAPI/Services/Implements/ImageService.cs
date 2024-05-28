@@ -8,6 +8,7 @@ using CommonLib.Utils;
 using DJImageLib.Utils;
 using DJImageLib.Extensions;
 using System.Buffers.Text;
+using CommonLib.Extensions;
 
 namespace SealTypographicWebAPI.Services.Implements
 {
@@ -70,7 +71,7 @@ namespace SealTypographicWebAPI.Services.Implements
         public async Task<string> GetSavedImageFilePath(ImageSaveInfo imageBase64Info)
         {
             string savePath = imageBase64Info.GetImageFilePath();
-            return await SaveImageAsync(imageBase64Info.ImageBase64, savePath, false);
+            return await SaveImageAsync(imageBase64Info.ImageBase64, savePath);
         }
 
         /// <summary>
@@ -81,8 +82,18 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <returns></returns>
         public async Task<string> GetSavedImageThumbnailFilePath(ImageSaveInfo imageBase64Info, bool isResize)
         {
+            string result;
             string savePath = imageBase64Info.GetImageThumbnailFilePath();
-            return await SaveImageAsync(imageBase64Info.ImageBase64, savePath, isResize);            
+            if(isResize)
+            {
+                result = await SaveImageAsync(imageBase64Info.ImageBase64, savePath, sealPathOption.ResizeScale);
+            }
+            else
+            {
+                result = await SaveImageAsync(imageBase64Info.ImageBase64, savePath);
+            }
+
+            return result;            
         }
 
         /// <summary>
@@ -91,16 +102,20 @@ namespace SealTypographicWebAPI.Services.Implements
         /// </summary>
         /// <param name="imageBase64">base64圖檔</param>
         /// <param name="savePath">存檔路徑</param>
-        /// <param name="isResize">是否縮放</param>
+        /// <param name="resizeScale"></param>        
         /// <returns></returns>
-        public void SaveImage(string imageBase64, string savePath, bool isResize)
+        public static void SaveImage(string imageBase64, string savePath, float resizeScale = 0)
         {
             ImageModel imageModel = new() { DataUrl = imageBase64 };
-            if (isResize)
+            string savefullPath = Path.Combine(savePath, imageModel.ImageFormat!.Name.ToLower()!);
+            if (resizeScale != 0)
             {               
-                 ImageUtil.ReSizeBase64Only(imageBase64, sealPathOption.ResizeScale, sealPathOption.ResizeScale);
-            }            
-            FileUtil.SaveFileReturnPath(imageBase64, Path.GetPathRoot(savePath)!, imageModel.ImageFormat!.Name.ToLower()!);
+                 ImageUtil.ReSizeBase64Only(imageBase64, resizeScale, resizeScale);
+            }
+            //TODO: 圖片存檔確認
+            imageBase64.ToBytes().Save(savefullPath);
+            
+            //FileUtil.SaveFileReturnPath(imageBase64, Path.GetPathRoot(savePath)!, imageModel.ImageFormat!.Name.ToLower()!);
         }
 
         /// <summary>
@@ -110,18 +125,29 @@ namespace SealTypographicWebAPI.Services.Implements
         /// </summary>
         /// <param name="imageBase64">base64圖檔</param>
         /// <param name="savePath">存檔路徑</param>
-        /// <param name="isResize">是否縮放</param>
+        /// <param name="resizeScale">縮放參數</param>        
         /// <returns></returns>
-        public async Task<string> SaveImageAsync(string imageBase64, string savePath, bool isResize)
+        public async static Task<string> SaveImageAsync(string imageBase64, string savePath, float resizeScale = 0)
         {     
             ImageModel imageModel = new() { DataUrl = imageBase64 };
-            savePath = $"{savePath}.{imageModel.ImageFormat!.Name.ToLower()}";
+            
+            if(imageModel.Base64 != null)
+            {
+                savePath = $"{savePath}.{imageModel.ImageFormat!.Name.ToLower()}";
+                if (resizeScale != 0)
+                {
+                    imageModel.Base64 = ImageUtil.ReSizeBase64Only(imageModel.Base64, resizeScale, resizeScale);
+                }
+                //TODO: 圖片存檔確認
+                //儲存圖片
+                await imageModel.Base64.ToBytes().SaveAsync(savePath);
+            }
+            else
+            {
+                throw new ArgumentException("Invalid image base64 string, unable to generate image data", nameof(imageBase64));
+            }
 
-            if (isResize)
-            {                
-                imageModel.Base64 = ImageUtil.ReSizeBase64Only(imageModel.Base64!, sealPathOption.ResizeScale, sealPathOption.ResizeScale);
-            }            
-            return await FileUtil.SaveFileReturnPath(imageModel.Base64!.ToBytes(), savePath);
+            return savePath;
         }
 
         /// <summary>

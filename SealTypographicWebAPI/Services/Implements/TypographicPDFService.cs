@@ -16,9 +16,6 @@ using DJSpire.Models;
 using SealTypographicWebAPI.Models.TypographicPDF.EditViewModels;
 using SealTypographicWebAPI.Config;
 using Microsoft.Extensions.Options;
-using DJImageLib.Models;
-using CommonLib.Utils;
-using DJImageLib.Extensions;
 using DBEntities.Utils;
 using CommonLib.Extensions;
 using Microsoft.OpenApi.Extensions;
@@ -43,13 +40,13 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <param name="dbContext"></param>
         /// <param name="logger"></param>
         /// <param name="mapper"></param>
-        /// <param name="typographyEditImagePathOptionsMonitor"></param>        
+        /// <param name="typographyEditImagePathOptionsMonitor"></param>
         public TypographicPDFService(SealTypographicDbContext dbContext, ILogger<TypographicPDFService> logger, IMapper mapper,
             IOptionsMonitor<TypographyEditImagePathOptions> typographyEditImagePathOptionsMonitor)
         {
             this.dbContext = dbContext;
             this.logger = logger;
-            this.mapper = mapper;            
+            this.mapper = mapper;
             configurationProvider = mapper.ConfigurationProvider;
             typographyEditImagePathOptions = typographyEditImagePathOptionsMonitor.CurrentValue;
 
@@ -118,12 +115,12 @@ namespace SealTypographicWebAPI.Services.Implements
                 }
                 logger.LogInformation("GetPaginate output {@output} ", typographicPDFPaginateViewModel);
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 typographicPDFPaginateViewModel.Error();
                 logger.LogError("GetPaginate error {@error}", ex.Message);
             }
-            
+
             return typographicPDFPaginateViewModel;
         }
 
@@ -132,7 +129,7 @@ namespace SealTypographicWebAPI.Services.Implements
         {
             logger.LogInformation("GetPaginate input id: {@id} userId: {@userId}", id, userId);
 
-            TypographicPagesResponse? typographicPagesResponse ;
+            TypographicPagesResponse? typographicPagesResponse;
 
             try
             {
@@ -160,7 +157,7 @@ namespace SealTypographicWebAPI.Services.Implements
                 typographicPagesResponse.Error();
                 logger.LogError("GetPaginate error {@error}", ex.Message);
             }
-            
+
             return typographicPagesResponse;
         }
 
@@ -170,7 +167,7 @@ namespace SealTypographicWebAPI.Services.Implements
             logger.LogInformation("GetPDFView input uploadFileid: {@uploadFileid} pageNumber: {@pageNumber} userId: {@userId}"
                                     , uploadFileid, pageNumber, userId);
 
-            PDFViewModel pDFViewModel = new ();
+            PDFViewModel pDFViewModel = new();
 
             try
             {
@@ -214,7 +211,7 @@ namespace SealTypographicWebAPI.Services.Implements
                                             .Include(x => x.TypographicPDF)
                                             .ThenInclude(x => x.UploadFile)
                                             .Include(x => x.TypographicResourceLocations)
-                                            .ThenInclude(x => x.TypographicResource)                                            
+                                            .ThenInclude(x => x.TypographicResource)
                                             .Where(x => x.TypographicPDF.Id == typographicPDFPageSearch.Id && x.PageNumber == typographicPDFPageSearch.PageNumber)
                                             .ProjectTo<TypographicPageViewModel>(configurationProvider)
                                             .FirstOrDefaultAsync();
@@ -241,7 +238,7 @@ namespace SealTypographicWebAPI.Services.Implements
                 typographicPageViewModel = new();
                 typographicPageViewModel.Error();
                 logger.LogInformation("GetPageView error {@error}", ex.Message);
-            }            
+            }
             return typographicPageViewModel;
         }
 
@@ -279,7 +276,7 @@ namespace SealTypographicWebAPI.Services.Implements
                 typographicPDFSettingViewModel = new();
                 typographicPDFSettingViewModel.Error();
                 logger.LogInformation("GetTypographicPDFSummary error {@error}", ex.Message);
-            }            
+            }
             return typographicPDFSettingViewModel;
         }
 
@@ -305,7 +302,7 @@ namespace SealTypographicWebAPI.Services.Implements
                     editPDF.PDFColor = PDFColor.Original;
                     editPDF.IsBlank = false;
 
-                    typographicPDFEditViewResponse.PDFBase64 = EditPdfUitl.ToDataURL(editPDF, 300f);                    
+                    typographicPDFEditViewResponse.PDFBase64 = EditPdfUitl.ToDataURL(editPDF, 300f);
                     typographicPDFEditViewResponse.Success();
                 }
                 else
@@ -327,8 +324,8 @@ namespace SealTypographicWebAPI.Services.Implements
         {
             logger.LogInformation("MakeTyporaphicPDF input {@typographicPDFMakeSetting} userId: {@userId}", typographicPDFMakeSetting, userId);
 
-            TypographicPDFMakeResponse typographicPagePDFResponse = new ();  
-            
+            TypographicPDFMakeResponse typographicPagePDFResponse = new();
+
             try
             {
                 //取得排版的頁面印鑑與座標
@@ -343,8 +340,8 @@ namespace SealTypographicWebAPI.Services.Implements
                 if (editPDF != null)
                 {
                     editPDF.PDFColor = typographicPDFMakeSetting.PDFColor;
-                    editPDF.IsBlank = typographicPDFMakeSetting.IsBlank;     
-                    
+                    editPDF.IsBlank = typographicPDFMakeSetting.IsBlank;
+
                     typographicPagePDFResponse.PDFBase64 = EditPdfUitl.ToDataURL(editPDF, 300f);
                     typographicPagePDFResponse.Success();
                 }
@@ -358,14 +355,14 @@ namespace SealTypographicWebAPI.Services.Implements
             {
                 typographicPagePDFResponse.Error();
                 logger.LogError("MakeTyporaphicPDF error {@error}", ex.Message);
-            }            
+            }
             return typographicPagePDFResponse;
         }
 
         ///<inheritdoc />
         public PdfEditStepResponse GetPdfEditStep()
         {
-            PdfEditStepResponse result = new ();
+            PdfEditStepResponse result = new();
 
             try
             {
@@ -380,7 +377,7 @@ namespace SealTypographicWebAPI.Services.Implements
                     result.ViewModels.Add(pdfEditStepViewModel);
                 }
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 result.Error();
                 logger.LogError("GetPdfEditStep error {@error}", ex.ToString());
@@ -393,8 +390,8 @@ namespace SealTypographicWebAPI.Services.Implements
         {
             logger.LogInformation("New input {@Input} typographyType: {@typographyType} userId: {@userId}", typographicPDFForm, typographyType, userId);
 
-            TypographicPDFNewResronse typographicPDFNewResronse = new();            
-            
+            TypographicPDFNewResronse typographicPDFNewResronse = new();
+
             try
             {
                 UploadFile? pDFInfo = dbContext.UploadFiles.Find(typographicPDFForm.UploadId);
@@ -445,7 +442,7 @@ namespace SealTypographicWebAPI.Services.Implements
             {
                 typographicPDFNewResronse.Error();
                 logger.LogError("New error {@error}", ex.Message);
-            }            
+            }
             return typographicPDFNewResronse;
         }
 
@@ -455,7 +452,7 @@ namespace SealTypographicWebAPI.Services.Implements
             logger.LogInformation("New input {@typographicPDFSaveForm} userId: {@userId}", typographicPDFSaveForm, userId);
 
             ResponseViewModel response = new();
-            
+
             try
             {
                 TypographicPDF? typographicPDF = dbContext.TypographicPDFs
@@ -471,7 +468,7 @@ namespace SealTypographicWebAPI.Services.Implements
                                             .Single(x => x.Id == typographicPDFSaveForm.QuarterYearId);
                     //紀錄pdf現在的步驟
                     typographicPDF.PdfEditStep = typographicPDFSaveForm.PdfEditStep;
-                    
+
                     ReviewStatus.Draft.Set(typographicPDF, userId);
                     InputUtil.Set(typographicPDF, userId);
 
@@ -554,13 +551,13 @@ namespace SealTypographicWebAPI.Services.Implements
                 {
                     response.DbNoData();
                 }
-                logger.LogInformation("Delete output {@output}", response);                
+                logger.LogInformation("Delete output {@output}", response);
             }
             catch (Exception ex)
             {
                 response.Error();
                 logger.LogError("Delete error {@error}", ex.Message);
-            }            
+            }
             return response;
         }
 
@@ -577,11 +574,11 @@ namespace SealTypographicWebAPI.Services.Implements
             typographicPage.BlankCheck = pageFrom.BlankCheck;
             typographicPage.DeleteCheck = pageFrom.DeleteCheck;
 
-            if(pageFrom.AccountantCertificateId != 0)
-            {                
+            if (pageFrom.AccountantCertificateId != 0)
+            {
                 typographicPage.AccountantCertificateFile = dbContext.UploadFiles.Find(pageFrom.AccountantCertificateId);
             }
-            
+
             //客戶印鑑座標
             foreach (CustomerSealLocationForm customerSealLocationForm in pageFrom.CustomerSealLocations)
             {
@@ -590,7 +587,7 @@ namespace SealTypographicWebAPI.Services.Implements
 
             //會計師簽印座標
             foreach (AccountantSignLocationForm accountantSignLocationForm in pageFrom.AccountantSignLocations)
-            {               
+            {
                 await AddTypographicResourceLocation(typographicResourceLocations, accountantSignLocationForm);
             }
 
@@ -610,16 +607,17 @@ namespace SealTypographicWebAPI.Services.Implements
             return typographicPage;
         }
 
-        private async Task AddTypographicResourceLocation<T>(List<TypographicResourceLocation> typographicResourceLocations, T locationData)  where T : TypographicPDFBaseLocation
+        private async Task AddTypographicResourceLocation<T>(List<TypographicResourceLocation> typographicResourceLocations, T locationData) where T : TypographicPDFBaseLocation
         {
             TypographicResourceLocation typographicResourceLocation = mapper.Map<TypographicResourceLocation>(locationData);
             typographicResourceLocation.TypographicResource = dbContext.TypographicResources.Single(x => x.Id == locationData.Id);
             if (!string.IsNullOrWhiteSpace(locationData.EditPdfImageBase64))
             {
-                ImageModel imageModel = new() { DataUrl = locationData.EditPdfImageBase64 };
-                string originalFileName = $"{DateTime.Now:yyyyMMddHHmmssffff}.{imageModel.ImageFormat!.Name.ToLower()}";
-                //存到指定位置
-                string savePath = await FileUtil.SaveFileReturnPath(imageModel.Base64!.ToBytes(), $"{typographyEditImagePathOptions.RootPath}{originalFileName}");
+                //儲存檔案
+                string originalFileName = $"{DateTime.Now:yyyyMMddHHmmssffff}";
+                string savePath = $"{typographyEditImagePathOptions.RootPath}{originalFileName}";
+                //TODO: 圖片存檔確認
+                await ImageService.SaveImageAsync(locationData.EditPdfImageBase64, savePath);
                 typographicResourceLocation.EditImageFullPath = savePath;
             }
             typographicResourceLocations.Add(typographicResourceLocation);
