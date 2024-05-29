@@ -112,10 +112,8 @@ namespace SealTypographicWebAPI.Services.Implements
             {               
                  ImageUtil.ReSizeBase64Only(imageBase64, resizeScale, resizeScale);
             }
-            //TODO: 圖片存檔確認
-            imageBase64.ToBytes().Save(savefullPath);
             
-            //FileUtil.SaveFileReturnPath(imageBase64, Path.GetPathRoot(savePath)!, imageModel.ImageFormat!.Name.ToLower()!);
+            imageBase64.ToBytes().Save(savefullPath);                        
         }
 
         /// <summary>
@@ -137,8 +135,7 @@ namespace SealTypographicWebAPI.Services.Implements
                 if (resizeScale != 0)
                 {
                     imageModel.Base64 = ImageUtil.ReSizeBase64Only(imageModel.Base64, resizeScale, resizeScale);
-                }
-                //TODO: 圖片存檔確認
+                }                
                 //儲存圖片
                 await imageModel.Base64.ToBytes().SaveAsync(savePath);
             }

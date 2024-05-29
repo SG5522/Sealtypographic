@@ -50,14 +50,15 @@ namespace SealTypographicWebAPI.Config.MapperProfile
 
             CreateMap<CustomerSealUpdate, CustomerSealUpdate>();
 
+            //Log紀錄使用
             CreateMap<CustomerSealUpdateForm, CustomerSealUpdateForm>()
-                    .ForMember(dst => dst.ImageBase64, opt => opt.Ignore());
+                    .ForMember(dst => dst.ImageBase64, opt => opt.MapFrom(src => src.ImageBase64 != null ? "Image/base64..." : null));
 
             CreateMap<CustomerSeal, CustomerSeal>()
-                    .ForMember(dst => dst.ImageBase64, opt => opt.Ignore());
+                    .ForMember(dst => dst.ImageBase64, opt => opt.MapFrom(src => src.ImageBase64 != null ? "Image/base64..." : null));
 
             CreateMap<CustomerSealViewModel, CustomerSealViewModel>()
-                    .ForMember(dst => dst.ImageBase64, opt => opt.Ignore());
+                    .ForMember(dst => dst.ImageBase64, opt => opt.MapFrom(src => src.ImageBase64 != null ? "Image/base64..." : null));
 
             CreateMap<CustomerSealGroup, CustomerSealGroupResponse>()
                     .ForMember(dst => dst.CustomerSealGroupId, opt => opt.MapFrom(src => src.Id))

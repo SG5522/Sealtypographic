@@ -335,8 +335,7 @@ namespace SealTypographicWebAPI.Services.Implements
                     {                                                
                         //掃描完存在資料庫的原始檔名
                         string originalFileName = $"{userId}{DateTime.Now:yyyyMMddHHmmssffff}ScanFile";
-                        string savePath = GetSavePath(uploadBase64Data.UploadType, userId, originalFileName);
-                        //TODO: 確認存檔有無成功
+                        string savePath = GetSavePath(uploadBase64Data.UploadType, userId, originalFileName);                        
                         await ImageService.SaveImageAsync(imagebase64, savePath);                                                
                         companyQuery.UploadFiles.Add(NewUploadFile(savePath, uploadBase64Data.UploadType, userId, originalFileName));
                     }

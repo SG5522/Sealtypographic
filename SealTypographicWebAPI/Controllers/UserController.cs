@@ -50,10 +50,10 @@ namespace SealTypographicWebAPI.Controllers
                 ResponseModel<UserViewModelPaginate> userViewModels = await base.Get(userQuery);
 
                 //寫入DB
-                UserViewModel? userViewModel = userViewModels.Data!.Users!.FirstOrDefault();
-                if (userViewModel != null)
+                UserViewModel? userViewModel = userViewModels.Data?.Users?.FirstOrDefault();
+                if (userViewModel != null && User.Identity?.Name != null)
                 {
-                    responseModel =  await applicationUserService.AddUser(newUserForm);
+                    responseModel =  await applicationUserService.AddUser(newUserForm, User.Identity.Name);
                 }
             }
             return responseModel;

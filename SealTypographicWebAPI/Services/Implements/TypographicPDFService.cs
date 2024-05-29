@@ -615,8 +615,7 @@ namespace SealTypographicWebAPI.Services.Implements
             {
                 //儲存檔案
                 string originalFileName = $"{DateTime.Now:yyyyMMddHHmmssffff}";
-                string savePath = $"{typographyEditImagePathOptions.RootPath}{originalFileName}";
-                //TODO: 圖片存檔確認
+                string savePath = $"{typographyEditImagePathOptions.RootPath}{originalFileName}";                
                 await ImageService.SaveImageAsync(locationData.EditPdfImageBase64, savePath);
                 typographicResourceLocation.EditImageFullPath = savePath;
             }

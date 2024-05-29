@@ -9,6 +9,7 @@ using System.Data.Common;
 using DBEntities.Utils;
 using System.Text.Json;
 using SealTypographicWebAPI.Consts;
+using Microsoft.EntityFrameworkCore;
 
 namespace SealTypographicWebAPI.Services.Implements
 {
@@ -85,22 +86,28 @@ namespace SealTypographicWebAPI.Services.Implements
 
             try
             {
-                //TODO:之後公司資料表由登入的adminUser取得帳號資料在反找所屬公司。                
-                //Company company = dbContext.Companys.First(x => x.ApplicationUsers.Any(x => x.UserName == username));
-                Company company = dbContext.Companys.First(x => x.Id == 1);
+                Company company = new();
+                            
+                if (userName == "admin")
+                {
+                    company = dbContext.Companys.Include(x => x.ApplicationUsers).First(x => x.Id == 1);
+                }
+                else
+                {
+                    company = dbContext.Companys.Include(x => x.ApplicationUsers).First(x => x.ApplicationUsers.Any(x => x.UserName == userName));
+                }
 
                 ApplicationUser user = new()
                 {
                     UserName = newUserForm.Username,
                     FirstName = newUserForm.FirstName,
                     LastName = newUserForm.LastName,
-                    Email = newUserForm.Email,
-                    Company = company,
+                    Email = newUserForm.Email,                    
                     CreateDate = DateTime.Now,
                     CreateUserId = 1
                 };
-                
-                dbContext.ApplicationUsers.Add(user);
+
+                company.ApplicationUsers.Add(user);
                 await dbContext.SaveChangesAsync();
                 response = ResponseModel.Success();
             }

@@ -1,6 +1,5 @@
 ﻿using DBEntities.Consts;
 using DBEntities.Entities.Base;
-using DBEntities.Utils;
 
 namespace DBEntities.Extensions
 {

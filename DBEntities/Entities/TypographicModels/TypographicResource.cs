@@ -29,7 +29,7 @@ namespace DBEntities.Entities.TypographicModels
         /// <summary>
         /// 影像處理後圖檔路徑
         /// TODO: 目前暫時跟原圖路徑一致
-        /// TODO: 保留以防需要原圖與影像處理的圖像時能做分別儲存的動作
+        ///       保留以防需要原圖與影像處理的圖像時能做分別儲存的動作
         /// </summary>
         public string? ImageProcessingFullPath { get; set; }
 

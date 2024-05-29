@@ -10,6 +10,8 @@ using DBEntities.Entities.TypographicModels;
 using DJImageLib.Utils;
 using CommonLib.Extensions;
 using DBEntities.Utils;
+using SealTypographicWebAPI.Extensions;
+using AutoMapper;
 
 namespace SealTypographicWebAPI.Services.Implements
 {
@@ -18,8 +20,9 @@ namespace SealTypographicWebAPI.Services.Implements
     /// </summary>
     public class LetterheadImageService : ILetterheadImageService
     {
-        private readonly SealTypographicDbContext dbContext;
-        private readonly ImageService imageService;                
+        private readonly SealTypographicDbContext dbContext;        
+        private readonly ImageService imageService;
+        private readonly IMapper mapper;
         private readonly IStringLocalizer<LetterheadImageService> localizer;
         private readonly ILogger<LetterheadImageService> logger;
 
@@ -27,21 +30,23 @@ namespace SealTypographicWebAPI.Services.Implements
         /// 取得DB與ResponseService
         /// </summary>
         /// <param name="dbContext"></param>                
-        /// <param name="imageSharpService"></param>
+        /// <param name="imageService"></param>
         /// <param name="localizer"></param>
-        /// <param name="logger"></param>        
-        public LetterheadImageService(SealTypographicDbContext dbContext, ImageService imageSharpService, IStringLocalizer<LetterheadImageService> localizer
-            , ILogger<LetterheadImageService> logger)
+        /// <param name="logger"></param>
+        /// <param name="mapper"></param>        
+        public LetterheadImageService(SealTypographicDbContext dbContext, ImageService imageService, IStringLocalizer<LetterheadImageService> localizer
+            , ILogger<LetterheadImageService> logger, IMapper mapper)
         {
             this.dbContext = dbContext;
-            this.imageService = imageSharpService;
+            this.imageService = imageService;
+            this.mapper = mapper;
             this.localizer = localizer;
-            this.logger = logger;
+            this.logger = logger;            
         }
 
         ///<inheritdoc />
         public LetterheadImageStatusResponse GetStatus()
-        {           
+        {
             LetterheadImageStatusResponse letterheadImageStatusResponse = new();
 
             try
@@ -58,11 +63,11 @@ namespace SealTypographicWebAPI.Services.Implements
                 letterheadImageStatusResponse.Success();
                 logger.LogInformation("GetStatus output {@output}", letterheadImageStatusResponse);
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 letterheadImageStatusResponse.Error();
                 logger.LogInformation("GetStatus error {@error}", ex.Message);
-            }            
+            }
 
             return letterheadImageStatusResponse;
         }
@@ -104,7 +109,7 @@ namespace SealTypographicWebAPI.Services.Implements
             {
                 letterheadImageCreateDateViews.Error();
                 logger.LogInformation("GetNameAndCreateDate error {@error}", ex.Message);
-            }            
+            }
             return letterheadImageCreateDateViews;
         }
 
@@ -122,7 +127,7 @@ namespace SealTypographicWebAPI.Services.Implements
                                             .Where(x => x.Id == id && x.DeleteStatus == DeleteStatus.No)
                                             .Select(x => new LetterheadImageViewModel
                                             {
-                                                Id = x.Id,                                            
+                                                Id = x.Id,
                                                 ImageBase64 = ImageUtil.ToDataUrlFromFilePath(x.ImageFullPath)
                                             }).FirstOrDefaultAsync();
 
@@ -147,8 +152,8 @@ namespace SealTypographicWebAPI.Services.Implements
                 letterheadImageViewModel.Error();
                 logger.LogInformation("GetImageViewModel error {@error}", ex.Message);
             }
-                 
-            return letterheadImageViewModel;            
+
+            return letterheadImageViewModel;
         }
 
         ///<inheritdoc />
@@ -156,7 +161,7 @@ namespace SealTypographicWebAPI.Services.Implements
         {
             logger.LogInformation("New input {@letterheadImageForm} userId: {@userId}", letterheadImageForm, userId);
 
-            ResponseViewModel response = new();            
+            ResponseViewModel response = new();
             int companyId = 1;//之後規劃從帳號取得公司ID
 
             try
@@ -198,47 +203,42 @@ namespace SealTypographicWebAPI.Services.Implements
             {
                 response.Error();
                 logger.LogInformation("New error {@error}", ex.Message);
-            }            
+            }
             return response;
         }
 
         ///<inheritdoc />
         public async Task<ResponseViewModel> Update(LetterheadImageUpdate letterheadImageUpdate, int userId = 1)
         {
-            logger.LogInformation("Update output {@letterheadImageUpdate} userId: {@userId}", letterheadImageUpdate, userId);
+            logger.LogInformation("Update output {@letterheadImageUpdate} userId: {@userId}", mapper.Map<LetterheadImageUpdate>(letterheadImageUpdate), userId);
 
-            ResponseViewModel response = new();            
+            ResponseViewModel response = new();
 
             try
             {
-                TypographicResource? updateImageQuery = dbContext.TypographicResources
-                                                        .Include(typographyResource => typographyResource.Letterhead)
-                                                        .ThenInclude(letterhead => letterhead!.Company)
-                                                        .FirstOrDefault(typographyResource => typographyResource.Id == letterheadImageUpdate.Id);
+                Letterhead? letterheadQuery = dbContext.Letterheads
+                                            .Include(letterhead => letterhead.TypographicResources)
+                                            .Include(letterhead => letterhead.Company)
+                                            .FirstOrDefault(letterhead => letterhead.TypographicResources.Any(x => x.Id == letterheadImageUpdate.Id));
 
-                if (updateImageQuery != null)
+                if (letterheadQuery != null)
                 {
-                    List<TypographicResource> typographyResources = new();
-                    ImageSaveInfo imageBase64Info = imageService.SetImageBase64InfoWithSeal(updateImageQuery.Letterhead!.Company.Code, SealType.Letterhead);
+                    List<TypographicResource> typographyResources = new();                    
+                    TypographicResource updateLetterImage = letterheadQuery.TypographicResources.Single(x => x.Id == letterheadImageUpdate.Id);
+                    ImageSaveInfo imageBase64Info = imageService.SetImageBase64InfoWithSeal(letterheadQuery.Company.Code, SealType.Letterhead);
 
-                    //原圖片狀態變更停用(刪除)
-                    updateImageQuery.DeleteStatus = DeleteStatus.Yes;                    
-                    InputUtil.Set(updateImageQuery, userId, false);
-
-                    await NewTypographyResource(letterheadImageUpdate.ImageBase64, typographyResources, imageBase64Info, userId);
-
-                    //TODO:這樣的寫法有點奇怪需要在調整
-                    //資料表的typographyResource 補上信頭欄位
-                    foreach (TypographicResource typographyResource in typographyResources)
-                    {
-                        typographyResource.Letterhead = updateImageQuery.Letterhead;
-                    }
+                    //原圖片狀態變更停用(刪除)                    
+                    updateLetterImage.DeleteStatus = DeleteStatus.Yes;                    
+                    InputUtil.Set(updateLetterImage, userId, false);
 
                     //變更信頭名稱
-                    updateImageQuery.Letterhead.Name = letterheadImageUpdate.LetterheadName;                    
-                    InputUtil.Set(updateImageQuery.Letterhead, userId, false);  
+                    letterheadQuery.Name = letterheadImageUpdate.LetterheadName;
+                    InputUtil.Set(letterheadQuery, userId, false);
 
-                    dbContext.TypographicResources.AddRange(typographyResources);
+                    //圖片處理
+                    await NewTypographyResource(letterheadImageUpdate.ImageBase64, typographyResources, imageBase64Info, userId);
+                    letterheadQuery.TypographicResources.AddRange(typographyResources);
+                    
                     dbContext.SaveChanges();
                     response.Success();
                 }
@@ -249,7 +249,7 @@ namespace SealTypographicWebAPI.Services.Implements
                 }
                 logger.LogInformation("Update output {@output}", response);
             }
-            catch (DbUpdateException ex) 
+            catch (DbUpdateException ex)
             {
                 response.DbError();
                 logger.LogInformation("Update dberror {@dberror}", ex.Message);
@@ -259,9 +259,9 @@ namespace SealTypographicWebAPI.Services.Implements
                 response.Error();
                 logger.LogInformation("Update error {@error}", ex.Message);
             }
-            
+
             return response;
-        }        
+        }
 
         /// <summary>
         /// 新增印鑑、簽印、圖片資料
@@ -284,7 +284,7 @@ namespace SealTypographicWebAPI.Services.Implements
             typographicResource.ImageFullPath = await imageService.GetSavedImageFilePath(imageBase64Info);
             typographicResource.ThumbnailFullPath = await imageService.GetSavedImageThumbnailFilePath(imageBase64Info, true);
 
-            InputUtil.Set(typographicResource, userId, true);           
+            InputUtil.Set(typographicResource, userId, true);
             typographyResources.Add(typographicResource);
         }
 

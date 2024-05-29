@@ -41,7 +41,7 @@ namespace SealTypographicWebAPI.Services.Implements
         private readonly IAdminService adminService;
         private readonly ILogger<LogReportService> logger;
         private readonly IMapper mapper;
-        private readonly AutoMapper.IConfigurationProvider configurationProvider;        
+        private readonly AutoMapper.IConfigurationProvider configurationProvider;
         private IMongoCollection<OperationLog> operationLog;
         private IMongoCollection<CustomerSealEventLog> customerSealEventLog;
         private IMongoCollection<AccountantSignEventLog> accountantSignEventLog;
@@ -59,13 +59,13 @@ namespace SealTypographicWebAPI.Services.Implements
         {
             this.dbContext = dbContext;
             this.adminService = adminService;
-            this.logger = logger;            
+            this.logger = logger;
             this.mapper = mapper;
             configurationProvider = mapper.ConfigurationProvider;
             //MongoDb連線            
             MongoClient mongoClient = new(options.CurrentValue.ConnectionString);
             IMongoDatabase mongoDatabase = mongoClient.GetDatabase(options.CurrentValue.DatabaseName);
-            Init(mongoDatabase);            
+            Init(mongoDatabase);
         }
 
         /// <summary>
@@ -102,7 +102,7 @@ namespace SealTypographicWebAPI.Services.Implements
             };
 
             if (!mongoDatabase.ListCollections(listCollectionsOptions).Any())
-            {                
+            {
                 mongoDatabase.CreateCollection(collectionName, new() { TimeSeriesOptions = new TimeSeriesOptions("DateTime") });
             }
         }
@@ -152,12 +152,12 @@ namespace SealTypographicWebAPI.Services.Implements
 
             IQueryable<OperationLog> operationLogQuery = operationLog.AsQueryable().Where
                                                         (
-                                                            x => x.DateTime >= operationLogSearch.StartDate 
-                                                            && x.DateTime <= operationLogSearch.EndDate                                                            
+                                                            x => x.DateTime >= operationLogSearch.StartDate
+                                                            && x.DateTime <= operationLogSearch.EndDate
                                                         );
 
             if (operationLogSearch.ActionType != null)
-            {                                
+            {
                 operationLogQuery = operationLogQuery.Where(x => x.Data != null
                                                             && x.Data.ActionType == operationLogSearch.ActionType.Value);
             }
@@ -168,23 +168,23 @@ namespace SealTypographicWebAPI.Services.Implements
                                                             || x.UserName.ToLower().Contains(operationLogSearch.UserKeyWord.ToLower()));
             }
 
-            if(!string.IsNullOrWhiteSpace(operationLogSearch.TargetKeyWord))
-            {                
+            if (!string.IsNullOrWhiteSpace(operationLogSearch.TargetKeyWord))
+            {
                 operationLogQuery = operationLogQuery.Where(x => x.Data != null &&
                                                                 (
                                                                     x.Data.CustomerName.ToLower().Contains(operationLogSearch.TargetKeyWord.ToLower())
                                                                     || x.Data.AccountantName.ToLower().Contains(operationLogSearch.TargetKeyWord.ToLower())
                                                                 )
-                                                            );                
+                                                            );
             }
 
-            if(operationLogQuery.Any())
+            if (operationLogQuery.Any())
             {
-                if(isFullPageOut)
+                if (isFullPageOut)
                 {
                     operationLogPaginate.ViewModels = PageUtil.SetPaginateViewModel<OperationLog, OperationLogViewModel>
                                                         (
-                                                            operationLogQuery, 
+                                                            operationLogQuery,
                                                             configurationProvider
                                                         );
                 }
@@ -192,14 +192,14 @@ namespace SealTypographicWebAPI.Services.Implements
                 {
                     operationLogPaginate.ViewModels = PageUtil.SetPaginateViewModel<OperationLog, OperationLogViewModel>
                                                         (
-                                                            operationLogQuery, 
-                                                            configurationProvider, 
-                                                            operationLogSearch.PageNumber, 
+                                                            operationLogQuery,
+                                                            configurationProvider,
+                                                            operationLogSearch.PageNumber,
                                                             operationLogSearch.PageSize
                                                         );
 
                     PageUtil.SetPaginate(operationLogPaginate, operationLogSearch.PageNumber, operationLogSearch.PageSize, operationLogQuery.Count());
-                }                                
+                }
 
                 operationLogPaginate.Success();
             }
@@ -220,7 +220,7 @@ namespace SealTypographicWebAPI.Services.Implements
             CustomerSealEventLogPaginate customerSealEventLogPaginate = new();
 
             logger.LogInformation("OperationLogPaginate input operationLogSearch: {@operationLogSearch}", customerSealEventLogSearch);
-            
+
             IQueryable<CustomerSealEventLog> customerSealEventLogQuery = customerSealEventLog.AsQueryable().Where
                                                                         (
                                                                             x => x.DateTime >= customerSealEventLogSearch.StartDate
@@ -230,9 +230,9 @@ namespace SealTypographicWebAPI.Services.Implements
                                                                         );
 
             if (customerSealEventLogSearch.ReviewStatus != null)
-            {                
+            {
                 customerSealEventLogQuery = customerSealEventLogQuery.Where(
-                                                                                x => x.Data != null 
+                                                                                x => x.Data != null
                                                                                 && x.Data.ReviewStatus == customerSealEventLogSearch.ReviewStatus.Value
                                                                             );
             }
@@ -245,18 +245,18 @@ namespace SealTypographicWebAPI.Services.Implements
             }
 
             if (!string.IsNullOrWhiteSpace(customerSealEventLogSearch.CustomerKeyWord))
-            {                
+            {
                 customerSealEventLogQuery = customerSealEventLogQuery
                                             .Where(x => x.Data != null &&
-                                            (                                              
-                                                x.Data.CustomerCode.ToLower().Contains(customerSealEventLogSearch.CustomerKeyWord.ToLower())                                                
-                                                || x.Data.CustomerName.ToLower().Contains(customerSealEventLogSearch.CustomerKeyWord.ToLower())                                                                                              
-                                            ));                
+                                            (
+                                                x.Data.CustomerCode.ToLower().Contains(customerSealEventLogSearch.CustomerKeyWord.ToLower())
+                                                || x.Data.CustomerName.ToLower().Contains(customerSealEventLogSearch.CustomerKeyWord.ToLower())
+                                            ));
             }
 
             if (customerSealEventLogQuery.Any())
             {
-                if(isFullPageOut)
+                if (isFullPageOut)
                 {
                     customerSealEventLogPaginate.ViewModels = PageUtil.SetPaginateViewModel<CustomerSealEventLog, CustomerSealEventLogViewModel>
                                                                 (
@@ -301,13 +301,13 @@ namespace SealTypographicWebAPI.Services.Implements
             IQueryable<AccountantSignEventLog> accountantSignEventLogQuery = accountantSignEventLog.AsQueryable().Where
                                                                             (
                                                                                 x => x.DateTime >= accountantSignEventLogSearch.StartDate
-                                                                                && x.DateTime <= accountantSignEventLogSearch.EndDate                                                                                
+                                                                                && x.DateTime <= accountantSignEventLogSearch.EndDate
                                                                             );
 
             if (accountantSignEventLogSearch.ReviewStatus != null)
             {
                 //MongoDb 沒辦法使用!判別null不比對所以需要加上x.Data != null
-                accountantSignEventLogQuery = accountantSignEventLogQuery.Where(x => x.Data != null 
+                accountantSignEventLogQuery = accountantSignEventLogQuery.Where(x => x.Data != null
                                                                                 && x.Data.ReviewStatus == accountantSignEventLogSearch.ReviewStatus.Value);
             }
 
@@ -329,7 +329,7 @@ namespace SealTypographicWebAPI.Services.Implements
 
             if (accountantSignEventLogQuery.Any())
             {
-                if(isFullPageOut)
+                if (isFullPageOut)
                 {
                     accountantSignEventLogPaginate.ViewModels = PageUtil.SetPaginateViewModel<AccountantSignEventLog, AccountantSignEventLogViewModel>
                                             (
@@ -373,7 +373,7 @@ namespace SealTypographicWebAPI.Services.Implements
             logger.LogInformation("GetTypographicReport input customerTypoReportSearch: {@customerTypoReportSearch} typographyType: {@typographyType} userId: {@userId}"
                 , customerTypoReportSearch, typographyType, userId);
 
-            TypographicReportPaginate customerTypoReportPaginate = new ();
+            TypographicReportPaginate customerTypoReportPaginate = new();
             try
             {
                 IQueryable<TypographicPDF> typographicPDFQuery = dbContext.TypographicPDFs
@@ -387,25 +387,27 @@ namespace SealTypographicWebAPI.Services.Implements
                                                                             && x.UpdateDate <= customerTypoReportSearch.EndDate
                                                                       );
 
-                if(!string.IsNullOrEmpty(customerTypoReportSearch.UserKeyWord))
-                {
-                    //adminService.GetUser
-                    //TODO:或是所有的登入資料要先放到資料表user中在過濾出來。
-                    typographicPDFQuery = typographicPDFQuery.Where(x => x.UpdateUser!.LastName!.Contains(customerTypoReportSearch.UserKeyWord)
-                                                                    || x.UpdateUser!.UserName!.Contains(customerTypoReportSearch.UserKeyWord));
+                if (!string.IsNullOrEmpty(customerTypoReportSearch.UserKeyWord))
+                {                                        
+                    typographicPDFQuery = typographicPDFQuery.Where(x => x.UpdateUser != null
+                                                                        && (
+                                                                            (x.UpdateUser.LastName != null
+                                                                            && x.UpdateUser.LastName.Contains(customerTypoReportSearch.UserKeyWord))
+                                                                            || x.UpdateUser.UserName.Contains(customerTypoReportSearch.UserKeyWord)
+                                                                        ));
                 }
 
-                if(!string.IsNullOrEmpty(customerTypoReportSearch.CustomerKeyWord))
+                if (!string.IsNullOrEmpty(customerTypoReportSearch.CustomerKeyWord))
                 {
                     typographicPDFQuery = typographicPDFQuery.Where(x => x.Customer.Name.Contains(customerTypoReportSearch.CustomerKeyWord)
-                                                                    || x.Customer.Code.Contains(customerTypoReportSearch.CustomerKeyWord));                 
+                                                                    || x.Customer.Code.Contains(customerTypoReportSearch.CustomerKeyWord));
                 }
 
                 typographicPDFQuery = typographicPDFQuery.OrderBy(x => x.Id);
 
                 if (typographicPDFQuery.Any())
                 {
-                    if(isFullPageOut)
+                    if (isFullPageOut)
                     {
                         customerTypoReportPaginate.ViewModels = PageUtil.SetPaginateViewModel<TypographicPDF, TypographicReportViewModel>
                                                                 (
@@ -422,19 +424,19 @@ namespace SealTypographicWebAPI.Services.Implements
                                                                     customerTypoReportSearch.PageNumber,
                                                                     customerTypoReportSearch.PageSize
                                                                 );
-                    }                                        
+                    }
 
                     PageUtil.SetPaginate(customerTypoReportPaginate, customerTypoReportSearch.PageNumber, customerTypoReportSearch.PageSize, typographicPDFQuery.Count());
                 }
                 else
                 {
                     customerTypoReportPaginate.DbNoData();
-                }                
+                }
 
                 logger.LogInformation("GetTypographicReport output {@customerTypoReportPaginate}", customerTypoReportPaginate);
             }
-            catch (Exception ex) 
-            {                
+            catch (Exception ex)
+            {
                 logger.LogError("GetTypographicReport error {@error}", ex.Message);
             }
             return customerTypoReportPaginate;
@@ -457,7 +459,7 @@ namespace SealTypographicWebAPI.Services.Implements
 
             try
             {
-                IQueryable<Accountant> accountantQuery = dbContext.Accountants                                                                
+                IQueryable<Accountant> accountantQuery = dbContext.Accountants
                                                                 .Include(x => x.AccountantGroups)
                                                                 .Where
                                                                 (
@@ -476,7 +478,7 @@ namespace SealTypographicWebAPI.Services.Implements
                     );
                 }
 
-                if(accountantMemberSearch.AccountantGroupId != 0)
+                if (accountantMemberSearch.AccountantGroupId != 0)
                 {
                     accountantQuery = accountantQuery.Where(accountant => accountant.AccountantGroups.Any(group => group.Id == accountantMemberSearch.AccountantGroupId));
                 }
@@ -486,13 +488,13 @@ namespace SealTypographicWebAPI.Services.Implements
                 accountantQuery = accountantQuery.OrderBy(accountant => accountant.Id);
 
                 if (accountantQuery.Any())
-                {                    
+                {
                     if (isFullPageOut)
                     {
                         accountantMemberPaginate.ViewModels = PageUtil.SetPaginateViewModel<Accountant, AccountantMemberViewModel>
                                                                 (
                                                                     accountantQuery,
-                                                                    configurationProvider                                                             
+                                                                    configurationProvider
                                                                 );
                     }
                     else
@@ -500,7 +502,7 @@ namespace SealTypographicWebAPI.Services.Implements
                         accountantMemberPaginate.ViewModels = PageUtil.SetPaginateViewModel<Accountant, AccountantMemberViewModel>
                                                                 (
                                                                     accountantQuery,
-                                                                    configurationProvider,                                                                    
+                                                                    configurationProvider,
                                                                     accountantMemberSearch.PageNumber,
                                                                     accountantMemberSearch.PageSize
                                                                 );
@@ -529,13 +531,13 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <param name="isFullPageOut">是否全部輸出</param>
         /// <returns></returns>
         public async Task<UserMemberPaginate> GetUserMember([FromQuery] UserMemberSearch userMemberSearch, bool isFullPageOut = false)
-        {            
+        {
             DJKeycloakLib.Models.BaseModel.ResponseModel<IList<UserRepresentation>> userRepresentationsResponseModel = await adminService.FindUsers(true, null, null, true, null,
                 userMemberSearch.FirstName, userMemberSearch.LastName, userMemberSearch.UserName);
 
             //取得成員資料
             UserMemberPaginate userMemberPaginate = new()
-            {                                
+            {
                 ViewModels = mapper.Map<List<UserMemberViewModel>>(userRepresentationsResponseModel.Data),
                 PageNumber = userMemberSearch.PageNumber,
                 PageSize = userMemberSearch.PageSize,
@@ -548,14 +550,14 @@ namespace SealTypographicWebAPI.Services.Implements
                 {
                     DJKeycloakLib.Models.BaseModel.ResponseModel<IList<GroupRepresentation>> groupResponse = await adminService.FindUserGroups(userMember.Id);
                     if (groupResponse is { Code: KeycloakResponseCode.Success, Data: not null })
-                    {                       
+                    {
                         foreach (GroupRepresentation groupRepresentation in groupResponse.Data)
                         {
                             userMember.Groups.Add(groupRepresentation.Name ?? string.Empty);
                         }
                     }
                 }
-                if(!string.IsNullOrWhiteSpace(userMemberSearch.UserGroupName))
+                if (!string.IsNullOrWhiteSpace(userMemberSearch.UserGroupName))
                 {
                     userMemberPaginate.ViewModels = userMemberPaginate.ViewModels.Where(x => x.Groups.Contains(userMemberSearch.UserGroupName)).ToList();
                 }
@@ -570,7 +572,7 @@ namespace SealTypographicWebAPI.Services.Implements
                                                         .ToList();
                 }
                 userMemberPaginate.Success();
-            }            
+            }
             else
             {
                 userMemberPaginate.KeycloakNoData();
@@ -593,7 +595,7 @@ namespace SealTypographicWebAPI.Services.Implements
             };
 
             // 呼叫現有的 SaveOperationLog 方法
-            await SaveOperationLog(operationLogSave, userInfo.UserName, $"{userInfo.FirstName}{userInfo.LastName}" );
+            await SaveOperationLog(operationLogSave, userInfo.UserName, $"{userInfo.FirstName}{userInfo.LastName}");
         }
 
         /// <summary>
@@ -632,18 +634,18 @@ namespace SealTypographicWebAPI.Services.Implements
         public async Task SaveAccountantSignEventLog(AccountantSignEventLogSave accountantSignEventLogSave, OperateType operateType, string userId = "test", string userName = "test")
         {
             await accountantSignEventLog.InsertOneAsync(MapFrom<AccountantSignEventLog, AccountantSignEventLogSave>(accountantSignEventLogSave, operateType, userId, userName));
-        }                
+        }
 
-        private static T MapFrom<T, K>(K logSaveData, OperateType operateType, string userId, string userName) where T : LogModel<K>, new()             
+        private static T MapFrom<T, K>(K logSaveData, OperateType operateType, string userId, string userName) where T : LogModel<K>, new()
         {
             if (logSaveData == null) throw new ArgumentNullException(nameof(logSaveData));
 
-            return new ()
+            return new()
             {
                 Data = logSaveData,
                 DateTime = DateTime.Now,
-                OperateType = operateType,                
-                FunctionType = FunctionType.SealTypographic,                
+                OperateType = operateType,
+                FunctionType = FunctionType.SealTypographic,
                 LogLevel = CommonLib.Enums.LogLevel.Info,
                 SystemType = SystemType.SealTypographic,
                 UserId = userId,
