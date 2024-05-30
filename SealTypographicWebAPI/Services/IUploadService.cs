@@ -16,10 +16,16 @@ namespace SealTypographicWebAPI.Services
         UploadTypeResponse GetUploadType();
 
         /// <summary>
-        /// 取得上傳類別
+        /// 取得上傳檔案上限
         /// </summary>
         /// <returns></returns>
-        DuplicateFileProcessModeResponse GetDuplicateFileProcessMode();
+        int GetMaxUploadSize();
+
+       /// <summary>
+       /// 取得上傳類別
+       /// </summary>
+       /// <returns></returns>
+       DuplicateFileProcessModeResponse GetDuplicateFileProcessMode();
 
         /// <summary>
         /// 依關鑑字與搜尋條件取得上傳檔案列表

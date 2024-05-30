@@ -2,6 +2,7 @@
 using DBEntities.Entities;
 using DBEntities.Entities.AccountantModels;
 using DBEntities.Entities.ImageRangeModels;
+using DJCryptoLib;
 
 namespace DBEntities.Utils
 {
@@ -28,13 +29,19 @@ namespace DBEntities.Utils
 
                 if (!dbContext.Companys.Any())
                 {
+                    string companyCode = "AAA001";
+                    //string privateKeyJsonPath = $"{Environment.CurrentDirectory}{Environment.NewLine}{companyCode}";
+                    //RSA rsa = RSA.Generate();                    
+                    //File.WriteAllText(privateKeyJsonPath, rsa.PrivateKeyBase64);
                     //公司基本資料
                     Company company = new()
                     {
                         Id = 1,
-                        Code = "AAA001",
+                        Code = companyCode,
                         BAN = "12345678",
                         Name = "映像有限公司",
+                        //PublicKeyBase64 = rsa.PublicKeyBase64,
+                        //PrivateKeyJsonPath = privateKeyJsonPath,
                         AccountantGroups = new List<AccountantGroup>(),
                         ApplicationUsers = new List<ApplicationUser>(),
                         ImageRangeSettings = new List<ImageRangeSetting>()

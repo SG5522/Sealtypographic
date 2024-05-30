@@ -33,6 +33,13 @@ namespace SealTypographicWebAPI.Controllers
         public UploadTypeResponse UploadType() => uploadService.GetUploadType();
 
         /// <summary>
+        /// 取得取得上傳檔案上限
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("[Action]")]
+        public int MaxUploadSize() => uploadService.GetMaxUploadSize();
+
+        /// <summary>
         /// 取得上傳重複檔名處理模式
         /// </summary>
         /// <returns></returns>

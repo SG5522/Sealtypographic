@@ -107,13 +107,30 @@ namespace SealTypographicWebAPI.Services.Implements
         public static void SaveImage(string imageBase64, string savePath, float resizeScale = 0)
         {
             ImageModel imageModel = new() { DataUrl = imageBase64 };
-            string savefullPath = Path.Combine(savePath, imageModel.ImageFormat!.Name.ToLower()!);
+            string savefullPath = $"{savePath}.{imageModel.ImageFormat!.Name.ToLower()}";
             if (resizeScale != 0)
             {               
                  ImageUtil.ReSizeBase64Only(imageBase64, resizeScale, resizeScale);
             }
             
             imageBase64.ToBytes().Save(savefullPath);                        
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="imageBase64"></param>
+        /// <param name="savePath"></param>
+        /// <param name="resizeScale"></param>
+        public void CryptoSaveImage(string imageBase64, string savePath, float resizeScale = 0)
+        {
+            ImageModel imageModel = new() { DataUrl = imageBase64 };            
+            if (resizeScale != 0)
+            {
+                ImageUtil.ReSizeBase64Only(imageBase64, resizeScale, resizeScale);
+            }
+
+            //CryptoUtil.Encrypt(imageBase64, savePath, );
         }
 
         /// <summary>

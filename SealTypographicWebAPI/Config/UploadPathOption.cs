@@ -89,5 +89,10 @@ namespace SealTypographicWebAPI.Config
             }
         }
 
+        /// <summary>
+        /// 檔案上傳大小限制
+        /// </summary>
+        public int MaxUploadSize { get; set; }
+
     }
 }

@@ -11,9 +11,6 @@ using SealTypographicWebAPI.Utils;
 using DBEntities.Entities;
 using DBEntities;
 using DJImageLib.Utils;
-using CommonLib.Utils;
-using DJImageLib.Models;
-using DJImageLib.Extensions;
 using DJSpire.Utils;
 using DJSpire.Models;
 using CommonLib.Extensions;
@@ -87,10 +84,10 @@ namespace SealTypographicWebAPI.Services.Implements
             return uploadTypeResponse;
         }
 
-        /// <summary>
-        /// 取得上傳類別
-        /// </summary>
-        /// <returns></returns>
+        /// <inheritdoc/>
+        public int GetMaxUploadSize() => uploadConfigPath.MaxUploadSize;
+
+        /// <inheritdoc/> 
         public DuplicateFileProcessModeResponse GetDuplicateFileProcessMode()
         {
             DuplicateFileProcessModeResponse duplicateFileProcessModeResponse = new();

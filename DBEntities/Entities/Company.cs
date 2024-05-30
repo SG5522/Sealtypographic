@@ -11,6 +11,16 @@ namespace DBEntities.Entities
     /// </summary>
     public class Company : BaseDetail
     {
+        ///// <summary>
+        ///// RSA PublickeyBase64
+        ///// </summary>
+        //public string PublicKeyBase64 { get; set; }
+
+        ///// <summary>
+        ///// RSA PrivateKeyJsonPath 
+        ///// </summary>
+        //public string PrivateKeyJsonPath { get; set; }
+
         /// <summary>
         /// 客戶資料表
         /// </summary>
