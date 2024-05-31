@@ -1,17 +1,13 @@
-using CommonLib.Utils;
 using DBEntities;
 using DBEntities.Utils;
-using DJCryptoLib;
 using DJKeycloakAPI.Configs;
 using DJKeycloakAPI.Models.Users;
 using DJKeycloakLib.Configs;
 using DJKeycloakLib.Services;
 using Keycloak.AuthServices.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using SealTypographicWebAPI.Config;
 using SealTypographicWebAPI.Services;
@@ -262,9 +258,8 @@ internal class Program
                     {
                         swagger.Servers = new List<OpenApiServer> {
                     new OpenApiServer {
-                        Url = $"{httpReq.Headers["X-Forwarded-Proto"]}://{httpReq.Headers["X-Forwarded-Host"]}:{httpReq.Headers["X-Forwarded-Port"]}/{httpReq.Headers["X-Forwarded-Prefix"]}"
-                    }
-                        };
+                            Url = $"{httpReq.Headers["X-Forwarded-Proto"]}://{httpReq.Headers["X-Forwarded-Host"]}:{httpReq.Headers["X-Forwarded-Port"]}/{httpReq.Headers["X-Forwarded-Prefix"]}"
+                        }};
                     }
                     //else
                     //{
@@ -312,14 +307,3 @@ internal class Program
         app.Run();
     }
 }
-
-#region -- ConectionString --
-
-#endregion
-#region -- Service --
-
-#endregion
-
-#region -- Authentication --
-
-#endregion
