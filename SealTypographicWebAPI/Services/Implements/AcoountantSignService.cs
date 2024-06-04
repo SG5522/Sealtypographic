@@ -377,7 +377,10 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <returns></returns>
         private async Task<List<TypographicResource>> NewTypographyResource(List<AccountantSign> formSeals, ImageSaveInfo imageSaveInfo, int userId = 1)
         {
-            List<TypographicResource> typographyResources = new();
+            List<TypographicResource> typographyResources = new();           
+
+            RASKey rasKey = imageService.GetRasKey(userId);
+
             foreach (AccountantSign accountantSign in formSeals)
             {
                 TypographicResource typographyResource = new()
@@ -388,6 +391,7 @@ namespace SealTypographicWebAPI.Services.Implements
                 };
                 //ImageBase64轉圖檔並存到指定資料夾
                 imageSaveInfo.ImageBase64 = accountantSign.ImageBase64;
+                typographyResource.ImageEncryptKey = await imageService.EncryptImageWithKeyAsync(imageSaveInfo, rasKey);
                 typographyResource.ImageFullPath = await imageService.GetSavedImageFilePath(imageSaveInfo);
                 typographyResource.ThumbnailFullPath = await imageService.GetSavedImageThumbnailFilePath(imageSaveInfo, true);
                 InputUtil.Set(typographyResource, userId, true);

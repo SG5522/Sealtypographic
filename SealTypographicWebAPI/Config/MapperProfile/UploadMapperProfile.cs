@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using DBEntities.Entities;
 using SealTypographicWebAPI.Models.Upload;
+using SealTypographicWebAPI.Services.Implements;
 
 namespace SealTypographicWebAPI.Config.MapperProfile
 {
@@ -8,7 +9,7 @@ namespace SealTypographicWebAPI.Config.MapperProfile
     /// AutoMapper用的LIST
     /// </summary>
     public class UploadMapperProfile : Profile
-    {
+    {        
         /// <summary>
         /// 建置
         /// </summary>

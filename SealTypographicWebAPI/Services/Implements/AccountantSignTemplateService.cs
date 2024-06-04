@@ -23,7 +23,7 @@ namespace SealTypographicWebAPI.Services.Implements
     public class AccountantSignTemplateService : IAccountantSignTemplateService
     {
         private readonly SealTypographicDbContext dbContext;
-        private readonly ImageService imageService;        
+        private readonly ImageService imageService;
         private readonly IMapper mapper;
         private readonly AutoMapper.IConfigurationProvider configurationProvider;
         private readonly ILogger<AccountantSignTemplateService> logger;
@@ -80,7 +80,7 @@ namespace SealTypographicWebAPI.Services.Implements
                 logger.LogError("GetDetail error {@Error}", ex.Message);
                 accountantSignTemplateDetailViewModel = new();
                 accountantSignTemplateDetailViewModel.Error();
-            }            
+            }
 
             return accountantSignTemplateDetailViewModel;
         }
@@ -115,7 +115,7 @@ namespace SealTypographicWebAPI.Services.Implements
             {
                 logger.LogError("GetImage error {@Error}", ex.Message);
                 viewImage.Error();
-            }            
+            }
 
             return viewImage;
         }
@@ -129,7 +129,7 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <returns></returns>
         public async Task<AccountantSignTemplatePaginate> GetPaginate(AccountantSignTemplateSearch accountantSignTemplateSearch, int userId = 1, int companyId = 1)
         {
-            AccountantSignTemplatePaginate accountantSignTemplatePaginate = new ();
+            AccountantSignTemplatePaginate accountantSignTemplatePaginate = new();
 
             logger.LogInformation("GetPaginate input {@Input} userId: {@userId} ", accountantSignTemplateSearch, userId);
 
@@ -164,29 +164,23 @@ namespace SealTypographicWebAPI.Services.Implements
                     PageUtil.SetPaginate(accountantSignTemplatePaginate, accountantSignTemplateSearch.PageNumber, accountantSignTemplateSearch.PageSize, templateQuery.Count());
                     accountantSignTemplatePaginate.Success();
                 }
-                else 
+                else
                 {
                     accountantSignTemplatePaginate.DbNoData();
                 }
-                logger.LogInformation("GetPaginate output {@Output}", mapper.Map<AccountantSignTemplatePaginate>(accountantSignTemplatePaginate));                
+                logger.LogInformation("GetPaginate output {@Output}", mapper.Map<AccountantSignTemplatePaginate>(accountantSignTemplatePaginate));
             }
             catch (Exception ex)
             {
                 logger.LogError("New error {@Error}", ex.Message);
                 accountantSignTemplatePaginate.Error();
-            }            
-            
+            }
+
             return accountantSignTemplatePaginate;
         }
 
-        /// <summary>
-        /// 新增會計師簽印樣板
-        /// </summary>
-        /// <param name="accountantSignTemplateForm">會計師簽印樣板</param>
-        /// <param name="companyId"></param>
-        /// <param name="userId"></param>
-        /// <returns></returns>
-        public async Task<ResponseViewModel> New(AccountantSignTemplateForm accountantSignTemplateForm, int userId = 1, int companyId = 1)
+        /// <inheritdoc/>
+        public async Task<ResponseViewModel> New(AccountantSignTemplateForm accountantSignTemplateForm, int userId = 1)
         {
             logger.LogInformation("New input {@Input} userId: {@userId} ", accountantSignTemplateForm, userId);
 
@@ -194,10 +188,9 @@ namespace SealTypographicWebAPI.Services.Implements
 
             try
             {
-                //尋找公司並與會計師簽印關聯
-                Company? companyQuery = dbContext.Companys
-                                        .Include(x => x.Templates)
-                                        .FirstOrDefault(x => x.Id == companyId);
+                Company? companyQuery = dbContext.Companys.Include(x => x.Templates)
+                                                          .FirstOrDefault(x => userId == 1 ?
+                                                                          x.Id == 1 : x.ApplicationUsers.Any(u => u.Id == userId));
 
                 if (companyQuery != null)
                 {
@@ -237,7 +230,7 @@ namespace SealTypographicWebAPI.Services.Implements
                 logger.LogError("New error {@Error}", ex.Message);
                 response.Error();
             }
-            
+
             return response;
         }
 
@@ -251,7 +244,7 @@ namespace SealTypographicWebAPI.Services.Implements
         {
             logger.LogInformation("Update input {@Input} userId: {@userId} ", accountantSignTemplateUpdateForm, userId);
 
-            ResponseViewModel response = new ();
+            ResponseViewModel response = new();
 
             try
             {
@@ -319,7 +312,7 @@ namespace SealTypographicWebAPI.Services.Implements
                 logger.LogError("Update error {@Error}", ex.Message);
                 response.Error();
             }
-            
+
             return response;
         }
 
@@ -363,7 +356,7 @@ namespace SealTypographicWebAPI.Services.Implements
                 logger.LogError("Delete error {@Error}", ex.Message);
                 response.Error();
             }
-            
+
             return response;
         }
 

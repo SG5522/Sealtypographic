@@ -10,7 +10,7 @@ namespace DBEntities.Utils
     {
         private const int Years = 50;
 
-        public static void Initialize(SealTypographicDbContext dbContext)
+        public static void Initialize(SealTypographicDbContext dbContext, string privateKeyForder)
         {
             try
             {
@@ -29,10 +29,11 @@ namespace DBEntities.Utils
 
                 if (!dbContext.Companys.Any())
                 {
-                    string companyCode = "AAA001";
-                    //string privateKeyJsonPath = $"{Environment.CurrentDirectory}{Environment.NewLine}{companyCode}";
-                    //RSA rsa = RSA.Generate();                    
-                    //File.WriteAllText(privateKeyJsonPath, rsa.PrivateKeyBase64);
+                    string companyCode = "AAA001";                    
+                    string privateKeyFilePath = Path.Combine(privateKeyForder, companyCode);
+                    
+                    RSA rsa = RSA.Generate();                    
+                    File.WriteAllText(privateKeyFilePath, rsa.PrivateKeyBase64);
                     //公司基本資料
                     Company company = new()
                     {
@@ -40,8 +41,8 @@ namespace DBEntities.Utils
                         Code = companyCode,
                         BAN = "12345678",
                         Name = "映像有限公司",
-                        //PublicKeyBase64 = rsa.PublicKeyBase64,
-                        //PrivateKeyJsonPath = privateKeyJsonPath,
+                        PublicKeyBase64 = rsa.PublicKeyBase64,
+                        PrivateKeyFilePath = privateKeyFilePath,
                         AccountantGroups = new List<AccountantGroup>(),
                         ApplicationUsers = new List<ApplicationUser>(),
                         ImageRangeSettings = new List<ImageRangeSetting>()

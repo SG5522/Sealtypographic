@@ -15,7 +15,7 @@ namespace Sqlite.Migrations
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder.HasAnnotation("ProductVersion", "7.0.16");
+            modelBuilder.HasAnnotation("ProductVersion", "7.0.20");
 
             modelBuilder.Entity("DBEntities.Entities.AccountantModels.Accountant", b =>
                 {
@@ -302,6 +302,14 @@ namespace Sqlite.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("President")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("PrivateKeyFilePath")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("PublicKeyBase64")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("ShortName")
@@ -885,6 +893,9 @@ namespace Sqlite.Migrations
                     b.Property<byte>("DeleteStatus")
                         .HasColumnType("INTEGER");
 
+                    b.Property<string>("ImageEncryptKey")
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("ImageFullPath")
                         .IsRequired()
                         .HasColumnType("TEXT");
@@ -906,6 +917,9 @@ namespace Sqlite.Migrations
 
                     b.Property<int?>("TemporarySealGroupId")
                         .HasColumnType("INTEGER");
+
+                    b.Property<string>("ThumbnailEncryptKey")
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("ThumbnailFullPath")
                         .HasColumnType("TEXT");

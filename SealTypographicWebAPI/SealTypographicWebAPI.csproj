@@ -7,7 +7,7 @@
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <DocumentationFile></DocumentationFile>
     <IncrementVersionOnBuild>0.0.3.1+</IncrementVersionOnBuild>
-    <Version>0.0.3.1641</Version>
+    <Version>0.0.3.1652</Version>
     <PackageIcon>android-chrome-128x128.png</PackageIcon>
     <Configurations>Debug;Release</Configurations>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>    
@@ -32,16 +32,16 @@
     <PackageReference Include="AspNetCore.HealthChecks.UI" Version="7.0.2" />
     <PackageReference Include="AspNetCore.HealthChecks.UI.InMemory.Storage" Version="7.0.0" />
     <PackageReference Include="AutoMapper" Version="13.0.1" />
-    <PackageReference Include="DJCommonLib" Version="6.0.10" />
+    <PackageReference Include="DJCommonLib" Version="6.0.12" />
     <PackageReference Include="DJImageLib" Version="6.0.9" />
     <PackageReference Include="DJKeycloakAPI" Version="6.0.17" CopyDirectory="lib\net6.0\**\*.*" />
     <PackageReference Include="DJKeycloakLib" Version="6.0.10" CopyDirectory="lib\net6.0\**\*.*" />	  
     <PackageReference Include="Keycloak.AuthServices.Authentication" Version="1.6.0" />
     <PackageReference Include="Keycloak.AuthServices.Authorization" Version="1.6.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.Certificate" Version="6.0.30" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.30" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.Certificate" Version="6.0.31" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.31" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="6.0.30" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="7.0.19">
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="7.0.20">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
@@ -53,7 +53,7 @@
     <PackageReference Include="Serilog.Sinks.Async" Version="1.5.0" />
     <PackageReference Include="Serilog.Sinks.MongoDB" Version="5.4.1" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
-    <PackageReference Include="System.Drawing.Common" Version="8.0.5" />
+    <PackageReference Include="System.Drawing.Common" Version="8.0.6" />
   </ItemGroup>
 
   <ItemGroup>

@@ -38,10 +38,9 @@ namespace SealTypographicWebAPI.Services
         /// 新增會計師簽印樣板
         /// </summary>
         /// <param name="accountantSignTemplateForm">會計師簽印樣板</param>
-        /// <param name="userId">userId</param>
-        /// <param name="companyId"></param>
+        /// <param name="userId">userId</param>        
         /// <returns></returns>
-        Task<ResponseViewModel> New(AccountantSignTemplateForm accountantSignTemplateForm, int userId = 1, int companyId = 1);
+        Task<ResponseViewModel> New(AccountantSignTemplateForm accountantSignTemplateForm, int userId = 1);
 
         /// <summary>
         /// 更新會計師簽印樣板

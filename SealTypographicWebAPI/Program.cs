@@ -1,3 +1,4 @@
+using CommonLib.Utils;
 using DBEntities;
 using DBEntities.Utils;
 using DJKeycloakAPI.Configs;
@@ -283,10 +284,14 @@ internal class Program
         using (IServiceScope scope = app.Services.CreateScope())
         {
             try
-            {
+            {                
+                string privateKeyForder = Path.Combine(Environment.CurrentDirectory, "Keys");
+                
                 SealTypographicDbContext dbContext = scope.ServiceProvider.GetRequiredService<SealTypographicDbContext>();
                 dbContext.Database.Migrate();
-                InitialDbData.Initialize(dbContext);                
+
+                FileUtil.CheckDirectory(privateKeyForder);
+                InitialDbData.Initialize(dbContext, privateKeyForder);                
             }
             catch (Exception ex)
             {
