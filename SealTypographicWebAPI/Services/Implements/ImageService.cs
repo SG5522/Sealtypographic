@@ -9,6 +9,9 @@ using DJImageLib.Utils;
 using DJImageLib.Extensions;
 using CommonLib.Extensions;
 using DBEntities;
+using DBEntities.Entities.TypographicModels;
+using DBEntities.Utils;
+using SealTypographicWebAPI.Models.BaseModels;
 
 namespace SealTypographicWebAPI.Services.Implements
 {
@@ -77,7 +80,7 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <param name="imageBase64Info">ImageBase64資訊</param>     
         public async Task<string> GetSavedImageFilePath(ImageSaveInfo imageBase64Info)
         {
-            string savePath = imageBase64Info.GetImageFilePath();
+            string savePath = imageBase64Info.GetFilePath();
             return await SaveImageAsync(imageBase64Info.ImageBase64, savePath);
         }
 
@@ -90,7 +93,7 @@ namespace SealTypographicWebAPI.Services.Implements
         public async Task<string> GetSavedImageThumbnailFilePath(ImageSaveInfo imageBase64Info, bool isResize)
         {
             string result;
-            string savePath = imageBase64Info.GetImageThumbnailFilePath();
+            string savePath = imageBase64Info.GetThumbnailFilePath();
             if (isResize)
             {
                 result = await SaveImageAsync(imageBase64Info.ImageBase64, savePath, sealPathOption.ResizeScale);
@@ -126,29 +129,27 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <summary>
         /// 加密圖片並儲存
         /// </summary>
-        /// <param name="imageBase64">Base64圖片字串</param>
-        /// <param name="savePath">存檔路徑</param>
-        /// <param name="rasKey">RAS公私鑰</param>        
-        /// <param name="resizeScale">縮放大小</param>
+        /// <param name="imageSaveInfo">Image存檔資訊</param>
+        /// <param name="rasKey">RAS公私鑰</param>
+        /// <param name="isResize">是否縮放</param>        
         /// <returns>回傳加密後的Key</returns>
-        public string EncryptImageWithKey(string imageBase64, string savePath, RASKey rasKey, float resizeScale = 0)
+        /// <exception cref="ArgumentException">imageSaveInfo.ImageModel.Base64 無資料可能是Base64不合法</exception>
+        public string EncryptImageWithKey(ImageSaveInfo imageSaveInfo, RASKey rasKey, bool isResize = false)
         {
             string result;
 
-            ImageModel imageModel = new() { DataUrl = imageBase64 };
-
-            if (imageModel.Base64 != null)
+            if (imageSaveInfo.ImageModel.Base64 != null)
             {
-                if (resizeScale != 0)
+                if (isResize)
                 {
-                    ImageUtil.ReSizeBase64Only(imageModel.Base64, resizeScale, resizeScale);
+                    ImageUtil.ReSizeBase64Only(imageSaveInfo.ImageModel.Base64, sealPathOption.ResizeScale, sealPathOption.ResizeScale);
                 }
 
-                result = CryptoUtil.Encrypt(imageModel.Base64, savePath, rasKey.PrivateKeyBase64, rasKey.PublicKeyBase64);
+                result = CryptoUtil.Encrypt(imageSaveInfo.ImageModel.Base64, imageSaveInfo.FullPath, rasKey.PrivateKeyBase64, rasKey.PublicKeyBase64);
             }
             else
             {
-                throw new ArgumentException("Invalid image base64 string, unable to generate image data", nameof(imageBase64));
+                throw new ArgumentException("Invalid image base64 string, unable to generate image data", nameof(imageSaveInfo.ImageModel.Base64));
             }
 
             return result;
@@ -158,29 +159,31 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <summary>
         /// 加密圖片並儲存(非同步)
         /// </summary>
-        /// <param name="imageSaveInfo">ImageBase64資訊</param>
-        /// <param name="rasKey">RAS公私鑰</param>        
-        /// <param name="resizeScale">縮放大小</param>
-        public async Task<string> EncryptImageWithKeyAsync(ImageSaveInfo imageSaveInfo, RASKey rasKey, float resizeScale = 0)
+        /// <param name="imageSaveInfo">Image存檔資訊</param>
+        /// <param name="rasKey">RAS公私鑰</param>
+        /// <param name="isThumbnail">是否縮放</param>
+        /// <returns>回傳加密後的Key</returns>
+        /// <exception cref="ArgumentException">imageSaveInfo.ImageModel.Base64 無資料可能是Base64不合法</exception>
+        public async Task<string> EncryptImageWithKeyAsync(ImageSaveInfo imageSaveInfo, RASKey rasKey, bool isThumbnail = false)
         {
-            string result;
+            string result;                 
 
-            ImageModel imageModel = new() { DataUrl = imageSaveInfo.ImageBase64 };            
-
-            if (imageModel.Base64 != null)
+            if (imageSaveInfo.ImageModel.Base64 != null)
             {
-                if (resizeScale != 0)
+                if (isThumbnail)
                 {
-                    ImageUtil.ReSizeBase64Only(imageModel.Base64, resizeScale, resizeScale);
+                    ImageUtil.ReSizeBase64Only(imageSaveInfo.ImageModel.Base64, sealPathOption.ResizeScale, sealPathOption.ResizeScale);
+                    result = await CryptoUtil.EncryptAsync(imageSaveInfo.ImageModel.Base64, imageSaveInfo.ThumbnailFullPath, rasKey.PrivateKeyBase64, rasKey.PublicKeyBase64);
                 }
-
-                result = await CryptoUtil.EncryptAsync(imageModel.Base64, imageSaveInfo.GetImageFilePath(), rasKey.PrivateKeyBase64, rasKey.PublicKeyBase64);
+                else
+                {
+                    result = await CryptoUtil.EncryptAsync(imageSaveInfo.ImageModel.Base64, imageSaveInfo.FullPath, rasKey.PrivateKeyBase64, rasKey.PublicKeyBase64);                    
+                }                
             }
             else
             {
-                throw new ArgumentException("Invalid image base64 string, unable to generate image data", nameof(imageSaveInfo.ImageBase64));
+                throw new ArgumentException("Invalid image base64 string, unable to generate image data", nameof(imageSaveInfo.ImageModel.Base64));
             }
-
             return result;
         }
 
@@ -240,16 +243,16 @@ namespace SealTypographicWebAPI.Services.Implements
             switch (sealType)
             {
                 case SealType.Customer:
-                    imageBase64Info.SaveRootPath = sealPathOption.Customer;
+                    imageBase64Info.RootPath = sealPathOption.Customer;
                     break;
                 case SealType.Accountant:
-                    imageBase64Info.SaveRootPath = sealPathOption.Accountant;
+                    imageBase64Info.RootPath = sealPathOption.Accountant;
                     break;
                 case SealType.Letterhead:
-                    imageBase64Info.SaveRootPath = sealPathOption.Letterhead;
+                    imageBase64Info.RootPath = sealPathOption.Letterhead;
                     break;
                 case SealType.TemporarySeal:
-                    imageBase64Info.SaveRootPath = sealPathOption.TemporarySeal;
+                    imageBase64Info.RootPath = sealPathOption.TemporarySeal;
                     break;
             }
             return imageBase64Info;
@@ -270,16 +273,57 @@ namespace SealTypographicWebAPI.Services.Implements
             switch (sealType)
             {
                 case SealType.Customer:
-                    imageBase64Info.SaveRootPath = templateImagePathOption.Customer;
+                    imageBase64Info.RootPath = templateImagePathOption.Customer;
                     break;
                 case SealType.Accountant:
-                    imageBase64Info.SaveRootPath = templateImagePathOption.Accountant;
+                    imageBase64Info.RootPath = templateImagePathOption.Accountant;
                     break;
                 case SealType.Letterhead:
-                    imageBase64Info.SaveRootPath = templateImagePathOption.Letterhead;
+                    imageBase64Info.RootPath = templateImagePathOption.Letterhead;
                     break;
             }
             return imageBase64Info;
+        }
+
+        /// <summary>
+        /// 新增印鑑、簽印、圖片資料
+        /// </summary>
+        /// <param name="formSeals">輸入</param>
+        /// <param name="code">編號</param>                
+        /// <param name="userId">使用者Id</param>
+        /// <returns>回傳TypographicResource的List內容</returns>
+        public async Task<List<TypographicResource>> NewTypographyResource<T>(List<T> formSeals, string code, int userId = 1) where T : BaseCreateSeal
+        {
+            List<TypographicResource> typographyResources = new();
+
+            //設定存檔路徑
+            ImageSaveInfo imageSaveInfo = SetImageBase64InfoWithSeal(code, formSeals.First().SealType);
+
+            RASKey rasKey = GetRasKey(userId);
+
+            foreach (T formSeal in formSeals)
+            {                
+                TypographicResource typographyResource = new()
+                {
+                    SealType = formSeal.SealType,
+                    //輸入model之後要修正為新的db
+                    SubSealType = formSeal.SubSealType,
+                    Sequence = formSeal.CommonSequence
+                };
+                //設定儲存的ImageBase64                
+                imageSaveInfo.ImageBase64 = formSeal.ImageBase64;
+                //依時間重新命名檔案
+                imageSaveInfo.ReNamePath();
+
+                //ImageBase64加密後存到指定資料夾
+                typographyResource.ImageEncryptKey = await EncryptImageWithKeyAsync(imageSaveInfo, rasKey);
+                typographyResource.ImageFullPath = imageSaveInfo.FullPath;
+                typographyResource.ThumbnailEncryptKey = await EncryptImageWithKeyAsync(imageSaveInfo, rasKey, true);
+                typographyResource.ThumbnailFullPath = imageSaveInfo.ThumbnailFullPath;
+                InputUtil.Set(typographyResource, userId, true);
+                typographyResources.Add(typographyResource);
+            }
+            return typographyResources;
         }
 
         /// <summary>
@@ -311,7 +355,7 @@ namespace SealTypographicWebAPI.Services.Implements
             RASKey? rasKey = dbContext.Companys
                             .Where
                             (
-                                x => userId == 0 ?
+                                x => userId == 0 || userId == 1 ?
                                 x.Id == companyId : x.ApplicationUsers.Any(x => x.Id == userId)
                             )
                             .Select(x => new RASKey

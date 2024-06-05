@@ -15,6 +15,7 @@ using SealTypographicWebAPI.Models.LogReport.OperationLog;
 using SealTypographicWebAPI.Models.LogReport.CustomerSealEventLog;
 using CommonLib.Enums;
 using DBEntities.Extensions;
+using SealTypographicWebAPI.Models.Accountant;
 
 namespace SealTypographicWebAPI.Services.Implements
 {
@@ -256,13 +257,16 @@ namespace SealTypographicWebAPI.Services.Implements
 
                 if (customerSealViewModels != null)
                 {
-                    if (isTransparent)
+                    RASKey rsaKey = imageService.GetRasKey(userInfo.UserId);
+
+                    foreach (CustomerSealViewModel customerSealViewModel in customerSealViewModels.SealViewModels)
                     {
-                        foreach (CustomerSealViewModel customerSealViewModel in customerSealViewModels.SealViewModels)
-                        {                            
-                            customerSealViewModel.ImageBase64 = ImageTransparentUtil.ToDataUrlFromDataUrl(customerSealViewModel.ImageBase64);
-                        }
+                        //解密圖檔
+                        string imageBase64 = imageService.DecryptImage(customerSealViewModel.ImageFullPath, customerSealViewModel.ImageEncryptKey, rsaKey);
+                        //判斷是否白底通透處理
+                        customerSealViewModel.ImageBase64 = isTransparent ? ImageTransparentUtil.ToDataUrlFromDataUrl(imageBase64) : imageBase64;                            
                     }
+                    
                     customerSealViewModels.Success();
                     await logReportService.SaveOperationLog(
                                                                 mapper.Map<OperationLogSave>(customerSealViewModels),
@@ -317,17 +321,17 @@ namespace SealTypographicWebAPI.Services.Implements
 
                     if (customerSealGroupQuery == null)
                     {
-                        CustomerSealGroup customerSealGroup = new();
+                        CustomerSealGroup customerSealGroup = new()
+                        {
+                            QuarterYear = quarter,
+                            TypographyType = typographyType
+                        };
 
-                        ImageSaveInfo imageBase64Info = imageService.SetImageBase64InfoWithSeal(customerQuery.Code, SealType.Customer);
-
-                        customerSealGroup.QuarterYear = quarter;
-                        customerSealGroup.TypographyType = typographyType;
                         //建立此組印鑑的審核類型與日期與建立日期
                         InputUtil.SetDraftWithCreate(customerSealGroup, userInfo.UserId);
 
                         //新增印鑑資料(圖檔與DB資源)
-                        customerSealGroup.TypographicResources = await NewTypographyResource(customerSealForm.Seals, imageBase64Info, userInfo.UserId);
+                        customerSealGroup.TypographicResources = await imageService.NewTypographyResource(customerSealForm.Seals, customerQuery.Code, userInfo.UserId);
 
                         customerQuery.CustomerSealGroups.Add(customerSealGroup);
                         await dbContext.SaveChangesAsync();
@@ -382,9 +386,7 @@ namespace SealTypographicWebAPI.Services.Implements
                                                     );
 
                 if (customerSealGroup != null)
-                {
-                    ImageSaveInfo imageBase64Info = imageService.SetImageBase64InfoWithSeal(customerSealGroup.Customer.Code, SealType.Customer);
-
+                {                    
                     //修改印鑑(更新ID移入DeleteCustomerSealIds，更新的資料移入CreateCustomerSeals，之後下一階段調整輸入時要拔掉此項)
                     foreach (CustomerSealUpdateForm customerSealFormUpdate in customerSealUpdate.UpdateCustomerSeals)
                     {
@@ -426,7 +428,7 @@ namespace SealTypographicWebAPI.Services.Implements
                     }
 
                     //新增印鑑資料(圖檔與DB資源)
-                    customerSealGroup.TypographicResources = await NewTypographyResource(customerSealUpdate.CreateCustomerSeals, imageBase64Info, userInfo.UserId);
+                    customerSealGroup.TypographicResources = await imageService.NewTypographyResource(customerSealUpdate.CreateCustomerSeals, customerSealGroup.Customer.Code, userInfo.UserId);
 
                     //無任何回傳訊息(錯誤訊息)就更新資料庫
                     if (!responseViewModels.Any())
@@ -516,33 +518,33 @@ namespace SealTypographicWebAPI.Services.Implements
             return response;
         }
 
-        /// <summary>
-        /// 新增印鑑資料
-        /// </summary>
-        /// <param name="formSeals">輸入</param>        
-        /// <param name="imageBase64Info">圖檔資訊</param>
-        /// <param name="userId">使用者Id</param>
-        /// <returns></returns>
-        private async Task<List<TypographicResource>> NewTypographyResource(List<CustomerSeal> formSeals, ImageSaveInfo imageBase64Info, int userId)
-        {
-            List<TypographicResource> typographyResources = new();
-            foreach (CustomerSeal customerSeal in formSeals)
-            {
-                TypographicResource typographyResource = new()
-                {
-                    SealType = SealType.Customer,
-                    SubSealType = SealMappingConfigUtil.GetSubSealTypeWithCustomer(customerSeal.SealMappingConfigId),
-                    Sequence = customerSeal.Sequence
-                };
-                //ImageBase64轉圖檔並存到指定資料夾
-                imageBase64Info.ImageBase64 = customerSeal.ImageBase64;
-                typographyResource.ImageFullPath = await imageService.GetSavedImageFilePath(imageBase64Info);
-                typographyResource.ThumbnailFullPath = await imageService.GetSavedImageThumbnailFilePath(imageBase64Info, true);
+        ///// <summary>
+        ///// 新增印鑑資料
+        ///// </summary>
+        ///// <param name="formSeals">輸入</param>        
+        ///// <param name="imageBase64Info">圖檔資訊</param>
+        ///// <param name="userId">使用者Id</param>
+        ///// <returns></returns>
+        //private async Task<List<TypographicResource>> NewTypographyResource(List<CustomerSeal> formSeals, ImageSaveInfo imageBase64Info, int userId)
+        //{
+        //    List<TypographicResource> typographyResources = new();
+        //    foreach (CustomerSeal customerSeal in formSeals)
+        //    {
+        //        TypographicResource typographyResource = new()
+        //        {
+        //            SealType = SealType.Customer,
+        //            SubSealType = SealMappingConfigUtil.GetSubSealTypeWithCustomer(customerSeal.SealMappingConfigId),
+        //            Sequence = customerSeal.Sequence
+        //        };
+        //        //ImageBase64轉圖檔並存到指定資料夾
+        //        imageBase64Info.ImageBase64 = customerSeal.ImageBase64;
+        //        typographyResource.ImageFullPath = await imageService.GetSavedImageFilePath(imageBase64Info);
+        //        typographyResource.ThumbnailFullPath = await imageService.GetSavedImageThumbnailFilePath(imageBase64Info, true);
                 
-                InputUtil.Set(typographyResource, userId, true);
-                typographyResources.Add(typographyResource);
-            }
-            return typographyResources;
-        }
+        //        InputUtil.Set(typographyResource, userId, true);
+        //        typographyResources.Add(typographyResource);
+        //    }
+        //    return typographyResources;
+        //}
     }
 }

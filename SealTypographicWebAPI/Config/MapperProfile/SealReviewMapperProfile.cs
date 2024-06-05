@@ -69,9 +69,9 @@ namespace SealTypographicWebAPI.Config.MapperProfile
                      .ForMember(dst => dst.Seals, opt => opt.MapFrom(src => src.TypographicResources.Where(x => x.DeleteStatus == DeleteStatus.No)));
 
             //客戶印鑑審核詳細資料的印鑑部份
-            CreateMap<TypographicResource, CustomerSealViewModel>()
-                     .ForMember(dst => dst.SealMappingConfigId, opt => opt.MapFrom(src => SealMappingConfigUtil.GetCustomerSealType(src.SubSealType)))
-                     .ForMember(dst => dst.ImageBase64, opt => opt.MapFrom(src => ImageUtil.ToDataUrlFromFilePath(src.ImageFullPath)));
+            //CreateMap<TypographicResource, CustomerSealViewModel>()
+            //         .ForMember(dst => dst.SealMappingConfigId, opt => opt.MapFrom(src => SealMappingConfigUtil.GetCustomerSealType(src.SubSealType)))
+            //         .ForMember(dst => dst.ImageBase64, opt => opt.MapFrom(src => ImageUtil.ToDataUrlFromFilePath(src.ImageFullPath)));
 
 
             //會計師簽印審核清單

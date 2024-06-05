@@ -218,6 +218,11 @@ namespace DBEntities.Consts
     public enum CustomerSealType
     {
         /// <summary>
+        /// 無設定
+        /// </summary>
+        None = 0,
+
+        /// <summary>
         /// 公司
         /// </summary>
         [Description("Company")]
@@ -258,6 +263,11 @@ namespace DBEntities.Consts
     /// </summary>
     public enum AccountantSignType
     {
+        /// <summary>
+        /// 無設定
+        /// </summary>
+        None = 0, 
+
         /// <summary>
         /// 印鑑
         /// </summary>

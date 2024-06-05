@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using AutoMapper.QueryableExtensions;
-using Azure;
 using CommonLib.Utils;
 using DBEntities;
 using DBEntities.Consts;
@@ -10,9 +9,7 @@ using DBEntities.Utils;
 using Microsoft.EntityFrameworkCore;
 using SealTypographicWebAPI.Models;
 using SealTypographicWebAPI.Models.AccountantSignTemplate;
-using SealTypographicWebAPI.Models.LetterheadImageTemplate;
 using SealTypographicWebAPI.Utils;
-using Serilog;
 using System.Data.Common;
 
 namespace SealTypographicWebAPI.Services.Implements

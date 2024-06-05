@@ -11,10 +11,9 @@ using DBEntities.Entities.AccountantModels;
 using SealTypographicWebAPI.Models.LogReport.OperationLog;
 using SealTypographicWebAPI.Models.LogReport.AccountantSignLog;
 using CommonLib.Enums;
-using DBEntities.Extensions;
 using DBEntities.Utils;
-using DBEntities.Entities.CustomerModels;
 using SealTypographicWebAPI.Models.CustomerSeal;
+using System.Security.Cryptography.Xml;
 
 namespace SealTypographicWebAPI.Services.Implements
 {
@@ -78,7 +77,7 @@ namespace SealTypographicWebAPI.Services.Implements
 
                     PageUtil.SetPaginate(accountantSignStartDates,
                                         accountantSignPaginateSearch.PageNumber,
-                                        accountantSignPaginateSearch.PageSize, 
+                                        accountantSignPaginateSearch.PageSize,
                                         accountantSignGroupQuery.Count());
 
                     accountantSignStartDates.Success();
@@ -117,13 +116,14 @@ namespace SealTypographicWebAPI.Services.Implements
 
                 if (accountantSignViewModels != null)
                 {
-                    if (isTransparent)
+                    RASKey rsaKey = imageService.GetRasKey(userInfo.UserId);
+                    foreach (AccountantSignViewModel accountantSignViewModel in accountantSignViewModels.SignViewModels)
                     {
-                        foreach (AccountantSignViewModel accountantSignViewModel in accountantSignViewModels.SignViewModels)
-                        {
-                            accountantSignViewModel.ImageBase64 = ImageTransparentUtil.ToDataUrlFromDataUrl(accountantSignViewModel.ImageBase64);
-                        }
-                    }
+                        //解密圖檔
+                        string imageBase64 = imageService.DecryptImage(accountantSignViewModel.ImageFullPath, accountantSignViewModel.ImageEncryptKey, rsaKey);
+                        //判斷是否白底通透處理
+                        accountantSignViewModel.ImageBase64 = isTransparent ? ImageTransparentUtil.ToDataUrlFromDataUrl(imageBase64) : imageBase64;                            
+                    }                    
                     accountantSignViewModels.Success();
                     //操作紀錄(查詢)存檔
                     await logReportService.SaveOperationLog(
@@ -169,13 +169,12 @@ namespace SealTypographicWebAPI.Services.Implements
                 if (accountantQuery != null)
                 {
                     AccountantSignGroup accountantSignGroup = new();
-                    //之後調整無需轉型
-                    ImageSaveInfo imageBase64Info = imageService.SetImageBase64InfoWithSeal(accountantQuery.Code, SealType.Accountant);
+
                     //建立此組簽印的審核類型與日期與建立日期
                     InputUtil.SetDraftWithCreate(accountantSignGroup, userInfo.UserId);
 
                     //新增簽印資料(圖檔與DB資源)         
-                    accountantSignGroup.TypographicResources = await NewTypographyResource(accountantSignForms.SignForms, imageBase64Info, userInfo.UserId);
+                    accountantSignGroup.TypographicResources = await imageService.NewTypographyResource(accountantSignForms.SignForms, accountantQuery.Code, userInfo.UserId);
 
                     accountantQuery.AccountantSignGroups.Add(accountantSignGroup);
                     dbContext.SaveChanges();
@@ -233,9 +232,7 @@ namespace SealTypographicWebAPI.Services.Implements
                         AccountantSignGroup accountantSignGroup = new()
                         {
                             TypographicResources = new List<TypographicResource>()
-                        };
-
-                        ImageSaveInfo imageSaveInfo = imageService.SetImageBase64InfoWithSeal(accountant.Code, SealType.Accountant);
+                        };                        
 
                         //修改(更新ID移入DeleteAccountantSignIds，更新的簽印移入新增CreateAccountantSigns)
                         foreach (AccountantSignUpdateForm accountantSignFormUpdate in accountantSignUpdate.UpdateAccountantSigns)
@@ -280,7 +277,7 @@ namespace SealTypographicWebAPI.Services.Implements
                         InputUtil.SetDraftWithCreate(accountantSignGroup, userInfo.UserId);
 
                         //新增簽印資料(圖檔與DB資源)         
-                        accountantSignGroup.TypographicResources = await NewTypographyResource(accountantSignUpdate.CreateAccountantSigns, imageSaveInfo, userInfo.UserId);
+                        accountantSignGroup.TypographicResources = await imageService.NewTypographyResource(accountantSignUpdate.CreateAccountantSigns, accountant.Code, userInfo.UserId);
 
                         //沒有任何回傳訊息(錯誤訊息)就更新資料庫
                         if (!responseViewModels.Any())
@@ -366,38 +363,6 @@ namespace SealTypographicWebAPI.Services.Implements
             }
 
             return response;
-        }
-
-        /// <summary>
-        /// 新增印鑑、簽印、圖片資料
-        /// </summary>
-        /// <param name="formSeals">輸入</param>        
-        /// <param name="imageSaveInfo">圖檔資訊</param>
-        /// <param name="userId">使用者Id</param>
-        /// <returns></returns>
-        private async Task<List<TypographicResource>> NewTypographyResource(List<AccountantSign> formSeals, ImageSaveInfo imageSaveInfo, int userId = 1)
-        {
-            List<TypographicResource> typographyResources = new();           
-
-            RASKey rasKey = imageService.GetRasKey(userId);
-
-            foreach (AccountantSign accountantSign in formSeals)
-            {
-                TypographicResource typographyResource = new()
-                {
-                    SealType = SealType.Accountant,
-                    //輸入model之後要修正為新的db
-                    SubSealType = SealMappingConfigUtil.GetSubSealTypeWithAccountant(accountantSign.SealMappingConfigId),
-                };
-                //ImageBase64轉圖檔並存到指定資料夾
-                imageSaveInfo.ImageBase64 = accountantSign.ImageBase64;
-                typographyResource.ImageEncryptKey = await imageService.EncryptImageWithKeyAsync(imageSaveInfo, rasKey);
-                typographyResource.ImageFullPath = await imageService.GetSavedImageFilePath(imageSaveInfo);
-                typographyResource.ThumbnailFullPath = await imageService.GetSavedImageThumbnailFilePath(imageSaveInfo, true);
-                InputUtil.Set(typographyResource, userId, true);
-                typographyResources.Add(typographyResource);
-            }
-            return typographyResources;
         }
     }
 }

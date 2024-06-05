@@ -1,5 +1,6 @@
 ﻿using DBEntities.Consts;
 using SealTypographicWebAPI.Models.BaseModels;
+using SealTypographicWebAPI.Utils;
 using System.ComponentModel.DataAnnotations;
 
 namespace SealTypographicWebAPI.Models.Accountant
@@ -9,11 +10,25 @@ namespace SealTypographicWebAPI.Models.Accountant
     /// </summary>
     public class AccountantSign : BaseCreateSeal
     {
+        private AccountantSignType sealMappingConfigId;
+
         /// <summary>      
         /// </summary>
         /// <example>1</example>
-        [Required]        
-        public AccountantSignType SealMappingConfigId { get; set; }
+        [Required]
+        public AccountantSignType SealMappingConfigId
+        {
+            get => sealMappingConfigId;
+            set
+            {
+                sealMappingConfigId = value;
+                if (sealMappingConfigId != AccountantSignType.None)
+                {
+                    SealType = SealType.Accountant;
+                    SubSealType = SealMappingConfigUtil.GetSubSealTypeWithAccountant(sealMappingConfigId);
+                }
+            }
+        }
     }
 
     /// <summary>

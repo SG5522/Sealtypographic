@@ -62,11 +62,11 @@ namespace SealTypographicWebAPI.Config.MapperProfile
 
             CreateMap<CustomerSealGroup, CustomerSealGroupResponse>()
                     .ForMember(dst => dst.CustomerSealGroupId, opt => opt.MapFrom(src => src.Id))
-                    .ForMember(dst => dst.QuarterYearId, opt => opt.MapFrom(src => src.QuarterYear.Id));            
+                    .ForMember(dst => dst.QuarterYearId, opt => opt.MapFrom(src => src.QuarterYear.Id));
 
             CreateMap<TypographicResource, CustomerSealViewModel>()
-                    .ForMember(dst => dst.SealMappingConfigId, opt => opt.MapFrom(src => SealMappingConfigUtil.GetCustomerSealType(src.SubSealType)))
-                    .ForMember(dst => dst.ImageBase64, opt => opt.MapFrom(src => ImageUtil.ToDataUrlFromFilePath(src.ImageFullPath)));
+                    .ForMember(dst => dst.SealMappingConfigId, opt => opt.MapFrom(src => SealMappingConfigUtil.GetCustomerSealType(src.SubSealType)));
+
 
             CreateMap<CustomerSeal, TypographicResource>()
                     .ForMember(dst => dst.ImageFullPath, opt => opt.Ignore()) // <---ImagePath要額外處理所以要忽略                    

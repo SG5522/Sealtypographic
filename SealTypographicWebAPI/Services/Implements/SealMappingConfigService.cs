@@ -43,6 +43,8 @@ namespace SealTypographicWebAPI.Services.Implements
                     case SealType.Customer:
                         foreach (CustomerSealType customerSealType in (CustomerSealType[])Enum.GetValues(typeof(CustomerSealType)))
                         {
+                            if (customerSealType == CustomerSealType.None) continue;
+                            
                             SealMappingConfigViewModel sealMappingConfigViewModel = new()
                             {
                                 Id = (int)customerSealType,
@@ -54,6 +56,8 @@ namespace SealTypographicWebAPI.Services.Implements
                     case SealType.Accountant:
                         foreach (AccountantSignType accountantSignType in (AccountantSignType[])Enum.GetValues(typeof(AccountantSignType)))
                         {
+                            if (accountantSignType == AccountantSignType.None) continue;
+
                             SealMappingConfigViewModel sealMappingConfigViewModel = new()
                             {
                                 Id = (int)accountantSignType,

@@ -1,5 +1,6 @@
 ﻿using DBEntities.Consts;
 using SealTypographicWebAPI.Models.BaseModels;
+using SealTypographicWebAPI.Utils;
 using System.ComponentModel.DataAnnotations;
 
 namespace SealTypographicWebAPI.Models.CustomerSeal
@@ -9,6 +10,10 @@ namespace SealTypographicWebAPI.Models.CustomerSeal
     /// </summary>
     public class CustomerSeal : BaseCreateSeal
     {
+        private CustomerSealType sealMappingConfigId;
+
+        private int sequence;
+
         /// <summary>
         /// 客戶印鑑群組ID 
         /// 1.公司章
@@ -19,7 +24,19 @@ namespace SealTypographicWebAPI.Models.CustomerSeal
         /// </summary>
         /// <example>1</example>
         [Required]
-        public CustomerSealType SealMappingConfigId { get; set; }
+        public CustomerSealType SealMappingConfigId
+        {
+            get => sealMappingConfigId;
+            set
+            {
+                sealMappingConfigId = value;
+                if (sealMappingConfigId != CustomerSealType.None)
+                {
+                    SealType = SealType.Customer;
+                    SubSealType = SealMappingConfigUtil.GetSubSealTypeWithCustomer(sealMappingConfigId);
+                }
+            }
+        }
 
         /// <summary>
         /// 印鑑編號(排序) 1為起始
@@ -27,6 +44,17 @@ namespace SealTypographicWebAPI.Models.CustomerSeal
         /// <example>1</example>
         [Required]
         [Range(1, 99)]
-        public int Sequence { get; set; }
+        public int Sequence 
+        {
+            get => sequence;
+            set
+            {
+                sequence = value;
+                if (sequence != 0)
+                {
+                    CommonSequence = sequence;
+                }
+            }
+        }
     }
 }

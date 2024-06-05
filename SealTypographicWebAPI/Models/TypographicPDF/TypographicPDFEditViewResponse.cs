@@ -1,8 +1,4 @@
-﻿using DJImageLib.Extensions;
-using DJImageLib.Utils;
-using System.Text.Json.Serialization;
-
-namespace SealTypographicWebAPI.Models.TypographicPDF
+﻿namespace SealTypographicWebAPI.Models.TypographicPDF
 {
     /// <summary>
     /// 回傳排版後PDFBase64
