@@ -41,8 +41,7 @@ namespace SealTypographicWebAPI.Config.MapperProfile
                     .ForMember(dst => dst.SealImageInfos, opt => opt.MapFrom(src => src.TypographicResources.Where(x => x.DeleteStatus == DeleteStatus.No)));
 
             CreateMap<TypographicResource, SealImageInfo>()
-                 .ForMember(dst => dst.ThumbnailBase64, opt => opt.MapFrom(src => ImageUtil.ToDataUrlFromFilePath(src.ThumbnailFullPath!)))
-                 .ForMember(dst => dst.SealMappingConfigId, opt => opt.MapFrom(src => SealMappingConfigUtil.GetCustomerSealType(src.SubSealType)));
+                    .ForMember(dst => dst.SealMappingConfigId, opt => opt.MapFrom(src => SealMappingConfigUtil.GetCustomerSealType(src.SubSealType)));
 
             CreateMap<CustomerSealGroup, CustomerSealQuarterViewModel>()
                     .ForMember(dst => dst.QuarterYearId, opt => opt.MapFrom(src => src.QuarterYear.Id));

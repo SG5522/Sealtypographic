@@ -257,7 +257,7 @@ namespace SealTypographicWebAPI.Services.Implements
 
                 if (customerSealViewModels != null)
                 {
-                    RASKey rsaKey = imageService.GetRasKey(userInfo.UserId);
+                    RSAKey rsaKey = imageService.GetRasKey(userInfo.UserId);
 
                     foreach (CustomerSealViewModel customerSealViewModel in customerSealViewModels.SealViewModels)
                     {

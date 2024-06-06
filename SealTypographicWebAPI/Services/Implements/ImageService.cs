@@ -131,28 +131,23 @@ namespace SealTypographicWebAPI.Services.Implements
         /// </summary>
         /// <param name="imageSaveInfo">Image存檔資訊</param>
         /// <param name="rasKey">RAS公私鑰</param>
-        /// <param name="isResize">是否縮放</param>        
+        /// <param name="isThumbnail">是否縮放</param>        
         /// <returns>回傳加密後的Key</returns>
         /// <exception cref="ArgumentException">imageSaveInfo.ImageModel.Base64 無資料可能是Base64不合法</exception>
-        public string EncryptImageWithKey(ImageSaveInfo imageSaveInfo, RASKey rasKey, bool isResize = false)
+        public void EncryptImage(ImageSaveInfo imageSaveInfo, RSAKey rasKey, bool isThumbnail = false)
         {
-            string result;
-
-            if (imageSaveInfo.ImageModel.Base64 != null)
-            {
-                if (isResize)
-                {
-                    ImageUtil.ReSizeBase64Only(imageSaveInfo.ImageModel.Base64, sealPathOption.ResizeScale, sealPathOption.ResizeScale);
-                }
-
-                result = CryptoUtil.Encrypt(imageSaveInfo.ImageModel.Base64, imageSaveInfo.FullPath, rasKey.PrivateKeyBase64, rasKey.PublicKeyBase64);
-            }
-            else
+            if (string.IsNullOrWhiteSpace(imageSaveInfo.ImageModel.Base64))
             {
                 throw new ArgumentException("Invalid image base64 string, unable to generate image data", nameof(imageSaveInfo.ImageModel.Base64));
             }
 
-            return result;
+            imageSaveInfo.ImageEncryptKey = CryptoUtil.Encrypt(imageSaveInfo.ImageModel.Base64, imageSaveInfo.FullPath, rasKey.PrivateKeyBase64, rasKey.PublicKeyBase64);
+
+            if (isThumbnail)
+            {
+                imageSaveInfo.ThumbnailScale = sealPathOption.ResizeScale;
+                imageSaveInfo.ThumbnailEncryptKey = CryptoUtil.Encrypt(imageSaveInfo.ThumbnailImageBase64, imageSaveInfo.ThumbnailFullPath, rasKey.PrivateKeyBase64, rasKey.PublicKeyBase64);
+            }
         }
 
 
@@ -164,27 +159,20 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <param name="isThumbnail">是否縮放</param>
         /// <returns>回傳加密後的Key</returns>
         /// <exception cref="ArgumentException">imageSaveInfo.ImageModel.Base64 無資料可能是Base64不合法</exception>
-        public async Task<string> EncryptImageWithKeyAsync(ImageSaveInfo imageSaveInfo, RASKey rasKey, bool isThumbnail = false)
-        {
-            string result;                 
-
-            if (imageSaveInfo.ImageModel.Base64 != null)
-            {
-                if (isThumbnail)
-                {
-                    ImageUtil.ReSizeBase64Only(imageSaveInfo.ImageModel.Base64, sealPathOption.ResizeScale, sealPathOption.ResizeScale);
-                    result = await CryptoUtil.EncryptAsync(imageSaveInfo.ImageModel.Base64, imageSaveInfo.ThumbnailFullPath, rasKey.PrivateKeyBase64, rasKey.PublicKeyBase64);
-                }
-                else
-                {
-                    result = await CryptoUtil.EncryptAsync(imageSaveInfo.ImageModel.Base64, imageSaveInfo.FullPath, rasKey.PrivateKeyBase64, rasKey.PublicKeyBase64);                    
-                }                
-            }
-            else
+        public async Task EncryptImageAsync(ImageSaveInfo imageSaveInfo, RSAKey rasKey, bool isThumbnail = false)
+        {      
+            if(string.IsNullOrWhiteSpace(imageSaveInfo.ImageModel.Base64))
             {
                 throw new ArgumentException("Invalid image base64 string, unable to generate image data", nameof(imageSaveInfo.ImageModel.Base64));
             }
-            return result;
+
+            imageSaveInfo.ImageEncryptKey = await CryptoUtil.EncryptAsync(imageSaveInfo.ImageModel.Base64, imageSaveInfo.FullPath, rasKey.PrivateKeyBase64, rasKey.PublicKeyBase64);
+
+            if (isThumbnail)
+            {
+                imageSaveInfo.ThumbnailScale = sealPathOption.ResizeScale;
+                imageSaveInfo.ThumbnailEncryptKey = await CryptoUtil.EncryptAsync(imageSaveInfo.ThumbnailImageBase64, imageSaveInfo.ThumbnailFullPath, rasKey.PrivateKeyBase64, rasKey.PublicKeyBase64);
+            }
         }
 
         /// <summary>
@@ -194,7 +182,7 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <param name="encryptKey">加密後的key</param>
         /// <param name="rasKey">RAS公私鑰</param>
         /// <returns></returns>
-        public string DecryptImage(string savePath, string encryptKey, RASKey rasKey)
+        public string DecryptImage(string savePath, string encryptKey, RSAKey rasKey)
             => CryptoUtil.Decrypt(savePath, encryptKey, rasKey.PrivateKeyBase64, rasKey.PublicKeyBase64);
 
         /// <summary>
@@ -299,27 +287,32 @@ namespace SealTypographicWebAPI.Services.Implements
             //設定存檔路徑
             ImageSaveInfo imageSaveInfo = SetImageBase64InfoWithSeal(code, formSeals.First().SealType);
 
-            RASKey rasKey = GetRasKey(userId);
+            RSAKey rsaKey = GetRasKey(userId);
 
             foreach (T formSeal in formSeals)
             {                
                 TypographicResource typographyResource = new()
                 {
-                    SealType = formSeal.SealType,
-                    //輸入model之後要修正為新的db
+                    SealType = formSeal.SealType,                    
                     SubSealType = formSeal.SubSealType,
                     Sequence = formSeal.CommonSequence
                 };
+
                 //設定儲存的ImageBase64                
                 imageSaveInfo.ImageBase64 = formSeal.ImageBase64;
+
                 //依時間重新命名檔案
                 imageSaveInfo.ReNamePath();
 
-                //ImageBase64加密後存到指定資料夾
-                typographyResource.ImageEncryptKey = await EncryptImageWithKeyAsync(imageSaveInfo, rasKey);
+                //ImageBase64加密處理並存到指定資料夾
+                await EncryptImageAsync(imageSaveInfo, rsaKey, true);
+
+                //將加密後的Key和路徑存儲到 TypographyResource
+                typographyResource.ImageEncryptKey = imageSaveInfo.ImageEncryptKey;
                 typographyResource.ImageFullPath = imageSaveInfo.FullPath;
-                typographyResource.ThumbnailEncryptKey = await EncryptImageWithKeyAsync(imageSaveInfo, rasKey, true);
+                typographyResource.ThumbnailEncryptKey = imageSaveInfo.ThumbnailEncryptKey;
                 typographyResource.ThumbnailFullPath = imageSaveInfo.ThumbnailFullPath;
+
                 InputUtil.Set(typographyResource, userId, true);
                 typographyResources.Add(typographyResource);
             }
@@ -332,7 +325,7 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <param name="userId">使用者Id</param>        
         /// <returns>回傳RasKey</returns>
         /// <exception cref="InvalidOperationException"></exception>
-        public RASKey GetRasKey(int userId) => GetRASKey(userId);
+        public RSAKey GetRasKey(int userId) => GetRASKey(userId);
 
         /// <summary>
         /// 取得RasKey
@@ -340,7 +333,7 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <param name="companyId"></param>        
         /// <returns>回傳RasKey</returns>
         /// <exception cref="InvalidOperationException"></exception>
-        public RASKey GetRasKeyFromCompany(int companyId) => GetRASKey(0, companyId);
+        public RSAKey GetRasKeyFromCompany(int companyId) => GetRASKey(0, companyId);
 
 
         /// <summary>
@@ -350,26 +343,26 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <param name="companyId">公司Id</param>
         /// <returns>回傳RasKey</returns>
         /// <exception cref="InvalidOperationException"></exception>
-        private RASKey GetRASKey(int userId = 0, int companyId = 1)
+        private RSAKey GetRASKey(int userId = 0, int companyId = 1)
         {
-            RASKey? rasKey = dbContext.Companys
+            RSAKey? rsaKey = dbContext.Companys
                             .Where
                             (
                                 x => userId == 0 || userId == 1 ?
                                 x.Id == companyId : x.ApplicationUsers.Any(x => x.Id == userId)
                             )
-                            .Select(x => new RASKey
+                            .Select(x => new RSAKey
                             {
                                 PrivateKeyBase64 = File.ReadAllText(x.PrivateKeyFilePath),
                                 PublicKeyBase64 = x.PublicKeyBase64
                             }).FirstOrDefault();
 
-            if (rasKey == null || string.IsNullOrEmpty(rasKey.PublicKeyBase64) || string.IsNullOrEmpty(rasKey.PrivateKeyBase64))
+            if (rsaKey == null || string.IsNullOrEmpty(rsaKey.PublicKeyBase64) || string.IsNullOrEmpty(rsaKey.PrivateKeyBase64))
             {
                 throw new InvalidOperationException("No RSA key found for the specified company.");
             }
 
-            return rasKey;
+            return rsaKey;
         }
     }
 }

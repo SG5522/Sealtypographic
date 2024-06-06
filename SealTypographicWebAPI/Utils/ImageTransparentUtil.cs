@@ -21,10 +21,20 @@ namespace SealTypographicWebAPI.Utils
         }
 
         /// <summary>
+        /// 從Base64輸入
+        /// </summary>
+        /// <param name="imageBase64"></param>
+        /// <returns>回傳DataUrl</returns>
+        public static string ToDataUrlFromImageBase64(string imageBase64)
+        {
+            return ToDataUrl(imageBase64.ToBytes());
+        }
+
+        /// <summary>
         /// 從DataUrl輸入
         /// </summary>
         /// <param name="dataUrl"></param>
-        /// <returns></returns>
+        /// <returns>回傳DataUrl</returns>
         public static string ToDataUrlFromDataUrl(string dataUrl)
         {                        
             return ToDataUrl(DataUrlUtil.GetBase64(dataUrl).ToBytes());

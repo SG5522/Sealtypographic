@@ -1,11 +1,13 @@
 ﻿using DBEntities.Consts;
+using SealTypographicWebAPI.Models.BaseModels;
+using System.Text.Json.Serialization;
 
 namespace SealTypographicWebAPI.Models.CustomerSealReview
 {
     /// <summary>
     /// 印鑑資訊
     /// </summary>
-    public class SealImageInfo
+    public class SealImageInfo : BaseThumbnailSeal
     {
         /// <summary>
         /// 類別
@@ -19,11 +21,5 @@ namespace SealTypographicWebAPI.Models.CustomerSealReview
         /// </summary>
         /// <example>1</example>
         public int Sequence { get; set; }
-
-        /// <summary>
-        /// 縮圖字串(Base64)
-        /// </summary>
-        /// <example>image/...</example>
-        public string ThumbnailBase64 { get; set; }
     }
 }

@@ -116,7 +116,7 @@ namespace SealTypographicWebAPI.Services.Implements
 
                 if (accountantSignViewModels != null)
                 {
-                    RASKey rsaKey = imageService.GetRasKey(userInfo.UserId);
+                    RSAKey rsaKey = imageService.GetRasKey(userInfo.UserId);
                     foreach (AccountantSignViewModel accountantSignViewModel in accountantSignViewModels.SignViewModels)
                     {
                         //解密圖檔

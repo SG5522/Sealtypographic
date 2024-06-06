@@ -1,4 +1,7 @@
 ﻿using DJImageLib.Models;
+using DJImageLib.Utils;
+using Org.BouncyCastle.Bcpg.OpenPgp;
+using SealTypographicWebAPI.Config;
 
 namespace SealTypographicWebAPI.Models
 {
@@ -10,6 +13,8 @@ namespace SealTypographicWebAPI.Models
         private string imageBase64;
 
         private string rootPath;
+
+        private float thumbnailScale;
 
         /// <summary>
         /// 編號
@@ -27,10 +32,41 @@ namespace SealTypographicWebAPI.Models
                 imageBase64 = value;
                 if (!string.IsNullOrWhiteSpace(imageBase64))
                 {
-                    ImageModel = new() { DataUrl = imageBase64 };                    
+                    ImageModel = new() { DataUrl = imageBase64 };
                 }
             }
         }
+
+        /// <summary>
+        /// 圖像加密Key
+        /// </summary>
+        public string ImageEncryptKey { get; set; }
+
+
+        /// <summary>
+        /// 縮圖加密Key
+        /// </summary>
+        public string ThumbnailEncryptKey { get; set; }
+
+        /// <summary>
+        /// 縮圖比例
+        /// </summary>
+        public float ThumbnailScale { 
+            get => thumbnailScale;
+            set
+            {
+                thumbnailScale = value;
+                if(thumbnailScale > 0 && ImageModel.Base64 != null)
+                {
+                    ThumbnailImageBase64 = ImageUtil.ReSizeBase64Only(ImageModel.Base64, thumbnailScale, thumbnailScale);
+                }            
+            }
+        }
+
+        /// <summary>
+        /// Base64縮圖字串
+        /// </summary>
+        public string ThumbnailImageBase64 { get; set; }
 
         /// <summary>
         /// 圖片模組
@@ -102,7 +138,7 @@ namespace SealTypographicWebAPI.Models
         /// 取得重新命名檔名
         /// </summary>
         /// <returns></returns>
-        public string ReNameForThumbnail() => $"{"thumbnail"}{ReName()}";        
+        public string ReNameForThumbnail() => $"{"thumbnail"}{ReName()}";
 
         /// <summary>
         /// 取得圖檔存檔路徑

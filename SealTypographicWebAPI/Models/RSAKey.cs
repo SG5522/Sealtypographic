@@ -3,7 +3,7 @@
     /// <summary>
     /// RAS Key
     /// </summary>
-    public class RASKey
+    public class RSAKey
     {
         /// <summary>
         /// RAS 私鑰

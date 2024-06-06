@@ -6,12 +6,18 @@ using DBEntities.Consts;
 using DBEntities.Entities.CustomerModels;
 using DBEntities.Extensions;
 using DBEntities.Utils;
+using DJImageLib.Models;
+using DJImageLib.Utils;
 using Microsoft.EntityFrameworkCore;
 using SealTypographicWebAPI.Models;
+using SealTypographicWebAPI.Models.Accountant;
+using SealTypographicWebAPI.Models.CustomerSeal;
 using SealTypographicWebAPI.Models.CustomerSealReview;
 using SealTypographicWebAPI.Models.LogReport.CustomerSealEventLog;
 using SealTypographicWebAPI.Models.LogReport.OperationLog;
 using SealTypographicWebAPI.Utils;
+using Spire.Xls;
+using System.Security.Cryptography.Xml;
 
 namespace SealTypographicWebAPI.Services.Implements
 {
@@ -20,7 +26,8 @@ namespace SealTypographicWebAPI.Services.Implements
     /// </summary>
     public class CustomerSealReviewService : ICustomerSealReviewService
     {
-        private readonly SealTypographicDbContext dbContext;               
+        private readonly SealTypographicDbContext dbContext;
+        private readonly ImageService imageService;
         private readonly IMapper mapper;
         private readonly AutoMapper.IConfigurationProvider configurationProvider;
         private readonly ILogReportService logReportService;        
@@ -30,17 +37,23 @@ namespace SealTypographicWebAPI.Services.Implements
         /// 建構
         /// </summary>
         /// <param name="dbContext"></param>
+        /// <param name="imageService"></param>
         /// <param name="mapper"></param>
         /// <param name="logger"></param>
         /// <param name="logReportService"></param>
-        public CustomerSealReviewService(SealTypographicDbContext dbContext, IMapper mapper, ILogReportService logReportService, ILogger<CustomerSealReviewService> logger)
+        public CustomerSealReviewService(
+            SealTypographicDbContext dbContext,
+            ImageService imageService,
+            IMapper mapper,
+            ILogReportService logReportService,
+            ILogger<CustomerSealReviewService> logger)
         {
             this.dbContext = dbContext;
+            this.imageService = imageService;
             this.mapper = mapper;
             this.logReportService = logReportService;
             configurationProvider = mapper.ConfigurationProvider;
-            this.logger = logger;
-            
+            this.logger = logger;            
         }
 
         ///<inheritdoc />
@@ -83,6 +96,9 @@ namespace SealTypographicWebAPI.Services.Implements
 
                 if (customerSealQuarterQuery.Any())
                 {
+                    //取得RsaKey
+                    RSAKey rsakey = imageService.GetRasKey(userInfo.UserId);
+
                     //取得該頁                   
                     customerSealQuarterResponse.ViewModels = await PageUtil.SetPaginateViewModelAsync<CustomerSealGroup, CustomerSealGroupReviewViewModel>
                                                             (
@@ -90,7 +106,26 @@ namespace SealTypographicWebAPI.Services.Implements
                                                                 configurationProvider,
                                                                 customerSealSearchReview.PageNumber,
                                                                 customerSealSearchReview.PageSize
-                                                            );                    
+                    );
+
+                    Parallel.ForEach(customerSealQuarterResponse.ViewModels, viewModel =>
+                    {
+                        Parallel.ForEach(viewModel.SealImageInfos, sealImageInfo =>
+                        {
+                            sealImageInfo.ThumbnailBase64 = imageService.DecryptImage(sealImageInfo.ThumbnailFullPath, sealImageInfo.ThumbnailEncryptKey, rsakey);
+                        });
+                    });
+                     
+
+                    foreach (CustomerSealGroupReviewViewModel viewModel in customerSealQuarterResponse.ViewModels)
+                    {
+                        foreach (SealImageInfo sealImageInfo in viewModel.SealImageInfos)
+                        {
+                            string imageBase64 = imageService.DecryptImage(sealImageInfo.ThumbnailFullPath, sealImageInfo.ThumbnailEncryptKey, rsakey);
+                            sealImageInfo.ThumbnailBase64 = ImageTransparentUtil.ToDataUrlFromImageBase64(imageBase64);
+                        }
+                    }
+
 
                     PageUtil.SetPaginate(customerSealQuarterResponse, customerSealSearchReview.PageNumber, customerSealSearchReview.PageSize, customerSealQuarterQuery.Count());
                     customerSealQuarterResponse.Success();                    
@@ -138,6 +173,14 @@ namespace SealTypographicWebAPI.Services.Implements
 
                 if (customerSealGroupQuery != null)
                 {
+                    RSAKey rsaKey = imageService.GetRasKey(userInfo.UserId);
+
+                    foreach (CustomerSealViewModel seal in customerSealGroupQuery.Seals)
+                    {
+                        string imageBase64 = imageService.DecryptImage(seal.ImageFullPath, seal.ImageEncryptKey, rsaKey);
+                        seal.ImageBase64 = ImageTransparentUtil.ToDataUrlFromImageBase64(imageBase64);
+                    }
+
                     customerSealReviewDetailResponse.ViewModel = customerSealGroupQuery;
                     customerSealReviewDetailResponse.Success();
                     await logReportService.SaveOperationLog(
