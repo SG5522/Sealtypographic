@@ -1,7 +1,5 @@
 ﻿using DJImageLib.Models;
 using DJImageLib.Utils;
-using Org.BouncyCastle.Bcpg.OpenPgp;
-using SealTypographicWebAPI.Config;
 
 namespace SealTypographicWebAPI.Models
 {
@@ -72,6 +70,11 @@ namespace SealTypographicWebAPI.Models
         /// 圖片模組
         /// </summary>
         public ImageModel ImageModel { get; set; }
+
+        /// <summary>
+        /// RSA 公私鑰
+        /// </summary>
+        public RSAKey RSAKey { get; set; }
 
         /// <summary>
         /// 存檔根目錄位置

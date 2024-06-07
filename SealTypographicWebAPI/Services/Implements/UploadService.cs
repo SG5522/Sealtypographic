@@ -14,6 +14,8 @@ using DJImageLib.Utils;
 using DJSpire.Utils;
 using DJSpire.Models;
 using CommonLib.Extensions;
+using System.IO;
+using SealTypographicWebAPI.Extensions;
 
 namespace SealTypographicWebAPI.Services.Implements
 {
@@ -22,8 +24,9 @@ namespace SealTypographicWebAPI.Services.Implements
     /// </summary>
     public class UploadService : IUploadService
     {        
-        private readonly IStringLocalizer<UploadService> localizer;        
         private readonly SealTypographicDbContext dbContext;
+        private readonly ImageService imageService;
+        private readonly IStringLocalizer<UploadService> localizer;        
         private readonly ILogger<UploadData> logger;        
         private readonly AutoMapper.IConfigurationProvider configurationProvider;
         private UploadPathOption uploadConfigPath;
@@ -32,17 +35,20 @@ namespace SealTypographicWebAPI.Services.Implements
         /// 建構
         /// </summary>        
         /// <param name="dbContext">注入資料庫</param>
+        /// <param name="imageService"></param>        
         /// <param name="localizer">注入多國語系處理</param>
         /// <param name="options">注入uploadConfigPath</param>
         /// <param name="logger">注入logger</param>
         /// <param name="mapper"></param>       
         public UploadService(SealTypographicDbContext dbContext
+            , ImageService imageService
             ,IStringLocalizer<UploadService> localizer           
             , ILogger<UploadData> logger
             , IMapper mapper
             , IOptionsMonitor<UploadPathOption> options)
         {
             this.dbContext = dbContext;
+            this.imageService = imageService;
             this.localizer = localizer;            
             this.logger = logger;            
             configurationProvider = mapper.ConfigurationProvider;
@@ -327,14 +333,20 @@ namespace SealTypographicWebAPI.Services.Implements
                 Company? companyQuery = dbContext.Companys.Include(x => x.UploadFiles).FirstOrDefault(x => x.Id == companyId);
 
                 if (companyQuery != null)
-                {
+                {                    
+                    ImageSaveInfo imageSaveInfo = new()
+                    {
+                        RootPath = GetRootPath(uploadBase64Data.UploadType),
+                        Code = userId.ToString(),
+                        RSAKey = imageService.GetRasKey(userId)
+                    };
                     foreach (string imagebase64 in uploadBase64Data.ImageBase64Strings)
-                    {                                                
+                    {
+                        
                         //掃描完存在資料庫的原始檔名
-                        string originalFileName = $"{userId}{DateTime.Now:yyyyMMddHHmmssffff}ScanFile";
-                        string savePath = GetSavePath(uploadBase64Data.UploadType, userId, originalFileName);                        
-                        await ImageService.SaveImageAsync(imagebase64, savePath);                                                
-                        companyQuery.UploadFiles.Add(NewUploadFile(savePath, uploadBase64Data.UploadType, userId, originalFileName));
+                        string originalFileName = $"ScanFile{imageSaveInfo.FullPath}";                        
+                        await imageService.EncryptImageAsync(imageSaveInfo);                                               
+                        companyQuery.UploadFiles.Add(NewUploadFile(imageSaveInfo.FullPath, uploadBase64Data.UploadType, userId, originalFileName));
                     }
                     dbContext.SaveChanges();
                     response.Success();
@@ -378,7 +390,14 @@ namespace SealTypographicWebAPI.Services.Implements
                 Company? companyQuery = dbContext.Companys.Include(x => x.UploadFiles).FirstOrDefault(x => x.Id == companyId);
 
                 if (companyQuery != null)
-                {
+                {                    
+                    ImageSaveInfo imageSaveInfo = new()
+                    {
+                        RootPath = GetRootPath(uploadData.UploadType),
+                        Code = userId.ToString(),
+                        RSAKey = imageService.GetRasKey(userId)
+                    };                    
+
                     if (uploadData.DuplicateFileIds != null)
                     {
                         foreach (int duplicateFileId in uploadData.DuplicateFileIds)
@@ -396,8 +415,10 @@ namespace SealTypographicWebAPI.Services.Implements
                                     uploadFile.DeleteStatus = DeleteStatus.Yes;
                                     BaseInput(uploadFile, false, userId);
                                 }
+
+
                                 //新增上傳的檔案
-                                companyQuery.UploadFiles.Add(await SaveFile(formFile, uploadData.UploadType, userId));
+                                companyQuery.UploadFiles.Add(await SaveFile(formFile, uploadData.UploadType, userId, imageSaveInfo));
                                 uploadData.FormFiles.Remove(formFile);
                             }
                         }
@@ -405,7 +426,7 @@ namespace SealTypographicWebAPI.Services.Implements
 
                     foreach (IFormFile formFile in uploadData.FormFiles)
                     {
-                        companyQuery.UploadFiles.Add(await SaveFile(formFile, uploadData.UploadType, userId));
+                        companyQuery.UploadFiles.Add(await SaveFile(formFile, uploadData.UploadType, userId, imageSaveInfo));
                     }
                     dbContext.SaveChanges();
                     response.Success();
@@ -518,16 +539,20 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <summary>
         /// 存檔處理       
         /// </summary>
-        /// <param name="formFile"></param>
-        /// <param name="uploadType">檔案類型</param>   
-        /// <param name="userid">使用者ID</param>
-        /// <returns></returns>
-        private async Task<UploadFile> SaveFile(IFormFile formFile, UploadType uploadType, int userid)
+        /// <param name="formFile">上傳的檔案</param>
+        /// <param name="uploadType">檔案類型</param>
+        /// <param name="userId">使用者 ID</param>
+        /// <param name="imageSaveInfo">Image存檔資訊</param>
+        /// <returns>上傳檔案的詳細信息</returns>              
+        private async Task<UploadFile> SaveFile(IFormFile formFile, UploadType uploadType, int userId, ImageSaveInfo imageSaveInfo)
         {
-            string savePath = GetSavePath(uploadType, userid, formFile.FileName);
-            using Stream stream = new FileStream(savePath, FileMode.Create);            
-            await formFile.CopyToAsync(stream);
-            return NewUploadFile(savePath, uploadType, userid, formFile.FileName);
+            using MemoryStream memoryStream = new();
+            await formFile.CopyToAsync(memoryStream);
+            // 使用擴充方法將 MemoryStream 轉換為 Base64 字串
+            imageSaveInfo.ImageBase64 = memoryStream.ToBase64String();
+
+            await imageService.EncryptImageAsync(imageSaveInfo);            
+            return NewUploadFile(imageSaveInfo.FullPath, uploadType, userId, formFile.FileName);
         }
 
         /// <summary>
@@ -554,11 +579,9 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <summary>
         /// 取得存檔路徑
         /// </summary>
-        /// <param name="uploadType">印鑑類別</param>
-        /// <param name="userid"></param>
-        /// <param name="originalFileName">原始檔名</param>        
+        /// <param name="uploadType">印鑑類別</param>          
         /// <returns></returns>
-        private string GetSavePath(UploadType uploadType, int userid, string originalFileName)
+        private string GetRootPath(UploadType uploadType)
         {            
             string folder = string.Empty;            
             DateTime dateTime = DateTime.Now;            
@@ -592,8 +615,8 @@ namespace SealTypographicWebAPI.Services.Implements
             {
                 Directory.CreateDirectory(folder);
             }
-            
-            return Path.Combine(folder, $"{userid}{dateTime:yyyyMMddHHmmssffff}{Path.GetExtension(originalFileName)}");
+            return folder;
+            //return Path.Combine(folder, $"{userid}{dateTime:yyyyMMddHHmmssffff}{Path.GetExtension(originalFileName)}");
         }
 
         /// <summary>

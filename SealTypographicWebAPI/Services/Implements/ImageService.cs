@@ -129,24 +129,31 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <summary>
         /// 加密圖片並儲存
         /// </summary>
-        /// <param name="imageSaveInfo">Image存檔資訊</param>
-        /// <param name="rasKey">RAS公私鑰</param>
+        /// <param name="imageSaveInfo">Image存檔資訊</param>        
         /// <param name="isThumbnail">是否縮放</param>        
         /// <returns>回傳加密後的Key</returns>
         /// <exception cref="ArgumentException">imageSaveInfo.ImageModel.Base64 無資料可能是Base64不合法</exception>
-        public void EncryptImage(ImageSaveInfo imageSaveInfo, RSAKey rasKey, bool isThumbnail = false)
+        public void EncryptImage(ImageSaveInfo imageSaveInfo, bool isThumbnail = false)
         {
             if (string.IsNullOrWhiteSpace(imageSaveInfo.ImageModel.Base64))
             {
                 throw new ArgumentException("Invalid image base64 string, unable to generate image data", nameof(imageSaveInfo.ImageModel.Base64));
             }
 
-            imageSaveInfo.ImageEncryptKey = CryptoUtil.Encrypt(imageSaveInfo.ImageModel.Base64, imageSaveInfo.FullPath, rasKey.PrivateKeyBase64, rasKey.PublicKeyBase64);
+            imageSaveInfo.ImageEncryptKey = CryptoUtil.Encrypt(
+                                            imageSaveInfo.ImageModel.Base64,
+                                            imageSaveInfo.FullPath, 
+                                            imageSaveInfo.RSAKey.PrivateKeyBase64, 
+                                            imageSaveInfo.RSAKey.PublicKeyBase64);
 
             if (isThumbnail)
             {
                 imageSaveInfo.ThumbnailScale = sealPathOption.ResizeScale;
-                imageSaveInfo.ThumbnailEncryptKey = CryptoUtil.Encrypt(imageSaveInfo.ThumbnailImageBase64, imageSaveInfo.ThumbnailFullPath, rasKey.PrivateKeyBase64, rasKey.PublicKeyBase64);
+                imageSaveInfo.ThumbnailEncryptKey = CryptoUtil.Encrypt(
+                                                    imageSaveInfo.ThumbnailImageBase64, 
+                                                    imageSaveInfo.ThumbnailFullPath, 
+                                                    imageSaveInfo.RSAKey.PrivateKeyBase64, 
+                                                    imageSaveInfo.RSAKey.PublicKeyBase64);
             }
         }
 
@@ -154,24 +161,31 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <summary>
         /// 加密圖片並儲存(非同步)
         /// </summary>
-        /// <param name="imageSaveInfo">Image存檔資訊</param>
-        /// <param name="rasKey">RAS公私鑰</param>
+        /// <param name="imageSaveInfo">Image存檔資訊</param>        
         /// <param name="isThumbnail">是否縮放</param>
         /// <returns>回傳加密後的Key</returns>
         /// <exception cref="ArgumentException">imageSaveInfo.ImageModel.Base64 無資料可能是Base64不合法</exception>
-        public async Task EncryptImageAsync(ImageSaveInfo imageSaveInfo, RSAKey rasKey, bool isThumbnail = false)
+        public async Task EncryptImageAsync(ImageSaveInfo imageSaveInfo, bool isThumbnail = false)
         {      
             if(string.IsNullOrWhiteSpace(imageSaveInfo.ImageModel.Base64))
             {
                 throw new ArgumentException("Invalid image base64 string, unable to generate image data", nameof(imageSaveInfo.ImageModel.Base64));
             }
 
-            imageSaveInfo.ImageEncryptKey = await CryptoUtil.EncryptAsync(imageSaveInfo.ImageModel.Base64, imageSaveInfo.FullPath, rasKey.PrivateKeyBase64, rasKey.PublicKeyBase64);
+            imageSaveInfo.ImageEncryptKey = await CryptoUtil.EncryptAsync(
+                                                    imageSaveInfo.ImageModel.Base64, 
+                                                    imageSaveInfo.FullPath, 
+                                                    imageSaveInfo.RSAKey.PrivateKeyBase64, 
+                                                    imageSaveInfo.RSAKey.PublicKeyBase64);
 
             if (isThumbnail)
             {
                 imageSaveInfo.ThumbnailScale = sealPathOption.ResizeScale;
-                imageSaveInfo.ThumbnailEncryptKey = await CryptoUtil.EncryptAsync(imageSaveInfo.ThumbnailImageBase64, imageSaveInfo.ThumbnailFullPath, rasKey.PrivateKeyBase64, rasKey.PublicKeyBase64);
+                imageSaveInfo.ThumbnailEncryptKey = await CryptoUtil.EncryptAsync(
+                                                        imageSaveInfo.ThumbnailImageBase64, 
+                                                        imageSaveInfo.ThumbnailFullPath, 
+                                                        imageSaveInfo.RSAKey.PrivateKeyBase64, 
+                                                        imageSaveInfo.RSAKey.PublicKeyBase64);
             }
         }
 
@@ -286,8 +300,7 @@ namespace SealTypographicWebAPI.Services.Implements
 
             //設定存檔路徑
             ImageSaveInfo imageSaveInfo = SetImageBase64InfoWithSeal(code, formSeals.First().SealType);
-
-            RSAKey rsaKey = GetRasKey(userId);
+            imageSaveInfo.RSAKey = GetRasKey(userId);            
 
             foreach (T formSeal in formSeals)
             {                
@@ -305,7 +318,7 @@ namespace SealTypographicWebAPI.Services.Implements
                 imageSaveInfo.ReNamePath();
 
                 //ImageBase64加密處理並存到指定資料夾
-                await EncryptImageAsync(imageSaveInfo, rsaKey, true);
+                await EncryptImageAsync(imageSaveInfo, true);
 
                 //將加密後的Key和路徑存儲到 TypographyResource
                 typographyResource.ImageEncryptKey = imageSaveInfo.ImageEncryptKey;
