@@ -268,10 +268,10 @@ namespace SealTypographicWebAPI.Services.Implements
         /// </summary>
         /// <param name="imageBase64">輸入圖片</param>
         /// <param name="typographyResources">要輸入資料庫的資源</param>
-        /// <param name="imageBase64Info">圖檔資訊</param>
+        /// <param name="imageSaveInfo">圖檔資訊</param>
         /// <param name="userId">使用者Id</param>
         /// <returns></returns>
-        private async Task NewTypographyResource(string imageBase64, IList<TypographicResource> typographyResources, ImageSaveInfo imageBase64Info, int userId)
+        private async Task NewTypographyResource(string imageBase64, IList<TypographicResource> typographyResources, ImageSaveInfo imageSaveInfo, int userId)
         {
             TypographicResource typographicResource = new()
             {
@@ -280,9 +280,10 @@ namespace SealTypographicWebAPI.Services.Implements
                 SubSealType = SubSealType.Letterhead,
             };
             //ImageBase64轉圖檔並存到指定資料夾
-            imageBase64Info.ImageBase64 = imageBase64;
-            typographicResource.ImageFullPath = await imageService.GetSavedImageFilePath(imageBase64Info);
-            typographicResource.ThumbnailFullPath = await imageService.GetSavedImageThumbnailFilePath(imageBase64Info, true);
+            imageSaveInfo.ImageBase64 = imageBase64;
+            await imageService.SavedImageAsync(imageSaveInfo, true);
+            typographicResource.ImageFullPath = imageSaveInfo.FullPath;
+            typographicResource.ThumbnailFullPath = imageSaveInfo.ThumbnailFullPath;
 
             InputUtil.Set(typographicResource, userId, true);
             typographyResources.Add(typographicResource);

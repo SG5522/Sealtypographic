@@ -23,8 +23,8 @@ namespace SealTypographicWebAPI.Config.MapperProfile
             CreateMap<CustomerSealTemplateLocationForm, TemplateLocation>();
 
             //客戶印鑑樣板異動使用
-            CreateMap<CustomerSealTemplateUpdateForm, Template>()
-                ;
+            CreateMap<CustomerSealTemplateUpdateForm, Template>();
+
             CreateMap<CustomerSealTemplateLocationUpdateForm, TemplateLocation>();
 
             //客戶印鑑樣板單筆查詢使用

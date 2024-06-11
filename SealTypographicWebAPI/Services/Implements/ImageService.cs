@@ -12,6 +12,7 @@ using DBEntities;
 using DBEntities.Entities.TypographicModels;
 using DBEntities.Utils;
 using SealTypographicWebAPI.Models.BaseModels;
+using DBEntities.Entities.TemplateModels;
 
 namespace SealTypographicWebAPI.Services.Implements
 {
@@ -77,33 +78,30 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <summary>
         /// Base64轉圖檔並存檔回傳存檔路徑(存檔路徑透過ImageBase64Info生成)
         /// </summary>
-        /// <param name="imageBase64Info">ImageBase64資訊</param>     
-        public async Task<string> GetSavedImageFilePath(ImageSaveInfo imageBase64Info)
-        {
-            string savePath = imageBase64Info.GetFilePath();
-            return await SaveImageAsync(imageBase64Info.ImageBase64, savePath);
-        }
-
-        /// <summary>
-        /// Base64儲存縮圖並存檔回傳存檔路徑(存檔路徑透過ImageBase64Info生成)
-        /// </summary>
-        /// <param name="imageBase64Info"></param>
-        /// <param name="isResize"></param>
-        /// <returns></returns>
-        public async Task<string> GetSavedImageThumbnailFilePath(ImageSaveInfo imageBase64Info, bool isResize)
-        {
-            string result;
-            string savePath = imageBase64Info.GetThumbnailFilePath();
-            if (isResize)
+        /// <param name="imageSaveInfo">ImageBase64資訊</param>
+        /// <param name="isThumbnail"></param>     
+        public async Task SavedImageAsync(ImageSaveInfo imageSaveInfo, bool isThumbnail = false)
+        {            
+            imageSaveInfo.ReNamePath();
+            
+            if (!string.IsNullOrWhiteSpace(imageSaveInfo.ImageModel.Base64))
             {
-                result = await SaveImageAsync(imageBase64Info.ImageBase64, savePath, sealPathOption.ResizeScale);
+                imageSaveInfo.FullPath = $"{imageSaveInfo.FullPath}.{imageSaveInfo.ImageModel.ImageFormat?.Name.ToLower()}";
+                //儲存圖片
+                await imageSaveInfo.ImageModel.Base64.ToBytes().SaveAsync(imageSaveInfo.FullPath);
+                //確認縮圖處理
+                if (isThumbnail)
+                {
+                    imageSaveInfo.ThumbnailScale = !string.IsNullOrWhiteSpace(imageSaveInfo.ThumbnailImageBase64) ? sealPathOption.ResizeScale : 0;
+                    imageSaveInfo.ThumbnailFullPath = $"{imageSaveInfo.ThumbnailFullPath}.{imageSaveInfo.ImageModel.ImageFormat?.Name.ToLower()}";
+                    //儲存圖片
+                    await imageSaveInfo.ThumbnailImageBase64.ToBytes().SaveAsync(imageSaveInfo.ThumbnailFullPath);
+                }                                
             }
             else
             {
-                result = await SaveImageAsync(imageBase64Info.ImageBase64, savePath);
-            }
-
-            return result;
+                throw new ArgumentException("Invalid image base64 string, unable to generate image data", nameof(imageSaveInfo));
+            }                        
         }
 
         /// <summary>
@@ -124,6 +122,16 @@ namespace SealTypographicWebAPI.Services.Implements
             }
 
             imageBase64.ToBytes().Save(savefullPath);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="imageSaveInfo"></param>
+        /// <param name="isThumbnail"></param>
+        public static void SaveImage(ImageSaveInfo imageSaveInfo, bool isThumbnail = false)
+        {
+            imageSaveInfo.ThumbnailImageBase64.ToBytes().Save(imageSaveInfo.ThumbnailFullPath);
         }
 
         /// <summary>
@@ -285,6 +293,26 @@ namespace SealTypographicWebAPI.Services.Implements
                     break;
             }
             return imageBase64Info;
+        }
+
+        /// <summary>
+        /// 儲存背景圖片與縮圖
+        /// </summary>
+        /// <typeparam name="T">各項樣版基本資料與檔案</typeparam>
+        /// <param name="template">資料庫的樣板</param>
+        /// <param name="form">來源圖像與縮圖</param>
+        /// <param name="imageSaveInfo">Image存檔資訊</param>
+        /// <returns></returns>
+        public async Task SaveTemplateImage<T>(Template template, T form, ImageSaveInfo imageSaveInfo) where T : BaseTemplateWithFile
+        {
+            //取得來源圖片與縮圖
+            imageSaveInfo.ImageBase64 = form.ImageBase64;
+            imageSaveInfo.ThumbnailImageBase64 = form.ImageBase64Thumbnail;
+            //儲存圖片(包含縮圖)
+            await SavedImageAsync(imageSaveInfo, true);
+            //給予圖片存檔位置
+            template.ImageViewFullPath = imageSaveInfo.FullPath;
+            template.ThumbnailFullPath = imageSaveInfo.ThumbnailFullPath;
         }
 
         /// <summary>

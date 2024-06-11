@@ -8,6 +8,7 @@ using DBEntities.Entities.TemplateModels;
 using DBEntities.Utils;
 using Microsoft.EntityFrameworkCore;
 using SealTypographicWebAPI.Models;
+using SealTypographicWebAPI.Models.AccountantSignTemplate;
 using SealTypographicWebAPI.Models.LetterheadImageTemplate;
 using SealTypographicWebAPI.Utils;
 using System.Data.Common;
@@ -203,11 +204,8 @@ namespace SealTypographicWebAPI.Services.Implements
 
                     //儲存圖片(原圖)
                     ImageSaveInfo imageBase64Info = imageService.SetImageBase64InfoWithTemplate(companyQuery.Code, SealType.Letterhead);
-                    imageBase64Info.ImageBase64 = letterheadImageTemplateForm.ImageBase64;
-                    template.ImageViewFullPath = await imageService.GetSavedImageFilePath(imageBase64Info);
-                    //儲存縮圖
-                    imageBase64Info.ImageBase64 = letterheadImageTemplateForm.ImageBase64Thumbnail;
-                    template.ThumbnailFullPath = await imageService.GetSavedImageThumbnailFilePath(imageBase64Info, false);
+                    //儲存背景圖片與縮圖
+                    await imageService.SaveTemplateImage(template, letterheadImageTemplateForm, imageBase64Info);
 
                     NewTemplateLoction(letterheadImageTemplateForm.LetterheadTemplateLocationForm, templateLocations);
                     InputUtil.Set(template, userId, true);
@@ -264,11 +262,8 @@ namespace SealTypographicWebAPI.Services.Implements
                     FileUtil.DeleteFile(template.ThumbnailFullPath);
                     //儲存圖片(原圖)                
                     ImageSaveInfo imageBase64Info = imageService.SetImageBase64InfoWithTemplate(template.Company.Code, SealType.Letterhead);
-                    imageBase64Info.ImageBase64 = letterheadImageTemplateUpdateForm.ImageBase64;
-                    template.ImageViewFullPath = await imageService.GetSavedImageFilePath(imageBase64Info);
-                    //儲存縮圖
-                    imageBase64Info.ImageBase64 = letterheadImageTemplateUpdateForm.ImageBase64Thumbnail;
-                    template.ThumbnailFullPath = await imageService.GetSavedImageThumbnailFilePath(imageBase64Info, false);
+                    //儲存背景圖片與縮圖
+                    await imageService.SaveTemplateImage(template, letterheadImageTemplateUpdateForm, imageBase64Info);
 
                     mapper.Map(letterheadImageTemplateUpdateForm, template);
                     InputUtil.Set(template, userId, false);

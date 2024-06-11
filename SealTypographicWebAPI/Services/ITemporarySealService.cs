@@ -27,15 +27,17 @@ namespace SealTypographicWebAPI.Services
         /// 新增客戶基本資料
         /// </summary>
         /// <param name="temporarySealForm">基本資料</param>
+        /// <param name="userId">使用者Id</param>
         /// <returns></returns>
-        Task<ResponseViewModel> New(TemporarySealForm temporarySealForm);
+        Task<ResponseViewModel> New(TemporarySealForm temporarySealForm, int userId = 1);
 
         /// <summary>
         /// 更新臨時章
         /// </summary>        
         /// <param name="temporarySealUpdateForm">臨時章資料</param>
+        /// <param name="userId">使用者Id</param>
         /// <returns></returns>
-        Task<ResponseViewModel> Update(TemporarySealUpdateForm temporarySealUpdateForm);
+        Task<ResponseViewModel> Update(TemporarySealUpdateForm temporarySealUpdateForm, int userId = 1);
 
         /// <summary>
         /// 刪除臨時章。

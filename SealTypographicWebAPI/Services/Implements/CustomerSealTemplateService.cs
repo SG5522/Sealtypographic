@@ -8,6 +8,7 @@ using DBEntities.Entities.TemplateModels;
 using DBEntities.Utils;
 using Microsoft.EntityFrameworkCore;
 using SealTypographicWebAPI.Models;
+using SealTypographicWebAPI.Models.AccountantSignTemplate;
 using SealTypographicWebAPI.Models.CustomerSealTemplate;
 using SealTypographicWebAPI.Utils;
 using System.Data.Common;
@@ -196,12 +197,9 @@ namespace SealTypographicWebAPI.Services.Implements
                     Template template = mapper.Map<Template>(customerSealTemplateForm);
                     List<TemplateLocation> templateLocations = new();
                     //儲存圖片(原圖)
-                    ImageSaveInfo imageBase64Info = imageService.SetImageBase64InfoWithTemplate(companyQuery.Code, SealType.Customer);
-                    imageBase64Info.ImageBase64 = customerSealTemplateForm.ImageBase64;
-                    template.ImageViewFullPath = await imageService.GetSavedImageFilePath(imageBase64Info);
-                    //儲存縮圖
-                    imageBase64Info.ImageBase64 = customerSealTemplateForm.ImageBase64Thumbnail;
-                    template.ThumbnailFullPath = await imageService.GetSavedImageThumbnailFilePath(imageBase64Info, false);
+                    ImageSaveInfo imageSaveInfo = imageService.SetImageBase64InfoWithTemplate(companyQuery.Code, SealType.Customer);
+                    //儲存背景圖片與縮圖
+                    await imageService.SaveTemplateImage(template, customerSealTemplateForm, imageSaveInfo);
 
                     NewTemplateLoction(customerSealTemplateForm.CustomerSealTemplateLocationForms, templateLocations);
                     InputUtil.Set(template, userId, true);
@@ -252,17 +250,14 @@ namespace SealTypographicWebAPI.Services.Implements
                                 .FirstOrDefault(x => x.Id == customerSealTemplateUpdateForm.Id);
 
                 if (template != null)
-                {
+                {                    
                     //刪除原圖與縮圖
                     FileUtil.DeleteFile(template.ImageViewFullPath);
-                    FileUtil.DeleteFile(template.ThumbnailFullPath);
+                    FileUtil.DeleteFile(template.ThumbnailFullPath);                                        
                     //儲存圖片(原圖)                
-                    ImageSaveInfo imageBase64Info = imageService.SetImageBase64InfoWithTemplate(template.Company.Code, SealType.Customer);
-                    imageBase64Info.ImageBase64 = customerSealTemplateUpdateForm.ImageBase64;
-                    template.ImageViewFullPath = await imageService.GetSavedImageFilePath(imageBase64Info);
-                    //儲存縮圖
-                    imageBase64Info.ImageBase64 = customerSealTemplateUpdateForm.ImageBase64Thumbnail;
-                    template.ThumbnailFullPath = await imageService.GetSavedImageThumbnailFilePath(imageBase64Info, false);
+                    ImageSaveInfo imageBase64Info = imageService.SetImageBase64InfoWithTemplate(template.Company.Code, SealType.Customer);                    
+                    //儲存背景圖片與縮圖
+                    await imageService.SaveTemplateImage(template, customerSealTemplateUpdateForm, imageBase64Info);
 
                     mapper.Map(customerSealTemplateUpdateForm, template);
                     InputUtil.Set(template, userId, false);

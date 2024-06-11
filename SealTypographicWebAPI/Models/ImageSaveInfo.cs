@@ -32,6 +32,15 @@ namespace SealTypographicWebAPI.Models
                 {
                     ImageModel = new() { DataUrl = imageBase64 };
                 }
+                else
+                {                                        
+                    if (ImageModel != null)
+                    {
+                        ImageModel.DataUrl = string.Empty;
+                    }
+
+                    ThumbnailImageBase64 = string.Empty;
+                }
             }
         }
 
@@ -54,10 +63,14 @@ namespace SealTypographicWebAPI.Models
             set
             {
                 thumbnailScale = value;
-                if(thumbnailScale > 0 && ImageModel.Base64 != null)
+                if (thumbnailScale > 0 && !string.IsNullOrWhiteSpace(ImageModel.Base64))
                 {
                     ThumbnailImageBase64 = ImageUtil.ReSizeBase64Only(ImageModel.Base64, thumbnailScale, thumbnailScale);
-                }            
+                }
+                else
+                {
+                    ThumbnailImageBase64 = string.Empty;
+                }
             }
         }
 
@@ -69,7 +82,7 @@ namespace SealTypographicWebAPI.Models
         /// <summary>
         /// 圖片模組
         /// </summary>
-        public ImageModel ImageModel { get; set; }
+        public ImageModel ImageModel { get; private set; }
 
         /// <summary>
         /// RSA 公私鑰
@@ -79,7 +92,7 @@ namespace SealTypographicWebAPI.Models
         /// <summary>
         /// 存檔根目錄位置
         /// </summary>
-        public string RootPath
+        public string RootPath 
         {
             get => rootPath;
             set
@@ -87,8 +100,7 @@ namespace SealTypographicWebAPI.Models
                 rootPath = value;
                 if (!string.IsNullOrWhiteSpace(rootPath))
                 {
-                    FullPath = GetFilePath();
-                    ThumbnailFullPath = GetThumbnailFilePath();
+                    ReNamePath();
                 }
             }
         }
@@ -135,24 +147,17 @@ namespace SealTypographicWebAPI.Models
         /// 取得重新命名檔名
         /// </summary>
         /// <returns></returns>
-        public string ReName() => $"{Code}{CreateTime:yyyyMMHHmmssffff}";
+        public string GetFilePath() => Path.Combine(RootFolder(), GenerateFileName());
 
         /// <summary>
-        /// 取得重新命名檔名
+        /// 取得重新命名縮圖檔名
         /// </summary>
         /// <returns></returns>
-        public string ReNameForThumbnail() => $"{"thumbnail"}{ReName()}";
+        public string GetThumbnailFilePath() => Path.Combine(RootFolder(), GenerateThumbnailFileName());
 
-        /// <summary>
-        /// 取得圖檔存檔路徑
-        /// </summary>
-        /// <returns></returns>
-        public string GetFilePath() => Path.Combine(RootFolder(), ReName());
+        private string GenerateFileName() => $"{Code}{CreateTime:yyyyMMddHHmmssffff}";
 
-        /// <summary>
-        /// 取得圖檔縮圖存檔路徑
-        /// </summary>
-        /// <returns></returns>
-        public string GetThumbnailFilePath() => Path.Combine(RootFolder(), ReNameForThumbnail());
-    }
+        private string GenerateThumbnailFileName() => $"thumbnail{GenerateFileName()}";
+
+    }    
 }

@@ -193,13 +193,10 @@ namespace SealTypographicWebAPI.Services.Implements
                 {
                     Template template = mapper.Map<Template>(accountantSignTemplateForm);
                     List<TemplateLocation> templateLocations = new();
-                    //儲存圖片(原圖)
+                    //設定圖像資訊
                     ImageSaveInfo imageBase64Info = imageService.SetImageBase64InfoWithTemplate(companyQuery.Code, SealType.Accountant);
-                    imageBase64Info.ImageBase64 = accountantSignTemplateForm.ImageBase64;
-                    template.ImageViewFullPath = await imageService.GetSavedImageFilePath(imageBase64Info);
-                    //儲存縮圖
-                    imageBase64Info.ImageBase64 = accountantSignTemplateForm.ImageBase64Thumbnail;
-                    template.ThumbnailFullPath = await imageService.GetSavedImageThumbnailFilePath(imageBase64Info, false);
+                    //儲存背景圖片與縮圖
+                    await imageService.SaveTemplateImage(template, accountantSignTemplateForm, imageBase64Info);
 
                     NewTemplateLoction(accountantSignTemplateForm.AccountantSignTemplateLocationForms, templateLocations);
                     InputUtil.Set(template, userId, true);
@@ -254,13 +251,10 @@ namespace SealTypographicWebAPI.Services.Implements
                     //刪除原圖與縮圖
                     FileUtil.DeleteFile(template.ImageViewFullPath);
                     FileUtil.DeleteFile(template.ThumbnailFullPath);
-                    //儲存圖片(原圖)                
+                    //設定圖像資訊             
                     ImageSaveInfo imageBase64Info = imageService.SetImageBase64InfoWithTemplate(template.Company.Code, SealType.Accountant);
-                    imageBase64Info.ImageBase64 = accountantSignTemplateUpdateForm.ImageBase64;
-                    template.ImageViewFullPath = await imageService.GetSavedImageFilePath(imageBase64Info);
-                    //儲存縮圖
-                    imageBase64Info.ImageBase64 = accountantSignTemplateUpdateForm.ImageBase64Thumbnail;
-                    template.ThumbnailFullPath = await imageService.GetSavedImageThumbnailFilePath(imageBase64Info, false);
+                    //儲存背景圖片與縮圖
+                    await imageService.SaveTemplateImage(template, accountantSignTemplateUpdateForm, imageBase64Info);
 
                     mapper.Map(accountantSignTemplateUpdateForm, template);
                     InputUtil.Set(template, userId, false);
@@ -369,7 +363,7 @@ namespace SealTypographicWebAPI.Services.Implements
                 TemplateLocation templateLocation = mapper.Map<TemplateLocation>(accountantSignTemplateLocationForm);
                 templateLocation.SealType = SealType.Accountant;
                 //之後要調整為不用轉型
-                templateLocation.SubSealType = SealMappingConfigUtil.GetSubSealTypeWithAccountant((AccountantSignType)accountantSignTemplateLocationForm.AccountantSignType);
+                templateLocation.SubSealType = SealMappingConfigUtil.GetSubSealTypeWithAccountant(accountantSignTemplateLocationForm.AccountantSignType);
                 templateLocations.Add(templateLocation);
             }
         }

@@ -12,7 +12,7 @@ namespace SealTypographicWebAPI.Controllers
     /// </summary>
     [Route("api/[controller]")]
     [ApiController]
-    public class TemporarySealController : ControllerBase
+    public class TemporarySealController : APIControllerBase
     {
         /// <summary>
         /// 管理臨時章資料
@@ -22,9 +22,9 @@ namespace SealTypographicWebAPI.Controllers
         /// <summary>
         /// 注入Service
         /// </summary>
-        public TemporarySealController(ITemporarySealService temporaryService) 
+        public TemporarySealController(ITemporarySealService temporarySealService, IApplicationUserService applicationUserService) : base(applicationUserService)
         {
-            this.temporarySealService = temporaryService;
+            this.temporarySealService = temporarySealService;
         }
 
         /// <summary>
@@ -85,7 +85,7 @@ namespace SealTypographicWebAPI.Controllers
             try
             {
                 Log.Information("TemporarySeal new input {@Input}", temporarySealForm);
-                response = await temporarySealService.New(temporarySealForm);
+                response = await temporarySealService.New(temporarySealForm, await GetUserId());
                 Log.Information("TemporarySeal new output {@Output}", response);
             }
             catch (Exception ex)
@@ -108,7 +108,7 @@ namespace SealTypographicWebAPI.Controllers
             try
             {                
                 Log.Information("TemporarySeal update input temporarySealUpdateForm {@temporarySealUpdateForm}", temporarySealUpdateForm);
-                response = await temporarySealService.Update(temporarySealUpdateForm);
+                response = await temporarySealService.Update(temporarySealUpdateForm, await GetUserId());
                 Log.Information("TemporarySeal update output {@Output}", response);
             }
             catch (Exception ex)
