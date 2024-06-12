@@ -45,10 +45,14 @@ namespace SealTypographicWebAPI.Models
         }
 
         /// <summary>
+        /// Base64檔案(非圖片)
+        /// </summary>
+        public string Base64 { get; set; }
+
+        /// <summary>
         /// 圖像加密Key
         /// </summary>
-        public string ImageEncryptKey { get; set; }
-
+        public string EncryptKey { get; set; }
 
         /// <summary>
         /// 縮圖加密Key

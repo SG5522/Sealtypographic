@@ -393,6 +393,7 @@ namespace Sqlite.Migrations
                     UploadType = table.Column<byte>(type: "INTEGER", nullable: false),
                     OriginalFileName = table.Column<string>(type: "TEXT", nullable: false),
                     FullPath = table.Column<string>(type: "TEXT", nullable: false),
+                    EncryptKey = table.Column<string>(type: "TEXT", nullable: false),
                     FileWorkStatus = table.Column<int>(type: "INTEGER", nullable: false),
                     CompanyId = table.Column<int>(type: "INTEGER", nullable: false),
                     CreateDate = table.Column<DateTime>(type: "TEXT", nullable: false),

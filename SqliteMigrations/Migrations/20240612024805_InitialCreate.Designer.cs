@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Sqlite.Migrations
 {
     [DbContext(typeof(SealTypographicDbContext))]
-    [Migration("20240604095536_InitialCreate")]
+    [Migration("20240612024805_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -1008,6 +1008,10 @@ namespace Sqlite.Migrations
 
                     b.Property<byte>("DeleteStatus")
                         .HasColumnType("INTEGER");
+
+                    b.Property<string>("EncryptKey")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
 
                     b.Property<int>("FileWorkStatus")
                         .HasColumnType("INTEGER");

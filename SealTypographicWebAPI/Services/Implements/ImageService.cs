@@ -129,7 +129,7 @@ namespace SealTypographicWebAPI.Services.Implements
         /// </summary>
         /// <param name="imageSaveInfo"></param>
         /// <param name="isThumbnail"></param>
-        public static void SaveImage(ImageSaveInfo imageSaveInfo, bool isThumbnail = false)
+        private static void SaveImage(ImageSaveInfo imageSaveInfo, bool isThumbnail = false)
         {
             imageSaveInfo.ThumbnailImageBase64.ToBytes().Save(imageSaveInfo.ThumbnailFullPath);
         }
@@ -148,7 +148,7 @@ namespace SealTypographicWebAPI.Services.Implements
                 throw new ArgumentException("Invalid image base64 string, unable to generate image data", nameof(imageSaveInfo.ImageModel.Base64));
             }
 
-            imageSaveInfo.ImageEncryptKey = CryptoUtil.Encrypt(
+            imageSaveInfo.EncryptKey = CryptoUtil.Encrypt(
                                             imageSaveInfo.ImageModel.Base64,
                                             imageSaveInfo.FullPath, 
                                             imageSaveInfo.RSAKey.PrivateKeyBase64, 
@@ -180,7 +180,7 @@ namespace SealTypographicWebAPI.Services.Implements
                 throw new ArgumentException("Invalid image base64 string, unable to generate image data", nameof(imageSaveInfo.ImageModel.Base64));
             }
 
-            imageSaveInfo.ImageEncryptKey = await CryptoUtil.EncryptAsync(
+            imageSaveInfo.EncryptKey = await CryptoUtil.EncryptAsync(
                                                     imageSaveInfo.ImageModel.Base64, 
                                                     imageSaveInfo.FullPath, 
                                                     imageSaveInfo.RSAKey.PrivateKeyBase64, 
@@ -198,13 +198,44 @@ namespace SealTypographicWebAPI.Services.Implements
         }
 
         /// <summary>
-        /// 解密圖案
+        /// 加密圖片並儲存(非同步)
+        /// </summary>
+        /// <param name="imageSaveInfo">Image存檔資訊</param>                
+        /// <returns>回傳加密後的Key</returns>
+        /// <exception cref="ArgumentException">imageSaveInfo.ImageModel.Base64 無資料可能是Base64不合法</exception>
+        public async Task EncryptFileAsync(ImageSaveInfo imageSaveInfo)
+        {
+            if (string.IsNullOrWhiteSpace(imageSaveInfo.Base64))
+            {
+                throw new ArgumentException("Invalid base64 string, unable to generate image data", nameof(imageSaveInfo.Base64));
+            }
+
+            imageSaveInfo.EncryptKey = await CryptoUtil.EncryptAsync(
+                                                    imageSaveInfo.Base64,
+                                                    imageSaveInfo.FullPath,
+                                                    imageSaveInfo.RSAKey.PrivateKeyBase64,
+                                                    imageSaveInfo.RSAKey.PublicKeyBase64);
+        }
+
+
+        /// <summary>
+        /// 解密檔案
         /// </summary>
         /// <param name="savePath">存檔路徑</param>
         /// <param name="encryptKey">加密後的key</param>
         /// <param name="rasKey">RAS公私鑰</param>
         /// <returns></returns>
-        public string DecryptImage(string savePath, string encryptKey, RSAKey rasKey)
+        public byte[] DecryptFileToBytes(string savePath, string encryptKey, RSAKey rasKey)
+            => DecryptFile(savePath, encryptKey, rasKey).ToBytes();
+
+        /// <summary>
+        /// 解密檔案
+        /// </summary>
+        /// <param name="savePath">存檔路徑</param>
+        /// <param name="encryptKey">加密後的key</param>
+        /// <param name="rasKey">RAS公私鑰</param>
+        /// <returns></returns>
+        public string DecryptFile(string savePath, string encryptKey, RSAKey rasKey)
             => CryptoUtil.Decrypt(savePath, encryptKey, rasKey.PrivateKeyBase64, rasKey.PublicKeyBase64);
 
         /// <summary>
@@ -349,7 +380,7 @@ namespace SealTypographicWebAPI.Services.Implements
                 await EncryptImageAsync(imageSaveInfo, true);
 
                 //將加密後的Key和路徑存儲到 TypographyResource
-                typographyResource.ImageEncryptKey = imageSaveInfo.ImageEncryptKey;
+                typographyResource.ImageEncryptKey = imageSaveInfo.EncryptKey;
                 typographyResource.ImageFullPath = imageSaveInfo.FullPath;
                 typographyResource.ThumbnailEncryptKey = imageSaveInfo.ThumbnailEncryptKey;
                 typographyResource.ThumbnailFullPath = imageSaveInfo.ThumbnailFullPath;
@@ -389,7 +420,7 @@ namespace SealTypographicWebAPI.Services.Implements
             RSAKey? rsaKey = dbContext.Companys
                             .Where
                             (
-                                x => userId == 0 || userId == 1 ?
+                                x => (userId == 0 || userId == 1) ?
                                 x.Id == companyId : x.ApplicationUsers.Any(x => x.Id == userId)
                             )
                             .Select(x => new RSAKey

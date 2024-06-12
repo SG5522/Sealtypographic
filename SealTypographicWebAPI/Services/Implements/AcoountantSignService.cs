@@ -120,7 +120,7 @@ namespace SealTypographicWebAPI.Services.Implements
                     foreach (AccountantSignViewModel accountantSignViewModel in accountantSignViewModels.SignViewModels)
                     {
                         //解密圖檔
-                        string imageBase64 = imageService.DecryptImage(accountantSignViewModel.ImageFullPath, accountantSignViewModel.ImageEncryptKey, rsaKey);
+                        string imageBase64 = imageService.DecryptFile(accountantSignViewModel.ImageFullPath, accountantSignViewModel.ImageEncryptKey, rsaKey);
                         //判斷是否白底通透處理
                         accountantSignViewModel.ImageBase64 = isTransparent ? ImageTransparentUtil.ToDataUrlFromDataUrl(imageBase64) : imageBase64;                            
                     }                    

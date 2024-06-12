@@ -52,11 +52,11 @@ namespace DJSpire.Utils
 
             return new PdfPageImageInfo()
             {
-                Width = imageModel.ImageInfo!.Width,
-                Height = imageModel.ImageInfo!.Height,
+                Width = imageModel.ImageInfo?.Width ?? 0,
+                Height = imageModel.ImageInfo?.Height ?? 0,
                 PageNo = pageNo,
                 TotalPage = pdfDocument.Pages.Count,
-                ImageDataUrl = imageModel.DataUrl!               
+                ImageDataUrl = imageModel.DataUrl ?? string.Empty               
             };
         }
 

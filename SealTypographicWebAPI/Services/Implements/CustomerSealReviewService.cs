@@ -112,7 +112,7 @@ namespace SealTypographicWebAPI.Services.Implements
                     {
                         Parallel.ForEach(viewModel.SealImageInfos, sealImageInfo =>
                         {
-                            sealImageInfo.ThumbnailBase64 = imageService.DecryptImage(sealImageInfo.ThumbnailFullPath, sealImageInfo.ThumbnailEncryptKey, rsakey);
+                            sealImageInfo.ThumbnailBase64 = imageService.DecryptFile(sealImageInfo.ThumbnailFullPath, sealImageInfo.ThumbnailEncryptKey, rsakey);
                         });
                     });
                      
@@ -121,7 +121,7 @@ namespace SealTypographicWebAPI.Services.Implements
                     {
                         foreach (SealImageInfo sealImageInfo in viewModel.SealImageInfos)
                         {
-                            string imageBase64 = imageService.DecryptImage(sealImageInfo.ThumbnailFullPath, sealImageInfo.ThumbnailEncryptKey, rsakey);
+                            string imageBase64 = imageService.DecryptFile(sealImageInfo.ThumbnailFullPath, sealImageInfo.ThumbnailEncryptKey, rsakey);
                             sealImageInfo.ThumbnailBase64 = ImageTransparentUtil.ToDataUrlFromImageBase64(imageBase64);
                         }
                     }
@@ -177,7 +177,7 @@ namespace SealTypographicWebAPI.Services.Implements
 
                     foreach (CustomerSealViewModel seal in customerSealGroupQuery.Seals)
                     {
-                        string imageBase64 = imageService.DecryptImage(seal.ImageFullPath, seal.ImageEncryptKey, rsaKey);
+                        string imageBase64 = imageService.DecryptFile(seal.ImageFullPath, seal.ImageEncryptKey, rsaKey);
                         seal.ImageBase64 = ImageTransparentUtil.ToDataUrlFromImageBase64(imageBase64);
                     }
 

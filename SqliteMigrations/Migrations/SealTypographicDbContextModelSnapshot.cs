@@ -1006,6 +1006,10 @@ namespace Sqlite.Migrations
                     b.Property<byte>("DeleteStatus")
                         .HasColumnType("INTEGER");
 
+                    b.Property<string>("EncryptKey")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
                     b.Property<int>("FileWorkStatus")
                         .HasColumnType("INTEGER");
 

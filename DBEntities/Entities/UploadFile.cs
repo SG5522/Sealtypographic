@@ -25,6 +25,11 @@ namespace DBEntities.Entities
         public string FullPath { get; set; }
 
         /// <summary>
+        /// 圖片加密key (部份圖檔無需加密)
+        /// </summary>
+        public string EncryptKey { get; set; }
+
+        /// <summary>
         /// 檔案工作狀態
         /// 在使用客戶印鑑、會計師簽印、信頭、PDF檔案
         /// 為了不在重複使用同一份檔案所做的狀態區分

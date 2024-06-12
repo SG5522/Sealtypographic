@@ -16,6 +16,9 @@ using DJSpire.Models;
 using CommonLib.Extensions;
 using System.IO;
 using SealTypographicWebAPI.Extensions;
+using k8s.Models;
+using SealTypographicWebAPI.Models.CustomerSeal;
+using DJImageLib.Extensions;
 
 namespace SealTypographicWebAPI.Services.Implements
 {
@@ -23,11 +26,11 @@ namespace SealTypographicWebAPI.Services.Implements
     /// 上傳檔案管理
     /// </summary>
     public class UploadService : IUploadService
-    {        
+    {
         private readonly SealTypographicDbContext dbContext;
         private readonly ImageService imageService;
-        private readonly IStringLocalizer<UploadService> localizer;        
-        private readonly ILogger<UploadData> logger;        
+        private readonly IStringLocalizer<UploadService> localizer;
+        private readonly ILogger<UploadData> logger;
         private readonly AutoMapper.IConfigurationProvider configurationProvider;
         private UploadPathOption uploadConfigPath;
 
@@ -42,15 +45,15 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <param name="mapper"></param>       
         public UploadService(SealTypographicDbContext dbContext
             , ImageService imageService
-            ,IStringLocalizer<UploadService> localizer           
+            , IStringLocalizer<UploadService> localizer
             , ILogger<UploadData> logger
             , IMapper mapper
             , IOptionsMonitor<UploadPathOption> options)
         {
             this.dbContext = dbContext;
             this.imageService = imageService;
-            this.localizer = localizer;            
-            this.logger = logger;            
+            this.localizer = localizer;
+            this.logger = logger;
             configurationProvider = mapper.ConfigurationProvider;
             uploadConfigPath = options.CurrentValue;
 
@@ -64,8 +67,8 @@ namespace SealTypographicWebAPI.Services.Implements
         /// 取得上傳類別
         /// </summary>
         /// <returns></returns>
-        public UploadTypeResponse GetUploadType() 
-        {            
+        public UploadTypeResponse GetUploadType()
+        {
             UploadTypeResponse uploadTypeResponse = new();
             try
             {
@@ -111,15 +114,15 @@ namespace SealTypographicWebAPI.Services.Implements
                 duplicateFileProcessModeResponse.Success();
                 logger.LogInformation("GetDuplicateFileProcessMode output {@output}", duplicateFileProcessModeResponse);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 duplicateFileProcessModeResponse.Error();
                 logger.LogError("GetUploadType error {@Error}", ex.Message);
             }
-            
+
             return duplicateFileProcessModeResponse;
         }
-        
+
         /// <inheritdoc/>     
         public UploadPaginateViewModel GetUploadPaginate(UploadSearch uploadSearch, int companyId = 1)
         {
@@ -131,11 +134,11 @@ namespace SealTypographicWebAPI.Services.Implements
             {
                 IQueryable<UploadFile> uploadFilesQuery = dbContext.UploadFiles.Where
                                                         (
-                                                            x => x.Company.Id == companyId                                                            
+                                                            x => x.Company.Id == companyId
                                                             && x.DeleteStatus == DeleteStatus.No
                                                         );
 
-                if(!string.IsNullOrEmpty(uploadSearch.KeyWord))
+                if (!string.IsNullOrEmpty(uploadSearch.KeyWord))
                 {
                     uploadFilesQuery = uploadFilesQuery.Where
                                         (
@@ -143,7 +146,7 @@ namespace SealTypographicWebAPI.Services.Implements
                                         );
                 }
 
-                if(uploadSearch.UploadType != null)
+                if (uploadSearch.UploadType != null)
                 {
                     uploadFilesQuery = uploadFilesQuery.Where
                                        (
@@ -151,7 +154,7 @@ namespace SealTypographicWebAPI.Services.Implements
                                        );
                 }
 
-                if(uploadSearch.FileWorkStatus != null)
+                if (uploadSearch.FileWorkStatus != null)
                 {
                     uploadFilesQuery = uploadFilesQuery.Where
                                        (
@@ -161,7 +164,7 @@ namespace SealTypographicWebAPI.Services.Implements
 
                 uploadFilesQuery = uploadFilesQuery.OrderBy(uploadFile => uploadFile.Id);
 
-                if(uploadFilesQuery.Any())
+                if (uploadFilesQuery.Any())
                 {
                     uploadPaginateViewModel.ViewModels = uploadFilesQuery
                                                         .Skip((uploadSearch.PageNumber - 1) * uploadSearch.PageSize)
@@ -175,10 +178,10 @@ namespace SealTypographicWebAPI.Services.Implements
                 else
                 {
                     uploadPaginateViewModel.DbNoData();
-                }    
+                }
                 logger.LogInformation("GetUploadPaginate output {@Output}", uploadPaginateViewModel);
             }
-            catch (Exception  ex)
+            catch (Exception ex)
             {
                 uploadPaginateViewModel.Error();
                 logger.LogError("GetUploadPaginate error {@Error}", ex.Message);
@@ -213,29 +216,30 @@ namespace SealTypographicWebAPI.Services.Implements
                     uploadFileResponse.ViewModel = uploadFileQuery.ToList();
                     uploadFileResponse.Success();
                 }
-                else 
+                else
                 {
                     uploadFileResponse.DbNoData();
-                }                
+                }
                 logger.LogInformation("GetFile output {@output}", uploadFileResponse);
             }
             catch (Exception ex)
             {
                 uploadFileResponse.Error();
                 logger.LogError("GetFile error {@Error}", ex.Message);
-            }            
+            }
 
             return uploadFileResponse;
         }
 
-        
+
 
         /// <summary>
         /// 取得上傳檔案圖片
         /// </summary>
         /// <param name="uploadFileId"></param>
+        /// <param name="userId"></param>
         /// <returns></returns>
-        public UploadFileImageView GetFileImage(int uploadFileId)
+        public UploadFileImageView GetFileImage(int uploadFileId, int userId = 1)
         {
             logger.LogInformation("GetFileImage input uploadFileId: {@uploadFileId}", uploadFileId);
 
@@ -243,20 +247,29 @@ namespace SealTypographicWebAPI.Services.Implements
 
             try
             {
-                UploadFile? uploadFile = dbContext.UploadFiles.Find(uploadFileId);
-                if (uploadFile != null)
-                {
-                    if(uploadFile.UploadType == UploadType.FinancialReport || uploadFile.UploadType == UploadType.TaxReport)
+                UploadEncryptFile? uploadEncryptFile = dbContext.UploadFiles                                                        
+                                                        .Where(x => x.Id == uploadFileId)
+                                                        .Select(x => new UploadEncryptFile
+                                                        {
+                                                            FullPath = x.FullPath,
+                                                            EncryptKey = x.EncryptKey,
+                                                            UploadType = x.UploadType,
+                                                            RSAKey = imageService.GetRasKey(userId)
+                                                        }).FirstOrDefault();
+                if (uploadEncryptFile != null)
+                {                    
+                    string base64 = imageService.DecryptFile(uploadEncryptFile.FullPath, uploadEncryptFile.EncryptKey, uploadEncryptFile.RSAKey);
+
+                    if (uploadEncryptFile.UploadType == UploadType.FinancialReport || uploadEncryptFile.UploadType == UploadType.TaxReport)
                     {
-                        //PDFService pDFService = new() { PDFPath = uploadFile.FullPath, PageIndex = 1 };
-                        //PDFImageInfo pDFImageInfo = pDFService.GetPageImageInfo();
                         //取得單頁PDF圖檔
-                        PdfPageImageInfo pDFImageInfo = PdfImageUtil.GetPdfPageImageInfo(uploadFile.FullPath, 0);
-                        uploadFileImageView.ImageBase64 = pDFImageInfo.ImageDataUrl;                        
+                        PdfPageImageInfo pDFImageInfo = PdfImageUtil.GetPdfPageImageInfo(base64.ToBytes(), 0);
+                        uploadFileImageView.ImageBase64 = pDFImageInfo.ImageDataUrl;
                     }
                     else
-                    {                        
-                        uploadFileImageView.ImageBase64 = ImageUtil.ToDataUrlFromFilePath(uploadFile.FullPath);
+                    {
+                        //解密圖檔
+                        uploadFileImageView.ImageBase64 = ImageUtil.ToDataUrl(base64.ToBytes());
                     }
                     uploadFileImageView.Success();
                 }
@@ -264,10 +277,10 @@ namespace SealTypographicWebAPI.Services.Implements
                 {
                     uploadFileImageView.DbNoData();
                 }
-                
+
                 logger.LogInformation("GetFileImage output {@output}", uploadFileImageView);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 uploadFileImageView.Error();
                 logger.LogError("GetFileImage error {@error}", ex.Message);
@@ -310,8 +323,8 @@ namespace SealTypographicWebAPI.Services.Implements
             {
                 uploadDuplicateFiles.Error();
                 logger.LogError("CheckDuplicateFileName error {@error}", ex.Message);
-            }            
-            
+            }
+
             return uploadDuplicateFiles;
         }
 
@@ -324,7 +337,7 @@ namespace SealTypographicWebAPI.Services.Implements
         public async Task<ResponseViewModel> SaveScanFile(UploadScanData uploadBase64Data, int userId = 1)
         {
             logger.LogInformation("SaveScanFile input {@Input} userId: {@userid}", uploadBase64Data, userId);
-            ResponseViewModel response = new();            
+            ResponseViewModel response = new();
             int companyId = 1; //公司Id
 
             try
@@ -333,7 +346,7 @@ namespace SealTypographicWebAPI.Services.Implements
                 Company? companyQuery = dbContext.Companys.Include(x => x.UploadFiles).FirstOrDefault(x => x.Id == companyId);
 
                 if (companyQuery != null)
-                {                    
+                {
                     ImageSaveInfo imageSaveInfo = new()
                     {
                         RootPath = GetRootPath(uploadBase64Data.UploadType),
@@ -342,11 +355,10 @@ namespace SealTypographicWebAPI.Services.Implements
                     };
                     foreach (string imagebase64 in uploadBase64Data.ImageBase64Strings)
                     {
-                        
                         //掃描完存在資料庫的原始檔名
-                        string originalFileName = $"ScanFile{imageSaveInfo.FullPath}";                        
-                        await imageService.EncryptImageAsync(imageSaveInfo);                                               
-                        companyQuery.UploadFiles.Add(NewUploadFile(imageSaveInfo.FullPath, uploadBase64Data.UploadType, userId, originalFileName));
+                        string originalFileName = $"ScanFile{imageSaveInfo.FullPath}";
+                        await imageService.EncryptImageAsync(imageSaveInfo);
+                        companyQuery.UploadFiles.Add(NewUploadFile(imageSaveInfo, uploadBase64Data.UploadType, userId, originalFileName));
                     }
                     dbContext.SaveChanges();
                     response.Success();
@@ -366,7 +378,7 @@ namespace SealTypographicWebAPI.Services.Implements
             {
                 response.Error();
                 logger.LogInformation("SaveScanFile error {@error}", ex.Message);
-            }            
+            }
 
             return response;
         }
@@ -381,7 +393,7 @@ namespace SealTypographicWebAPI.Services.Implements
         {
             logger.LogInformation("SaveFormFile input {@Input} userId: {@userid}", uploadData, userId);
 
-            ResponseViewModel response = new();                     
+            ResponseViewModel response = new();
             int companyId = 1; //公司Id
 
             try
@@ -390,13 +402,13 @@ namespace SealTypographicWebAPI.Services.Implements
                 Company? companyQuery = dbContext.Companys.Include(x => x.UploadFiles).FirstOrDefault(x => x.Id == companyId);
 
                 if (companyQuery != null)
-                {                    
+                {
                     ImageSaveInfo imageSaveInfo = new()
                     {
                         RootPath = GetRootPath(uploadData.UploadType),
                         Code = userId.ToString(),
                         RSAKey = imageService.GetRasKey(userId)
-                    };                    
+                    };
 
                     if (uploadData.DuplicateFileIds != null)
                     {
@@ -415,7 +427,6 @@ namespace SealTypographicWebAPI.Services.Implements
                                     uploadFile.DeleteStatus = DeleteStatus.Yes;
                                     BaseInput(uploadFile, false, userId);
                                 }
-
 
                                 //新增上傳的檔案
                                 companyQuery.UploadFiles.Add(await SaveFile(formFile, uploadData.UploadType, userId, imageSaveInfo));
@@ -447,7 +458,7 @@ namespace SealTypographicWebAPI.Services.Implements
                 response.Error();
                 logger.LogInformation("SaveFormFile error {@Error}", ex.Message);
             }
-            
+
             return response;
         }
 
@@ -462,7 +473,7 @@ namespace SealTypographicWebAPI.Services.Implements
             logger.LogInformation("ChangeFileWorkStatusToDone input uploadFileId: {@uploadFileId} userId: {@userid}", uploadFileId, userId);
 
             ResponseViewModel response = new();
-            
+
             try
             {
                 UploadFile? uploadFile = dbContext.UploadFiles.Find(uploadFileId);
@@ -498,8 +509,8 @@ namespace SealTypographicWebAPI.Services.Implements
         {
             logger.LogInformation("Delete input uploadFileIds {@uploadFileIds} userId: {@userid}", uploadFileIds, userId);
 
-            ResponseViewModel response = new();            
-            
+            ResponseViewModel response = new();
+
             try
             {
                 foreach (int uploadFileId in uploadFileIds)
@@ -548,30 +559,40 @@ namespace SealTypographicWebAPI.Services.Implements
         {
             using MemoryStream memoryStream = new();
             await formFile.CopyToAsync(memoryStream);
-            // 使用擴充方法將 MemoryStream 轉換為 Base64 字串
-            imageSaveInfo.ImageBase64 = memoryStream.ToBase64String();
 
-            await imageService.EncryptImageAsync(imageSaveInfo);            
-            return NewUploadFile(imageSaveInfo.FullPath, uploadType, userId, formFile.FileName);
+            if (uploadType >= UploadType.FinancialReport || uploadType <= UploadType.AccountantSignCertificate)
+            {
+                // 使用擴充方法將 MemoryStream 轉換為 Base64 字串
+                imageSaveInfo.Base64 = memoryStream.ToBase64String();
+                await imageService.EncryptFileAsync(imageSaveInfo);
+            }
+            else
+            {
+                // 使用擴充方法將 MemoryStream 轉換為 Base64 字串
+                imageSaveInfo.ImageBase64 = memoryStream.ToBase64String();
+                await imageService.EncryptImageAsync(imageSaveInfo);
+            }
+            return NewUploadFile(imageSaveInfo, uploadType, userId, formFile.FileName);
         }
 
         /// <summary>
         /// 新增上傳檔案
         /// </summary>
-        /// <param name="savePath">存檔路徑</param>
+        /// <param name="imageSaveInfo">存檔路徑</param>
         /// <param name="uploadType">上傳檔案類別</param>
         /// <param name="userId">userId</param>
         /// <param name="originalFileName">原檔名稱</param>
         /// <returns></returns>
-        private static UploadFile NewUploadFile(string savePath, UploadType uploadType, int userId, string originalFileName)
+        private static UploadFile NewUploadFile(ImageSaveInfo imageSaveInfo, UploadType uploadType, int userId, string originalFileName)
         {
             // TODO:後續在DuplicateFileProcessMode.Reserve(保留原檔名)模式時客戶要求檔名要區分時在另做調整。
             UploadFile uploadFile = new()
             {
                 OriginalFileName = originalFileName,
                 UploadType = uploadType,
-                FullPath = savePath,                
-            };            
+                FullPath = imageSaveInfo.FullPath,
+                EncryptKey = imageSaveInfo.EncryptKey
+            };
             BaseInput(uploadFile, true, userId);
             return uploadFile;
         }
@@ -582,9 +603,8 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <param name="uploadType">印鑑類別</param>          
         /// <returns></returns>
         private string GetRootPath(UploadType uploadType)
-        {            
-            string folder = string.Empty;            
-            DateTime dateTime = DateTime.Now;            
+        {
+            string folder = string.Empty;
 
             switch (uploadType)
             {
@@ -616,7 +636,6 @@ namespace SealTypographicWebAPI.Services.Implements
                 Directory.CreateDirectory(folder);
             }
             return folder;
-            //return Path.Combine(folder, $"{userid}{dateTime:yyyyMMddHHmmssffff}{Path.GetExtension(originalFileName)}");
         }
 
         /// <summary>
@@ -630,7 +649,7 @@ namespace SealTypographicWebAPI.Services.Implements
             if (isCreate)
             {
                 uploadFile.CreateUserId = userid;
-                uploadFile.CreateDate = DateTime.Now;                
+                uploadFile.CreateDate = DateTime.Now;
                 uploadFile.DeleteStatus = DeleteStatus.No;
                 uploadFile.FileWorkStatus = FileWorkStatus.Unprocessed;
             }

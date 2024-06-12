@@ -20,6 +20,7 @@ using DBEntities.Utils;
 using CommonLib.Extensions;
 using Microsoft.OpenApi.Extensions;
 using DBEntities.Extensions;
+using SealTypographicWebAPI.Models.Upload;
 
 namespace SealTypographicWebAPI.Services.Implements
 {
@@ -29,6 +30,7 @@ namespace SealTypographicWebAPI.Services.Implements
     public class TypographicPDFService : ITypographicPDFService
     {
         private readonly SealTypographicDbContext dbContext;
+        private readonly ImageService imageService;
         private readonly IMapper mapper;
         private readonly AutoMapper.IConfigurationProvider configurationProvider;
         private readonly ILogger<TypographicPDFService> logger;
@@ -38,13 +40,19 @@ namespace SealTypographicWebAPI.Services.Implements
         /// 取得DB與Automapper
         /// </summary>
         /// <param name="dbContext"></param>
+        /// <param name="imageService"></param>
         /// <param name="logger"></param>
         /// <param name="mapper"></param>
         /// <param name="typographyEditImagePathOptionsMonitor"></param>
-        public TypographicPDFService(SealTypographicDbContext dbContext, ILogger<TypographicPDFService> logger, IMapper mapper,
+        public TypographicPDFService(
+            SealTypographicDbContext dbContext,
+            ImageService imageService,
+            ILogger<TypographicPDFService> logger,
+            IMapper mapper,
             IOptionsMonitor<TypographyEditImagePathOptions> typographyEditImagePathOptionsMonitor)
         {
             this.dbContext = dbContext;
+            this.imageService = imageService;
             this.logger = logger;
             this.mapper = mapper;
             configurationProvider = mapper.ConfigurationProvider;
@@ -171,13 +179,23 @@ namespace SealTypographicWebAPI.Services.Implements
 
             try
             {
-                string? uploadPath = await dbContext.UploadFiles.Where(x => x.Id == uploadFileid).Select(x => x.FullPath).FirstOrDefaultAsync();
-                if (uploadPath != null)
-                {
-                    //取得單頁PDF圖檔資訊
-                    PdfPageImageInfo pdfPageImageInfo = PdfImageUtil.GetPdfPageImageInfo(uploadPath, pageNumber);
+                UploadEncryptFile? uploadEncryptFile = await dbContext.UploadFiles                                                            
+                                                            .Where(x => x.Id == uploadFileid)
+                                                            .Select(x => new UploadEncryptFile
+                                                            {
+                                                                FullPath = x.FullPath,
+                                                                EncryptKey = x.EncryptKey,
+                                                                RSAKey = imageService.GetRasKey(userId)                                                                
+                                                            }).FirstOrDefaultAsync();
+                if (uploadEncryptFile != null)
+                {                    
+                    //解密檔案
+                    byte[] pdfBytes = imageService.DecryptFileToBytes(uploadEncryptFile.FullPath, uploadEncryptFile.EncryptKey, uploadEncryptFile.RSAKey);
 
-                    pDFViewModel.PDFFullPath = uploadPath; //Log使用
+                    //取得單頁PDF圖檔資訊
+                    PdfPageImageInfo pdfPageImageInfo = PdfImageUtil.GetPdfPageImageInfo(pdfBytes, pageNumber);
+
+                    pDFViewModel.PDFFullPath = uploadEncryptFile.FullPath; //Log使用
                     pDFViewModel.TotalPage = pdfPageImageInfo.TotalPage;
                     pDFViewModel.ImageWidth = pdfPageImageInfo.Width;
                     pDFViewModel.ImageHeight = pdfPageImageInfo.Height;
@@ -615,7 +633,7 @@ namespace SealTypographicWebAPI.Services.Implements
             {
                 //儲存檔案
                 string originalFileName = $"{DateTime.Now:yyyyMMddHHmmssffff}";
-                string savePath = $"{typographyEditImagePathOptions.RootPath}{originalFileName}";                
+                string savePath = $"{typographyEditImagePathOptions.RootPath}{originalFileName}";
                 await ImageService.SaveImageAsync(locationData.EditPdfImageBase64, savePath);
                 typographicResourceLocation.EditImageFullPath = savePath;
             }

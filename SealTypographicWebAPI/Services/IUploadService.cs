@@ -46,8 +46,9 @@ namespace SealTypographicWebAPI.Services
         /// 取得上傳檔案圖片
         /// </summary>
         /// <param name="uploadFileId"></param>
+        /// <param name="userId"></param>
         /// <returns></returns>
-        UploadFileImageView GetFileImage(int uploadFileId);
+        UploadFileImageView GetFileImage(int uploadFileId, int userId = 1);
 
         /// <summary>
         /// 確認上傳是否有重複檔案
