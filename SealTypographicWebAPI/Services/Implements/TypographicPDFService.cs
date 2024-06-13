@@ -437,12 +437,19 @@ namespace SealTypographicWebAPI.Services.Implements
                         TypographicPages = new List<TypographicPage>()
                     };
 
+                    //存檔資訊
+                    ImageSaveInfo imageSaveInfo = new()
+                    {
+                        RootPath = typographyEditImagePathOptions.RootPath,
+                        RSAKey = imageService.GetRasKey(userId)
+                    };
+
                     //建立此排版PDF的審核類型與日期與建立日期                    
                     InputUtil.SetDraftWithCreate(typographicPDF, userId);
 
                     foreach (TypographicPageForm pageInfo in typographicPDFForm.Pages)
                     {
-                        typographicPDF.TypographicPages.Add(await PageSave(pageInfo));
+                        typographicPDF.TypographicPages.Add(await PageSave(pageInfo, imageSaveInfo));
                     }
 
                     dbContext.TypographicPDFs.Add(typographicPDF);
@@ -492,9 +499,16 @@ namespace SealTypographicWebAPI.Services.Implements
 
                     List<TypographicPage> newPages = new();
 
+                    //存檔資訊
+                    ImageSaveInfo imageSaveInfo = new()
+                    {
+                        RootPath = typographyEditImagePathOptions.RootPath,                        
+                        RSAKey = imageService.GetRasKey(userId)
+                    };
+
                     foreach (TypographicPageForm typographicPageForm in typographicPDFSaveForm.Pages)
                     {
-                        newPages.Add(await PageSave(typographicPageForm));
+                        newPages.Add(await PageSave(typographicPageForm, imageSaveInfo));
                     }
                     //由於Include(Pages)所以更換成newPages後會將舊的資料刪除
                     typographicPDF.TypographicPages = newPages;
@@ -582,8 +596,9 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <summary>
         /// PDF頁次存檔
         /// </summary>             
-        /// <param name="pageFrom">來源頁次</param>        
-        private async Task<TypographicPage> PageSave(TypographicPageForm pageFrom)
+        /// <param name="pageFrom">來源頁次</param>
+        /// <param name="imageSaveInfo">存檔資訊</param>        
+        private async Task<TypographicPage> PageSave(TypographicPageForm pageFrom, ImageSaveInfo imageSaveInfo)
         {
             TypographicPage typographicPage = new();
             List<TypographicResourceLocation> typographicResourceLocations = new();
@@ -600,42 +615,41 @@ namespace SealTypographicWebAPI.Services.Implements
             //客戶印鑑座標
             foreach (CustomerSealLocationForm customerSealLocationForm in pageFrom.CustomerSealLocations)
             {
-                await AddTypographicResourceLocation(typographicResourceLocations, customerSealLocationForm);
+                await AddTypographicResourceLocation(typographicResourceLocations, customerSealLocationForm, imageSaveInfo);
             }
 
             //會計師簽印座標
             foreach (AccountantSignLocationForm accountantSignLocationForm in pageFrom.AccountantSignLocations)
             {
-                await AddTypographicResourceLocation(typographicResourceLocations, accountantSignLocationForm);
+                await AddTypographicResourceLocation(typographicResourceLocations, accountantSignLocationForm, imageSaveInfo);
             }
 
             //信頭座標
             foreach (LetterheadImageLocationForm letterheadImageLocationForm in pageFrom.LetterheadImageLocations)
             {
-                await AddTypographicResourceLocation(typographicResourceLocations, letterheadImageLocationForm);
+                await AddTypographicResourceLocation(typographicResourceLocations, letterheadImageLocationForm, imageSaveInfo);
             }
 
             //信頭座標
             foreach (TemporarySealLocationForm temporarySealLocationForm in pageFrom.TemporarySealLocations)
             {
-                await AddTypographicResourceLocation(typographicResourceLocations, temporarySealLocationForm);
+                await AddTypographicResourceLocation(typographicResourceLocations, temporarySealLocationForm, imageSaveInfo);
             }
             typographicPage.TypographicResourceLocations = typographicResourceLocations;
 
             return typographicPage;
         }
 
-        private async Task AddTypographicResourceLocation<T>(List<TypographicResourceLocation> typographicResourceLocations, T locationData) where T : TypographicPDFBaseLocation
+        private async Task AddTypographicResourceLocation<T>(List<TypographicResourceLocation> typographicResourceLocations, T locationData, ImageSaveInfo imageSaveInfo) where T : TypographicPDFBaseLocation
         {
             TypographicResourceLocation typographicResourceLocation = mapper.Map<TypographicResourceLocation>(locationData);
-            typographicResourceLocation.TypographicResource = dbContext.TypographicResources.Single(x => x.Id == locationData.Id);
+            typographicResourceLocation.TypographicResource.Id = locationData.Id;
             if (!string.IsNullOrWhiteSpace(locationData.EditPdfImageBase64))
             {
-                //儲存檔案
-                string originalFileName = $"{DateTime.Now:yyyyMMddHHmmssffff}";
-                string savePath = $"{typographyEditImagePathOptions.RootPath}{originalFileName}";
-                await ImageService.SaveImageAsync(locationData.EditPdfImageBase64, savePath);
-                typographicResourceLocation.EditImageFullPath = savePath;
+                //加密儲存檔案
+                imageSaveInfo.ImageBase64 = locationData.EditPdfImageBase64;
+                await imageService.EncryptFileAsync(imageSaveInfo);                
+                typographicResourceLocation.EditImageFullPath = imageSaveInfo.FullPath;
             }
             typographicResourceLocations.Add(typographicResourceLocation);
         }

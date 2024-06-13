@@ -74,43 +74,49 @@ namespace DJSpire.Utils
         /// <summary>
         /// 將單頁PDF轉圖片
         /// </summary>
-        /// <param name="stream"></param>
+        /// <param name="pdfStream"></param>
         /// <param name="pageNo"></param>
         /// <param name="dpi"></param>
         /// <param name="imageType"></param>
         /// <returns></returns>
-        public static string GetPageImageBase64(Stream stream, int pageNo, int dpi = 300, PdfImageType imageType = PdfImageType.Jpg)
+        public static string GetPageImageBase64(Stream pdfStream, int pageNo, int dpi = 300, PdfImageType imageType = PdfImageType.Jpg)
         {
-            return GetPageImageBase64(((MemoryStream)stream).ToArray(), pageNo, dpi, imageType);
+            return GetPageImageBase64(((MemoryStream)pdfStream).ToArray(), pageNo, dpi, imageType);
         }
 
         /// <summary>
         /// 將單頁PDF轉圖片
         /// </summary>
-        /// <param name="bytes"></param>
+        /// <param name="pdfBytes"></param>
         /// <param name="pageNo"></param>
         /// <param name="dpi"></param>
         /// <param name="imageType"></param>
         /// <returns></returns>
-        public static string GetPageImageBase64(byte[] bytes, int pageNo, int dpi = 300 , PdfImageType imageType = PdfImageType.Jpg)
-        {            
-            MemoryStream memoryStream = new();
-#pragma warning disable CA1416 // 驗證平台相容性            
-            switch (imageType)
+        public static string GetPageImageBase64(byte[] pdfBytes, int pageNo, int dpi = 300 , PdfImageType imageType = PdfImageType.Jpg)
+        {              
+            // 運行時檢查操作系統是否受支援
+            if (OperatingSystem.IsWindows() || OperatingSystem.IsLinux() || OperatingSystem.IsMacOS() || OperatingSystem.IsAndroidVersionAtLeast(31))
             {
-                case PdfImageType.Jpg:                    
-                    Conversion.SaveJpeg(memoryStream, bytes, null, pageNo - 1, options: new(dpi));
-                    break;
-                case PdfImageType.Png:
-                    Conversion.SavePng(memoryStream, bytes, null, pageNo - 1, options: new(dpi));
-                    break;
-                case PdfImageType.Webp:
-                    Conversion.SaveWebp(memoryStream, bytes, null, pageNo - 1, options: new(dpi));
-                    break;
+                using MemoryStream memoryStream = new();
+                switch (imageType)
+                {
+                    case PdfImageType.Jpg:
+                        Conversion.SaveJpeg(memoryStream, pdfBytes, null, pageNo - 1, options: new(dpi));
+                        break;
+                    case PdfImageType.Png:
+                        Conversion.SavePng(memoryStream, pdfBytes, null, pageNo - 1, options: new(dpi));
+                        break;
+                    case PdfImageType.Webp: 
+                        Conversion.SaveWebp(memoryStream, pdfBytes, null, pageNo - 1, options: new(dpi));
+                        break;
+                }
+                memoryStream.Position = 0;
+                return Convert.ToBase64String(memoryStream.ToArray());
             }
-#pragma warning restore CA1416 // 驗證平台相容性
-            memoryStream.Position = 0;
-            return Convert.ToBase64String(memoryStream.ToArray());
+            else
+            {
+                throw new PlatformNotSupportedException("This operation is not supported on the current platform.");
+            }
         }     
     }
 }

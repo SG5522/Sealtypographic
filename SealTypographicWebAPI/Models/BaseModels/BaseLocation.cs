@@ -7,6 +7,7 @@
     {
         /// <summary>
         /// 各印鑑、簽印Id
+        /// 此處Id為TypographicResource的Id
         /// </summary>
         public int Id { get; set; }
 
