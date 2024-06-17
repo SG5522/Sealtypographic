@@ -1,5 +1,4 @@
-﻿using DBEntities.Consts;
-using DBEntities.Entities.TypographicModels;
+﻿using DBEntities.Entities.TypographicModels;
 
 namespace SealTypographicWebAPI.Utils
 {
@@ -33,6 +32,25 @@ namespace SealTypographicWebAPI.Utils
             else
             {
                 result = typographicResourceLocation.EditImageFullPath;
+            }
+            return result;
+        }
+
+        /// <summary>
+        /// 從資料庫參數中判斷該取得哪個ImagePath
+        /// </summary>        
+        /// <param name="typographicResourceLocation">Db上的排版印鑑資料</param>
+        public static string GetEncryptKey(TypographicResourceLocation typographicResourceLocation)
+        {
+            string result;
+            //確認是否有排版中加入編輯後的印鑑
+            if (string.IsNullOrWhiteSpace(typographicResourceLocation.EditImageEncryptKey))
+            {
+                result = typographicResourceLocation.TypographicResource.ImageEncryptKey ?? string.Empty;
+            }
+            else
+            {
+                result = typographicResourceLocation.EditImageEncryptKey;
             }
             return result;
         }

@@ -18,5 +18,11 @@ namespace SealTypographicWebAPI.Models.BaseModels
         /// </summary>
         [JsonIgnore]
         public string ImagePath { get; set; }
+
+        /// <summary>
+        /// 圖片加密Key
+        /// </summary>
+        [JsonIgnore]
+        public string EncryptKey { get; set; }
     }
 }

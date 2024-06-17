@@ -15,6 +15,11 @@ namespace DBEntities.Entities.TypographicModels
         public string? EditImageFullPath { get; set; }
 
         /// <summary>
+        /// 圖片加密key (部份圖檔無需加密)
+        /// </summary>
+        public string? EditImageEncryptKey { get; set; }
+
+        /// <summary>
         /// 排版素材
         /// </summary>
         public TypographicResource TypographicResource { get; set; }

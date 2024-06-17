@@ -958,6 +958,9 @@ namespace Sqlite.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<string>("EditImageEncryptKey")
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("EditImageFullPath")
                         .HasColumnType("TEXT");
 

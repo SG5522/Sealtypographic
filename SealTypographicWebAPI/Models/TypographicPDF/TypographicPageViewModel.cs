@@ -44,10 +44,22 @@ namespace SealTypographicWebAPI.Models.TypographicPDF
         public string PDFImageBase64 { get; set; }
 
         /// <summary>
-        /// PDF圖片路徑
+        /// PDF檔案路徑
         /// </summary>
         [JsonIgnore]
         public string PDFFullPath { get; set; }
+
+        /// <summary>
+        /// PDF檔案Key
+        /// </summary>
+        [JsonIgnore]
+        public string EncryptKey { get; set; }
+
+        /// <summary>
+        /// RSAKEY
+        /// </summary>
+        [JsonIgnore]
+        public RSAKey RSAKey { get; set; }
 
         /// <summary>
         /// 客戶印鑑位置

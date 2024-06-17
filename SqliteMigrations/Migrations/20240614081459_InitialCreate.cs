@@ -718,6 +718,7 @@ namespace Sqlite.Migrations
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     EditImageFullPath = table.Column<string>(type: "TEXT", nullable: true),
+                    EditImageEncryptKey = table.Column<string>(type: "TEXT", nullable: true),
                     TypographicResourceId = table.Column<int>(type: "INTEGER", nullable: false),
                     Left = table.Column<float>(type: "REAL", nullable: false),
                     Top = table.Column<float>(type: "REAL", nullable: false),

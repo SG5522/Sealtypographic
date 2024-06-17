@@ -1,4 +1,5 @@
 ﻿using SealTypographicWebAPI.Consts;
+using System.Text.Json.Serialization;
 
 
 namespace SealTypographicWebAPI.Models.EditPdf
@@ -29,10 +30,19 @@ namespace SealTypographicWebAPI.Models.EditPdf
                 if(!string.IsNullOrWhiteSpace(value))
                 {
                     pdfPath = value;
-                    Bytes = File.ReadAllBytes(pdfPath);
+                    if(string.IsNullOrWhiteSpace(EncryptKey))
+                    {
+                        Bytes = File.ReadAllBytes(pdfPath);
+                    }                
                 }
             }
         }
+
+        /// <summary>
+        /// PDF檔案Key
+        /// </summary>        
+        public string EncryptKey { get; set; }
+
 
         /// <summary>
         /// PDFByes

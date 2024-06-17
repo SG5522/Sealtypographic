@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Sqlite.Migrations
 {
     [DbContext(typeof(SealTypographicDbContext))]
-    [Migration("20240612024805_InitialCreate")]
+    [Migration("20240614081459_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -960,6 +960,9 @@ namespace Sqlite.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
+
+                    b.Property<string>("EditImageEncryptKey")
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("EditImageFullPath")
                         .HasColumnType("TEXT");

@@ -21,6 +21,7 @@ using CommonLib.Extensions;
 using Microsoft.OpenApi.Extensions;
 using DBEntities.Extensions;
 using SealTypographicWebAPI.Models.Upload;
+using SealTypographicWebAPI.Models.BaseModels;
 
 namespace SealTypographicWebAPI.Services.Implements
 {
@@ -179,16 +180,16 @@ namespace SealTypographicWebAPI.Services.Implements
 
             try
             {
-                UploadEncryptFile? uploadEncryptFile = await dbContext.UploadFiles                                                            
+                UploadEncryptFile? uploadEncryptFile = await dbContext.UploadFiles
                                                             .Where(x => x.Id == uploadFileid)
                                                             .Select(x => new UploadEncryptFile
                                                             {
                                                                 FullPath = x.FullPath,
                                                                 EncryptKey = x.EncryptKey,
-                                                                RSAKey = imageService.GetRasKey(userId)                                                                
+                                                                RSAKey = imageService.GetRasKey(userId)
                                                             }).FirstOrDefaultAsync();
                 if (uploadEncryptFile != null)
-                {                    
+                {
                     //解密檔案
                     byte[] pdfBytes = imageService.DecryptFileToBytes(uploadEncryptFile.FullPath, uploadEncryptFile.EncryptKey, uploadEncryptFile.RSAKey);
 
@@ -226,8 +227,7 @@ namespace SealTypographicWebAPI.Services.Implements
             try
             {
                 typographicPageViewModel = await dbContext.TypographicPages
-                                            .Include(x => x.TypographicPDF)
-                                            .ThenInclude(x => x.UploadFile)
+                                            .Include(x => x.TypographicPDF.UploadFile)
                                             .Include(x => x.TypographicResourceLocations)
                                             .ThenInclude(x => x.TypographicResource)
                                             .Where(x => x.TypographicPDF.Id == typographicPDFPageSearch.Id && x.PageNumber == typographicPDFPageSearch.PageNumber)
@@ -236,12 +236,23 @@ namespace SealTypographicWebAPI.Services.Implements
 
                 if (typographicPageViewModel != null)
                 {
+                    typographicPageViewModel.RSAKey = imageService.GetRasKey(userId);
+
                     //取得單頁PDF圖檔資訊                    
-                    PdfPageImageInfo pdfPageImageInfo = PdfImageUtil.GetPdfPageImageInfo(typographicPageViewModel.PDFFullPath, typographicPDFPageSearch.PageNumber);
+                    byte[] pdfBytes = imageService.DecryptFileToBytes(typographicPageViewModel.PDFFullPath, typographicPageViewModel.EncryptKey,
+                        typographicPageViewModel.RSAKey);
+
+                    PdfPageImageInfo pdfPageImageInfo = PdfImageUtil.GetPdfPageImageInfo(pdfBytes, typographicPDFPageSearch.PageNumber);
 
                     typographicPageViewModel.PDFImageWidth = pdfPageImageInfo.Width;
                     typographicPageViewModel.PDFImageHeight = pdfPageImageInfo.Height;
                     typographicPageViewModel.PDFImageBase64 = pdfPageImageInfo.ImageDataUrl;
+
+                    //解密所有印鑑、簽印、臨時章的圖片
+                    DecryptImagesAndUpdateBase64(typographicPageViewModel.CustomerSealLocationViewModels, typographicPageViewModel.RSAKey);
+                    DecryptImagesAndUpdateBase64(typographicPageViewModel.AccountantSignLocationViewModels, typographicPageViewModel.RSAKey);                    
+                    DecryptImagesAndUpdateBase64(typographicPageViewModel.TemporarySealLocationViewModels, typographicPageViewModel.RSAKey);
+
                     typographicPageViewModel.Success();
                 }
                 else
@@ -502,7 +513,7 @@ namespace SealTypographicWebAPI.Services.Implements
                     //存檔資訊
                     ImageSaveInfo imageSaveInfo = new()
                     {
-                        RootPath = typographyEditImagePathOptions.RootPath,                        
+                        RootPath = typographyEditImagePathOptions.RootPath,
                         RSAKey = imageService.GetRasKey(userId)
                     };
 
@@ -640,18 +651,31 @@ namespace SealTypographicWebAPI.Services.Implements
             return typographicPage;
         }
 
-        private async Task AddTypographicResourceLocation<T>(List<TypographicResourceLocation> typographicResourceLocations, T locationData, ImageSaveInfo imageSaveInfo) where T : TypographicPDFBaseLocation
+        private async Task AddTypographicResourceLocation<T>(
+            List<TypographicResourceLocation> typographicResourceLocations, 
+            T locationData, 
+            ImageSaveInfo imageSaveInfo) where T : TypographicPDFBaseLocation
         {
-            TypographicResourceLocation typographicResourceLocation = mapper.Map<TypographicResourceLocation>(locationData);
-            typographicResourceLocation.TypographicResource.Id = locationData.Id;
+            TypographicResourceLocation newTypographicResourceLocation = mapper.Map<TypographicResourceLocation>(locationData);
+            newTypographicResourceLocation.TypographicResource.Id = locationData.Id;
+            //確認是否有修改後的圖片
             if (!string.IsNullOrWhiteSpace(locationData.EditPdfImageBase64))
             {
                 //加密儲存檔案
                 imageSaveInfo.ImageBase64 = locationData.EditPdfImageBase64;
-                await imageService.EncryptFileAsync(imageSaveInfo);                
-                typographicResourceLocation.EditImageFullPath = imageSaveInfo.FullPath;
+                await imageService.EncryptFileAsync(imageSaveInfo);
+                newTypographicResourceLocation.EditImageFullPath = imageSaveInfo.FullPath;
             }
-            typographicResourceLocations.Add(typographicResourceLocation);
+            typographicResourceLocations.Add(newTypographicResourceLocation);
+        }
+
+        private void DecryptImagesAndUpdateBase64<T>(List<T> dataList, RSAKey rsaKey) where T : BaseSealLocation
+        {
+            foreach (T data in dataList)
+            {
+                //解密檔案並更新其 Base64 字串
+                data.ImageBase64 = imageService.DecryptFile(data.ImagePath, data.EncryptKey, rsaKey);
+            }
         }
     }
 }
