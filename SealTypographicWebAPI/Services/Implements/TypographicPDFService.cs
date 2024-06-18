@@ -22,6 +22,7 @@ using Microsoft.OpenApi.Extensions;
 using DBEntities.Extensions;
 using SealTypographicWebAPI.Models.Upload;
 using SealTypographicWebAPI.Models.BaseModels;
+using SealTypographicWebAPI.Models.Accountant;
 
 namespace SealTypographicWebAPI.Services.Implements
 {
@@ -227,12 +228,12 @@ namespace SealTypographicWebAPI.Services.Implements
             try
             {
                 typographicPageViewModel = await dbContext.TypographicPages
-                                            .Include(x => x.TypographicPDF.UploadFile)
-                                            .Include(x => x.TypographicResourceLocations)
-                                            .ThenInclude(x => x.TypographicResource)
-                                            .Where(x => x.TypographicPDF.Id == typographicPDFPageSearch.Id && x.PageNumber == typographicPDFPageSearch.PageNumber)
-                                            .ProjectTo<TypographicPageViewModel>(configurationProvider)
-                                            .FirstOrDefaultAsync();
+                                           .Include(x => x.TypographicPDF.UploadFile)
+                                           .Include(x => x.TypographicResourceLocations)
+                                           .ThenInclude(x => x.TypographicResource)
+                                           .Where(x => x.TypographicPDF.Id == typographicPDFPageSearch.Id && x.PageNumber == typographicPDFPageSearch.PageNumber)
+                                           .ProjectTo<TypographicPageViewModel>(configurationProvider)
+                                           .FirstOrDefaultAsync();
 
                 if (typographicPageViewModel != null)
                 {
@@ -657,14 +658,16 @@ namespace SealTypographicWebAPI.Services.Implements
             ImageSaveInfo imageSaveInfo) where T : TypographicPDFBaseLocation
         {
             TypographicResourceLocation newTypographicResourceLocation = mapper.Map<TypographicResourceLocation>(locationData);
-            newTypographicResourceLocation.TypographicResource.Id = locationData.Id;
+            newTypographicResourceLocation.TypographicResource = dbContext.TypographicResources.Single(x => x.Id == locationData.Id);
             //確認是否有修改後的圖片
             if (!string.IsNullOrWhiteSpace(locationData.EditPdfImageBase64))
             {
                 //加密儲存檔案
                 imageSaveInfo.ImageBase64 = locationData.EditPdfImageBase64;
-                await imageService.EncryptFileAsync(imageSaveInfo);
+                imageSaveInfo.ReNamePath();
+                await imageService.EncryptImageAsync(imageSaveInfo);
                 newTypographicResourceLocation.EditImageFullPath = imageSaveInfo.FullPath;
+                newTypographicResourceLocation.EditImageEncryptKey = imageSaveInfo.EncryptKey;
             }
             typographicResourceLocations.Add(newTypographicResourceLocation);
         }
@@ -674,7 +677,10 @@ namespace SealTypographicWebAPI.Services.Implements
             foreach (T data in dataList)
             {
                 //解密檔案並更新其 Base64 字串
-                data.ImageBase64 = imageService.DecryptFile(data.ImagePath, data.EncryptKey, rsaKey);
+                string imageBase64 = imageService.DecryptFile(data.ImagePath, data.EncryptKey, rsaKey);                
+
+                //通透處理
+                data.ImageBase64 = ImageTransparentUtil.ToDataUrlFromDataUrl(imageBase64);                        
             }
         }
     }

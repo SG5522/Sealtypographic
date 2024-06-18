@@ -130,12 +130,12 @@ namespace SealTypographicWebAPI.Models
         public string RootFolder()
         {
             return Path.Combine
-                    (
-                        rootPath,
-                        CreateTime.Year.ToString(),
-                        CreateTime.Month.ToString(),
-                        CreateTime.Day.ToString()
-                    );
+                   (
+                       rootPath,
+                       CreateTime.Year.ToString(),
+                       CreateTime.Month.ToString(),
+                       CreateTime.Day.ToString()
+                   );
         }
 
         /// <summary>

@@ -129,9 +129,28 @@ namespace SealTypographicWebAPI.Services.Implements
         /// </summary>
         /// <param name="imageSaveInfo"></param>
         /// <param name="isThumbnail"></param>
-        private static void SaveImage(ImageSaveInfo imageSaveInfo, bool isThumbnail = false)
+        private void SaveImage(ImageSaveInfo imageSaveInfo, bool isThumbnail = false)
         {
-            imageSaveInfo.ThumbnailImageBase64.ToBytes().Save(imageSaveInfo.ThumbnailFullPath);
+            imageSaveInfo.ReNamePath();
+
+            if (!string.IsNullOrWhiteSpace(imageSaveInfo.ImageModel.Base64))
+            {
+                imageSaveInfo.FullPath = $"{imageSaveInfo.FullPath}.{imageSaveInfo.ImageModel.ImageFormat?.Name.ToLower()}";
+                //儲存圖片
+                imageSaveInfo.ImageModel.Base64.ToBytes().Save(imageSaveInfo.FullPath);
+                //確認縮圖處理
+                if (isThumbnail)
+                {
+                    imageSaveInfo.ThumbnailScale = !string.IsNullOrWhiteSpace(imageSaveInfo.ThumbnailImageBase64) ? sealPathOption.ResizeScale : 0;
+                    imageSaveInfo.ThumbnailFullPath = $"{imageSaveInfo.ThumbnailFullPath}.{imageSaveInfo.ImageModel.ImageFormat?.Name.ToLower()}";
+                    //儲存圖片
+                    imageSaveInfo.ThumbnailImageBase64.ToBytes().Save(imageSaveInfo.ThumbnailFullPath);
+                }
+            }
+            else
+            {
+                throw new ArgumentException("Invalid imageSaveInfo.ImageModel.Base64, unable to generate image data", nameof(imageSaveInfo));
+            }
         }
 
         /// <summary>
@@ -145,14 +164,13 @@ namespace SealTypographicWebAPI.Services.Implements
         {
             if (string.IsNullOrWhiteSpace(imageSaveInfo.ImageModel.Base64))
             {
-                throw new ArgumentException("Invalid image base64 string, unable to generate image data", nameof(imageSaveInfo.ImageModel.Base64));
+                throw new ArgumentException("Invalid image base64 string, unable to generate image data", nameof(imageSaveInfo));
             }
 
             imageSaveInfo.EncryptKey = CryptoUtil.Encrypt(
-                                            imageSaveInfo.ImageModel.Base64,
-                                            imageSaveInfo.FullPath, 
-                                            imageSaveInfo.RSAKey.PrivateKeyBase64, 
-                                            imageSaveInfo.RSAKey.PublicKeyBase64);
+                                       imageSaveInfo.ImageModel.Base64,
+                                       imageSaveInfo.FullPath, 
+                                       imageSaveInfo.RSAKey.PublicKeyBase64);
 
             if (isThumbnail)
             {
@@ -160,7 +178,6 @@ namespace SealTypographicWebAPI.Services.Implements
                 imageSaveInfo.ThumbnailEncryptKey = CryptoUtil.Encrypt(
                                                     imageSaveInfo.ThumbnailImageBase64, 
                                                     imageSaveInfo.ThumbnailFullPath, 
-                                                    imageSaveInfo.RSAKey.PrivateKeyBase64, 
                                                     imageSaveInfo.RSAKey.PublicKeyBase64);
             }
         }
@@ -177,23 +194,21 @@ namespace SealTypographicWebAPI.Services.Implements
         {      
             if(string.IsNullOrWhiteSpace(imageSaveInfo.ImageModel.Base64))
             {
-                throw new ArgumentException("Invalid image base64 string, unable to generate image data", nameof(imageSaveInfo.ImageModel.Base64));
+                throw new ArgumentException("Invalid ImageModel.Base64 string, unable to generate image data", nameof(imageSaveInfo));
             }
 
             imageSaveInfo.EncryptKey = await CryptoUtil.EncryptAsync(
-                                                    imageSaveInfo.ImageModel.Base64, 
-                                                    imageSaveInfo.FullPath, 
-                                                    imageSaveInfo.RSAKey.PrivateKeyBase64, 
-                                                    imageSaveInfo.RSAKey.PublicKeyBase64);
+                                             imageSaveInfo.ImageModel.Base64, 
+                                             imageSaveInfo.FullPath, 
+                                             imageSaveInfo.RSAKey.PublicKeyBase64);
 
             if (isThumbnail)
             {
                 imageSaveInfo.ThumbnailScale = sealPathOption.ResizeScale;
                 imageSaveInfo.ThumbnailEncryptKey = await CryptoUtil.EncryptAsync(
-                                                        imageSaveInfo.ThumbnailImageBase64, 
-                                                        imageSaveInfo.ThumbnailFullPath, 
-                                                        imageSaveInfo.RSAKey.PrivateKeyBase64, 
-                                                        imageSaveInfo.RSAKey.PublicKeyBase64);
+                                                          imageSaveInfo.ThumbnailImageBase64, 
+                                                          imageSaveInfo.ThumbnailFullPath, 
+                                                          imageSaveInfo.RSAKey.PublicKeyBase64);
             }
         }
 
@@ -207,14 +222,13 @@ namespace SealTypographicWebAPI.Services.Implements
         {
             if (string.IsNullOrWhiteSpace(imageSaveInfo.Base64))
             {
-                throw new ArgumentException("Invalid base64 string, unable to generate image data", nameof(imageSaveInfo.Base64));
+                throw new ArgumentException("Invalid imageSaveInfo.Base64 string, unable to generate image data", nameof(imageSaveInfo));
             }
 
             imageSaveInfo.EncryptKey = await CryptoUtil.EncryptAsync(
-                                                    imageSaveInfo.Base64,
-                                                    imageSaveInfo.FullPath,
-                                                    imageSaveInfo.RSAKey.PrivateKeyBase64,
-                                                    imageSaveInfo.RSAKey.PublicKeyBase64);
+                                             imageSaveInfo.Base64,
+                                             imageSaveInfo.FullPath,
+                                             imageSaveInfo.RSAKey.PublicKeyBase64);
         }
 
 
@@ -236,7 +250,7 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <param name="rasKey">RAS公私鑰</param>
         /// <returns></returns>
         public string DecryptFile(string savePath, string encryptKey, RSAKey rasKey)
-            => CryptoUtil.Decrypt(savePath, encryptKey, rasKey.PrivateKeyBase64, rasKey.PublicKeyBase64);
+            => CryptoUtil.Decrypt(savePath, encryptKey, rasKey.PrivateKeyBase64);
 
         /// <summary>
         /// 非同步方式
