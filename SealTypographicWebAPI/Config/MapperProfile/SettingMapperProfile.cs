@@ -7,7 +7,7 @@ using DBEntities.Entities.ImageRangeModels;
 namespace SealTypographicWebAPI.Config.MapperProfile
 {
     /// <summary>
-    /// AutoMapper用的LIST
+    /// 設定截取範圍 AutoMapper Profile
     /// </summary>
     public class SettingMapperProfile : Profile
     {

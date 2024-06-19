@@ -494,6 +494,7 @@ namespace SealTypographicWebAPI.Services.Implements
             {
                 TypographicPDF? typographicPDF = dbContext.TypographicPDFs
                                                 .Include(x => x.TypographicPages)
+                                                .ThenInclude(x => x.TypographicResourceLocations)
                                                 .FirstOrDefault(x => x.Id == typographicPDFSaveForm.TypographicPDFId);
 
                 if (typographicPDF != null)
@@ -522,6 +523,19 @@ namespace SealTypographicWebAPI.Services.Implements
                     {
                         newPages.Add(await PageSave(typographicPageForm, imageSaveInfo));
                     }
+
+                    //刪除修改後的印鑑實體檔案
+                    foreach (TypographicPage typographicPage in typographicPDF.TypographicPages)
+                    {
+                        foreach (TypographicResourceLocation typographicResourceLocation in typographicPage.TypographicResourceLocations)
+                        {                            
+                            if(!string.IsNullOrWhiteSpace(typographicResourceLocation.EditImageFullPath))
+                            {
+                                File.Delete(typographicResourceLocation.EditImageFullPath);
+                            }                            
+                        }
+                    }                    
+
                     //由於Include(Pages)所以更換成newPages後會將舊的資料刪除
                     typographicPDF.TypographicPages = newPages;
                     await dbContext.SaveChangesAsync();
