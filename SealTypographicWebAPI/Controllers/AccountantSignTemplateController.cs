@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using SealTypographicWebAPI.Consts;
 using SealTypographicWebAPI.Models;
 using SealTypographicWebAPI.Models.AccountantSignTemplate;
 using SealTypographicWebAPI.Services;
@@ -12,6 +14,7 @@ namespace SealTypographicWebAPI.Controllers
     /// </summary>
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Roles = KeycloakRoleConsts.TEMPLATE_ACCOUNTANTSIGNTEMPLATE)]
     public class AccountantSignTemplateController : APIControllerBase
     {
         private readonly IAccountantSignTemplateService accountantSignTemplateService;

@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using SealTypographicWebAPI.Consts;
 using SealTypographicWebAPI.Models;
 using SealTypographicWebAPI.Models.Accountant;
 using SealTypographicWebAPI.Services;
@@ -9,8 +11,9 @@ namespace SealTypographicWebAPI.Controllers
     /// <summary>
     /// 管理會計師基本資料
     /// </summary>
-    [Route("api/[controller]")]    
-    [ApiController]    
+    [Route("api/[controller]")]
+    [ApiController]
+    [Authorize(Roles = KeycloakRoleConsts.DATAMANGE_ACCOUNTANT)]
     public class AccountantController : APIControllerBase
     {
         /// <summary>
@@ -42,7 +45,7 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="accountantSearch">搜尋條件</param>
         /// <returns></returns>
         [HttpGet]
-        public async Task<AccountantPaginateViewModel> Paginate([FromQuery]AccountantSearch accountantSearch) 
+        public async Task<AccountantPaginateViewModel> Paginate([FromQuery] AccountantSearch accountantSearch)
             => await accountantService.GetPaginate(accountantSearch, false, await GetUserId());
 
         /// <summary>
@@ -51,7 +54,7 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="accountantSearch">搜尋條件</param>
         /// <returns></returns>
         [HttpGet("[Action]")]
-        public async Task<AccountantPaginateViewModel> PaginateWithTypographic([FromQuery] AccountantSearch accountantSearch) 
+        public async Task<AccountantPaginateViewModel> PaginateWithTypographic([FromQuery] AccountantSearch accountantSearch)
             => await accountantService.GetPaginate(accountantSearch, true, await GetUserId());
 
         /// <summary>

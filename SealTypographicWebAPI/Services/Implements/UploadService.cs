@@ -14,10 +14,7 @@ using DJImageLib.Utils;
 using DJSpire.Utils;
 using DJSpire.Models;
 using CommonLib.Extensions;
-using System.IO;
 using SealTypographicWebAPI.Extensions;
-using k8s.Models;
-using SealTypographicWebAPI.Models.CustomerSeal;
 using DJImageLib.Extensions;
 
 namespace SealTypographicWebAPI.Services.Implements

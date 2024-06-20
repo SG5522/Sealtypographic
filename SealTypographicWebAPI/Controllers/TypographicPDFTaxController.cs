@@ -1,5 +1,7 @@
 ﻿using DBEntities.Consts;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using SealTypographicWebAPI.Consts;
 using SealTypographicWebAPI.Models;
 using SealTypographicWebAPI.Models.TypographicPDF;
 using SealTypographicWebAPI.Models.TypographicPDF.EditViewModels;
@@ -14,6 +16,7 @@ namespace SealTypographicWebAPI.Controllers
     /// </summary>
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Roles = KeycloakRoleConsts.TAXREPORT_TYPOGRAPHIC)]
     public class TypographicPDFTaxController : APIControllerBase
     {
         private readonly ITypographicPDFService typographicPDFService;

@@ -2,6 +2,8 @@
 using SealTypographicWebAPI.Models;
 using SealTypographicWebAPI.Services;
 using SealTypographicWebAPI.Models.AccountantGroupMember;
+using Microsoft.AspNetCore.Authorization;
+using SealTypographicWebAPI.Consts;
 
 
 namespace SealTypographicWebAPI.Controllers
@@ -10,7 +12,8 @@ namespace SealTypographicWebAPI.Controllers
     /// 管理會計師群組成員
     /// </summary>
     [Route("api/[controller]")]    
-    [ApiController]    
+    [ApiController]
+    [Authorize(Roles = KeycloakRoleConsts.DATAMANAGE_ACCOUNTANTGROUP)]
     public class AccountantGroupMemberController : APIControllerBase
     {
         /// <summary>

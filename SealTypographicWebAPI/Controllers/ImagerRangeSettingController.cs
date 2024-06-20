@@ -3,6 +3,8 @@ using SealTypographicWebAPI.Models;
 using SealTypographicWebAPI.Services;
 using SealTypographicWebAPI.Models.ImageRangeSetting;
 using System.Runtime.CompilerServices;
+using Microsoft.AspNetCore.Authorization;
+using SealTypographicWebAPI.Consts;
 
 namespace SealTypographicWebAPI.Controllers
 {
@@ -29,14 +31,14 @@ namespace SealTypographicWebAPI.Controllers
         /// 取得客戶印鑑圖片範圍設定
         /// </summary>
         /// <returns></returns>
-        [HttpGet("[Action]")]
+        [HttpGet("[Action]")]        
         public async Task<CustomerSealRangeSettingResponse> CustomerSealRange() => await imageRangeSettingService.GetCustomerSealRangeSetting();
 
         /// <summary>
         /// 取得會計師簽印範圍設定
         /// </summary>
         /// <returns></returns>
-        [HttpGet("[Action]")]
+        [HttpGet("[Action]")]        
         public async Task<AccountantSignRangeSettingResponse> AccountantSignRange() => await imageRangeSettingService.GetAccountantSignRangeSetting();
 
         /// <summary>
@@ -45,6 +47,7 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="customerSealRangeSetting"></param>
         /// <returns></returns>
         [HttpPut("[Action]")]
+        [Authorize(Roles = KeycloakRoleConsts.SYSTEM_AUTOSEALIMAGERANGESETTING_CUSTOMER)]
         public async Task<ResponseViewModel> UpdateCustomerSealRange(CustomerSealRangeSetting customerSealRangeSetting)
             => await imageRangeSettingService.UpdateCustomerSealRangeSetting(customerSealRangeSetting, await GetUserId());
 
@@ -54,6 +57,7 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="accountantSignRangeSetting"></param>
         /// <returns></returns>
         [HttpPut("[Action]")]
+        [Authorize(Roles = KeycloakRoleConsts.SYSTEM_AUTOSEALIMAGERANGESETTING_ACCOUNTANT)]
         public async Task<ResponseViewModel> UpdateAccountantSignRange(AccountantSignRangeSetting accountantSignRangeSetting) 
             => await imageRangeSettingService.UpdateAccountantSignRangeSetting(accountantSignRangeSetting, await GetUserId());
 

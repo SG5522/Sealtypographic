@@ -1,11 +1,11 @@
-﻿using DBEntities;
-using DBEntities.Consts;
+﻿using DBEntities.Consts;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using SealTypographicWebAPI.Consts;
 using SealTypographicWebAPI.Models;
 using SealTypographicWebAPI.Models.TypographicPDF;
 using SealTypographicWebAPI.Models.TypographicPDF.EditViewModels;
 using SealTypographicWebAPI.Services;
-using Serilog;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -16,6 +16,7 @@ namespace SealTypographicWebAPI.Controllers
     /// </summary>
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Roles = KeycloakRoleConsts.FINANCIALREPORT_TYPOGRAPHIC)]
     public class TypographicPDFController : APIControllerBase
     {
         private readonly ITypographicPDFService typographicPDFService;
@@ -43,7 +44,8 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="pageNumber" example="1">pdf頁次</param>
         /// <returns></returns>        
         [HttpGet("[Action]")]
-        public async Task<PDFViewModel> PDFView(int uploadId, int pageNumber) => await typographicPDFService.GetPDFView(uploadId, pageNumber, await GetUserId());
+        public async Task<PDFViewModel> PDFView(int uploadId, int pageNumber) 
+            => await typographicPDFService.GetPDFView(uploadId, pageNumber, await GetUserId());
 
         /// <summary>
         /// 取得單頁PDF圖像與排版編輯資訊
@@ -60,7 +62,8 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="typographicPDFId">PDFID</param>
         /// <returns></returns>
         [HttpGet("[Action]")]
-        public async Task<TypographicPDFSettingViewModel> PDFSummary(int typographicPDFId) => await typographicPDFService.GetTypographicPDFSummary(typographicPDFId, await GetUserId());   
+        public async Task<TypographicPDFSettingViewModel> PDFSummary(int typographicPDFId) 
+            => await typographicPDFService.GetTypographicPDFSummary(typographicPDFId, await GetUserId());   
 
         /// <summary>
         /// 排板分頁搜尋
@@ -77,8 +80,8 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="typographicPDFId">PDF排版ID</param>
         /// <returns></returns>
         [HttpGet("[Action]/{typographicPDFId}")]
-        public async Task<TypographicPDFEditViewResponse> EditPDFView(int typographicPDFId) => await typographicPDFService.GetEditPDFView(typographicPDFId, await GetUserId());
-
+        public async Task<TypographicPDFEditViewResponse> EditPDFView(int typographicPDFId) 
+            => await typographicPDFService.GetEditPDFView(typographicPDFId, await GetUserId());
 
         /// <summary>
         /// 取得排版步驟

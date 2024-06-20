@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using SealTypographicWebAPI.Consts;
 using SealTypographicWebAPI.Models;
 using SealTypographicWebAPI.Models.CustomerSealTemplate;
 using SealTypographicWebAPI.Services;
@@ -11,6 +13,7 @@ namespace SealTypographicWebAPI.Controllers
     /// </summary>
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Roles = KeycloakRoleConsts.TEMPLATE_CUSTOMERSEALTEMPLATE)]
     public class CustomerSealTemplateController : APIControllerBase
     {
         private readonly ICustomerSealTemplateService customerSealTemplateService;

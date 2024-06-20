@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using SealTypographicWebAPI.Consts;
 using SealTypographicWebAPI.Models;
 using SealTypographicWebAPI.Models.Customer;
 using SealTypographicWebAPI.Services;
@@ -9,8 +11,9 @@ namespace SealTypographicWebAPI.Controllers
     /// <summary>
     /// 管理客戶基本資料
     /// </summary>
-    [Route("api/[controller]")]    
+    [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Roles = KeycloakRoleConsts.DATAMANAGE_CUSTOMER)]
     public class CustomerController : APIControllerBase
     {
         /// <summary>

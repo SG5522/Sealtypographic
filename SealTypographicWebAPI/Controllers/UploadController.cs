@@ -3,6 +3,8 @@ using SealTypographicWebAPI.Models;
 using SealTypographicWebAPI.Models.Upload;
 using DBEntities.Consts;
 using SealTypographicWebAPI.Services;
+using Microsoft.AspNetCore.Authorization;
+using SealTypographicWebAPI.Consts;
 
 namespace SealTypographicWebAPI.Controllers
 {
@@ -51,6 +53,7 @@ namespace SealTypographicWebAPI.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet("[Action]")]
+        [Authorize(Roles = KeycloakRoleConsts.SYSTEM_UPLOADMANAGE)]
         public UploadPaginateViewModel UploadPaginate([FromQuery] UploadSearch uploadSearch) => uploadService.GetUploadPaginate(uploadSearch);
 
         /// <summary>
@@ -107,6 +110,7 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="uploadFileIds"></param>
         /// <returns></returns>
         [HttpDelete]
+        [Authorize(Roles = KeycloakRoleConsts.SYSTEM_UPLOADMANAGE)]
         public ResponseViewModel Delete(List<int> uploadFileIds) => uploadService.Delete(uploadFileIds);
 
     }

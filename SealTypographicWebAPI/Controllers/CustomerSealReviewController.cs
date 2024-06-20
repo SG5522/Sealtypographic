@@ -1,5 +1,7 @@
 ﻿using DBEntities.Consts;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using SealTypographicWebAPI.Consts;
 using SealTypographicWebAPI.Models;
 using SealTypographicWebAPI.Models.CustomerSealReview;
 using SealTypographicWebAPI.Services;
@@ -12,6 +14,7 @@ namespace SealTypographicWebAPI.Controllers
     /// </summary>
     [Route("api/[controller]")]    
     [ApiController]
+    [Authorize(Roles = KeycloakRoleConsts.REVIEW_CUSTOMERSEALREVIEW)]
     public class CustomerSealReviewController : APIControllerBase
     {
         /// <summary>

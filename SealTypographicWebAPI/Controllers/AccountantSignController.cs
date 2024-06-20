@@ -1,5 +1,7 @@
 ﻿using DBEntities.Consts;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using SealTypographicWebAPI.Consts;
 using SealTypographicWebAPI.Models;
 using SealTypographicWebAPI.Models.Accountant;
 using SealTypographicWebAPI.Models.CustomerSeal;
@@ -13,6 +15,7 @@ namespace SealTypographicWebAPI.Controllers
     /// </summary>
     [Route("api/[controller]")]    
     [ApiController]
+    [Authorize(Roles = KeycloakRoleConsts.DATAMANGE_ACCOUNTANT)]
     public class AccountantSignController : APIControllerBase
     {
         /// <summary>

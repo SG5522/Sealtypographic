@@ -3,7 +3,9 @@ using DJKeycloakAPI.Controllers;
 using DJKeycloakAPI.Models.Users;
 using DJKeycloakLib.Models.BaseModel;
 using DJKeycloakLib.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using SealTypographicWebAPI.Consts;
 using SealTypographicWebAPI.Services;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -15,6 +17,7 @@ namespace SealTypographicWebAPI.Controllers
     /// </summary>
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Roles =  KeycloakRoleConsts.SYSTEM_ACCOUNTMANAGE)]
     public class UserController : AdminUserController
     {           
         private readonly IApplicationUserService applicationUserService;

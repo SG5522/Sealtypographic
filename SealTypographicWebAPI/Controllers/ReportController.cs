@@ -1,6 +1,7 @@
 ﻿using DBEntities.Consts;
 using DJSpire.Models;
 using DJSpire.Utils;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SealTypographicWebAPI.Consts;
 using SealTypographicWebAPI.Models.LogReport.AccountantList;
@@ -48,6 +49,7 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="operationLogSearch"></param>
         /// <returns></returns>
         [HttpGet("[Action]")]
+        [Authorize(Roles = KeycloakRoleConsts.REPORT_OPERATIONLOG)]
         public OperationLogPaginate OperationLogPaginate ([FromQuery] OperationLogSearch operationLogSearch)
             => logReportService.GetOperationLogPaginate(operationLogSearch);
 
@@ -58,6 +60,7 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="fileName">預設檔名為OperationLog</param>
         /// <returns></returns>
         [HttpGet("[Action]")]
+        [Authorize(Roles = KeycloakRoleConsts.REPORT_OPERATIONLOG)]
         public IActionResult OperationLogToExcel([FromQuery] OperationLogSearch operationLogSearch, string fileName = "OperationLog")
             => ToExcel(
                         logReportService.GetOperationLogPaginate(operationLogSearch, true).ViewModels,
@@ -71,6 +74,7 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="customerSealEventLogSearch"></param>
         /// <returns></returns>
         [HttpGet("[Action]")]
+        [Authorize(Roles = KeycloakRoleConsts.REPORT_FINANCIALREPORTSEALEVENTLOG)]
         public CustomerSealEventLogPaginate FinancialReportSealEventLogPaginate([FromQuery] CustomerSealEventLogSearch customerSealEventLogSearch)
             => logReportService.GetCustomerSealEventLogPaginate(customerSealEventLogSearch, TypographyType.FinancialReport);
 
@@ -81,6 +85,7 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="fileName">預設檔名為FinancialReportSealEventLog</param>
         /// <returns></returns>
         [HttpGet("[Action]")]
+        [Authorize(Roles = KeycloakRoleConsts.REPORT_FINANCIALREPORTSEALEVENTLOG)]
         public IActionResult FinancialReportSealEventLogToExcel([FromQuery] CustomerSealEventLogSearch customerSealEventLogSearch, string fileName = "FinancialReportSealEventLog")
                 => ToExcel(
                             logReportService.GetCustomerSealEventLogPaginate(customerSealEventLogSearch, TypographyType.FinancialReport, true).ViewModels,
@@ -94,6 +99,7 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="customerSealEventLogSearch"></param>
         /// <returns></returns>
         [HttpGet("[Action]")]
+        [Authorize(Roles = KeycloakRoleConsts.REPORT_TAXREPORTSEALEVENTLOG)]
         public CustomerSealEventLogPaginate TaxReportSealEventLogPaginate([FromQuery] CustomerSealEventLogSearch customerSealEventLogSearch)
             => logReportService.GetCustomerSealEventLogPaginate(customerSealEventLogSearch, TypographyType.TaxReport);
 
@@ -104,6 +110,7 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="fileName">預設檔名為TaxReportSealEventLog</param>
         /// <returns></returns>
         [HttpGet("[Action]")]
+        [Authorize(Roles = KeycloakRoleConsts.REPORT_TAXREPORTSEALEVENTLOG)]
         public IActionResult TaxReportSealEventLogToExcel([FromQuery] CustomerSealEventLogSearch customerSealEventLogSearch, string fileName = "TaxReportSealEventLog")
                 => ToExcel(
                             logReportService.GetCustomerSealEventLogPaginate(customerSealEventLogSearch, TypographyType.TaxReport, true).ViewModels,
@@ -117,6 +124,7 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="accountantSignEventLogSearch">會計師異動紀錄查詢</param>
         /// <returns></returns>
         [HttpGet("[Action]")]
+        [Authorize(Roles = KeycloakRoleConsts.REPORT_ACCOUNTANTSIGNEVENTLOG)]
         public AccountantSignEventLogPaginate AccountantSignEventLogPaginate([FromQuery] AccountantSignEventLogSearch accountantSignEventLogSearch)
             => logReportService.GetAccountantSignEventLogPaginate(accountantSignEventLogSearch);
 
@@ -127,6 +135,7 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="fileName">預設為AccountantSignEventLog</param>
         /// <returns></returns>
         [HttpGet("[Action]")]
+        [Authorize(Roles = KeycloakRoleConsts.REPORT_ACCOUNTANTSIGNEVENTLOG)]
         public IActionResult AccountantSignEventLogToExcel([FromQuery] AccountantSignEventLogSearch accountantSignEventLogSearch, string fileName = "AccountantSignEventLog")
                 => ToExcel(
                             logReportService.GetAccountantSignEventLogPaginate(accountantSignEventLogSearch, true).ViewModels,
@@ -140,6 +149,7 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="typographicReportSearch">排版紀錄查詢</param>
         /// <returns></returns>
         [HttpGet("[Action]")]
+        [Authorize(Roles = KeycloakRoleConsts.REPORT_FINANCIALREPORT)]
         public TypographicReportPaginate FinancialReport([FromQuery] TypographicReportSearch typographicReportSearch)
             => logReportService.GetTypographicReport(typographicReportSearch, TypographyType.FinancialReport);
 
@@ -150,6 +160,7 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="fileName">預設FinancialReport</param>
         /// <returns></returns>
         [HttpGet("[Action]")]
+        [Authorize(Roles = KeycloakRoleConsts.REPORT_FINANCIALREPORT)]
         public IActionResult FinancialReportToExcel([FromQuery] TypographicReportSearch typographicReportSearch, string fileName = "FinancialReport")
                 => ToExcel(
                             logReportService.GetTypographicReport(typographicReportSearch, TypographyType.FinancialReport, 1, true).ViewModels,
@@ -163,6 +174,7 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="typographicReportSearch">排版紀錄查詢</param>
         /// <returns></returns>
         [HttpGet("[Action]")]
+        [Authorize(Roles = KeycloakRoleConsts.REPORT_TAXREPORT)]
         public TypographicReportPaginate TaxReport([FromQuery] TypographicReportSearch typographicReportSearch)
             => logReportService.GetTypographicReport(typographicReportSearch, TypographyType.TaxReport);
 
@@ -173,6 +185,7 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="fileName">預設檔名為TaxReport</param>
         /// <returns></returns>
         [HttpGet("[Action]")]
+        [Authorize(Roles = KeycloakRoleConsts.REPORT_TAXREPORT)]
         public IActionResult TaxReportToExcel([FromQuery] TypographicReportSearch typographicReportSearch, string fileName = "TaxReport")
                 => ToExcel(
                             logReportService.GetTypographicReport(typographicReportSearch, TypographyType.TaxReport, 1, true).ViewModels,
@@ -186,6 +199,7 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="accountantMemberSearch">會計師成員查詢</param>
         /// <returns></returns>
         [HttpGet("[Action]")]
+        [Authorize(Roles = KeycloakRoleConsts.REPORT_ACCOUNTANTMEMBER)]
         public AccountantMemberPaginate AccountantMember ([FromQuery] AccountantMemberSearch accountantMemberSearch)
             => logReportService.GetAccountantMemberPaginate(accountantMemberSearch);
 
@@ -196,6 +210,7 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="fileName">預設檔名為AccountantMember</param>
         /// <returns></returns>
         [HttpGet("[Action]")]
+        [Authorize(Roles = KeycloakRoleConsts.REPORT_ACCOUNTANTMEMBER)]
         public IActionResult AccountantMemberToExcel([FromQuery] AccountantMemberSearch accountantMemberSearch, string fileName = "AccountantMember")
                 => ToExcel(
                             logReportService.GetAccountantMemberPaginate(accountantMemberSearch, 1, true).ViewModels,
@@ -209,6 +224,7 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="userMemberSearch"></param>
         /// <returns></returns>
         [HttpGet("[Action]")]
+        [Authorize(Roles = KeycloakRoleConsts.REPORT_USERMEMBER)]
         public async Task<UserMemberPaginate> UserMember([FromQuery] UserMemberSearch userMemberSearch) => await logReportService.GetUserMember(userMemberSearch);
 
         /// <summary>
@@ -218,6 +234,7 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="fileName">預設檔名為UserMember</param>
         /// <returns></returns>
         [HttpGet("[Action]")]
+        [Authorize(Roles = KeycloakRoleConsts.REPORT_USERMEMBER)]
         public async Task<IActionResult> UserMemberToExcel([FromQuery] UserMemberSearch userMemberSearch, string fileName = "UserMember") 
                 => ToExcel(
                             (await logReportService.GetUserMember(userMemberSearch, true)).ViewModels,

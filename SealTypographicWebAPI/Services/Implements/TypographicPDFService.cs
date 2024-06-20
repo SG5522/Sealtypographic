@@ -22,7 +22,6 @@ using Microsoft.OpenApi.Extensions;
 using DBEntities.Extensions;
 using SealTypographicWebAPI.Models.Upload;
 using SealTypographicWebAPI.Models.BaseModels;
-using SealTypographicWebAPI.Models.Accountant;
 
 namespace SealTypographicWebAPI.Services.Implements
 {
@@ -144,11 +143,11 @@ namespace SealTypographicWebAPI.Services.Implements
             try
             {
                 typographicPagesResponse = await dbContext.TypographicPDFs
-                                            .Include(x => x.TypographicPages)
-                                            .ThenInclude(x => x.TypographicResourceLocations)
-                                            .Where(x => x.Id == id)
-                                            .ProjectTo<TypographicPagesResponse>(configurationProvider)
-                                            .FirstOrDefaultAsync();
+                                           .Include(x => x.TypographicPages)
+                                           .ThenInclude(x => x.TypographicResourceLocations)
+                                           .Where(x => x.Id == id)
+                                           .ProjectTo<TypographicPagesResponse>(configurationProvider)
+                                           .FirstOrDefaultAsync();
 
                 if (typographicPagesResponse != null)
                 {

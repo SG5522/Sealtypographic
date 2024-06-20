@@ -1,9 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using SealTypographicWebAPI.Consts;
 using SealTypographicWebAPI.Models;
 using SealTypographicWebAPI.Models.TemporarySeal;
 using SealTypographicWebAPI.Services;
 using Serilog;
-
 
 namespace SealTypographicWebAPI.Controllers
 {
@@ -12,6 +13,7 @@ namespace SealTypographicWebAPI.Controllers
     /// </summary>
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Roles = KeycloakRoleConsts.DATAMANAGE_TEMPORARYSEAL)]
     public class TemporarySealController : APIControllerBase
     {
         /// <summary>
