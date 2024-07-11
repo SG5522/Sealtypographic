@@ -15,12 +15,12 @@ namespace DBEntities.Entities.Base
         /// <summary>
         /// 建立日期
         /// </summary>
-        public DateTime CreateDate { get; set; }
+        public DateTimeOffset CreateDate { get; set; }
 
         /// <summary>
         /// 更新日期
         /// </summary>
-        public DateTime UpdateDate { get; set; }
+        public DateTimeOffset UpdateDate { get; set; }
 
         /// <summary>
         /// 建立此筆資料的User

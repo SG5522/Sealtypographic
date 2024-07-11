@@ -102,6 +102,9 @@ internal class Program
                 case "MsSql":
                     optionsBuilder.UseSqlServer(builder.Configuration.GetConnectionString(provider));
                     break;
+                case "PostgreSQL":
+                    optionsBuilder.UseNpgsql(builder.Configuration.GetConnectionString(provider), x => x.MigrationsAssembly(provider));
+                    break;
                 default:
                     throw new Exception($"Unsupported provider: {provider}");
             }

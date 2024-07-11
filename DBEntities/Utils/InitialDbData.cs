@@ -21,7 +21,7 @@ namespace DBEntities.Utils
                     {
                         Id = 1,
                         UserName = "admin",                        
-                        CreateDate = DateTime.Now
+                        CreateDate = DateTimeOffset.Now
                     };
                     dbContext.ApplicationUsers.Add(user);
                     dbContext.SaveChanges();

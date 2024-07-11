@@ -92,7 +92,7 @@ namespace SealTypographicWebAPI.Services.Implements
                                                                     .Select(typographyResource => new LetterheadImageCreateDateView()
                                                                     {
                                                                         Id = typographyResource.Id,
-                                                                        GroupCreateDate = letterhead.CreateDate,
+                                                                        GroupCreateDate = letterhead.CreateDate.ToLocalTime().DateTime,
                                                                         Status = letterhead.Status
                                                                     })
                                                                     .OrderByDescending(x => x.Id)

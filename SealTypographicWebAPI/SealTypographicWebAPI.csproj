@@ -7,10 +7,11 @@
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <DocumentationFile></DocumentationFile>
     <IncrementVersionOnBuild>0.0.3.1+</IncrementVersionOnBuild>
-    <Version>0.0.3.1736</Version>
+    <Version>0.0.3.1759</Version>
     <PackageIcon>android-chrome-128x128.png</PackageIcon>
     <Configurations>Debug;Release</Configurations>
-    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>    
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+    <UserSecretsId>90f055cb-47ce-44a4-b6f4-7cb8dcad5eba</UserSecretsId>    
 	  
   </PropertyGroup>
 
@@ -45,6 +46,7 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.Extensions.Hosting.WindowsServices" Version="8.0.0" />
+    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.20.1" />
     <PackageReference Include="MongoDB.Driver" Version="2.25.0" />
     <PackageReference Include="Serilog.AspNetCore" Version="8.0.1" />
     <PackageReference Include="Serilog.Expressions" Version="4.0.0" />
@@ -59,6 +61,7 @@
     <ProjectReference Include="..\DBEntities\DBEntities.csproj" />
     <ProjectReference Include="..\DJSpire\DJSpire.csproj" />
     <ProjectReference Include="..\MySqlMigrations\MySql.csproj" />
+    <ProjectReference Include="..\PostgreSQL\PostgreSQL.csproj" />
     <ProjectReference Include="..\SqliteMigrations\Sqlite.csproj" />
   </ItemGroup>
 
