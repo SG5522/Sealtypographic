@@ -5,12 +5,14 @@ using DJKeycloakAPI.Configs;
 using DJKeycloakAPI.Models.Users;
 using DJKeycloakLib.Configs;
 using DJKeycloakLib.Services;
+using k8s.KubeConfigModels;
 using Keycloak.AuthServices.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using SealTypographicWebAPI.Config;
+using SealTypographicWebAPI.Models;
 using SealTypographicWebAPI.Services;
 using SealTypographicWebAPI.Services.Implements;
 using Serilog;
@@ -221,6 +223,25 @@ internal class Program
             options.BackchannelHttpHandler = new HttpClientHandler
             {
                 ServerCertificateCustomValidationCallback = delegate { return true; }
+            };
+            //TODO:登入日誌每次呼叫API都會被紀錄需要調整
+            options.Events = new JwtBearerEvents
+            {
+                OnTokenValidated = async context =>
+                {
+                    if (context.Principal!.Identity != null && context.Principal.Identity.IsAuthenticated)
+                    {
+                        // 登入成功時的處理程序 
+                        // 可以在這裡呼叫 LogReportService 來紀錄登入日誌 
+                        ILogReportService logReportService = context.HttpContext.RequestServices.GetRequiredService<ILogReportService>();
+                        IApplicationUserService applicationUserService = context.HttpContext.RequestServices.GetRequiredService<IApplicationUserService>();
+
+                        UserInfo userInfo = await applicationUserService.GetUserInfo(context.Principal!);
+
+                        // 使用 LogReportService 來紀錄登入日誌 
+                        await logReportService.LogLogin(userInfo);
+                    }
+                }
             };
         });
 

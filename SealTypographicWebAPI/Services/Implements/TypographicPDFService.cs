@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using SealTypographicWebAPI.Models.TypographicPDF;
 using SealTypographicWebAPI.Models;
 using Microsoft.EntityFrameworkCore;
