@@ -532,8 +532,9 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <returns></returns>
         public async Task<UserMemberPaginate> GetUserMember([FromQuery] UserMemberSearch userMemberSearch, bool isFullPageOut = false)
         {
-            DJKeycloakLib.Models.BaseModel.ResponseModel<IList<UserRepresentation>> userRepresentationsResponseModel = await adminService.FindUsers(true, null, null, true, null,
-                userMemberSearch.FirstName, userMemberSearch.LastName, userMemberSearch.UserName);
+            DJKeycloakLib.Models.BaseModel.ResponseModel<IList<UserRepresentation>> userRepresentationsResponseModel = await adminService.FindUsers(
+                    true, null, null, true, null,
+                    null, null, null, userMemberSearch.UserQuery);
 
             //取得成員資料
             UserMemberPaginate userMemberPaginate = new()
