@@ -18,10 +18,9 @@ namespace DBEntities.Utils
                 {
                     //建立User資料
                     ApplicationUser user = new()
-                    {
-                        Id = 1,
-                        UserName = "admin",                        
-                        CreateDate = DateTimeOffset.Now
+                    {                        
+                        UserName = "admin",
+                        CreateDate = DateTimeOffset.UtcNow,
                     };
                     dbContext.ApplicationUsers.Add(user);
                     dbContext.SaveChanges();
@@ -36,8 +35,7 @@ namespace DBEntities.Utils
                     File.WriteAllText(privateKeyFilePath, rsa.PrivateKeyBase64);
                     //公司基本資料
                     Company company = new()
-                    {
-                        Id = 1,
+                    {                        
                         Code = companyCode,
                         BAN = "12345678",
                         Name = "映像有限公司",
@@ -49,16 +47,15 @@ namespace DBEntities.Utils
                     };
 
                     //建立User資料
-                    ApplicationUser user = new()
-                    {
-                        UserName = "ImageAdmin",                        
-                        CreateDate = DateTime.Now
-                    };
+                    //ApplicationUser user = new()
+                    //{                        
+                    //    UserName = "ImageAdmin",                        
+                    //    CreateDate = DateTimeOffset.UtcNow
+                    //};
 
                     //建立DB前先建置AccountantGroup無群組資料
                     AccountantGroup accountantGroup = new()
-                    {
-                        Id = 1,
+                    {                        
                         Code = "Default",
                         Name = "預設群組"
                     };
@@ -170,16 +167,18 @@ namespace DBEntities.Utils
                             }
                         }
                     };
-                    InputUtil.Set(company, 1,true);
-                    InputUtil.Set(imageCaptureWithCustomer, 1, true);
-                    InputUtil.Set(imageCaptureWithAccountant, 1, true);
-                    InputUtil.Set(accountantGroup, 1, true);
+
+                    ApplicationUser adminUser = dbContext.ApplicationUsers.Single(x => x.UserName == "admin");
+
+                    InputUtil.Set(company, adminUser.Id, true);
+                    InputUtil.Set(imageCaptureWithCustomer, adminUser.Id, true);
+                    InputUtil.Set(imageCaptureWithAccountant, adminUser.Id, true);
+                    InputUtil.Set(accountantGroup, adminUser.Id, true);
 
                     company.AccountantGroups.Add(accountantGroup);
-                    company.ApplicationUsers.Add(user);
+                    company.ApplicationUsers.Add(adminUser);                    
                     company.ImageRangeSettings!.Add(imageCaptureWithCustomer);
                     company.ImageRangeSettings!.Add(imageCaptureWithAccountant);
-
 
                     dbContext.Companys.Add(company);
                 }

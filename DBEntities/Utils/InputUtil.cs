@@ -23,13 +23,13 @@ namespace DBEntities.Utils
             if (isCreate)
             {
                 input.CreateUserId = userId;                
-                input.CreateDate = DateTimeOffset.Now;
+                input.CreateDate = DateTimeOffset.UtcNow;
                 input.DeleteStatus = DeleteStatus.No;
             }
             else
             {
                 input.UpdateUserId = userId;
-                input.UpdateDate = DateTimeOffset.Now;
+                input.UpdateDate = DateTimeOffset.UtcNow;
             }
         }
 

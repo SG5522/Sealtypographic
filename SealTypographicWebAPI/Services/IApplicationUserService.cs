@@ -24,6 +24,5 @@ namespace SealTypographicWebAPI.Services
         /// <param name="userName"></param>
         /// <returns></returns>
         Task<ResponseModel> AddUser(NewUserForm newUserForm, string userName = "admin");
-
     }
 }

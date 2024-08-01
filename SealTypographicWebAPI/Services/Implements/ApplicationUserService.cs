@@ -1,14 +1,9 @@
 ﻿using SealTypographicWebAPI.Models;
-using AutoMapper;
 using DBEntities;
 using System.Security.Claims;
 using DBEntities.Entities;
 using DJKeycloakLib.Models.BaseModel;
 using DJKeycloakAPI.Models.Users;
-using System.Data.Common;
-using DBEntities.Utils;
-using System.Text.Json;
-using SealTypographicWebAPI.Consts;
 using Microsoft.EntityFrameworkCore;
 
 namespace SealTypographicWebAPI.Services.Implements
@@ -103,7 +98,7 @@ namespace SealTypographicWebAPI.Services.Implements
                     FirstName = newUserForm.FirstName,
                     LastName = newUserForm.LastName,
                     Email = newUserForm.Email,                    
-                    CreateDate = DateTime.Now,
+                    CreateDate = DateTimeOffset.UtcNow,
                     CreateUserId = 1
                 };
 
@@ -111,7 +106,7 @@ namespace SealTypographicWebAPI.Services.Implements
                 await dbContext.SaveChangesAsync();
                 response = ResponseModel.Success();
             }
-            catch(DbException ex)
+            catch(DbUpdateException ex)
             {
                 logger.LogError("AddUser Error while updating database {@error}", ex.InnerException?.Message);
                 response = ResponseModel.SystemError();
