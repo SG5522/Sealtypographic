@@ -1,5 +1,6 @@
 ﻿using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using SealTypographicWebAPI.Models.BaseModels;
 
 namespace SealTypographicWebAPI.Utils

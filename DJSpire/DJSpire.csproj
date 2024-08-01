@@ -17,7 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="DJCommonLib" Version="6.0.7" />
+    <PackageReference Include="DJCommonLib" Version="6.0.17" />
     <PackageReference Include="DJImageLib" Version="6.0.9" />
     <PackageReference Include="PDFtoImage" Version="4.0.1" />
     <PackageReference Include="Spire.Office" Version="8.8.0" />

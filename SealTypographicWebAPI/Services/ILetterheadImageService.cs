@@ -17,10 +17,10 @@ namespace SealTypographicWebAPI.Services
         /// <summary>
         /// 取得信頭名稱與圖片建立日期
         /// </summary>
-        /// <param name="letterheadId">信頭Id</param>
+        /// <param name="letterheadImageSearch">信頭圖片歷程分頁搜尋</param>        
         /// <param name="userId">登入的使用者Id</param>
         /// <returns></returns>
-        Task<LetterheadImageCreateDateViews> GetNameAndCreateDate(int letterheadId, int userId = 1);
+        Task<LetterheadImageCreateDateViews> GetNameAndCreateDate(LetterheadImageSearch letterheadImageSearch, int userId = 1);
 
         /// <summary>
         /// 取得信頭圖片

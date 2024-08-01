@@ -1,4 +1,5 @@
 ﻿using DBEntities.Consts;
+using SealTypographicWebAPI.Models.BaseModels;
 using System.ComponentModel.DataAnnotations;
 
 namespace SealTypographicWebAPI.Models.Letterhead
@@ -32,7 +33,7 @@ namespace SealTypographicWebAPI.Models.Letterhead
     /// <summary>
     /// 信頭名稱與圖片群組創建日期列表
     /// </summary>
-    public class LetterheadImageCreateDateViews : ResponseViewModel
+    public class LetterheadImageCreateDateViews : PaginateViewModel
     {
         /// <summary>
         /// 信頭名稱

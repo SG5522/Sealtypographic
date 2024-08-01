@@ -12,6 +12,7 @@ using CommonLib.Extensions;
 using DBEntities.Utils;
 using SealTypographicWebAPI.Extensions;
 using AutoMapper;
+using System.Linq;
 
 namespace SealTypographicWebAPI.Services.Implements
 {
@@ -73,30 +74,43 @@ namespace SealTypographicWebAPI.Services.Implements
         }
 
         ///<inheritdoc />
-        public async Task<LetterheadImageCreateDateViews> GetNameAndCreateDate(int letterheadId, int userId)
+        public async Task<LetterheadImageCreateDateViews> GetNameAndCreateDate(LetterheadImageSearch letterheadImageSearch, int userId)
         {
-            logger.LogInformation("GetNameAndCreateDate input letterheadId: {@letterheadId} userId: {@userId}", letterheadId, userId);
+            logger.LogInformation("GetNameAndCreateDate input letterheadImageSearch: {@letterheadImageSearch} userId: {@userId}", letterheadImageSearch, userId);
 
             LetterheadImageCreateDateViews letterheadImageCreateDateViews = new();
 
             try
             {
                 Letterhead? letterhead = await dbContext.Letterheads.Include(x => x.TypographicResources)
-                                        .FirstOrDefaultAsync(letterhead => letterhead.Id == letterheadId);
+                                        .FirstOrDefaultAsync(letterhead => letterhead.Id == letterheadImageSearch.LetterheadId);
+                
 
                 if (letterhead != null)
                 {
                     letterheadImageCreateDateViews.Name = letterhead.Name;
+
                     letterheadImageCreateDateViews.CreateDateViews = letterhead.TypographicResources
-                                                                    .Where(x => x.DeleteStatus == DeleteStatus.No)
+                                                                    .Skip((letterheadImageSearch.PageNumber - 1) * letterheadImageSearch.PageSize)
+                                                                    .Take(letterheadImageSearch.PageSize)
                                                                     .Select(typographyResource => new LetterheadImageCreateDateView()
                                                                     {
                                                                         Id = typographyResource.Id,
                                                                         GroupCreateDate = letterhead.CreateDate,
-                                                                        Status = letterhead.Status
-                                                                    })
+                                                                        //當時是用letterhead做為審核，但中途修改規格後只看圖片修改歷程，
+                                                                        //未來如果信頭圖片有需要審核會再另行使用LetterheadImageStatus做為依據。
+                                                                        //目前使用TypographyResource表內的 DeleteStatus做為是否啟用的判斷
+                                                                        Status = typographyResource.DeleteStatus == 0 ? 
+                                                                                 LetterheadImageStatus.Enable : LetterheadImageStatus.Disabled,
+                                                                    })                                                                        
                                                                     .OrderByDescending(x => x.Id)
                                                                     .ToList();
+
+                    PageUtil.SetPaginate(letterheadImageCreateDateViews, 
+                                         letterheadImageSearch.PageNumber,
+                                         letterheadImageSearch.PageSize,
+                                         letterhead.TypographicResources.Count);
+
                     letterheadImageCreateDateViews.Success();
                 }
                 else

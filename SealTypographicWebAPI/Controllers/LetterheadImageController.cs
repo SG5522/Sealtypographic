@@ -38,11 +38,11 @@ namespace SealTypographicWebAPI.Controllers
         /// <summary>
         /// 取得信頭名稱與圖片建立日期
         /// </summary>
-        /// <param name="letterheadId">信頭Id</param>
+        /// <param name="letterheadImageSearch">信頭圖片歷程分頁搜尋</param>
         /// <returns></returns>
-        [HttpGet("{letterheadId}")]
-        public async Task<LetterheadImageCreateDateViews> NameAndCreateDate(int letterheadId) 
-            => await letterheadImageService.GetNameAndCreateDate(letterheadId, await GetUserId());
+        [HttpGet("[Action]")]
+        public async Task<LetterheadImageCreateDateViews> NameAndCreateDate([FromQuery]LetterheadImageSearch letterheadImageSearch) 
+            => await letterheadImageService.GetNameAndCreateDate(letterheadImageSearch, await GetUserId());
 
         /// <summary>
         /// 取得信頭圖片
