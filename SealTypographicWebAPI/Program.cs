@@ -5,7 +5,6 @@ using DJKeycloakAPI.Configs;
 using DJKeycloakAPI.Models.Users;
 using DJKeycloakLib.Configs;
 using DJKeycloakLib.Services;
-using k8s.KubeConfigModels;
 using Keycloak.AuthServices.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc.Razor;
