@@ -576,7 +576,7 @@ namespace SealTypographicWebAPI.Services.Implements
             }
             else
             {
-                userMemberPaginate.KeycloakNoData();
+                userMemberPaginate.DbNoData();
             }
 
             return userMemberPaginate;
