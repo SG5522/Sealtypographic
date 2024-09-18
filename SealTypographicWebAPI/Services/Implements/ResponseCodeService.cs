@@ -43,8 +43,7 @@ namespace SealTypographicWebAPI.Services.Implements
                         Description = localizer[responseCode.GetDisplayName()]
                     };
                     responseCodeList.ViewModels.Add(responseCodeViewModel);
-                }
-                logger.LogInformation("Get output {@Output}", responseCodeList);
+                }                
             }
             catch (Exception ex) 
             {

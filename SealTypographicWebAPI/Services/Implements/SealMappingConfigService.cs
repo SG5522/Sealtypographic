@@ -64,8 +64,7 @@ namespace SealTypographicWebAPI.Services.Implements
                         break;
                 }
                 sealMappingConfigResponseList.SealType = Enum.GetName(sealType);
-                sealMappingConfigResponseList.Success();
-                logger.LogInformation("Get output {@Output}", sealMappingConfigResponseList);
+                sealMappingConfigResponseList.Success();                
             }
             catch (Exception ex)
             {

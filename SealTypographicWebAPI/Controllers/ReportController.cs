@@ -1,6 +1,7 @@
 ﻿using DBEntities.Consts;
 using DJSpire.Models;
 using DJSpire.Utils;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SealTypographicWebAPI.Consts;
 using SealTypographicWebAPI.Models.LogReport.AccountantList;
@@ -21,6 +22,7 @@ namespace SealTypographicWebAPI.Controllers
     /// </summary>
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class ReportController : ControllerBase
     {
         private readonly ILogReportService logReportService;

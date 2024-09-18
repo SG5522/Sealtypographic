@@ -3,6 +3,7 @@ using DJKeycloakAPI.Controllers;
 using DJKeycloakAPI.Models.Users;
 using DJKeycloakLib.Models.BaseModel;
 using DJKeycloakLib.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SealTypographicWebAPI.Services;
 
@@ -15,6 +16,7 @@ namespace SealTypographicWebAPI.Controllers
     /// </summary>
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class UserController : AdminUserController
     {           
         private readonly IApplicationUserService applicationUserService;
