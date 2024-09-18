@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using DJKeycloakAPI.Controllers;
 using DJKeycloakAPI.Models.Users;
 using DJKeycloakLib.Models.BaseModel;

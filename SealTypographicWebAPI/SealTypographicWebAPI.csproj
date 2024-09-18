@@ -35,7 +35,7 @@
     <PackageReference Include="AutoMapper" Version="13.0.1" />
     <PackageReference Include="DJCommonLib" Version="6.0.15" />
     <PackageReference Include="DJImageLib" Version="6.0.9" />
-    <PackageReference Include="DJKeycloakAPI" Version="6.0.18" CopyDirectory="lib\net6.0\**\*.*" />	  
+    <PackageReference Include="DJKeycloakAPI" Version="6.0.19" CopyDirectory="lib\net6.0\**\*.*" />	  
     <PackageReference Include="Keycloak.AuthServices.Authentication" Version="1.6.0" />
     <PackageReference Include="Keycloak.AuthServices.Authorization" Version="1.6.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Certificate" Version="6.0.31" />

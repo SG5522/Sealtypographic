@@ -23,6 +23,7 @@ namespace SealTypographicWebAPI.Controllers
         private readonly IWebHostEnvironment environment;
         private KeycloakAuthenticationOptions keycloakAuthenticationOptions;
         private SystemConfigOption systemConfigOption;
+        private ILogReportService logReportService;
 
         /// <summary>
         /// 建構
@@ -30,18 +31,21 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="logger"></param>
         /// <param name="environment"></param>
         /// <param name="keycloakAuthenticationOptionsMonitor"></param>
-        /// <param name="applicationUserService"></param>        
+        /// <param name="applicationUserService"></param>
+        /// <param name="logReportService"></param>        
         /// <param name="systemConfigOptionMonitor"></param>
         public SysController(ILogger<SysController> logger, 
             IWebHostEnvironment environment,
             IOptionsMonitor<KeycloakAuthenticationOptions> keycloakAuthenticationOptionsMonitor,
             IOptionsMonitor<SystemConfigOption> systemConfigOptionMonitor,
-            IApplicationUserService applicationUserService) : base(applicationUserService)
+            IApplicationUserService applicationUserService,
+            ILogReportService logReportService) : base(applicationUserService)
         {
             this.logger = logger;
             this.environment = environment;
-            keycloakAuthenticationOptions = keycloakAuthenticationOptionsMonitor.CurrentValue;    
+            keycloakAuthenticationOptions = keycloakAuthenticationOptionsMonitor.CurrentValue;
             systemConfigOption = systemConfigOptionMonitor.CurrentValue;
+            this.logReportService = logReportService;
 
             keycloakAuthenticationOptionsMonitor.OnChange(options =>
             {
@@ -52,6 +56,7 @@ namespace SealTypographicWebAPI.Controllers
             {
                 systemConfigOption = options;
             });
+            
         }
 
         /// <summary>
