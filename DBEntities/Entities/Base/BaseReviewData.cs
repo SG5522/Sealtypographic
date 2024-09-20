@@ -15,17 +15,17 @@ namespace DBEntities.Entities.Base
         /// <summary>
         /// 審查時間
         /// </summary>
-        public DateTime? ReviewDate { get; set; }
+        public DateTimeOffset? ReviewDate { get; set; }
 
         /// <summary>
         /// 啟用日期
         /// </summary>
-        public DateTime StartDate { get; set; }
+        public DateTimeOffset StartDate { get; set; }
 
         /// <summary>
         /// 結束日期
         /// </summary>
-        public DateTime EndDate { get; set; }
+        public DateTimeOffset EndDate { get; set; }
 
         /// <summary>
         /// 審核狀態狀態

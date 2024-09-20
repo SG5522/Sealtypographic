@@ -7,6 +7,7 @@ using DBEntities.Consts;
 using DBEntities.Entities;
 using DBEntities;
 using DBEntities.Entities.TypographicModels;
+using DBEntities.Utils;
 
 namespace SealTypographicWebAPI.Services.Implements
 {
@@ -99,7 +100,7 @@ namespace SealTypographicWebAPI.Services.Implements
                 {
                     letterheadQuery.DeleteStatus = DeleteStatus.Yes;
                     letterheadQuery.Status = LetterheadImageStatus.Disabled; //應該用不到之後移除或是未來需要審查時在來調整。
-                    BaseInputLetterhead(letterheadQuery, false, userId);
+                    InputUtil.Set(letterheadQuery, userId);
 
                     foreach (TypographicResource typographicResource in letterheadQuery.TypographicResources)
                     {
@@ -127,27 +128,6 @@ namespace SealTypographicWebAPI.Services.Implements
             }
             
             return response;            
-        }
-
-        /// <summary>
-        /// 信頭資料新增修改時基本資料輸入
-        /// </summary>
-        /// <param name="letterhead">DB上的信頭資料</param>
-        /// <param name="isCreate">確認是否新增的動作</param>
-        /// <param name="userid">使用者ID</param>
-        private static void BaseInputLetterhead(Letterhead letterhead, bool isCreate, int userid)
-        {
-            if(isCreate)
-            {
-                letterhead.CreateUserId = userid;
-                letterhead.CreateDate = DateTime.Now;
-                letterhead.DeleteStatus = DeleteStatus.No;                
-            }
-            else
-            {
-                letterhead.UpdateUserId = userid;
-                letterhead.UpdateDate = DateTime.Now;
-            }            
         }
     }
 

@@ -516,35 +516,6 @@ namespace SealTypographicWebAPI.Services.Implements
             }
             
             return response;
-        }
-
-        ///// <summary>
-        ///// 新增印鑑資料
-        ///// </summary>
-        ///// <param name="formSeals">輸入</param>        
-        ///// <param name="imageBase64Info">圖檔資訊</param>
-        ///// <param name="userId">使用者Id</param>
-        ///// <returns></returns>
-        //private async Task<List<TypographicResource>> NewTypographyResource(List<CustomerSeal> formSeals, ImageSaveInfo imageBase64Info, int userId)
-        //{
-        //    List<TypographicResource> typographyResources = new();
-        //    foreach (CustomerSeal customerSeal in formSeals)
-        //    {
-        //        TypographicResource typographyResource = new()
-        //        {
-        //            SealType = SealType.Customer,
-        //            SubSealType = SealMappingConfigUtil.GetSubSealTypeWithCustomer(customerSeal.SealMappingConfigId),
-        //            Sequence = customerSeal.Sequence
-        //        };
-        //        //ImageBase64轉圖檔並存到指定資料夾
-        //        imageBase64Info.ImageBase64 = customerSeal.ImageBase64;
-        //        typographyResource.ImageFullPath = await imageService.GetSavedImageFilePath(imageBase64Info);
-        //        typographyResource.ThumbnailFullPath = await imageService.GetSavedImageThumbnailFilePath(imageBase64Info, true);
-                
-        //        InputUtil.Set(typographyResource, userId, true);
-        //        typographyResources.Add(typographyResource);
-        //    }
-        //    return typographyResources;
-        //}
+        }        
     }
 }

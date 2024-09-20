@@ -72,7 +72,7 @@ namespace SealTypographicWebAPI.Config.MapperProfile
             CreateMap<AccountantGroupUpdateForm, AccountantGroup>();
 
             CreateMap<AccountantSignGroup, AccountantSignGroupViewModel>()
-                    .ForMember(dst => dst.GroupCreateDate, opt => opt.MapFrom(src => src.CreateDate));
+                    .ForMember(dst => dst.GroupCreateDate, opt => opt.MapFrom(src => src.CreateDate.DateTime.ToLocalTime()));
 
             //會計師印鑑
             CreateMap<TypographicResource, AccountantSignViewModel>()
@@ -81,7 +81,7 @@ namespace SealTypographicWebAPI.Config.MapperProfile
 
             CreateMap<AccountantSignGroup, AccountantSignViewModels>()
                     .ForMember(dst => dst.AccountantSignGroupId, opt => opt.MapFrom(src => src.Id))
-                    .ForMember(dst => dst.GroupCreateDate, opt => opt.MapFrom(src => src.CreateDate))
+                    .ForMember(dst => dst.GroupCreateDate, opt => opt.MapFrom(src => src.CreateDate.DateTime.ToLocalTime()))
                     .ForMember(dst => dst.ReviewStatus, opt => opt.MapFrom(src => src.ReviewStatus))
                     //--Log Save--//
                     .ForMember(dst => dst.AccountantId, opt => opt.MapFrom(src => src.Accountant.Id))

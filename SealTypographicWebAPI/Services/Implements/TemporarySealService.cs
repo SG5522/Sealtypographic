@@ -148,8 +148,8 @@ namespace SealTypographicWebAPI.Services.Implements
                     if (!customerQuery.TemporarySealGroups.Any(x => x.QuarterYear == quarter))
                     {
                         TemporarySealGroup temporarySealGroup = new();
-                        List<TypographicResource> typographicResources = new();
-                        BaseInputTemporarySealGroup(temporarySealGroup, true, userId);
+                        List<TypographicResource> typographicResources = new();                        
+                        InputUtil.Set(temporarySealGroup, userId, true);
 
                         typographicResources = await imageService.NewTypographyResource(temporarySealForm.Seals, customerQuery.Code, userId);
                         temporarySealGroup.QuarterYear = quarter;
@@ -248,7 +248,7 @@ namespace SealTypographicWebAPI.Services.Implements
             if(temporarySealGroup != null)
             {
                 temporarySealGroup.DeleteStatus = DeleteStatus.Yes;
-                BaseInputTemporarySealGroup(temporarySealGroup, false, userId);
+                InputUtil.Set(temporarySealGroup, userId);                
                 dbContext.SaveChanges();
                 response.Success();
             }
@@ -257,27 +257,6 @@ namespace SealTypographicWebAPI.Services.Implements
                 response.DeleteTemporarySealNoData();
             }
             return response;
-        }
-
-        /// <summary>
-        /// 客戶印鑑新增修改時基本的資料輸入
-        /// </summary>
-        /// <param name="temporarySealGroup">Db上的印鑑資料</param>
-        /// <param name="isCreate">對Db所做的行動</param>
-        /// <param name="userId">userId</param>
-        private static void BaseInputTemporarySealGroup(TemporarySealGroup temporarySealGroup, bool isCreate, int userId)
-        {
-            if (isCreate)
-            {
-                temporarySealGroup.CreateUserId = userId;
-                temporarySealGroup.CreateDate = DateTime.Now;
-                temporarySealGroup.DeleteStatus = DeleteStatus.No;
-            }
-            else
-            {
-                temporarySealGroup.UpdateUserId = userId;
-                temporarySealGroup.UpdateDate = DateTime.Now;
-            }
         }
     }
 }

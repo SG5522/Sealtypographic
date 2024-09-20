@@ -136,7 +136,7 @@ namespace SealTypographicWebAPI.Config.MapperProfile
                     .ForMember(dst => dst.AccountantCode, opt => opt.MapFrom(src => src.Accountant.Code))
                     .ForMember(dst => dst.AccountantName, opt => opt.MapFrom(src => src.Accountant.Name))
                     .ForMember(dst => dst.AccountantSignGroupId, opt => opt.MapFrom(src => src.Id))
-                    .ForMember(dst => dst.AccountantSignGroupCreateDate, opt => opt.MapFrom(src => src.CreateDate));
+                    .ForMember(dst => dst.AccountantSignGroupCreateDate, opt => opt.MapFrom(src => src.CreateDate.DateTime.ToLocalTime()));
 
             //印鑑異動紀錄Map(分頁顯示)
             CreateMap<CustomerSealEventLog, CustomerSealEventLogViewModel>()

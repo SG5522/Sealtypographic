@@ -16,6 +16,7 @@ using DJSpire.Models;
 using CommonLib.Extensions;
 using SealTypographicWebAPI.Extensions;
 using DJImageLib.Extensions;
+using DBEntities.Utils;
 
 namespace SealTypographicWebAPI.Services.Implements
 {
@@ -422,7 +423,7 @@ namespace SealTypographicWebAPI.Services.Implements
                                 {
                                     //原檔案的刪除狀態變更為Yes
                                     uploadFile.DeleteStatus = DeleteStatus.Yes;
-                                    BaseInput(uploadFile, false, userId);
+                                    InputUtil.Set(uploadFile, userId);                                    
                                 }
 
                                 //新增上傳的檔案
@@ -476,8 +477,8 @@ namespace SealTypographicWebAPI.Services.Implements
                 UploadFile? uploadFile = dbContext.UploadFiles.Find(uploadFileId);
                 if (uploadFile != null)
                 {
-                    uploadFile.FileWorkStatus = FileWorkStatus.Done;
-                    BaseInput(uploadFile, false, userId);
+                    uploadFile.FileWorkStatus = FileWorkStatus.Done;                    
+                    InputUtil.Set(uploadFile, userId);                    
                     dbContext.SaveChanges();
                     response.Success();
                 }
@@ -516,7 +517,8 @@ namespace SealTypographicWebAPI.Services.Implements
                     if (uploadFile != null)
                     {
                         uploadFile.DeleteStatus = DeleteStatus.Yes;
-                        BaseInput(uploadFile, false, userId);
+                        uploadFile.FileWorkStatus = FileWorkStatus.Unprocessed;
+                        InputUtil.Set(uploadFile, userId);                        
                     }
                     else
                     {
@@ -588,9 +590,10 @@ namespace SealTypographicWebAPI.Services.Implements
                 OriginalFileName = originalFileName,
                 UploadType = uploadType,
                 FullPath = imageSaveInfo.FullPath,
-                EncryptKey = imageSaveInfo.EncryptKey
+                EncryptKey = imageSaveInfo.EncryptKey,
+                FileWorkStatus = FileWorkStatus.Unprocessed
             };
-            BaseInput(uploadFile, true, userId);
+            InputUtil.Set(uploadFile, userId, true);            
             return uploadFile;
         }
 
@@ -633,28 +636,6 @@ namespace SealTypographicWebAPI.Services.Implements
                 Directory.CreateDirectory(folder);
             }
             return folder;
-        }
-
-        /// <summary>
-        /// 信頭資料新增修改時基本資料輸入
-        /// </summary>
-        /// <param name="uploadFile">DB上的上傳檔案</param>
-        /// <param name="isCreate">確認是否新增的動作</param>
-        /// <param name="userid">使用者ID</param>
-        private static void BaseInput(UploadFile uploadFile, bool isCreate, int userid)
-        {
-            if (isCreate)
-            {
-                uploadFile.CreateUserId = userid;
-                uploadFile.CreateDate = DateTime.Now;
-                uploadFile.DeleteStatus = DeleteStatus.No;
-                uploadFile.FileWorkStatus = FileWorkStatus.Unprocessed;
-            }
-            else
-            {
-                uploadFile.UpdateUserId = userid;
-                uploadFile.UpdateDate = DateTime.Now;
-            }
         }
     }
 }

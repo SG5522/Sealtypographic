@@ -17,11 +17,11 @@ namespace SealTypographicWebAPI.Config.MapperProfile
         {
             CreateMap<UploadFile, UploadViewModel>()                    
                     .ForMember(dst => dst.FileName, opt => opt.MapFrom(src => src.OriginalFileName))
-                    .ForMember(dst => dst.UploadDate, opt => opt.MapFrom(src => src.CreateDate));
+                    .ForMember(dst => dst.UploadDate, opt => opt.MapFrom(src => src.CreateDate.DateTime.ToLocalTime()));
 
             CreateMap<UploadFile, UploadFileViewModel>()
                     .ForMember(dst => dst.FileName, opt => opt.MapFrom(src => src.OriginalFileName))
-                    .ForMember(dst => dst.UploadDate, opt => opt.MapFrom(src => src.CreateDate));
+                    .ForMember(dst => dst.UploadDate, opt => opt.MapFrom(src => src.CreateDate.DateTime.ToLocalTime()));
 
         }
     }

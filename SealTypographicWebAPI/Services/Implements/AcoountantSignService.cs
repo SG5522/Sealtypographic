@@ -14,6 +14,7 @@ using CommonLib.Enums;
 using DBEntities.Utils;
 using SealTypographicWebAPI.Models.CustomerSeal;
 using System.Security.Cryptography.Xml;
+using DBEntities.Extensions;
 
 namespace SealTypographicWebAPI.Services.Implements
 {
@@ -335,13 +336,17 @@ namespace SealTypographicWebAPI.Services.Implements
 
                 if (accountantSignGroupQuery != null)
                 {
-                    accountantSignGroupQuery.ReviewStatus = reviewStatus;
-                    accountantSignGroupQuery.UpdateUserId = userId;
-                    accountantSignGroupQuery.UpdateDate = DateTime.Now;
-                    if (reviewStatus == ReviewStatus.Invalid)
-                    {
-                        accountantSignGroupQuery.DeleteStatus = DeleteStatus.Yes;
-                    }
+                    //accountantSignGroupQuery.ReviewStatus = reviewStatus;
+                    //accountantSignGroupQuery.UpdateUserId = userId;
+                    //accountantSignGroupQuery.UpdateDate = DateTime.Now;
+                    
+                    //if (reviewStatus == ReviewStatus.Invalid)
+                    //{
+                    //    accountantSignGroupQuery.DeleteStatus = DeleteStatus.Yes;
+                    //}
+
+                    reviewStatus.Set(accountantSignGroupQuery, userId);
+                    InputUtil.Set(accountantSignGroupQuery, userId);
                     await dbContext.SaveChangesAsync();
                     response.Success();
                 }

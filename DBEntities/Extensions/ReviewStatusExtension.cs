@@ -20,19 +20,19 @@ namespace DBEntities.Extensions
             {
                 input.DeleteStatus = DeleteStatus.Yes;
                 //曾經是通過(啟用)的狀態變成停用 作廢 不受理 就將EndDate改成現在。
-                if (input.ReviewStatus == ReviewStatus.Approval) input.EndDate = DateTime.Now;
+                if (input.ReviewStatus == ReviewStatus.Approval) input.EndDate = DateTimeOffset.Now;
             }
             //Approval 
             else if (reviewStatus == ReviewStatus.Approval)
             {
-                input.StartDate = DateTime.Now;
-                input.EndDate = DateTime.Parse("9999/12/31");                
+                input.StartDate = DateTimeOffset.Now;
+                input.EndDate = DateTimeOffset.Parse("9999/12/31");                
             }
 
             // 更新草稿狀態以外的審核日期與使用者
             if (reviewStatus != ReviewStatus.Draft)
             {
-                input.ReviewDate = DateTime.Now;
+                input.ReviewDate = DateTimeOffset.Now;
                 input.ReviewUserId = userId;
             }
 
