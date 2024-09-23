@@ -1,4 +1,5 @@
 ﻿using DBEntities.Consts;
+using SealTypographicWebAPI.Models.BaseModels;
 using System.Text.Json.Serialization;
 
 namespace SealTypographicWebAPI.Models.AccountantSignReview
@@ -9,7 +10,7 @@ namespace SealTypographicWebAPI.Models.AccountantSignReview
     public class AccountantSignGroupReviewViewModel
     {
         /// <summary>
-        /// New SealImageInfos
+        /// New SignImageInfos
         /// </summary>
         public AccountantSignGroupReviewViewModel()
         {
@@ -70,7 +71,7 @@ namespace SealTypographicWebAPI.Models.AccountantSignReview
     /// <summary>
     /// 簽印資訊
     /// </summary>
-    public class SignImageInfo
+    public class SignImageInfo : BaseThumbnailSeal
     {
         /// <summary>
         /// 簽印類別
@@ -78,11 +79,5 @@ namespace SealTypographicWebAPI.Models.AccountantSignReview
         /// </summary>
         /// <example>1</example>
         public AccountantSignType SealMappingConfigId { get; set; }
-
-        /// <summary>
-        /// 縮圖字串(Base64)
-        /// </summary>
-        /// <example>image/...</example>
-        public string ThumbnailBase64 { get; set; }
     }
 }

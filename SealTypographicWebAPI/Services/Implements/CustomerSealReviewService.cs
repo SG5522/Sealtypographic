@@ -97,7 +97,7 @@ namespace SealTypographicWebAPI.Services.Implements
                 if (customerSealQuarterQuery.Any())
                 {
                     //取得RsaKey
-                    RSAKey rsakey = imageService.GetRasKey(userInfo.UserId);
+                    RSAKey rsakey = imageService.GetRsaKey(userInfo.UserId);
 
                     //取得該頁                   
                     customerSealQuarterResponse.ViewModels = await PageUtil.SetPaginateViewModelAsync<CustomerSealGroup, CustomerSealGroupReviewViewModel>
@@ -108,24 +108,9 @@ namespace SealTypographicWebAPI.Services.Implements
                                                                 customerSealSearchReview.PageSize
                     );
 
-                    Parallel.ForEach(customerSealQuarterResponse.ViewModels, viewModel =>
-                    {
-                        Parallel.ForEach(viewModel.SealImageInfos, sealImageInfo =>
-                        {
-                            sealImageInfo.ThumbnailBase64 = imageService.DecryptFile(sealImageInfo.ThumbnailFullPath, sealImageInfo.ThumbnailEncryptKey, rsakey);
-                        });
-                    });
-                     
-
-                    foreach (CustomerSealGroupReviewViewModel viewModel in customerSealQuarterResponse.ViewModels)
-                    {
-                        foreach (SealImageInfo sealImageInfo in viewModel.SealImageInfos)
-                        {
-                            string imageBase64 = imageService.DecryptFile(sealImageInfo.ThumbnailFullPath, sealImageInfo.ThumbnailEncryptKey, rsakey);
-                            sealImageInfo.ThumbnailBase64 = ImageTransparentUtil.ToDataUrlFromImageBase64(imageBase64);
-                        }
-                    }
-
+                    //多執行序處理
+                    Parallel.ForEach(customerSealQuarterResponse.ViewModels, 
+                        viewModel => imageService.DecryptThumbnailSeals(viewModel.SealImageInfos, userInfo.UserId));                       
 
                     PageUtil.SetPaginate(customerSealQuarterResponse, customerSealSearchReview.PageNumber, customerSealSearchReview.PageSize, customerSealQuarterQuery.Count());
                     customerSealQuarterResponse.Success();                    
@@ -173,13 +158,7 @@ namespace SealTypographicWebAPI.Services.Implements
 
                 if (customerSealGroupQuery != null)
                 {
-                    RSAKey rsaKey = imageService.GetRasKey(userInfo.UserId);
-
-                    foreach (CustomerSealViewModel seal in customerSealGroupQuery.Seals)
-                    {
-                        string imageBase64 = imageService.DecryptFile(seal.ImageFullPath, seal.ImageEncryptKey, rsaKey);
-                        seal.ImageBase64 = ImageTransparentUtil.ToDataUrlFromImageBase64(imageBase64);
-                    }
+                    imageService.DecryptSeals(customerSealGroupQuery.Seals, userInfo.UserId);
 
                     customerSealReviewDetailResponse.ViewModel = customerSealGroupQuery;
                     customerSealReviewDetailResponse.Success();

@@ -243,7 +243,7 @@ namespace SealTypographicWebAPI.Services.Implements
                     //更新會計師群組以外的資料
                     mapper.Map(accountantFormUpdate, accountantQuery);
                                         
-                    InputUtil.Set(accountantQuery, userId, false);
+                    InputUtil.Set(accountantQuery, userId);
                     await dbContext.SaveChangesAsync();
                     response.Success();
                 }

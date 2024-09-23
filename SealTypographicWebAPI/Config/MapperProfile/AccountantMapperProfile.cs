@@ -76,8 +76,7 @@ namespace SealTypographicWebAPI.Config.MapperProfile
 
             //會計師印鑑
             CreateMap<TypographicResource, AccountantSignViewModel>()
-                    .ForMember(dst => dst.ImageBase64, opt => opt.Ignore()) // <---imagebase64要額外處理所以要忽略
-                    .ReverseMap();
+                    .ForMember(dst => dst.ImageBase64, opt => opt.Ignore()); // <---imagebase64要額外處理所以要忽略
 
             CreateMap<AccountantSignGroup, AccountantSignViewModels>()
                     .ForMember(dst => dst.AccountantSignGroupId, opt => opt.MapFrom(src => src.Id))
@@ -90,7 +89,7 @@ namespace SealTypographicWebAPI.Config.MapperProfile
                     .ForMember(dst => dst.SignViewModels, opt => opt.MapFrom(src => src.TypographicResources.Where(x => x.DeleteStatus == DeleteStatus.No)));
 
             CreateMap<TypographicResource, AccountantSignViewModel>()
-                    .ForMember(dst => dst.SealMappingConfigId, opt => opt.MapFrom(src => SealMappingConfigUtil.GetAccountantSignType(src.SubSealType)));
+                    .ForMember(dst => dst.SealMappingConfigId, opt => opt.MapFrom(src => SealMappingConfigUtil.GetAccountantSignType(src.SubSealType)));                    
                     //.ForMember(dst => dst.ImageBase64, opt => opt.MapFrom(src => ImageUtil.ToDataUrlFromFilePath(src.ImageFullPath)));
 
             CreateMap<AccountantSign, TypographicResource>()

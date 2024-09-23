@@ -257,16 +257,7 @@ namespace SealTypographicWebAPI.Services.Implements
 
                 if (customerSealViewModels != null)
                 {
-                    RSAKey rsaKey = imageService.GetRasKey(userInfo.UserId);
-
-                    foreach (CustomerSealViewModel customerSealViewModel in customerSealViewModels.SealViewModels)
-                    {
-                        //解密圖檔
-                        string imageBase64 = imageService.DecryptFile(customerSealViewModel.ImageFullPath, customerSealViewModel.ImageEncryptKey, rsaKey);
-                        //判斷是否白底通透處理
-                        customerSealViewModel.ImageBase64 = isTransparent ? ImageTransparentUtil.ToDataUrlFromDataUrl(imageBase64) : imageBase64;                            
-                    }
-                    
+                    imageService.DecryptSeals(customerSealViewModels.SealViewModels, userInfo.UserId);                    
                     customerSealViewModels.Success();
                     await logReportService.SaveOperationLog(
                                                                 mapper.Map<OperationLogSave>(customerSealViewModels),

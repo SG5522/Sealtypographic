@@ -13,7 +13,6 @@ using SealTypographicWebAPI.Models.LogReport.AccountantSignLog;
 using CommonLib.Enums;
 using DBEntities.Utils;
 using SealTypographicWebAPI.Models.CustomerSeal;
-using System.Security.Cryptography.Xml;
 using DBEntities.Extensions;
 
 namespace SealTypographicWebAPI.Services.Implements
@@ -110,21 +109,14 @@ namespace SealTypographicWebAPI.Services.Implements
             try
             {
                 accountantSignViewModels = await dbContext.AccountantSignGroups
-                                            .Include(x => x.Accountant)
-                                            .Include(x => x.TypographicResources)
-                                            .ProjectTo<AccountantSignViewModels>(configurationProvider)
-                                            .FirstOrDefaultAsync(x => x.AccountantSignGroupId == accountantSignGroupId);
+                                                        .Include(x => x.Accountant)
+                                                        .Include(x => x.TypographicResources)
+                                                        .ProjectTo<AccountantSignViewModels>(configurationProvider)
+                                                        .FirstOrDefaultAsync(x => x.AccountantSignGroupId == accountantSignGroupId);
 
                 if (accountantSignViewModels != null)
                 {
-                    RSAKey rsaKey = imageService.GetRasKey(userInfo.UserId);
-                    foreach (AccountantSignViewModel accountantSignViewModel in accountantSignViewModels.SignViewModels)
-                    {
-                        //解密圖檔
-                        string imageBase64 = imageService.DecryptFile(accountantSignViewModel.ImageFullPath, accountantSignViewModel.ImageEncryptKey, rsaKey);
-                        //判斷是否白底通透處理
-                        accountantSignViewModel.ImageBase64 = isTransparent ? ImageTransparentUtil.ToDataUrlFromDataUrl(imageBase64) : imageBase64;                            
-                    }                    
+                    imageService.DecryptSeals(accountantSignViewModels.SignViewModels, userInfo.UserId);                 
                     accountantSignViewModels.Success();
                     //操作紀錄(查詢)存檔
                     await logReportService.SaveOperationLog(
@@ -136,7 +128,7 @@ namespace SealTypographicWebAPI.Services.Implements
                 else
                 {
                     accountantSignViewModels = new();
-                    accountantSignViewModels!.AccountantSignNoData();
+                    accountantSignViewModels.AccountantSignNoData();
                 }
                 logger.LogInformation("GetSignViewModels output {@Output}", accountantSignViewModels);
             }

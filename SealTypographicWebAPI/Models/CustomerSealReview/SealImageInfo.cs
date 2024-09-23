@@ -1,6 +1,5 @@
 ﻿using DBEntities.Consts;
 using SealTypographicWebAPI.Models.BaseModels;
-using System.Text.Json.Serialization;
 
 namespace SealTypographicWebAPI.Models.CustomerSealReview
 {

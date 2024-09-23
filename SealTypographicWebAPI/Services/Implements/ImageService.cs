@@ -13,6 +13,7 @@ using DBEntities.Entities.TypographicModels;
 using DBEntities.Utils;
 using SealTypographicWebAPI.Models.BaseModels;
 using DBEntities.Entities.TemplateModels;
+using SealTypographicWebAPI.Utils;
 
 namespace SealTypographicWebAPI.Services.Implements
 {
@@ -237,20 +238,65 @@ namespace SealTypographicWebAPI.Services.Implements
         /// </summary>
         /// <param name="savePath">存檔路徑</param>
         /// <param name="encryptKey">加密後的key</param>
-        /// <param name="rasKey">RAS公私鑰</param>
+        /// <param name="rsaKey">RAS公私鑰</param>
         /// <returns></returns>
-        public byte[] DecryptFileToBytes(string savePath, string encryptKey, RSAKey rasKey)
-            => DecryptFile(savePath, encryptKey, rasKey).ToBytes();
+        public byte[] DecryptFileToBytes(string savePath, string encryptKey, RSAKey rsaKey)
+            => DecryptFile(savePath, encryptKey, rsaKey).ToBytes();
 
         /// <summary>
         /// 解密檔案
         /// </summary>
         /// <param name="savePath">存檔路徑</param>
         /// <param name="encryptKey">加密後的key</param>
-        /// <param name="rasKey">RAS公私鑰</param>
+        /// <param name="rsaKey">RAS公私鑰</param>
         /// <returns></returns>
-        public string DecryptFile(string savePath, string encryptKey, RSAKey rasKey)
-            => CryptoUtil.Decrypt(savePath, encryptKey, rasKey.PrivateKeyBase64);
+        public string DecryptFile(string savePath, string encryptKey, RSAKey rsaKey)
+            => CryptoUtil.Decrypt(savePath, encryptKey, rsaKey.PrivateKeyBase64);
+
+        /// <summary>
+        /// 解密印鑑組
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="seals">印鑑組</param>
+        /// <param name="userId">使用者Id</param>
+        /// <param name="isTransparent">是否透通處理(背景透明)</param>
+        /// <returns></returns>
+        public void DecryptSeals<T>(IList<T> seals, int userId, bool isTransparent = true) where T : BaseSeal
+        {
+            //透過使用者Id取得RsaKey
+            RSAKey rsaKey = GetRsaKey(userId);
+
+            foreach (T seal in seals)
+            {
+                //解密圖檔
+                string imageBase64 = DecryptFile(seal.ImageFullPath, seal.ImageEncryptKey, rsaKey);
+                //判斷是否白底通透處理
+                seal.ImageBase64 = isTransparent ? ImageTransparentUtil.ToDataUrlFromDataUrl(imageBase64) : imageBase64;
+            }
+        }
+
+        /// <summary>
+        /// 解密印鑑組
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="thumbnailSeals">印鑑組</param>
+        /// <param name="userId">使用者Id</param>
+        /// <param name="isTransparent">是否透通處理(背景透明)</param>
+        /// <returns></returns>
+        public void DecryptThumbnailSeals<T>(IList<T> thumbnailSeals, int userId, bool isTransparent = true) where T : BaseThumbnailSeal
+        {
+            //透過使用者Id取得RsaKey
+            RSAKey rsaKey = GetRsaKey(userId);
+
+            Parallel.ForEach(thumbnailSeals, thumbnailSeal =>
+            {                
+                //解密圖檔
+                string thumbnailBase64 = DecryptFile(thumbnailSeal.ThumbnailFullPath, thumbnailSeal.ThumbnailEncryptKey, rsaKey);
+                //判斷是否白底通透處理
+                thumbnailSeal.ThumbnailBase64 = isTransparent ? ImageTransparentUtil.ToDataUrlFromDataUrl(thumbnailBase64) : thumbnailBase64;
+            });
+        }
+
 
         /// <summary>
         /// 非同步方式
@@ -373,7 +419,7 @@ namespace SealTypographicWebAPI.Services.Implements
 
             //設定存檔路徑
             ImageSaveInfo imageSaveInfo = SetImageBase64InfoWithSeal(code, formSeals.First().SealType);
-            imageSaveInfo.RSAKey = GetRasKey(userId);            
+            imageSaveInfo.RSAKey = GetRsaKey(userId);            
 
             foreach (T formSeal in formSeals)
             {                
@@ -411,7 +457,7 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <param name="userId">使用者Id</param>        
         /// <returns>回傳RasKey</returns>
         /// <exception cref="InvalidOperationException"></exception>
-        public RSAKey GetRasKey(int userId) => GetRASKey(userId);
+        public RSAKey GetRsaKey(int userId) => GetRASKey(userId);
 
         /// <summary>
         /// 取得RasKey

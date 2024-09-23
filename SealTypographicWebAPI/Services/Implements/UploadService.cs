@@ -252,7 +252,7 @@ namespace SealTypographicWebAPI.Services.Implements
                                                             FullPath = x.FullPath,
                                                             EncryptKey = x.EncryptKey,
                                                             UploadType = x.UploadType,
-                                                            RSAKey = imageService.GetRasKey(userId)
+                                                            RSAKey = imageService.GetRsaKey(userId)
                                                         }).FirstOrDefault();
                 if (uploadEncryptFile != null)
                 {                    
@@ -349,7 +349,7 @@ namespace SealTypographicWebAPI.Services.Implements
                     {
                         RootPath = GetRootPath(uploadBase64Data.UploadType),
                         Code = userId.ToString(),
-                        RSAKey = imageService.GetRasKey(userId)
+                        RSAKey = imageService.GetRsaKey(userId)
                     };
                     foreach (string imagebase64 in uploadBase64Data.ImageBase64Strings)
                     {
@@ -405,7 +405,7 @@ namespace SealTypographicWebAPI.Services.Implements
                     {
                         RootPath = GetRootPath(uploadData.UploadType),
                         Code = userId.ToString(),
-                        RSAKey = imageService.GetRasKey(userId)
+                        RSAKey = imageService.GetRsaKey(userId)
                     };
 
                     if (uploadData.DuplicateFileIds != null)

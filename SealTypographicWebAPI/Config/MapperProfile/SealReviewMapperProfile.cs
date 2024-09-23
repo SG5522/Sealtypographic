@@ -3,12 +3,10 @@ using SealTypographicWebAPI.Models.CustomerSealReview;
 using SealTypographicWebAPI.Models.AccountantSignReview;
 using SealTypographicWebAPI.Utils;
 using DBEntities.Consts;
-using SealTypographicWebAPI.Models.Accountant;
 using SealTypographicWebAPI.Models.CustomerSeal;
 using DBEntities.Entities.TypographicModels;
 using DBEntities.Entities.CustomerModels;
 using DBEntities.Entities.AccountantModels;
-using DJImageLib.Utils;
 
 namespace SealTypographicWebAPI.Config.MapperProfile
 {
@@ -86,8 +84,7 @@ namespace SealTypographicWebAPI.Config.MapperProfile
 
             //會計師簽印審核詳細資料的簽印部份
             CreateMap<TypographicResource, SignImageInfo>()
-                     .ForMember(dst => dst.SealMappingConfigId, opt => opt.MapFrom(src => SealMappingConfigUtil.GetAccountantSignType(src.SubSealType)))
-                     .ForMember(dst => dst.ThumbnailBase64, opt => opt.MapFrom(src => ImageUtil.ToDataUrlFromFilePath(src.ThumbnailFullPath!)));
+                     .ForMember(dst => dst.SealMappingConfigId, opt => opt.MapFrom(src => SealMappingConfigUtil.GetAccountantSignType(src.SubSealType)));
 
             //會計師簽印審核詳細資料
             CreateMap<AccountantSignGroup, AccountantSignGroupDetailReviewViewModel>()
@@ -102,9 +99,10 @@ namespace SealTypographicWebAPI.Config.MapperProfile
                     .ForMember(dst => dst.Signs, opt => opt.MapFrom(src => src.TypographicResources.Where(x => x.DeleteStatus == DeleteStatus.No)));
 
             //會計師簽印審核詳細資料的簽印部份
-            CreateMap<TypographicResource, AccountantSignViewModel>()
-                     .ForMember(dst => dst.SealMappingConfigId, opt => opt.MapFrom(src => SealMappingConfigUtil.GetAccountantSignType(src.SubSealType)))
-                     .ForMember(dst => dst.ImageBase64, opt => opt.MapFrom(src => ImageUtil.ToDataUrlFromFilePath(src.ImageFullPath)));
+            //TODO:預定刪除
+            //CreateMap<TypographicResource, AccountantSignViewModel>()
+            //         .ForMember(dst => dst.SealMappingConfigId, opt => opt.MapFrom(src => SealMappingConfigUtil.GetAccountantSignType(src.SubSealType)));
+                     //.ForMember(dst => dst.ImageBase64, opt => opt.MapFrom(src => ImageUtil.ToDataUrlFromFilePath(src.ImageFullPath)));
 
             //會計師簽印審核詳細資料
             CreateMap<Accountant, AccountantSignGroupDetailReviewViewModel>()

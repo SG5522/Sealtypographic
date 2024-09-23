@@ -22,6 +22,7 @@ namespace SealTypographicWebAPI.Services.Implements
     {
         private readonly SealTypographicDbContext dbContext;
         private readonly IMapper mapper;
+        private readonly ImageService imageService;
         private readonly AutoMapper.IConfigurationProvider configurationProvider;
         private readonly ILogger<AccountantSignReviewService> logger;
         private readonly ILogReportService logReportService;
@@ -31,12 +32,14 @@ namespace SealTypographicWebAPI.Services.Implements
         /// </summary>
         /// <param name="dbContext"></param>
         /// <param name="mapper"></param>
+        /// <param name="imageService"></param>
         /// <param name="logger"></param>
         /// <param name="logReportService"></param>        
-        public AccountantSignReviewService(SealTypographicDbContext dbContext, IMapper mapper, ILogger<AccountantSignReviewService> logger, ILogReportService logReportService)
+        public AccountantSignReviewService(SealTypographicDbContext dbContext, IMapper mapper, ImageService imageService, ILogger<AccountantSignReviewService> logger, ILogReportService logReportService)
         {
             this.dbContext = dbContext;
             this.mapper = mapper;
+            this.imageService = imageService;
             configurationProvider = mapper.ConfigurationProvider;
             this.logger = logger;
             this.logReportService = logReportService;
@@ -89,6 +92,10 @@ namespace SealTypographicWebAPI.Services.Implements
                                                                             accountantSignSearchReview.PageSize
                                                                         );
 
+                    //多執行序處理
+                    Parallel.ForEach(accountantSignGroupReviewPaginate.ViewModels,
+                        viewModel => imageService.DecryptThumbnailSeals(viewModel.SignImageInfos, userInfo.UserId));
+
                     PageUtil.SetPaginate(accountantSignGroupReviewPaginate, accountantSignSearchReview.PageNumber, accountantSignSearchReview.PageSize, accountantSignGroupQuery.Count());
                     accountantSignGroupReviewPaginate.Success();
                     foreach(AccountantSignGroupReviewViewModel accountantSignGroupReviewViewModel in accountantSignGroupReviewPaginate.ViewModels)
@@ -135,6 +142,7 @@ namespace SealTypographicWebAPI.Services.Implements
 
                 if (accountantSignGroupQuery != null)
                 {
+                    imageService.DecryptSeals(accountantSignGroupQuery.Signs, userInfo.UserId);
                     accountantSignGroupDetailReviewResponse.ViewModel = accountantSignGroupQuery;
                     accountantSignGroupDetailReviewResponse.Success();
                     await logReportService.SaveOperationLog(

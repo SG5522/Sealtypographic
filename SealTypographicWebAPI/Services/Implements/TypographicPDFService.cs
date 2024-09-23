@@ -186,7 +186,7 @@ namespace SealTypographicWebAPI.Services.Implements
                                                             {
                                                                 FullPath = x.FullPath,
                                                                 EncryptKey = x.EncryptKey,
-                                                                RSAKey = imageService.GetRasKey(userId)
+                                                                RSAKey = imageService.GetRsaKey(userId)
                                                             }).FirstOrDefaultAsync();
                 if (uploadEncryptFile != null)
                 {
@@ -236,7 +236,7 @@ namespace SealTypographicWebAPI.Services.Implements
 
                 if (typographicPageViewModel != null)
                 {
-                    typographicPageViewModel.RSAKey = imageService.GetRasKey(userId);
+                    typographicPageViewModel.RSAKey = imageService.GetRsaKey(userId);
 
                     //取得單頁PDF圖檔資訊                    
                     byte[] pdfBytes = imageService.DecryptFileToBytes(typographicPageViewModel.PDFFullPath, typographicPageViewModel.EncryptKey,
@@ -452,7 +452,7 @@ namespace SealTypographicWebAPI.Services.Implements
                     ImageSaveInfo imageSaveInfo = new()
                     {
                         RootPath = typographyEditImagePathOptions.RootPath,
-                        RSAKey = imageService.GetRasKey(userId)
+                        RSAKey = imageService.GetRsaKey(userId)
                     };
 
                     //建立此排版PDF的審核類型與日期與建立日期                    
@@ -515,7 +515,7 @@ namespace SealTypographicWebAPI.Services.Implements
                     ImageSaveInfo imageSaveInfo = new()
                     {
                         RootPath = typographyEditImagePathOptions.RootPath,
-                        RSAKey = imageService.GetRasKey(userId)
+                        RSAKey = imageService.GetRsaKey(userId)
                     };
 
                     foreach (TypographicPageForm typographicPageForm in typographicPDFSaveForm.Pages)

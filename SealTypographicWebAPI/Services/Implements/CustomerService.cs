@@ -108,12 +108,6 @@ namespace SealTypographicWebAPI.Services.Implements
                 if (customerQuery.Any())
                 {
                     //取得該頁
-                    //customerPaginateSummary.Summarys = customerQuery
-                    //                                    .Skip((customerSearch.PageNumber - 1) * customerSearch.PageSize)
-                    //                                    .Take(customerSearch.PageSize)
-                    //                                    .ProjectTo<CustomerSummary>(configurationProvider)
-                    //                                    .ToList();
-
                     customerPaginateSummary.Summarys = await PageUtil.SetPaginateViewModelAsync<Customer ,CustomerSummary>
                                                         (customerQuery, configurationProvider, customerSearch.PageNumber, customerSearch.PageSize);
 
