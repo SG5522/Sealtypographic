@@ -11,7 +11,7 @@ namespace SealTypographicWebAPI.Models.BaseModels
         /// 圖檔字串(Base64)
         /// </summary>
         /// <example>image/...</example>
-        public string ImageBase64 { get; set; }
+        public virtual string ImageBase64 { get; set; }
 
         /// <summary>
         /// 圖檔路徑

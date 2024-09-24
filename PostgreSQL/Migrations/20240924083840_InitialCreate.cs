@@ -89,9 +89,9 @@ namespace PostgreSQL.Migrations
                     UpdateUserId = table.Column<int>(type: "integer", nullable: true),
                     DeleteStatus = table.Column<byte>(type: "smallint", nullable: false),
                     ReviewUserId = table.Column<int>(type: "integer", nullable: true),
-                    ReviewDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    StartDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    EndDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    ReviewDate = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
+                    StartDate = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
+                    EndDate = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
                     ReviewStatus = table.Column<short>(type: "smallint", nullable: false)
                 },
                 constraints: table =>
@@ -394,7 +394,7 @@ namespace PostgreSQL.Migrations
                     UploadType = table.Column<byte>(type: "smallint", nullable: false),
                     OriginalFileName = table.Column<string>(type: "text", nullable: false),
                     FullPath = table.Column<string>(type: "text", nullable: false),
-                    EncryptKey = table.Column<string>(type: "text", nullable: false),
+                    EncryptKey = table.Column<string>(type: "text", nullable: true),
                     FileWorkStatus = table.Column<int>(type: "integer", nullable: false),
                     CompanyId = table.Column<int>(type: "integer", nullable: false),
                     CreateDate = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
@@ -439,9 +439,9 @@ namespace PostgreSQL.Migrations
                     UpdateUserId = table.Column<int>(type: "integer", nullable: true),
                     DeleteStatus = table.Column<byte>(type: "smallint", nullable: false),
                     ReviewUserId = table.Column<int>(type: "integer", nullable: true),
-                    ReviewDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    StartDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    EndDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    ReviewDate = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
+                    StartDate = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
+                    EndDate = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
                     ReviewStatus = table.Column<short>(type: "smallint", nullable: false)
                 },
                 constraints: table =>
@@ -581,9 +581,9 @@ namespace PostgreSQL.Migrations
                     UpdateUserId = table.Column<int>(type: "integer", nullable: true),
                     DeleteStatus = table.Column<byte>(type: "smallint", nullable: false),
                     ReviewUserId = table.Column<int>(type: "integer", nullable: true),
-                    ReviewDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    StartDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    EndDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    ReviewDate = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
+                    StartDate = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
+                    EndDate = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
                     ReviewStatus = table.Column<short>(type: "smallint", nullable: false)
                 },
                 constraints: table =>

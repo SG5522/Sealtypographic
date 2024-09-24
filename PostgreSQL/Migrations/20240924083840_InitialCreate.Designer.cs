@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace PostgreSQL.Migrations
 {
     [DbContext(typeof(SealTypographicDbContext))]
-    [Migration("20240711100017_InitialCreate")]
+    [Migration("20240924083840_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -135,10 +135,10 @@ namespace PostgreSQL.Migrations
                     b.Property<byte>("DeleteStatus")
                         .HasColumnType("smallint");
 
-                    b.Property<DateTime>("EndDate")
+                    b.Property<DateTimeOffset>("EndDate")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<DateTime?>("ReviewDate")
+                    b.Property<DateTimeOffset?>("ReviewDate")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<short>("ReviewStatus")
@@ -147,7 +147,7 @@ namespace PostgreSQL.Migrations
                     b.Property<int?>("ReviewUserId")
                         .HasColumnType("integer");
 
-                    b.Property<DateTime>("StartDate")
+                    b.Property<DateTimeOffset>("StartDate")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<DateTimeOffset>("UpdateDate")
@@ -461,13 +461,13 @@ namespace PostgreSQL.Migrations
                     b.Property<byte>("DeleteStatus")
                         .HasColumnType("smallint");
 
-                    b.Property<DateTime>("EndDate")
+                    b.Property<DateTimeOffset>("EndDate")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<int>("QuarterYearId")
                         .HasColumnType("integer");
 
-                    b.Property<DateTime?>("ReviewDate")
+                    b.Property<DateTimeOffset?>("ReviewDate")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<short>("ReviewStatus")
@@ -476,7 +476,7 @@ namespace PostgreSQL.Migrations
                     b.Property<int?>("ReviewUserId")
                         .HasColumnType("integer");
 
-                    b.Property<DateTime>("StartDate")
+                    b.Property<DateTimeOffset>("StartDate")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<byte>("TypographyType")
@@ -824,7 +824,7 @@ namespace PostgreSQL.Migrations
                     b.Property<byte>("DeleteStatus")
                         .HasColumnType("smallint");
 
-                    b.Property<DateTime>("EndDate")
+                    b.Property<DateTimeOffset>("EndDate")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("FullPath")
@@ -841,7 +841,7 @@ namespace PostgreSQL.Migrations
                     b.Property<int>("QuarterYearId")
                         .HasColumnType("integer");
 
-                    b.Property<DateTime?>("ReviewDate")
+                    b.Property<DateTimeOffset?>("ReviewDate")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<short>("ReviewStatus")
@@ -850,7 +850,7 @@ namespace PostgreSQL.Migrations
                     b.Property<int?>("ReviewUserId")
                         .HasColumnType("integer");
 
-                    b.Property<DateTime>("StartDate")
+                    b.Property<DateTimeOffset>("StartDate")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<byte>("TypographyType")
@@ -1056,7 +1056,6 @@ namespace PostgreSQL.Migrations
                         .HasColumnType("smallint");
 
                     b.Property<string>("EncryptKey")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<int>("FileWorkStatus")

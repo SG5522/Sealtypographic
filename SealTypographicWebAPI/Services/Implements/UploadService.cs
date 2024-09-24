@@ -28,7 +28,7 @@ namespace SealTypographicWebAPI.Services.Implements
         private readonly SealTypographicDbContext dbContext;
         private readonly ImageService imageService;
         private readonly IStringLocalizer<UploadService> localizer;
-        private readonly ILogger<UploadData> logger;
+        private readonly ILogger<UploadService> logger;
         private readonly AutoMapper.IConfigurationProvider configurationProvider;
         private UploadPathOption uploadConfigPath;
 
@@ -44,7 +44,7 @@ namespace SealTypographicWebAPI.Services.Implements
         public UploadService(SealTypographicDbContext dbContext
             , ImageService imageService
             , IStringLocalizer<UploadService> localizer
-            , ILogger<UploadData> logger
+            , ILogger<UploadService> logger
             , IMapper mapper
             , IOptionsMonitor<UploadPathOption> options)
         {
@@ -401,13 +401,6 @@ namespace SealTypographicWebAPI.Services.Implements
 
                 if (companyQuery != null)
                 {
-                    ImageSaveInfo imageSaveInfo = new()
-                    {
-                        RootPath = GetRootPath(uploadData.UploadType),
-                        Code = userId.ToString(),
-                        RSAKey = imageService.GetRsaKey(userId)
-                    };
-
                     if (uploadData.DuplicateFileIds != null)
                     {
                         foreach (int duplicateFileId in uploadData.DuplicateFileIds)
@@ -427,7 +420,7 @@ namespace SealTypographicWebAPI.Services.Implements
                                 }
 
                                 //新增上傳的檔案
-                                companyQuery.UploadFiles.Add(await SaveFile(formFile, uploadData.UploadType, userId, imageSaveInfo));
+                                companyQuery.UploadFiles.Add(await SaveFile(formFile, uploadData.UploadType, userId));
                                 uploadData.FormFiles.Remove(formFile);
                             }
                         }
@@ -435,7 +428,7 @@ namespace SealTypographicWebAPI.Services.Implements
 
                     foreach (IFormFile formFile in uploadData.FormFiles)
                     {
-                        companyQuery.UploadFiles.Add(await SaveFile(formFile, uploadData.UploadType, userId, imageSaveInfo));
+                        companyQuery.UploadFiles.Add(await SaveFile(formFile, uploadData.UploadType, userId));
                     }
                     dbContext.SaveChanges();
                     response.Success();
@@ -449,7 +442,7 @@ namespace SealTypographicWebAPI.Services.Implements
             catch (DbUpdateException ex)
             {
                 response.DbError();
-                logger.LogInformation("SaveScanFile Db error {@dbError}", ex.Message);
+                logger.LogInformation("SaveScanFile Db error {@dbError}", ex.InnerException);
             }
             catch (Exception ex)
             {
@@ -552,18 +545,25 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <param name="formFile">上傳的檔案</param>
         /// <param name="uploadType">檔案類型</param>
         /// <param name="userId">使用者 ID</param>
-        /// <param name="imageSaveInfo">Image存檔資訊</param>
         /// <returns>上傳檔案的詳細信息</returns>              
-        private async Task<UploadFile> SaveFile(IFormFile formFile, UploadType uploadType, int userId, ImageSaveInfo imageSaveInfo)
+        private async Task<UploadFile> SaveFile(IFormFile formFile, UploadType uploadType, int userId)
         {
             using MemoryStream memoryStream = new();
             await formFile.CopyToAsync(memoryStream);
 
-            if (uploadType >= UploadType.FinancialReport || uploadType <= UploadType.AccountantSignCertificate)
+            ImageSaveInfo imageSaveInfo = new()
+            {
+                RootPath = GetRootPath(uploadType),
+                Code = userId.ToString(),
+                RSAKey = imageService.GetRsaKey(userId)
+            };
+
+            if (uploadType >= UploadType.FinancialReport && uploadType <= UploadType.AccountantSignCertificate)
             {
                 // 使用擴充方法將 MemoryStream 轉換為 Base64 字串
                 imageSaveInfo.Base64 = memoryStream.ToBase64String();
-                await imageService.EncryptFileAsync(imageSaveInfo);
+                imageSaveInfo.FullPath += Path.GetExtension(formFile.FileName);
+                await imageService.SaveFileAsync(imageSaveInfo);
             }
             else
             {

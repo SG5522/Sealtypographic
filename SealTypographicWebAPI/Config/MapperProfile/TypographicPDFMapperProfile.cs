@@ -205,7 +205,10 @@ namespace SealTypographicWebAPI.Config.MapperProfile
 
             // PDF排版圖像與位置的Map
             CreateMap<TypographicResourceLocation, EditImage>()
-                .ForMember(dst => dst.ImageBase64, opt => opt.MapFrom(src => TypographicResourceLocationUtil.GetImageBase64(src)));
+                //.ForMember(dst => dst.ImageBase64, opt => opt.MapFrom(src => TypographicResourceLocationUtil.GetImageBase64(src)));
+                .ForMember(dst => dst.ImageBase64, opt => opt.Ignore())
+                .ForMember(dst => dst.ImageFullPath, opt => opt.MapFrom(src => src.EditImageFullPath ?? src.TypographicResource.ImageFullPath))
+                .ForMember(dst => dst.ImageEncryptKey, opt => opt.MapFrom(src => src.EditImageEncryptKey ?? src.TypographicResource.ImageEncryptKey));
 
             // PDF排版圖像紀錄處理
             CreateMap<TypographicPDFEditViewResponse, TypographicPDFEditViewResponse>()

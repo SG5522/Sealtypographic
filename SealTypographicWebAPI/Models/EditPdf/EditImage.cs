@@ -1,32 +1,34 @@
-﻿using DBEntities.Consts;
+﻿using CommonLib.Extensions;
 using DJImageLib.Extensions;
-using DJImageLib.Utils;
-using Humanizer.Localisation;
-using System.Text.RegularExpressions;
+using SealTypographicWebAPI.Models.BaseModels;
 
 namespace SealTypographicWebAPI.Models.EditPdf
 {
     /// <summary>
     /// PDF排版圖像與位置
     /// </summary>
-    public class EditImage
+    public class EditImage : BaseSeal
     {
         private string imageBase64;
         /// <summary>
         /// ImageBase64字串
         /// </summary>
-        public string ImageBase64
+        public override string ImageBase64
         {
             get { return imageBase64; }
             set
-            {
-                imageBase64 = value;
-                if (imageBase64 != string.Empty)
-                {                    
-                    ImageStream = new MemoryStream(imageBase64.ToBytes());
+            {                
+                if (value != string.Empty)
+                {
+                    imageBase64 = value;
+                    byte[]? bytes = imageBase64.FromDataUrlToBytes();
+                    if (bytes != null)
+                    {
+                        ImageStream = new MemoryStream(bytes);
+                    }                        
                 }
             }
-        }
+        }        
 
         /// <summary>
         /// 最左邊位置

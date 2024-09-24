@@ -106,6 +106,25 @@ namespace SealTypographicWebAPI.Services.Implements
         }
 
         /// <summary>
+        /// 加密圖片並儲存(非同步)
+        /// </summary>
+        /// <param name="imageSaveInfo">Image存檔資訊</param>                
+        /// <returns>回傳加密後的Key</returns>
+        /// <exception cref="ArgumentException">imageSaveInfo.ImageModel.Base64 無資料可能是Base64不合法</exception>
+        public async Task SaveFileAsync(ImageSaveInfo imageSaveInfo)
+        {            
+            if (string.IsNullOrWhiteSpace(imageSaveInfo.Base64))
+            {
+                throw new ArgumentException("Invalid imageSaveInfo.Base64 string, unable to generate image data", nameof(imageSaveInfo));
+            }
+            else
+            {                
+                //儲存檔案
+                await imageSaveInfo.Base64.ToBytes().SaveAsync(imageSaveInfo.FullPath);
+            }
+        }
+
+        /// <summary>
         /// Base64轉圖檔並存檔
         /// saveFullPath為完整路徑
         /// </summary>

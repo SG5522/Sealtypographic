@@ -22,6 +22,7 @@ using Microsoft.OpenApi.Extensions;
 using DBEntities.Extensions;
 using SealTypographicWebAPI.Models.Upload;
 using SealTypographicWebAPI.Models.BaseModels;
+using k8s.Models;
 
 namespace SealTypographicWebAPI.Services.Implements
 {
@@ -180,23 +181,18 @@ namespace SealTypographicWebAPI.Services.Implements
 
             try
             {
-                UploadEncryptFile? uploadEncryptFile = await dbContext.UploadFiles
-                                                            .Where(x => x.Id == uploadFileid)
-                                                            .Select(x => new UploadEncryptFile
-                                                            {
-                                                                FullPath = x.FullPath,
-                                                                EncryptKey = x.EncryptKey,
-                                                                RSAKey = imageService.GetRsaKey(userId)
-                                                            }).FirstOrDefaultAsync();
-                if (uploadEncryptFile != null)
+                string? pdfPath = await dbContext.UploadFiles.Where(x => x.Id == uploadFileid).Select(x => x.FullPath).FirstOrDefaultAsync();
+
+                if (pdfPath != null)
                 {
                     //解密檔案
-                    byte[] pdfBytes = imageService.DecryptFileToBytes(uploadEncryptFile.FullPath, uploadEncryptFile.EncryptKey, uploadEncryptFile.RSAKey);
+                    //byte[] pdfBytes = imageService.DecryptFileToBytes(uploadEncryptFile.FullPath, uploadEncryptFile.EncryptKey, uploadEncryptFile.RSAKey);
+                    
 
                     //取得單頁PDF圖檔資訊
-                    PdfPageImageInfo pdfPageImageInfo = PdfImageUtil.GetPdfPageImageInfo(pdfBytes, pageNumber);
+                    PdfPageImageInfo pdfPageImageInfo = PdfImageUtil.GetPdfPageImageInfo(pdfPath, pageNumber);
 
-                    pDFViewModel.PDFFullPath = uploadEncryptFile.FullPath; //Log使用
+                    pDFViewModel.PDFFullPath = pdfPath; //Log使用
                     pDFViewModel.TotalPage = pdfPageImageInfo.TotalPage;
                     pDFViewModel.ImageWidth = pdfPageImageInfo.Width;
                     pDFViewModel.ImageHeight = pdfPageImageInfo.Height;
@@ -248,7 +244,7 @@ namespace SealTypographicWebAPI.Services.Implements
                     typographicPageViewModel.PDFImageHeight = pdfPageImageInfo.Height;
                     typographicPageViewModel.PDFImageBase64 = pdfPageImageInfo.ImageDataUrl;
 
-                    //解密所有印鑑、簽印、臨時章的圖片
+                    //解密所有印鑑、簽印、臨時章的圖片                    
                     DecryptImagesAndUpdateBase64(typographicPageViewModel.CustomerSealLocationViewModels, typographicPageViewModel.RSAKey);
                     DecryptImagesAndUpdateBase64(typographicPageViewModel.AccountantSignLocationViewModels, typographicPageViewModel.RSAKey);                    
                     DecryptImagesAndUpdateBase64(typographicPageViewModel.TemporarySealLocationViewModels, typographicPageViewModel.RSAKey);
@@ -370,6 +366,12 @@ namespace SealTypographicWebAPI.Services.Implements
                 {
                     editPDF.PDFColor = typographicPDFMakeSetting.PDFColor;
                     editPDF.IsBlank = typographicPDFMakeSetting.IsBlank;
+
+                    //圖片解密 多執行序處理 
+                    foreach (EditPage editPage in editPDF.EditPages)
+                    {
+                        imageService.DecryptSeals(editPage.EditImages, userId);
+                    }
 
                     typographicPagePDFResponse.PDFBase64 = EditPdfUitl.ToDataURL(editPDF, 300f);
                     typographicPagePDFResponse.Success();

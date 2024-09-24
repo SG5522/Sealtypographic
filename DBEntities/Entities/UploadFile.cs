@@ -27,7 +27,7 @@ namespace DBEntities.Entities
         /// <summary>
         /// 圖片加密key (部份圖檔無需加密)
         /// </summary>
-        public string EncryptKey { get; set; }
+        public string? EncryptKey { get; set; }
 
         /// <summary>
         /// 檔案工作狀態

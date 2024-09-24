@@ -1053,7 +1053,6 @@ namespace PostgreSQL.Migrations
                         .HasColumnType("smallint");
 
                     b.Property<string>("EncryptKey")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<int>("FileWorkStatus")
