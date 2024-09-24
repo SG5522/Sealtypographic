@@ -26,7 +26,7 @@ namespace DBEntities.Extensions
             else if (reviewStatus == ReviewStatus.Approval)
             {
                 input.StartDate = DateTimeOffset.UtcNow;
-                input.EndDate = DateTimeOffset.Parse("9999/12/31");                
+                input.EndDate = DateTimeOffset.MaxValue;                
             }
 
             // 更新草稿狀態以外的審核日期與使用者

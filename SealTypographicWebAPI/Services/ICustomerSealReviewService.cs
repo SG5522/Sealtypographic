@@ -16,7 +16,7 @@ namespace SealTypographicWebAPI.Services
         /// <param name="typographyType">排版類別</param>
         /// <param name="userInfo">登入使用者基本資訊</param>
         /// <returns></returns>        
-        Task<CustomerSealGroupReviewPaginate> GetReviewList(CustomerSealSearchReview customerSealSearchReview, TypographyType typographyType, UserInfo userInfo);
+        Task<CustomerSealReviewPaginate> GetReviewList(CustomerSealSearchReview customerSealSearchReview, TypographyType typographyType, UserInfo userInfo);
 
         /// <summary>
         /// 基本資料與印鑑細項
@@ -24,7 +24,7 @@ namespace SealTypographicWebAPI.Services
         /// <param name="customerSealQuarterId">印鑑季度Id</param>
         /// <param name="userInfo">登入使用者基本資訊</param>
         /// <returns></returns>        
-        Task<CustomerSealGroupDetailReviewResponse> GetReviewDetail(int customerSealQuarterId, UserInfo userInfo);
+        Task<CustomerSealDetailReviewResponse> GetReviewDetail(int customerSealQuarterId, UserInfo userInfo);
 
         /// <summary>
         /// 更換審核狀態

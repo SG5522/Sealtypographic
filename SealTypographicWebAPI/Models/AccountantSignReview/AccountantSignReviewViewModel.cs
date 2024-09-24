@@ -7,12 +7,12 @@ namespace SealTypographicWebAPI.Models.AccountantSignReview
     /// <summary>
     /// 會計師簽印審核檢視
     /// </summary>
-    public class AccountantSignGroupReviewViewModel
+    public class AccountantSignReviewViewModel
     {
         /// <summary>
         /// New SignImageInfos
         /// </summary>
-        public AccountantSignGroupReviewViewModel()
+        public AccountantSignReviewViewModel()
         {
             SignImageInfos = new();
         }

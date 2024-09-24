@@ -15,7 +15,7 @@ namespace SealTypographicWebAPI.Services
         /// <param name="accountantSignSearchReview">會計師簽印審核狀態分頁搜尋</param>
         /// <param name="userInfo">登入使用者基本資訊</param>        
         /// <returns></returns>
-        Task<AccountantSignGroupReviewPaginate> GetReviewPaginate(AccountantSignSearchReview accountantSignSearchReview, UserInfo userInfo);
+        Task<AccountantSignReviewPaginate> GetReviewPaginate(AccountantSignSearchReview accountantSignSearchReview, UserInfo userInfo);
 
         /// <summary>
         /// 基本資料與簽印組
@@ -23,7 +23,7 @@ namespace SealTypographicWebAPI.Services
         /// <param name="accountantSignGroupId">會計師簽印組Id</param>
         /// <param name="userInfo">登入使用者基本資訊</param>
         /// <returns></returns>
-        Task<AccountantSignGroupDetailReviewResponse> GetReviewDetail(int accountantSignGroupId, UserInfo userInfo);
+        Task<AccountantSignDetailReviewResponse> GetReviewDetail(int accountantSignGroupId, UserInfo userInfo);
 
         /// <summary>
         /// 更換審核狀態

@@ -76,7 +76,7 @@ namespace SealTypographicWebAPI.Config.MapperProfile
                     .ForMember(dst => dst.AccountantId, opt => opt.MapFrom(src => src.Id))
                     .ForMember(dst => dst.AccountantName, opt => opt.MapFrom(src => src.Name));
 
-            CreateMap<CustomerSealGroupReviewViewModel, OperationLogSave>()
+            CreateMap<CustomerSealReviewViewModel, OperationLogSave>()
                     .ForMember(dst => dst.ActionType, opt => opt.MapFrom(src =>
                         src.TypographyType == TypographyType.FinancialReport ?
                         ActionType.FinancialReportSealQuery : ActionType.TaxReportSealQuery
@@ -85,7 +85,7 @@ namespace SealTypographicWebAPI.Config.MapperProfile
                     .ForMember(dst => dst.CustomerSealGroupId, opt => opt.MapFrom(src => src.Id));
 
             //客戶印鑑審核查詢操作紀錄
-            CreateMap<CustomerSealGroupDetailReviewViewModel, OperationLogSave>()
+            CreateMap<CustomerSealDetailReviewViewModel, OperationLogSave>()
                     .ForMember(dst => dst.ActionType, opt => opt.MapFrom(src =>
                         src.TypographyType == TypographyType.FinancialReport ?
                         ActionType.FinancialReportSealQuery : ActionType.TaxReportSealQuery
@@ -100,7 +100,7 @@ namespace SealTypographicWebAPI.Config.MapperProfile
                     .ForMember(dst => dst.AccountantSignGroupCreateDate, opt => opt.MapFrom(src => src.GroupCreateDate));
 
             //會計師審核查詢操作紀錄
-            CreateMap<AccountantSignGroupReviewViewModel, OperationLogSave>()
+            CreateMap<AccountantSignReviewViewModel, OperationLogSave>()
                     .ForMember(dst => dst.ActionType, opt => opt.MapFrom(src => ActionType.AccountantSignQuery))
                     .ForMember(dst => dst.AccountantId, opt => opt.MapFrom(src => src.AccountantId))
                     .ForMember(dst => dst.AccountantName, opt => opt.MapFrom(src => src.Name))
@@ -108,7 +108,7 @@ namespace SealTypographicWebAPI.Config.MapperProfile
                     .ForMember(dst => dst.AccountantSignGroupCreateDate, opt => opt.MapFrom(src => src.GroupCreateDate));
 
             //會計師審核查詢操作紀錄
-            CreateMap<AccountantSignGroupDetailReviewViewModel, OperationLogSave>()
+            CreateMap<AccountantSignDetailReviewViewModel, OperationLogSave>()
                     .ForMember(dst => dst.ActionType, opt => opt.MapFrom(src => ActionType.AccountantSignQuery))
                     .ForMember(dst => dst.AccountantName, opt => opt.MapFrom(src => src.Name))
                     .ForMember(dst => dst.AccountantSignGroupId, opt => opt.MapFrom(src => src.Id))

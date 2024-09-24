@@ -89,8 +89,7 @@ namespace SealTypographicWebAPI.Config.MapperProfile
                     .ForMember(dst => dst.SignViewModels, opt => opt.MapFrom(src => src.TypographicResources.Where(x => x.DeleteStatus == DeleteStatus.No)));
 
             CreateMap<TypographicResource, AccountantSignViewModel>()
-                    .ForMember(dst => dst.SealMappingConfigId, opt => opt.MapFrom(src => SealMappingConfigUtil.GetAccountantSignType(src.SubSealType)));                    
-                    //.ForMember(dst => dst.ImageBase64, opt => opt.MapFrom(src => ImageUtil.ToDataUrlFromFilePath(src.ImageFullPath)));
+                    .ForMember(dst => dst.SealMappingConfigId, opt => opt.MapFrom(src => SealMappingConfigUtil.GetAccountantSignType(src.SubSealType)));                                        
 
             CreateMap<AccountantSign, TypographicResource>()
                     .ForMember(dst => dst.ImageFullPath, opt => opt.Ignore()); // <---imagebase64要額外處理所以要忽略

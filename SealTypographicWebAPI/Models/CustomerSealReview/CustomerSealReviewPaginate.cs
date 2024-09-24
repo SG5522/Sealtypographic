@@ -7,12 +7,12 @@ namespace SealTypographicWebAPI.Models.CustomerSealReview
     /// <summary>
     /// 客戶印鑑審核檢視列表(分頁)
     /// </summary>
-    public class CustomerSealGroupReviewPaginate : PaginateViewModel
+    public class CustomerSealReviewPaginate : PaginateViewModel
     {
         /// <summary>
         /// New ViewModels
         /// </summary>
-        public CustomerSealGroupReviewPaginate()
+        public CustomerSealReviewPaginate()
         {
             ViewModels = new();
         }
@@ -20,6 +20,6 @@ namespace SealTypographicWebAPI.Models.CustomerSealReview
         /// <summary>
         /// 審核檢視列表
         /// </summary>
-        public List<CustomerSealGroupReviewViewModel> ViewModels { get; set; }
+        public List<CustomerSealReviewViewModel> ViewModels { get; set; }
     }
 }

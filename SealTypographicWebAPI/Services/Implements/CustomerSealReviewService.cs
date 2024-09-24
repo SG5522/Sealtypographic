@@ -57,12 +57,12 @@ namespace SealTypographicWebAPI.Services.Implements
         }
 
         ///<inheritdoc />
-        public async Task<CustomerSealGroupReviewPaginate> GetReviewList(CustomerSealSearchReview customerSealSearchReview, TypographyType typographyType, UserInfo userInfo)
+        public async Task<CustomerSealReviewPaginate> GetReviewList(CustomerSealSearchReview customerSealSearchReview, TypographyType typographyType, UserInfo userInfo)
         {
             logger.LogInformation("GetReviewList input {@customerSealSearchReview} typographyType: {@TypographyType} userId : {@userId}"
                 , customerSealSearchReview, typographyType, userInfo.UserId);
 
-            CustomerSealGroupReviewPaginate customerSealQuarterResponse = new ();
+            CustomerSealReviewPaginate customerSealQuarterResponse = new ();
             int companyId = 1;
 
             try
@@ -100,7 +100,7 @@ namespace SealTypographicWebAPI.Services.Implements
                     RSAKey rsakey = imageService.GetRsaKey(userInfo.UserId);
 
                     //取得該頁                   
-                    customerSealQuarterResponse.ViewModels = await PageUtil.SetPaginateViewModelAsync<CustomerSealGroup, CustomerSealGroupReviewViewModel>
+                    customerSealQuarterResponse.ViewModels = await PageUtil.SetPaginateViewModelAsync<CustomerSealGroup, CustomerSealReviewViewModel>
                                                             (
                                                                 customerSealQuarterQuery,                                                                 
                                                                 configurationProvider,
@@ -115,7 +115,7 @@ namespace SealTypographicWebAPI.Services.Implements
                     PageUtil.SetPaginate(customerSealQuarterResponse, customerSealSearchReview.PageNumber, customerSealSearchReview.PageSize, customerSealQuarterQuery.Count());
                     customerSealQuarterResponse.Success();                    
 
-                    foreach(CustomerSealGroupReviewViewModel customerSealGroupReviewViewModel in customerSealQuarterResponse.ViewModels)
+                    foreach(CustomerSealReviewViewModel customerSealGroupReviewViewModel in customerSealQuarterResponse.ViewModels)
                     {
                         await logReportService.SaveOperationLog(
                                                                     mapper.Map<OperationLogSave>(customerSealGroupReviewViewModel),
@@ -140,20 +140,20 @@ namespace SealTypographicWebAPI.Services.Implements
         }
         
         ///<inheritdoc />
-        public async Task<CustomerSealGroupDetailReviewResponse> GetReviewDetail(int customerSealQuarterId, UserInfo userInfo)
+        public async Task<CustomerSealDetailReviewResponse> GetReviewDetail(int customerSealQuarterId, UserInfo userInfo)
         {
             logger.LogInformation("GetReviewDetail input customerSealQuarterId: {@customerSealQuarterId} userId: {@userId}", customerSealQuarterId, userInfo.UserId);
 
-            CustomerSealGroupDetailReviewResponse customerSealReviewDetailResponse = new();
+            CustomerSealDetailReviewResponse customerSealReviewDetailResponse = new();
 
             try
             {
-                CustomerSealGroupDetailReviewViewModel? customerSealGroupQuery = await dbContext.CustomerSealGroups
+                CustomerSealDetailReviewViewModel? customerSealGroupQuery = await dbContext.CustomerSealGroups
                                                                                 .Include(x => x.Customer)
                                                                                 .Include(x => x.QuarterYear)
                                                                                 .Include(x => x.TypographicResources)
                                                                                 .Where(x => x.Id == customerSealQuarterId)
-                                                                                .ProjectTo<CustomerSealGroupDetailReviewViewModel>(configurationProvider)
+                                                                                .ProjectTo<CustomerSealDetailReviewViewModel>(configurationProvider)
                                                                                 .FirstOrDefaultAsync();
 
                 if (customerSealGroupQuery != null)

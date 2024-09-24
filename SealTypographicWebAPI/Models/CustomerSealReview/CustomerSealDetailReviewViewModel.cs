@@ -9,12 +9,12 @@ namespace SealTypographicWebAPI.Models.CustomerSealReview
     /// <summary>
     /// 客戶印鑑審核詳細資料
     /// </summary>
-    public class CustomerSealGroupDetailReviewViewModel
+    public class CustomerSealDetailReviewViewModel
     {
         /// <summary>
         /// new Seals
         /// </summary>
-        public CustomerSealGroupDetailReviewViewModel() 
+        public CustomerSealDetailReviewViewModel() 
         {
             Seals = new();
         }

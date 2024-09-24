@@ -38,7 +38,7 @@ namespace SealTypographicWebAPI.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet("[Action]")]
-        public async Task<AccountantSignGroupReviewPaginate> ReviewPaginate([FromQuery]AccountantSignSearchReview accountantSignSearchReview) 
+        public async Task<AccountantSignReviewPaginate> ReviewPaginate([FromQuery]AccountantSignSearchReview accountantSignSearchReview) 
            => await accountSignReviewService.GetReviewPaginate(accountantSignSearchReview, await GetUserInfo());
 
         /// <summary>
@@ -47,7 +47,7 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="accountantSignGroupId"></param>        
         /// <returns></returns>
         [HttpGet("{accountantSignGroupId}")]
-        public async Task<AccountantSignGroupDetailReviewResponse> ReviewDetail(int accountantSignGroupId)
+        public async Task<AccountantSignDetailReviewResponse> ReviewDetail(int accountantSignGroupId)
              => await accountSignReviewService.GetReviewDetail(accountantSignGroupId, await GetUserInfo());
 
         /// <summary>

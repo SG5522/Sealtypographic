@@ -37,7 +37,7 @@ namespace SealTypographicWebAPI.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet("[Action]")]
-        public async Task<CustomerSealGroupReviewPaginate> ReviewPaginate([FromQuery]CustomerSealSearchReview customerSealReviewSearch) => 
+        public async Task<CustomerSealReviewPaginate> ReviewPaginate([FromQuery]CustomerSealSearchReview customerSealReviewSearch) => 
              await customerSealReviewService.GetReviewList(customerSealReviewSearch, TypographyType.FinancialReport, await GetUserInfo());
 
         /// <summary>
@@ -46,7 +46,7 @@ namespace SealTypographicWebAPI.Controllers
         /// <param name="customerSealQuarterId"></param>        
         /// <returns></returns>
         [HttpGet("{customerSealQuarterId}")]
-        public async Task<CustomerSealGroupDetailReviewResponse> ReviewDetail(int customerSealQuarterId) => 
+        public async Task<CustomerSealDetailReviewResponse> ReviewDetail(int customerSealQuarterId) => 
             await customerSealReviewService.GetReviewDetail(customerSealQuarterId, await GetUserInfo());
 
         /// <summary>

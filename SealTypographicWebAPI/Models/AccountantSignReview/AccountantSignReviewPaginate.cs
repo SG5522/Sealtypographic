@@ -6,12 +6,12 @@ namespace SealTypographicWebAPI.Models.AccountantSignReview
     /// <summary>
     /// 會計師簽印審核檢視列表(分頁)
     /// </summary>
-    public class AccountantSignGroupReviewPaginate : PaginateViewModel
+    public class AccountantSignReviewPaginate : PaginateViewModel
     {
         /// <summary>
         /// New ViewModels
         /// </summary>
-        public AccountantSignGroupReviewPaginate()
+        public AccountantSignReviewPaginate()
         {
             ViewModels = new();
         }
@@ -19,6 +19,6 @@ namespace SealTypographicWebAPI.Models.AccountantSignReview
         /// <summary>
         /// 審核檢視列表
         /// </summary>
-        public List<AccountantSignGroupReviewViewModel> ViewModels { get; set; }
+        public List<AccountantSignReviewViewModel> ViewModels { get; set; }
     }
 }

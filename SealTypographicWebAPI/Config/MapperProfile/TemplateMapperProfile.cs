@@ -70,7 +70,6 @@ namespace SealTypographicWebAPI.Config.MapperProfile
                 .ForMember(dst => dst.ThumbnailBase64, opt => opt.Ignore());
 
 
-
             //信頭樣板使用
             CreateMap<LetterheadImageTemplateForm, Template>();
             CreateMap<LetterheadImageTemplateLocationForm, TemplateLocation>();

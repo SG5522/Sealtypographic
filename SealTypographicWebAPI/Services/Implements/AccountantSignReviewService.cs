@@ -46,11 +46,11 @@ namespace SealTypographicWebAPI.Services.Implements
         }
 
         ///<inheritdoc />
-        public async Task<AccountantSignGroupReviewPaginate> GetReviewPaginate(AccountantSignSearchReview accountantSignSearchReview, UserInfo userInfo)
+        public async Task<AccountantSignReviewPaginate> GetReviewPaginate(AccountantSignSearchReview accountantSignSearchReview, UserInfo userInfo)
         {
             logger.LogInformation("GetReviewPaginate input {@input} userId {@userId}", accountantSignSearchReview, userInfo.UserId);
 
-            AccountantSignGroupReviewPaginate accountantSignGroupReviewPaginate = new();
+            AccountantSignReviewPaginate accountantSignGroupReviewPaginate = new();
 
             try
             {
@@ -84,7 +84,7 @@ namespace SealTypographicWebAPI.Services.Implements
                 if (accountantSignGroupQuery.Any())
                 {
                     //取得該頁                   
-                    accountantSignGroupReviewPaginate.ViewModels = await PageUtil.SetPaginateViewModelAsync<AccountantSignGroup, AccountantSignGroupReviewViewModel>
+                    accountantSignGroupReviewPaginate.ViewModels = await PageUtil.SetPaginateViewModelAsync<AccountantSignGroup, AccountantSignReviewViewModel>
                                                                         (
                                                                             accountantSignGroupQuery,                                                                        
                                                                             configurationProvider,
@@ -98,7 +98,7 @@ namespace SealTypographicWebAPI.Services.Implements
 
                     PageUtil.SetPaginate(accountantSignGroupReviewPaginate, accountantSignSearchReview.PageNumber, accountantSignSearchReview.PageSize, accountantSignGroupQuery.Count());
                     accountantSignGroupReviewPaginate.Success();
-                    foreach(AccountantSignGroupReviewViewModel accountantSignGroupReviewViewModel in accountantSignGroupReviewPaginate.ViewModels)
+                    foreach(AccountantSignReviewViewModel accountantSignGroupReviewViewModel in accountantSignGroupReviewPaginate.ViewModels)
                     {                        
                         await logReportService.SaveOperationLog(
                                                                     mapper.Map<OperationLogSave>(accountantSignGroupReviewViewModel),
@@ -124,21 +124,21 @@ namespace SealTypographicWebAPI.Services.Implements
         }
 
         ///<inheritdoc />
-        public async Task<AccountantSignGroupDetailReviewResponse> GetReviewDetail(int accountantSignGroupId, UserInfo userInfo)
+        public async Task<AccountantSignDetailReviewResponse> GetReviewDetail(int accountantSignGroupId, UserInfo userInfo)
         {
             logger.LogInformation("GetReviewDetail accountantSignGroupId {@accountantSignGroupId} userId {@userId}", accountantSignGroupId, userInfo.UserId);
 
-            AccountantSignGroupDetailReviewResponse accountantSignGroupDetailReviewResponse = new();
+            AccountantSignDetailReviewResponse accountantSignGroupDetailReviewResponse = new();
 
             try
             {
-                AccountantSignGroupDetailReviewViewModel? accountantSignGroupQuery = await dbContext.AccountantSignGroups
-                                                                                    .Include(x => x.Accountant)
-                                                                                    .ThenInclude(x => x.AccountantGroups)
-                                                                                    .Include(x => x.TypographicResources)
-                                                                                    .Where(x => x.Id == accountantSignGroupId)
-                                                                                    .ProjectTo<AccountantSignGroupDetailReviewViewModel>(configurationProvider)
-                                                                                    .FirstOrDefaultAsync();
+                AccountantSignDetailReviewViewModel? accountantSignGroupQuery = await dbContext.AccountantSignGroups
+                                                                                                    .Include(x => x.Accountant)
+                                                                                                    .ThenInclude(x => x.AccountantGroups)
+                                                                                                    .Include(x => x.TypographicResources)
+                                                                                                    .Where(x => x.Id == accountantSignGroupId)
+                                                                                                    .ProjectTo<AccountantSignDetailReviewViewModel>(configurationProvider)
+                                                                                                    .FirstOrDefaultAsync();
 
                 if (accountantSignGroupQuery != null)
                 {

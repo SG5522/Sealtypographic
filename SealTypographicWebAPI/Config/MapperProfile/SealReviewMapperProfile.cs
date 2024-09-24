@@ -22,7 +22,7 @@ namespace SealTypographicWebAPI.Config.MapperProfile
         {
 
             //客戶印鑑季度審核清單
-            CreateMap<CustomerSealGroup, CustomerSealGroupReviewViewModel>()
+            CreateMap<CustomerSealGroup, CustomerSealReviewViewModel>()
                     .ForMember(dst => dst.Name, opt => opt.MapFrom(src => src.Customer.Name))
                     .ForMember(dst => dst.Code, opt => opt.MapFrom(src => src.Customer.Code))
                     .ForMember(dst => dst.QuarterYearId, opt => opt.MapFrom(src => src.QuarterYear.Id))
@@ -46,7 +46,7 @@ namespace SealTypographicWebAPI.Config.MapperProfile
 
 
             //客戶印鑑審核詳細資料
-            CreateMap<CustomerSealGroup, CustomerSealGroupDetailReviewViewModel>()
+            CreateMap<CustomerSealGroup, CustomerSealDetailReviewViewModel>()
                      //客戶基本資料
                      .ForMember(dst => dst.Name, opt => opt.MapFrom(src => src.Customer.Name))
                      .ForMember(dst => dst.Code, opt => opt.MapFrom(src => src.Customer.Code))
@@ -65,21 +65,16 @@ namespace SealTypographicWebAPI.Config.MapperProfile
                      .ForMember(dst => dst.QuarterYearId, opt => opt.MapFrom(src => src.QuarterYear.Id))
                      .ForMember(dst => dst.Seals, opt => opt.MapFrom(src => src.TypographicResources.Where(x => x.DeleteStatus == DeleteStatus.No)));
 
-            //客戶印鑑審核詳細資料的印鑑部份
-            //CreateMap<TypographicResource, CustomerSealViewModel>()
-            //         .ForMember(dst => dst.SealMappingConfigId, opt => opt.MapFrom(src => SealMappingConfigUtil.GetCustomerSealType(src.SubSealType)))
-            //         .ForMember(dst => dst.ImageBase64, opt => opt.MapFrom(src => ImageUtil.ToDataUrlFromFilePath(src.ImageFullPath)));
-
 
             //會計師簽印審核清單
-            CreateMap<AccountantSignGroup, AccountantSignGroupReviewViewModel>()
+            CreateMap<AccountantSignGroup, AccountantSignReviewViewModel>()
                     .ForMember(dst => dst.Name, opt => opt.MapFrom(src => src.Accountant.Name))
                     .ForMember(dst => dst.Code, opt => opt.MapFrom(src => src.Accountant.Code))
                     .ForMember(dst => dst.GroupName, opt => opt.MapFrom(src => src.Accountant.AccountantGroups.First().Name))
                     .ForMember(dst => dst.ReviewStatus, opt => opt.MapFrom(src => src.ReviewStatus))
                     //Log Save
                     .ForMember(dst => dst.AccountantId, opt => opt.MapFrom(src => src.Accountant.Id))
-                    .ForMember(dst => dst.GroupCreateDate, opt => opt.MapFrom(src => src.CreateDate))
+                    .ForMember(dst => dst.GroupCreateDate, opt => opt.MapFrom(src => src.CreateDate.DateTime))
                     .ForMember(dst => dst.SignImageInfos, opt => opt.MapFrom(src => src.TypographicResources.Where(x => x.DeleteStatus == DeleteStatus.No)));
 
             //會計師簽印審核詳細資料的簽印部份
@@ -87,25 +82,20 @@ namespace SealTypographicWebAPI.Config.MapperProfile
                      .ForMember(dst => dst.SealMappingConfigId, opt => opt.MapFrom(src => SealMappingConfigUtil.GetAccountantSignType(src.SubSealType)));
 
             //會計師簽印審核詳細資料
-            CreateMap<AccountantSignGroup, AccountantSignGroupDetailReviewViewModel>()
+            CreateMap<AccountantSignGroup, AccountantSignDetailReviewViewModel>()
                     .ForMember(dst => dst.Id, opt => opt.MapFrom(src => src.Id))
                     .ForMember(dst => dst.Name, opt => opt.MapFrom(src => src.Accountant.Name))
                     .ForMember(dst => dst.Code, opt => opt.MapFrom(src => src.Accountant.Code))
                     //Log Save
                     .ForMember(dst => dst.AccountantId, opt => opt.MapFrom(src => src.Accountant.Id))
-                    .ForMember(dst => dst.GroupCreateDate, opt => opt.MapFrom(src => src.CreateDate))
+                    .ForMember(dst => dst.GroupCreateDate, opt => opt.MapFrom(src => src.CreateDate.DateTime.ToLocalTime()))
                     //TODO 之後要想辦法改成顯示多個Name
                     .ForMember(dst => dst.GroupName, opt => opt.MapFrom(src => src.Accountant.AccountantGroups.First().Name))
                     .ForMember(dst => dst.Signs, opt => opt.MapFrom(src => src.TypographicResources.Where(x => x.DeleteStatus == DeleteStatus.No)));
 
-            //會計師簽印審核詳細資料的簽印部份
-            //TODO:預定刪除
-            //CreateMap<TypographicResource, AccountantSignViewModel>()
-            //         .ForMember(dst => dst.SealMappingConfigId, opt => opt.MapFrom(src => SealMappingConfigUtil.GetAccountantSignType(src.SubSealType)));
-                     //.ForMember(dst => dst.ImageBase64, opt => opt.MapFrom(src => ImageUtil.ToDataUrlFromFilePath(src.ImageFullPath)));
 
             //會計師簽印審核詳細資料
-            CreateMap<Accountant, AccountantSignGroupDetailReviewViewModel>()
+            CreateMap<Accountant, AccountantSignDetailReviewViewModel>()
                      .ForMember(dst => dst.Id, y => y.Ignore())
                      //.ForMember(dst => dst.GroupName, y => y.MapFrom(o => o.AccountantGroup.Name))
                      .ForMember(dst => dst.GroupName, y => y.MapFrom(src => src.AccountantGroups.First().Name))
