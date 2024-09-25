@@ -12,6 +12,7 @@ using SealTypographicWebAPI.Models.LogReport.AccountantSignLog;
 using SealTypographicWebAPI.Models.LogReport.OperationLog;
 using DBEntities.Utils;
 using DBEntities.Extensions;
+using Spire.Xls;
 
 namespace SealTypographicWebAPI.Services.Implements
 {
@@ -92,10 +93,12 @@ namespace SealTypographicWebAPI.Services.Implements
                                                                             accountantSignSearchReview.PageSize
                                                                         );
 
-                    //多執行序處理
-                    Parallel.ForEach(accountantSignGroupReviewPaginate.ViewModels,
-                        viewModel => imageService.DecryptThumbnailSeals(viewModel.SignImageInfos, userInfo.UserId));
-
+                    //解密圖片                    
+                    foreach (AccountantSignReviewViewModel viewModel in accountantSignGroupReviewPaginate.ViewModels)
+                    {
+                        imageService.DecryptThumbnailSeals(viewModel.SignImageInfos, userInfo.UserId);
+                    }
+                    
                     PageUtil.SetPaginate(accountantSignGroupReviewPaginate, accountantSignSearchReview.PageNumber, accountantSignSearchReview.PageSize, accountantSignGroupQuery.Count());
                     accountantSignGroupReviewPaginate.Success();
                     foreach(AccountantSignReviewViewModel accountantSignGroupReviewViewModel in accountantSignGroupReviewPaginate.ViewModels)

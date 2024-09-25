@@ -150,7 +150,6 @@ namespace SealTypographicWebAPI.Services.Implements
             {
                 logger.LogInformation("New input {@Input} userId {@userId}", temporarySealForm, userId);
 
-
                 //取得季度
                 //之後輸入要從前端提供Id
                 QuarterYear? quarter = dbContext.QuarterYears.FirstOrDefault

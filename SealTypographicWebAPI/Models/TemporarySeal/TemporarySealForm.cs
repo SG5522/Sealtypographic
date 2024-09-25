@@ -1,4 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using DBEntities.Consts;
+using System.Text.Json.Serialization;
 using SealTypographicWebAPI.Models.BaseModels;
 
 namespace SealTypographicWebAPI.Models.TemporarySeal
@@ -15,6 +17,13 @@ namespace SealTypographicWebAPI.Models.TemporarySeal
         [Required]
         [Range(1, 99)]
         public int Sequence { get; set; }
+
+        /// <summary>
+        /// 印鑑、簽印類型 
+        /// </summary>
+        [JsonIgnore]
+        public override SealType SealType => SealType.TemporarySeal;
+
     }
 
     /// <summary>

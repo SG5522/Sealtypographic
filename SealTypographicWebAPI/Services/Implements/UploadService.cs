@@ -250,7 +250,7 @@ namespace SealTypographicWebAPI.Services.Implements
                                                         .Select(x => new UploadEncryptFile
                                                         {
                                                             FullPath = x.FullPath,
-                                                            EncryptKey = x.EncryptKey,
+                                                            EncryptKey = x.EncryptKey ?? string.Empty,
                                                             UploadType = x.UploadType,
                                                             RSAKey = imageService.GetRsaKey(userId)
                                                         }).FirstOrDefault();

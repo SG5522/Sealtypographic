@@ -44,6 +44,7 @@ namespace SealTypographicWebAPI.Models.Accountant
         /// <summary>
         /// 會計師印鑑簽名
         /// </summary>
+        [Required]
         public List<AccountantSign> SignForms { get; set; }
     }
 }

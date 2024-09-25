@@ -26,7 +26,7 @@ namespace SealTypographicWebAPI.Models.BaseModels
         /// 印鑑、簽印類型 
         /// </summary>
         [JsonIgnore]
-        public SealType SealType { get; set; }
+        public virtual SealType SealType { get; set; }
 
         /// <summary>
         /// 印鑑、簽印子類別

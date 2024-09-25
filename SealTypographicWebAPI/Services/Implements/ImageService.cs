@@ -307,13 +307,13 @@ namespace SealTypographicWebAPI.Services.Implements
             //透過使用者Id取得RsaKey
             RSAKey rsaKey = GetRsaKey(userId);
 
-            Parallel.ForEach(thumbnailSeals, thumbnailSeal =>
+            foreach (T thumbnailSeal in thumbnailSeals)
             {                
                 //解密圖檔
                 string thumbnailBase64 = DecryptFile(thumbnailSeal.ThumbnailFullPath, thumbnailSeal.ThumbnailEncryptKey, rsaKey);
                 //判斷是否白底通透處理
                 thumbnailSeal.ThumbnailBase64 = isTransparent ? ImageTransparentUtil.ToDataUrlFromDataUrl(thumbnailBase64) : thumbnailBase64;
-            });
+            };
         }
 
 

@@ -210,9 +210,7 @@ namespace SealTypographicWebAPI.Services.Implements
                 if (accountantGroupQuery != null)
                 {
                     mapper.Map(accountantGroupFormUpdate, accountantGroupQuery);
-                    InputUtil.Set(accountantGroupQuery, userId, false);
-                    accountantGroupQuery.UpdateDate = DateTime.Now;
-                    accountantGroupQuery.UpdateUserId = userId;
+                    InputUtil.Set(accountantGroupQuery, userId);
 
                     await dbContext.SaveChangesAsync();
                     response.Success();

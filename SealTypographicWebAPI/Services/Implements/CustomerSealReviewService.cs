@@ -108,9 +108,11 @@ namespace SealTypographicWebAPI.Services.Implements
                                                                 customerSealSearchReview.PageSize
                     );
 
-                    //多執行序處理
-                    Parallel.ForEach(customerSealQuarterResponse.ViewModels, 
-                        viewModel => imageService.DecryptThumbnailSeals(viewModel.SealImageInfos, userInfo.UserId));                       
+                    //解密圖片
+                    foreach (CustomerSealReviewViewModel viewModel in customerSealQuarterResponse.ViewModels)
+                    {
+                        imageService.DecryptThumbnailSeals(viewModel.SealImageInfos, userInfo.UserId);
+                    }
 
                     PageUtil.SetPaginate(customerSealQuarterResponse, customerSealSearchReview.PageNumber, customerSealSearchReview.PageSize, customerSealQuarterQuery.Count());
                     customerSealQuarterResponse.Success();                    
