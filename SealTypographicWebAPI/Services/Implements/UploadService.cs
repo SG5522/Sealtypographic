@@ -17,6 +17,10 @@ using CommonLib.Extensions;
 using SealTypographicWebAPI.Extensions;
 using DJImageLib.Extensions;
 using DBEntities.Utils;
+using Microsoft.AspNetCore.Http;
+using System.IO;
+using SkiaSharp;
+using Spire.Doc.Fields;
 
 namespace SealTypographicWebAPI.Services.Implements
 {
@@ -345,18 +349,11 @@ namespace SealTypographicWebAPI.Services.Implements
 
                 if (companyQuery != null)
                 {
-                    ImageSaveInfo imageSaveInfo = new()
-                    {
-                        RootPath = GetRootPath(uploadBase64Data.UploadType),
-                        Code = userId.ToString(),
-                        RSAKey = imageService.GetRsaKey(userId)
-                    };
                     foreach (string imagebase64 in uploadBase64Data.ImageBase64Strings)
                     {
                         //掃描完存在資料庫的原始檔名
-                        string originalFileName = $"ScanFile{imageSaveInfo.FullPath}";
-                        await imageService.EncryptImageAsync(imageSaveInfo);
-                        companyQuery.UploadFiles.Add(NewUploadFile(imageSaveInfo, uploadBase64Data.UploadType, userId, originalFileName));
+                        string originalFileName = $"ScanFile{DateTime.Now:yyyyMMddHHmmssffff}";                        
+                        companyQuery.UploadFiles.Add(await NewUploadFile(imagebase64, uploadBase64Data.UploadType, userId, originalFileName));
                     }
                     dbContext.SaveChanges();
                     response.Success();
@@ -420,7 +417,8 @@ namespace SealTypographicWebAPI.Services.Implements
                                 }
 
                                 //新增上傳的檔案
-                                companyQuery.UploadFiles.Add(await SaveFile(formFile, uploadData.UploadType, userId));
+                                companyQuery.UploadFiles.Add(await NewUploadFile(
+                                    await FormFileToBase64(formFile), uploadData.UploadType, userId, formFile.FileName));
                                 uploadData.FormFiles.Remove(formFile);
                             }
                         }
@@ -428,7 +426,8 @@ namespace SealTypographicWebAPI.Services.Implements
 
                     foreach (IFormFile formFile in uploadData.FormFiles)
                     {
-                        companyQuery.UploadFiles.Add(await SaveFile(formFile, uploadData.UploadType, userId));
+                        companyQuery.UploadFiles.Add(await NewUploadFile(
+                            await FormFileToBase64(formFile), uploadData.UploadType, userId, formFile.FileName));
                     }
                     dbContext.SaveChanges();
                     response.Success();
@@ -539,18 +538,23 @@ namespace SealTypographicWebAPI.Services.Implements
             return response;
         }
 
-        /// <summary>
-        /// 存檔處理       
-        /// </summary>
-        /// <param name="formFile">上傳的檔案</param>
-        /// <param name="uploadType">檔案類型</param>
-        /// <param name="userId">使用者 ID</param>
-        /// <returns>上傳檔案的詳細信息</returns>              
-        private async Task<UploadFile> SaveFile(IFormFile formFile, UploadType uploadType, int userId)
+        private async Task<string> FormFileToBase64(IFormFile formFile)
         {
             using MemoryStream memoryStream = new();
             await formFile.CopyToAsync(memoryStream);
+            return memoryStream.ToBase64String();
+        }
 
+        /// <summary>
+        /// 新增上傳檔案
+        /// </summary>
+        /// <param name="base64">存檔路徑</param>
+        /// <param name="uploadType">上傳檔案類別</param>
+        /// <param name="userId">userId</param>
+        /// <param name="originalFileName">原檔名稱</param>
+        /// <returns></returns>
+        private async Task<UploadFile> NewUploadFile(string base64, UploadType uploadType, int userId, string originalFileName)
+        {
             ImageSaveInfo imageSaveInfo = new()
             {
                 RootPath = GetRootPath(uploadType),
@@ -561,29 +565,17 @@ namespace SealTypographicWebAPI.Services.Implements
             if (uploadType >= UploadType.FinancialReport && uploadType <= UploadType.AccountantSignCertificate)
             {
                 // 使用擴充方法將 MemoryStream 轉換為 Base64 字串
-                imageSaveInfo.Base64 = memoryStream.ToBase64String();
-                imageSaveInfo.FullPath += Path.GetExtension(formFile.FileName);
+                imageSaveInfo.Base64 = base64;
+                imageSaveInfo.FullPath += Path.GetExtension(originalFileName);
                 await imageService.SaveFileAsync(imageSaveInfo);
             }
             else
             {
                 // 使用擴充方法將 MemoryStream 轉換為 Base64 字串
-                imageSaveInfo.ImageBase64 = memoryStream.ToBase64String();
+                imageSaveInfo.ImageBase64 = base64;
                 await imageService.EncryptImageAsync(imageSaveInfo);
             }
-            return NewUploadFile(imageSaveInfo, uploadType, userId, formFile.FileName);
-        }
 
-        /// <summary>
-        /// 新增上傳檔案
-        /// </summary>
-        /// <param name="imageSaveInfo">存檔路徑</param>
-        /// <param name="uploadType">上傳檔案類別</param>
-        /// <param name="userId">userId</param>
-        /// <param name="originalFileName">原檔名稱</param>
-        /// <returns></returns>
-        private static UploadFile NewUploadFile(ImageSaveInfo imageSaveInfo, UploadType uploadType, int userId, string originalFileName)
-        {
             // TODO:後續在DuplicateFileProcessMode.Reserve(保留原檔名)模式時客戶要求檔名要區分時在另做調整。
             UploadFile uploadFile = new()
             {
