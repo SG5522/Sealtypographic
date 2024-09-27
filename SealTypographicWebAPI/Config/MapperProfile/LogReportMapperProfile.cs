@@ -37,7 +37,7 @@ namespace SealTypographicWebAPI.Config.MapperProfile
                     .ForMember(dst => dst.UserNickName, opt => opt.MapFrom(src => src.UpdateUser != null ? src.UpdateUser.LastName : string.Empty))
                     .ForMember(dst => dst.CustomerCode, opt => opt.MapFrom(src => src.Customer.Code))
                     .ForMember(dst => dst.CustomerName, opt => opt.MapFrom(src => src.Customer.Name))
-                    .ForMember(dst => dst.RecordDate, opt => opt.MapFrom(src => src.UpdateDate))
+                    .ForMember(dst => dst.RecordDate, opt => opt.MapFrom(src => src.UpdateDate.DateTime))
                     .ForMember(dst => dst.EditFileName, opt => opt.MapFrom(src => src.OriginFileName))
                     .ForMember(dst => dst.EditPageCount, opt => opt.MapFrom(src => src.TypographicPages.Where(x => x.BlankCheck == false).Count()))
                     .ForMember(dst => dst.BlankPageCount, opt => opt.MapFrom(src =>

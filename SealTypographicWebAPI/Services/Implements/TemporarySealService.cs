@@ -8,6 +8,7 @@ using DBEntities.Entities.TemplateModels;
 using DBEntities.Entities.TypographicModels;
 using DBEntities.Utils;
 using Microsoft.EntityFrameworkCore;
+using SealTypographicWebAPI.Extensions;
 using SealTypographicWebAPI.Models;
 using SealTypographicWebAPI.Models.TemporarySeal;
 using Serilog;
@@ -159,17 +160,13 @@ namespace SealTypographicWebAPI.Services.Implements
 
                 if (quarter != null)
                 {
-                    Customer? customerQuery = dbContext.Customers
-                                            .Include(customer => customer.TemporarySealGroups)
-                                            .ThenInclude(temporarySealGroup => temporarySealGroup.TypographicResources)
-                                            .FirstOrDefault
-                                            (
-                                                customer => customer.Id == temporarySealForm.CustomerId
-                                            );
+                    Customer? customerQuery = dbContext.Customers.Include(customer => customer.TemporarySealGroups)
+                                                                .ThenInclude(temporarySealGroup => temporarySealGroup.TypographicResources)
+                                                                .FirstOrDefault(customer => customer.Id == temporarySealForm.CustomerId);
 
                     if (customerQuery != null)
                     {
-                        if (!customerQuery.TemporarySealGroups.Any(x => x.QuarterYear == quarter))
+                        if (!customerQuery.TemporarySealGroups.Any(x => x.QuarterYear == quarter && x.DeleteStatus == DeleteStatus.No))
                         {
                             TemporarySealGroup temporarySealGroup = new();
                             List<TypographicResource> typographicResources = new();
@@ -263,7 +260,8 @@ namespace SealTypographicWebAPI.Services.Implements
                     }
 
                     //新增臨時章
-                    await imageService.NewTypographyResource(temporarySealUpdateForm.SealsToCreate, temporarySealGroup.Customer.Code, userId);
+                    temporarySealGroup.TypographicResources.AddRange(
+                        await imageService.NewTypographyResource(temporarySealUpdateForm.SealsToCreate, temporarySealGroup.Customer.Code, userId));
 
                     if (response.ErrorItem == null)
                     {

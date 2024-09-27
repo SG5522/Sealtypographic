@@ -184,11 +184,7 @@ namespace SealTypographicWebAPI.Services.Implements
                 string? pdfPath = await dbContext.UploadFiles.Where(x => x.Id == uploadFileid).Select(x => x.FullPath).FirstOrDefaultAsync();
 
                 if (pdfPath != null)
-                {
-                    //解密檔案
-                    //byte[] pdfBytes = imageService.DecryptFileToBytes(uploadEncryptFile.FullPath, uploadEncryptFile.EncryptKey, uploadEncryptFile.RSAKey);
-                    
-
+                {                   
                     //取得單頁PDF圖檔資訊
                     PdfPageImageInfo pdfPageImageInfo = PdfImageUtil.GetPdfPageImageInfo(pdfPath, pageNumber);
 
@@ -234,15 +230,13 @@ namespace SealTypographicWebAPI.Services.Implements
                 {
                     typographicPageViewModel.RSAKey = imageService.GetRsaKey(userId);
 
-                    //取得單頁PDF圖檔資訊                    
-                    byte[] pdfBytes = imageService.DecryptFileToBytes(typographicPageViewModel.PDFFullPath, typographicPageViewModel.EncryptKey,
-                        typographicPageViewModel.RSAKey);
+                    //TODO:前端把PDF圖像讀取用 GetPDFView抓取
+                    //取得單頁PDF圖檔資訊
+                    //PdfPageImageInfo pdfPageImageInfo = PdfImageUtil.GetPdfPageImageInfo(typographicPageViewModel.PDFFullPath, typographicPDFPageSearch.PageNumber);
 
-                    PdfPageImageInfo pdfPageImageInfo = PdfImageUtil.GetPdfPageImageInfo(pdfBytes, typographicPDFPageSearch.PageNumber);
-
-                    typographicPageViewModel.PDFImageWidth = pdfPageImageInfo.Width;
-                    typographicPageViewModel.PDFImageHeight = pdfPageImageInfo.Height;
-                    typographicPageViewModel.PDFImageBase64 = pdfPageImageInfo.ImageDataUrl;
+                    //typographicPageViewModel.PDFImageWidth = pdfPageImageInfo.Width;
+                    //typographicPageViewModel.PDFImageHeight = pdfPageImageInfo.Height;
+                    //typographicPageViewModel.PDFImageBase64 = pdfPageImageInfo.ImageDataUrl;
 
                     //解密所有印鑑、簽印、臨時章的圖片                    
                     DecryptImagesAndUpdateBase64(typographicPageViewModel.CustomerSealLocationViewModels, typographicPageViewModel.RSAKey);

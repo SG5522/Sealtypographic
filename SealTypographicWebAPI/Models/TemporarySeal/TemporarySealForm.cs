@@ -10,13 +10,22 @@ namespace SealTypographicWebAPI.Models.TemporarySeal
     /// </summary>
     public class TemporarySeal : BaseCreateSeal
     {
+        private int sequence;
+
         /// <summary>
         /// 印鑑編號(排序) 1為起始
         /// </summary>
         /// <example>1</example>
         [Required]
         [Range(1, 99)]
-        public int Sequence { get; set; }
+        public int Sequence 
+        { 
+            get => sequence;
+            set { 
+                sequence = value;
+                CommonSequence = sequence;
+            }
+        }
 
         /// <summary>
         /// 印鑑、簽印類型 

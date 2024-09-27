@@ -16,7 +16,7 @@ namespace SealTypographicWebAPI.Models.BaseModels
         [Required]
         [DataType(DataType.Date)]
         [DisplayFormat(DataFormatString = "{0:yyyy/MM/dd}", ApplyFormatInEditMode = true)]
-        public DateTime StartDate 
+        public DateTimeOffset StartDate 
         {
             get
             {
@@ -24,7 +24,7 @@ namespace SealTypographicWebAPI.Models.BaseModels
             }
             set
             {
-                startDate = value.Date;                
+                startDate = value.Date.ToUniversalTime();                
             }
         }
 
@@ -34,7 +34,7 @@ namespace SealTypographicWebAPI.Models.BaseModels
         [Required]
         [DataType(DataType.Date)]
         [DisplayFormat(DataFormatString = "{0:yyyy/MM/dd}", ApplyFormatInEditMode = true)]
-        public DateTime EndDate
+        public DateTimeOffset EndDate
         {
             get
             {
@@ -42,7 +42,7 @@ namespace SealTypographicWebAPI.Models.BaseModels
             }
             set
             {
-                endDate = value.Date.AddDays(1);
+                endDate = value.Date.ToUniversalTime().AddDays(1).AddTicks(-1);
             }
         }
 

@@ -101,35 +101,7 @@ namespace SealTypographicWebAPI.Config.MapperProfile
 
             //會計師簽印重複確認
             CreateMap<AccountantSign, AccountantSignCheck>();
-            CreateMap<AccountantSignUpdateForm, AccountantSignCheck>();
-
-            //信頭基本資料
-            CreateMap<Letterhead, LetterheadViewModel>()
-                      .ForMember(dst => dst.LetterheadImageId, opt => opt.MapFrom(src => src.TypographicResources.Single(x => x.DeleteStatus == DeleteStatus.No).Id));
-
-            //臨時章Log使用
-            CreateMap<TemporarySealDetailViewModel, TemporarySealDetailLogModel>();
-            //subList
-            CreateMap<TemporarySealViewModel, TemporarySealLogModel>();
-
-
-            CreateMap<TemporarySealGroup, TemporarySealDetailViewModel>()
-                    .ForMember(dst => dst.CustomerId, opt => opt.MapFrom(src => src.Customer.Id))
-                    .ForMember(dst => dst.CustomerName, opt => opt.MapFrom(src => src.Customer.Name))
-                    .ForMember(dst => dst.ViewModels, opt => opt.MapFrom(src => src.TypographicResources
-                                                                        .Where(x => x.DeleteStatus == DeleteStatus.No)
-                                                                        .OrderBy(x => x.Sequence)));
-
-            CreateMap<TypographicResource, TemporarySealViewModel>()
-                    .ForMember(dst => dst.Id, opt => opt.MapFrom(src => src.Id))
-                    .ForMember(dst => dst.Sequence, opt => opt.MapFrom(src => src.Sequence))
-                    .ForMember(dst => dst.ImageFullPath, opt => opt.MapFrom(src => src.ImageFullPath))
-                    .ForMember(dst => dst.ImageBase64, opt => opt.MapFrom(src => ImageUtil.ToDataUrlFromFilePath(src.ImageFullPath)));
-
-            CreateMap<TemporarySealGroup, TemporaryViewModel>()
-                    .ForMember(dst => dst.Id, opt => opt.MapFrom(src => src.Id))
-                    .ForMember(dst => dst.CustomerName, opt => opt.MapFrom(src => src.Customer.Name))
-                    .ForMember(dst => dst.Quarter, opt => opt.MapFrom(src => QuarterUtil.GetTaiwanYearQuarter(src.QuarterYear)));
+            CreateMap<AccountantSignUpdateForm, AccountantSignCheck>();            
         }
     }
 }

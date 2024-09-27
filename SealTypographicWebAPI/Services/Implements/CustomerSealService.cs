@@ -16,6 +16,7 @@ using SealTypographicWebAPI.Models.LogReport.CustomerSealEventLog;
 using CommonLib.Enums;
 using DBEntities.Extensions;
 using SealTypographicWebAPI.Models.Accountant;
+using SealTypographicWebAPI.Extensions;
 
 namespace SealTypographicWebAPI.Services.Implements
 {
@@ -419,7 +420,8 @@ namespace SealTypographicWebAPI.Services.Implements
                     }
 
                     //新增印鑑資料(圖檔與DB資源)
-                    customerSealGroup.TypographicResources = await imageService.NewTypographyResource(customerSealUpdate.CreateCustomerSeals, customerSealGroup.Customer.Code, userInfo.UserId);
+                    customerSealGroup.TypographicResources.AddRange(
+                        await imageService.NewTypographyResource(customerSealUpdate.CreateCustomerSeals, customerSealGroup.Customer.Code, userInfo.UserId));
 
                     //無任何回傳訊息(錯誤訊息)就更新資料庫
                     if (!responseViewModels.Any())

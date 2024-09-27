@@ -119,7 +119,7 @@ namespace SealTypographicWebAPI.Config.MapperProfile
 
             //單頁詳細資料(Log)
             CreateMap<TypographicPageViewModel, TypographicPageViewModel>()
-                    .ForMember(dst => dst.PDFImageBase64, opt => opt.Ignore());
+                    .ForMember(dst => dst.PDFImageBase64, opt => opt.Ignore());                    
 
             //各印鑑基本資料
             //客戶印鑑
@@ -204,8 +204,7 @@ namespace SealTypographicWebAPI.Config.MapperProfile
                  .ForMember(dst => dst.EditImages, opt => opt.MapFrom(src => src.TypographicResourceLocations));
 
             // PDF排版圖像與位置的Map
-            CreateMap<TypographicResourceLocation, EditImage>()
-                //.ForMember(dst => dst.ImageBase64, opt => opt.MapFrom(src => TypographicResourceLocationUtil.GetImageBase64(src)));
+            CreateMap<TypographicResourceLocation, EditImage>()                
                 .ForMember(dst => dst.ImageBase64, opt => opt.Ignore())
                 .ForMember(dst => dst.ImageFullPath, opt => opt.MapFrom(src => src.EditImageFullPath ?? src.TypographicResource.ImageFullPath))
                 .ForMember(dst => dst.ImageEncryptKey, opt => opt.MapFrom(src => src.EditImageEncryptKey ?? src.TypographicResource.ImageEncryptKey));

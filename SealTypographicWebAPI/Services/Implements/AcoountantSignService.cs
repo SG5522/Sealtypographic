@@ -14,6 +14,7 @@ using CommonLib.Enums;
 using DBEntities.Utils;
 using SealTypographicWebAPI.Models.CustomerSeal;
 using DBEntities.Extensions;
+using SealTypographicWebAPI.Extensions;
 
 namespace SealTypographicWebAPI.Services.Implements
 {
@@ -270,7 +271,8 @@ namespace SealTypographicWebAPI.Services.Implements
                         InputUtil.SetDraftWithCreate(accountantSignGroup, userInfo.UserId);
 
                         //新增簽印資料(圖檔與DB資源)         
-                        accountantSignGroup.TypographicResources = await imageService.NewTypographyResource(accountantSignUpdate.CreateAccountantSigns, accountant.Code, userInfo.UserId);
+                        accountantSignGroup.TypographicResources.AddRange(
+                            await imageService.NewTypographyResource(accountantSignUpdate.CreateAccountantSigns, accountant.Code, userInfo.UserId));
 
                         //沒有任何回傳訊息(錯誤訊息)就更新資料庫
                         if (!responseViewModels.Any())
@@ -328,15 +330,6 @@ namespace SealTypographicWebAPI.Services.Implements
 
                 if (accountantSignGroupQuery != null)
                 {
-                    //accountantSignGroupQuery.ReviewStatus = reviewStatus;
-                    //accountantSignGroupQuery.UpdateUserId = userId;
-                    //accountantSignGroupQuery.UpdateDate = DateTime.Now;
-                    
-                    //if (reviewStatus == ReviewStatus.Invalid)
-                    //{
-                    //    accountantSignGroupQuery.DeleteStatus = DeleteStatus.Yes;
-                    //}
-
                     reviewStatus.Set(accountantSignGroupQuery, userId);
                     InputUtil.Set(accountantSignGroupQuery, userId);
                     await dbContext.SaveChangesAsync();
