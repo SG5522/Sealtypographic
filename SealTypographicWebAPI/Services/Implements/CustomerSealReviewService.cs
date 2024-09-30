@@ -111,7 +111,7 @@ namespace SealTypographicWebAPI.Services.Implements
                     //解密圖片
                     foreach (CustomerSealReviewViewModel viewModel in customerSealQuarterResponse.ViewModels)
                     {
-                        imageService.DecryptThumbnailSeals(viewModel.SealImageInfos, userInfo.UserId);
+                        imageService.DecryptThumbnailSeals(viewModel.SealImageInfos, userInfo.UserId, false);
                     }
 
                     PageUtil.SetPaginate(customerSealQuarterResponse, customerSealSearchReview.PageNumber, customerSealSearchReview.PageSize, customerSealQuarterQuery.Count());

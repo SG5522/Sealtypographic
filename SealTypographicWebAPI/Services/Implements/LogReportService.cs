@@ -6,6 +6,7 @@ using DBEntities;
 using DBEntities.Consts;
 using DBEntities.Entities.AccountantModels;
 using DBEntities.Entities.TypographicModels;
+using DJKeycloakAPI.Extensions;
 using DJKeycloakLib.Models.BaseModel;
 using DJKeycloakLib.Models.Group;
 using DJKeycloakLib.Models.User;
@@ -18,6 +19,7 @@ using MongoDB.Driver;
 using MongoDB.Driver.Linq;
 using SealTypographicWebAPI.Config;
 using SealTypographicWebAPI.Consts;
+using SealTypographicWebAPI.Extensions;
 using SealTypographicWebAPI.Models;
 using SealTypographicWebAPI.Models.LogReport.AccountantList;
 using SealTypographicWebAPI.Models.LogReport.AccountantMember;
@@ -388,7 +390,7 @@ namespace SealTypographicWebAPI.Services.Implements
                                                                       );
 
                 if (!string.IsNullOrEmpty(customerTypoReportSearch.UserKeyWord))
-                {                                        
+                {
                     typographicPDFQuery = typographicPDFQuery.Where(x => x.UpdateUser != null
                                                                         && (
                                                                             (x.UpdateUser.LastName != null
@@ -532,21 +534,49 @@ namespace SealTypographicWebAPI.Services.Implements
         /// <returns></returns>
         public async Task<UserMemberPaginate> GetUserMember([FromQuery] UserMemberSearch userMemberSearch, bool isFullPageOut = false)
         {
-            DJKeycloakLib.Models.BaseModel.ResponseModel<IList<UserRepresentation>> userRepresentationsResponseModel = await adminService.FindUsers(
-                    true, null, null, true, null,
-                    null, null, null, userMemberSearch.UserQuery);
+            UserMemberPaginate userMemberPaginate = new();
 
-            //取得成員資料
-            UserMemberPaginate userMemberPaginate = new()
-            {
-                ViewModels = mapper.Map<List<UserMemberViewModel>>(userRepresentationsResponseModel.Data),
-                PageNumber = userMemberSearch.PageNumber,
-                PageSize = userMemberSearch.PageSize,
-            };
+            DJKeycloakLib.Models.BaseModel.ResponseModel<int> usersCount = await adminService.GetUsersCount(true, null, null, true, null,
+                null, null, null, userMemberSearch.GetSanitizedQuery());
 
             //確定有資料後取得群組資料
-            if (userMemberPaginate.ViewModels.Any())
+            if (usersCount.Data > 0)
             {
+                DJKeycloakLib.Models.BaseModel.ResponseModel<IList<UserRepresentation>> userRepresentationsResponseModel = new();
+                
+                if (!isFullPageOut)
+                {
+                    userRepresentationsResponseModel = await GetKeycloakUsers(userMemberSearch.GetSanitizedQuery(), userMemberSearch.First, userMemberSearch.Max);                    
+                }
+                else
+                {
+                    IList<UserRepresentation> userRepresentations = new List<UserRepresentation>();
+                    for (int offset = 0; offset <= usersCount.Data; offset+= 100)
+                    {                        
+                        userRepresentationsResponseModel = await GetKeycloakUsers(userMemberSearch.GetSanitizedQuery(), offset, 100);
+
+                        //如果API有一次沒抓好資料就回傳錯誤
+                        if (userRepresentationsResponseModel.Code == KeycloakResponseCode.Success)
+                        {
+                            userRepresentations.AddRange(userRepresentationsResponseModel.Data!);
+                        }
+                        else
+                        {
+                            userMemberPaginate.Message = userRepresentationsResponseModel.Message;
+                            return userMemberPaginate;
+                        }
+                    }                    
+                    userRepresentationsResponseModel.Data = userRepresentations;
+                }                
+
+                //取得成員資料
+                userMemberPaginate = new()
+                {
+                    ViewModels = mapper.Map<List<UserMemberViewModel>>(userRepresentationsResponseModel.Data),
+                    PageNumber = userMemberSearch.PageNumber,
+                    PageSize = userMemberSearch.PageSize,
+                };
+
                 foreach (UserMemberViewModel userMember in userMemberPaginate.ViewModels)
                 {
                     DJKeycloakLib.Models.BaseModel.ResponseModel<IList<GroupRepresentation>> groupResponse = await adminService.FindUserGroups(userMember.Id);
@@ -563,15 +593,8 @@ namespace SealTypographicWebAPI.Services.Implements
                     userMemberPaginate.ViewModels = userMemberPaginate.ViewModels.Where(x => x.Groups.Contains(userMemberSearch.UserGroupName)).ToList();
                 }
 
-                userMemberPaginate.TotalCount = userMemberPaginate.ViewModels.Count;
-
-                if (!isFullPageOut)
-                {
-                    userMemberPaginate.ViewModels = userMemberPaginate.ViewModels
-                                                        .Skip((userMemberPaginate.PageNumber - 1) * userMemberPaginate.PageSize)
-                                                        .Take(userMemberPaginate.PageSize)
-                                                        .ToList();
-                }
+                userMemberPaginate.TotalCount = usersCount.Data;
+                userMemberPaginate.ViewModels = userMemberPaginate.ViewModels.ToList();
                 userMemberPaginate.Success();
             }
             else
@@ -653,5 +676,12 @@ namespace SealTypographicWebAPI.Services.Implements
                 UserName = userName
             };
         }
+
+        private async Task<DJKeycloakLib.Models.BaseModel.ResponseModel<IList<UserRepresentation>>> GetKeycloakUsers(string searchKeyword, int? first, int? max)
+        
+            => await adminService.FindUsers(true, null, null, true, null,
+                                            null, null, null, searchKeyword,
+                                            first, max);
+        
     }
 }

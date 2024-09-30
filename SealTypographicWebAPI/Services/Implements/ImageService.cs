@@ -312,7 +312,7 @@ namespace SealTypographicWebAPI.Services.Implements
                 //解密圖檔
                 string thumbnailBase64 = DecryptFile(thumbnailSeal.ThumbnailFullPath, thumbnailSeal.ThumbnailEncryptKey, rsaKey);
                 //判斷是否白底通透處理
-                thumbnailSeal.ThumbnailBase64 = isTransparent ? ImageTransparentUtil.ToDataUrlFromDataUrl(thumbnailBase64) : thumbnailBase64;
+                thumbnailSeal.ThumbnailBase64 = isTransparent ? ImageTransparentUtil.ToDataUrlFromImageBase64(thumbnailBase64) : ImageUtil.ToDataUrl(thumbnailBase64.ToBytes());
             };
         }
 
