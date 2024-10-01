@@ -1,5 +1,5 @@
-﻿using DJKeycloakAPI.Models.Users;
-using DJKeycloakLib.Models.BaseModel;
+﻿using CommonLib.Models;
+using DJKeycloakAPI.Models.Users;
 using SealTypographicWebAPI.Models;
 using System.Security.Claims;
 

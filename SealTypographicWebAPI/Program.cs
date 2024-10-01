@@ -185,7 +185,7 @@ internal class Program
 
             c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, $"{Assembly.GetExecutingAssembly().GetName().Name}.xml"), true);
             c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, $"{typeof(NewUserForm).Assembly.GetName().Name}.xml"), true);
-            c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, $"{typeof(DJKeycloakLib.Models.BaseModel.ResponseModel).Assembly.GetName().Name}.xml"), true);
+            c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, $"{typeof(DJKeycloakLib.Models.BaseModel.PaginateViewModel).Assembly.GetName().Name}.xml"), true);
 
             OpenApiSecurityScheme securityScheme = new()
             {

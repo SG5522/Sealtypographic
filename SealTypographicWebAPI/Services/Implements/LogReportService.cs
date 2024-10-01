@@ -6,7 +6,6 @@ using DBEntities;
 using DBEntities.Consts;
 using DBEntities.Entities.AccountantModels;
 using DBEntities.Entities.TypographicModels;
-using DJKeycloakAPI.Extensions;
 using DJKeycloakLib.Models.BaseModel;
 using DJKeycloakLib.Models.Group;
 using DJKeycloakLib.Models.User;
@@ -30,6 +29,7 @@ using SealTypographicWebAPI.Models.LogReport.TypographicReport;
 using SealTypographicWebAPI.Models.LogReport.UserMember;
 using SealTypographicWebAPI.Models.MongoDBModel;
 using SealTypographicWebAPI.Utils;
+
 
 namespace SealTypographicWebAPI.Services.Implements
 {
@@ -536,27 +536,31 @@ namespace SealTypographicWebAPI.Services.Implements
         {
             UserMemberPaginate userMemberPaginate = new();
 
-            DJKeycloakLib.Models.BaseModel.ResponseModel<int> usersCount = await adminService.GetUsersCount(true, null, null, true, null,
+            ResponseModel<int> usersCount = await adminService.GetUsersCount(true, null, null, true, null,
                 null, null, null, userMemberSearch.GetSanitizedQuery());
 
             //確定有資料後取得群組資料
             if (usersCount.Data > 0)
             {
-                DJKeycloakLib.Models.BaseModel.ResponseModel<IList<UserRepresentation>> userRepresentationsResponseModel = new();
-                
+                ResponseModel<IList<UserRepresentation>> userRepresentationsResponseModel = new();
+
                 if (!isFullPageOut)
                 {
-                    userRepresentationsResponseModel = await GetKeycloakUsers(userMemberSearch.GetSanitizedQuery(), userMemberSearch.First, userMemberSearch.Max);                    
+                    userRepresentationsResponseModel = await adminService.FindUsers(true, null, null, true, null,
+                                                                null, null, null, userMemberSearch.GetSanitizedQuery(),
+                                                                userMemberSearch.First, userMemberSearch.Max);                                       
                 }
                 else
                 {
                     IList<UserRepresentation> userRepresentations = new List<UserRepresentation>();
-                    for (int offset = 0; offset <= usersCount.Data; offset+= 100)
+                    for (int offset = 0; offset <= usersCount.Data; offset += 100)
                     {                        
-                        userRepresentationsResponseModel = await GetKeycloakUsers(userMemberSearch.GetSanitizedQuery(), offset, 100);
+                        userRepresentationsResponseModel = await adminService.FindUsers(true, null, null, true, null,
+                                            null, null, null, userMemberSearch.GetSanitizedQuery(),
+                                            offset, 100);
 
                         //如果API有一次沒抓好資料就回傳錯誤
-                        if (userRepresentationsResponseModel.Code == KeycloakResponseCode.Success)
+                        if (userRepresentationsResponseModel.Code == (int)KeycloakResponseCode.Success)
                         {
                             userRepresentations.AddRange(userRepresentationsResponseModel.Data!);
                         }
@@ -579,8 +583,8 @@ namespace SealTypographicWebAPI.Services.Implements
 
                 foreach (UserMemberViewModel userMember in userMemberPaginate.ViewModels)
                 {
-                    DJKeycloakLib.Models.BaseModel.ResponseModel<IList<GroupRepresentation>> groupResponse = await adminService.FindUserGroups(userMember.Id);
-                    if (groupResponse is { Code: KeycloakResponseCode.Success, Data: not null })
+                    ResponseModel<IList<GroupRepresentation>> groupResponse = await adminService.FindUserGroups(userMember.Id);
+                    if (groupResponse is { Code: (int)KeycloakResponseCode.Success, Data: not null })
                     {
                         foreach (GroupRepresentation groupRepresentation in groupResponse.Data)
                         {
@@ -593,8 +597,7 @@ namespace SealTypographicWebAPI.Services.Implements
                     userMemberPaginate.ViewModels = userMemberPaginate.ViewModels.Where(x => x.Groups.Contains(userMemberSearch.UserGroupName)).ToList();
                 }
 
-                userMemberPaginate.TotalCount = usersCount.Data;
-                userMemberPaginate.ViewModels = userMemberPaginate.ViewModels.ToList();
+                userMemberPaginate.TotalCount = usersCount.Data;                
                 userMemberPaginate.Success();
             }
             else
@@ -677,11 +680,27 @@ namespace SealTypographicWebAPI.Services.Implements
             };
         }
 
-        private async Task<DJKeycloakLib.Models.BaseModel.ResponseModel<IList<UserRepresentation>>> GetKeycloakUsers(string searchKeyword, int? first, int? max)
+        private async Task<ResponseModel<IList<UserRepresentation>>> GetKeycloakUsers(string searchKeyword, int? first, int? max)
         
             => await adminService.FindUsers(true, null, null, true, null,
                                             null, null, null, searchKeyword,
                                             first, max);
-        
+
+        private async Task<IList<UserRepresentation>> GetKeycloakUsers(string searchKeyword, int? first, int? max, UserMemberPaginate userMemberPaginate)
+        {
+            // 調用 adminService.FindUsers API 並檢查回應
+            ResponseModel<IList<UserRepresentation>> response = 
+                await adminService.FindUsers(true, null, null, true, null, null, null, null, searchKeyword, first, max);
+
+            // 檢查回應
+            if (response.Code != (int)KeycloakResponseCode.Success)
+            {
+                userMemberPaginate.Message = response.Message;                
+            }            
+            // 成功則返回結果，若 Data 為 null 則回傳空列表
+            return response.Data ?? new List<UserRepresentation>();
+        }
+
+
     }
 }

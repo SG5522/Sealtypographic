@@ -1,4 +1,5 @@
 using AutoMapper;
+using CommonLib.Models;
 using DJKeycloakAPI.Controllers;
 using DJKeycloakAPI.Models.Users;
 using DJKeycloakLib.Models.BaseModel;
@@ -43,7 +44,7 @@ namespace SealTypographicWebAPI.Controllers
         {
             ResponseModel responseModel = await base.Post(newUserForm);
 
-            if (responseModel.Code == KeycloakResponseCode.Success)
+            if (responseModel.Code == (int)KeycloakResponseCode.Success)
             {
                 //新增成功後搜尋剛新增的User
                 UsersQuery userQuery = new()

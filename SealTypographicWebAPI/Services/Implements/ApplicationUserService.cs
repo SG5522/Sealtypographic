@@ -2,9 +2,10 @@
 using DBEntities;
 using System.Security.Claims;
 using DBEntities.Entities;
-using DJKeycloakLib.Models.BaseModel;
 using DJKeycloakAPI.Models.Users;
 using Microsoft.EntityFrameworkCore;
+using CommonLib.Models;
+using DJKeycloakLib.Models.BaseModel;
 
 namespace SealTypographicWebAPI.Services.Implements
 {
@@ -103,19 +104,19 @@ namespace SealTypographicWebAPI.Services.Implements
                 };
 
                 company.ApplicationUsers.Add(user);
-                await dbContext.SaveChangesAsync();
-                response = ResponseModel.Success();
+                await dbContext.SaveChangesAsync();                
+                response.SetCode(KeycloakResponseCode.Success);
             }
             catch(DbUpdateException ex)
             {
-                logger.LogError("AddUser Error while updating database {@error}", ex.InnerException?.Message);
-                response = ResponseModel.SystemError();
+                logger.LogError("AddUser Error while updating database {@error}", ex.InnerException?.Message);                
+                response.SetCode(KeycloakResponseCode.Failure);
                 response.Message = ex.InnerException?.Message;
             }
             catch(Exception ex) 
             {
-                logger.LogError("AddUser error {@error}", ex.Message);
-                response = ResponseModel.SystemError();
+                logger.LogError("AddUser error {@error}", ex.Message);                
+                response.SetCode(KeycloakResponseCode.Failure);
                 response.Message = ex.Message;                
             }
             return response;
