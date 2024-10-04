@@ -7,7 +7,7 @@
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <DocumentationFile></DocumentationFile>
     <IncrementVersionOnBuild>0.0.3.1+</IncrementVersionOnBuild>
-    <Version>0.0.3.1934</Version>
+    <Version>0.0.3.1936</Version>
     <PackageIcon>android-chrome-128x128.png</PackageIcon>
     <Configurations>Debug;Release</Configurations>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>

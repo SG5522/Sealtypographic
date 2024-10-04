@@ -541,42 +541,52 @@ namespace SealTypographicWebAPI.Services.Implements
 
             //確定有資料後取得群組資料
             if (usersCount.Data > 0)
-            {
-                ResponseModel<IList<UserRepresentation>> userRepresentationsResponseModel = new();
+            {                
+                IList<UserRepresentation> userRepresentations = new List<UserRepresentation>();
 
-                if (!isFullPageOut)
+                // 局部函數，封裝 FindUsers 邏輯
+                async Task<bool> FetchUserRepresentations(int? offset, int? limit)
                 {
-                    userRepresentationsResponseModel = await adminService.FindUsers(true, null, null, true, null,
-                                                                null, null, null, userMemberSearch.GetSanitizedQuery(),
-                                                                userMemberSearch.First, userMemberSearch.Max);                                       
+                    var response = await adminService.FindUsers(true, null, null, true, null,
+                        null, null, null, userMemberSearch.GetSanitizedQuery(), offset, limit);
+
+                    if (response.Code == (int)KeycloakResponseCode.Success && response.Data != null)
+                    {
+                        userRepresentations.AddRange(response.Data);
+                        return true;
+                    }
+
+                    userMemberPaginate.Message = response.Message;
+                    return false;
+                }
+
+                // 如果不是全頁導出
+                if (!isFullPageOut)
+                {                    
+                    // 獲取當前頁面的使用者資料
+                    if (!await FetchUserRepresentations(userMemberSearch.First, userMemberSearch.Max))
+                    {
+                        return userMemberPaginate;  // 若請求失敗則返回
+                    }
                 }
                 else
                 {
-                    IList<UserRepresentation> userRepresentations = new List<UserRepresentation>();
-                    for (int offset = 0; offset <= usersCount.Data; offset += 100)
-                    {                        
-                        userRepresentationsResponseModel = await adminService.FindUsers(true, null, null, true, null,
-                                            null, null, null, userMemberSearch.GetSanitizedQuery(),
-                                            offset, 100);
-
-                        //如果API有一次沒抓好資料就回傳錯誤
-                        if (userRepresentationsResponseModel.Code == (int)KeycloakResponseCode.Success)
+                    // 全頁導出：分批次取得所有使用者資料
+                    const int batchSize = 100;
+                    for (int offset = 0; offset <= usersCount.Data; offset += batchSize)
+                    {
+                        // 獲取當前頁面的使用者資料
+                        if (!await FetchUserRepresentations(offset, batchSize))
                         {
-                            userRepresentations.AddRange(userRepresentationsResponseModel.Data!);
-                        }
-                        else
-                        {
-                            userMemberPaginate.Message = userRepresentationsResponseModel.Message;
-                            return userMemberPaginate;
+                            return userMemberPaginate;  // 若請求失敗則返回
                         }
                     }                    
-                    userRepresentationsResponseModel.Data = userRepresentations;
                 }                
 
                 //取得成員資料
                 userMemberPaginate = new()
                 {
-                    ViewModels = mapper.Map<List<UserMemberViewModel>>(userRepresentationsResponseModel.Data),
+                    ViewModels = mapper.Map<List<UserMemberViewModel>>(userRepresentations),
                     PageNumber = userMemberSearch.PageNumber,
                     PageSize = userMemberSearch.PageSize,
                 };
@@ -604,10 +614,8 @@ namespace SealTypographicWebAPI.Services.Implements
             {
                 userMemberPaginate.DbNoData();
             }
-
             return userMemberPaginate;
         }
-
 
         /// <summary>
         /// 登入日誌
@@ -679,28 +687,5 @@ namespace SealTypographicWebAPI.Services.Implements
                 UserName = userName
             };
         }
-
-        private async Task<ResponseModel<IList<UserRepresentation>>> GetKeycloakUsers(string searchKeyword, int? first, int? max)
-        
-            => await adminService.FindUsers(true, null, null, true, null,
-                                            null, null, null, searchKeyword,
-                                            first, max);
-
-        private async Task<IList<UserRepresentation>> GetKeycloakUsers(string searchKeyword, int? first, int? max, UserMemberPaginate userMemberPaginate)
-        {
-            // 調用 adminService.FindUsers API 並檢查回應
-            ResponseModel<IList<UserRepresentation>> response = 
-                await adminService.FindUsers(true, null, null, true, null, null, null, null, searchKeyword, first, max);
-
-            // 檢查回應
-            if (response.Code != (int)KeycloakResponseCode.Success)
-            {
-                userMemberPaginate.Message = response.Message;                
-            }            
-            // 成功則返回結果，若 Data 為 null 則回傳空列表
-            return response.Data ?? new List<UserRepresentation>();
-        }
-
-
     }
 }
