@@ -36,8 +36,7 @@ namespace SealTypographicWebAPI.Config.MapperProfile
                         src.QuarterYear.Type == TypographyType.FinancialReport ?
                         QuarterUtil.GetTaiwanYearQuarter(src.QuarterYear) : QuarterUtil.GetTaiwanYear(src.QuarterYear)
                     ))
-                    .ForMember(dst => dst.SealImageInfos, opt => opt.MapFrom(src => src.TypographicResources.Where(x => x.DeleteStatus == DeleteStatus.No)));
-
+                    .ForMember(dst => dst.SealImageInfos, opt => opt.MapFrom(src => src.TypographicResources.Where(x => x.DeleteStatus == DeleteStatus.No).OrderBy(x => x.SubSealType).ThenBy(x => x.Sequence)));
             CreateMap<TypographicResource, SealImageInfo>()
                     .ForMember(dst => dst.SealMappingConfigId, opt => opt.MapFrom(src => SealMappingConfigUtil.GetCustomerSealType(src.SubSealType)));
 
@@ -63,7 +62,7 @@ namespace SealTypographicWebAPI.Config.MapperProfile
                      //印鑑與季度相關
                      .ForMember(dst => dst.Id, opt => opt.MapFrom(src => src.Id))
                      .ForMember(dst => dst.QuarterYearId, opt => opt.MapFrom(src => src.QuarterYear.Id))
-                     .ForMember(dst => dst.Seals, opt => opt.MapFrom(src => src.TypographicResources.Where(x => x.DeleteStatus == DeleteStatus.No)));
+                     .ForMember(dst => dst.Seals, opt => opt.MapFrom(src => src.TypographicResources.Where(x => x.DeleteStatus == DeleteStatus.No).OrderBy(x => x.SubSealType)));
 
 
             //會計師簽印審核清單
