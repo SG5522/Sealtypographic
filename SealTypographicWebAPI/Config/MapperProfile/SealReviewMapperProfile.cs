@@ -36,7 +36,9 @@ namespace SealTypographicWebAPI.Config.MapperProfile
                         src.QuarterYear.Type == TypographyType.FinancialReport ?
                         QuarterUtil.GetTaiwanYearQuarter(src.QuarterYear) : QuarterUtil.GetTaiwanYear(src.QuarterYear)
                     ))
-                    .ForMember(dst => dst.SealImageInfos, opt => opt.MapFrom(src => src.TypographicResources.Where(x => x.DeleteStatus == DeleteStatus.No).OrderBy(x => x.SubSealType).ThenBy(x => x.Sequence)));
+                    .ForMember(dst => dst.SealImageInfos, opt => opt.MapFrom(src => src.TypographicResources.Where(x => x.DeleteStatus == DeleteStatus.No)
+                    .OrderBy(x => x.SubSealType).ThenBy(x => x.Sequence)));
+
             CreateMap<TypographicResource, SealImageInfo>()
                     .ForMember(dst => dst.SealMappingConfigId, opt => opt.MapFrom(src => SealMappingConfigUtil.GetCustomerSealType(src.SubSealType)));
 
@@ -64,7 +66,6 @@ namespace SealTypographicWebAPI.Config.MapperProfile
                      .ForMember(dst => dst.QuarterYearId, opt => opt.MapFrom(src => src.QuarterYear.Id))
                      .ForMember(dst => dst.Seals, opt => opt.MapFrom(src => src.TypographicResources.Where(x => x.DeleteStatus == DeleteStatus.No).OrderBy(x => x.SubSealType)));
 
-
             //會計師簽印審核清單
             CreateMap<AccountantSignGroup, AccountantSignReviewViewModel>()
                     .ForMember(dst => dst.Name, opt => opt.MapFrom(src => src.Accountant.Name))
@@ -74,7 +75,8 @@ namespace SealTypographicWebAPI.Config.MapperProfile
                     //Log Save
                     .ForMember(dst => dst.AccountantId, opt => opt.MapFrom(src => src.Accountant.Id))
                     .ForMember(dst => dst.GroupCreateDate, opt => opt.MapFrom(src => src.CreateDate.DateTime))
-                    .ForMember(dst => dst.SignImageInfos, opt => opt.MapFrom(src => src.TypographicResources.Where(x => x.DeleteStatus == DeleteStatus.No)));
+                    .ForMember(dst => dst.SignImageInfos, opt => opt.MapFrom(src => src.TypographicResources.Where(x => x.DeleteStatus == DeleteStatus.No)
+                    .OrderBy(x => x.SubSealType)));
 
             //會計師簽印審核詳細資料的簽印部份
             CreateMap<TypographicResource, SignImageInfo>()
