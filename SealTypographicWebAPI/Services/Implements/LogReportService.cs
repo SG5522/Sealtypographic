@@ -154,8 +154,8 @@ namespace SealTypographicWebAPI.Services.Implements
 
             IQueryable<OperationLog> operationLogQuery = operationLog.AsQueryable().Where
                                                         (
-                                                            x => x.DateTime >= operationLogSearch.StartDate
-                                                            && x.DateTime <= operationLogSearch.EndDate
+                                                            x => x.LogTimestamp >= operationLogSearch.StartDate
+                                                            && x.LogTimestamp <= operationLogSearch.EndDate
                                                         );
 
             if (operationLogSearch.ActionType != null)
@@ -225,8 +225,8 @@ namespace SealTypographicWebAPI.Services.Implements
 
             IQueryable<CustomerSealEventLog> customerSealEventLogQuery = customerSealEventLog.AsQueryable().Where
                                                                         (
-                                                                            x => x.DateTime >= customerSealEventLogSearch.StartDate
-                                                                            && x.DateTime <= customerSealEventLogSearch.EndDate
+                                                                            x => x.LogTimestamp >= customerSealEventLogSearch.StartDate
+                                                                            && x.LogTimestamp <= customerSealEventLogSearch.EndDate
                                                                             && x.Data != null
                                                                             && x.Data.TypographyType == typographyType
                                                                         );
@@ -302,8 +302,8 @@ namespace SealTypographicWebAPI.Services.Implements
 
             IQueryable<AccountantSignEventLog> accountantSignEventLogQuery = accountantSignEventLog.AsQueryable().Where
                                                                             (
-                                                                                x => x.DateTime >= accountantSignEventLogSearch.StartDate
-                                                                                && x.DateTime <= accountantSignEventLogSearch.EndDate
+                                                                                x => x.LogTimestamp >= accountantSignEventLogSearch.StartDate
+                                                                                && x.LogTimestamp <= accountantSignEventLogSearch.EndDate
                                                                             );
 
             if (accountantSignEventLogSearch.ReviewStatus != null)
@@ -671,14 +671,13 @@ namespace SealTypographicWebAPI.Services.Implements
             await accountantSignEventLog.InsertOneAsync(MapFrom<AccountantSignEventLog, AccountantSignEventLogSave>(accountantSignEventLogSave, operateType, userId, userName));
         }
 
-        private static T MapFrom<T, K>(K logSaveData, OperateType operateType, string userId, string userName) where T : LogModel<K>, new()
+        private static T MapFrom<T, K>(K logSaveData, OperateType operateType, string userId, string userName) where T : LogModel<K, DateTime>, new()
         {
             if (logSaveData == null) throw new ArgumentNullException(nameof(logSaveData));
 
             return new()
             {
-                Data = logSaveData,
-                DateTime = DateTime.Now,
+                Data = logSaveData,                
                 OperateType = operateType,
                 FunctionType = FunctionType.SealTypographic,
                 LogLevel = CommonLib.Enums.LogLevel.Info,

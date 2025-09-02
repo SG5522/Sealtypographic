@@ -71,7 +71,7 @@ namespace SealTypographicWebAPI.Services.Implements
                 {
                     accountantResponse.DbNoData();
                 }
-                LogModel<AccountantDetailResponse> log = new()
+                LogModel<AccountantDetailResponse, DateTime> log = new()
                 {
                     Data = accountantResponse
                 };

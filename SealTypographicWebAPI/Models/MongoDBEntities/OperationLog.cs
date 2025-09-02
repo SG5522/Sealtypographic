@@ -8,7 +8,7 @@ namespace SealTypographicWebAPI.Models.MongoDBModel
     /// <summary>
     /// 
     /// </summary>
-    public class OperationLog : LogModel<OperationLogSave>
+    public class OperationLog : LogModel<OperationLogSave, DateTime>
     {
         /// <summary>
         /// 
