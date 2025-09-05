@@ -64,8 +64,7 @@ namespace DJSpire.Utils
                 //搜尋包含Display的屬性值並參照Order排序
                 PropertyInfo[] properties = typeof(T).GetProperties()
                                             .Where(
-                                                    p => p.GetCustomAttribute<DisplayAttribute>() != null
-                                                    && p.GetValue(excelData.Values.FirstOrDefault()) != null
+                                                    p => p.GetCustomAttribute<DisplayAttribute>() != null                                                    
                                                 )
                                             .OrderBy(p => p.GetCustomAttribute<DisplayAttribute>()?.Order ?? int.MaxValue)
                                             .ToArray();

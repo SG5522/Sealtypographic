@@ -2,11 +2,13 @@
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
+	<VersionPrefix>1.0.2</VersionPrefix>
+	<Description>D &amp; J Spire.Office 函式庫</Description>
+	<ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
-
-  <ItemGroup>
+  
+    <ItemGroup>
     <None Remove="license.elic.xml" />
   </ItemGroup>
 
@@ -14,7 +16,7 @@
     <EmbeddedResource Include="license.elic.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
-  </ItemGroup>
+    </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="DJCommonLib" Version="8.0.5" />
