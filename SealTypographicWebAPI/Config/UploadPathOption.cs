@@ -73,7 +73,7 @@ namespace SealTypographicWebAPI.Config
         public string AccountantSignCertificate
         {
             get
-            {
+            {                
                 return Path.Combine(UploadRootPath, UploadType.AccountantSignCertificate.ToString());
             }
         }
