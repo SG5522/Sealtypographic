@@ -105,7 +105,7 @@ namespace SealTypographicWebAPI.Services.Implements
 
             if (!mongoDatabase.ListCollections(listCollectionsOptions).Any())
             {
-                mongoDatabase.CreateCollection(collectionName, new() { TimeSeriesOptions = new TimeSeriesOptions("DateTime") });
+                mongoDatabase.CreateCollection(collectionName, new() { TimeSeriesOptions = new TimeSeriesOptions("LogTimestamp") });
             }
         }
 

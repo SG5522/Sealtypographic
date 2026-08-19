@@ -126,10 +126,9 @@ internal class Program
         builder.Services.AddSingleton<TemplateConfigService>();
         builder.Services.AddScoped<ResponseCodeService>();
         builder.Services.AddScoped<ReviewStatusService>();
-        builder.Services.AddScoped<IAdminService, KeycloakAdminService>();
-        builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
-        builder.Services.AddAutoMapper(Assembly.GetAssembly(typeof(UserMapperProfile)));
-
+        builder.Services.AddScoped<IAdminService, KeycloakAdminService>();        
+        builder.Services.AddAutoMapper(cfg => cfg.AddMaps(Assembly.GetExecutingAssembly(),
+                                        Assembly.GetAssembly(typeof(UserMapperProfile))));
         //DB Process
         builder.Services.AddScoped<ICustomerService, CustomerService>();
         builder.Services.AddScoped<ICustomerSealService, CustomerSealService>();
@@ -193,8 +192,8 @@ internal class Program
                 Type = SecuritySchemeType.OAuth2,
                 Reference = new OpenApiReference
                 {
-                    Id = JwtBearerDefaults.AuthenticationScheme,
-                    Type = ReferenceType.SecurityScheme
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "oauth2"
                 },
                 Flows = new OpenApiOAuthFlows
                 {
@@ -208,10 +207,10 @@ internal class Program
             };
             c.AddSecurityDefinition(securityScheme.Reference.Id, securityScheme);
             c.AddSecurityRequirement(new OpenApiSecurityRequirement
-            {
-        {securityScheme, Array.Empty<string>()}
-            });
-        });
+                {
+            {securityScheme, Array.Empty<string>()}
+                });
+    });
 
         #region -- Authentication --
 
